@@ -1,0 +1,466 @@
+{
+  "_meta": {
+    "models": {
+      "entities": "Legal entities such as corporations, LLCs, or personal identities that own accounts and conduct financial activities.",
+      "dashboardMetrics": "Key performance indicators showing overall financial health including net income, revenue, expenses, burn rate, and net worth.",
+      "cashFlowData": "Time series data showing money flowing in and out over time, broken down by month with inflow and outflow amounts.",
+      "plData": "Profit and Loss statement showing revenue and expense categories with their amounts for the selected time period.",
+      "balanceSheetData": "Snapshot of financial position showing assets, liabilities, and equity organized by account type.",
+      "aiInsights": "AI-generated financial recommendations and observations based on spending patterns, trends, and opportunities.",
+      "timePeriods": "Available time period selections for filtering reports (this month, last quarter, year-to-date, etc.).",
+      "categories": "Transaction classifications used for reporting and budgeting, providing grouping for income and expense analysis."
+    },
+    "relationships": [
+      "Each Entity has its own set of financial data including metrics, cash flow, P&L, and balance sheet",
+      "Dashboard Metrics aggregate data across selected entities and time periods",
+      "Cash Flow Data Points are organized chronologically to show trends over time",
+      "P&L Data groups transactions by Category to show revenue and expense breakdown",
+      "Balance Sheet Data is organized by account type (assets, liabilities, equity)",
+      "AI Insights analyze data patterns to generate recommendations"
+    ]
+  },
+  "entities": [
+    {
+      "id": "entity-001",
+      "name": "Personal",
+      "type": "personal",
+      "currency": "USD"
+    },
+    {
+      "id": "entity-002",
+      "name": "Marakana Corp",
+      "type": "business",
+      "currency": "USD"
+    },
+    {
+      "id": "entity-003",
+      "name": "Tech Ventures LLC",
+      "type": "business",
+      "currency": "USD"
+    }
+  ],
+  "dashboardMetrics": {
+    "netIncome": 24567.89,
+    "totalRevenue": 156789.50,
+    "totalExpenses": 132221.61,
+    "burnRate": 11018.47,
+    "netWorth": 487325.00,
+    "cashBalance": 89432.15,
+    "accountsReceivable": 28450.00,
+    "accountsPayable": 12380.00,
+    "profitMargin": 0.156,
+    "revenueGrowth": 0.124,
+    "expenseRatio": 0.843
+  },
+  "cashFlowData": [
+    {
+      "month": "2024-01",
+      "monthLabel": "Jan 2024",
+      "inflow": 12450.00,
+      "outflow": 8932.45,
+      "net": 3517.55
+    },
+    {
+      "month": "2024-02",
+      "monthLabel": "Feb 2024",
+      "inflow": 15230.50,
+      "outflow": 10125.30,
+      "net": 5105.20
+    },
+    {
+      "month": "2024-03",
+      "monthLabel": "Mar 2024",
+      "inflow": 13890.00,
+      "outflow": 11450.75,
+      "net": 2439.25
+    },
+    {
+      "month": "2024-04",
+      "monthLabel": "Apr 2024",
+      "inflow": 16780.25,
+      "outflow": 9876.20,
+      "net": 6904.05
+    },
+    {
+      "month": "2024-05",
+      "monthLabel": "May 2024",
+      "inflow": 14520.00,
+      "outflow": 10932.60,
+      "net": 3587.40
+    },
+    {
+      "month": "2024-06",
+      "monthLabel": "Jun 2024",
+      "inflow": 18945.75,
+      "outflow": 12345.90,
+      "net": 6599.85
+    },
+    {
+      "month": "2024-07",
+      "monthLabel": "Jul 2024",
+      "inflow": 13240.00,
+      "outflow": 11234.50,
+      "net": 2005.50
+    },
+    {
+      "month": "2024-08",
+      "monthLabel": "Aug 2024",
+      "inflow": 15678.30,
+      "outflow": 10456.80,
+      "net": 5221.50
+    },
+    {
+      "month": "2024-09",
+      "monthLabel": "Sep 2024",
+      "inflow": 17890.40,
+      "outflow": 11890.45,
+      "net": 5999.95
+    },
+    {
+      "month": "2024-10",
+      "monthLabel": "Oct 2024",
+      "inflow": 14325.00,
+      "outflow": 12567.30,
+      "net": 1757.70
+    },
+    {
+      "month": "2024-11",
+      "monthLabel": "Nov 2024",
+      "inflow": 16234.80,
+      "outflow": 11234.76,
+      "net": 5000.04
+    },
+    {
+      "month": "2024-12",
+      "monthLabel": "Dec 2024",
+      "inflow": 17604.50,
+      "outflow": 11175.60,
+      "net": 6428.90
+    }
+  ],
+  "plData": {
+    "period": "2024-01-01 to 2024-12-31",
+    "revenue": [
+      {
+        "category": "Service Revenue",
+        "amount": 89450.00,
+        "percentage": 0.57
+      },
+      {
+        "category": "Product Sales",
+        "amount": 45230.50,
+        "percentage": 0.29
+      },
+      {
+        "category": "Consulting",
+        "amount": 18900.00,
+        "percentage": 0.12
+      },
+      {
+        "category": "Interest Income",
+        "amount": 3209.00,
+        "percentage": 0.02
+      }
+    ],
+    "totalRevenue": 156789.50,
+    "expenses": [
+      {
+        "category": "Salaries & Wages",
+        "amount": 68450.00,
+        "percentage": 0.52
+      },
+      {
+        "category": "Office Rent",
+        "amount": 24000.00,
+        "percentage": 0.18
+      },
+      {
+        "category": "Software & Tools",
+        "amount": 12345.60,
+        "percentage": 0.09
+      },
+      {
+        "category": "Marketing",
+        "amount": 8932.50,
+        "percentage": 0.07
+      },
+      {
+        "category": "Professional Services",
+        "amount": 6780.00,
+        "percentage": 0.05
+      },
+      {
+        "category": "Travel & Entertainment",
+        "amount": 5234.75,
+        "percentage": 0.04
+      },
+      {
+        "category": "Utilities",
+        "amount": 3456.76,
+        "percentage": 0.03
+      },
+      {
+        "category": "Insurance",
+        "amount": 3022.00,
+        "percentage": 0.02
+      }
+    ],
+    "totalExpenses": 132221.61,
+    "netIncome": 24567.89
+  },
+  "balanceSheetData": {
+    "asOfDate": "2024-12-31",
+    "assets": {
+      "currentAssets": [
+        {
+          "account": "Cash & Cash Equivalents",
+          "amount": 89432.15
+        },
+        {
+          "account": "Accounts Receivable",
+          "amount": 28450.00
+        },
+        {
+          "account": "Prepaid Expenses",
+          "amount": 4567.00
+        },
+        {
+          "account": "Inventory",
+          "amount": 15230.00
+        }
+      ],
+      "totalCurrentAssets": 137679.15,
+      "fixedAssets": [
+        {
+          "account": "Equipment",
+          "amount": 45000.00
+        },
+        {
+          "account": "Furniture & Fixtures",
+          "amount": 18500.00
+        },
+        {
+          "account": "Vehicles",
+          "amount": 32000.00
+        },
+        {
+          "account": "Accumulated Depreciation",
+          "amount": -12854.15
+        }
+      ],
+      "totalFixedAssets": 82645.85,
+      "otherAssets": [
+        {
+          "account": "Investments",
+          "amount": 125000.00
+        },
+        {
+          "account": "Intangible Assets",
+          "amount": 8000.00
+        }
+      ],
+      "totalOtherAssets": 133000.00,
+      "totalAssets": 353325.00
+    },
+    "liabilities": {
+      "currentLiabilities": [
+        {
+          "account": "Accounts Payable",
+          "amount": 12380.00
+        },
+        {
+          "account": "Credit Card",
+          "amount": 3456.80
+        },
+        {
+          "account": "Accrued Expenses",
+          "amount": 5678.20
+        },
+        {
+          "account": "Short-term Loan",
+          "amount": 10000.00
+        }
+      ],
+      "totalCurrentLiabilities": 31515.00,
+      "longTermLiabilities": [
+        {
+          "account": "Equipment Loan",
+          "amount": 25000.00
+        },
+        {
+          "account": "Vehicle Loan",
+          "amount": 18485.00
+        }
+      ],
+      "totalLongTermLiabilities": 43485.00,
+      "totalLiabilities": 75000.00
+    },
+    "equity": {
+      "items": [
+        {
+          "account": "Owner's Equity",
+          "amount": 253757.11
+        },
+        {
+          "account": "Retained Earnings",
+          "amount": 24567.89
+        }
+      ],
+      "totalEquity": 278325.00
+    },
+    "liabilitiesAndEquity": 353325.00
+  },
+  "aiInsights": [
+    {
+      "id": "insight-001",
+      "type": "opportunity",
+      "priority": "high",
+      "title": "Revenue Growth Opportunity",
+      "description": "Your service revenue has grown 15% over the past quarter. Consider expanding your service offerings or increasing rates to capitalize on this momentum.",
+      "impact": "Could increase monthly revenue by $2,000-$3,000",
+      "category": "Revenue"
+    },
+    {
+      "id": "insight-002",
+      "type": "warning",
+      "priority": "medium",
+      "title": "Rising Software Costs",
+      "description": "Software and tools expenses have increased by 24% this year. Review your subscriptions and consider consolidating or negotiating better rates.",
+      "impact": "Potential savings of $150-$200 per month",
+      "category": "Expenses"
+    },
+    {
+      "id": "insight-003",
+      "type": "recommendation",
+      "priority": "medium",
+      "title": "Optimize Cash Reserves",
+      "description": "Your current cash balance is 6.8 months of operating expenses, which is healthy. Consider investing 20-30% in short-term, low-risk investments for better returns.",
+      "impact": "Potential additional income of $200-$300 per month",
+      "category": "Cash Management"
+    },
+    {
+      "id": "insight-004",
+      "type": "positive",
+      "priority": "low",
+      "title": "Strong Profit Margins",
+      "description": "Your profit margin of 15.6% is above industry average for service businesses. This indicates efficient operations and good pricing strategy.",
+      "impact": "Continue current strategies",
+      "category": "Performance"
+    },
+    {
+      "id": "insight-005",
+      "type": "recommendation",
+      "priority": "high",
+      "title": "Tax Optimization Opportunity",
+      "description": "Based on your expense patterns, you may be eligible for additional deductions on home office, professional development, and equipment. Consult with a tax professional before year-end.",
+      "impact": "Potential tax savings of $1,500-$2,500",
+      "category": "Tax"
+    }
+  ],
+  "timePeriods": [
+    {
+      "id": "this-month",
+      "label": "This Month",
+      "startDate": "2024-12-01",
+      "endDate": "2024-12-31"
+    },
+    {
+      "id": "last-month",
+      "label": "Last Month",
+      "startDate": "2024-11-01",
+      "endDate": "2024-11-30"
+    },
+    {
+      "id": "this-quarter",
+      "label": "This Quarter (Q4)",
+      "startDate": "2024-10-01",
+      "endDate": "2024-12-31"
+    },
+    {
+      "id": "last-quarter",
+      "label": "Last Quarter (Q3)",
+      "startDate": "2024-07-01",
+      "endDate": "2024-09-30"
+    },
+    {
+      "id": "ytd",
+      "label": "Year to Date",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+    },
+    {
+      "id": "last-year",
+      "label": "Last Year",
+      "startDate": "2023-01-01",
+      "endDate": "2023-12-31"
+    },
+    {
+      "id": "custom",
+      "label": "Custom Range",
+      "startDate": null,
+      "endDate": null
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-001",
+      "name": "Service Revenue",
+      "type": "income",
+      "color": "emerald"
+    },
+    {
+      "id": "cat-002",
+      "name": "Product Sales",
+      "type": "income",
+      "color": "green"
+    },
+    {
+      "id": "cat-003",
+      "name": "Consulting",
+      "type": "income",
+      "color": "teal"
+    },
+    {
+      "id": "cat-004",
+      "name": "Salaries & Wages",
+      "type": "expense",
+      "color": "red"
+    },
+    {
+      "id": "cat-005",
+      "name": "Office Rent",
+      "type": "expense",
+      "color": "orange"
+    },
+    {
+      "id": "cat-006",
+      "name": "Software & Tools",
+      "type": "expense",
+      "color": "amber"
+    },
+    {
+      "id": "cat-007",
+      "name": "Marketing",
+      "type": "expense",
+      "color": "yellow"
+    },
+    {
+      "id": "cat-008",
+      "name": "Professional Services",
+      "type": "expense",
+      "color": "purple"
+    },
+    {
+      "id": "cat-009",
+      "name": "Travel & Entertainment",
+      "type": "expense",
+      "color": "pink"
+    },
+    {
+      "id": "cat-010",
+      "name": "Utilities",
+      "type": "expense",
+      "color": "blue"
+    }
+  ]
+}

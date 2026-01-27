@@ -1,0 +1,406 @@
+{
+  "_meta": {
+    "models": {
+      "entities": "Legal entities such as corporations, LLCs, or personal identities that own accounts and conduct financial activities.",
+      "budgets": "Planned income and expense amounts per entity, optionally broken down by category and time period, used for variance analysis and spending control.",
+      "goals": "Financial targets such as savings goals or debt paydown objectives, with progress tracking, target dates, and suggested monthly contributions.",
+      "categories": "Classifications for transactions used for reporting and budgeting, providing simplified grouping for income and expenses.",
+      "timePeriods": "Available time period selections for filtering budgets and goals (this month, this quarter, this year, etc.)."
+    },
+    "relationships": [
+      "Each Budget belongs to an Entity and may be scoped to a specific Category",
+      "Each Goal belongs to an Entity and tracks progress toward a financial target",
+      "Budgets track actual spending vs budgeted amounts to show variance",
+      "Goals calculate suggested monthly contributions based on target date and remaining amount",
+      "Categories are used to group and filter budgets for detailed spending control"
+    ]
+  },
+  "entities": [
+    {
+      "id": "entity-001",
+      "name": "Personal",
+      "type": "personal",
+      "currency": "USD"
+    },
+    {
+      "id": "entity-002",
+      "name": "Marakana Corp",
+      "type": "business",
+      "currency": "USD"
+    },
+    {
+      "id": "entity-003",
+      "name": "Tech Ventures LLC",
+      "type": "business",
+      "currency": "USD"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "budget-001",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "categoryId": "cat-005",
+      "categoryName": "Groceries",
+      "period": "monthly",
+      "periodLabel": "January 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "budgetedAmount": 600.00,
+      "actualAmount": 487.32,
+      "variance": 112.68,
+      "percentUsed": 81.22,
+      "status": "on-track"
+    },
+    {
+      "id": "budget-002",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "categoryId": "cat-006",
+      "categoryName": "Transportation",
+      "period": "monthly",
+      "periodLabel": "January 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "budgetedAmount": 300.00,
+      "actualAmount": 278.45,
+      "variance": 21.55,
+      "percentUsed": 92.82,
+      "status": "warning"
+    },
+    {
+      "id": "budget-003",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "categoryId": "cat-007",
+      "categoryName": "Entertainment",
+      "period": "monthly",
+      "periodLabel": "January 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "budgetedAmount": 200.00,
+      "actualAmount": 245.60,
+      "variance": -45.60,
+      "percentUsed": 122.80,
+      "status": "exceeded"
+    },
+    {
+      "id": "budget-004",
+      "entityId": "entity-002",
+      "entityName": "Marakana Corp",
+      "categoryId": "cat-001",
+      "categoryName": "Salaries & Wages",
+      "period": "monthly",
+      "periodLabel": "January 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "budgetedAmount": 15000.00,
+      "actualAmount": 15000.00,
+      "variance": 0.00,
+      "percentUsed": 100.00,
+      "status": "on-track"
+    },
+    {
+      "id": "budget-005",
+      "entityId": "entity-002",
+      "entityName": "Marakana Corp",
+      "categoryId": "cat-002",
+      "categoryName": "Marketing",
+      "period": "quarterly",
+      "periodLabel": "Q1 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-03-31",
+      "budgetedAmount": 5000.00,
+      "actualAmount": 3245.80,
+      "variance": 1754.20,
+      "percentUsed": 64.92,
+      "status": "on-track"
+    },
+    {
+      "id": "budget-006",
+      "entityId": "entity-002",
+      "entityName": "Marakana Corp",
+      "categoryId": "cat-003",
+      "categoryName": "Software & Tools",
+      "period": "monthly",
+      "periodLabel": "January 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "budgetedAmount": 1200.00,
+      "actualAmount": 1145.67,
+      "variance": 54.33,
+      "percentUsed": 95.47,
+      "status": "warning"
+    },
+    {
+      "id": "budget-007",
+      "entityId": "entity-003",
+      "entityName": "Tech Ventures LLC",
+      "categoryId": "cat-004",
+      "categoryName": "Professional Services",
+      "period": "monthly",
+      "periodLabel": "January 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "budgetedAmount": 2500.00,
+      "actualAmount": 1850.00,
+      "variance": 650.00,
+      "percentUsed": 74.00,
+      "status": "on-track"
+    },
+    {
+      "id": "budget-008",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "categoryId": null,
+      "categoryName": "All Categories",
+      "period": "monthly",
+      "periodLabel": "January 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31",
+      "budgetedAmount": 3500.00,
+      "actualAmount": 3245.89,
+      "variance": 254.11,
+      "percentUsed": 92.74,
+      "status": "warning"
+    },
+    {
+      "id": "budget-009",
+      "entityId": "entity-002",
+      "entityName": "Marakana Corp",
+      "categoryId": null,
+      "categoryName": "All Categories",
+      "period": "quarterly",
+      "periodLabel": "Q1 2024",
+      "startDate": "2024-01-01",
+      "endDate": "2024-03-31",
+      "budgetedAmount": 55000.00,
+      "actualAmount": 42567.89,
+      "variance": 12432.11,
+      "percentUsed": 77.40,
+      "status": "on-track"
+    }
+  ],
+  "goals": [
+    {
+      "id": "goal-001",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "name": "Emergency Fund",
+      "description": "Build a 6-month emergency fund for unexpected expenses",
+      "type": "savings",
+      "targetAmount": 18000.00,
+      "currentAmount": 12450.00,
+      "remainingAmount": 5550.00,
+      "percentComplete": 69.17,
+      "targetDate": "2024-12-31",
+      "startDate": "2024-01-01",
+      "daysRemaining": 340,
+      "monthsRemaining": 11,
+      "suggestedMonthlyContribution": 504.55,
+      "status": "on-track",
+      "linkedAccountId": "acc-savings-001",
+      "linkedAccountName": "High-Yield Savings"
+    },
+    {
+      "id": "goal-002",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "name": "Vacation to Europe",
+      "description": "Save for a 2-week vacation to Europe in summer",
+      "type": "savings",
+      "targetAmount": 5000.00,
+      "currentAmount": 2800.00,
+      "remainingAmount": 2200.00,
+      "percentComplete": 56.00,
+      "targetDate": "2024-06-01",
+      "startDate": "2024-01-01",
+      "daysRemaining": 127,
+      "monthsRemaining": 4,
+      "suggestedMonthlyContribution": 550.00,
+      "status": "warning",
+      "linkedAccountId": "acc-savings-002",
+      "linkedAccountName": "Travel Fund"
+    },
+    {
+      "id": "goal-003",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "name": "Pay Off Credit Card",
+      "description": "Eliminate high-interest credit card debt",
+      "type": "debt-paydown",
+      "targetAmount": 8500.00,
+      "currentAmount": 5200.00,
+      "remainingAmount": 3300.00,
+      "percentComplete": 61.18,
+      "targetDate": "2024-08-31",
+      "startDate": "2024-01-01",
+      "daysRemaining": 218,
+      "monthsRemaining": 7,
+      "suggestedMonthlyContribution": 471.43,
+      "status": "on-track",
+      "linkedAccountId": "acc-cc-001",
+      "linkedAccountName": "Chase Visa"
+    },
+    {
+      "id": "goal-004",
+      "entityId": "entity-002",
+      "entityName": "Marakana Corp",
+      "name": "New Equipment Purchase",
+      "description": "Save for new development workstations and equipment",
+      "type": "savings",
+      "targetAmount": 25000.00,
+      "currentAmount": 8750.00,
+      "remainingAmount": 16250.00,
+      "percentComplete": 35.00,
+      "targetDate": "2024-09-30",
+      "startDate": "2024-01-01",
+      "daysRemaining": 248,
+      "monthsRemaining": 8,
+      "suggestedMonthlyContribution": 2031.25,
+      "status": "warning",
+      "linkedAccountId": "acc-biz-savings-001",
+      "linkedAccountName": "Business Savings"
+    },
+    {
+      "id": "goal-005",
+      "entityId": "entity-003",
+      "entityName": "Tech Ventures LLC",
+      "name": "Pay Off Equipment Loan",
+      "description": "Eliminate remaining balance on equipment financing",
+      "type": "debt-paydown",
+      "targetAmount": 12000.00,
+      "currentAmount": 9600.00,
+      "remainingAmount": 2400.00,
+      "percentComplete": 80.00,
+      "targetDate": "2024-04-30",
+      "startDate": "2024-01-01",
+      "daysRemaining": 95,
+      "monthsRemaining": 3,
+      "suggestedMonthlyContribution": 800.00,
+      "status": "on-track",
+      "linkedAccountId": "acc-loan-001",
+      "linkedAccountName": "Equipment Loan"
+    },
+    {
+      "id": "goal-006",
+      "entityId": "entity-001",
+      "entityName": "Personal",
+      "name": "Retirement Savings",
+      "description": "Long-term retirement savings goal",
+      "type": "retirement",
+      "targetAmount": 500000.00,
+      "currentAmount": 125000.00,
+      "remainingAmount": 375000.00,
+      "percentComplete": 25.00,
+      "targetDate": "2044-12-31",
+      "startDate": "2024-01-01",
+      "daysRemaining": 7670,
+      "monthsRemaining": 252,
+      "suggestedMonthlyContribution": 1488.10,
+      "status": "on-track",
+      "linkedAccountId": "acc-401k-001",
+      "linkedAccountName": "401(k) Retirement"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-001",
+      "name": "Salaries & Wages",
+      "type": "expense",
+      "color": "red"
+    },
+    {
+      "id": "cat-002",
+      "name": "Marketing",
+      "type": "expense",
+      "color": "orange"
+    },
+    {
+      "id": "cat-003",
+      "name": "Software & Tools",
+      "type": "expense",
+      "color": "amber"
+    },
+    {
+      "id": "cat-004",
+      "name": "Professional Services",
+      "type": "expense",
+      "color": "yellow"
+    },
+    {
+      "id": "cat-005",
+      "name": "Groceries",
+      "type": "expense",
+      "color": "green"
+    },
+    {
+      "id": "cat-006",
+      "name": "Transportation",
+      "type": "expense",
+      "color": "blue"
+    },
+    {
+      "id": "cat-007",
+      "name": "Entertainment",
+      "type": "expense",
+      "color": "purple"
+    },
+    {
+      "id": "cat-008",
+      "name": "Utilities",
+      "type": "expense",
+      "color": "cyan"
+    },
+    {
+      "id": "cat-009",
+      "name": "Healthcare",
+      "type": "expense",
+      "color": "pink"
+    },
+    {
+      "id": "cat-010",
+      "name": "Insurance",
+      "type": "expense",
+      "color": "indigo"
+    }
+  ],
+  "timePeriods": [
+    {
+      "id": "this-month",
+      "label": "This Month",
+      "startDate": "2024-01-01",
+      "endDate": "2024-01-31"
+    },
+    {
+      "id": "this-quarter",
+      "label": "This Quarter (Q1)",
+      "startDate": "2024-01-01",
+      "endDate": "2024-03-31"
+    },
+    {
+      "id": "this-year",
+      "label": "This Year",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31"
+    },
+    {
+      "id": "next-month",
+      "label": "Next Month",
+      "startDate": "2024-02-01",
+      "endDate": "2024-02-29"
+    },
+    {
+      "id": "next-quarter",
+      "label": "Next Quarter (Q2)",
+      "startDate": "2024-04-01",
+      "endDate": "2024-06-30"
+    },
+    {
+      "id": "custom",
+      "label": "Custom Range",
+      "startDate": null,
+      "endDate": null
+    }
+  ]
+}
