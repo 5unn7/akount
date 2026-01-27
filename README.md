@@ -1,295 +1,285 @@
-# Akount - Product Plan Export Package
+# Akount - Multi-Entity Accounting Platform
 
-**Version:** 1.0
-**Generated:** January 2026
-**Product:** Multi-country financial command center for solo entrepreneurs
-
----
-
-## What's Included
-
-This export package contains everything needed to implement Akount in your chosen tech stack:
-
-### 📋 Product Specifications
-- `product-overview.md` - Product description, sections, data model summary, implementation sequence
-- `product/sections/*/spec.md` - Detailed specifications for each of the 7 sections
-- `product/shell/spec.md` - Application shell specification
-
-### 🎨 Design System
-- `design-system/tokens.css` - CSS custom properties for colors and typography
-- `design-system/tailwind-colors.md` - Tailwind CSS v4 usage examples
-- `design-system/fonts.md` - Google Fonts import code and usage
-
-### 💾 Data Model
-- `data-model/types.ts` - Complete TypeScript type definitions
-- `data-model/README.md` - Entity descriptions and relationships
-
-### 🏗️ Application Shell
-- `shell/components/` - Sidebar navigation, workspace/entity controls, user menu
-- `shell/README.md` - Shell specification and usage examples
-
-### 🧩 Section Components
-- `sections/[section-id]/types.ts` - Section-specific TypeScript types
-- `sections/[section-id]/sample-data.json` - Sample data for development and testing
-- `sections/[section-id]/components/` - Reference React components
-- `sections/[section-id]/README.md` - Section specification and design notes
-- `sections/[section-id]/tests.md` - Test specifications (TDD approach)
-
-### 📖 Implementation Instructions
-- `instructions/incremental/01-foundation.md` - Foundation setup (auth, routing, design system, shell)
-- `instructions/incremental/02-08-*.md` - Step-by-step instructions for each of the 7 sections
-- `instructions/one-shot-instructions.md` - All milestones combined for full implementation
-
-### 🚀 Ready-to-Use Prompts
-- `prompts/one-shot-prompt.md` - Complete prompt for full implementation in one session
-- `prompts/section-prompt.md` - Template for section-by-section implementation
+**Status:** 🚧 Early Development (Phase 0 - Foundation)
+**Progress:** 5% (Infrastructure only)
+**Last Updated:** 2026-01-27
 
 ---
 
-## How to Use This Package
+## 📊 Quick Status
 
-### Approach 1: Incremental Implementation (Recommended)
+| Item | Status |
+|------|--------|
+| **Monorepo Structure** | ✅ Complete |
+| **Database Schema** | ✅ Defined (not migrated) |
+| **Frontend Shell** | ✅ Basic layout |
+| **Backend API** | ⚠️ Hello-world only |
+| **Authentication** | ❌ Not configured |
+| **Database Connection** | ❌ Not operational |
+| **Features** | ❌ None implemented |
 
-Build Akount milestone by milestone, fully completing one before moving to the next:
-
-1. **Foundation** - Follow `instructions/incremental/01-foundation.md`
-   - Set up tech stack, auth, routing, design system, shell
-   - Create database schema for core entities
-   - Get application skeleton working
-
-2. **Accounts Overview** - Follow `instructions/incremental/02-accounts-overview.md`
-   - Build the financial dashboard
-   - Implement multi-currency display and entity filtering
-   - Test all user flows before proceeding
-
-3. **Continue with remaining sections** (03-08)
-   - Each milestone builds on the previous ones
-   - Reference provided components and sample data
-   - Write tests first (TDD approach)
-
-**Benefits:**
-- Reduces complexity
-- Easier to test and validate
-- Can deploy incrementally
-- Better for team collaboration
-
-### Approach 2: One-Shot Full Build
-
-Build the entire application in one session using an AI coding agent:
-
-1. Copy the content from `prompts/one-shot-prompt.md`
-2. Answer the clarifying questions about tech stack and scope
-3. Let the agent build all 8 milestones following the combined instructions
-4. Review and test the complete implementation
-
-**Benefits:**
-- Fastest path to complete app
-- Good for prototypes or MVPs
-- Consistent architecture across all sections
-
-### Approach 3: Section-by-Section with AI
-
-Focus on one section at a time with AI assistance:
-
-1. Complete foundation milestone first
-2. For each section, use `prompts/section-prompt.md` as a template
-3. Replace placeholders with section-specific information
-4. Implement and test before moving to next section
-
-**Benefits:**
-- Focused scope per session
-- Easier to review AI output
-- Good for learning the codebase
+**Current Phase:** Foundation Setup
+**Next Milestone:** Get auth + database working
 
 ---
 
-## Test-Driven Development (TDD)
+## 🎯 Project Tracking (START HERE)
 
-Each section includes comprehensive test specifications in `tests.md`. This approach ensures:
+**For accurate, up-to-date project status:**
 
-✅ **Complete Coverage** - All requirements, user flows, and edge cases specified
-✅ **Framework Agnostic** - Tests written as specifications, not tied to Jest/Vitest/etc.
-✅ **User-Focused** - Tests describe actual user interactions and expected outcomes
-✅ **Edge Cases** - Empty states, error handling, boundary conditions included
+1. **STATUS.md** - Current progress, what's done, what's next
+2. **ROADMAP.md** - Phase-by-phase development plan (Phases 0-8)
+3. **TASKS.md** - This week's actionable tasks with time estimates
 
-**How to use test specifications:**
-1. Read `sections/[section-id]/tests.md` before implementing
-2. Write actual test code in your chosen framework based on these specs
-3. Implement features to make tests pass
-4. Tests act as acceptance criteria - when they pass, the section is complete
+**These 3 files are the single source of truth for implementation progress.**
 
 ---
 
-## Design System Notes
+## 📁 Project Structure
 
-### Tailwind CSS v4
-- **No `tailwind.config.js`** - Tailwind v4 doesn't use config files
-- **Use built-in utilities** - Avoid custom CSS
-- **Use built-in colors** - orange, violet, slate palettes
-
-### Typography
-- **Newsreader** - Serif font for headings and emphasis
-- **Manrope** - Sans-serif for body text and UI
-- **JetBrains Mono** - Monospace for numbers, codes, technical data
-
-### Responsive Design
-- Mobile-first approach
-- Breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
-- Sidebar collapses on mobile with hamburger menu
-
-### Dark Mode
-- All components include `dark:` variants
-- Toggle handled at app level
-- Slate palette optimized for both modes
+```
+akount/
+├── apps/
+│   ├── web/              # Next.js 16 frontend (17 files)
+│   └── api/              # Fastify backend (1 file)
+├── packages/
+│   ├── db/               # Prisma schema (611 lines, 40+ models)
+│   ├── types/            # Shared TypeScript types (placeholder)
+│   ├── ui/               # Shared UI components (empty)
+│   └── config/           # Shared config (empty)
+├── planning/             # Product specs, design system, reference code
+├── STATUS.md            # ⭐ Current implementation status
+├── ROADMAP.md           # ⭐ Development roadmap
+├── TASKS.md             # ⭐ Current week tasks
+├── package.json          # Monorepo root
+└── turbo.json            # Turborepo config
+```
 
 ---
 
-## Architecture Guidelines
+## 🚀 Getting Started
 
-### Component Philosophy
-- **Props-based** - All data passed via props, no direct imports
-- **Presentation layer** - Components don't fetch data or handle business logic
-- **Composable** - Small, reusable components combined into larger views
-- **Type-safe** - Full TypeScript coverage
+### Prerequisites
+- Node.js 20+
+- npm 10+
+- PostgreSQL 15+ (or Railway/Supabase account)
+- Clerk account (for authentication)
 
-### State Management
-- **Server state** - Use react-query, SWR, or similar for API data
-- **Global UI state** - Context, Zustand, Redux for entity filter, workspace, user
-- **Local state** - useState for forms, toggles, temporary UI state
+### Setup
 
-### Data Fetching
-- Fetch at route/page level
-- Pass data down to components
-- Handle loading and error states
-- Consider optimistic updates for mutations
+1. **Clone and Install**
+   ```bash
+   npm install
+   ```
 
-### Navigation & Context
-- Preserve context with query parameters
-- Example: `/transactions?account=acc-001&entity=ent-002`
-- Entity filter persists across navigation
-- Back button works as expected
+2. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your credentials
+   ```
 
----
+3. **Set Up Authentication** (see TASKS.md Task 0.1.1)
+   - Create Clerk account at clerk.com
+   - Add API keys to .env
 
-## Implementation Tips
+4. **Set Up Database** (see TASKS.md Task 0.2.1)
+   - Create PostgreSQL database
+   - Add DATABASE_URL to .env
+   - Run migrations: `cd packages/db && npx prisma migrate dev`
 
-### Start Simple
-- Begin with mock data from `sample-data.json` files
-- Hardcode single workspace/entity initially
-- Add complexity incrementally
+5. **Start Development**
+   ```bash
+   npm run dev
+   ```
+   - Web: http://localhost:3000
+   - API: http://localhost:3001
 
-### Reuse Patterns
-- Once you solve multi-currency display, reuse the pattern
-- Entity filtering logic can be shared across sections
-- Create shared utility functions for common operations
-
-### Empty States Matter
-- Every list view needs an empty state
-- Make them helpful and actionable
-- Include illustrations or friendly copy
-
-### Mobile Responsiveness
-- Test on mobile from the start
-- Sidebar becomes hamburger menu <lg
-- Tables become cards on mobile
-- Touch targets at least 44x44px
-
-### Performance Considerations
-- Paginate long lists (transactions, invoices)
-- Virtualize very long tables if needed
-- Optimize images and fonts
-- Lazy load sections if bundle size grows
+### First Time Setup Guide
+👉 **See TASKS.md for step-by-step setup instructions**
 
 ---
 
-## Tech Stack Suggestions
+## 📖 Documentation
 
-This package is tech-stack agnostic, but here are proven combinations:
+### Implementation Tracking
+- **STATUS.md** - What's implemented vs planned
+- **ROADMAP.md** - 8-phase development plan
+- **TASKS.md** - Current week's tasks
 
-### Option A: Next.js + Supabase
-- **Frontend:** Next.js 14+ (App Router)
-- **Backend:** Supabase (Auth + Database + Storage)
-- **State:** Tanstack Query + Zustand
+### Product Specifications
+- **planning/product-overview.md** - Product vision and features
+- **planning/sections/** - Feature section specs
+- **planning/data-model/** - Database entity documentation
+
+### Architecture & Design
+- **planning/akount-engineering-roadmap.md** - 32-week implementation plan
+- **planning/akount_foundation_checklist.md** - Schema design checklist
+- **planning/design-system/** - Design tokens, colors, typography
+- **planning/passkey-authentication.md** - WebAuthn implementation guide
+
+---
+
+## 🏗️ Tech Stack
+
+### Frontend
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript 5
 - **Styling:** Tailwind CSS v4
+- **UI Components:** Shadcn/ui + Radix
+- **State:** Zustand
+- **Charts:** Recharts
+- **Tables:** TanStack Table
 
-### Option B: Remix + PostgreSQL
-- **Frontend:** Remix
-- **Backend:** Remix loaders/actions + PostgreSQL
-- **ORM:** Prisma
-- **Styling:** Tailwind CSS v4
+### Backend
+- **Framework:** Fastify
+- **Language:** TypeScript 5
+- **Database:** PostgreSQL 15+
+- **ORM:** Prisma 5
+- **Validation:** Zod
 
-### Option C: Vite + tRPC
-- **Frontend:** Vite + React Router
-- **Backend:** tRPC + Express
-- **Database:** PostgreSQL + Drizzle ORM
-- **State:** Tanstack Query
-
-### Option D: Full-Stack Framework
-- **RedwoodJS:** Full-stack React with GraphQL
-- **Blitz.js:** Full-stack React with RPC layer
-
----
-
-## Banking Integrations
-
-For real bank connections, consider:
-- **Plaid** (North America) - Most popular, great developer experience
-- **Finicity** (North America) - Mastercard owned, enterprise-ready
-- **Yodlee** (Global) - Supports many countries
-- **TrueLayer** (Europe) - Open banking focused
-- **Basiq** (Australia) - AU/NZ specialist
-
-Start with mock data and add real integrations later.
+### Infrastructure
+- **Monorepo:** Turborepo
+- **Auth:** Clerk (passkeys/WebAuthn)
+- **Database Host:** Railway (recommended)
+- **Deployment:** Vercel (web) + Railway (API)
 
 ---
 
-## AI Integration
+## 📋 Current Phase: Foundation
 
-For AI features (insights, categorization suggestions):
-- **OpenAI GPT-4** - Good for natural language insights
-- **Anthropic Claude** - Excellent for financial analysis
-- **Local Models** - For privacy-sensitive deployments
+**Goal:** Get authentication, database, and API foundation working
 
-Initially, use rule-based logic and add AI progressively.
+**Tasks This Week:**
+1. ✅ Set up Clerk authentication
+2. ✅ Connect PostgreSQL database
+3. ✅ Run initial migrations
+4. ✅ Build first API endpoint
+5. ✅ Display real data in UI
 
----
-
-## Common Questions
-
-**Q: Do I need to implement all 7 sections?**
-A: No. Start with Foundation + Accounts Overview + Bank Reconciliation + Transactions. Add others based on user needs.
-
-**Q: Can I modify the design?**
-A: Yes! The provided components are reference implementations. Adapt to your brand and users.
-
-**Q: What about multi-user collaboration?**
-A: The data model supports it (Workspace, UserRole), but implement single-user first, then add collaboration.
-
-**Q: How do I handle the double-entry accounting?**
-A: Start simple with categories. Add GL accounts and journal entries only if users need them. See Transactions & Bookkeeping section.
-
-**Q: Should I build a mobile app?**
-A: Start with responsive web. Consider React Native or Capacitor later if needed.
+👉 **See TASKS.md for detailed breakdown**
 
 ---
 
-## Getting Help
+## 🎯 Roadmap Overview
 
-This export package is designed to be self-contained, but you may need:
+| Phase | Goal | Duration | Status |
+|-------|------|----------|--------|
+| **Phase 0** | Foundation (auth, DB, API) | 1-2 weeks | 🚧 In Progress (5%) |
+| **Phase 1** | Accounts Overview | 1-2 weeks | ⏸️ Not Started |
+| **Phase 2** | Bank Reconciliation | 2-3 weeks | ⏸️ Not Started |
+| **Phase 3** | Transactions & Bookkeeping | 2-3 weeks | ⏸️ Not Started |
+| **Phase 4** | Invoicing & Bills | 2-3 weeks | ⏸️ Not Started |
+| **Phase 5** | Financial Analytics | 2-3 weeks | ⏸️ Not Started |
+| **Phase 6** | Budgets & Goals | 1-2 weeks | 🔘 Optional |
+| **Phase 7** | AI Financial Advisor | 2-3 weeks | 🔘 Optional |
+| **Phase 8** | Polish & Launch Prep | 2-3 weeks | ⏸️ Not Started |
 
-- **Tailwind CSS v4 docs:** https://tailwindcss.com/docs
-- **React docs:** https://react.dev
-- **TypeScript docs:** https://www.typescriptlang.org/docs
-- **Lucide icons:** https://lucide.dev (used in reference components)
+**MVP Target:** Phases 0-5 + 8 (4-6 months)
+
+👉 **See ROADMAP.md for full details**
 
 ---
 
-## License & Usage
+## 🧪 Development Commands
 
-This export package is for implementing Akount. All code, designs, and specifications are provided as-is for your use in building the product.
+```bash
+# Install dependencies
+npm install
+
+# Start all apps in development
+npm run dev
+
+# Build all apps
+npm run build
+
+# Run linting
+npm run lint
+
+# Database commands
+npm run db:push      # Push schema without migrations
+npm run db:studio    # Open Prisma Studio GUI
+
+# Clean build artifacts
+npm run clean
+```
 
 ---
 
-**Ready to build? Start with `instructions/incremental/01-foundation.md` or `prompts/one-shot-prompt.md`!**
-#   a k o u n t  
- 
+## 🗄️ Database
+
+**Schema:** 40+ models (611 lines)
+**Status:** Defined but not migrated
+**Location:** `packages/db/prisma/schema.prisma`
+
+**Key Models:**
+- Tenant, User, Entity (multi-tenant, multi-entity)
+- Account, Transaction (financial accounts)
+- Invoice, Bill, Payment (AR/AP)
+- GLAccount, JournalEntry (double-entry bookkeeping)
+- Budget, Goal, Insight (planning)
+- ImportBatch, BankFeedTransaction (data import)
+- AuditLog, DomainEvent (compliance)
+
+**To view schema:**
+```bash
+cd packages/db
+npx prisma studio
+```
+
+---
+
+## 🔐 Authentication
+
+**Provider:** Clerk
+**Method:** Passkeys (WebAuthn) + Email Magic Links
+**Status:** Not configured
+
+**Setup:**
+1. Create account at https://clerk.com
+2. Get API keys
+3. Add to .env
+4. Follow TASKS.md Task 0.1.1-0.1.9
+
+---
+
+## 💰 Cost Estimate
+
+| Phase | Monthly Cost |
+|-------|-------------|
+| **Development** | $0-10 (free tiers) |
+| **MVP (10 users)** | $50-100 |
+| **Growth (100 users)** | $150-300 |
+| **Scale (1000 users)** | $300-500 |
+
+**Current:** Using free tiers only
+
+---
+
+## 🤝 Contributing
+
+This is currently in early development. Contributions welcome once foundation is complete.
+
+**Before contributing:**
+1. Read STATUS.md to understand current state
+2. Check ROADMAP.md for planned features
+3. See TASKS.md for current priorities
+
+---
+
+## 📜 License
+
+Proprietary - All rights reserved
+
+---
+
+## 📞 Support
+
+**Documentation:** Check STATUS.md, ROADMAP.md, and TASKS.md first
+**Issues:** Track in GitHub Issues
+**Questions:** Contact team
+
+---
+
+**Last Updated:** 2026-01-27
+**Version:** 0.0.1 (Pre-Alpha)
+**Status:** Foundation phase in progress
