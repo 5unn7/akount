@@ -2,10 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(done)",
-      "Bash(npx prisma migrate:*)",
-      "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd project tracking system with accurate progress reporting\n\nEstablishes disciplined tracking system to replace aspirational checklists with reality-based progress tracking.\n\n**New Tracking Files:**\n- STATUS.md: Single source of truth for implementation progress \\(5% complete\\)\n- ROADMAP.md: 8-phase development plan with time estimates \\(4-6 months to MVP\\)\n- TASKS.md: Weekly task breakdown with daily goals and step-by-step instructions\n- TRACKING-GUIDE.md: Maintenance guide for keeping tracking system updated\n- CHANGELOG.md: Project history and significant changes log\n- README.md: Project overview pointing to tracking system\n\n**Updated Planning Docs:**\n- planning/akount_foundation_checklist.md: Clarified this tracks schema design \\(29% complete\\) vs implementation \\(0% complete\\), added references to STATUS.md for actual progress\n\n**Key Changes:**\n- Fixed inaccurate progress reporting \\(was showing 29% complete, actually 5%\\)\n- Separated schema design from implementation tracking\n- Created clear distinction between planning/reference docs and live progress tracking\n- Established weekly review discipline \\(update STATUS.md Fridays, TASKS.md daily\\)\n\n**Current State:**\n- Infrastructure: Complete \\(monorepo, Next.js, Fastify, Prisma schema\\)\n- Authentication: Not configured \\(Clerk installed but not wired up\\)\n- Database: Schema defined but migrations not run\n- API: Hello-world endpoint only\n- Features: None implemented\n- Overall: 5% complete \\(foundation structure only\\)\n\n**Next Priorities:**\n1. Set up Clerk authentication \\(Tasks 0.1.1-0.1.9, ~2 hours\\)\n2. Connect PostgreSQL database \\(Tasks 0.2.1-0.2.5, ~1 hour\\)\n3. Build first API endpoint \\(Tasks 0.3.1-0.3.3, ~1 hour\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(du:*)"
+      "Bash(npx prisma migrate *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(du *)",
+      "Bash(tree *)",
+      "Bash(bash *)",
+      "Bash(~/agent-os/scripts/project-install.sh *)",
+      "Bash(/home/sunny/agent-os/scripts/project-install.sh *)",
+      "Bash(git commit:*)"
     ]
   }
 }
