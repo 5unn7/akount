@@ -8,7 +8,15 @@
         "lint": "eslint .",
         "build": "prisma generate",
         "generate": "prisma generate",
-        "push": "prisma db push"
+        "push": "prisma db push",
+        "migrate": "prisma migrate dev",
+        "migrate:deploy": "prisma migrate deploy",
+        "seed": "tsx prisma/seed.ts",
+        "db:reset": "prisma migrate reset",
+        "db:setup": "prisma migrate dev && npm run seed"
+    },
+    "prisma": {
+        "seed": "tsx prisma/seed.ts"
     },
     "dependencies": {
         "@prisma/client": "^5.7.0"
@@ -16,6 +24,8 @@
     "devDependencies": {
         "prisma": "^5.7.0",
         "typescript": "^5.3.3",
-        "eslint": "^8.56.0"
+        "eslint": "^8.56.0",
+        "tsx": "^4.7.0",
+        "@types/node": "^20.11.0"
     }
 }

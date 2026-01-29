@@ -9,7 +9,12 @@
         "clean": "turbo clean",
         "test": "turbo test",
         "db:push": "turbo db:push",
-        "db:studio": "turbo db:studio"
+        "db:studio": "turbo db:studio",
+        "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed",
+        "db:generate": "cd packages/db && npm run generate",
+        "db:migrate": "cd packages/db && npm run migrate",
+        "db:seed": "cd packages/db && npm run seed",
+        "db:reset": "cd packages/db && npm run db:reset"
     },
     "devDependencies": {
         "turbo": "^2.3.3",
