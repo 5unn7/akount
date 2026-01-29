@@ -35,6 +35,32 @@
 
 ---
 
+## 🔒 Backup & Security (CRITICAL)
+
+**⚠️ Protect your work before you start coding!**
+
+**Quick Start (10 minutes):**
+- **[BACKUP-QUICKSTART.md](./BACKUP-QUICKSTART.md)** - 4 commands to run now
+
+**Complete Guide:**
+- **[BACKUP-SECURITY.md](./BACKUP-SECURITY.md)** - Full backup & security implementation
+- **[scripts/README.md](./scripts/README.md)** - Automated backup scripts
+
+**What you get:**
+- Dual Git remotes (GitHub + backup)
+- Encrypted configuration backups (daily)
+- Database backups (daily)
+- Recovery testing procedures
+- Security hardening checklist
+
+**Run this first:**
+```bash
+./scripts/setup-git-backup.sh
+./scripts/backup-config.sh
+```
+
+---
+
 ## 📁 Project Structure
 
 ```
