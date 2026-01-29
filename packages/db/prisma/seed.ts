@@ -7,7 +7,7 @@ async function main() {
 
   // Clean existing data (in development only)
   console.log('🧹 Cleaning existing data...');
-  await prisma.journalEntryLine.deleteMany();
+  await prisma.journalLine.deleteMany();
   await prisma.journalEntry.deleteMany();
   await prisma.invoiceLine.deleteMany();
   await prisma.invoice.deleteMany();
@@ -16,7 +16,7 @@ async function main() {
   await prisma.payment.deleteMany();
   await prisma.client.deleteMany();
   await prisma.vendor.deleteMany();
-  await prisma.glAccount.deleteMany();
+  await prisma.gLAccount.deleteMany();
   await prisma.tenantUser.deleteMany();
   await prisma.user.deleteMany();
   await prisma.entity.deleteMany();
@@ -69,7 +69,7 @@ async function main() {
 
   // Create chart of accounts
   console.log('📊 Creating chart of accounts...');
-  const cashAccount = await prisma.glAccount.create({
+  const cashAccount = await prisma.gLAccount.create({
     data: {
       entityId: entity.id,
       code: '1000',
@@ -80,7 +80,7 @@ async function main() {
     },
   });
 
-  const arAccount = await prisma.glAccount.create({
+  const arAccount = await prisma.gLAccount.create({
     data: {
       entityId: entity.id,
       code: '1200',
@@ -91,7 +91,7 @@ async function main() {
     },
   });
 
-  const apAccount = await prisma.glAccount.create({
+  const apAccount = await prisma.gLAccount.create({
     data: {
       entityId: entity.id,
       code: '2000',
@@ -102,7 +102,7 @@ async function main() {
     },
   });
 
-  const incomeAccount = await prisma.glAccount.create({
+  const incomeAccount = await prisma.gLAccount.create({
     data: {
       entityId: entity.id,
       code: '4000',
@@ -113,7 +113,7 @@ async function main() {
     },
   });
 
-  const expenseAccount = await prisma.glAccount.create({
+  const expenseAccount = await prisma.gLAccount.create({
     data: {
       entityId: entity.id,
       code: '5000',
@@ -124,7 +124,7 @@ async function main() {
     },
   });
 
-  const equityAccount = await prisma.glAccount.create({
+  const equityAccount = await prisma.gLAccount.create({
     data: {
       entityId: entity.id,
       code: '3000',
@@ -143,7 +143,7 @@ async function main() {
       name: 'Acme Corporation',
       email: 'billing@acme.com',
       phone: '+1-555-0001',
-      billingAddress: JSON.stringify({
+      address: JSON.stringify({
         street: '123 Business St',
         city: 'Toronto',
         province: 'ON',
@@ -159,7 +159,7 @@ async function main() {
       name: 'Tech Startup Ltd',
       email: 'finance@techstartup.com',
       phone: '+1-555-0002',
-      billingAddress: JSON.stringify({
+      address: JSON.stringify({
         street: '456 Innovation Ave',
         city: 'Vancouver',
         province: 'BC',
@@ -194,20 +194,22 @@ async function main() {
       entityId: entity.id,
       clientId: client1.id,
       invoiceNumber: 'INV-001',
-      date: new Date('2026-01-15'),
+      issueDate: new Date('2026-01-15'),
       dueDate: new Date('2026-02-14'),
       status: 'SENT',
       currency: 'CAD',
       subtotal: 5000_00, // $5,000.00 in cents
-      taxTotal: 650_00,   // $650.00 (13% HST)
+      taxAmount: 650_00,   // $650.00 (13% HST)
       total: 5650_00,     // $5,650.00
+      paidAmount: 0,      // Not paid yet
       notes: 'Consulting services for January 2026',
-      lines: {
+      invoiceLines: {
         create: [
           {
             description: 'Software Development Consulting',
             quantity: 50, // 50 hours
             unitPrice: 100_00, // $100/hour
+            taxAmount: 650_00,
             amount: 5000_00,
           },
         ],
@@ -220,21 +222,22 @@ async function main() {
       entityId: entity.id,
       clientId: client2.id,
       invoiceNumber: 'INV-002',
-      date: new Date('2026-01-20'),
+      issueDate: new Date('2026-01-20'),
       dueDate: new Date('2026-02-19'),
       status: 'PAID',
       currency: 'CAD',
       subtotal: 3000_00, // $3,000.00
-      taxTotal: 390_00,   // $390.00 (13% HST)
+      taxAmount: 390_00,   // $390.00 (13% HST)
       total: 3390_00,     // $3,390.00
-      amountPaid: 3390_00,
+      paidAmount: 3390_00,
       notes: 'System architecture consultation',
-      lines: {
+      invoiceLines: {
         create: [
           {
             description: 'Architecture Consultation',
             quantity: 30, // 30 hours
             unitPrice: 100_00, // $100/hour
+            taxAmount: 390_00,
             amount: 3000_00,
           },
         ],
@@ -249,20 +252,22 @@ async function main() {
       entityId: entity.id,
       vendorId: vendor1.id,
       billNumber: 'BILL-001',
-      date: new Date('2026-01-10'),
+      issueDate: new Date('2026-01-10'),
       dueDate: new Date('2026-02-09'),
       status: 'PENDING',
       currency: 'CAD',
       subtotal: 250_00, // $250.00
-      taxTotal: 32_50,   // $32.50 (13% HST)
+      taxAmount: 32_50,   // $32.50 (13% HST)
       total: 282_50,     // $282.50
+      paidAmount: 0,     // Not paid yet
       notes: 'Office supplies for January',
-      lines: {
+      billLines: {
         create: [
           {
             description: 'Paper, pens, folders',
             quantity: 1,
             unitPrice: 250_00,
+            taxAmount: 32_50,
             amount: 250_00,
           },
         ],
@@ -276,23 +281,24 @@ async function main() {
     data: {
       entityId: entity.id,
       date: new Date('2026-01-20'),
-      description: 'Invoice INV-002 issued',
+      memo: 'Invoice INV-002 issued',
       status: 'POSTED',
       sourceType: 'INVOICE',
       sourceId: invoice2.id,
-      lines: {
+      createdBy: user.id,
+      journalLines: {
         create: [
           {
             glAccountId: arAccount.id,
-            description: 'Accounts Receivable - Invoice INV-002',
-            debit: 3390_00,
-            credit: 0,
+            memo: 'Accounts Receivable - Invoice INV-002',
+            debitAmount: 3390_00,
+            creditAmount: 0,
           },
           {
             glAccountId: incomeAccount.id,
-            description: 'Service Revenue',
-            debit: 0,
-            credit: 3390_00,
+            memo: 'Service Revenue',
+            debitAmount: 0,
+            creditAmount: 3390_00,
           },
         ],
       },
@@ -307,17 +313,8 @@ async function main() {
       amount: 3390_00,
       currency: 'CAD',
       date: new Date('2026-01-25'),
-      method: 'BANK_TRANSFER',
+      paymentMethod: 'TRANSFER',
       reference: 'PMT-001',
-      notes: 'Payment received for INV-002',
-      invoicePayments: {
-        create: [
-          {
-            invoiceId: invoice2.id,
-            amount: 3390_00,
-          },
-        ],
-      },
     },
   });
 
@@ -326,22 +323,23 @@ async function main() {
     data: {
       entityId: entity.id,
       date: new Date('2026-01-25'),
-      description: 'Payment received for Invoice INV-002',
+      memo: 'Payment received for Invoice INV-002',
       status: 'POSTED',
       sourceType: 'PAYMENT',
-      lines: {
+      createdBy: user.id,
+      journalLines: {
         create: [
           {
             glAccountId: cashAccount.id,
-            description: 'Cash received',
-            debit: 3390_00,
-            credit: 0,
+            memo: 'Cash received',
+            debitAmount: 3390_00,
+            creditAmount: 0,
           },
           {
             glAccountId: arAccount.id,
-            description: 'Accounts Receivable payment',
-            debit: 0,
-            credit: 3390_00,
+            memo: 'Accounts Receivable payment',
+            debitAmount: 0,
+            creditAmount: 3390_00,
           },
         ],
       },
