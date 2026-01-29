@@ -10,7 +10,8 @@
       "Bash(bash *)",
       "Bash(~/agent-os/scripts/project-install.sh *)",
       "Bash(/home/sunny/agent-os/scripts/project-install.sh *)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(tar tzf:*)"
     ]
   }
 }

@@ -105,6 +105,12 @@ model GLAccount {
   parentAccount   GLAccount?    @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
   childAccounts   GLAccount[]   @relation("AccountHierarchy")
   isActive        Boolean       @default(true)
+
+  // Phase 6: Multi-currency consolidation hooks
+  isCTAAccount Boolean @default(false) // Cumulative Translation Adjustment
+  isEliminationAccount Boolean @default(false) // Inter-company eliminations
+  consolidationCode String? // Maps accounts across entities for consolidation
+
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   journalLines    JournalLine[]
@@ -120,9 +126,18 @@ model JournalEntry {
   entity       Entity        @relation(fields: [entityId], references: [id])
   date         DateTime
   memo         String
-  sourceType   String?
-  sourceId     String?
-  status       String // 'draft' | 'posted'
+
+  // Phase 0: Source tracking (Event Sourcing Lite)
+  sourceType   String? // 'INVOICE' | 'PAYMENT' | 'BANK_FEED' | 'MANUAL' | 'TRANSFER'
+  sourceId     String? // ID of the source document
+  sourceDocument Json? // Snapshot of source document at posting time
+
+  // Phase 3: Transfer linking (Better than separate Transfer entity)
+  linkedEntryId String? // Points to counterpart in transfer
+  linkedEntry   JournalEntry? @relation("TransferPair", fields: [linkedEntryId], references: [id])
+  linkedFrom    JournalEntry[] @relation("TransferPair")
+
+  status       String // 'draft' | 'posted' | 'archived'
   createdBy    String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -135,9 +150,15 @@ model JournalLine {
   journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id])
   glAccountId    String
   glAccount      GLAccount    @relation(fields: [glAccountId], references: [id])
+
+  // CRITICAL: Integer money math (avoids floating-point errors)
   debitAmount    Int // Integer cents
   creditAmount   Int // Integer cents
+
   memo           String?
+
+  // Phase 3: Database constraint enforces SUM(debit - credit) = 0 per journalEntryId
+  // Implemented via PostgreSQL trigger (see docs/architecture/evolution.md)
 }
 
 model TaxRate {
@@ -369,6 +390,16 @@ model BankFeedTransaction {
   amount            Int
   currency          String
   balance           Int?
+
+  // Phase 2: Raw data preservation (Audit #4)
+  rawData Json? // Full Flinks/Plaid webhook payload - NEVER delete this
+  merchantHints Json? // Flinks merchant categorization hints
+
+  // Phase 2: Status tracking (Audit #10 - Pending transactions)
+  status String @default("pending") // 'pending' | 'posted' | 'cancelled'
+  statusHistory Json[] // Track description changes between pending→posted
+  postedToJournalId String? // Only set when status='posted', prevents duplicate GL postings
+
   createdAt         DateTime            @default(now())
   TransactionMatch  TransactionMatch[]
 }
@@ -384,9 +415,15 @@ model Transaction {
   categoryId      String?
   category        Category?          @relation(fields: [categoryId], references: [id])
   notes           String?
+
+  // Phase 0: Source tracking
   sourceType      String // 'bank_feed' | 'manual' | 'invoice' | 'bill'
   sourceId        String?
-  journalEntryId  String?
+  journalEntryId  String? // Link to posted journal entry (if posted to GL)
+
+  // Phase 2: Staging flag (don't post pending transactions to GL)
+  isStaged        Boolean @default(false) // True if from pending bank feed
+
   isSplit         Boolean            @default(false)
   splits          TransactionSplit[]
   createdAt       DateTime           @default(now())
@@ -504,10 +541,21 @@ model Rule {
   entityId   String
   Entity     Entity   @relation(fields: [entityId], references: [id])
   name       String
-  conditions String // JSON
-  action     String // JSON
+
+  // Deterministic rule logic (NOT live AI execution)
+  conditions String // JSON: { "description": { "contains": "STARBUCKS" } }
+  action     String // JSON: { "category": "meals", "deductible": 0.5 }
+
   isActive   Boolean
-  source     String
+  source     String // 'USER_MANUAL' | 'AI_SUGGESTED' | 'SYSTEM_DEFAULT'
+
+  // Phase 7: AI metadata (only for AI-suggested rules)
+  aiConfidence Float? // 0.0 - 1.0 confidence when suggested
+  aiModelVersion String? // 'gpt-4-2024-01' - track which model suggested it
+  userApprovedAt DateTime? // When user approved AI suggestion
+  executionCount Int @default(0) // Track rule usage
+  successRate Float @default(1.0) // Track if users override this rule
+
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
@@ -602,10 +650,44 @@ model AccountingPolicy {
   tenant        Tenant   @relation(fields: [tenantId], references: [id])
   entityId      String?
   entity        Entity?  @relation(fields: [entityId], references: [id])
-  key           String   // 'revenue_recognition_method', 'fx_method', etc.
-  value         String   // JSON or simple string/number
+
+  // Phase 4-5: Accounting basis and FX translation methods
+  key           String   // 'accounting_basis' | 'fx_translation' | 'revenue_recognition'
+  value         String   // 'CASH' | 'ACCRUAL' | 'SPOT' | 'AVERAGE' (JSON for complex policies)
+
   effectiveFrom DateTime
   effectiveTo   DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+// ============================================================================
+// Phase 6+: Advanced Features (Not used in MVP)
+// ============================================================================
+
+// Phase 6: Multi-currency consolidation eliminations
+model ConsolidationElimination {
+  id             String   @id @default(cuid())
+  fiscalPeriodId String
+  fromEntityId   String
+  toEntityId     String
+  amount         Int      // Elimination amount in cents
+  description    String   // "Eliminate inter-company invoice #INV-001"
+  journalEntryId String?  // Link to elimination journal entry
+  createdAt      DateTime @default(now())
+}
+
+// Phase 7: AI rule suggestions (Human-in-the-Loop)
+model RuleSuggestion {
+  id            String    @id @default(cuid())
+  entityId      String
+  triggeredBy   String    // transactionId that triggered this suggestion
+  suggestedRule Json      // Proposed rule structure: { if: {...}, then: {...} }
+  aiReasoning   String    // "User categorized 3 Starbucks transactions as 'Meals'"
+  aiConfidence  Float     // 0.0 - 1.0
+  aiModelVersion String   // 'gpt-4-2024-01'
+  status        String    // 'pending' | 'approved' | 'rejected'
+  createdAt     DateTime  @default(now())
+  reviewedAt    DateTime?
+  reviewedBy    String?   // userId who approved/rejected
 }
