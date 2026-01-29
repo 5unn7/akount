@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Newsreader, Manrope, JetBrains_Mono } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
 import './globals.css';
 
 const newsreader = Newsreader({
@@ -31,10 +32,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
-            <body className={`${newsreader.variable} ${manrope.variable} ${jetbrainsMono.variable} font-sans`}>
-                {children}
-            </body>
-        </html>
+        <ClerkProvider>
+            <html lang="en">
+                <body className={`${newsreader.variable} ${manrope.variable} ${jetbrainsMono.variable} font-sans`}>
+                    {children}
+                </body>
+            </html>
+        </ClerkProvider>
     );
 }

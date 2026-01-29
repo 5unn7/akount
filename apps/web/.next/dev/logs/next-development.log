@@ -1,6 +1,12 @@
-[00:00:02.396] Server  LOG     ✓ Ready in 1723ms
-[00:00:08.348] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:08.705] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+[00:00:03.589] Server  WARN    ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[00:00:04.171] Server  LOG     ✓ Ready in 3.2s
+[00:04:14.008] Server  LOG     
+
+[Clerk]: You are running in keyless mode.
+You can claim your keys by visiting https://dashboard.clerk.com/apps/claim?token=e5164lf6t9hh30rpqg7wun0lhdpme230ok3v55ga&return_url=http%3A%2F%2Flocalhost%3A3000%2F
+
+[00:04:17.946] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:04:18.438] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
 
 - A server/client branch `if (typeof window !== 'undefined')`.
 - Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
@@ -13,131 +19,25 @@ It can also happen if the client has a browser extension installed which messes 
 %s%s https://react.dev/link/hydration-mismatch 
 
   ...
-    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
-      <AppDevOverlayErrorBoundary globalError={[...]}>
-        <ReplaySsrOnlyErrors>
-        <DevRootHTTPAccessFallbackBoundary>
-          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
-            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <Head>
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="/apps/web/...">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <RootLayout>
-                        <html lang="en">
-                          <body
--                           className="clickup-chrome-ext_installed"
-                          >
-                  ...
+    <ClerkProviderBase publishableKey="pk_test_c2..." proxyUrl="" domain="" isSatellite={false} signInUrl="" signUpUrl="" ...>
+      <ClerkContextProvider initialState={null} isomorphicClerkOptions={{...}}>
+        <OrganizationProvider organization={undefined}>
+          <SWRConfigCompat swrConfig={undefined}>
+            <SWRConfig value={undefined}>
+              <__experimental_CheckoutProvider value={undefined}>
+                <RouterTelemetry>
+                <ClerkJSScript>
+                <html lang="en">
+                  <body
++                   className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__variable ..."
+-                   className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__variable ..."
+                  >
 
-[00:16:13.225] Server  LOG     ✓ Compiled in 2.1s
-[00:17:09.729] Server  LOG     ✓ Compiled in 2.1s
-[00:17:16.258] Server  LOG     ✓ Compiled in 4.5s
-[00:17:21.167] Browser ERROR   ./apps/web/src/app/globals.css
-Error evaluating Node.js code
-Error: Cannot find module 'tailwindcss-animate'
-Require stack:
-- W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts
-    [at Function._resolveFilename (node:internal/modules/cjs/loader:1365:15)]
-    [at Function.resolve (node:internal/modules/helpers:145:19)]
-    [at _resolve (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:246378)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249092)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts:65:15]
-    [at evalModule (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:251913)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249841)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:53:30]
-    [at loadConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:55:6)]
-    [at getTailwindConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:74:116)]
-
-Import trace:
-  Client Component Browser:
-    ./apps/web/src/app/globals.css [Client Component Browser]
-    ./apps/web/src/app/layout.tsx [Server Component]
-[00:17:21.167] Browser ERROR   ./apps/web/src/app/globals.css
-Error evaluating Node.js code
-Error: Cannot find module 'tailwindcss-animate'
-Require stack:
-- W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts
-    [at Function._resolveFilename (node:internal/modules/cjs/loader:1365:15)]
-    [at Function.resolve (node:internal/modules/helpers:145:19)]
-    [at _resolve (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:246378)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249092)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts:65:15]
-    [at evalModule (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:251913)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249841)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:53:30]
-    [at loadConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:55:6)]
-    [at getTailwindConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:74:116)]
-
-Import trace:
-  Client Component Browser:
-    ./apps/web/src/app/globals.css [Client Component Browser]
-    ./apps/web/src/app/layout.tsx [Server Component]
-[00:17:21.167] Browser ERROR   ./apps/web/src/app/globals.css
-Error evaluating Node.js code
-Error: Cannot find module 'tailwindcss-animate'
-Require stack:
-- W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts
-    [at Function._resolveFilename (node:internal/modules/cjs/loader:1365:15)]
-    [at Function.resolve (node:internal/modules/helpers:145:19)]
-    [at _resolve (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:246378)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249092)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts:65:15]
-    [at evalModule (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:251913)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249841)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:53:30]
-    [at loadConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:55:6)]
-    [at getTailwindConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:74:116)]
-
-Import trace:
-  Client Component Browser:
-    ./apps/web/src/app/globals.css [Client Component Browser]
-    ./apps/web/src/app/layout.tsx [Server Component]
-[00:17:21.167] Browser ERROR   ./apps/web/src/app/globals.css
-Error evaluating Node.js code
-Error: Cannot find module 'tailwindcss-animate'
-Require stack:
-- W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts
-    [at Function._resolveFilename (node:internal/modules/cjs/loader:1365:15)]
-    [at Function.resolve (node:internal/modules/helpers:145:19)]
-    [at _resolve (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:246378)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249092)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web\tailwind.config.ts:65:15]
-    [at evalModule (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:251913)]
-    [at jiti (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\jiti\dist\jiti.js:1:249841)]
-    [at W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:53:30]
-    [at loadConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\load-config.js:55:6)]
-    [at getTailwindConfig (W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\node_modules\tailwindcss\lib\lib\setupTrackingContext.js:74:116)]
-
-Import trace:
-  Client Component Browser:
-    ./apps/web/src/app/globals.css [Client Component Browser]
-    ./apps/web/src/app/layout.tsx [Server Component]
-[00:17:32.393] Server  LOG     ✓ Compiled in 115ms
-[00:17:32.986] Server  LOG     ✓ Compiled in 119ms
-[00:17:33.859] Server  LOG     ✓ Compiled in 210ms
-[00:17:34.778] Server  LOG     ✓ Compiled in 172ms
-[00:17:35.591] Server  LOG     ✓ Compiled in 226ms
-[00:17:36.490] Server  LOG     ✓ Compiled in 218ms
-[00:17:37.387] Server  LOG     ✓ Compiled in 142ms
-[00:18:05.994] Server  LOG     ✓ Compiled in 920ms
-[00:18:34.860] Server  LOG     ✓ Compiled in 259ms
-[00:18:39.059] Server  LOG     ✓ Compiled in 2.4s
-[00:19:26.934] Server  LOG     ✓ Compiled in 153ms
-[00:19:27.407] Server  LOG     ✓ Compiled in 151ms
-[00:19:54.169] Server  LOG     ✓ Compiled in 105ms
-[00:19:56.586] Server  LOG     ✓ Compiled in 147ms
-[00:20:11.954] Server  LOG     ✓ Compiled in 2.4s
-[00:20:12.568] Server  LOG     ✓ Compiled in 197ms
-[00:20:28.981] Server  LOG     ✓ Compiled in 139ms
-[00:20:48.529] Server  LOG     ✓ Compiled in 156ms
-[00:20:51.929] Server  LOG     ✓ Compiled in 484ms
-[00:22:38.452] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:22:38.731] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+[00:04:18.438] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:04:19.443] Browser ERROR   unhandledRejection: TypeError: Failed to fetch
+[00:04:20.263] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/clerk-sync-keyless?returnUrl=http://localhost:3000/dashboard. Falling back to browser navigation. {}
+[00:05:34.013] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:05:34.462] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
 
 - A server/client branch `if (typeof window !== 'undefined')`.
 - Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
@@ -150,32 +50,28 @@ It can also happen if the client has a browser extension installed which messes 
 %s%s https://react.dev/link/hydration-mismatch 
 
   ...
-    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
-      <AppDevOverlayErrorBoundary globalError={[...]}>
-        <ReplaySsrOnlyErrors>
-        <DevRootHTTPAccessFallbackBoundary>
-          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
-            <HTTPAccessFallbackErrorBoundary pathname="/dashboard" notFound={<NotAllowedRootHTTPFallbackError>} ...>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <Head>
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="/apps/web/...">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <RootLayout>
-                        <html lang="en">
-                          <body
-+                           className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__v..."
--                           className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__v..."
-                          >
-                  ...
+    <ClerkProviderBase publishableKey="pk_test_c2..." proxyUrl="" domain="" isSatellite={false} signInUrl="" signUpUrl="" ...>
+      <ClerkContextProvider initialState={null} isomorphicClerkOptions={{...}}>
+        <OrganizationProvider organization={undefined}>
+          <SWRConfigCompat swrConfig={undefined}>
+            <SWRConfig value={undefined}>
+              <__experimental_CheckoutProvider value={undefined}>
+                <RouterTelemetry>
+                <ClerkJSScript>
+                <html lang="en">
+                  <body
++                   className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__variable ..."
+-                   className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__variable ..."
+                  >
 
-[00:22:44.777] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:22:46.586] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:23:16.463] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:23:22.451] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+[00:05:34.625] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:05:51.256] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:05:51.868] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:05:53.623] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:05:53.938] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:06:01.753] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:06:01.942] Browser WARN    Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview
+[00:06:02.117] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
 
 - A server/client branch `if (typeof window !== 'undefined')`.
 - Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
@@ -188,29 +84,17 @@ It can also happen if the client has a browser extension installed which messes 
 %s%s https://react.dev/link/hydration-mismatch 
 
   ...
-    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
-      <AppDevOverlayErrorBoundary globalError={[...]}>
-        <ReplaySsrOnlyErrors>
-        <DevRootHTTPAccessFallbackBoundary>
-          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
-            <HTTPAccessFallbackErrorBoundary pathname="/dashboard" notFound={<NotAllowedRootHTTPFallbackError>} ...>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <Head>
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="/apps/web/...">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <RootLayout>
-                        <html lang="en">
-                          <body
-+                           className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__v..."
--                           className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__v..."
--                           data-new-gr-c-s-check-loaded="14.1270.0"
--                           data-gr-ext-installed=""
-                          >
-                  ...
+    <ClerkProviderBase publishableKey="pk_test_c2..." proxyUrl="" domain="" isSatellite={false} signInUrl="" signUpUrl="" ...>
+      <ClerkContextProvider initialState={null} isomorphicClerkOptions={{...}}>
+        <OrganizationProvider organization={undefined}>
+          <SWRConfigCompat swrConfig={undefined}>
+            <SWRConfig value={undefined}>
+              <__experimental_CheckoutProvider value={undefined}>
+                <RouterTelemetry>
+                <ClerkJSScript>
+                <html lang="en">
+                  <body
++                   className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__variable ..."
+-                   className="newsreader_b0fe46d6-module__e8jyvW__variable manrope_2086aec6-module__U1xg0W__variable ..."
+                  >
 
-[00:23:23.790] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:23:25.821] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
