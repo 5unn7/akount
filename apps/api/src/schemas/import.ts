@@ -26,13 +26,20 @@ export const parsedTransactionSchema = z.object({
   description: z.string(),
   amount: z.number().int(), // In cents
   balance: z.number().int().optional(), // In cents (if available)
-  category: z.object({
+
+  // Duplicate detection fields
+  isDuplicate: z.boolean(),
+  duplicateConfidence: z.number().min(0).max(100).optional(),
+  matchedTransactionId: z.string().optional(), // ID of matched existing transaction
+  matchReason: z.string().optional(), // Why it was flagged as duplicate
+
+  // Auto-categorization fields
+  suggestedCategory: z.object({
     id: z.string(),
     name: z.string(),
     confidence: z.number().min(0).max(100),
+    reason: z.string(),
   }).optional(),
-  isDuplicate: z.boolean(),
-  duplicateConfidence: z.number().min(0).max(100).optional(),
 });
 
 export type ParsedTransaction = z.infer<typeof parsedTransactionSchema>;

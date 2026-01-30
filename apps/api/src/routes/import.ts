@@ -13,6 +13,8 @@ import {
   type ImportBatchMetadata,
 } from '../schemas/import';
 import { parseCSV } from '../services/parserService';
+import { findDuplicates, findInternalDuplicates } from '../services/duplicationService';
+import { categorizeTransactions } from '../services/categorizationService';
 import { randomUUID } from 'crypto';
 
 /**
@@ -170,6 +172,77 @@ export async function importRoutes(fastify: FastifyInstance) {
         // Generate parse ID
         const parseId = randomUUID();
 
+        // Get tenant ID for categorization
+        const tenantId = account.entity.tenantId;
+
+        // Run duplicate detection
+        const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+        const internalDuplicates = findInternalDuplicates(parseResult.transactions);
+
+        // Create duplicate lookup map
+        const duplicateMap = new Map(
+          duplicateResults.map(d => [d.tempId, d])
+        );
+
+        // Mark internal duplicates (duplicates within the CSV itself)
+        for (const [tempId, duplicateIds] of internalDuplicates.entries()) {
+          const existing = duplicateMap.get(tempId);
+          if (existing && !existing.isDuplicate) {
+            existing.isDuplicate = true;
+            existing.duplicateConfidence = 100;
+            existing.matchReason = 'Duplicate within uploaded file';
+          }
+          // Also mark the duplicate entries
+          for (const dupId of duplicateIds) {
+            const dupResult = duplicateMap.get(dupId);
+            if (dupResult) {
+              dupResult.isDuplicate = true;
+              dupResult.duplicateConfidence = 100;
+              dupResult.matchReason = 'Duplicate within uploaded file';
+            }
+          }
+        }
+
+        // Run categorization (batch operation)
+        const categorySuggestions = await categorizeTransactions(
+          parseResult.transactions.map(t => ({
+            description: t.description,
+            amount: t.amount,
+          })),
+          tenantId
+        );
+
+        // Merge duplicate and category data with transactions
+        const enrichedTransactions = parseResult.transactions.map((t: ParsedTransaction, index: number) => {
+          const duplicateInfo = duplicateMap.get(t.tempId);
+          const categorySuggestion = categorySuggestions[index];
+
+          return {
+            ...t,
+            isDuplicate: duplicateInfo?.isDuplicate || false,
+            duplicateConfidence: duplicateInfo?.duplicateConfidence,
+            matchedTransactionId: duplicateInfo?.matchedTransactionId,
+            matchReason: duplicateInfo?.matchReason,
+            suggestedCategory: categorySuggestion.categoryId
+              ? {
+                  id: categorySuggestion.categoryId,
+                  name: categorySuggestion.categoryName,
+                  confidence: categorySuggestion.confidence,
+                  reason: categorySuggestion.matchReason,
+                }
+              : undefined,
+          };
+        });
+
+        // Calculate summary statistics
+        const duplicateCount = enrichedTransactions.filter(t => t.isDuplicate).length;
+        const categorizedCount = enrichedTransactions.filter(
+          t => t.suggestedCategory && t.suggestedCategory.confidence >= 70
+        ).length;
+        const needsReviewCount = enrichedTransactions.filter(
+          t => !t.isDuplicate && (!t.suggestedCategory || t.suggestedCategory.confidence < 70)
+        ).length;
+
         // Store parsed data in cache
         parseCache.set(parseId, {
           accountId,
@@ -179,12 +252,12 @@ export async function importRoutes(fastify: FastifyInstance) {
           columns: parseResult.columns,
           columnMappings: parseResult.suggestedMappings,
           preview: parseResult.preview,
-          transactions: parseResult.transactions,
+          transactions: enrichedTransactions,
           externalAccountData: parseResult.externalAccountData,
           createdAt: new Date(),
         });
 
-        // Return preview (duplicate detection and categorization will be added in Day 2-4)
+        // Return preview with duplicate detection and categorization
         const response = {
           parseId,
           accountId,
@@ -194,17 +267,12 @@ export async function importRoutes(fastify: FastifyInstance) {
           columns: parseResult.columns,
           columnMappings: parseResult.suggestedMappings,
           preview: parseResult.preview,
-          transactions: parseResult.transactions.map((t: ParsedTransaction) => ({
-            ...t,
-            // Placeholder for duplicate detection and categorization (will be implemented later)
-            isDuplicate: false,
-            category: undefined,
-          })),
+          transactions: enrichedTransactions,
           summary: {
             total: parseResult.transactions.length,
-            duplicates: 0, // Will be populated by duplicate detection service
-            categorized: 0, // Will be populated by categorization service
-            needsReview: parseResult.transactions.length,
+            duplicates: duplicateCount,
+            categorized: categorizedCount,
+            needsReview: needsReviewCount,
           },
         };
 
@@ -322,6 +390,15 @@ export async function importRoutes(fastify: FastifyInstance) {
           });
         }
 
+        // Calculate summary from cached enriched transactions
+        const duplicateCount = cached.transactions.filter((t: any) => t.isDuplicate).length;
+        const categorizedCount = cached.transactions.filter(
+          (t: any) => t.suggestedCategory && t.suggestedCategory.confidence >= 70
+        ).length;
+        const needsReviewCount = cached.transactions.filter(
+          (t: any) => !t.isDuplicate && (!t.suggestedCategory || t.suggestedCategory.confidence < 70)
+        ).length;
+
         return reply.status(200).send({
           parseId,
           accountId: cached.accountId,
@@ -334,9 +411,9 @@ export async function importRoutes(fastify: FastifyInstance) {
           transactions: cached.transactions,
           summary: {
             total: cached.transactions.length,
-            duplicates: 0,
-            categorized: 0,
-            needsReview: cached.transactions.length,
+            duplicates: duplicateCount,
+            categorized: categorizedCount,
+            needsReview: needsReviewCount,
           },
         });
       } catch (error: any) {
