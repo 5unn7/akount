@@ -228,17 +228,19 @@ model TenantUser {
 }
 
 model User {
-  id        String       @id @default(cuid())
-  email     String       @unique
-  name      String?
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  id          String       @id @default(cuid())
+  clerkUserId String?      @unique
+  email       String       @unique
+  name        String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   // Relations
   memberships TenantUser[]
   auditLogs  AuditLog[]
 
   @@index([email])
+  @@index([clerkUserId])
 }
 
 // ============================================================================
@@ -963,16 +965,29 @@ model ImportBatch {
   tenant     Tenant    @relation(fields: [tenantId], references: [id])
   entityId   String?
   entity     Entity?   @relation(fields: [entityId], references: [id])
+
+  // Import metadata
   sourceType ImportBatchSourceType
   status     ImportBatchStatus
   error      String?
   createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // NEW FIELDS for bank statement import
+  accountId          String?   // Which account was imported to
+  account            Account?  @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  fileName           String?   // Original file name
+  fileSize           Int?      // File size in bytes
+  transactionsCount  Int       @default(0)  // Total transactions in import
+  duplicatesSkipped  Int       @default(0)  // Number of duplicates skipped
+  metadata           Json?     @db.JsonB    // Additional import metadata (column mappings, external account data)
 
   // Relations
   transactions Transaction[]  // Fixed: was Transactions
 
   @@index([tenantId])
   @@index([entityId])
+  @@index([accountId])  // NEW INDEX for account queries
   @@index([status])
 }
 

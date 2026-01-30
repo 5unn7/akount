@@ -9,18 +9,24 @@
         "lint": "eslint ."
     },
     "dependencies": {
-        "fastify": "^4.25.0",
-        "@fastify/cors": "^8.5.0",
-        "zod": "^3.22.0",
-        "dotenv": "^16.3.0",
+        "@akount/db": "*",
         "@akount/types": "*",
-        "@akount/db": "*"
+        "@clerk/backend": "^2.29.7",
+        "@fastify/cors": "^8.5.0",
+        "@fastify/helmet": "^11.1.1",
+        "@fastify/multipart": "^9.4.0",
+        "@types/papaparse": "^5.5.2",
+        "@types/string-similarity": "^4.0.2",
+        "fastify": "^4.25.0",
+        "papaparse": "^5.5.3",
+        "string-similarity": "^4.0.4",
+        "zod": "^3.22.0"
     },
     "devDependencies": {
-        "tsx": "^4.7.0",
-        "typescript": "^5.3.0",
         "@types/node": "^20.10.0",
+        "eslint": "^8.56.0",
         "tsup": "^8.0.0",
-        "eslint": "^8.56.0"
+        "tsx": "^4.7.0",
+        "typescript": "^5.3.0"
     }
 }
