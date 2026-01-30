@@ -12,9 +12,10 @@ import {
   type ExternalAccountData,
   type ImportBatchMetadata,
 } from '../schemas/import';
-import { parseCSV } from '../services/parserService';
+import { parseCSV, parsePDF } from '../services/parserService';
 import { findDuplicates, findInternalDuplicates } from '../services/duplicationService';
 import { categorizeTransactions } from '../services/categorizationService';
+import { matchAccountToBankConnection, findDuplicateAccounts } from '../services/accountMatcherService';
 import { randomUUID } from 'crypto';
 
 /**
@@ -72,15 +73,9 @@ export async function importRoutes(fastify: FastifyInstance) {
         }
 
         // Get form fields
-        const accountId = (data.fields as any).accountId?.value;
+        const accountId = (data.fields as any).accountId?.value; // Optional now
         const dateFormat = (data.fields as any).dateFormat?.value;
-
-        if (!accountId) {
-          return reply.status(400).send({
-            error: 'Bad Request',
-            message: 'accountId is required',
-          });
-        }
+        const entityId = (data.fields as any).entityId?.value; // For account suggestions
 
         // Validate file size (10MB limit)
         const fileBuffer = await data.toBuffer();
@@ -106,36 +101,66 @@ export async function importRoutes(fastify: FastifyInstance) {
           });
         }
 
-        // Verify account ownership (tenant isolation)
-        const account = await prisma.account.findFirst({
-          where: {
-            id: accountId,
-            entity: {
-              tenant: {
-                memberships: {
-                  some: {
-                    user: {
-                      clerkUserId: request.userId,
+        // If accountId provided, verify ownership (tenant isolation)
+        let account: any = null;
+        let tenantId: string | null = null;
+
+        if (accountId) {
+          account = await prisma.account.findFirst({
+            where: {
+              id: accountId,
+              entity: {
+                tenant: {
+                  memberships: {
+                    some: {
+                      user: {
+                        clerkUserId: request.userId,
+                      },
                     },
                   },
                 },
               },
             },
-          },
-          include: {
-            entity: {
-              select: {
-                tenantId: true,
+            include: {
+              entity: {
+                select: {
+                  id: true,
+                  tenantId: true,
+                },
               },
             },
-          },
-        });
-
-        if (!account) {
-          return reply.status(403).send({
-            error: 'Forbidden',
-            message: 'Account not found or access denied',
           });
+
+          if (!account) {
+            return reply.status(403).send({
+              error: 'Forbidden',
+              message: 'Account not found or access denied',
+            });
+          }
+
+          tenantId = account.entity.tenantId;
+        } else {
+          // No accountId provided - get user's tenant for later suggestions
+          const user = await prisma.user.findUnique({
+            where: { clerkUserId: request.userId },
+            include: {
+              tenantMemberships: {
+                include: {
+                  tenant: true,
+                },
+                take: 1,
+              },
+            },
+          });
+
+          if (!user || user.tenantMemberships.length === 0) {
+            return reply.status(403).send({
+              error: 'Forbidden',
+              message: 'User has no tenant access',
+            });
+          }
+
+          tenantId = user.tenantMemberships[0].tenant.id;
         }
 
         // Determine source type
@@ -156,11 +181,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         if (sourceType === 'CSV') {
           parseResult = parseCSV(fileBuffer, undefined, dateFormat);
         } else if (sourceType === 'PDF') {
-          // TODO: Implement PDF parsing in Day 10
-          return reply.status(501).send({
-            error: 'Not Implemented',
-            message: 'PDF parsing will be implemented in Phase 2. Please use CSV export for now.',
-          });
+          parseResult = await parsePDF(fileBuffer, dateFormat);
         } else {
           // TODO: Implement OFX and XLSX parsing in Phase 2
           return reply.status(501).send({
@@ -172,11 +193,11 @@ export async function importRoutes(fastify: FastifyInstance) {
         // Generate parse ID
         const parseId = randomUUID();
 
-        // Get tenant ID for categorization
-        const tenantId = account.entity.tenantId;
-
-        // Run duplicate detection
-        const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+        // Run duplicate detection (only if accountId is provided)
+        let duplicateResults: any[] = [];
+        if (accountId) {
+          duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+        }
         const internalDuplicates = findInternalDuplicates(parseResult.transactions);
 
         // Create duplicate lookup map
@@ -243,6 +264,95 @@ export async function importRoutes(fastify: FastifyInstance) {
           t => !t.isDuplicate && (!t.suggestedCategory || t.suggestedCategory.confidence < 70)
         ).length;
 
+        // If no accountId provided, suggest matching accounts based on external identifiers
+        let suggestedAccounts: any[] = [];
+        if (!accountId && parseResult.externalAccountData && tenantId) {
+          // Get all entities for this tenant
+          const entities = await prisma.entity.findMany({
+            where: { tenantId },
+            include: {
+              accounts: {
+                where: { isActive: true },
+                include: {
+                  transactions: {
+                    include: { importBatch: true },
+                    take: 1,
+                    orderBy: { createdAt: 'desc' },
+                  },
+                },
+              },
+            },
+          });
+
+          // Score each account for matching
+          for (const entity of entities) {
+            for (const acc of entity.accounts) {
+              let score = 0;
+              const reasons: string[] = [];
+
+              // Match currency (if we can infer it from transactions)
+              const externalData = parseResult.externalAccountData;
+
+              // Match account type
+              if (externalData.accountType && acc.type.toLowerCase() === externalData.accountType) {
+                score += 20;
+                reasons.push('Account type match');
+              }
+
+              // Check import batch metadata for external identifiers
+              const importBatch = acc.transactions[0]?.importBatch;
+              if (importBatch?.metadata) {
+                const metadata = importBatch.metadata as any;
+                const storedExternalData = metadata.externalAccountData || {};
+
+                // Match masked account number
+                if (
+                  externalData.externalAccountId &&
+                  storedExternalData.externalAccountId &&
+                  externalData.externalAccountId.endsWith(
+                    storedExternalData.externalAccountId.slice(-4)
+                  )
+                ) {
+                  score += 50;
+                  reasons.push(`Account number match (${externalData.externalAccountId})`);
+                }
+
+                // Match institution name
+                if (externalData.institutionName && storedExternalData.institutionName) {
+                  const normalizedExternal = externalData.institutionName.toLowerCase();
+                  const normalizedStored = storedExternalData.institutionName.toLowerCase();
+
+                  if (normalizedExternal.includes(normalizedStored) || normalizedStored.includes(normalizedExternal)) {
+                    score += 30;
+                    reasons.push('Institution match');
+                  }
+                }
+              }
+
+              if (score > 0) {
+                suggestedAccounts.push({
+                  id: acc.id,
+                  name: acc.name,
+                  type: acc.type,
+                  currency: acc.currency,
+                  entity: {
+                    id: entity.id,
+                    name: entity.name,
+                  },
+                  matchScore: score,
+                  matchReasons: reasons,
+                });
+              }
+            }
+          }
+
+          // Sort by match score (descending)
+          suggestedAccounts.sort((a, b) => b.matchScore - a.matchScore);
+
+          // Return top 5 suggestions
+          suggestedAccounts = suggestedAccounts.slice(0, 5);
+        }
+
         // Store parsed data in cache
         parseCache.set(parseId, {
           accountId,
@@ -258,7 +368,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         });
 
         // Return preview with duplicate detection and categorization
-        const response = {
+        const response: any = {
           parseId,
           accountId,
           fileName,
@@ -274,7 +384,14 @@ export async function importRoutes(fastify: FastifyInstance) {
             categorized: categorizedCount,
             needsReview: needsReviewCount,
           },
+          externalAccountData: parseResult.externalAccountData,
         };
+
+        // Add suggested accounts if no accountId was provided
+        if (!accountId) {
+          response.suggestedAccounts = suggestedAccounts;
+          response.requiresAccountSelection = true;
+        }
 
         return reply.status(200).send(response);
       } catch (error: any) {

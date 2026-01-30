@@ -20,7 +20,7 @@ import { ImportPreviewTable } from './ImportPreviewTable';
 interface UploadedFile {
   file: File;
   parseId: string;
-  accountId: string;
+  accountId?: string;
   fileName: string;
   fileSize: number;
   sourceType: 'CSV' | 'PDF' | 'OFX' | 'XLSX';
@@ -34,6 +34,25 @@ interface UploadedFile {
     categorized: number;
     needsReview: number;
   };
+  externalAccountData?: {
+    externalAccountId?: string;
+    institutionName?: string;
+    accountType?: string;
+    currency?: string;
+  };
+  suggestedAccounts?: Array<{
+    id: string;
+    name: string;
+    type: string;
+    currency: string;
+    entity: {
+      id: string;
+      name: string;
+    };
+    matchScore: number;
+    matchReasons: string[];
+  }>;
+  requiresAccountSelection?: boolean;
 }
 
 export function ImportUploadForm() {
@@ -105,14 +124,10 @@ export function ImportUploadForm() {
     setError(null);
 
     try {
-      // TODO: Get accountId from user selection (for now, using a placeholder)
-      // In production, this should be selected by the user from a dropdown
-      const accountId = 'placeholder-account-id';
-
-      // Create form data
+      // Create form data (no accountId yet - we'll extract account info from file)
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('accountId', accountId);
+      // Don't send accountId yet - let the API extract account info and suggest matches
 
       // Upload to API
       const response = await fetch('/api/import/upload', {
@@ -263,11 +278,75 @@ export function ImportUploadForm() {
                     {uploadedData.summary.categorized > 0 &&
                       `, ${uploadedData.summary.categorized} auto-categorized`}
                   </p>
+                  {uploadedData.externalAccountData && (
+                    <div className="mt-2 text-xs text-green-600">
+                      <p>
+                        Detected:{' '}
+                        {uploadedData.externalAccountData.institutionName && (
+                          <span className="font-medium">
+                            {uploadedData.externalAccountData.institutionName}
+                          </span>
+                        )}
+                        {uploadedData.externalAccountData.externalAccountId && (
+                          <span className="ml-2">
+                            Account: {uploadedData.externalAccountData.externalAccountId}
+                          </span>
+                        )}
+                        {uploadedData.externalAccountData.accountType && (
+                          <span className="ml-2 capitalize">
+                            ({uploadedData.externalAccountData.accountType})
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <Button variant="outline" size="sm" onClick={handleReset}>
                   Upload New File
                 </Button>
               </div>
+
+              {/* Account Selection (if required) */}
+              {uploadedData.requiresAccountSelection && uploadedData.suggestedAccounts && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="text-sm font-medium text-blue-900 mb-3">
+                    Select an Account for Import
+                  </h3>
+                  <p className="text-xs text-blue-700 mb-4">
+                    We found these matching accounts based on the statement information:
+                  </p>
+
+                  <div className="space-y-2">
+                    {uploadedData.suggestedAccounts.map((account) => (
+                      <div
+                        key={account.id}
+                        className="p-3 bg-white border border-blue-200 rounded-md hover:border-blue-400 cursor-pointer transition-colors"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium">{account.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {account.entity.name} • {account.type} • {account.currency}
+                            </p>
+                            <p className="text-xs text-blue-600 mt-1">
+                              Match: {account.matchReasons.join(', ')} ({account.matchScore}% confidence)
+                            </p>
+                          </div>
+                          <Button size="sm" variant="outline">
+                            Select
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-blue-200">
+                    <Button variant="outline" size="sm" className="w-full">
+                      Create New Account
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </CardContent>

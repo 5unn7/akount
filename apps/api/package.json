@@ -19,6 +19,7 @@
         "@types/string-similarity": "^4.0.2",
         "fastify": "^4.25.0",
         "papaparse": "^5.5.3",
+        "pdf-parse": "^2.4.5",
         "string-similarity": "^4.0.4",
         "zod": "^3.22.0"
     },

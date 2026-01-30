@@ -1,4 +1,5 @@
 import Papa from 'papaparse';
+import pdf from 'pdf-parse';
 import type { ParsedTransaction, ExternalAccountData, ColumnMappings } from '../schemas/import';
 import { randomUUID } from 'crypto';
 
@@ -286,6 +287,158 @@ function parseAmountValue(amountStr: string | undefined): number {
   const cents = Math.round(floatValue * 100);
 
   return isNegative ? -Math.abs(cents) : cents;
+}
+
+/**
+ * Parse PDF bank statement and extract transactions
+ *
+ * PDF parsing is more complex than CSV - uses regex patterns to find transactions
+ */
+export async function parsePDF(
+  fileBuffer: Buffer,
+  dateFormat?: string
+): Promise<ParseResult> {
+  try {
+    // Extract text from PDF
+    const data = await pdf(fileBuffer);
+    const text = data.text;
+
+    if (!text || text.trim().length === 0) {
+      throw new Error('PDF contains no readable text. Please ensure the file is not password-protected or image-only.');
+    }
+
+    // Extract external account identifiers from PDF text
+    const externalAccountData = extractExternalIdentifiersFromText(text);
+
+    // Parse transactions using common bank statement patterns
+    const transactions = parseTransactionsFromPDFText(text, dateFormat);
+
+    if (transactions.length === 0) {
+      throw new Error('No transactions found in PDF. Please ensure this is a valid bank statement with transaction details.');
+    }
+
+    return {
+      transactions,
+      externalAccountData,
+      preview: {
+        rows: [], // PDF doesn't have column preview like CSV
+      },
+    };
+  } catch (error: any) {
+    if (error.message?.includes('No transactions found') || error.message?.includes('no readable text')) {
+      throw error;
+    }
+    throw new Error(`PDF parsing error: ${error.message || 'Unknown error'}`);
+  }
+}
+
+/**
+ * Extract transactions from PDF text using regex patterns
+ *
+ * Supports common bank statement formats
+ */
+function parseTransactionsFromPDFText(
+  text: string,
+  dateFormat?: string
+): ParsedTransaction[] {
+  const transactions: ParsedTransaction[] = [];
+  const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+  // Common transaction patterns:
+  // Pattern 1: MM/DD/YYYY Description Amount Balance
+  // Pattern 2: DD/MM/YYYY Description $Amount
+  // Pattern 3: Date | Description | Amount | Balance
+
+  const datePattern = /(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})/;
+  const amountPattern = /([+-]?\$?\s*\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/;
+
+  for (const line of lines) {
+    // Try to find date and amount in the line
+    const dateMatch = line.match(datePattern);
+    const amountMatches = line.match(new RegExp(amountPattern, 'g'));
+
+    if (dateMatch && amountMatches && amountMatches.length > 0) {
+      try {
+        const dateStr = dateMatch[1];
+        const date = parseDate(dateStr, dateFormat);
+
+        // Amount is usually the last number on the line (sometimes second-to-last if balance is included)
+        const amountStr = amountMatches[amountMatches.length - 1];
+        const amount = parseAmountValue(amountStr);
+
+        // Balance might be the last number if there are 2+ numbers
+        const balance = amountMatches.length > 1
+          ? parseAmountValue(amountMatches[amountMatches.length - 2])
+          : undefined;
+
+        // Extract description (everything between date and amount)
+        const dateIndex = line.indexOf(dateMatch[0]);
+        const amountIndex = line.lastIndexOf(amountStr);
+        let description = line.substring(dateIndex + dateMatch[0].length, amountIndex).trim();
+
+        // Clean up description (remove extra spaces, special chars)
+        description = description.replace(/\s+/g, ' ').trim();
+
+        if (description.length === 0) {
+          description = 'Transaction';
+        }
+
+        transactions.push({
+          tempId: `temp_${randomUUID()}`,
+          date: date.toISOString().split('T')[0],
+          description,
+          amount,
+          balance,
+          isDuplicate: false,
+          duplicateConfidence: undefined,
+        });
+      } catch (error) {
+        // Skip lines that can't be parsed
+        continue;
+      }
+    }
+  }
+
+  return transactions;
+}
+
+/**
+ * Extract external identifiers from PDF text (institution, account number, etc.)
+ */
+function extractExternalIdentifiersFromText(text: string): ExternalAccountData {
+  const externalData: ExternalAccountData = {};
+
+  // Extract account number (last 4 digits pattern)
+  const accountNumberPattern = /account.*?(\d{4})/i;
+  const accountMatch = text.match(accountNumberPattern);
+  if (accountMatch) {
+    externalData.externalAccountId = `xxxx${accountMatch[1]}`;
+  }
+
+  // Extract institution name (common banks)
+  const institutions = [
+    'TD Bank', 'RBC', 'BMO', 'Scotiabank', 'CIBC',
+    'Chase', 'Bank of America', 'Wells Fargo', 'Citibank',
+    'Capital One', 'US Bank', 'PNC Bank'
+  ];
+  for (const institution of institutions) {
+    if (text.toLowerCase().includes(institution.toLowerCase())) {
+      externalData.institutionName = institution;
+      break;
+    }
+  }
+
+  // Detect account type from keywords
+  const textLower = text.toLowerCase();
+  if (textLower.includes('checking') || textLower.includes('chequing')) {
+    externalData.accountType = 'checking';
+  } else if (textLower.includes('savings')) {
+    externalData.accountType = 'savings';
+  } else if (textLower.includes('credit card') || textLower.includes('mastercard') || textLower.includes('visa')) {
+    externalData.accountType = 'credit';
+  }
+
+  return externalData;
 }
 
 /**
