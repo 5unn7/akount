@@ -1,8 +1,8 @@
 # Akount - Development Roadmap
 
-**Version:** 1.0
-**Last Updated:** 2026-01-27
-**Current Phase:** Phase 0 - Foundation (In Progress)
+**Version:** 1.1
+**Last Updated:** 2026-01-30
+**Current Phase:** Phase 0 - Foundation (In Progress - 40% Complete)
 
 ---
 
@@ -32,32 +32,34 @@ This roadmap outlines the path from current state (5% complete) to a production-
 
 ### Tasks
 
-#### 0.1 Authentication (Priority: CRITICAL)
-- [ ] Create Clerk account at clerk.com
-- [ ] Get API keys (publishable key + secret key)
-- [ ] Configure .env with Clerk keys
-- [ ] Install @clerk/nextjs middleware
-- [ ] Create /sign-in and /sign-up pages
-- [ ] Add ClerkProvider to root layout
-- [ ] Test sign-up flow with passkey
-- [ ] Test sign-in flow with passkey
-- [ ] Add "Sign Out" button to UserMenu
+#### 0.1 Authentication (Priority: CRITICAL) ✅ COMPLETE
+- [x] Create Clerk account at clerk.com
+- [x] Get API keys (publishable key + secret key)
+- [x] Configure .env with Clerk keys
+- [x] Install @clerk/nextjs middleware
+- [x] Create /sign-in and /sign-up pages
+- [x] Add ClerkProvider to root layout
+- [x] Test sign-up flow with passkey
+- [x] Test sign-in flow with passkey
+- [x] Add "Sign Out" button to UserMenu
 
-**Deliverable:** Users can create accounts and log in
+**Deliverable:** ✅ Users can create accounts and log in
+**Completed:** 2026-01-30
 
 ---
 
-#### 0.2 Database Setup (Priority: CRITICAL)
-- [ ] Choose database host (Railway free tier recommended)
-- [ ] Create PostgreSQL database instance
-- [ ] Get connection string
-- [ ] Update DATABASE_URL in .env
-- [ ] Run `npx prisma migrate dev --name init` in packages/db
-- [ ] Create seed script with sample data
-- [ ] Run seed script
-- [ ] Verify data in Prisma Studio (`npx prisma studio`)
+#### 0.2 Database Setup (Priority: CRITICAL) ✅ COMPLETE
+- [x] Choose database host (Railway free tier recommended)
+- [x] Create PostgreSQL database instance
+- [x] Get connection string
+- [x] Update DATABASE_URL in .env
+- [x] Run `npx prisma migrate dev --name init` in packages/db
+- [x] Create seed script with sample data
+- [x] Run seed script
+- [x] Verify data in Prisma Studio (`npx prisma studio`)
 
-**Deliverable:** Database is operational with test data
+**Deliverable:** ✅ Database is operational with test data
+**Completed:** 2026-01-30
 
 ---
 
@@ -103,8 +105,8 @@ This roadmap outlines the path from current state (5% complete) to a production-
 ---
 
 **Phase 0 Exit Criteria:**
-- [ ] User can sign up, log in, and log out
-- [ ] Database has migrations and seed data
+- [x] User can sign up, log in, and log out
+- [x] Database has migrations and seed data
 - [ ] API has working authentication
 - [ ] At least one API endpoint returns real data
 - [ ] Frontend displays real data (not mocks)
@@ -609,7 +611,7 @@ This roadmap outlines the path from current state (5% complete) to a production-
 
 | Phase | Duration | Effort (Hours) | Status |
 |-------|----------|----------------|--------|
-| 0: Foundation | 1-2 weeks | 20-30 | 🚧 In Progress (5% done) |
+| 0: Foundation | 1-2 weeks | 20-30 | 🚧 In Progress (40% complete - Tasks 0.1 & 0.2 done) |
 | 1: Accounts Overview | 1-2 weeks | 30-40 | ⏸️ Not Started |
 | 2: Bank Reconciliation | 2-3 weeks | 40-50 | ⏸️ Not Started |
 | 3: Transactions | 2-3 weeks | 40-50 | ⏸️ Not Started |
@@ -686,5 +688,5 @@ See `planning/akount-engineering-roadmap.md` for detailed cost breakdown.
 
 ---
 
-**Last Updated:** 2026-01-27
-**Next Review:** 2026-02-03 (1 week from now)
+**Last Updated:** 2026-01-30
+**Next Review:** 2026-02-06 (1 week from now)
