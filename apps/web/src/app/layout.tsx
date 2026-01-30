@@ -32,12 +32,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <ClerkProvider>
-            <html lang="en">
+        <html lang="en" suppressHydrationWarning>
+            <ClerkProvider>
                 <body className={`${newsreader.variable} ${manrope.variable} ${jetbrainsMono.variable} font-sans`}>
                     {children}
                 </body>
-            </html>
-        </ClerkProvider>
+            </ClerkProvider>
+        </html>
     );
 }

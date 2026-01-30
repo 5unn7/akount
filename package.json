@@ -8,6 +8,7 @@
         "lint": "turbo lint",
         "clean": "turbo clean",
         "test": "turbo test",
+        "start": "npm run start --workspace=web",
         "db:push": "turbo db:push",
         "db:studio": "turbo db:studio",
         "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed",
