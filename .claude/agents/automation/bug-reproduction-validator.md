@@ -1,3 +1,26 @@
+---
+name: bug-reproduction-validator
+description: "Systematically verify whether reported issues are genuine bugs or expected behavior. Tests reproduction steps, classifies issues, and provides validation reports with evidence."
+model: inherit
+context_files:
+  - CLAUDE.md
+  - docs/standards/api-design.md
+  - docs/standards/security.md
+  - docs/standards/multi-tenancy.md
+  - docs/architecture/decisions.md
+related_agents:
+  - repo-research-analyst
+  - git-history-analyzer
+  - architecture-strategist
+invoke_patterns:
+  - "bug"
+  - "reproduce"
+  - "validate"
+  - "issue"
+  - "verify"
+  - "test report"
+---
+
 # Bug Reproduction Validator
 
 Systematically verify whether reported issues are genuine bugs or expected behavior.

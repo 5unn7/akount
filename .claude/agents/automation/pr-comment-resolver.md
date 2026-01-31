@@ -1,3 +1,28 @@
+---
+name: pr-comment-resolver
+description: "Systematically address code review feedback by implementing requested changes and reporting resolutions. Analyzes comments, plans fixes, implements changes, and verifies results."
+model: inherit
+context_files:
+  - CLAUDE.md
+  - docs/standards/api-design.md
+  - docs/standards/security.md
+  - docs/standards/multi-tenancy.md
+  - docs/standards/financial-data.md
+  - docs/architecture/decisions.md
+related_agents:
+  - architecture-strategist
+  - kieran-typescript-reviewer
+  - security-sentinel
+  - financial-data-validator
+  - code-simplicity-reviewer
+invoke_patterns:
+  - "PR comment"
+  - "review feedback"
+  - "address comment"
+  - "resolve feedback"
+  - "reviewer suggestion"
+---
+
 # PR Comment Resolver
 
 Systematically address code review feedback by implementing requested changes and reporting resolutions.
