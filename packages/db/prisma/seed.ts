@@ -27,6 +27,7 @@ async function main() {
   const user = await prisma.user.create({
     data: {
       id: 'user_test_akount',
+      clerkUserId: 'user_38zWHi1LvQhkZS4N5AIsv9SeEmZ', // Your actual Clerk user ID
       email: 'demo@akount.com',
       name: 'Demo User',
     },
@@ -53,19 +54,34 @@ async function main() {
     },
   });
 
-  // Create entity (the actual business being accounted for)
-  console.log('🏪 Creating entity...');
-  const entity = await prisma.entity.create({
+  // Create entities (the actual businesses/accounts being tracked)
+  console.log('🏪 Creating entities...');
+  const businessEntity = await prisma.entity.create({
     data: {
       tenantId: tenant.id,
-      name: 'Demo Consulting Inc.',
+      name: 'Akount Inc.',
       type: 'CORPORATION',
       country: 'CA',
       taxId: '123456789',
-      functionalCurrency: 'CAD',
-      reportingCurrency: 'CAD',
+      functionalCurrency: 'USD',
+      reportingCurrency: 'USD',
     },
   });
+
+  const personalEntity = await prisma.entity.create({
+    data: {
+      tenantId: tenant.id,
+      name: 'Personal',
+      type: 'PERSONAL',
+      country: 'CA',
+      taxId: null,
+      functionalCurrency: 'USD',
+      reportingCurrency: 'USD',
+    },
+  });
+
+  // Use business entity for the rest of the seed data
+  const entity = businessEntity;
 
   // Create chart of accounts
   console.log('📊 Creating chart of accounts...');

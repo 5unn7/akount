@@ -1,6 +1,6 @@
 # Akount - Current Tasks
 
-**Last Updated:** 2026-01-27
+**Last Updated:** 2026-01-30
 **Current Sprint:** Phase 0 - Foundation
 **Sprint Goal:** Get auth, database, and first API endpoint working
 
@@ -8,20 +8,23 @@
 
 ## 🎯 This Week's Goals
 
-**Target:** Complete Phase 0.1 (Authentication) + Phase 0.2 (Database)
+**Target:** Complete Phase 0.3 (API Foundation) + Phase 0.4 (First Vertical Slice)
 
 **Success Criteria:**
-- [ ] Users can sign up and log in
-- [ ] Database is connected with migrations
-- [ ] Can query database from Prisma Studio
+- [x] Users can sign up and log in ✅ COMPLETE
+- [x] Database is connected with migrations ✅ COMPLETE
+- [x] Can query database from Prisma Studio ✅ COMPLETE
+- [ ] API can authenticate requests
+- [ ] API can query database and return data
+- [ ] Frontend can fetch and display real data
 
 ---
 
-## 🔥 Priority 1: Authentication (Start Here)
+## ✅ COMPLETED: Priority 1 - Authentication
 
 ### Task 0.1.1: Set Up Clerk Account
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 15 minutes
 
 **Steps:**
@@ -37,17 +40,16 @@
 7. Keep browser tab open for reference
 
 **Done When:**
-- [ ] Have NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-- [ ] Have CLERK_SECRET_KEY
-- [ ] Clerk dashboard accessible
+- [x] Have NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+- [x] Have CLERK_SECRET_KEY
+- [x] Clerk dashboard accessible
 
 ---
 
 ### Task 0.1.2: Configure Environment Variables
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 5 minutes
-**Blocked By:** Task 0.1.1
 
 **Steps:**
 1. Open `.env` in project root
@@ -58,16 +60,15 @@
 6. Restart dev server (if running)
 
 **Done When:**
-- [ ] `.env` has real Clerk keys (not commented out)
-- [ ] No environment variable errors on startup
+- [x] `.env` has real Clerk keys (not commented out)
+- [x] No environment variable errors on startup
 
 ---
 
 ### Task 0.1.3: Add Clerk Middleware to Next.js
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 10 minutes
-**Blocked By:** Task 0.1.2
 
 **Steps:**
 1. Create `apps/web/src/middleware.ts`
@@ -89,17 +90,16 @@ export const config = {
 3. Save file
 
 **Done When:**
-- [ ] `middleware.ts` exists
-- [ ] No TypeScript errors
-- [ ] Server restarts without errors
+- [x] `middleware.ts` exists
+- [x] No TypeScript errors
+- [x] Server restarts without errors
 
 ---
 
 ### Task 0.1.4: Add ClerkProvider to Root Layout
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 10 minutes
-**Blocked By:** Task 0.1.3
 
 **Steps:**
 1. Open `apps/web/src/app/layout.tsx`
@@ -121,17 +121,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 4. Save file
 
 **Done When:**
-- [ ] ClerkProvider wraps entire app
-- [ ] No TypeScript errors
-- [ ] No console errors in browser
+- [x] ClerkProvider wraps entire app
+- [x] No TypeScript errors
+- [x] No console errors in browser
 
 ---
 
 ### Task 0.1.5: Create Sign-In Page
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 15 minutes
-**Blocked By:** Task 0.1.4
 
 **Steps:**
 1. Create `apps/web/src/app/sign-in/[[...sign-in]]/page.tsx`
@@ -152,17 +151,16 @@ export default function SignInPage() {
 5. Verify sign-in page loads
 
 **Done When:**
-- [ ] Can access /sign-in route
-- [ ] Clerk sign-in form displays
-- [ ] No console errors
+- [x] Can access /sign-in route
+- [x] Clerk sign-in form displays
+- [x] No console errors
 
 ---
 
 ### Task 0.1.6: Create Sign-Up Page
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 10 minutes
-**Blocked By:** Task 0.1.4
 
 **Steps:**
 1. Create `apps/web/src/app/sign-up/[[...sign-up]]/page.tsx`
@@ -183,17 +181,16 @@ export default function SignUpPage() {
 5. Verify sign-up page loads
 
 **Done When:**
-- [ ] Can access /sign-up route
-- [ ] Clerk sign-up form displays
-- [ ] No console errors
+- [x] Can access /sign-up route
+- [x] Clerk sign-up form displays
+- [x] No console errors
 
 ---
 
 ### Task 0.1.7: Test Authentication Flow
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 15 minutes
-**Blocked By:** Task 0.1.5, Task 0.1.6
 
 **Steps:**
 1. Go to http://localhost:3000/sign-up
@@ -206,18 +203,17 @@ export default function SignUpPage() {
 8. Verify successful login
 
 **Done When:**
-- [ ] Can create new account
-- [ ] Passkey setup works
-- [ ] Can sign in with passkey
-- [ ] Redirect after login works
+- [x] Can create new account
+- [x] Passkey setup works
+- [x] Can sign in with passkey
+- [x] Redirect after login works
 
 ---
 
 ### Task 0.1.8: Protect Dashboard Route
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 10 minutes
-**Blocked By:** Task 0.1.7
 
 **Steps:**
 1. Open `apps/web/src/app/(dashboard)/layout.tsx`
@@ -241,17 +237,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
 5. Verify redirect to /sign-in
 
 **Done When:**
-- [ ] Cannot access dashboard while logged out
-- [ ] Redirect to /sign-in works
-- [ ] Can access dashboard when logged in
+- [x] Cannot access dashboard while logged out
+- [x] Redirect to /sign-in works
+- [x] Can access dashboard when logged in
 
 ---
 
 ### Task 0.1.9: Add User Menu with Sign Out
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 20 minutes
-**Blocked By:** Task 0.1.8
 
 **Steps:**
 1. Open `apps/web/src/components/layout/Navbar.tsx`
@@ -264,18 +259,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
 5. Test sign out functionality
 
 **Done When:**
-- [ ] User button shows in navbar
-- [ ] Clicking shows user menu
-- [ ] Sign out works
-- [ ] Redirects to /sign-in after sign out
+- [x] User button shows in navbar
+- [x] Clicking shows user menu
+- [x] Sign out works
+- [x] Redirects to /sign-in after sign out
 
 ---
 
-## 🔥 Priority 2: Database Setup
+## ✅ COMPLETED: Priority 2 - Database Setup
 
 ### Task 0.2.1: Choose Database Provider
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 10 minutes
 
 **Options:**
@@ -293,16 +288,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
 7. Copy "Postgres Connection URL"
 
 **Done When:**
-- [ ] Have PostgreSQL database provisioned
-- [ ] Have DATABASE_URL connection string
+- [x] Have PostgreSQL database provisioned (Railway)
+- [x] Have DATABASE_URL connection string
 
 ---
 
 ### Task 0.2.2: Configure Database Connection
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 5 minutes
-**Blocked By:** Task 0.2.1
 
 **Steps:**
 1. Open `.env` file
@@ -312,16 +306,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
 5. Test connection: `cd packages/db && npx prisma db pull` (should succeed)
 
 **Done When:**
-- [ ] `.env` has real DATABASE_URL
-- [ ] `prisma db pull` succeeds (no error)
+- [x] `.env` has real DATABASE_URL
+- [x] `prisma db pull` succeeds (no error)
 
 ---
 
 ### Task 0.2.3: Create Initial Migration
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 5 minutes
-**Blocked By:** Task 0.2.2
 
 **Steps:**
 1. Open terminal
@@ -331,17 +324,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
 5. Check database with Prisma Studio: `npx prisma studio`
 
 **Done When:**
-- [ ] Migration files exist in `prisma/migrations/`
-- [ ] No errors during migration
-- [ ] Can open Prisma Studio and see tables
+- [x] Migration files exist in `prisma/migrations/`
+- [x] No errors during migration
+- [x] Can open Prisma Studio and see tables
 
 ---
 
 ### Task 0.2.4: Create Seed Script
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 30 minutes
-**Blocked By:** Task 0.2.3
 
 **Steps:**
 1. Create `packages/db/prisma/seed.ts`
@@ -361,17 +353,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
 4. Run seed: `npx prisma db seed`
 
 **Done When:**
-- [ ] Seed script exists
-- [ ] Seed runs without errors
-- [ ] Can see data in Prisma Studio
+- [x] Seed script exists
+- [x] Seed runs without errors
+- [x] Can see data in Prisma Studio
 
 ---
 
 ### Task 0.2.5: Verify Database Setup
-**Status:** ❌ Not Started
-**Assignee:** Unassigned
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 10 minutes
-**Blocked By:** Task 0.2.4
 
 **Steps:**
 1. Open Prisma Studio: `cd packages/db && npx prisma studio`
@@ -385,28 +376,248 @@ export default async function DashboardLayout({ children }: { children: React.Re
 4. Close Prisma Studio
 
 **Done When:**
-- [ ] All tables exist with data
-- [ ] Relationships work in Prisma Studio
-- [ ] No orphaned records
+- [x] All tables exist with data
+- [x] Relationships work in Prisma Studio
+- [x] No orphaned records
 
 ---
 
-## 🔥 Priority 3: API Foundation (Next Week)
+## 🔥 Priority 3: API Foundation (START HERE)
 
 ### Task 0.3.1: Set Up Prisma Client in API
-**Status:** ⏸️ Blocked
-**Blocked By:** Task 0.2.5
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 15 minutes
 
+**Steps:**
+1. Install Prisma client in API: `cd apps/api && npm install @prisma/client`
+2. Create `apps/api/src/lib/prisma.ts`:
+```typescript
+import { PrismaClient } from '@prisma/client'
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
+}
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({
+  log: ['query', 'error', 'warn'],
+})
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+```
+3. Test connection by adding to `apps/api/src/index.ts`:
+```typescript
+import { prisma } from './lib/prisma'
+
+// Add to health check endpoint
+fastify.get('/', async () => {
+  const tenantCount = await prisma.tenant.count()
+  return {
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    database: { connected: true, tenants: tenantCount }
+  }
+})
+```
+4. Start API server and verify health check shows database connection
+
+**Done When:**
+- [x] Prisma Client installed in API
+- [x] Can query database from API
+- [x] Health check endpoint shows database connected
+
+---
+
 ### Task 0.3.2: Add Authentication Middleware
-**Status:** ⏸️ Blocked
-**Blocked By:** Task 0.3.1
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
+**Estimated Time:** 30 minutes
+
+**Steps:**
+1. Install Clerk SDK: `cd apps/api && npm install @clerk/clerk-sdk-node`
+2. Create `apps/api/src/middleware/auth.ts`:
+```typescript
+import { FastifyRequest, FastifyReply } from 'fastify'
+import { createClerkClient } from '@clerk/clerk-sdk-node'
+
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY!,
+})
+
+export async function authMiddleware(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  const authHeader = request.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return reply.status(401).send({ error: 'Unauthorized' })
+  }
+
+  const token = authHeader.substring(7)
+
+  try {
+    const session = await clerkClient.sessions.verifyToken(token)
+    request.userId = session.userId
+  } catch (error) {
+    return reply.status(401).send({ error: 'Invalid token' })
+  }
+}
+```
+3. Add TypeScript types for request.userId in `apps/api/src/types/fastify.d.ts`:
+```typescript
+import 'fastify'
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    userId?: string
+  }
+}
+```
+4. Test with a protected endpoint
+
+**Done When:**
+- [x] Clerk SDK installed (@clerk/backend)
+- [x] Auth middleware implemented (apps/api/src/middleware/auth.ts)
+- [x] Can verify JWT tokens
+- [x] request.userId is populated for authenticated requests
+- [x] Test endpoints created (/auth/test, /me)
+- [x] Error handling for missing/invalid tokens
+
+---
+
+### Task 0.3.3: Add Zod Validation Middleware
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 20 minutes
 
-### Task 0.3.3: Create First CRUD Endpoint
-**Status:** ⏸️ Blocked
-**Blocked By:** Task 0.3.2
+**Steps:**
+1. Install Zod and Fastify plugin: `cd apps/api && npm install zod @fastify/type-provider-zod`
+2. Register type provider in `apps/api/src/index.ts`:
+```typescript
+import { serializerCompiler, validatorCompiler, type ZodTypeProvider } from 'fastify-type-provider-zod'
+
+fastify.setValidatorCompiler(validatorCompiler)
+fastify.setSerializerCompiler(serializerCompiler)
+```
+3. Create error handler in `apps/api/src/middleware/errorHandler.ts`:
+```typescript
+import { FastifyError, FastifyRequest, FastifyReply } from 'fastify'
+import { ZodError } from 'zod'
+
+export function errorHandler(
+  error: FastifyError,
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  if (error instanceof ZodError) {
+    return reply.status(400).send({
+      error: 'Validation Error',
+      details: error.errors,
+    })
+  }
+
+  console.error(error)
+  return reply.status(500).send({ error: 'Internal Server Error' })
+}
+```
+4. Register error handler in main server file
+
+**Done When:**
+- [x] Zod validation working (validateBody, validateQuery, validateParams)
+- [x] Error handling middleware in place (errorHandler)
+- [x] Can validate request schemas with clear error messages
+- [x] Common schemas defined (uuid, pagination, dateRange, etc.)
+- [x] Test endpoints created (/validation/test, /validation/query)
+- [x] Documentation created (VALIDATION.md)
+
+---
+
+### Task 0.3.4: Create First CRUD Endpoint (GET /api/entities)
+**Status:** ✅ Complete
+**Completed:** 2026-01-30
 **Estimated Time:** 30 minutes
+
+**Steps:**
+1. Create `apps/api/src/routes/entities.ts`:
+```typescript
+import { FastifyInstance } from 'fastify'
+import { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { z } from 'zod'
+import { prisma } from '../lib/prisma'
+import { authMiddleware } from '../middleware/auth'
+
+export async function entitiesRoutes(fastify: FastifyInstance) {
+  const server = fastify.withTypeProvider<ZodTypeProvider>()
+
+  server.get(
+    '/entities',
+    {
+      onRequest: [authMiddleware],
+      schema: {
+        response: {
+          200: z.object({
+            entities: z.array(z.object({
+              id: z.string(),
+              name: z.string(),
+              type: z.string(),
+              currency: z.string(),
+            })),
+          }),
+        },
+      },
+    },
+    async (request, reply) => {
+      // Get user's tenant
+      const tenantUser = await prisma.tenantUser.findFirst({
+        where: { userId: request.userId },
+        include: { tenant: true },
+      })
+
+      if (!tenantUser) {
+        return reply.status(404).send({ error: 'Tenant not found' })
+      }
+
+      // Get entities for this tenant
+      const entities = await prisma.entity.findMany({
+        where: { tenantId: tenantUser.tenantId },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          baseCurrency: true,
+        },
+      })
+
+      return {
+        entities: entities.map(e => ({
+          id: e.id,
+          name: e.name,
+          type: e.type,
+          currency: e.baseCurrency,
+        })),
+      }
+    }
+  )
+}
+```
+2. Register routes in `apps/api/src/index.ts`:
+```typescript
+import { entitiesRoutes } from './routes/entities'
+
+await fastify.register(entitiesRoutes, { prefix: '/api' })
+```
+3. Test with curl or Thunder Client:
+```bash
+curl -H "Authorization: Bearer YOUR_CLERK_TOKEN" http://localhost:4000/api/entities
+```
+
+**Done When:**
+- [x] GET /api/entities endpoint works
+- [x] Returns only entities for authenticated user's tenant
+- [x] Validates authentication
+- [x] Returns proper JSON response
+- [x] Test documentation created (TEST_ENTITIES.md)
 
 ---
 
@@ -432,34 +643,36 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
 ## 📊 Week Progress
 
-**Phase 0.1 (Authentication):** 0 / 9 tasks complete (0%)
-**Phase 0.2 (Database):** 0 / 5 tasks complete (0%)
+**Phase 0.1 (Authentication):** 9 / 9 tasks complete (100%) ✅
+**Phase 0.2 (Database):** 5 / 5 tasks complete (100%) ✅
+**Phase 0.3 (API Foundation):** 4 / 4 tasks complete (100%) ✅
+**Phase 0.4 (First Vertical Slice):** 4 / 4 tasks complete (100%) ✅
 
-**Total This Week:** 0 / 14 tasks complete (0%)
+**Total Completed:** 22 / 22 tasks complete (100%) 🎉🎉🎉
 
-**Estimated Time Remaining:** ~3-4 hours
+**🏆 PHASE 0 COMPLETE - FOUNDATION SOLID! 🏆**
 
 ---
 
-## 🗓️ Daily Goals
+## 🗓️ This Week (2026-01-30)
 
-### Monday (Today)
-- [ ] Complete Task 0.1.1 - 0.1.4 (Clerk setup)
-- [ ] Complete Task 0.1.5 - 0.1.6 (Sign-in/Sign-up pages)
-- **Goal:** Authentication pages working
+### ✅ Completed
+- [x] Phase 0.1 - Authentication (all 9 tasks) ✅
+- [x] Phase 0.2 - Database Setup (all 5 tasks) ✅
 
-### Tuesday
-- [ ] Complete Task 0.1.7 - 0.1.9 (Test auth + protect routes)
-- [ ] Complete Task 0.2.1 - 0.2.2 (Database setup)
-- **Goal:** Auth complete, database connected
+### 🔥 Today's Goals
+- [x] Complete Task 0.3.1 - Set up Prisma Client in API ✅
+- [x] Complete Task 0.3.2 - Add Authentication Middleware ✅
+- [x] Complete Task 0.3.3 - Add Zod Validation ✅
+- [x] Complete Task 0.3.4 - Create First CRUD Endpoint ✅
+- **Goal:** Complete Phase 0.3 - API Foundation ✅ ACHIEVED!
 
-### Wednesday
-- [ ] Complete Task 0.2.3 - 0.2.5 (Migrations + seed data)
-- **Goal:** Database operational with test data
-
-### Thursday-Friday
-- [ ] Start Phase 0.3 (API Foundation)
-- **Goal:** First API endpoint working
+### ✅ Phase 0.4 - First Vertical Slice (COMPLETE)
+- [x] Create frontend component to fetch entities
+- [x] Display entities list in dashboard
+- [x] Add loading and error states
+- [x] Fix Clerk authentication (modern networkless verification)
+- **Goal:** Full stack data flow working end-to-end ✅ ACHIEVED!
 
 ---
 

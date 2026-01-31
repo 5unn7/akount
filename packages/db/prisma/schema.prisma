@@ -621,6 +621,7 @@ model Account {
   // Relations
   transactions   Transaction[]
   feedTxns       BankFeedTransaction[]
+  importBatches  ImportBatch[]
 
   @@index([entityId])
   @@index([entityId, type])
