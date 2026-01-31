@@ -23,13 +23,15 @@ async function main() {
   await prisma.tenant.deleteMany();
 
   // Create test user
+  // NOTE: Update clerkUserId with your actual Clerk user ID after creating the account
+  // See TEST_CREDENTIALS.md for setup instructions
   console.log('👤 Creating test user...');
   const user = await prisma.user.create({
     data: {
       id: 'user_test_akount',
-      clerkUserId: 'user_38zWHi1LvQhkZS4N5AIsv9SeEmZ', // Your actual Clerk user ID
-      email: 'demo@akount.com',
-      name: 'Demo User',
+      clerkUserId: 'user_REPLACE_WITH_YOUR_CLERK_ID', // Replace with actual Clerk user ID
+      email: 'testuser1@akount.local',
+      name: 'Test User 1',
     },
   });
 

@@ -530,7 +530,7 @@ describe('GET /api/invoices', () => {
 - `docs/standards/multi-tenancy.md` - Tenant filtering in APIs
 - `docs/standards/security.md` - Input validation, auth
 - `docs/standards/financial-data.md` - Money handling in APIs
-- `agent-os/standards/` - Generic TypeScript patterns
+- `docs/standards/` - Akount domain standards
 
 ---
 

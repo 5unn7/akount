@@ -8,7 +8,7 @@ context_files:
   - turbo.json
   - docs/architecture/decisions.md
   - docs/architecture/summary.md
-  - agent-os/standards/monorepo/workspace-organization.md
+  - docs/standards/ (project standards)
 related_agents:
   - git-history-analyzer
   - best-practices-researcher
