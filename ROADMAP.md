@@ -174,22 +174,34 @@ This roadmap outlines the path from current state (5% complete) to a production-
 - [ ] Add date range filter (optional)
 - [ ] Make dashboard responsive (mobile)
 
-#### 1.6 Testing
+#### 1.6 Running Balance Display (NEW - LunchMoney Priority)
+- [ ] Add running balance calculation to GET /api/accounts/:id/transactions
+- [ ] Update TransactionList component to show "Balance" column
+- [ ] Add runningBalance field to Transaction type
+- [ ] Test with various transaction orders and amounts
+- [ ] Test with multi-currency accounts
+
+**Why Added:** Core accounting feature, 86 user votes, low effort (2-3 hours)
+**See:** `docs/architecture/lunchmoney-feature-analysis.md`
+
+#### 1.7 Testing
 - [ ] Write API integration tests for accounts endpoints
 - [ ] Write frontend component tests
 - [ ] Write E2E test: Create account → See it in dashboard
 - [ ] Test multi-currency display
 - [ ] Test entity filtering
+- [ ] Test running balance calculation accuracy
 
 **Phase 1 Exit Criteria:**
 - [ ] All account CRUD operations work
 - [ ] Dashboard shows real account data
 - [ ] Multi-currency toggle works
 - [ ] Entity filtering works
+- [ ] Running balance displays correctly
 - [ ] Mobile responsive
 - [ ] Tests pass
 
-**Estimated Effort:** 30-40 hours
+**Estimated Effort:** 32-43 hours (+2-3 hours for running balance)
 
 ---
 
@@ -239,21 +251,37 @@ This roadmap outlines the path from current state (5% complete) to a production-
 - [ ] Add filters (matched/unmatched/all)
 - [ ] Show reconciliation status card
 
-#### 2.5 Testing
+#### 2.5 Cash Flow Forecasting (NEW - LunchMoney Priority)
+- [ ] Create ForecastingService with projection algorithm
+- [ ] POST /api/forecasting/cash-flow - Project future balance
+- [ ] Calculate 7/30/90 day projections
+- [ ] Show confidence indicator (high/medium/low)
+- [ ] Create CashFlowForecastCard dashboard widget
+- [ ] Show projected low balance warnings
+- [ ] List assumptions made in forecast
+
+**Why Added:** High demand (208 user votes), differentiator, 15-20 hours
+**Dependencies:** Works better with recurring transactions (Phase 3), but can show basic projections
+**See:** `docs/architecture/lunchmoney-feature-analysis.md`
+
+#### 2.6 Testing
 - [ ] Test CSV import with various formats
 - [ ] Test duplicate detection
 - [ ] Test matching algorithm accuracy
 - [ ] Test bulk operations
 - [ ] E2E: Import CSV → Match → Verify
+- [ ] Test cash flow projection accuracy
+- [ ] Test with/without recurring transactions
 
 **Phase 2 Exit Criteria:**
 - [ ] CSV import works end-to-end
 - [ ] Users can match transactions manually
 - [ ] Auto-match suggestions are reasonable
 - [ ] Reconciliation status is accurate
+- [ ] Cash flow forecasting displays on dashboard
 - [ ] Tests pass
 
-**Estimated Effort:** 40-50 hours
+**Estimated Effort:** 55-70 hours (+15-20 hours for cash flow forecasting)
 
 ---
 
@@ -309,21 +337,60 @@ This roadmap outlines the path from current state (5% complete) to a production-
 - [ ] Create TransactionList component
 - [ ] Add filtering (date, account, entity)
 
-#### 3.6 Testing
+#### 3.6 Recurring Transactions (NEW - LunchMoney Priority)
+- [ ] POST /api/recurring-transactions - Create recurring rule
+- [ ] GET /api/recurring-transactions - List rules
+- [ ] PATCH /api/recurring-transactions/:id - Update rule
+- [ ] DELETE /api/recurring-transactions/:id - Delete rule
+- [ ] Create RecurringTransactionService with auto-generation logic
+- [ ] Support frequencies: daily, weekly, monthly, yearly
+- [ ] Support end date or "never"
+- [ ] Implement "skip this month" exception handling
+- [ ] Create background job (cron) for nightly generation
+- [ ] Create RecurringTransactionForm component
+- [ ] Create RecurringTransactionsList component
+- [ ] Add preview before confirming generation
+
+**Why Added:** High demand (230 votes combined), essential for automation, 15-20 hours
+**Dependencies:** Required for accurate cash flow forecasting (Phase 2)
+**See:** `docs/architecture/lunchmoney-feature-analysis.md`
+
+#### 3.7 Keyboard Shortcuts (NEW - LunchMoney Priority)
+- [ ] Create useKeyboardShortcuts hook
+- [ ] Implement global keyboard listener
+- [ ] Add command palette (/) for search
+- [ ] Add modal close (ESC)
+- [ ] Add table navigation (arrow keys)
+- [ ] Add new transaction shortcut (n)
+- [ ] Add quick actions (Cmd/Ctrl + K)
+- [ ] Create HelpOverlay component (?)
+- [ ] Register global listener in layout
+- [ ] Document shortcuts in help page
+
+**Why Added:** Professional software standard (105 votes), power user efficiency, 8-10 hours
+**See:** `docs/architecture/lunchmoney-feature-analysis.md`
+
+#### 3.8 Testing
 - [ ] Test double-entry validation
 - [ ] Test multi-currency posting
 - [ ] Test split transactions
 - [ ] Test journal entry generation
 - [ ] E2E: Post transaction → Verify GL balance
+- [ ] Test recurring transaction generation
+- [ ] Test "skip this month" exceptions
+- [ ] Test all keyboard shortcuts
+- [ ] Test keyboard navigation in tables
 
 **Phase 3 Exit Criteria:**
 - [ ] Users can post transactions manually
 - [ ] Double-entry bookkeeping works
 - [ ] Chart of accounts is functional
 - [ ] Transaction list and filters work
+- [ ] Recurring transactions generate automatically
+- [ ] Keyboard shortcuts work globally
 - [ ] Tests pass
 
-**Estimated Effort:** 40-50 hours
+**Estimated Effort:** 63-80 hours (+23-30 hours for recurring + keyboard shortcuts)
 
 ---
 
@@ -438,20 +505,40 @@ This roadmap outlines the path from current state (5% complete) to a production-
 - [ ] Add export buttons
 - [ ] Add charts/visualizations (Recharts)
 
-#### 5.4 Testing
+#### 5.4 Data Export (NEW - LunchMoney Priority)
+- [ ] Create ExportService for comprehensive data export
+- [ ] POST /api/export/full - Generate complete export
+- [ ] Support JSON format (complete backup, all models)
+- [ ] Support CSV format (per-entity spreadsheets)
+- [ ] Collect all attachments
+- [ ] Generate ZIP file with all data
+- [ ] Return S3 presigned download URL
+- [ ] Add "Export Data" section to settings page
+- [ ] Show export progress indicator
+- [ ] Add "Your data is yours" messaging
+
+**Why Added:** Trust signal (60 votes), data portability, essential before launch, 10-12 hours
+**See:** `docs/architecture/lunchmoney-feature-analysis.md`
+
+#### 5.5 Testing
 - [ ] Test P&L accuracy with known data
 - [ ] Test balance sheet balances
 - [ ] Test cash flow calculations
 - [ ] Test multi-entity reports
 - [ ] E2E: Post transactions → Generate report
+- [ ] Test JSON export structure
+- [ ] Test CSV export readability
+- [ ] Test export with attachments (ZIP)
+- [ ] Test large dataset export (10,000+ transactions)
 
 **Phase 5 Exit Criteria:**
 - [ ] All three financial statements generate correctly
 - [ ] Reports can be filtered and compared
 - [ ] Export works (PDF/CSV)
+- [ ] Full data export works (JSON/CSV/ZIP)
 - [ ] Tests pass
 
-**Estimated Effort:** 35-45 hours
+**Estimated Effort:** 45-57 hours (+10-12 hours for data export)
 
 ---
 
@@ -609,22 +696,29 @@ This roadmap outlines the path from current state (5% complete) to a production-
 
 ## Total Timeline
 
-| Phase | Duration | Effort (Hours) | Status |
-|-------|----------|----------------|--------|
-| 0: Foundation | 1-2 weeks | 20-30 | 🚧 In Progress (40% complete - Tasks 0.1 & 0.2 done) |
-| 1: Accounts Overview | 1-2 weeks | 30-40 | ⏸️ Not Started |
-| 2: Bank Reconciliation | 2-3 weeks | 40-50 | ⏸️ Not Started |
-| 3: Transactions | 2-3 weeks | 40-50 | ⏸️ Not Started |
-| 4: Invoicing & Bills | 2-3 weeks | 40-50 | ⏸️ Not Started |
-| 5: Analytics | 2-3 weeks | 35-45 | ⏸️ Not Started |
-| 6: Budgets & Goals | 1-2 weeks | 20-30 | 🔘 Optional |
-| 7: AI Advisor | 2-3 weeks | 30-40 | 🔘 Optional |
-| 8: Polish & Launch | 2-3 weeks | 40-50 | ⏸️ Not Started |
+| Phase | Duration | Effort (Hours) | Status | Enhancements |
+|-------|----------|----------------|--------|--------------|
+| 0: Foundation | 1-2 weeks | 20-30 | 🚧 In Progress (40% complete - Tasks 0.1 & 0.2 done) | - |
+| 1: Accounts Overview | 1-2 weeks | 32-43 | ⏸️ Not Started | +Running Balance (+2-3h) |
+| 2: Bank Reconciliation | 2-3 weeks | 55-70 | ⏸️ Not Started | +Cash Flow Forecasting (+15-20h) |
+| 3: Transactions | 2-3 weeks | 63-80 | ⏸️ Not Started | +Recurring Txns (+15-20h), +Keyboard Shortcuts (+8-10h) |
+| 4: Invoicing & Bills | 2-3 weeks | 40-50 | ⏸️ Not Started | - |
+| 5: Analytics | 2-3 weeks | 45-57 | ⏸️ Not Started | +Data Export (+10-12h) |
+| 6: Budgets & Goals | 1-2 weeks | 20-30 | 🔘 Optional | - |
+| 7: AI Advisor | 2-3 weeks | 30-40 | 🔘 Optional | - |
+| 8: Polish & Launch | 2-3 weeks | 40-50 | ⏸️ Not Started | - |
 
-**Core MVP (Phases 0-5 + 8):** 16-24 weeks (4-6 months)
-**Full Product (All Phases):** 20-30 weeks (5-7.5 months)
+**Core MVP (Phases 0-5 + 8):** 17-25 weeks (4.25-6.25 months)
+**Full Product (All Phases):** 21-31 weeks (5.25-7.75 months)
 
-**Total Effort Estimate:** 265-355 hours for core MVP
+**Total Effort Estimate:**
+- **Original Core MVP:** 265-355 hours
+- **Enhanced Core MVP:** 315-420 hours
+- **Additional Effort:** +50-65 hours (+18%) for 5 strategic features
+- **Features Added:** Running balance, cash flow forecasting, recurring transactions, keyboard shortcuts, data export
+- **ROI:** Addresses 700+ LunchMoney user votes with moderate timeline impact
+
+**See:** `docs/architecture/lunchmoney-feature-analysis.md` for detailed feature analysis and rationale
 
 ---
 
