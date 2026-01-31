@@ -305,6 +305,292 @@ Use the prisma-migration-reviewer agent to review this schema change
 
 ---
 
+### pattern-recognition-specialist
+
+**Purpose**: Analyzes code for design patterns, anti-patterns, naming conventions, and code duplication.
+
+**When to use**:
+- Identifying design patterns in the codebase
+- Finding anti-patterns and code smells
+- Checking naming convention consistency
+- Detecting code duplication
+- Understanding architectural patterns
+- Finding refactoring opportunities
+
+**How to invoke**:
+```
+Use the pattern-recognition-specialist agent to analyze API routes for patterns
+```
+
+**What it checks**:
+- ✓ Design patterns (Singleton, Factory, Observer, Strategy, etc.)
+- ✓ Anti-patterns (God objects, code smells, TODOs, tight coupling)
+- ✓ Naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
+- ✓ Code duplication (repeated logic, copy-paste)
+- ✓ Architectural boundaries
+- ✓ File length and complexity
+
+**Example scenarios**:
+1. Finding repeated authentication logic across routes
+2. Identifying inconsistent naming patterns
+3. Detecting God objects that should be split
+4. Finding opportunities for shared utilities
+
+**Critical rules enforced**:
+- 🔴 No God objects (classes/files doing too much)
+- 🔴 Consistent naming across codebase
+- 🟡 Extract utilities when code is duplicated 3+ times
+- 🟡 Respect architectural boundaries
+
+---
+
+### data-migration-expert
+
+**Purpose**: Validates database migrations to prevent data corruption, swapped values, and ensure rollback safety.
+
+**When to use**:
+- Database schema migrations
+- Data backfills or transformations
+- Production data updates
+- Column renames or type changes
+- ID remapping operations
+
+**How to invoke**:
+```
+Use the data-migration-expert agent to review this migration
+```
+
+**What it checks**:
+- ✓ Production data verification (actual values, not fixtures)
+- ✓ Migration code safety (batching, reversibility, error handling)
+- ✓ Mapping logic completeness (handles all values)
+- ✓ Observability setup (monitoring queries)
+- ✓ Rollback strategy
+- ✓ Code references and dependencies
+
+**Example scenarios**:
+1. Migrating invoice status enum values
+2. Remapping account IDs during consolidation
+3. Backfilling missing transaction categories
+4. Converting date formats or timezones
+
+**Critical rules enforced**:
+- 🔴 NEVER trust assumptions - verify with production SQL
+- 🔴 ALL possible values must be mapped (use CASE with ELSE)
+- 🔴 Migrations must be batched for large datasets
+- 🟡 Feature flags for rollback capability
+- 🟡 Dual-write during column renames
+
+---
+
+### deployment-verification-agent
+
+**Purpose**: Generates executable Go/No-Go checklists for risky data deployments.
+
+**When to use**:
+- Database migration involves data transformation
+- Changes affect critical data processing
+- Backfill or data migration ready to run
+- Risk of data loss or corruption
+- Financial or sensitive data changes
+
+**How to invoke**:
+```
+Use the deployment-verification-agent to create a checklist for this migration
+```
+
+**What it produces**:
+- 🔴 Pre-Deploy Audits (baseline queries)
+- 🟡 Deploy Steps (commands to execute)
+- 🟢 Post-Deploy Verification (integrity checks)
+- 🔵 24-Hour Monitoring (metrics to watch)
+- 🔄 Rollback Plan (recovery procedure)
+
+**Example scenarios**:
+1. Adding new required column to invoices
+2. Deleting old inactive accounts
+3. Migrating payment processing logic
+4. Updating transaction status workflow
+
+**Critical rules enforced**:
+- 🔴 Pre-deploy baseline MUST be documented
+- 🔴 All verification queries MUST have expected results
+- 🔴 Rollback procedure MUST be documented
+- 🟡 Database snapshot created before migration
+- 🟡 Time-bounded decision window (when to rollback)
+
+---
+
+---
+
+### fastify-api-reviewer
+
+**Purpose**: Reviews Fastify API code for proper route structure, Zod validation, authentication, and database patterns.
+
+**When to use**:
+- Any code in apps/api/src/routes/
+- Fastify middleware changes
+- API endpoint implementations
+- Backend error handling
+- Database query optimization in APIs
+
+**How to invoke**:
+```
+Use the fastify-api-reviewer agent to review this API route
+```
+
+**What it checks**:
+- ✓ Zod schema validation on all routes
+- ✓ Authentication middleware usage
+- ✓ Tenant isolation in queries
+- ✓ Error handling and status codes
+- ✓ N+1 query prevention
+- ✓ Type safety with ZodTypeProvider
+- ✓ Financial data handling
+
+**Critical rules enforced**:
+- 🔴 All routes must have Zod validation
+- 🔴 Protected routes must use authMiddleware
+- 🔴 All queries must filter by tenantId
+- 🟡 Use transactions for multi-step operations
+- 🟡 Pagination for list endpoints
+
+---
+
+### clerk-auth-reviewer
+
+**Purpose**: Reviews authentication and authorization code involving Clerk for security and correctness.
+
+**When to use**:
+- Authentication middleware changes
+- Protected routes and layouts
+- JWT verification in API
+- Clerk SDK usage
+- User session handling
+- Multi-tenant auth flows
+
+**How to invoke**:
+```
+Use the clerk-auth-reviewer agent to review this authentication code
+```
+
+**What it checks**:
+- ✓ Server-side auth checks (not client-only)
+- ✓ Modern Clerk v6 patterns (@clerk/backend)
+- ✓ JWT token verification
+- ✓ Tenant mapping and isolation
+- ✓ Session management
+- ✓ Security best practices
+
+**Critical rules enforced**:
+- 🔴 NEVER trust client-sent userId
+- 🔴 Always verify tokens server-side
+- 🔴 Use auth() in Next.js layouts/pages
+- 🟡 Handle token expiry gracefully
+- 🟡 No tokens in logs or query strings
+
+---
+
+### turborepo-monorepo-reviewer
+
+**Purpose**: Reviews monorepo structure, package dependencies, and workspace configuration for Turborepo.
+
+**When to use**:
+- package.json changes
+- turbo.json pipeline updates
+- New workspace packages
+- Import structure changes
+- Build configuration
+- Dependency management
+
+**How to invoke**:
+```
+Use the turborepo-monorepo-reviewer agent to review this workspace change
+```
+
+**What it checks**:
+- ✓ Workspace protocol usage (workspace:*)
+- ✓ No circular dependencies
+- ✓ Proper package imports (@akount/*)
+- ✓ Turbo pipeline configuration
+- ✓ Build order and caching
+- ✓ Type safety across packages
+
+**Critical rules enforced**:
+- 🔴 Must use workspace:* protocol
+- 🔴 No relative imports across workspaces
+- 🔴 No circular dependencies
+- 🟡 All scripts in turbo.json pipeline
+- 🟡 Consistent dependency versions
+
+---
+
+## Agent Categories
+
+### Financial & Data Integrity
+- financial-data-validator (accounting rules)
+- prisma-migration-reviewer (schema safety)
+- data-migration-expert (migration validation)
+- deployment-verification-agent (deployment checklists)
+
+### Architecture & Code Quality
+- architecture-strategist (system design)
+- kieran-typescript-reviewer (type safety)
+- code-simplicity-reviewer (minimalism)
+- pattern-recognition-specialist (patterns & anti-patterns)
+- turborepo-monorepo-reviewer (monorepo structure) **NEW - Week 2**
+
+### Performance & Security
+- performance-oracle (optimization)
+- security-sentinel (vulnerability assessment)
+
+### Framework-Specific
+- nextjs-app-router-reviewer (Next.js patterns)
+- fastify-api-reviewer (Fastify API patterns) **NEW - Week 2**
+
+### Authentication & Authorization
+- clerk-auth-reviewer (Clerk authentication) **NEW - Week 2**
+
+---
+
+## Recommended Review Order
+
+For comprehensive code review, use agents in this order:
+
+### For API Changes (Backend)
+1. **Security First**: security-sentinel
+2. **Authentication**: clerk-auth-reviewer (if auth changes)
+3. **API Patterns**: fastify-api-reviewer
+4. **Data Safety**: prisma-migration-reviewer (if schema changes)
+5. **Financial Logic**: financial-data-validator (if financial code)
+6. **Architecture**: architecture-strategist
+7. **Type Safety**: kieran-typescript-reviewer
+8. **Performance**: performance-oracle
+9. **Code Quality**: pattern-recognition-specialist
+10. **Final Simplicity Pass**: code-simplicity-reviewer
+
+### For Frontend Changes
+1. **Security First**: security-sentinel
+2. **Authentication**: clerk-auth-reviewer (if auth changes)
+3. **Next.js Patterns**: nextjs-app-router-reviewer
+4. **Type Safety**: kieran-typescript-reviewer
+5. **Performance**: performance-oracle
+6. **Code Quality**: pattern-recognition-specialist
+7. **Final Simplicity Pass**: code-simplicity-reviewer
+
+### For Structural Changes
+1. **Monorepo Structure**: turborepo-monorepo-reviewer
+2. **Architecture**: architecture-strategist
+3. **Code Quality**: pattern-recognition-specialist
+
+### For Database Changes
+1. **Schema Safety**: prisma-migration-reviewer
+2. **Migration Validation**: data-migration-expert
+3. **Deployment Checklist**: deployment-verification-agent
+4. **Financial Data**: financial-data-validator (if financial tables)
+
+---
+
 ## How to Add New Review Agents
 
 1. Create a new `.md` file in this directory
@@ -318,3 +604,27 @@ Use the prisma-migration-reviewer agent to review this schema change
    ```
 3. Write the agent's system prompt with checklists and guidelines
 4. Update this README with usage instructions
+
+---
+
+## Installation History
+
+**Original Agents** (Custom for Akount):
+- financial-data-validator
+- nextjs-app-router-reviewer
+- prisma-migration-reviewer
+- kieran-typescript-reviewer
+- architecture-strategist
+- code-simplicity-reviewer
+- performance-oracle
+- security-sentinel
+
+**Week 1 Compound Engineering Agents** (2026-01-30):
+- pattern-recognition-specialist
+- data-migration-expert
+- deployment-verification-agent
+
+**Week 2 Custom Agents** (2026-01-30):
+- fastify-api-reviewer (Akount-specific API patterns)
+- clerk-auth-reviewer (Clerk authentication security)
+- turborepo-monorepo-reviewer (Monorepo structure validation)

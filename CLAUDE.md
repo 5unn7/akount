@@ -1,0 +1,431 @@
+# Akount Project - Agent Context
+
+> **Purpose:** This file is automatically loaded by Claude Code at the start of every conversation.
+> It provides essential context about documentation, architecture, standards, and constraints.
+> Keep this concise - link to detailed docs rather than including full content here.
+
+**Last Updated:** 2026-01-30
+**Project:** Akount - Multi-tenant Accounting Platform for Canadian Freelancers
+**Current Phase:** Phase 0 Complete (100%) - Bank Statement Import Feature Added
+
+---
+
+## 🏗️ Architecture & Technical Decisions
+
+### Core Architecture Documents
+- **`docs/architecture/decisions.md`** - Tech stack choices and rationale (Next.js 16, Fastify, PostgreSQL)
+- **`docs/architecture/summary.md`** - Architecture evolution approach (phase-by-phase hooks)
+- **`docs/architecture/ARCHITECTURE-HOOKS.md`** - Future-proof hooks inventory and activation guide
+- **`docs/architecture/schema-design.md`** - Database design patterns and Prisma conventions
+- **`docs/architecture/processes.md`** - Development workflows and deployment processes
+- **`docs/architecture/operations.md`** - Operational procedures, security, and compliance
+
+### Critical Architectural Principles
+
+**1. Multi-Tenancy (ZERO EXCEPTIONS)**
+```typescript
+// ALWAYS filter by tenantId - NO EXCEPTIONS
+const entities = await prisma.entity.findMany({
+  where: { tenantId: user.tenantId } // REQUIRED
+})
+```
+- ALL queries MUST include `tenantId` filter
+- Middleware enforces tenant isolation
+- See: `docs/standards/multi-tenancy.md`
+
+**2. Server-First Architecture**
+- Maximize React Server Components (default)
+- Only use `'use client'` when absolutely necessary (interactivity, hooks, browser APIs)
+- Data fetching happens on server
+- See: `agent-os/standards/frontend/client-server-components.md`
+
+**3. Integer Cents for Money (NEVER Float)**
+```typescript
+// CORRECT: Store money as integer cents
+amount: Int // 1000 = $10.00
+
+// WRONG: Never use Float for money
+amount: Float // Precision errors destroy accounting integrity
+```
+- All monetary values stored as `Int` (cents)
+- Division ONLY for display
+- See: `docs/standards/financial-data.md`
+
+**4. Monorepo Structure**
+```
+apps/
+  web/     - Next.js 16 frontend (port 3000)
+  api/     - Fastify backend (port 4000)
+packages/
+  db/      - Prisma schema & migrations
+  types/   - Shared TypeScript types
+  ui/      - Shared UI components
+```
+- Turborepo for build orchestration
+- Shared packages via workspace protocol
+- See: `agent-os/standards/monorepo/`
+
+---
+
+## 📊 Product Context
+
+### What We're Building
+- **`docs/product/overview.md`** - Product vision, target users (Canadian freelancers), value proposition
+- **`docs/product/data-model/README.md`** - Complete database schema explanation (40+ Prisma models)
+
+### Data Model Overview
+**40+ Prisma Models across 7 categories:**
+- **Multi-tenancy:** Tenant, TenantUser, User
+- **Financial Core:** Entity, GLAccount, JournalEntry, JournalLine
+- **Banking:** Account, BankConnection, BankFeedTransaction
+- **Transactions:** Transaction, TransactionSplit, TransactionMatch
+- **Invoicing:** Invoice, InvoiceLine, Bill, BillLine, Payment, PaymentAllocation
+- **Relationships:** Client, Vendor
+- **Supporting:** Category, Budget, Goal, FiscalCalendar, Tag, Rule, Attachment, AuditLog
+
+**Key Schema Patterns:**
+- Soft deletes (`deletedAt`) - NEVER hard delete financial data
+- Audit trails (`createdAt`, `updatedAt`, `createdBy`, `updatedBy`)
+- Multi-currency ready (`baseCurrency`, `functionalCurrency`)
+- Source tracking (`sourceType`, `sourceId`, `sourceDocument`)
+
+### Feature Specifications (7 Phases)
+- **`docs/features/01-accounts-overview.md`** - Dashboard, accounts list, entity filter
+- **`docs/features/02-bank-reconciliation.md`** - Bank feeds, reconciliation, Flinks integration
+- **`docs/features/03-transactions-bookkeeping.md`** - Transaction entry, categorization, journal posting
+- **`docs/features/04-invoicing-bills.md`** - Invoice creation, payment tracking, aging reports
+- **`docs/features/05-analytics.md`** - Reports, charts, financial insights
+- **`docs/features/06-planning.md`** - Budgets, forecasting, goals
+- **`docs/features/07-ai-financial-advisor.md`** - AI categorization, insights, rule suggestions
+
+---
+
+## 📍 Current State & Progress
+
+### What's Implemented (Phase 0 - 100% Complete)
+**See:** `STATUS.md` (updated weekly), `ROADMAP.md` (phase plan), `TASKS.md` (daily work)
+
+**✅ Completed:**
+- Authentication (Clerk with passkeys/WebAuthn)
+- Database (PostgreSQL + Prisma, 40+ models, migrations, seed data)
+- API Foundation (Fastify + Clerk JWT auth + Zod validation)
+- First Vertical Slice (GET /api/entities with frontend display)
+- Bank Statement Import (PDF parsing, account matching, duplicate detection)
+
+**Current Work:**
+- Bank statement import enhancements
+- Frontend dashboard improvements
+- Transaction categorization
+
+**Next Phase:** Phase 1 - Accounts Overview (dashboard with real data)
+
+### Recent Milestones
+**See:** `CHANGELOG.md` (milestone tracking)
+- 2026-01-30: Bank statement import feature added (PDF parsing, intelligent account matching)
+- 2026-01-29: Architecture hooks documented, backup system implemented
+- 2026-01-27: Phase 0 foundation complete (auth + database + API)
+
+---
+
+## 📐 Standards & Conventions
+
+### Agent OS Standards (Generic Coding Patterns)
+**Location:** `agent-os/standards/`
+
+Discovered patterns from codebase analysis:
+- **`monorepo/`** - Workspace organization, package naming, dependencies, singleton patterns
+- **`frontend/`** - Component patterns, client/server boundaries, import paths, route groups
+- **`database/`** - Schema conventions, naming, relationships
+- **`global/`** - Tech stack decisions
+
+**How to Use:**
+```bash
+# Discover patterns from code
+/agent-os:discover-standards
+
+# Load relevant standards into context
+/agent-os:inject-standards
+
+# View all available standards
+/agent-os:index-standards
+```
+
+### Akount-Specific Standards (Domain Patterns)
+**Location:** `docs/standards/`
+
+Domain-specific patterns for accounting platform:
+- **`multi-tenancy.md`** - Tenant isolation enforcement, query patterns, middleware
+- **`financial-data.md`** - Double-entry bookkeeping, money handling, audit trails
+- **`api-design.md`** - Fastify route patterns, error handling, validation schemas
+- **`security.md`** - OWASP Top 10 for Akount, input validation, sensitive data
+
+### Design System
+**Location:** `docs/design-system/`
+- **`tailwind-colors.md`** - Color palette (Orange primary, Violet secondary, Slate neutral)
+- **`fonts.md`** - Typography system (Newsreader, Manrope, JetBrains Mono)
+- **`tokens.css`** - CSS custom properties
+
+---
+
+## 🤖 Available Agents & Workflows
+
+### Review Agents (15 Specialized Agents)
+**Location:** `.claude/agents/review/`
+**Master Index:** `.claude/agents/review/README.md`
+
+**Financial & Data Integrity:**
+- `financial-data-validator.md` - Double-entry bookkeeping, money precision, audit trails
+- `prisma-migration-reviewer.md` - Schema safety, migration validation, breaking changes
+- `data-migration-expert.md` - Data migration safety and validation
+- `deployment-verification-agent.md` - Deployment checklists
+
+**Architecture & Code Quality:**
+- `architecture-strategist.md` - System design, multi-tenant validation, component boundaries
+- `kieran-typescript-reviewer.md` - Strict TypeScript, modern patterns, type safety
+- `code-simplicity-reviewer.md` - YAGNI, minimize complexity, remove over-engineering
+- `pattern-recognition-specialist.md` - Design patterns and anti-patterns
+- `turborepo-monorepo-reviewer.md` - Monorepo structure validation
+
+**Performance & Security:**
+- `performance-oracle.md` - N+1 queries, algorithmic complexity, caching strategies
+- `security-sentinel.md` - OWASP Top 10, tenant isolation, input validation
+
+**Framework-Specific:**
+- `nextjs-app-router-reviewer.md` - Server/Client components, async patterns, App Router
+- `fastify-api-reviewer.md` - Fastify API patterns and best practices
+- `clerk-auth-reviewer.md` - Clerk authentication security
+
+### Research Agents (4 Agents)
+**Location:** `.claude/agents/research/`
+- `best-practices-researcher.md` - Industry best practices exploration
+- `framework-docs-researcher.md` - Framework documentation research
+- `git-history-analyzer.md` - Commit history analysis
+- `repo-research-analyst.md` - Repository pattern analysis
+
+### Automation Agents (3 Agents)
+**Location:** `.claude/agents/automation/`
+- `bug-reproduction-validator.md` - Bug validation workflow
+- `pr-comment-resolver.md` - PR comment resolution
+
+### Development Workflows
+**Location:** `.claude/commands/processes/`
+**Master Guide:** `.claude/commands/processes/README.md`
+
+**Structured Development Process:**
+```
+Idea → /brainstorm → /plan → /work → /review → Merge
+         (explore)     (design)  (implement) (validate)
+```
+
+**Available Workflows:**
+- `/processes:brainstorm` - Feature exploration and requirements gathering
+- `/processes:plan` - Implementation planning with architectural decisions
+- `/processes:work` - Systematic development execution
+- `/processes:review` - Multi-agent code review
+- `/processes:compound` - Document solved problems for organizational knowledge
+- `/processes:begin` - Session startup dashboard
+
+**Outputs:**
+- Brainstorms → `docs/brainstorms/YYYY-MM-DD-feature-name-brainstorm.md`
+- Plans → `docs/plans/YYYY-MM-DD-feature-name-plan.md`
+- Reviews → `docs/archive/sessions/` (after completion)
+
+---
+
+## 🚨 Critical Constraints & Rules
+
+### Security (ZERO TOLERANCE)
+
+**1. Tenant Isolation**
+```typescript
+// NEVER allow cross-tenant data access
+// ALWAYS include tenantId in WHERE clauses
+// ALWAYS validate tenantId matches authenticated user
+
+// CORRECT:
+const invoice = await prisma.invoice.findFirst({
+  where: {
+    id: invoiceId,
+    tenantId: user.tenantId // REQUIRED
+  }
+})
+
+// WRONG: Missing tenantId check (security vulnerability)
+const invoice = await prisma.invoice.findFirst({
+  where: { id: invoiceId }
+})
+```
+
+**2. Input Validation**
+- ALWAYS validate user input with Zod schemas
+- NEVER trust client data
+- ALWAYS sanitize before database queries
+- See: `docs/standards/security.md`
+
+**3. Sensitive Data**
+- NEVER log tokens, passwords, or PII
+- NEVER commit secrets to git (use .env)
+- ALWAYS use HTTPS/TLS in production
+
+### Financial Data (ACCOUNTING INTEGRITY)
+
+**1. Money Precision**
+```typescript
+// CORRECT: Integer cents
+const amount = 1050 // $10.50
+
+// WRONG: Float (precision errors)
+const amount = 10.50 // BAD - will cause rounding errors
+```
+
+**2. Double-Entry Bookkeeping**
+```typescript
+// ALWAYS maintain: SUM(debits) = SUM(credits)
+const journalEntry = await prisma.journalEntry.create({
+  data: {
+    lines: {
+      create: [
+        { glAccountId: '...', debitAmount: 1000, creditAmount: 0 },  // Debit $10.00
+        { glAccountId: '...', debitAmount: 0, creditAmount: 1000 },  // Credit $10.00
+      ]
+    }
+  }
+})
+// Validate: debits (1000) = credits (1000) ✓
+```
+
+**3. Audit Trails**
+- NEVER delete financial data (use soft delete: `deletedAt`)
+- ALWAYS preserve source documents (`sourceDocument` JSON field)
+- ALWAYS track who/when/what/why (`createdBy`, `createdAt`, `updatedBy`, `updatedAt`)
+- See: `docs/standards/financial-data.md`
+
+### Database (DATA INTEGRITY)
+
+**1. Transactions for Multi-Table Updates**
+```typescript
+// CORRECT: Use transaction
+await prisma.$transaction(async (tx) => {
+  await tx.journalEntry.create(...)
+  await tx.transaction.update(...)
+  await tx.account.update(...)
+})
+
+// WRONG: Separate operations (can leave inconsistent state)
+await prisma.journalEntry.create(...)
+await prisma.transaction.update(...)
+await prisma.account.update(...) // What if this fails?
+```
+
+**2. Soft Deletes Only**
+```typescript
+// CORRECT: Soft delete
+await prisma.invoice.update({
+  where: { id },
+  data: { deletedAt: new Date() }
+})
+
+// WRONG: Hard delete (destroys audit trail)
+await prisma.invoice.delete({ where: { id } })
+```
+
+**3. TenantId in ALL Queries**
+- See Multi-Tenancy section above
+- See: `docs/standards/multi-tenancy.md`
+
+---
+
+## 📚 Additional Resources
+
+### Setup & Installation
+**Location:** `docs/setup/`
+- `backup-security.md` - Comprehensive backup and security guide
+- `database-setup.md` - PostgreSQL and Prisma setup
+- `next-steps.md` - Post-installation next steps
+
+### Development Guides
+**Location:** `docs/guides/`
+- `quick-start-agents.md` - Getting started with custom agents
+- `custom-agents-templates.md` - Agent creation templates
+- `tracking-guide.md` - How to maintain STATUS, TASKS, ROADMAP
+- `passkey-auth.md` - WebAuthn implementation guide (in docs/guides/)
+
+### Session Archives
+**Location:** `docs/archive/sessions/`
+- Historical session reports (WEEK_*.md)
+- Completed code reviews (CODE_REVIEW_REPORT.md)
+- Feature performance reviews (PERFORMANCE_REVIEW_*.md)
+- Engineering analyses (COMPOUND_ENGINEERING_*.md)
+
+### Exploration & Planning
+**Location:** `docs/brainstorms/` and `docs/plans/`
+- Feature brainstorms (timestamped)
+- Implementation plans (timestamped)
+- Solution designs
+
+---
+
+## 🎯 Quick Reference
+
+### For New Agents Starting a Task
+1. Read this file (CLAUDE.md) - you're doing it now! ✓
+2. Check `STATUS.md` - what's implemented?
+3. Check `ROADMAP.md` - what phase are we in?
+4. Read relevant feature spec in `docs/features/`
+5. Review architectural decisions in `docs/architecture/`
+6. Use `/inject-standards` to load relevant coding patterns
+
+### For Code Reviews
+1. Use specialized review agents from `.claude/agents/review/`
+2. **Financial code?** → `financial-data-validator`
+3. **Architecture changes?** → `architecture-strategist`
+4. **Security concerns?** → `security-sentinel`
+5. **Schema changes?** → `prisma-migration-reviewer`
+6. **TypeScript patterns?** → `kieran-typescript-reviewer`
+7. **Performance issues?** → `performance-oracle`
+
+### For Finding Information
+- **Architecture decisions?** → `docs/architecture/decisions.md`
+- **How does X model work?** → `docs/product/data-model/README.md`
+- **What are the coding standards?** → `agent-os/standards/` + `docs/standards/`
+- **What's the feature spec?** → `docs/features/`
+- **Current progress?** → `STATUS.md`
+- **What to work on?** → `TASKS.md`
+
+---
+
+## 💡 Development Philosophy
+
+**"Architecture for scale, implement for lean"**
+
+- Build MVP first, activate advanced features later
+- Schema includes architectural hooks (optional fields) for future features
+- No premature optimization or over-engineering
+- Clear phase-by-phase evolution (see: `docs/architecture/summary.md`)
+- Every decision documented in `docs/architecture/`
+
+**Key Patterns:**
+- Server-first (maximize Server Components)
+- Progressive enhancement (basic → advanced)
+- Convention over configuration
+- Type safety everywhere (TypeScript + Zod + Prisma)
+
+---
+
+## 📞 Getting Help
+
+**Questions about:**
+- **Architecture?** → Read `docs/architecture/ARCHITECTURE-HOOKS.md`
+- **Schema?** → Read `docs/product/data-model/README.md`
+- **Standards?** → Use `/inject-standards` or check `docs/standards/`
+- **Current work?** → Check `TASKS.md` or `STATUS.md`
+- **How to use agents?** → Read `.claude/agents/review/README.md`
+
+**Not sure where to start?**
+→ Use `/processes:begin` to see session startup dashboard
+
+---
+
+**End of Agent Context**
+**This file is version controlled and updated as the project evolves.**
+**Last significant update: 2026-01-30 (project reorganization)**

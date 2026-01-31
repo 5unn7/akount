@@ -1,6 +1,6 @@
 # Akount Documentation
 
-**Last Updated:** 2026-01-27
+**Last Updated:** 2026-01-30
 **Purpose:** Central index for all architecture, product, and technical documentation.
 
 ---
@@ -23,17 +23,20 @@ This folder contains reference documentation that changes rarely. For active wor
 
 ### For AI Agents
 
+**IMPORTANT:** Read **/CLAUDE.md** first - it's automatically loaded and provides comprehensive context.
+
 **To understand the project:**
-1. Read **/README.md** for tech stack and structure
+1. Read **/CLAUDE.md** (auto-loaded, essential context)
 2. Read **product/overview.md** for product vision
 3. Read **architecture/decisions.md** for technical decisions
 4. Read **product/data-model/README.md** for database schema
 
 **To work on implementation:**
-1. Check **/STATUS.md** for current state (5% complete)
+1. Check **/STATUS.md** for current state (Phase 0 complete)
 2. Check **/ROADMAP.md** for planned work (Phases 0-8)
 3. Check **/TASKS.md** for immediate tasks
 4. Read relevant **features/*.md** spec for requirements
+5. Use `/inject-standards` to load relevant coding patterns
 
 **To update progress:**
 1. Mark tasks complete in **/TASKS.md** (daily)
@@ -47,12 +50,12 @@ This folder contains reference documentation that changes rarely. For active wor
 ### Root Level (Active Work)
 Located in project root - updated frequently:
 
+- **/CLAUDE.md** - Agent context (auto-loaded, essential reading for all agents)
 - **/README.md** - Project overview, tech stack summary, quick start
 - **/STATUS.md** - Implementation progress (updated weekly)
 - **/ROADMAP.md** - Development plan, phases 0-8 (updated weekly)
 - **/TASKS.md** - Current week's tasks (updated daily)
 - **/CHANGELOG.md** - Project history (updated on milestones)
-- **/TRACKING-GUIDE.md** - How to maintain tracking system
 
 ### docs/ (Reference Documentation)
 This folder - updated rarely:
@@ -63,9 +66,15 @@ docs/
 ├── product/                    # Product specifications
 ├── architecture/               # Technical decisions
 ├── design-system/              # UI/UX specifications
-├── features/                   # Feature requirements
-├── guides/                     # Implementation guides
+├── features/                   # Feature requirements (7 phases)
+├── setup/                      # Setup and installation guides
+├── guides/                     # Development and implementation guides
+├── standards/                  # Akount-specific coding standards
+├── brainstorms/                # Feature exploration documents (timestamped)
+├── plans/                      # Implementation plans (timestamped)
+├── solutions/                  # Solution designs
 └── archive/                    # Historical documents
+    └── sessions/               # Completed session reports and reviews
 ```
 
 ---
@@ -245,7 +254,25 @@ All feature specs follow consistent structure:
 
 ---
 
-## 📚 Implementation Guides
+## 🛠️ Setup Guides
+
+### [setup/backup-security.md](./setup/backup-security.md)
+**Purpose:** Comprehensive backup and security setup
+**Audience:** Developers, DevOps
+**Contents:** Backup strategies, encryption, recovery testing
+
+### [setup/database-setup.md](./setup/database-setup.md)
+**Purpose:** PostgreSQL and Prisma setup
+**Audience:** Developers
+**Contents:** Database provisioning, connection setup, migrations
+
+### [setup/next-steps.md](./setup/next-steps.md)
+**Purpose:** Post-installation next steps
+**Audience:** New developers
+
+---
+
+## 📚 Development Guides
 
 ### [guides/passkey-auth.md](./guides/passkey-auth.md)
 **Purpose:** Implement WebAuthn passkey authentication
@@ -259,6 +286,42 @@ All feature specs follow consistent structure:
 - Best practices
 - Recovery flows
 - Cross-device sync (iCloud Keychain, Google Password Manager)
+
+### [guides/quick-start-agents.md](./guides/quick-start-agents.md)
+**Purpose:** Getting started with custom agents
+**Audience:** Developers working with Claude Code agents
+
+### [guides/custom-agents-templates.md](./guides/custom-agents-templates.md)
+**Purpose:** Agent creation templates and examples
+**Audience:** Developers creating new agents
+
+### [guides/tracking-guide.md](./guides/tracking-guide.md)
+**Purpose:** How to maintain STATUS, TASKS, ROADMAP tracking
+**Audience:** All developers
+
+---
+
+## 📏 Coding Standards
+
+### [standards/multi-tenancy.md](./standards/multi-tenancy.md)
+**Purpose:** Tenant isolation patterns and enforcement
+**Audience:** All developers
+**Contents:** Query patterns, middleware, security requirements
+
+### [standards/financial-data.md](./standards/financial-data.md)
+**Purpose:** Financial data handling rules
+**Audience:** All developers
+**Contents:** Double-entry bookkeeping, money precision, audit trails
+
+### [standards/api-design.md](./standards/api-design.md)
+**Purpose:** Fastify API conventions
+**Audience:** Backend developers
+**Contents:** Route patterns, error handling, validation schemas
+
+### [standards/security.md](./standards/security.md)
+**Purpose:** Security requirements and OWASP compliance
+**Audience:** All developers
+**Contents:** Input validation, authentication, sensitive data handling
 
 ---
 
@@ -274,6 +337,15 @@ All feature specs follow consistent structure:
 - Many assumptions changed during early implementation
 - Replaced by phase-based ROADMAP.md (more flexible)
 - Useful detail extracted to architecture/decisions.md and architecture/processes.md
+
+### [archive/sessions/](./archive/sessions/)
+**Purpose:** Completed session reports and reviews
+**Contents:**
+- Weekly completion reports (WEEK_*.md)
+- Code review reports
+- Feature performance reviews
+- Engineering analyses
+- Security audit reports
 
 ---
 
@@ -322,6 +394,6 @@ All feature specs follow consistent structure:
 
 ---
 
-**Last Updated:** 2026-01-27
+**Last Updated:** 2026-01-30 (Reorganization: added setup/, guides/, standards/, archive/sessions/)
 **Maintainer:** Engineering Team
 **Review Schedule:** Update when structure changes

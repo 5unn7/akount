@@ -75,22 +75,60 @@ Run specialized reviewer agents in **parallel** based on code changes:
 
 Run these based on file changes:
 
-6. **prisma-migration-reviewer** (if schema.prisma changed)
+6. **fastify-api-reviewer** (if API routes changed) **NEW - Week 2**
+   - Zod validation schemas
+   - Authentication middleware
+   - Tenant isolation
+   - Database query patterns
+   - Error handling
+   - Financial data safety
+
+7. **clerk-auth-reviewer** (if auth code changed) **NEW - Week 2**
+   - JWT verification
+   - Protected route checks
+   - Session handling
+   - Tenant mapping
+   - Security best practices
+
+8. **turborepo-monorepo-reviewer** (if package.json or turbo.json changed) **NEW - Week 2**
+   - Workspace protocol usage
+   - Circular dependencies
+   - Import structure
+   - Pipeline configuration
+   - Build order
+
+9. **prisma-migration-reviewer** (if schema.prisma changed)
    - Migration safety
    - Data integrity
    - Financial data protection
 
-7. **financial-data-validator** (if financial logic affected)
-   - Double-entry bookkeeping
-   - Integer cents arithmetic
-   - Multi-currency handling
-   - Audit trails
+10. **financial-data-validator** (if financial logic affected)
+    - Double-entry bookkeeping
+    - Integer cents arithmetic
+    - Multi-currency handling
+    - Audit trails
 
-8. **nextjs-app-router-reviewer** (if App Router files changed)
-   - Server/Client boundaries
-   - Async patterns
-   - Metadata configuration
-   - Performance optimization
+11. **nextjs-app-router-reviewer** (if App Router files changed)
+    - Server/Client boundaries
+    - Async patterns
+    - Metadata configuration
+    - Performance optimization
+
+12. **pattern-recognition-specialist** (optional for large changes)
+    - Design patterns
+    - Code duplication
+    - Naming conventions
+    - Anti-patterns
+
+13. **data-migration-expert** (if migration scripts included)
+    - Data transformation safety
+    - Rollback procedures
+    - Production data verification
+
+14. **deployment-verification-agent** (if risky deployment)
+    - Pre/post deploy checklists
+    - Verification queries
+    - Rollback plan
 
 **Execute agents using Task tool:**
 
