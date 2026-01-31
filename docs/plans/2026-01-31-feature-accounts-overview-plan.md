@@ -2,10 +2,12 @@
 
 **Date:** 2026-01-31
 **Type:** feature
-**Status:** Planning
+**Status:** Planning → Ready for Implementation
+**Phase:** Phase 1 - Accounts Overview
 **Related:**
-- Feature Spec: `docs/features/01-accounts-overview.md`
-- Roadmap: `ROADMAP.md` (Phase 1)
+- **Brainstorm:** `docs/brainstorms/2026-01-30-accounts-overview-brainstorm.md`
+- **Feature Spec:** `docs/features/01-accounts-overview.md`
+- **Roadmap:** `ROADMAP.md` (Phase 1)
 
 ---
 

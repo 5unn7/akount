@@ -1,11 +1,16 @@
-# Dashboard Redesign Brainstorm
+# Accounts Overview - Dashboard Brainstorm
 
 **Date:** 2026-01-30
-**Status:** Brainstormed
+**Status:** Brainstormed → Implementation Plan Created
+**Phase:** Phase 1 - Accounts Overview
 **Related:**
+- [Implementation Plan](../plans/2026-01-31-feature-accounts-overview-plan.md) - **START HERE**
 - [Product Overview](../product/overview.md)
-- [Analytics Feature Spec](../features/05-analytics.md)
+- [Feature Spec](../features/01-accounts-overview.md)
+- [Analytics Feature Spec](../features/05-analytics.md) - Advanced dashboard (Phase 5)
 - [Current Dashboard](../../apps/web/src/app/(dashboard)/dashboard/page.tsx)
+
+**Note:** This brainstorm covers both Phase 1 (Accounts Overview) and Phase 5 (Advanced Analytics). The implementation plan focuses on Phase 1 MVP features first.
 
 ---
 
