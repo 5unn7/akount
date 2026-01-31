@@ -37,7 +37,7 @@ const entities = await prisma.entity.findMany({
 - Maximize React Server Components (default)
 - Only use `'use client'` when absolutely necessary (interactivity, hooks, browser APIs)
 - Data fetching happens on server
-- See: `agent-os/standards/frontend/client-server-components.md`
+- Prefer Server Components for data fetching, Client Components for interactivity
 
 **3. Integer Cents for Money (NEVER Float)**
 ```typescript
@@ -63,7 +63,7 @@ packages/
 ```
 - Turborepo for build orchestration
 - Shared packages via workspace protocol
-- See: `agent-os/standards/monorepo/`
+- See: `.claude/agents/review/turborepo-monorepo-reviewer.md` for validation patterns
 
 ---
 
@@ -129,35 +129,17 @@ packages/
 
 ## 📐 Standards & Conventions
 
-### Agent OS Standards (Generic Coding Patterns)
-**Location:** `agent-os/standards/`
-
-Discovered patterns from codebase analysis:
-- **`monorepo/`** - Workspace organization, package naming, dependencies, singleton patterns
-- **`frontend/`** - Component patterns, client/server boundaries, import paths, route groups
-- **`database/`** - Schema conventions, naming, relationships
-- **`global/`** - Tech stack decisions
-
-**How to Use:**
-```bash
-# Discover patterns from code
-/agent-os:discover-standards
-
-# Load relevant standards into context
-/agent-os:inject-standards
-
-# View all available standards
-/agent-os:index-standards
-```
-
-### Akount-Specific Standards (Domain Patterns)
+### Akount Standards (Domain Patterns)
 **Location:** `docs/standards/`
 
 Domain-specific patterns for accounting platform:
-- **`multi-tenancy.md`** - Tenant isolation enforcement, query patterns, middleware
-- **`financial-data.md`** - Double-entry bookkeeping, money handling, audit trails
+- **`multi-tenancy.md`** - Tenant isolation enforcement, query patterns, middleware (CRITICAL)
+- **`financial-data.md`** - Double-entry bookkeeping, money handling, audit trails (CRITICAL)
 - **`api-design.md`** - Fastify route patterns, error handling, validation schemas
-- **`security.md`** - OWASP Top 10 for Akount, input validation, sensitive data
+- **`security.md`** - OWASP Top 10 for Akount, input validation, sensitive data (CRITICAL)
+- **`README.md`** - Standards overview and usage guide
+
+**Total:** 2,073 lines of domain-specific guidance for accounting software development
 
 ### Design System
 **Location:** `docs/design-system/`
@@ -373,7 +355,7 @@ await prisma.invoice.delete({ where: { id } })
 3. Check `ROADMAP.md` - what phase are we in?
 4. Read relevant feature spec in `docs/features/`
 5. Review architectural decisions in `docs/architecture/`
-6. Use `/inject-standards` to load relevant coding patterns
+6. Review relevant standards in `docs/standards/` (multi-tenancy, financial, security, API)
 
 ### For Code Reviews
 1. Use specialized review agents from `.claude/agents/review/`
@@ -387,7 +369,7 @@ await prisma.invoice.delete({ where: { id } })
 ### For Finding Information
 - **Architecture decisions?** → `docs/architecture/decisions.md`
 - **How does X model work?** → `docs/product/data-model/README.md`
-- **What are the coding standards?** → `agent-os/standards/` + `docs/standards/`
+- **What are the coding standards?** → `docs/standards/` (comprehensive domain standards)
 - **What's the feature spec?** → `docs/features/`
 - **Current progress?** → `STATUS.md`
 - **What to work on?** → `TASKS.md`
@@ -417,7 +399,7 @@ await prisma.invoice.delete({ where: { id } })
 **Questions about:**
 - **Architecture?** → Read `docs/architecture/ARCHITECTURE-HOOKS.md`
 - **Schema?** → Read `docs/product/data-model/README.md`
-- **Standards?** → Use `/inject-standards` or check `docs/standards/`
+- **Standards?** → Read `docs/standards/` (multi-tenancy, financial, security, API)
 - **Current work?** → Check `TASKS.md` or `STATUS.md`
 - **How to use agents?** → Read `.claude/agents/review/README.md`
 
