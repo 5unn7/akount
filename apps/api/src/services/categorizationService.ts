@@ -1,4 +1,5 @@
 import { prisma } from '@akount/db';
+import { aiService } from './ai/aiService';
 
 /**
  * Categorization Service
@@ -193,8 +194,57 @@ export async function categorizeTransaction(
     }
   }
 
-  // No keyword match - try machine learning from past transactions (future enhancement)
-  // For now, return no suggestion
+  // No keyword match - try AI categorization (Phase 7 / Perplexity Integration)
+  if (aiService.isProviderAvailable('perplexity')) {
+    try {
+      const response = await aiService.chat(
+        [
+          {
+            role: 'user',
+            content: `Categorize this transaction. Description: "${description}", Amount: ${amount}. Available categories: ${KEYWORD_PATTERNS.map(p => p[2]).join(', ')}. Return only the category name.`,
+          },
+        ],
+        {
+          systemPrompt: 'You are a financial AI assistant. Your task is to categorize transactions based on their description. Reply with only the category name from the provided list, or "Other" if none match.',
+          temperature: 0,
+        }
+      );
+
+      const suggestedName = response.content.trim();
+
+      // Try to find the category in the database
+      const category = await prisma.category.findFirst({
+        where: {
+          tenantId,
+          name: {
+            contains: suggestedName,
+            mode: 'insensitive',
+          },
+        },
+      });
+
+      if (category) {
+        return {
+          categoryId: category.id,
+          categoryName: category.name,
+          confidence: 75,
+          matchReason: `AI suggested: "${suggestedName}" (Perplexity)`,
+        };
+      } else {
+        return {
+          categoryId: null,
+          categoryName: suggestedName !== 'Other' ? suggestedName : null,
+          confidence: 60,
+          matchReason: `AI suggested: "${suggestedName}" (category not found in your account)`,
+        };
+      }
+    } catch (error) {
+      console.error('AI Categorization failed:', error);
+      // Fall through to no suggestion
+    }
+  }
+
+  // No match found
   return {
     categoryId: null,
     categoryName: null,
