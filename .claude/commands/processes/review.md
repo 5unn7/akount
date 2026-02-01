@@ -1,5 +1,5 @@
 ---
-name: workflows:review
+name: processes:review
 description: Perform comprehensive code reviews using multi-agent analysis
 argument-hint: "[PR number, GitHub URL, file path, or current branch]"
 ---

@@ -1,12 +1,14 @@
 import { MobileSidebar } from "./Sidebar";
 import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function Navbar() {
     return (
-        <div className="flex items-center p-4 border-b h-16 bg-white dark:bg-slate-950">
+        <div className="flex items-center p-4 border-b h-16 glass">
             <MobileSidebar />
             <div className="flex w-full justify-end items-center gap-4">
+                <ThemeToggle />
                 <SignedIn>
                     {/* User is signed in - show Clerk user button with profile/sign out */}
                     <UserButton

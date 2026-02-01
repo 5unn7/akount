@@ -1,5 +1,5 @@
 ---
-name: workflows:begin
+name: processes:begin
 description: Session startup dashboard - Get up to speed quickly
 argument-hint: "[optional focus area]"
 ---

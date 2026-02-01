@@ -1,5 +1,5 @@
 ---
-name: workflows:work
+name: processes:work
 description: Execute implementation plans systematically while maintaining quality
 argument-hint: "[plan file path or feature name]"
 ---

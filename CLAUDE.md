@@ -4,7 +4,7 @@
 > It provides essential context about documentation, architecture, standards, and constraints.
 > Keep this concise - link to detailed docs rather than including full content here.
 
-**Last Updated:** 2026-01-30
+**Last Updated:** 2026-01-31
 **Project:** Akount - Multi-tenant Accounting Platform for Canadian Freelancers
 **Current Phase:** Phase 0 Complete (100%) - Bank Statement Import Feature Added
 
@@ -63,7 +63,6 @@ packages/
 ```
 - Turborepo for build orchestration
 - Shared packages via workspace protocol
-- See: `.claude/agents/review/turborepo-monorepo-reviewer.md` for validation patterns
 
 ---
 
@@ -121,6 +120,7 @@ packages/
 
 ### Recent Milestones
 **See:** `CHANGELOG.md` (milestone tracking)
+- 2026-01-31: Claude Code configuration optimized (hooks, permissions, documentation)
 - 2026-01-30: Bank statement import feature added (PDF parsing, intelligent account matching)
 - 2026-01-29: Architecture hooks documented, backup system implemented
 - 2026-01-27: Phase 0 foundation complete (auth + database + API)
@@ -155,39 +155,15 @@ Domain-specific patterns for accounting platform:
 **Location:** `.claude/agents/review/`
 **Master Index:** `.claude/agents/review/README.md`
 
-**Financial & Data Integrity:**
-- `financial-data-validator.md` - Double-entry bookkeeping, money precision, audit trails
-- `prisma-migration-reviewer.md` - Schema safety, migration validation, breaking changes
-- `data-migration-expert.md` - Data migration safety and validation
-- `deployment-verification-agent.md` - Deployment checklists
+**Key agents:**
+- `financial-data-validator` - Double-entry bookkeeping, money precision, audit trails
+- `architecture-strategist` - System design, multi-tenant validation, component boundaries
+- `security-sentinel` - OWASP Top 10, tenant isolation, input validation
+- `prisma-migration-reviewer` - Schema safety, migration validation, breaking changes
+- `kieran-typescript-reviewer` - Strict TypeScript, modern patterns, type safety
+- `performance-oracle` - N+1 queries, algorithmic complexity, caching strategies
 
-**Architecture & Code Quality:**
-- `architecture-strategist.md` - System design, multi-tenant validation, component boundaries
-- `kieran-typescript-reviewer.md` - Strict TypeScript, modern patterns, type safety
-- `code-simplicity-reviewer.md` - YAGNI, minimize complexity, remove over-engineering
-- `pattern-recognition-specialist.md` - Design patterns and anti-patterns
-- `turborepo-monorepo-reviewer.md` - Monorepo structure validation
-
-**Performance & Security:**
-- `performance-oracle.md` - N+1 queries, algorithmic complexity, caching strategies
-- `security-sentinel.md` - OWASP Top 10, tenant isolation, input validation
-
-**Framework-Specific:**
-- `nextjs-app-router-reviewer.md` - Server/Client components, async patterns, App Router
-- `fastify-api-reviewer.md` - Fastify API patterns and best practices
-- `clerk-auth-reviewer.md` - Clerk authentication security
-
-### Research Agents (4 Agents)
-**Location:** `.claude/agents/research/`
-- `best-practices-researcher.md` - Industry best practices exploration
-- `framework-docs-researcher.md` - Framework documentation research
-- `git-history-analyzer.md` - Commit history analysis
-- `repo-research-analyst.md` - Repository pattern analysis
-
-### Automation Agents (3 Agents)
-**Location:** `.claude/agents/automation/`
-- `bug-reproduction-validator.md` - Bug validation workflow
-- `pr-comment-resolver.md` - PR comment resolution
+**See `.claude/agents/review/README.md` for complete list (15 agents) and usage examples.**
 
 ### Development Workflows
 **Location:** `.claude/commands/processes/`
@@ -195,8 +171,7 @@ Domain-specific patterns for accounting platform:
 
 **Structured Development Process:**
 ```
-Idea → /brainstorm → /plan → /work → /review → Merge
-         (explore)     (design)  (implement) (validate)
+Idea → /processes:brainstorm → /processes:plan → /processes:work → /processes:review → Merge
 ```
 
 **Available Workflows:**
@@ -207,10 +182,7 @@ Idea → /brainstorm → /plan → /work → /review → Merge
 - `/processes:compound` - Document solved problems for organizational knowledge
 - `/processes:begin` - Session startup dashboard
 
-**Outputs:**
-- Brainstorms → `docs/brainstorms/YYYY-MM-DD-feature-name-brainstorm.md`
-- Plans → `docs/plans/YYYY-MM-DD-feature-name-plan.md`
-- Reviews → `docs/archive/sessions/` (after completion)
+**See `.claude/commands/processes/README.md` for detailed workflow documentation.**
 
 ---
 
@@ -330,7 +302,14 @@ await prisma.invoice.delete({ where: { id } })
 - `quick-start-agents.md` - Getting started with custom agents
 - `custom-agents-templates.md` - Agent creation templates
 - `tracking-guide.md` - How to maintain STATUS, TASKS, ROADMAP
-- `passkey-auth.md` - WebAuthn implementation guide (in docs/guides/)
+- `passkey-auth.md` - WebAuthn implementation guide
+
+### Configuration & Hooks
+**Location:** `.claude/`
+- `PERMISSIONS-REFERENCE.md` - Permission structure explanation
+- `MCP-SERVERS.md` - MCP server configuration guide
+- `hooks/` - File protection, validation, auto-format hooks
+- `settings.local.json` - Claude Code configuration
 
 ### Session Archives
 **Location:** `docs/archive/sessions/`
@@ -402,6 +381,7 @@ await prisma.invoice.delete({ where: { id } })
 - **Standards?** → Read `docs/standards/` (multi-tenancy, financial, security, API)
 - **Current work?** → Check `TASKS.md` or `STATUS.md`
 - **How to use agents?** → Read `.claude/agents/review/README.md`
+- **Configuration?** → Read `.claude/PERMISSIONS-REFERENCE.md` and `.claude/MCP-SERVERS.md`
 
 **Not sure where to start?**
 → Use `/processes:begin` to see session startup dashboard
@@ -410,4 +390,4 @@ await prisma.invoice.delete({ where: { id } })
 
 **End of Agent Context**
 **This file is version controlled and updated as the project evolves.**
-**Last significant update: 2026-01-30 (project reorganization)**
+**Last significant update: 2026-01-31 (Claude Code configuration optimization)**

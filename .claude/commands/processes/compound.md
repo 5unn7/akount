@@ -1,5 +1,5 @@
 ---
-name: workflows:compound
+name: processes:compound
 description: Document solved problems to build organizational knowledge
 argument-hint: "[optional context or problem description]"
 ---

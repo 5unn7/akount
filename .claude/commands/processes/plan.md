@@ -1,5 +1,5 @@
 ---
-name: workflows:plan
+name: processes:plan
 description: Transform feature descriptions into well-structured implementation plans
 argument-hint: "[feature description, bug report, or improvement idea]"
 ---

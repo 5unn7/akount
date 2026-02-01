@@ -1,5 +1,5 @@
 ---
-name: workflows:brainstorm
+name: processes:brainstorm
 description: Collaboratively explore feature ideas and requirements before implementation planning
 argument-hint: "[feature idea or problem to explore]"
 ---

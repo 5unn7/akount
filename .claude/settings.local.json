@@ -1,54 +1,142 @@
 {
   "permissions": {
     "allow": [
-      "Bash(done)",
-      "Bash(npx prisma migrate *)",
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(git show *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(du *)",
-      "Bash(tree *)",
-      "Bash(bash *)",
-      "Bash(~/agent-os/scripts/project-install.sh *)",
-      "Bash(/home/sunny/agent-os/scripts/project-install.sh *)",
       "Bash(git commit:*)",
-      "Bash(tar tzf:*)",
-      "Bash(npm install:*)",
+      "Bash(git checkout -b *)",
+      "Bash(git rm *)",
+      "Bash(npm run *)",
       "Bash(npm run dev:*)",
       "Bash(npm run seed:*)",
-      "Bash(find:*)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(xargs:*)",
-      "Bash(ls:*)",
-      "Bash(netstat:*)",
-      "Bash(findstr:*)",
-      "Bash(taskkill:*)",
-      "Bash(curl:*)",
-      "Bash(python:*)",
-      "Bash(git push)",
-      "Bash(test:*)",
-      "Bash(pkill:*)",
-      "Bash(npx tsx:*)",
-      "Bash(npm uninstall:*)",
-      "Bash(npx prisma db push:*)",
-      "Bash(npx prisma generate:*)",
-      "WebSearch",
-      "Bash(npm outdated:*)",
-      "Bash(npm test:*)",
-      "Bash(tasklist:*)",
-      "Bash(git reset:*)",
-      "Bash(node:*)",
-      "Bash(npm --version:*)",
-      "Bash(npx prisma db pull:*)",
       "Bash(npm run db:generate:*)",
       "Bash(npm run build:*)",
-      "Bash(git checkout:*)",
-      "Bash(git merge:*)",
-      "Bash(git push:*)",
-      "Bash(git branch:*)",
+      "Bash(npm test:*)",
+      "Bash(npm --version:*)",
+      "Bash(npm outdated:*)",
+      "Bash(npx prisma studio)",
+      "Bash(npx prisma validate)",
+      "Bash(npx prisma format)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx tsx:*)",
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(dir:*)",
+      "Bash(tree *)",
+      "Bash(du *)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
       "Bash(wc:*)",
-      "Bash(grep:*)"
+      "Bash(xargs:*)",
+      "Bash(findstr:*)",
+      "Bash(test:*)",
+      "Bash(echo:*)",
+      "Bash(chmod:*)",
+      "Bash(where:*)",
+      "Bash(which:*)",
+      "Bash(bash *)",
+      "Bash(tasklist:*)",
+      "Bash(netstat:*)",
+      "Bash(tar tzf:*)",
+      "Bash(python:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:claude-guide.lovable.app)",
+      "WebSearch",
+      "Bash(done)",
+      "Bash(~/agent-os/scripts/project-install.sh *)",
+      "Bash(/home/sunny/agent-os/scripts/project-install.sh *)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:www-cdn.anthropic.com)",
+      "WebFetch(domain:registry.modelcontextprotocol.io)",
+      "WebFetch(domain:www.builder.io)",
+      "WebFetch(domain:claudefa.st)"
+    ],
+    "deny": [
+      "Bash(git reset --hard *)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -f *)",
+      "Bash(git clean -fd *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git branch -D *)",
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(del /s *)",
+      "Bash(rmdir /s *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(secrets/*)",
+      "Read(**/credentials.json)",
+      "Write(.env*)",
+      "Edit(.env*)",
+      "Write(secrets/*)",
+      "Edit(secrets/*)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git push:*)",
+      "Bash(git merge *)",
+      "Bash(git checkout *)",
+      "Bash(git rebase *)",
+      "Bash(git stash *)",
+      "Bash(npm install *)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall *)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx prisma migrate *)",
+      "Bash(npx prisma db push *)",
+      "Bash(npx prisma db push:*)",
+      "Bash(npx prisma db pull *)",
+      "Bash(npx prisma db pull:*)",
+      "Bash(curl *)",
+      "Bash(curl:*)",
+      "Bash(wget *)",
+      "Bash(taskkill *)",
+      "Bash(taskkill:*)",
+      "Bash(pkill *)"
     ]
   },
-  "enableAllProjectMcpServers": true
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git commit *)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/pre-commit-validation.sh",
+            "timeout": 60000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/auto-format.sh"
+          }
+        ]
+      }
+    ]
+  }
 }

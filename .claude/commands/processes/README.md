@@ -4,7 +4,7 @@ Structured workflows for systematic feature development, from exploration to imp
 
 ## Available Workflows
 
-### 1. /workflows:brainstorm
+### 1. /processes:brainstorm
 
 **Purpose:** Collaboratively explore feature ideas before implementation planning.
 
@@ -16,11 +16,11 @@ Structured workflows for systematic feature development, from exploration to imp
 
 **Output:** Brainstorm document in `docs/brainstorms/`
 
-**Next step:** → `/workflows:plan`
+**Next step:** → `/processes:plan`
 
 ---
 
-### 2. /workflows:plan
+### 2. /processes:plan
 
 **Purpose:** Transform feature descriptions into well-structured implementation plans.
 
@@ -32,11 +32,11 @@ Structured workflows for systematic feature development, from exploration to imp
 
 **Output:** Implementation plan in `docs/plans/`
 
-**Next step:** → `/workflows:work`
+**Next step:** → `/processes:work`
 
 ---
 
-### 3. /workflows:work
+### 3. /processes:work
 
 **Purpose:** Execute implementation plans systematically while maintaining quality.
 
@@ -48,11 +48,11 @@ Structured workflows for systematic feature development, from exploration to imp
 
 **Output:** Implemented feature with tests, ready for review
 
-**Next step:** → `/workflows:review`
+**Next step:** → `/processes:review`
 
 ---
 
-### 4. /workflows:review
+### 4. /processes:review
 
 **Purpose:** Perform comprehensive code reviews using multi-agent analysis.
 
@@ -73,13 +73,13 @@ Structured workflows for systematic feature development, from exploration to imp
 ```
 💡 Idea
    ↓
-📝 /workflows:brainstorm   → docs/brainstorms/
+📝 /processes:brainstorm   → docs/brainstorms/
    ↓
-📋 /workflows:plan         → docs/plans/
+📋 /processes:plan         → docs/plans/
    ↓
-⚙️  /workflows:work         → Feature implementation
+⚙️  /processes:work         → Feature implementation
    ↓
-✅ /workflows:review        → Code review findings
+✅ /processes:review        → Code review findings
    ↓
 🚀 Merge & Deploy
 ```
@@ -90,58 +90,58 @@ Structured workflows for systematic feature development, from exploration to imp
 
 ```bash
 # 1. Explore the idea
-/workflows:brainstorm invoice templates
+/processes:brainstorm invoice templates
 
 # 2. Create implementation plan
-/workflows:plan invoice-templates
+/processes:plan invoice-templates
 
 # 3. Execute the plan
-/workflows:work docs/plans/2026-01-30-feature-invoice-templates-plan.md
+/processes:work docs/plans/2026-01-30-feature-invoice-templates-plan.md
 
 # 4. Review before merging
-/workflows:review #123
+/processes:review #123
 ```
 
 ### Example 2: Bug Fix (Skip Brainstorm)
 
 ```bash
 # 1. Plan the fix
-/workflows:plan fix-invoice-total-calculation
+/processes:plan fix-invoice-total-calculation
 
 # 2. Implement
-/workflows:work docs/plans/2026-01-30-bugfix-invoice-calculation-plan.md
+/processes:work docs/plans/2026-01-30-bugfix-invoice-calculation-plan.md
 
 # 3. Review
-/workflows:review current-branch
+/processes:review current-branch
 ```
 
 ### Example 3: Quick Improvement (Minimal Planning)
 
 ```bash
 # 1. Quick plan
-/workflows:plan improve-loading-states
+/processes:plan improve-loading-states
 
 # 2. Implement
-/workflows:work docs/plans/2026-01-30-enhancement-loading-states-plan.md
+/processes:work docs/plans/2026-01-30-enhancement-loading-states-plan.md
 
 # 3. Review
-/workflows:review .
+/processes:review .
 ```
 
 ## Workflow Decision Tree
 
 ```
 Do you have clear requirements?
-├─ No → /workflows:brainstorm
+├─ No → /processes:brainstorm
 │       └─ Do you have a concrete approach now?
-│           ├─ Yes → /workflows:plan
+│           ├─ Yes → /processes:plan
 │           └─ No → Iterate on brainstorm
 │
-└─ Yes → /workflows:plan
+└─ Yes → /processes:plan
          └─ Is the plan complete?
-             ├─ Yes → /workflows:work
+             ├─ Yes → /processes:work
              │       └─ Is implementation done?
-             │           ├─ Yes → /workflows:review
+             │           ├─ Yes → /processes:review
              │           └─ No → Continue work
              │
              └─ No → Refine plan
@@ -263,7 +263,7 @@ argument-hint: "[input description]"
 **Issue:** Implementation plan overwhelming
 
 **Solutions:**
-- Run `/workflows:plan` with MINIMAL detail level
+- Run `/processes:plan` with MINIMAL detail level
 - Break into multiple smaller plans
 - Focus on MVP scope first
 - Use brainstorm to simplify approach
