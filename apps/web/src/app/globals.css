@@ -33,12 +33,6 @@
     --input: 214 32% 91%; /* slate-200 */
     --ring: 25 95% 53%; /* orange-500 for focus rings */
 
-    --chart-1: 25 95% 53%; /* orange-500 */
-    --chart-2: 262 83% 58%; /* violet-500 */
-    --chart-3: 173 58% 39%; /* teal */
-    --chart-4: 43 74% 66%; /* yellow */
-    --chart-5: 340 75% 55%; /* pink */
-
     --radius: 0.5rem;
   }
 
@@ -71,12 +65,6 @@
     --border: 215 28% 17%; /* slate-800 */
     --input: 215 28% 17%; /* slate-800 */
     --ring: 25 95% 53%; /* orange-500 */
-
-    --chart-1: 25 95% 53%; /* orange-500 */
-    --chart-2: 262 83% 58%; /* violet-500 */
-    --chart-3: 173 58% 39%; /* teal */
-    --chart-4: 43 74% 66%; /* yellow */
-    --chart-5: 340 75% 55%; /* pink */
   }
 }
 
@@ -91,15 +79,10 @@
 
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.85);
+    background: hsl(var(--card) / 0.85);
     -webkit-backdrop-filter: blur(6px); /* Safari */
     backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid hsl(var(--border) / 0.2);
     transform: translateZ(0); /* GPU acceleration */
-  }
-
-  .dark .glass {
-    background: rgba(30, 41, 59, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
