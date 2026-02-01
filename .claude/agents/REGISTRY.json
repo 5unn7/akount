@@ -1,0 +1,648 @@
+{
+  "_comment": "AUTHORITATIVE SOURCE: This file is the single source of truth for agent and skill metadata. When updating agents, update this file FIRST, then individual agent files. See .claude/SINGLE_SOURCE_OF_TRUTH.md for update procedures.",
+  "version": "1.0.0",
+  "lastUpdated": "2026-02-01",
+  "tiers": {
+    "1": {
+      "model": "claude-haiku-4-20250101",
+      "description": "Simple pattern matching, fast",
+      "cost": "85% cheaper than Tier 3",
+      "useCases": [
+        "Pattern detection",
+        "Read-only exploration",
+        "Simple checks"
+      ]
+    },
+    "2": {
+      "model": "claude-sonnet-3-7-20250219",
+      "description": "Standard validation",
+      "cost": "50% cheaper than Tier 3",
+      "useCases": [
+        "Quality checks",
+        "Moderate complexity",
+        "Non-critical analysis"
+      ]
+    },
+    "3": {
+      "model": "claude-sonnet-4-5-20250929",
+      "description": "Critical financial/security",
+      "cost": "Baseline",
+      "useCases": [
+        "Financial calculations",
+        "Security decisions",
+        "Architecture analysis"
+      ]
+    }
+  },
+  "agents": {
+    "financial-data-validator": {
+      "file": "review/financial-data-validator.md",
+      "type": "review",
+      "category": "financial",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "financial",
+        "accounting",
+        "money",
+        "double-entry",
+        "invoice",
+        "payment"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "security-sentinel": {
+      "file": "review/security-sentinel.md",
+      "type": "review",
+      "category": "security",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "security",
+        "auth",
+        "vulnerability",
+        "OWASP",
+        "injection",
+        "XSS"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "architecture-strategist": {
+      "file": "review/architecture-strategist.md",
+      "type": "review",
+      "category": "architecture",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "architecture",
+        "design",
+        "patterns",
+        "structure",
+        "boundaries"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "prisma-migration-reviewer": {
+      "file": "review/prisma-migration-reviewer.md",
+      "type": "review",
+      "category": "database",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "prisma",
+        "migration",
+        "schema",
+        "database",
+        "SQL"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "kieran-typescript-reviewer": {
+      "file": "review/kieran-typescript-reviewer.md",
+      "type": "review",
+      "category": "typescript",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "typescript",
+        "types",
+        "strict",
+        "type-safety"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "performance-oracle": {
+      "file": "review/performance-oracle.md",
+      "type": "review",
+      "category": "performance",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "performance",
+        "optimization",
+        "N+1",
+        "query",
+        "slow"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "nextjs-app-router-reviewer": {
+      "file": "review/nextjs-app-router-reviewer.md",
+      "type": "review",
+      "category": "framework",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "nextjs",
+        "app-router",
+        "server-component",
+        "client-component"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "fastify-api-reviewer": {
+      "file": "review/fastify-api-reviewer.md",
+      "type": "review",
+      "category": "framework",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "fastify",
+        "api",
+        "routes",
+        "endpoint",
+        "validation"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "clerk-auth-reviewer": {
+      "file": "review/clerk-auth-reviewer.md",
+      "type": "review",
+      "category": "security",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "clerk",
+        "auth",
+        "authentication",
+        "JWT",
+        "session"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "data-migration-expert": {
+      "file": "review/data-migration-expert.md",
+      "type": "review",
+      "category": "database",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "migration",
+        "data",
+        "transform",
+        "backfill"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "deployment-verification-agent": {
+      "file": "review/deployment-verification-agent.md",
+      "type": "review",
+      "category": "deployment",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "deployment",
+        "go-no-go",
+        "verification",
+        "checklist"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "turborepo-monorepo-reviewer": {
+      "file": "review/turborepo-monorepo-reviewer.md",
+      "type": "review",
+      "category": "monorepo",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "turborepo",
+        "monorepo",
+        "workspace",
+        "pipeline"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "code-simplicity-reviewer": {
+      "file": "review/code-simplicity-reviewer.md",
+      "type": "review",
+      "category": "quality",
+      "model": "claude-haiku-4-20250101",
+      "tier": 1,
+      "patterns": [
+        "simplify",
+        "complexity",
+        "YAGNI",
+        "over-engineering"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "pattern-recognition-specialist": {
+      "file": "review/pattern-recognition-specialist.md",
+      "type": "review",
+      "category": "quality",
+      "model": "claude-haiku-4-20250101",
+      "tier": 1,
+      "patterns": [
+        "pattern",
+        "anti-pattern",
+        "consistency",
+        "naming",
+        "duplication"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "git-history-analyzer": {
+      "file": "research/git-history-analyzer.md",
+      "type": "research",
+      "category": "history",
+      "model": "claude-haiku-4-20250101",
+      "tier": 1,
+      "patterns": [
+        "git",
+        "history",
+        "evolution",
+        "blame",
+        "contributor"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "repo-research-analyst": {
+      "file": "research/repo-research-analyst.md",
+      "type": "research",
+      "category": "exploration",
+      "model": "claude-haiku-4-20250101",
+      "tier": 1,
+      "patterns": [
+        "codebase",
+        "structure",
+        "conventions",
+        "patterns",
+        "organization"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "framework-docs-researcher": {
+      "file": "research/framework-docs-researcher.md",
+      "type": "research",
+      "category": "documentation",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "docs",
+        "documentation",
+        "framework",
+        "library",
+        "version"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    },
+    "best-practices-researcher": {
+      "file": "research/best-practices-researcher.md",
+      "type": "research",
+      "category": "documentation",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "best-practices",
+        "standards",
+        "industry",
+        "conventions"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31"
+    }
+  },
+  "skills": {
+    "changelog": {
+      "file": "commands/changelog.md",
+      "type": "utility",
+      "category": "documentation",
+      "model": "inherit",
+      "patterns": [
+        "changelog",
+        "release",
+        "history",
+        "merges",
+        "updates"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "generate-changelog",
+        "release-notes",
+        "whats-new"
+      ]
+    },
+    "deepen-plan": {
+      "file": "commands/deepen-plan.md",
+      "type": "utility",
+      "category": "planning",
+      "model": "inherit",
+      "patterns": [
+        "plan",
+        "research",
+        "enhance",
+        "best-practices",
+        "architecture"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "enhance-plan",
+        "research-plan",
+        "improve-plan"
+      ]
+    },
+    "plan_review": {
+      "file": "commands/plan_review.md",
+      "type": "utility",
+      "category": "planning",
+      "model": "inherit",
+      "patterns": [
+        "plan",
+        "review",
+        "validation",
+        "feedback",
+        "agents"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "review-plan",
+        "validate-plan",
+        "check-plan"
+      ]
+    },
+    "resolve_pr_parallel": {
+      "file": "commands/resolve_pr_parallel.md",
+      "type": "utility",
+      "category": "workflow",
+      "model": "inherit",
+      "patterns": [
+        "pr",
+        "pull-request",
+        "comments",
+        "feedback",
+        "parallel"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "pr-comments",
+        "fix-pr",
+        "resolve-pr"
+      ]
+    },
+    "processes:begin": {
+      "file": "commands/processes/begin.md",
+      "type": "workflow",
+      "category": "session",
+      "model": "claude-sonnet-4-5-20250929",
+      "patterns": [
+        "session",
+        "start",
+        "overview",
+        "status",
+        "context"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "begin",
+        "start",
+        "startup",
+        "dashboard"
+      ]
+    },
+    "processes:brainstorm": {
+      "file": "commands/processes/brainstorm.md",
+      "type": "workflow",
+      "category": "planning",
+      "model": "claude-sonnet-4-5-20250929",
+      "patterns": [
+        "feature",
+        "requirements",
+        "unclear",
+        "explore",
+        "ideas",
+        "collaboration"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "brainstorm",
+        "explore",
+        "ideate",
+        "discover-requirements"
+      ]
+    },
+    "processes:plan": {
+      "file": "commands/processes/plan.md",
+      "type": "workflow",
+      "category": "planning",
+      "model": "claude-sonnet-4-5-20250929",
+      "patterns": [
+        "plan",
+        "design",
+        "architecture",
+        "implementation",
+        "structure"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "plan",
+        "design",
+        "architecture",
+        "implementation-plan"
+      ]
+    },
+    "processes:work": {
+      "file": "commands/processes/work.md",
+      "type": "workflow",
+      "category": "implementation",
+      "model": "claude-sonnet-4-5-20250929",
+      "patterns": [
+        "implementation",
+        "execution",
+        "build",
+        "code",
+        "development"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "work",
+        "implement",
+        "execute",
+        "build"
+      ]
+    },
+    "processes:review": {
+      "file": "commands/processes/review.md",
+      "type": "workflow",
+      "category": "quality",
+      "model": "claude-sonnet-4-5-20250929",
+      "patterns": [
+        "review",
+        "validation",
+        "quality",
+        "agents",
+        "analysis"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "review",
+        "check",
+        "validate",
+        "code-review"
+      ]
+    },
+    "processes:compound": {
+      "file": "commands/processes/compound.md",
+      "type": "workflow",
+      "category": "documentation",
+      "model": "claude-sonnet-4-5-20250929",
+      "patterns": [
+        "documentation",
+        "learning",
+        "knowledge",
+        "compound",
+        "archive"
+      ],
+      "status": "active",
+      "createdDate": "2026-01-31",
+      "aliases": [
+        "compound",
+        "document",
+        "learn",
+        "knowledge"
+      ]
+    },
+    "quality:brand-voice-check": {
+      "file": "commands/quality/brand-voice-check.md",
+      "type": "quality",
+      "category": "brand",
+      "model": "claude-sonnet-3-7-20250219",
+      "patterns": [
+        "brand",
+        "tone",
+        "voice",
+        "copy",
+        "writing",
+        "content"
+      ],
+      "status": "active",
+      "createdDate": "2026-02-01",
+      "aliases": [
+        "brand-check",
+        "tone-check",
+        "voice-check"
+      ]
+    },
+    "quality:design-system-enforce": {
+      "file": "commands/quality/design-system-enforce.md",
+      "type": "quality",
+      "category": "design",
+      "model": "claude-haiku-4-20250101",
+      "patterns": [
+        "design",
+        "ui",
+        "styling",
+        "components",
+        "colors",
+        "fonts"
+      ],
+      "status": "active",
+      "createdDate": "2026-02-01",
+      "aliases": [
+        "design-check",
+        "ui-check",
+        "design-system"
+      ]
+    },
+    "quality:test-coverage-analyze": {
+      "file": "commands/quality/test-coverage-analyze.md",
+      "type": "quality",
+      "category": "testing",
+      "model": "claude-sonnet-3-7-20250219",
+      "patterns": [
+        "test",
+        "coverage",
+        "testing",
+        "gaps",
+        "edge-cases"
+      ],
+      "status": "active",
+      "createdDate": "2026-02-01",
+      "aliases": [
+        "test-gaps",
+        "coverage-check",
+        "test-analysis"
+      ]
+    },
+    "quality:a11y-review": {
+      "file": "commands/quality/a11y-review.md",
+      "type": "quality",
+      "category": "accessibility",
+      "model": "claude-sonnet-3-7-20250219",
+      "patterns": [
+        "accessibility",
+        "a11y",
+        "wcag",
+        "screen-reader",
+        "keyboard"
+      ],
+      "status": "active",
+      "createdDate": "2026-02-01",
+      "aliases": [
+        "accessibility-check",
+        "a11y-check",
+        "wcag-check"
+      ]
+    }
+  },
+  "statistics": {
+    "totalAgents": 18,
+    "totalSkills": 15,
+    "agentsByTier": {
+      "1": 4,
+      "2": 0,
+      "3": 14
+    },
+    "skillsByType": {
+      "utility": 4,
+      "workflow": 7,
+      "quality": 4
+    },
+    "agentsByCategory": {
+      "financial": 1,
+      "security": 2,
+      "architecture": 1,
+      "database": 2,
+      "typescript": 1,
+      "performance": 1,
+      "framework": 2,
+      "deployment": 1,
+      "monorepo": 1,
+      "quality": 2,
+      "history": 1,
+      "exploration": 1,
+      "documentation": 2
+    }
+  },
+  "notes": {
+    "phase2Complete": "2026-02-01: Downgraded 4 agents to Haiku (Tier 1) for cost optimization",
+    "phase3Complete": "2026-02-01: Added aliases and keywords to all skills for better discovery",
+    "phase4Complete": "2026-02-01: Added 4 quality skills (brand, design, testing, accessibility)",
+    "nextPhase": "After 1 week, evaluate Tier 1 quality. If successful, expand to Tier 2 (5-7 more agents)"
+  }
+}

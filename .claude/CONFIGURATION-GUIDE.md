@@ -446,7 +446,54 @@ Use the Task tool with subagent_type="financial-data-validator" to review accoun
 
 ---
 
+## Configuration Maintenance
+
+### Single Source of Truth
+
+See `.claude/SINGLE_SOURCE_OF_TRUTH.md` for authoritative sources.
+
+**Key principle:** Update REGISTRY.json FIRST, then individual files.
+
+### Validation
+
+Run validation before committing:
+```bash
+bash .claude/hooks/validate-config.sh
+```
+
+This checks:
+- REGISTRY.json is valid JSON
+- All agents/skills in registry have corresponding files
+- Identifies orphaned files not in registry
+- Reports errors (blocking) and warnings (informational)
+
+**When to run:**
+- Before git commits
+- After updating REGISTRY.json
+- After adding/removing agents or skills
+- Weekly maintenance check
+
+**Expected output:**
+```
+✅ Configuration valid - No errors or warnings
+```
+
+**If validation fails:**
+1. Check error messages for missing files
+2. Verify REGISTRY.json syntax with `jq empty .claude/agents/REGISTRY.json`
+3. Ensure file paths in registry match actual file locations
+4. Remove deprecated agents/skills from registry or create missing files
+
+---
+
 ## Version History
+
+**2026-02-01 - Configuration Optimization**
+- Added SINGLE_SOURCE_OF_TRUTH.md documentation
+- Created validate-config.sh hook for automated validation
+- Added authority hierarchy for metadata management
+- Updated REGISTRY.json with authoritative source comment
+- Added _source field to agent frontmatter
 
 **2026-01-31 - Initial Configuration**
 - Added file protection hook

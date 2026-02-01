@@ -4,7 +4,7 @@
 > It provides essential context about documentation, architecture, standards, and constraints.
 > Keep this concise - link to detailed docs rather than including full content here.
 
-**Last Updated:** 2026-01-31
+**Last Updated:** 2026-02-01
 **Project:** Akount - Multi-tenant Accounting Platform for Canadian Freelancers
 **Current Phase:** Phase 0 Complete (100%) - Bank Statement Import Feature Added
 
@@ -149,11 +149,44 @@ Domain-specific patterns for accounting platform:
 
 ---
 
+## 🔎 Smart Skill Discovery
+
+**Before starting any task, check if these skills apply:**
+
+**Planning & Design:**
+- Feature unclear? → `/processes:brainstorm` or `brainstorm`
+- Ready to plan? → `/processes:plan` or `plan`
+- Need to enhance plan? → `/deepen-plan` or `enhance-plan`
+- Validate plan? → `/plan_review` or `review-plan`
+
+**Implementation:**
+- Start development? → `/processes:work` or `work`
+- Need to fix PR comments? → `/resolve_pr_parallel` or `fix-pr`
+
+**Quality & Review:**
+- Code complete? → `/processes:review` or `review`
+- Check brand voice? → `/quality:brand-voice-check` or `brand-check`
+- Check design system? → `/quality:design-system-enforce` or `design-check`
+- Check test coverage? → `/quality:test-coverage-analyze` or `test-gaps`
+- Check accessibility? → `/quality:a11y-review` or `a11y-check`
+
+**Documentation:**
+- Create changelog? → `/changelog` or `generate-changelog`
+- Document solution? → `/processes:compound` or `compound`
+
+**Session Start:**
+- New session? → `/processes:begin` or `begin`
+
+**Not sure which skill?** Use aliases (shorter names work) or ask!
+
+---
+
 ## 🤖 Available Agents & Workflows
 
 ### Review Agents (15 Specialized Agents)
 **Location:** `.claude/agents/review/`
 **Master Index:** `.claude/agents/review/README.md`
+**Configuration:** See `.claude/agents/REGISTRY.json` for complete metadata
 
 **Key agents:**
 - `financial-data-validator` - Double-entry bookkeeping, money precision, audit trails
@@ -162,6 +195,8 @@ Domain-specific patterns for accounting platform:
 - `prisma-migration-reviewer` - Schema safety, migration validation, breaking changes
 - `kieran-typescript-reviewer` - Strict TypeScript, modern patterns, type safety
 - `performance-oracle` - N+1 queries, algorithmic complexity, caching strategies
+
+**Maintenance:** Run `bash .claude/hooks/validate-config.sh` to validate configuration.
 
 **See `.claude/agents/review/README.md` for complete list (15 agents) and usage examples.**
 
@@ -373,6 +408,144 @@ await prisma.invoice.delete({ where: { id } })
 
 ---
 
+## 🤔 Decision-Making Protocol (CRITICAL)
+
+**ALWAYS STOP AND ASK when:**
+- Requirements are ambiguous or unclear
+- Multiple valid approaches exist with tradeoffs
+- User preference matters (style, architecture, naming)
+- Business logic is unclear
+- Destructive action proposed (delete, overwrite, major refactor)
+- Security/compliance implications unknown
+- Financial calculations involved
+- Multi-tenant isolation concerns
+
+**Example good questions:**
+- "I found 3 approaches. Want quick/simple or robust/scalable?"
+- "Should this support multi-currency initially or just CAD?"
+- "Found similar pattern in X. Reuse that or create new?"
+
+**Example bad behavior (DON'T DO THIS):**
+- Assuming requirements without asking
+- Picking approach without presenting alternatives
+- Guessing business rules
+- Making architectural decisions unilaterally
+
+**Philosophy:** Better to ask 5 questions than implement wrong solution.
+
+---
+
+## 🔍 Search-First Development (MANDATORY)
+
+**Before creating anything new, CHECK:**
+
+1. **Documentation Search:**
+   ```bash
+   Grep "feature-name" docs/
+   ls docs/brainstorms/ docs/plans/
+   ```
+
+2. **Codebase Pattern Search:**
+   ```bash
+   Grep "similar-pattern" apps/ packages/
+   Glob "**/*similar*.ts*"
+   ```
+
+3. **Git History:**
+   ```bash
+   git log --grep="feature-name" --oneline
+   git log --all --full-history -- "**/filename*"
+   ```
+
+4. **Existing Skills/Agents:**
+   - Check `.claude/SKILLS-INDEX.md`
+   - Review `.claude/agents/review/README.md`
+
+5. **Ask User:**
+   - "Found X in codebase. Should I extend it or create new?"
+   - "Similar feature in git history. Use that approach?"
+
+**NEVER:**
+- Create duplicates without checking first
+- Ignore git history and existing solutions
+- Assume something doesn't exist without searching
+
+**Example:**
+User: "Add invoice PDF generation"
+Claude: *searches first* "Found PDFAttachment model and import parsing code. Should invoice PDF use similar approach or different?"
+
+---
+
+## 💡 Proactive Optimization (SUGGEST BETTER)
+
+**Before implementing, CONSIDER:**
+
+1. **Is there a simpler approach?**
+   - "You asked for X with 5 steps. I can achieve 80% value with 2 steps. Which do you prefer?"
+
+2. **Does it follow existing patterns?**
+   - "Found 3 similar implementations. Use pattern Y for consistency?"
+
+3. **Can we avoid over-engineering?**
+   - "This adds 200 lines. Do you need all features now or start with core?"
+
+4. **Cost/performance implications?**
+   - "This works but might be slow with 10K+ records. Want optimization or acceptable?"
+
+5. **Alternative technologies?**
+   - "Could use library X (maintained) instead of custom code. Preference?"
+
+**Present options, explain tradeoffs, LET USER DECIDE.**
+
+**Don't:**
+- Silently implement what you think is better
+- Override user's explicit instructions without discussion
+- Add features not requested (YAGNI)
+
+**Do:**
+- Suggest simplifications
+- Point out pattern inconsistencies
+- Highlight potential issues
+- Respect user's final decision
+
+---
+
+## 🏗️ Meta-Skills: Creating Skills & Agents
+
+**Recognize when to suggest skill creation:**
+
+**Triggers for "Should we create a skill?":**
+- User repeats same sequence 3+ times in session
+- User says "I wish there was a command for..."
+- Task takes >5 steps but is repeatable
+- Multiple similar requests across sessions
+- Pattern would benefit future work
+
+**When you recognize these, ASK:**
+> "I notice you're doing [X] repeatedly. Should we create a `/custom-skill` for this? It would:
+> - Save time (5 steps → 1 command)
+> - Ensure consistency
+> - Make it reusable
+>
+> Would take ~15 mins to create. Want to?"
+
+**Creating New Skills:**
+1. Check `.claude/guides/SKILL_CREATION_GUIDE.md` for decision tree
+2. Use templates from `.claude/templates/`
+3. Follow naming conventions
+4. Test independently
+5. Register in SKILLS-INDEX.md
+
+**Creating New Agents:**
+1. Use templates from `docs/guides/custom-agents-templates.md`
+2. Choose appropriate tier (Haiku/Sonnet/Opus)
+3. Add to agent README
+4. Test with sample code
+
+**Key principle:** If you're doing it repeatedly, automate it.
+
+---
+
 ## 📞 Getting Help
 
 **Questions about:**
@@ -390,4 +563,4 @@ await prisma.invoice.delete({ where: { id } })
 
 **End of Agent Context**
 **This file is version controlled and updated as the project evolves.**
-**Last significant update: 2026-01-31 (Claude Code configuration optimization)**
+**Last significant update: 2026-02-01 (Behavior protocols: decision-making, search-first, proactive optimization, meta-skills)**
