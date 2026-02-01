@@ -667,14 +667,15 @@ curl -H "Authorization: Bearer YOUR_CLERK_TOKEN" http://localhost:4000/api/entit
 - [x] Complete Task 0.3.4 - Create First CRUD Endpoint ✅
 - **Goal:** Complete Phase 0.3 - API Foundation ✅ ACHIEVED!
 
-### ✅ Phase 0.4 - First Vertical Slice (COMPLETE)
-- [x] Create frontend component to fetch entities
-- [x] Display entities list in dashboard
-- [x] Add loading and error states
-- [x] Fix Clerk authentication (modern networkless verification)
-- **Goal:** Full stack data flow working end-to-end ✅ ACHIEVED!
+### ✅ Phase 0.5 - Perplexity AI Integration (COMPLETE)
+- [x] Create modular `AIService` architecture
+- [x] Implement `PerplexityProvider` with OpenAI-compatible API
+- [x] Integrate AI categorization fallback in `categorizationService.ts`
+- [x] Add AI routes for chat and testing (POST /api/ai/*)
+- [x] Fix Category schema and enforce multi-tenancy in AI lookups
+- **Goal:** Leverage AI to automate transaction categorization ✅ ACHIEVED!
 
 ---
 
-**Next Update:** End of day today (mark completed tasks)
-**Sprint Review:** End of week (Friday)
+**Next Update:** 2026-02-01 (End of Perplexity Integration)
+**Sprint Review:** Phase 0 complete + Bonus features

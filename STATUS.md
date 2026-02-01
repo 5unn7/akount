@@ -73,6 +73,13 @@
 - [x] Frontend dashboard component
 - [x] Comprehensive test documentation
 
+### Perplexity AI Integration (Bonus!)
+- [x] Modular `AIService` architecture
+- [x] `PerplexityProvider` implementation (OpenAI-compatible)
+- [x] AI-powered transaction categorization fallback
+- [x] API routes for AI chat & testing (POST /api/ai/*)
+- [x] Multi-tenancy isolation for categories (Fixed schema bug)
+
 ### Design System
 - [x] Color palette defined (Orange, Violet, Slate)
 - [x] Typography system configured
