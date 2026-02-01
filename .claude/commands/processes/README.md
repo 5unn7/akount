@@ -1,3 +1,19 @@
+---
+name: processes:README
+description: Workflow Commands
+aliases:
+  - workflows
+  - help
+  - guide
+  - processes-help
+keywords:
+  - workflows
+  - processes
+  - help
+  - guide
+  - documentation
+---
+
 # Workflow Commands
 
 Structured workflows for systematic feature development, from exploration to implementation to review.

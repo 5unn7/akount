@@ -1,7 +1,7 @@
 ---
 name: pattern-recognition-specialist
 description: "Analyze code for design patterns, anti-patterns, naming conventions, and code duplication. Identifies established patterns and suggests improvements for consistency."
-model: inherit
+model: claude-haiku-4-20250101  # Safe: Pattern detection, no financial/security risk
 context_files:
   - agent-os/standards/frontend/component-pattern.md
   - docs/architecture/decisions.md

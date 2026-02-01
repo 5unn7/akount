@@ -90,6 +90,40 @@ Idea → /processes:brainstorm → /processes:plan → /processes:work → /proc
 
 ---
 
+## Quality Skills
+
+**Location:** `.claude/commands/quality/`
+
+**Created:** 2026-02-01
+
+These skills validate code quality, design consistency, testing, and accessibility.
+
+### quality:brand-voice-check
+**Command:** `/quality:brand-voice-check`
+**Description:** Ensure consistent Akount brand voice in user-facing content
+**Use case:** Validate tone, terminology, and Canadian English spelling in UI/docs
+**Aliases:** `brand-check`, `tone-check`, `voice-check`
+
+### quality:design-system-enforce
+**Command:** `/quality:design-system-enforce`
+**Description:** Validate UI follows Akount design system
+**Use case:** Check color usage, typography, component patterns, dark mode support
+**Aliases:** `design-check`, `ui-check`, `design-system`
+
+### quality:test-coverage-analyze
+**Command:** `/quality:test-coverage-analyze`
+**Description:** Identify gaps in test coverage
+**Use case:** Find untested functions, missing edge cases, financial/security test gaps
+**Aliases:** `test-gaps`, `coverage-check`, `test-analysis`
+
+### quality:a11y-review
+**Command:** `/quality:a11y-review`
+**Description:** WCAG 2.1 AA accessibility compliance
+**Use case:** Check color contrast, keyboard navigation, screen reader support, semantic HTML
+**Aliases:** `accessibility-check`, `a11y-check`, `wcag-check`
+
+---
+
 ## Keybindings Skill
 
 ### keybindings-help
@@ -122,6 +156,32 @@ Idea → /processes:brainstorm → /processes:plan → /processes:work → /proc
 - PR has multiple review comments
 - Want fast resolution (4x faster than sequential)
 - Comments are independent (can be resolved in parallel)
+
+### When to Use Quality Skills
+
+**Use `/quality:brand-voice-check`** when:
+- Adding user-facing content
+- Updating documentation
+- Writing error messages
+- Need to ensure Canadian English spelling
+
+**Use `/quality:design-system-enforce`** when:
+- Creating new UI components
+- Modifying existing components
+- Want to validate design consistency
+- Checking dark mode support
+
+**Use `/quality:test-coverage-analyze`** when:
+- Code is functionally complete
+- Want to identify test gaps
+- Need to ensure edge cases covered
+- Financial or security code needs validation
+
+**Use `/quality:a11y-review`** when:
+- Building new UI features
+- Modifying interactive elements
+- Want WCAG compliance check
+- Need accessibility improvements
 
 ### When to Use Workflow Skills
 
@@ -198,6 +258,6 @@ Purpose and usage documentation...
 
 ## Last Updated
 
-**Date:** 2026-01-31
-**Reason:** Initial skills index creation after configuration audit
-**Total Skills:** 11 (4 utility + 7 workflow)
+**Date:** 2026-02-01
+**Reason:** Added 4 quality skills (brand, design, testing, accessibility)
+**Total Skills:** 15 (4 utility + 7 workflow + 4 quality)

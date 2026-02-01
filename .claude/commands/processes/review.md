@@ -2,6 +2,17 @@
 name: processes:review
 description: Perform comprehensive code reviews using multi-agent analysis
 argument-hint: "[PR number, GitHub URL, file path, or current branch]"
+aliases:
+  - review
+  - check
+  - validate
+  - code-review
+keywords:
+  - review
+  - validation
+  - quality
+  - agents
+  - analysis
 ---
 
 # Workflow: Review

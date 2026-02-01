@@ -2,6 +2,16 @@
 name: resolve_pr_parallel
 description: Resolve all PR comments using parallel processing
 argument-hint: "[optional PR number]"
+aliases:
+  - pr-comments
+  - fix-pr
+  - resolve-pr
+keywords:
+  - pr
+  - pull-request
+  - comments
+  - feedback
+  - parallel
 ---
 
 # Resolve PR Parallel

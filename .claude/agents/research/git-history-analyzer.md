@@ -1,7 +1,7 @@
 ---
 name: git-history-analyzer
 description: "Analyze git repository history to understand code evolution, trace origins, and identify patterns. Uses git log, blame, and shortlog to map changes over time."
-model: inherit
+model: claude-haiku-4-20250101  # Safe: Just reading git log, no complex analysis
 context_files:
   - CLAUDE.md
 related_agents:

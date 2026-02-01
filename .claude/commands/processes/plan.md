@@ -2,6 +2,17 @@
 name: processes:plan
 description: Transform feature descriptions into well-structured implementation plans
 argument-hint: "[feature description, bug report, or improvement idea]"
+aliases:
+  - plan
+  - design
+  - architecture
+  - implementation-plan
+keywords:
+  - plan
+  - design
+  - architecture
+  - implementation
+  - structure
 ---
 
 # Workflow: Plan

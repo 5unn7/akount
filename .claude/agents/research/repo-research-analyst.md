@@ -1,7 +1,7 @@
 ---
 name: repo-research-analyst
 description: "Conduct thorough repository research to understand project structure, conventions, and patterns. Maps codebase organization, discovers coding standards, and identifies implementation patterns."
-model: inherit
+model: claude-haiku-4-20250101  # Safe: Exploring file structure, basic pattern search
 context_files:
   - CLAUDE.md
   - package.json

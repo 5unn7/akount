@@ -2,6 +2,17 @@
 name: processes:compound
 description: Document solved problems to build organizational knowledge
 argument-hint: "[optional context or problem description]"
+aliases:
+  - compound
+  - document
+  - learn
+  - knowledge
+keywords:
+  - documentation
+  - learning
+  - knowledge
+  - compound
+  - archive
 ---
 
 # Workflow: Compound

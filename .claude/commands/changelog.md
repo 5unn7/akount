@@ -2,6 +2,16 @@
 name: changelog
 description: Create engaging changelogs from recent merges
 argument-hint: "[days] or [start-date]..[end-date]"
+aliases:
+  - generate-changelog
+  - release-notes
+  - whats-new
+keywords:
+  - changelog
+  - release
+  - history
+  - merges
+  - updates
 ---
 
 # Changelog Generator

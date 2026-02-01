@@ -2,6 +2,16 @@
 name: deepen-plan
 description: Enhance plans with parallel research agents and best practices
 argument-hint: "[plan file path]"
+aliases:
+  - enhance-plan
+  - research-plan
+  - improve-plan
+keywords:
+  - plan
+  - research
+  - enhance
+  - best-practices
+  - architecture
 ---
 
 # Deepen Plan

@@ -2,6 +2,16 @@
 name: plan_review
 description: Have multiple specialized agents review a plan in parallel
 argument-hint: "[plan file path or plan content]"
+aliases:
+  - review-plan
+  - validate-plan
+  - check-plan
+keywords:
+  - plan
+  - review
+  - validation
+  - feedback
+  - agents
 ---
 
 # Plan Review
