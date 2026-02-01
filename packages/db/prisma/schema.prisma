@@ -8,19 +8,24 @@ datasource db {
 }
 
 model Tenant {
-  id                 String             @id @default(cuid())
-  name               String
-  region             TenantRegion
-  status             TenantStatus
-  plan               TenantPlan
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  accountingPolicies AccountingPolicy[]
-  auditLogs          AuditLog[]
-  events             DomainEvent[]
-  entities           Entity[]
-  importBatches      ImportBatch[]
-  memberships        TenantUser[]
+  id                    String             @id @default(cuid())
+  name                  String
+  region                TenantRegion
+  status                TenantStatus
+  plan                  TenantPlan
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  onboardingStatus      OnboardingStatus   @default(NEW)
+  onboardingStep        String?
+  onboardingData        Json?
+  onboardingCompletedAt DateTime?
+  accountingPolicies    AccountingPolicy[]
+  auditLogs             AuditLog[]
+  events                DomainEvent[]
+  entities              Entity[]
+  importBatches         ImportBatch[]
+  memberships           TenantUser[]
+  categories            Category[]
 }
 
 model TenantUser {
@@ -52,38 +57,42 @@ model User {
 }
 
 model Entity {
-  id                 String             @id @default(cuid())
-  tenantId           String
-  name               String
-  type               EntityType
-  country            String
-  taxId              String?
+  id                String             @id @default(cuid())
+  tenantId          String
+  name              String
+  type              EntityType
+  country           String
+  taxId             String?
   functionalCurrency String
-  reportingCurrency  String
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  accounts           Account[]
+  reportingCurrency String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  fiscalYearStart   Int?
+  industryCode      String?
+  coaTemplateUsed   String?
+  setupCompletedAt  DateTime?
+  accounts          Account[]
   accountingPolicies AccountingPolicy[]
-  auditLogs          AuditLog[]
-  bankConnections    BankConnection[]
-  bills              Bill[]
-  budgets            Budget[]
-  clients            Client[]
-  creditNotes        CreditNote[]
-  events             DomainEvent[]
-  tenant             Tenant             @relation(fields: [tenantId], references: [id])
-  fiscalCalendars    FiscalCalendar[]
-  glAccounts         GLAccount[]
-  goals              Goal[]
-  importBatches      ImportBatch[]
-  insights           Insight[]
-  invoices           Invoice[]
-  journalEntries     JournalEntry[]
-  payments           Payment[]
-  projects           Project[]
-  rules              Rule[]
-  taxRates           TaxRate[]
-  vendors            Vendor[]
+  auditLogs         AuditLog[]
+  bankConnections   BankConnection[]
+  bills             Bill[]
+  budgets           Budget[]
+  clients           Client[]
+  creditNotes       CreditNote[]
+  events            DomainEvent[]
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  fiscalCalendars   FiscalCalendar[]
+  glAccounts        GLAccount[]
+  goals             Goal[]
+  importBatches     ImportBatch[]
+  insights          Insight[]
+  invoices          Invoice[]
+  journalEntries    JournalEntry[]
+  payments          Payment[]
+  projects          Project[]
+  rules             Rule[]
+  taxRates          TaxRate[]
+  vendors           Vendor[]
 
   @@index([tenantId])
   @@index([tenantId, type])
@@ -497,6 +506,8 @@ model TransactionMatch {
 
 model Category {
   id                String             @id @default(cuid())
+  tenantId          String
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
   name              String
   type              CategoryType
   parentCategoryId  String?
@@ -746,6 +757,12 @@ model RuleSuggestion {
 
   @@index([entityId, status])
   @@index([status])
+}
+
+enum OnboardingStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
 }
 
 enum TenantRegion {
