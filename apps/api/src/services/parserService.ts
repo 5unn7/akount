@@ -7,6 +7,27 @@ import { randomUUID } from 'crypto';
  * Parser service for extracting transactions from various file formats
  */
 
+/**
+ * SECURITY: Sanitize string to prevent CSV injection attacks
+ * Excel formulas start with =, +, -, @, \t, \r
+ * These can be used for code execution or data exfiltration
+ */
+function sanitizeCSVInjection(value: string | undefined | null): string {
+  if (!value) return '';
+
+  const trimmed = value.trim();
+
+  // Check if string starts with dangerous characters
+  const dangerousChars = ['=', '+', '-', '@', '\t', '\r'];
+  if (dangerousChars.some(char => trimmed.startsWith(char))) {
+    // Prepend single quote to escape the formula
+    // Excel will treat it as literal text
+    return "'" + trimmed;
+  }
+
+  return trimmed;
+}
+
 interface ParseResult {
   transactions: ParsedTransaction[];
   columns?: string[];
@@ -53,7 +74,8 @@ export function parseCSV(
   // Parse transactions
   const transactions = rows.map((row, index) => {
     const date = parseDate(row[mappings.date], dateFormat);
-    const description = row[mappings.description]?.trim() || '';
+    // SECURITY: Sanitize description to prevent CSV injection
+    const description = sanitizeCSVInjection(row[mappings.description]);
     const amount = parseAmount(row, mappings.amount);
     const balance = mappings.balance ? parseAmountValue(row[mappings.balance]) : undefined;
 
@@ -69,8 +91,15 @@ export function parseCSV(
   });
 
   // Preview: first 5 rows for verification
+  // SECURITY: Sanitize all preview fields to prevent CSV injection
   const preview = {
-    rows: rows.slice(0, 5),
+    rows: rows.slice(0, 5).map(row => {
+      const sanitizedRow: Record<string, string> = {};
+      for (const [key, value] of Object.entries(row)) {
+        sanitizedRow[key] = sanitizeCSVInjection(value);
+      }
+      return sanitizedRow;
+    }),
   };
 
   return {

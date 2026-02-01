@@ -20,6 +20,38 @@ if [ -z "$FILE_PATH" ]; then
   exit 0
 fi
 
+# SECURITY: Validate and normalize file path to prevent path traversal attacks
+# Reject paths with suspicious characters
+if [[ "$FILE_PATH" =~ [\;\`\$\(\)] ]]; then
+    echo "🚨 BLOCKED: Suspicious characters in file path: $FILE_PATH" >&2
+    exit 2
+fi
+
+# Normalize path to prevent traversal attacks (../../etc/passwd)
+if command -v realpath &> /dev/null; then
+    NORMALIZED_PATH=$(realpath -m "$FILE_PATH" 2>/dev/null)
+    if [ $? -ne 0 ]; then
+        echo "🚨 BLOCKED: Invalid file path: $FILE_PATH" >&2
+        exit 2
+    fi
+
+    # Verify path is within project directory
+    PROJECT_ROOT=$(realpath -m "." 2>/dev/null)
+    if [ -n "$PROJECT_ROOT" ] && [ -n "$NORMALIZED_PATH" ]; then
+        if [[ "$NORMALIZED_PATH" != "$PROJECT_ROOT"* ]]; then
+            echo "🚨 BLOCKED: File outside project directory: $FILE_PATH" >&2
+            echo "   Normalized path: $NORMALIZED_PATH" >&2
+            exit 2
+        fi
+    fi
+
+    # Use normalized path for pattern matching (relative to project root)
+    RELATIVE_PATH="${NORMALIZED_PATH#$PROJECT_ROOT/}"
+else
+    # If realpath not available, use FILE_PATH but warn
+    RELATIVE_PATH="$FILE_PATH"
+fi
+
 # Protected file patterns
 PROTECTED_PATTERNS=(
   ".env"
@@ -44,10 +76,11 @@ PROTECTED_PATTERNS=(
   ".key"
 )
 
-# Check if file path matches any protected pattern
+# Check if file path matches any protected pattern (using normalized path)
 for pattern in "${PROTECTED_PATTERNS[@]}"; do
-  if [[ "$FILE_PATH" == *"$pattern"* ]]; then
+  if [[ "$RELATIVE_PATH" == *"$pattern"* ]]; then
     echo "🚨 BLOCKED: Cannot edit protected file: $FILE_PATH" >&2
+    echo "   Normalized path: $RELATIVE_PATH" >&2
     echo "   Protected pattern: '$pattern'" >&2
     echo "   Reason: This file contains sensitive data or critical configuration" >&2
     echo "" >&2

@@ -20,7 +20,20 @@ export const uuidSchema = z.string().uuid({
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
-  sortBy: z.string().optional(),
+  // SECURITY: Allowlist of sortable fields to prevent SQL injection
+  sortBy: z.enum([
+    'createdAt',
+    'updatedAt',
+    'name',
+    'id',
+    'amount',
+    'date',
+    'status',
+    'type',
+    'code',
+    'email',
+    'description',
+  ]).optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),
 });
 
@@ -231,7 +244,8 @@ export const errorResponseSchema = z.object({
   error: z.object({
     code: z.string(),
     message: z.string(),
-    details: z.record(z.any()).optional(),
+    // SECURITY: Use z.unknown() instead of z.any() for type safety
+    details: z.record(z.unknown()).optional(),
   }),
   meta: z.object({
     timestamp: z.string().datetime(),
@@ -297,6 +311,79 @@ export type PaginatedResponse<T> = {
     timestamp: string;
   };
 };
+
+// ============================================================================
+// Onboarding Schemas
+// ============================================================================
+
+/**
+ * Account type for onboarding
+ */
+export const onboardingAccountTypeSchema = z.enum(['personal', 'business', 'accountant']);
+export type OnboardingAccountType = z.infer<typeof onboardingAccountTypeSchema>;
+
+/**
+ * Entity type for onboarding (subset of EntityType enum)
+ */
+export const onboardingEntityTypeSchema = z.enum([
+  'PERSONAL',
+  'CORPORATION',
+  'SOLE_PROPRIETORSHIP',
+  'PARTNERSHIP',
+  'LLC',
+]);
+export type OnboardingEntityType = z.infer<typeof onboardingEntityTypeSchema>;
+
+/**
+ * Initialize onboarding schema
+ */
+export const initializeOnboardingSchema = z.object({
+  accountType: onboardingAccountTypeSchema,
+  // SECURITY: Sanitize input to prevent XSS/injection attacks
+  entityName: z.string()
+    .trim()
+    .min(1, 'Entity name is required')
+    .max(255, 'Entity name must be 255 characters or less')
+    .regex(
+      /^[a-zA-Z0-9\s\-'&.,()]+$/,
+      'Entity name can only contain letters, numbers, spaces, and common business characters (- \' & . , ( ))'
+    ),
+  entityType: onboardingEntityTypeSchema,
+  country: z.string().length(2).toUpperCase(),
+  currency: z.string().length(3).toUpperCase(),
+});
+export type InitializeOnboarding = z.infer<typeof initializeOnboardingSchema>;
+
+/**
+ * Complete onboarding schema
+ */
+export const completeOnboardingSchema = z.object({
+  tenantId: z.string(),
+  // SECURITY: Sanitize input to prevent XSS/injection attacks
+  entityName: z.string()
+    .trim()
+    .min(1, 'Entity name is required')
+    .max(255, 'Entity name must be 255 characters or less')
+    .regex(
+      /^[a-zA-Z0-9\s\-'&.,()]+$/,
+      'Entity name can only contain letters, numbers, spaces, and common business characters (- \' & . , ( ))'
+    ),
+  entityType: onboardingEntityTypeSchema,
+  country: z.string().length(2).toUpperCase(),
+  currency: z.string().length(3).toUpperCase(),
+  fiscalYearStart: z.number().int().min(1).max(12),
+});
+export type CompleteOnboarding = z.infer<typeof completeOnboardingSchema>;
+
+/**
+ * Onboarding status response
+ */
+export const onboardingStatusSchema = z.object({
+  status: z.enum(['new', 'in_progress', 'completed']),
+  tenantId: z.string().optional(),
+  currentStep: z.string().optional(),
+});
+export type OnboardingStatus = z.infer<typeof onboardingStatusSchema>;
 
 // ============================================================================
 // Type Guards

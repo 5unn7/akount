@@ -11,18 +11,82 @@ import {
   type ParsedTransaction,
   type ExternalAccountData,
   type ImportBatchMetadata,
+  type ColumnMappings,
 } from '../schemas/import';
 import { parseCSV, parsePDF } from '../services/parserService';
 import { findDuplicates, findInternalDuplicates } from '../services/duplicationService';
 import { categorizeTransactions } from '../services/categorizationService';
 import { matchAccountToBankConnection, findDuplicateAccounts } from '../services/accountMatcherService';
 import { randomUUID } from 'crypto';
+import type { Account } from '@prisma/client';
+import { fileTypeFromBuffer } from 'file-type';
 
 /**
  * Import routes for bank statement import feature
  *
  * Handles file upload, parsing, column mapping, and transaction import
  */
+
+// TYPES: Additional type definitions for type safety
+type PreviewData = {
+  rows: Array<Record<string, string>>;
+};
+
+type ParseResult = {
+  columns: string[];
+  suggestedMappings?: ColumnMappings;
+  preview?: PreviewData;
+  transactions: ParsedTransaction[];
+  externalAccountData?: ExternalAccountData;
+};
+
+type DuplicateCheckResult = {
+  tempId: string;
+  isDuplicate: boolean;
+  duplicateConfidence?: number;
+  matchedTransactionId?: string;
+  matchReason?: string;
+};
+
+type SuggestedAccount = {
+  id: string;
+  name: string;
+  type: string;
+  currency: string;
+  entity: {
+    id: string;
+    name: string;
+  };
+  matchScore: number;
+  matchReasons: string[];
+};
+
+type UploadResponse = {
+  parseId: string;
+  accountId: string;
+  fileName: string;
+  fileSize: number;
+  sourceType: 'CSV' | 'PDF' | 'OFX' | 'XLSX';
+  columns?: string[];
+  columnMappings?: ColumnMappings;
+  preview?: PreviewData;
+  transactions: ParsedTransaction[];
+  summary: {
+    total: number;
+    duplicates: number;
+    categorized: number;
+    needsReview: number;
+  };
+  externalAccountData?: ExternalAccountData;
+  suggestedAccounts?: SuggestedAccount[];
+  requiresAccountSelection?: boolean;
+};
+
+type MultipartFields = {
+  accountId?: { value: string };
+  dateFormat?: { value: string };
+  entityId?: { value: string };
+};
 
 // In-memory cache for parsed data (parseId -> parsed data)
 // FUTURE ENHANCEMENT (Phase 8 - Production Readiness):
@@ -32,18 +96,48 @@ import { randomUUID } from 'crypto';
 // - TTL management
 // - Better memory management
 // Current implementation is suitable for single-server MVP
+
+// SECURITY: Cache limits to prevent abuse
+const MAX_CACHE_SIZE_MB = 100; // 100MB total cache size
+const MAX_FILES_PER_USER = 5;  // Maximum files per user in cache
+
 const parseCache = new Map<string, {
+  userId: string;        // SECURITY: Track who uploaded this
+  tenantId: string;      // SECURITY: Track which tenant owns this
   accountId: string;
   fileName: string;
   fileSize: number;
   sourceType: 'CSV' | 'PDF' | 'OFX' | 'XLSX';
   columns?: string[];
-  columnMappings?: any;
-  preview?: any;
+  columnMappings?: ColumnMappings;
+  preview?: PreviewData;
   transactions: ParsedTransaction[];
   externalAccountData?: ExternalAccountData;
   createdAt: Date;
 }>();
+
+// Helper function to check if we can add to cache (prevent DoS)
+function canAddToCache(userId: string, fileSize: number): boolean {
+  // Check total cache size
+  let totalSize = 0;
+  for (const entry of parseCache.values()) {
+    totalSize += entry.fileSize;
+  }
+
+  if (totalSize + fileSize > MAX_CACHE_SIZE_MB * 1024 * 1024) {
+    return false;
+  }
+
+  // Check per-user file count
+  let userFiles = 0;
+  for (const entry of parseCache.values()) {
+    if (entry.userId === userId) {
+      userFiles++;
+    }
+  }
+
+  return userFiles < MAX_FILES_PER_USER;
+}
 
 // Clean up old parse sessions (older than 1 hour)
 setInterval(() => {
@@ -79,9 +173,10 @@ export async function importRoutes(fastify: FastifyInstance) {
         }
 
         // Get form fields
-        const accountId = (data.fields as any).accountId?.value; // Optional now
-        const dateFormat = (data.fields as any).dateFormat?.value;
-        const entityId = (data.fields as any).entityId?.value; // For account suggestions
+        const fields = data.fields as MultipartFields;
+        const accountId = fields.accountId?.value; // Optional now
+        const dateFormat = fields.dateFormat?.value;
+        const entityId = fields.entityId?.value; // For account suggestions
 
         // Validate file size (10MB limit)
         const fileBuffer = await data.toBuffer();
@@ -95,8 +190,15 @@ export async function importRoutes(fastify: FastifyInstance) {
           });
         }
 
-        // Validate file type
-        const fileName = data.filename;
+        // SECURITY: Sanitize filename to prevent path traversal attacks
+        const rawFileName = data.filename;
+        const fileName = rawFileName
+          .replace(/[^a-zA-Z0-9._-]/g, '_')  // Replace unsafe characters
+          .replace(/\.{2,}/g, '_')            // Remove consecutive dots (path traversal)
+          .replace(/^\.+/, '')                // Remove leading dots
+          .substring(0, 255);                 // Limit length
+
+        // Validate file extension
         const ext = fileName.toLowerCase().match(/\.[^.]+$/)?.[0];
         const validExtensions = ['.csv', '.pdf', '.ofx', '.qfx', '.xlsx', '.xls'];
 
@@ -107,8 +209,41 @@ export async function importRoutes(fastify: FastifyInstance) {
           });
         }
 
+        // SECURITY: Validate file content matches extension (magic byte check)
+        const fileType = await fileTypeFromBuffer(fileBuffer);
+
+        // Map extensions to expected MIME types
+        const expectedMimeTypes: Record<string, string[]> = {
+          '.csv': ['text/csv', 'text/plain', 'application/csv'],
+          '.pdf': ['application/pdf'],
+          '.ofx': ['text/plain', 'application/x-ofx'],
+          '.qfx': ['text/plain', 'application/x-ofx'],
+          '.xlsx': ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+          '.xls': ['application/vnd.ms-excel'],
+        };
+
+        // For text-based formats (CSV, OFX), file-type may not detect MIME type
+        // Only validate for binary formats (PDF, XLSX, XLS)
+        const binaryExtensions = ['.pdf', '.xlsx', '.xls'];
+        if (binaryExtensions.includes(ext)) {
+          if (!fileType) {
+            return reply.status(400).send({
+              error: 'Bad Request',
+              message: `File content validation failed. The file may be corrupted or not a valid ${ext.toUpperCase()} file.`,
+            });
+          }
+
+          const allowedMimes = expectedMimeTypes[ext] || [];
+          if (!allowedMimes.includes(fileType.mime)) {
+            return reply.status(400).send({
+              error: 'Bad Request',
+              message: `File content does not match extension. Expected ${ext.toUpperCase()}, but file appears to be ${fileType.ext?.toUpperCase() || 'unknown'}.`,
+            });
+          }
+        }
+
         // If accountId provided, verify ownership (tenant isolation)
-        let account: any = null;
+        let account: Account | null = null;
         let tenantId: string | null = null;
 
         if (accountId) {
@@ -182,7 +317,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         }
 
         // Parse file based on type
-        let parseResult: any;
+        let parseResult: ParseResult;
 
         if (sourceType === 'CSV') {
           parseResult = parseCSV(fileBuffer, undefined, dateFormat);
@@ -206,7 +341,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         const parseId = randomUUID();
 
         // Run duplicate detection (only if accountId is provided)
-        let duplicateResults: any[] = [];
+        let duplicateResults: DuplicateCheckResult[] = [];
         if (accountId) {
           duplicateResults = await findDuplicates(parseResult.transactions, accountId);
         }
@@ -277,7 +412,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         ).length;
 
         // If no accountId provided, suggest matching accounts based on external identifiers
-        let suggestedAccounts: any[] = [];
+        let suggestedAccounts: SuggestedAccount[] = [];
         if (!accountId && parseResult.externalAccountData && tenantId) {
           // Get all entities for this tenant
           const entities = await prisma.entity.findMany({
@@ -314,7 +449,7 @@ export async function importRoutes(fastify: FastifyInstance) {
               // Check import batch metadata for external identifiers
               const importBatch = acc.transactions[0]?.importBatch;
               if (importBatch?.metadata) {
-                const metadata = importBatch.metadata as any;
+                const metadata = importBatch.metadata as ImportBatchMetadata;
                 const storedExternalData = metadata.externalAccountData || {};
 
                 // Match masked account number
@@ -365,8 +500,18 @@ export async function importRoutes(fastify: FastifyInstance) {
           suggestedAccounts = suggestedAccounts.slice(0, 5);
         }
 
-        // Store parsed data in cache
+        // SECURITY: Check cache limits before adding
+        if (!canAddToCache(request.userId, fileSize)) {
+          return reply.status(429).send({
+            error: 'Too Many Requests',
+            message: 'Cache limit reached. Please wait a few minutes and try again, or complete pending imports.',
+          });
+        }
+
+        // Store parsed data in cache with user/tenant tracking
         parseCache.set(parseId, {
+          userId: request.userId,         // SECURITY: Track ownership
+          tenantId: tenantId!,            // SECURITY: Track tenant
           accountId,
           fileName,
           fileSize,
@@ -380,7 +525,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         });
 
         // Return preview with duplicate detection and categorization
-        const response: any = {
+        const response: UploadResponse = {
           parseId,
           accountId,
           fileName,
@@ -406,18 +551,18 @@ export async function importRoutes(fastify: FastifyInstance) {
         }
 
         return reply.status(200).send(response);
-      } catch (error: any) {
+      } catch (error: unknown) {
         request.log.error({ error }, 'Error uploading file');
 
         // Handle specific parsing errors
-        if (error.message?.includes('CSV parsing error')) {
+        if (error instanceof Error && error.message?.includes('CSV parsing error')) {
           return reply.status(400).send({
             error: 'Bad Request',
             message: error.message,
           });
         }
 
-        if (error.message?.includes('Invalid date') || error.message?.includes('Invalid amount')) {
+        if (error instanceof Error && (error.message?.includes('Invalid date') || error.message?.includes('Invalid amount'))) {
           return reply.status(400).send({
             error: 'Bad Request',
             message: error.message,
@@ -444,7 +589,7 @@ export async function importRoutes(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
-        const { parseId, columnMappings } = request.body as any;
+        const { parseId, columnMappings } = request.body as { parseId: string; columnMappings: ColumnMappings };
 
         // Retrieve cached parse data
         const cached = parseCache.get(parseId);
@@ -466,7 +611,7 @@ export async function importRoutes(fastify: FastifyInstance) {
           error: 'Bad Request',
           message: 'Column mapping update requires re-uploading the file (will be fixed in next iteration)',
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
         request.log.error({ error }, 'Error updating column mappings');
         return reply.status(500).send({
           error: 'Internal Server Error',
@@ -488,7 +633,7 @@ export async function importRoutes(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
-        const { parseId } = request.params as any;
+        const { parseId } = request.params as { parseId: string };
 
         const cached = parseCache.get(parseId);
         if (!cached) {
@@ -498,38 +643,76 @@ export async function importRoutes(fastify: FastifyInstance) {
           });
         }
 
-        // Verify user has access to this account (tenant isolation)
-        const account = await prisma.account.findFirst({
-          where: {
-            id: cached.accountId,
-            entity: {
-              tenant: {
-                memberships: {
-                  some: {
-                    user: {
-                      clerkUserId: request.userId,
-                    },
-                  },
-                },
-              },
+        // SECURITY: Verify this parseId belongs to the requesting user
+        if (cached.userId !== request.userId) {
+          request.log.warn(
+            {
+              parseId,
+              cachedUserId: cached.userId,
+              requestUserId: request.userId,
             },
-          },
-        });
-
-        if (!account) {
+            'Attempted cross-user cache access'
+          );
           return reply.status(403).send({
             error: 'Forbidden',
             message: 'Access denied',
           });
         }
 
+        // SECURITY: Double-check tenant isolation via database
+        // Verify user still has access to the tenant (in case membership was revoked)
+        const user = await prisma.user.findFirst({
+          where: {
+            clerkUserId: request.userId,
+            tenantMemberships: {
+              some: {
+                tenantId: cached.tenantId,
+              },
+            },
+          },
+        });
+
+        if (!user) {
+          return reply.status(403).send({
+            error: 'Forbidden',
+            message: 'Access denied - tenant membership not found',
+          });
+        }
+
+        // If accountId is provided in cache, verify access to that specific account
+        if (cached.accountId) {
+          const account = await prisma.account.findFirst({
+            where: {
+              id: cached.accountId,
+              entity: {
+                tenant: {
+                  memberships: {
+                    some: {
+                      user: {
+                        clerkUserId: request.userId,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          if (!account) {
+            return reply.status(403).send({
+              error: 'Forbidden',
+              message: 'Access denied - account not found or no access',
+            });
+          }
+        }
+
         // Calculate summary from cached enriched transactions
-        const duplicateCount = cached.transactions.filter((t: any) => t.isDuplicate).length;
+        const duplicateCount = cached.transactions.filter((t) => t.isDuplicate).length;
         const categorizedCount = cached.transactions.filter(
-          (t: any) => t.suggestedCategory && t.suggestedCategory.confidence >= 70
+          (t) => t.suggestedCategory && t.suggestedCategory.confidence >= 70
         ).length;
         const needsReviewCount = cached.transactions.filter(
-          (t: any) => !t.isDuplicate && (!t.suggestedCategory || t.suggestedCategory.confidence < 70)
+          (t) => !t.isDuplicate && (!t.suggestedCategory || t.suggestedCategory.confidence < 70)
         ).length;
 
         return reply.status(200).send({
@@ -549,7 +732,7 @@ export async function importRoutes(fastify: FastifyInstance) {
             needsReview: needsReviewCount,
           },
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
         request.log.error({ error }, 'Error retrieving parse data');
         return reply.status(500).send({
           error: 'Internal Server Error',

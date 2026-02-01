@@ -51,7 +51,29 @@ if command -v jq &> /dev/null; then
             agent=$(echo "$agent" | tr -d '\r')
             file=$(echo "$file" | tr -d '\r')
 
+            # SECURITY: Validate file path to prevent command injection
+            # Reject paths with special characters, path traversal, or absolute paths
+            if [[ "$file" =~ [^a-zA-Z0-9/_.-] ]] || [[ "$file" == *".."* ]] || [[ "$file" == /* ]]; then
+                echo "  ❌ ERROR: Invalid or suspicious file path for agent '$agent': $file"
+                ERRORS=$((ERRORS + 1))
+                continue
+            fi
+
             FULL_PATH=".claude/agents/$file"
+
+            # Verify path is within expected directory using realpath
+            if command -v realpath &> /dev/null; then
+                REAL_PATH=$(realpath -m "$FULL_PATH" 2>/dev/null || echo "")
+                ALLOWED_DIR=$(realpath -m ".claude/agents" 2>/dev/null || echo "")
+
+                if [ -n "$REAL_PATH" ] && [ -n "$ALLOWED_DIR" ]; then
+                    if [[ "$REAL_PATH" != "$ALLOWED_DIR"* ]]; then
+                        echo "  ❌ ERROR: Path traversal detected for agent '$agent': $file"
+                        ERRORS=$((ERRORS + 1))
+                        continue
+                    fi
+                fi
+            fi
 
             if [ ! -f "$FULL_PATH" ]; then
                 echo "  ❌ ERROR: Agent '$agent' references missing file: $file"
@@ -86,7 +108,29 @@ if command -v jq &> /dev/null; then
             skill=$(echo "$skill" | tr -d '\r')
             file=$(echo "$file" | tr -d '\r')
 
+            # SECURITY: Validate file path to prevent command injection
+            # Reject paths with special characters, path traversal, or absolute paths
+            if [[ "$file" =~ [^a-zA-Z0-9/_.:\ -] ]] || [[ "$file" == *".."* ]] || [[ "$file" == /* ]]; then
+                echo "  ❌ ERROR: Invalid or suspicious file path for skill '$skill': $file"
+                ERRORS=$((ERRORS + 1))
+                continue
+            fi
+
             FULL_PATH=".claude/$file"
+
+            # Verify path is within expected directory using realpath
+            if command -v realpath &> /dev/null; then
+                REAL_PATH=$(realpath -m "$FULL_PATH" 2>/dev/null || echo "")
+                ALLOWED_DIR=$(realpath -m ".claude" 2>/dev/null || echo "")
+
+                if [ -n "$REAL_PATH" ] && [ -n "$ALLOWED_DIR" ]; then
+                    if [[ "$REAL_PATH" != "$ALLOWED_DIR"* ]]; then
+                        echo "  ❌ ERROR: Path traversal detected for skill '$skill': $file"
+                        ERRORS=$((ERRORS + 1))
+                        continue
+                    fi
+                fi
+            fi
 
             if [ ! -f "$FULL_PATH" ]; then
                 echo "  ❌ ERROR: Skill '$skill' references missing file: $file"

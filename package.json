@@ -18,13 +18,16 @@
         "db:reset": "cd packages/db && npm run db:reset"
     },
     "devDependencies": {
-        "turbo": "^2.3.3",
         "prettier": "^3.1.0",
+        "turbo": "^2.3.3",
         "typescript": "^5.3.3"
     },
     "workspaces": [
         "apps/*",
         "packages/*"
     ],
-    "packageManager": "npm@10.2.4"
+    "packageManager": "npm@10.2.4",
+    "dependencies": {
+        "file-type": "^19.0.0"
+    }
 }
