@@ -12,6 +12,7 @@ import { HealthService } from './services/health.service';
 import { UserService, UserNotFoundError } from './services/user.service';
 import { entitiesRoutes } from './routes/entities';
 import { importRoutes } from './routes/import';
+import { onboardingRoutes } from './routes/onboarding';
 
 const server: FastifyInstance = Fastify({
     logger: true
@@ -76,6 +77,9 @@ server.register(multipart, {
 // Register API routes
 server.register(entitiesRoutes, { prefix: '/api' });
 server.register(importRoutes, { prefix: '/api' });
+server.register(onboardingRoutes, { prefix: '/api' });
+import { aiRoutes } from './routes/ai';
+server.register(aiRoutes, { prefix: '/api' });
 
 // Define response types for type safety
 type HealthCheckResponse = {
