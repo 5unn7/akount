@@ -25,7 +25,13 @@ import { randomUUID } from 'crypto';
  */
 
 // In-memory cache for parsed data (parseId -> parsed data)
-// TODO: Replace with Redis in production for multi-server support
+// FUTURE ENHANCEMENT (Phase 8 - Production Readiness):
+// Replace with Redis for:
+// - Multi-server support (horizontal scaling)
+// - Persistence across API restarts
+// - TTL management
+// - Better memory management
+// Current implementation is suitable for single-server MVP
 const parseCache = new Map<string, {
   accountId: string;
   fileName: string;
@@ -183,7 +189,13 @@ export async function importRoutes(fastify: FastifyInstance) {
         } else if (sourceType === 'PDF') {
           parseResult = await parsePDF(fileBuffer, dateFormat);
         } else {
-          // TODO: Implement OFX and XLSX parsing in Phase 2
+          // PHASE 2 ENHANCEMENT: OFX/QFX and XLSX/XLS parsing
+          // Priority: Medium (after core features)
+          // Estimated effort: 8-12 hours
+          // Dependencies:
+          // - OFX: node-ofx or ofx-js library
+          // - XLSX: xlsx or exceljs library
+          // Benefits: Direct import from Quicken/QuickBooks and Excel exports
           return reply.status(501).send({
             error: 'Not Implemented',
             message: `${sourceType} parsing will be implemented in Phase 2. Please use CSV export for now.`,
@@ -444,7 +456,11 @@ export async function importRoutes(fastify: FastifyInstance) {
         }
 
         // Re-parse with new column mappings
-        const fileBuffer = Buffer.from([]); // TODO: Store original file buffer in cache
+        // IMPROVEMENT NEEDED: Store original file buffer in cache for re-parsing
+        // Current workaround: User must re-upload file with new mappings
+        // Reason for limitation: Keeping memory footprint low (avoiding 10MB+ buffers in cache)
+        // Future: Store in Redis or S3 with presigned URL
+        const fileBuffer = Buffer.from([]);
         // For now, return error asking to re-upload
         return reply.status(400).send({
           error: 'Bad Request',

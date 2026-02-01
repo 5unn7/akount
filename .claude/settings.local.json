@@ -57,7 +57,9 @@
       "WebFetch(domain:www-cdn.anthropic.com)",
       "WebFetch(domain:registry.modelcontextprotocol.io)",
       "WebFetch(domain:www.builder.io)",
-      "WebFetch(domain:claudefa.st)"
+      "WebFetch(domain:claudefa.st)",
+      "Bash(npm audit:*)",
+      "Bash(cat:*)"
     ],
     "deny": [
       "Bash(git reset --hard *)",
