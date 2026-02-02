@@ -13,6 +13,9 @@ import { UserService, UserNotFoundError } from './services/user.service';
 import { entitiesRoutes } from './routes/entities';
 import { importRoutes } from './routes/import';
 import { onboardingRoutes } from './routes/onboarding';
+import { accountsRoutes } from './routes/accounts';
+import { dashboardRoutes } from './routes/dashboard';
+import { aiRoutes } from './routes/ai';
 
 const server: FastifyInstance = Fastify({
     logger: true
@@ -78,7 +81,8 @@ server.register(multipart, {
 server.register(entitiesRoutes, { prefix: '/api' });
 server.register(importRoutes, { prefix: '/api' });
 server.register(onboardingRoutes, { prefix: '/api' });
-import { aiRoutes } from './routes/ai';
+server.register(accountsRoutes, { prefix: '/api' });
+server.register(dashboardRoutes, { prefix: '/api' });
 server.register(aiRoutes, { prefix: '/api' });
 
 // Define response types for type safety
@@ -93,7 +97,7 @@ type AuthTestResponse = {
     message: string;
 };
 
-type UserNotFoundError = {
+type UserNotFoundResponse = {
     error: 'User not found';
     message: string;
 };
@@ -167,7 +171,7 @@ server.get<{ Reply: HealthCheckResponse }>(
 
 // Root endpoint redirects to health for convenience
 server.get('/', async (request, reply) => {
-    return reply.redirect(301, '/health');
+    return reply.redirect(302, '/health');
 });
 
 // Simple auth test endpoint - just verifies token is valid
@@ -186,7 +190,7 @@ server.get<{ Reply: AuthTestResponse }>(
 );
 
 // Protected endpoint - requires authentication
-server.get<{ Reply: UserMeResponse | UserNotFoundError | InternalServerError }>(
+server.get<{ Reply: UserMeResponse | UserNotFoundResponse | InternalServerError }>(
     '/me',
     {
         onRequest: [authMiddleware]
@@ -194,7 +198,7 @@ server.get<{ Reply: UserMeResponse | UserNotFoundError | InternalServerError }>(
     async (
         request: FastifyRequest,
         reply: FastifyReply
-    ): Promise<UserMeResponse | UserNotFoundError | InternalServerError> => {
+    ): Promise<UserMeResponse | UserNotFoundResponse | InternalServerError> => {
         try {
             const user = await userService.getUserByClerkId(request.userId as string);
             return user;
@@ -266,7 +270,10 @@ const gracefulShutdown = async () => {
         server.log.info('✓ Server and database connections closed gracefully');
         process.exit(0);
     } catch (error) {
-        server.log.error('Error during shutdown:', error);
+        server.log.error(
+            error instanceof Error ? error : new Error('Unknown shutdown error'),
+            'Error during shutdown'
+        );
         process.exit(1);
     }
 };

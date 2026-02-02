@@ -30,8 +30,8 @@ async function main() {
     data: {
       id: 'user_test_akount',
       clerkUserId: 'user_REPLACE_WITH_YOUR_CLERK_ID', // Replace with actual Clerk user ID
-      email: 'testuser1@akount.local',
-      name: 'Test User 1',
+      email: 'demo@akount.com',
+      name: 'Demo User',
     },
   });
 
@@ -364,17 +364,87 @@ async function main() {
     },
   });
 
+  // Create accounts
+  console.log('🏦 Creating accounts...');
+  const accounts = [
+    {
+      name: 'TD Chequing',
+      type: 'BANK',
+      institution: 'TD Canada Trust',
+      currency: 'CAD',
+      country: 'CA',
+      currentBalance: 450000, // $4,500.00
+      entityId: businessEntity.id,
+    },
+    {
+      name: 'RBC Savings',
+      type: 'BANK',
+      institution: 'Royal Bank of Canada',
+      currency: 'CAD',
+      country: 'CA',
+      currentBalance: 1250000, // $12,500.00
+      entityId: personalEntity.id,
+    },
+    {
+      name: 'Amex Business Card',
+      type: 'CREDIT_CARD',
+      institution: 'American Express',
+      currency: 'USD',
+      country: 'US',
+      currentBalance: -150000, // -$1,500.00 (debt)
+      entityId: businessEntity.id,
+    },
+    {
+      name: 'Wealthsimple Investment',
+      type: 'INVESTMENT',
+      institution: 'Wealthsimple',
+      currency: 'CAD',
+      country: 'CA',
+      currentBalance: 3500000, // $35,000.00
+      entityId: personalEntity.id,
+    },
+    {
+      name: 'Student Loan',
+      type: 'LOAN',
+      institution: 'NSLSC',
+      currency: 'CAD',
+      country: 'CA',
+      currentBalance: -2500000, // -$25,000.00 (debt)
+      entityId: personalEntity.id,
+    },
+  ];
+
+  for (const acc of accounts) {
+    await prisma.account.create({ data: acc });
+  }
+
+  // Create sample FX rates
+  console.log('💱 Creating FX rates...');
+  const today = new Date();
+  const fxRates = [
+    { base: 'CAD', quote: 'USD', date: today, source: 'manual', rate: 0.74 },
+    { base: 'USD', quote: 'CAD', date: today, source: 'manual', rate: 1.35 },
+    { base: 'CAD', quote: 'EUR', date: today, source: 'manual', rate: 0.68 },
+    { base: 'EUR', quote: 'CAD', date: today, source: 'manual', rate: 1.47 },
+  ];
+
+  for (const rate of fxRates) {
+    await prisma.fXRate.create({ data: rate });
+  }
+
   console.log('✅ Seed completed successfully!');
   console.log('');
   console.log('📊 Summary:');
   console.log('  - 1 Tenant (Demo Company)');
-  console.log('  - 1 Entity (Demo Consulting Inc.)');
+  console.log('  - 2 Entities (Business & Personal)');
   console.log('  - 1 User (demo@akount.com)');
+  console.log('  - 5 Accounts (Bank, CC, Loan, Investment)');
+  console.log('  - 4 FX Rates');
   console.log('  - 6 GL Accounts');
   console.log('  - 2 Clients');
   console.log('  - 1 Vendor');
-  console.log('  - 2 Invoices (1 sent, 1 paid)');
-  console.log('  - 1 Bill (pending)');
+  console.log('  - 2 Invoices');
+  console.log('  - 1 Bill');
   console.log('  - 1 Payment');
   console.log('  - 2 Journal Entries');
   console.log('');
