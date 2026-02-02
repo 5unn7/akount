@@ -84,6 +84,34 @@ Structured workflows for systematic feature development, from exploration to imp
 
 ---
 
+### 5. /processes:eod
+
+**Purpose:** End-of-day workflow to save progress, update documentation, and prepare for next session.
+
+**When to use:**
+- End of work day (daily or whenever wrapping up)
+- Before starting a multi-day break
+- Want to ensure nothing falls through cracks
+- Need to organize session artifacts
+
+**Output:**
+- Updated STATUS.md, TASKS.md, ROADMAP.md
+- Organized documentation (brainstorms → docs/brainstorms/, plans → docs/plans/)
+- Committed and pushed changes to git
+- Prepared task list for next session
+
+**What it does:**
+1. Reviews git status and identifies changes
+2. Deletes temporary files (`*_errors.txt`, build artifacts)
+3. Moves session artifacts to appropriate folders
+4. Updates core documentation with today's progress
+5. Stages, commits, and pushes to git
+6. Creates handoff document for next session
+
+**Next step:** Start fresh next session with clear context
+
+---
+
 ## Complete Workflow Lifecycle
 
 ```
@@ -98,6 +126,24 @@ Structured workflows for systematic feature development, from exploration to imp
 ✅ /processes:review        → Code review findings
    ↓
 🚀 Merge & Deploy
+   ↓
+🌙 /processes:eod           → Close session properly
+   ↓
+✨ Next session ready to go
+```
+
+### Daily Workflow (Recommended)
+
+```
+🌅 Start of Day
+   → /processes:begin                    (Load context from yesterday)
+   ↓
+⚙️  Development with /processes:* tools   (Brainstorm → Plan → Work → Review)
+   ↓
+🌙 End of Day
+   → /processes:eod                       (Save work, update docs, organize files)
+   ↓
+✨ Ready for next session
 ```
 
 ## Quick Start Examples
@@ -142,6 +188,22 @@ Structured workflows for systematic feature development, from exploration to imp
 
 # 3. Review
 /processes:review .
+```
+
+### Example 4: Full Day Cycle
+
+```bash
+# Morning: Load context
+/processes:begin
+
+# Work: Use these as needed
+/processes:brainstorm new-feature
+/processes:plan new-feature
+/processes:work docs/plans/2026-02-01-feature-new-feature-plan.md
+/processes:review current-branch
+
+# Evening: Close out
+/processes:eod
 ```
 
 ## Workflow Decision Tree
