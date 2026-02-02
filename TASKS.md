@@ -1,22 +1,22 @@
 # Akount - Current Tasks
 
-**Last Updated:** 2026-01-30
-**Current Sprint:** Phase 0 - Foundation
-**Sprint Goal:** Get auth, database, and first API endpoint working
+**Last Updated:** 2026-02-02
+**Current Sprint:** Phase 1 - Accounts Overview
+**Sprint Goal:** Build financial dashboard with real account data and multi-currency support
 
 ---
 
-## 🎯 This Week's Goals
+## 🎯 This Week's Goals (2026-02-02)
 
-**Target:** Complete Phase 0.3 (API Foundation) + Phase 0.4 (First Vertical Slice)
+**Target:** Complete Phase 1.4 & 1.5 (Frontend Dashboard + Account Management)
 
 **Success Criteria:**
-- [x] Users can sign up and log in ✅ COMPLETE
-- [x] Database is connected with migrations ✅ COMPLETE
-- [x] Can query database from Prisma Studio ✅ COMPLETE
-- [ ] API can authenticate requests
-- [ ] API can query database and return data
-- [ ] Frontend can fetch and display real data
+- [x] Phase 0 foundation complete ✅
+- [x] API endpoints ready (GET /api/accounts, /api/dashboard/metrics) ✅
+- [ ] Frontend dashboard shows real account data
+- [ ] Entity filter dropdown implemented
+- [ ] Currency toggle (CAD/USD) implemented
+- [ ] Account list page created and functional
 
 ---
 
@@ -654,28 +654,65 @@ curl -H "Authorization: Bearer YOUR_CLERK_TOKEN" http://localhost:4000/api/entit
 
 ---
 
-## 🗓️ This Week (2026-01-30)
+## 🗓️ This Week (2026-02-02)
 
-### ✅ Completed
+### ✅ Phase 0 Complete (2026-02-01)
 - [x] Phase 0.1 - Authentication (all 9 tasks) ✅
 - [x] Phase 0.2 - Database Setup (all 5 tasks) ✅
+- [x] Phase 0.3 - API Foundation (all 4 tasks) ✅
+- [x] Phase 0.4 - First Vertical Slice (all 4 tasks) ✅
+- [x] Phase 0.5 - Perplexity AI Integration (complete) ✅
+- [x] Code Review & Performance Optimization (50x improvement) ✅
 
-### 🔥 Today's Goals
-- [x] Complete Task 0.3.1 - Set up Prisma Client in API ✅
-- [x] Complete Task 0.3.2 - Add Authentication Middleware ✅
-- [x] Complete Task 0.3.3 - Add Zod Validation ✅
-- [x] Complete Task 0.3.4 - Create First CRUD Endpoint ✅
-- **Goal:** Complete Phase 0.3 - API Foundation ✅ ACHIEVED!
+### 🔥 Today's Goals (2026-02-02 - PHASE 1 STARTS)
 
-### ✅ Phase 0.5 - Perplexity AI Integration (COMPLETE)
-- [x] Create modular `AIService` architecture
-- [x] Implement `PerplexityProvider` with OpenAI-compatible API
-- [x] Integrate AI categorization fallback in `categorizationService.ts`
-- [x] Add AI routes for chat and testing (POST /api/ai/*)
-- [x] Fix Category schema and enforce multi-tenancy in AI lookups
-- **Goal:** Leverage AI to automate transaction categorization ✅ ACHIEVED!
+#### Task 1.1: Frontend Dashboard Integration
+- [ ] Connect dashboard page to GET /api/dashboard/metrics
+- [ ] Display KPI cards with real data (Net Worth, Cash Position, etc.)
+- [ ] Add entity filter dropdown (show all entities in tenant)
+- [ ] Add currency toggle (base currency vs USD)
+- [ ] Test with real database data
+- **Estimated:** 3-4 hours
+
+#### Task 1.2: Create Account List Page
+- [ ] Create /accounts page layout
+- [ ] Create AccountsList component
+- [ ] Connect to GET /api/accounts endpoint
+- [ ] Display account cards with balances
+- [ ] Add filtering UI (by type, entity, etc.)
+- [ ] Link to individual account detail pages
+- **Estimated:** 2-3 hours
+
+#### Task 1.3: Testing & Validation
+- [ ] End-to-end test: Login → View Dashboard → Filter by entity
+- [ ] End-to-end test: Navigate to /accounts → See all accounts
+- [ ] Test multi-currency calculations
+- [ ] Verify performance (dashboard loads < 200ms)
+- [ ] Test tenant isolation (can't see other tenant's data)
+- **Estimated:** 1 hour
+
+### 🚀 Phase 1 Implementation Plan
+
+**Frontend Components Needed:**
+1. DashboardMetrics component (real data)
+2. EntityFilter component (dropdown)
+3. CurrencyToggle component (CAD/USD)
+4. AccountCard component (balance display)
+5. AccountsList page integration
+
+**UI Patterns:**
+- Use existing Card components from shadcn/ui
+- Follow design system (Orange/Violet/Slate colors)
+- Mobile responsive layout
+- Loading states with Suspense
+
+**Testing Approach:**
+- Test in development environment
+- Use real database data
+- Verify calculations with known values
+- Check permissions/tenant isolation
 
 ---
 
-**Next Update:** 2026-02-01 (End of Perplexity Integration)
-**Sprint Review:** Phase 0 complete + Bonus features
+**Next Update:** 2026-02-03
+**Sprint Goal:** Complete Phase 1 frontend integration by end of week
