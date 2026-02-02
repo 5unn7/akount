@@ -21,7 +21,7 @@ rm -rf .agent/
 ### 2. Move valuable artifacts
 - `*_brainstorm.md` → `docs/brainstorms/`
 - `*_plan.md` → `docs/plans/`
-- `WEEK_*.md` → `docs/archive/sessions/`
+- Session reports → `docs/archive/`
 
 ### 3. Update documentation
 - **STATUS.md** - Today's progress
@@ -36,7 +36,7 @@ git push origin main
 ```
 
 ### 5. Create handoff (optional)
-File: `docs/archive/sessions/TOMORROW-SESSION-PREP.md`
+File: `docs/archive/TOMORROW-SESSION-PREP.md`
 - What's complete
 - What's ready to start
 - Any blockers
@@ -134,11 +134,10 @@ Topics: documentation, project-maintenance
 - Architecture designs
 - Technical specifications
 
-**Move to docs/archive/sessions/:**
-- Session reports (WEEK_*.md)
+**Move to docs/archive/:**
+- Session reports
 - Code review reports
-- Performance analysis
-- Engineering compounds
+- Historical documents
 
 **Delete:**
 - `*_errors.txt` (build errors)
@@ -194,7 +193,7 @@ git push origin main
 
 ## When Tomorrow Starts
 
-1. Open `docs/archive/sessions/TOMORROW-SESSION-PREP.md` (if you created it)
+1. Open `docs/archive/TOMORROW-SESSION-PREP.md` (if you created it)
 2. Read updated TASKS.md
 3. Check ROADMAP for phase status
 4. `git pull` to get latest changes

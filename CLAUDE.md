@@ -4,7 +4,7 @@
 > It provides essential context about documentation, architecture, standards, and constraints.
 > Keep this concise - link to detailed docs rather than including full content here.
 
-**Last Updated:** 2026-02-01
+**Last Updated:** 2026-02-02
 **Project:** Akount - Multi-tenant Accounting Platform for Canadian Freelancers
 **Current Phase:** Phase 0 Complete (100%) - Bank Statement Import Feature Added
 
@@ -15,10 +15,9 @@
 ### Core Architecture Documents
 - **`docs/architecture/decisions.md`** - Tech stack choices and rationale (Next.js 16, Fastify, PostgreSQL)
 - **`docs/architecture/summary.md`** - Architecture evolution approach (phase-by-phase hooks)
-- **`docs/architecture/ARCHITECTURE-HOOKS.md`** - Future-proof hooks inventory and activation guide
+- **`docs/architecture/SCHEMA-IMPROVEMENTS.md`** - Schema technical debt backlog (enums, indexes, multi-jurisdiction)
 - **`docs/architecture/schema-design.md`** - Database design patterns and Prisma conventions
 - **`docs/architecture/processes.md`** - Development workflows and deployment processes
-- **`docs/architecture/operations.md`** - Operational procedures, security, and compliance
 
 ### Critical Architectural Principles
 
@@ -69,7 +68,26 @@ packages/
 ## 📊 Product Context
 
 ### What We're Building
-- **`docs/product/overview.md`** - Product vision, target users (Canadian freelancers), value proposition
+
+**Akount is an AI-powered financial command center for globally-operating solopreneurs.**
+
+**NOT a simple bookkeeping tool.** It's for business owners who:
+- Have legal entities in multiple countries (Canada, India, US, etc.)
+- Work with clients globally (Australia, UK, Europe)
+- Need consolidated view of personal AND business finances
+- Want AI guidance on tax optimization, deductions, subsidies
+- Need an "AI accountant" that connects to real accountants when needed
+
+**Why the complexity is necessary:**
+| Feature | Reason |
+|---------|--------|
+| Multi-tenancy | One user = multiple legal entities across countries |
+| Multi-currency | CAD, USD, INR, GBP, EUR with FX tracking |
+| Double-entry | Tax compliance across jurisdictions requires real accounting |
+| Audit trails | Cross-border tax audits need complete history |
+
+**See:** `docs/product/overview.md` for full vision and competitive positioning
+
 - **`docs/product/data-model/README.md`** - Complete database schema explanation (40+ Prisma models)
 
 ### Data Model Overview
@@ -321,6 +339,70 @@ await prisma.invoice.delete({ where: { id } })
 **3. TenantId in ALL Queries**
 - See Multi-Tenancy section above
 - See: `docs/standards/multi-tenancy.md`
+
+---
+
+## 📁 File Creation Rules (MANDATORY)
+
+**NEVER create files without checking where they belong.**
+
+### Forbidden at Project Root
+```
+❌ NEVER create these at root:
+- Analysis files (ANALYSIS-*.md, *-REVIEW.md, *-FINDINGS.md)
+- Summary files (*-SUMMARY.md, *-REPORT.md)
+- Work-in-progress docs (*-WIP.md, *-DRAFT.md)
+- Design system docs (DESIGN-SYSTEM-*.md) → Use docs/design-system/
+- Setup guides (*GUIDE*.md, *SETUP*.md) → Use docs/setup/
+- Planning docs (*-PLAN.md) → Use docs/plans/
+```
+
+### Allowed at Project Root (ONLY these)
+```
+✅ Essential project files ONLY:
+- README.md (project readme)
+- CLAUDE.md (agent context)
+- STATUS.md, ROADMAP.md, TASKS.md, CHANGELOG.md (tracking)
+- Config files (package.json, tsconfig.json, turbo.json, etc.)
+```
+
+### Where Files Belong
+| File Type | Location |
+|-----------|----------|
+| Feature brainstorms | `docs/brainstorms/YYYY-MM-DD-*.md` |
+| Implementation plans | `docs/plans/YYYY-MM-DD-*.md` |
+| Session outputs/reports | `docs/archive/sessions/*.md` |
+| Solved problems | `docs/solutions/[category]/*.md` |
+| Setup/install guides | `docs/setup/*.md` |
+| Design system | `docs/design-system/*.md` (ONLY) |
+| Architecture docs | `docs/architecture/*.md` |
+| Feature specs | `docs/features/*.md` |
+| Standards | `docs/standards/*.md` |
+
+### Design System Rule (CRITICAL)
+```
+The design system is DEFINED in docs/design-system/
+├── README.md         ← Overview
+├── tailwind-colors.md ← Color tokens
+├── fonts.md          ← Typography
+├── tokens.css        ← CSS variables
+├── theme-system.md   ← Theme configuration
+└── COMPONENTS-REFERENCE.md ← Component usage
+
+NEVER create new design system files.
+If asked to "implement" or "review" the design system:
+1. READ the existing docs/design-system/ files
+2. APPLY those rules to code
+3. DO NOT create analysis/summary/review files
+```
+
+### Before Creating ANY File, Ask:
+1. Does this file type already exist somewhere?
+2. Is this the right location per the table above?
+3. Am I creating unnecessary documentation?
+4. Should I just edit an existing file instead?
+
+**Default behavior:** Edit existing files. Create new files only when truly necessary.
 
 ---
 

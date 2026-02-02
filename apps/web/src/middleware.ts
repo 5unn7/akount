@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { prisma } from '@repo/db'
+import { prisma } from '@akount/db'
 
 // Define public routes that don't require authentication
 const isPublicRoute = createRouteMatcher([
@@ -19,7 +19,7 @@ export default clerkMiddleware(async (auth, request) => {
 
     // For protected routes (excluding onboarding), check if user has a tenant
     if (!request.nextUrl.pathname.startsWith('/onboarding')) {
-      const userId = auth.userId
+      const { userId } = await auth()
 
       if (userId) {
         try {

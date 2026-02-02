@@ -386,9 +386,9 @@ Compile findings into readable summary:
 - [Clerk JWT Verification](docs/solutions/security/2026-01-20-clerk-jwt.md)
 
 ### Relevant Docs
-- [Fastify API Patterns](docs/api-patterns.md)
-- [Multi-tenant Guide](docs/multi-tenant.md)
-- [Testing Strategy](docs/testing.md)
+- [API Design Standards](docs/standards/api-design.md)
+- [Multi-tenancy Standards](docs/standards/multi-tenancy.md)
+- [Security Standards](docs/standards/security.md)
 
 ### Quick Commands
 ```bash

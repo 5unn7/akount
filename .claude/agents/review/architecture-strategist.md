@@ -4,9 +4,10 @@ description: "Use this agent when analyzing code changes from an architectural p
 _source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
 context_files:
+  - docs/product/overview.md
   - docs/architecture/decisions.md
-  - docs/architecture/summary.md
-  - docs/architecture/ARCHITECTURE-HOOKS.md
+  - docs/architecture/evolution.md
+  - docs/architecture/SCHEMA-IMPROVEMENTS.md
   - docs/product/data-model/README.md
   - STATUS.md
 related_agents:

@@ -53,4 +53,37 @@ This section establishes patterns for multi-currency display, entity filtering, 
 - Linking to other sections while preserving context
 - Responsive collapsible groups on mobile
 
-**Reference:** See full specification in original `product/sections/accounts-overview/spec.md`
+---
+
+## Enhancement: Running Balance Display
+
+**Status:** Approved for Phase 1
+**Effort:** 2-3 hours
+**User Demand:** 86 votes (from LunchMoney analysis)
+
+### What is Running Balance?
+
+Running balance shows the cumulative account balance after each transaction in a chronological list:
+
+```
+Date       Description    Amount      Balance
+2026-01-31 Groceries      -$50.00     $1,450.00
+2026-01-30 Paycheck      +$2,000.00   $1,500.00
+2026-01-29 Gas            -$40.00     -$500.00  ← Red highlight
+```
+
+### Implementation
+
+**Backend:** Add `runningBalance` field to transaction API response
+- Calculate from current balance going backwards
+- Handle pagination appropriately
+
+**Frontend:** Add "Balance" column to TransactionList
+- Highlight negative balances in red
+- Responsive layout for mobile
+
+### User Value
+- Detect errors (account went negative unexpectedly)
+- Understand historical balance at any point
+- Reconcile statements more easily
+- Verify transaction order is correct

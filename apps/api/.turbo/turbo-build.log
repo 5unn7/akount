@@ -3,8 +3,9 @@
 > tsup src/index.ts
 
 [34mCLI[39m Building entry: src/index.ts
+[34mCLI[39m Using tsconfig: tsconfig.json
 [34mCLI[39m tsup v8.5.1
-[34mCLI[39m Target: node16
+[34mCLI[39m Target: esnext
 [34mCJS[39m Build start
-[32mCJS[39m [1mdist\index.js [22m[32m1.62 KB[39m
-[32mCJS[39m ⚡️ Build success in 95ms
+[32mCJS[39m [1mdist\index.js [22m[32m143.31 KB[39m
+[32mCJS[39m ⚡️ Build success in 70ms

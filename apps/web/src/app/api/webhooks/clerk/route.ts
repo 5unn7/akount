@@ -1,7 +1,7 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import { prisma } from '@repo/db'
+import { prisma } from '@akount/db'
 
 /**
  * Clerk Webhook Handler

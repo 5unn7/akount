@@ -1,7 +1,49 @@
 # Akount
 
-## Description
-Akount is a multi-country financial command center for solo entrepreneurs managing complex finances across borders. It provides a unified view of all personal and business accounts, tracks money flow across multiple currencies and legal entities, and uses AI to surface insights on spending, cash flow, and tax optimization - giving you complete financial clarity in one place.
+## Vision
+
+**Akount is an AI-powered financial command center for globally-operating solopreneurs.**
+
+It's NOT a simple bookkeeping tool. It's a sophisticated multi-jurisdiction financial management platform for business owners who:
+- Operate legal entities across multiple countries (e.g., Canada, India, US)
+- Work with clients globally (Australia, UK, Europe, etc.)
+- Need consolidated oversight of personal AND business finances
+- Want AI-powered guidance on tax optimization, deductions, subsidies, and policies
+- Need to understand cross-border financial implications
+- Want an "AI accountant" that helps make better financial decisions
+
+## Target User
+
+**The Global Solopreneur:**
+- Freelancers, consultants, and small business owners operating internationally
+- People with bank accounts and entities in multiple countries
+- Those who need financial clarity across jurisdictions
+- Business owners who want to be conscious about their money
+- Solopreneurs who can't afford a full-time CFO but need CFO-level insights
+
+**NOT for:**
+- Simple single-country freelancers (Wave, FreshBooks serve them)
+- Large enterprises (QuickBooks Enterprise, NetSuite serve them)
+- Accountants managing client books (Xero Practice Manager serves them)
+
+## Core Value Proposition
+
+1. **Unified View** - See all accounts (personal + business) across all countries in one dashboard
+2. **Financial Consciousness** - Know exactly where your money is, what you can deduct, what you're spending
+3. **AI Accountant** - Get proactive guidance on tax incentives, deductions, subsidies, and better financial decisions
+4. **Multi-Jurisdiction Intelligence** - Understand tax implications across Canada, US, India, UK, Europe, Australia
+5. **Real Accountant Bridge** - When you need a human, connect to vetted accountants and bookkeeping services
+
+## Why the Complexity is Necessary
+
+| Requirement | Why It Matters |
+|-------------|----------------|
+| **Multi-tenancy** | One user can have multiple legal entities (Canadian corp, US LLC, Indian sole prop) |
+| **Multi-currency** | CAD, USD, INR, GBP, EUR transactions must be tracked accurately with FX conversions |
+| **Double-entry bookkeeping** | Tax compliance across jurisdictions requires proper accounting, not just income/expense tracking |
+| **Entity model (BUSINESS/PERSONAL)** | Solopreneurs mix personal and business - need clear separation for tax purposes |
+| **Audit trails** | Cross-border tax audits require complete transaction history |
+| **GL accounts** | Different countries have different chart of accounts requirements |
 
 ## Sections
 
@@ -17,7 +59,14 @@ Akount is a multi-country financial command center for solo entrepreneurs managi
 
 6. **Planning** - Set budgets by entity, category, and period; define financial goals for savings or debt paydown; track progress against targets with variance analysis and alerts.
 
-7. **AI Financial Advisor** - Personalized spending insights, tax optimization recommendations, deduction discovery, alerts for subsidies and programs, automated categorization rules, and intelligent financial guidance.
+7. **AI Financial Advisor** - The core differentiator:
+   - Automated transaction categorization with learning
+   - Tax deduction discovery ("You spent $X on home office - here's your deduction")
+   - Subsidy and grant alerts ("Your Canadian corp qualifies for SR&ED")
+   - Policy monitoring ("New tax law affects your US LLC")
+   - Financial health insights ("Your burn rate increased 20% this quarter")
+   - Optimization recommendations ("Transfer $X to maximize tax efficiency")
+   - Accountant connection ("This is complex - here's a vetted CPA in your jurisdiction")
 
 ## Data Model Summary
 
@@ -57,3 +106,22 @@ The product is designed to be built incrementally across 8 milestones:
 8. **AI Financial Advisor** - Insights feed and categorization rules
 
 Each section is self-contained and can be built independently after the foundation is complete.
+
+## Competitive Positioning
+
+| Product | Focus | Why Akount is Different |
+|---------|-------|------------------------|
+| Wave | Simple bookkeeping, single country | Multi-jurisdiction, AI-powered |
+| FreshBooks | Invoicing for freelancers | Full financial command center |
+| QuickBooks | SMB accounting (single entity) | Multi-entity, multi-country |
+| Xero | Cloud accounting | AI advisor, cross-border intelligence |
+| Pilot | Bookkeeping service | Self-service with AI, not human-dependent |
+
+**Akount's moat:** Multi-jurisdiction AI intelligence that no current tool provides.
+
+## Success Metrics
+
+- User can see consolidated net worth across all countries in <5 seconds
+- AI surfaces at least 3 actionable tax insights per quarter
+- Time to monthly close reduced by 70% vs manual tracking
+- Zero missed deductions or tax incentives

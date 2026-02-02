@@ -36,7 +36,8 @@ export function EntitiesList() {
                 }
 
                 // Fetch entities from API
-                const response = await fetch('http://localhost:3001/api/entities', {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+                const response = await fetch(`${apiUrl}/api/entities`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },

@@ -5,6 +5,7 @@ _source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
 context_files:
   - packages/db/prisma/schema.prisma
+  - docs/architecture/SCHEMA-IMPROVEMENTS.md
   - docs/product/data-model/README.md
   - docs/architecture/schema-design.md
   - docs/standards/financial-data.md

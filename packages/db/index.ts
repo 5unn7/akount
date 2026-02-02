@@ -90,27 +90,10 @@ prisma.$use(async (params, next) => {
     return next(params);
 });
 
-// Graceful shutdown handler
-const cleanup = async (): Promise<void> => {
-    try {
-        await prisma.$disconnect();
-        console.log('✓ Database connection closed gracefully');
-    } catch (error) {
-        console.error('Error during database cleanup:', error);
-        process.exit(1);
-    }
-};
-
-// Handle termination signals (Docker, Kubernetes, process managers)
-const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM', 'SIGHUP'];
-signals.forEach((signal) => {
-    process.on(signal, () => {
-        console.log(`Received ${signal}, closing database connection...`);
-        cleanup();
-    });
-});
-
-// Handle beforeExit (when event loop is empty)
-process.on('beforeExit', async () => {
-    await prisma.$disconnect();
-});
+// NOTE: Graceful shutdown handlers (process.on, process.exit) are NOT included here
+// because this package is imported by Next.js middleware which runs in Edge Runtime.
+// Edge Runtime doesn't support Node.js process APIs.
+//
+// If you need graceful shutdown, add handlers in your server entry point:
+// - apps/api/src/index.ts (Fastify server)
+// - NOT in shared packages that may be imported by Edge code

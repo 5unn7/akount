@@ -51,8 +51,6 @@
       "WebFetch(domain:claude-guide.lovable.app)",
       "WebSearch",
       "Bash(done)",
-      "Bash(~/agent-os/scripts/project-install.sh *)",
-      "Bash(/home/sunny/agent-os/scripts/project-install.sh *)",
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:www-cdn.anthropic.com)",
       "WebFetch(domain:registry.modelcontextprotocol.io)",
@@ -62,7 +60,10 @@
       "Bash(cat:*)",
       "Bash(cd:*)",
       "Bash(file=\"review/financial-data-validator.md\")",
-      "Bash(FULL_PATH=\".claude/agents/$file\":*)"
+      "Bash(FULL_PATH=\".claude/agents/$file\":*)",
+      "WebFetch(domain:clerk.com)",
+      "Bash(npx tsc:*)",
+      "Bash(npm ls:*)"
     ],
     "deny": [
       "Bash(git reset --hard *)",

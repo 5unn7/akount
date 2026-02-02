@@ -7,7 +7,7 @@ context_files:
   - package.json
   - turbo.json
   - docs/architecture/decisions.md
-  - docs/architecture/summary.md
+  - docs/architecture/evolution.md
   - docs/standards/ (project standards)
 related_agents:
   - git-history-analyzer

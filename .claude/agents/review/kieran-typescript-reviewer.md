@@ -3,9 +3,8 @@ name: kieran-typescript-reviewer
 description: "Use this agent when reviewing TypeScript code for strict type safety, modern patterns, and exceptional code quality standards. This agent enforces rigorous TypeScript conventions and best practices. Invoke after code implementation, modifications, or when reviewing pull requests. <example>Context: The user has implemented a new TypeScript component. user: \"I've created a new Invoice component with type definitions\" assistant: \"I'll use the kieran-typescript-reviewer agent to ensure type safety and modern TypeScript patterns\" <commentary>New TypeScript implementations benefit from strict review to catch type issues early.</commentary></example> <example>Context: Reviewing code that may have type safety issues. user: \"Review this payment processing logic\" assistant: \"Let me use the kieran-typescript-reviewer to check for type safety and modern patterns\" <commentary>Payment logic requires strict type safety, making this perfect for kieran-typescript-reviewer.</commentary></example>"
 model: inherit
 context_files:
-  - agent-os/standards/frontend/component-pattern.md
-  - agent-os/standards/frontend/import-paths.md
   - packages/db/prisma/schema.prisma
+  - docs/architecture/decisions.md
 related_agents:
   - architecture-strategist
   - nextjs-app-router-reviewer

@@ -6,6 +6,55 @@
 
 ---
 
+## 2026-02-02 - Critical Fixes & Project Cleanup
+
+### Fixed
+- **Build failure** - packages/db/index.ts used Node.js-only APIs (process.exit, process.on) that broke Edge Runtime. Wrapped in runtime check.
+- **Wrong package import** - apps/web/src/app/api/webhooks/clerk/route.ts imported `@repo/db` instead of `@akount/db`
+- **Hardcoded localhost URL** - EntitiesList.tsx had hardcoded `http://localhost:3001`, now uses environment variable with correct port 4000
+- **Build artifact committed** - Removed apps/api/dist/index.js from git tracking
+- **Missing .gitignore entries** - Added `*.tsbuildinfo` to .gitignore
+
+### Removed
+- **9 design system work artifacts** at root (DESIGN-SYSTEM-*.md, README-DESIGN-SYSTEM-REVIEW.md)
+- **6 misplaced documentation files** - Moved to proper locations in docs/
+
+### Changed
+- **CLAUDE.md** - Added "File Creation Rules (MANDATORY)" section to prevent future documentation bloat
+- **/compound skill** - Simplified from 472 lines to 127 lines (removed theoretical 7-agent parallel fantasy)
+- **Root directory** - Reduced from 22 markdown files to 7 essential files
+
+### Documentation
+- Updated ROADMAP.md: Phase 0 now 100% complete
+- Moved ONBOARDING_SETUP_GUIDE.md to docs/setup/
+- Moved QUICK_START.md to docs/setup/
+- Moved TEST_CREDENTIALS.md to docs/setup/
+- Moved PHASE_1_COMPLETION_REPORT.md to docs/archive/sessions/
+- Moved IMPLEMENTATION_SUMMARY.md to docs/archive/sessions/
+- Moved REORGANIZATION_PLAN.md to docs/plans/
+
+---
+
+## 2026-02-01 - Phase 0 Complete & Code Review
+
+### Added
+- Bank statement import feature (PDF parsing, intelligent account matching)
+- Performance optimizations for dashboard
+- Code review and fixes for critical issues
+- Claude Code configuration (18 agents, 15 skills, 4 hooks)
+
+### Changed
+- STATUS.md: Phase 0 marked 100% complete
+- API foundation fully operational (Fastify + Clerk JWT + Zod)
+- First vertical slice working (entities API → frontend)
+
+### Fixed
+- Multiple code review issues addressed
+- Authentication middleware improvements
+- Tenant isolation enforcement
+
+---
+
 ## 2026-01-27 - Project Tracking System Established
 
 ### Added
@@ -208,5 +257,5 @@
 
 ---
 
-**Last Updated:** 2026-01-27
-**Next Expected Entry:** When Phase 0 (Foundation) is complete
+**Last Updated:** 2026-02-02
+**Next Expected Entry:** When Phase 1 (Accounts Overview) is complete

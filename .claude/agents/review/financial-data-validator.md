@@ -6,8 +6,9 @@ model: inherit
 context_files:
   - docs/standards/financial-data.md
   - docs/product/data-model/README.md
+  - docs/product/overview.md
   - docs/architecture/schema-design.md
-  - docs/architecture/ARCHITECTURE-HOOKS.md
+  - docs/architecture/SCHEMA-IMPROVEMENTS.md
 related_agents:
   - architecture-strategist
   - prisma-migration-reviewer

@@ -3,29 +3,28 @@
 > next build
 
 ▲ Next.js 16.1.5 (Turbopack)
+- Environments: .env.local
 
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
   Creating an optimized production build ...
-✓ Compiled successfully in 2.6s
+✓ Compiled successfully in 5.7s
   Running TypeScript ...
+Failed to compile.
 
-  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
-  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+./src/app/(dashboard)/accounts/page.tsx:2:30
+Type error: Cannot find module '@/components/accounts/AccountsList' or its corresponding type declarations.
 
-  	- include was updated to add '.next/dev/types/**/*.ts'
-
-  The following mandatory changes were made to your tsconfig.json:
-
-  	- jsx was set to react-jsx (next.js uses the React automatic runtime)
-
-  Collecting page data using 19 workers ...
-  Generating static pages using 19 workers (0/3) ...
-✓ Generating static pages using 19 workers (3/3) in 1181.4ms
-  Finalizing page optimization ...
-
-Route (app)
-┌ ○ /
-└ ○ /_not-found
-
-
-○  (Static)  prerendered as static content
-
+[0m [90m 1 |[39m [36mimport[39m { [33mSuspense[39m } [36mfrom[39m [32m"react"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mAccountsList[39m } [36mfrom[39m [32m"@/components/accounts/AccountsList"[39m[33m;[39m
+ [90m   |[39m                              [31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { [33mCard[39m[33m,[39m [33mCardContent[39m } [36mfrom[39m [32m"@/components/ui/card"[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mAccountsPage[39m() {[0m
+Next.js build worker exited with code: 1 and signal: null
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web
+npm error workspace web@0.1.0
+npm error location W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c next build

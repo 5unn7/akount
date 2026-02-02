@@ -3,9 +3,8 @@ name: nextjs-app-router-reviewer
 description: "Use this agent when reviewing Next.js 16+ App Router code, including pages, layouts, route handlers, middleware, and component architecture. This agent validates Server/Client component boundaries, async patterns, authentication integration, metadata configuration, and Next.js best practices. Essential for any PR that touches app directory files, middleware, or Next.js-specific patterns. <example>Context: The user has a PR that creates a new page with data fetching. user: \"Review this new dashboard page that fetches user data\" assistant: \"I'll use the nextjs-app-router-reviewer agent to check Server/Client boundaries and async patterns\" <commentary>App Router pages involve server components, async data fetching, and proper component boundaries, making this perfect for nextjs-app-router-reviewer.</commentary></example> <example>Context: The user is adding client-side interactivity. user: \"This PR adds a form with useState and event handlers\" assistant: \"Let me have the nextjs-app-router-reviewer verify the 'use client' directive is properly placed\" <commentary>Client-side interactivity requires 'use client', and the reviewer ensures it's used correctly without over-marking.</commentary></example> <example>Context: The user is implementing authentication middleware. user: \"Updated middleware.ts to protect dashboard routes with Clerk\" assistant: \"I'll use the nextjs-app-router-reviewer to check middleware patterns and route protection\" <commentary>Middleware is critical for auth and the reviewer ensures proper patterns with Clerk integration.</commentary></example>"
 model: inherit
 context_files:
-  - agent-os/standards/frontend/client-server-components.md
-  - agent-os/standards/frontend/route-groups.md
   - docs/architecture/decisions.md
+  - docs/architecture/evolution.md
 related_agents:
   - kieran-typescript-reviewer
   - clerk-auth-reviewer
