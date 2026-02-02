@@ -592,6 +592,45 @@ Claude: *searches first* "Found PDFAttachment model and import parsing code. Sho
 
 ---
 
+## 📝 Implementation Standards
+
+### Before Editing Code
+**ALWAYS:**
+1. Read relevant documentation (CLAUDE.md, feature specs, architecture docs)
+2. Summarize your understanding back to the user before making changes
+3. Explain what you found and what you plan to do
+
+### Development Approach
+**ALWAYS:**
+- Make small, incremental edits with clear explanations and diffs
+- Focus on what changed and why, not generic commentary
+- Avoid "drive-by refactors" (don't make unrelated changes in the same edit)
+- Keep explanations short but precise
+
+### Testing & Validation
+**ALWAYS:**
+- Run appropriate tests/checks after code changes
+- Include the command and result in your summary
+- Write or update tests when adding/changing behavior
+- Don't add complex logic without test coverage
+
+### Troubleshooting
+**AFTER TWO FAILED ATTEMPTS:**
+- Stop and summarize what failed
+- Propose an alternative approach
+- Don't blindly retry the same direction
+
+### Code Quality Standards
+**Comments:** Add only where they clarify non-obvious intent or tricky logic—don't restate what code already makes clear
+
+**Dependencies:** Avoid adding new dependencies without explicit approval; if needed, suggest the minimal option with justification
+
+**Patterns:** Follow existing style and conventions; prefer consistency over personal preference
+
+**Scope:** Keep functions focused and small; avoid introducing new abstractions without explaining tradeoffs
+
+---
+
 ## 🏗️ Meta-Skills: Creating Skills & Agents
 
 **Recognize when to suggest skill creation:**
