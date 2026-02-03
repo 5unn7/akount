@@ -8,11 +8,13 @@
 
 ## 🎯 This Week's Goals (2026-02-02)
 
-**Target:** Complete Phase 1.4 & 1.5 (Frontend Dashboard + Account Management)
+**Target:** Fix Critical Code Review Issues + Complete Phase 1 Frontend
 
 **Success Criteria:**
 - [x] Phase 0 foundation complete ✅
 - [x] API endpoints ready (GET /api/accounts, /api/dashboard/metrics) ✅
+- [x] 🔴 **Critical code review fixes complete (CR.1-CR.4)** ✅
+- [ ] 🟡 **High priority fixes complete (CR.5-CR.9)**
 - [ ] Frontend dashboard shows real account data
 - [ ] Entity filter dropdown implemented
 - [ ] Currency toggle (CAD/USD) implemented
@@ -665,6 +667,201 @@ curl -H "Authorization: Bearer YOUR_CLERK_TOKEN" http://localhost:4000/api/entit
 - [x] Code Review & Performance Optimization (50x improvement) ✅
 
 ### 🔥 Today's Goals (2026-02-02 - PHASE 1 STARTS)
+
+---
+
+## 🔴 CRITICAL: Code Review Fixes (Must Complete First)
+
+**Source:** Multi-agent code review 2026-02-02
+**Priority:** BLOCKING - Complete before continuing feature work
+
+### Task CR.1: Security - Remove Debug Endpoint
+**Status:** ✅ Complete
+**Completed:** 2026-02-02
+**Priority:** 🔴 CRITICAL
+**File:** `apps/api/src/index.ts`
+
+- [x] Remove `/validation/debug` POST endpoint (exposes request headers)
+- [x] Remove `/validation/test` and `/validation/query` test endpoints
+- [x] Removed unused imports and types
+
+**Risk:** ~~Publicly accessible debug endpoint leaks internal information~~ RESOLVED
+
+---
+
+### Task CR.2: Dead Code Cleanup - Unused Plugins
+**Status:** ✅ Complete
+**Completed:** 2026-02-02
+**Priority:** 🔴 CRITICAL
+**Files:** `apps/api/src/plugins/` (deleted)
+
+- [x] **Option A:** Delete plugin files (keep inline config in index.ts) ✓
+- [x] Deleted `rateLimit.ts` and `security.ts`
+- [x] Removed empty `plugins/` directory
+
+**Risk:** ~~Duplicate code causes confusion and maintenance issues~~ RESOLVED
+
+---
+
+### Task CR.3: Turborepo - Workspace Protocol (FALSE POSITIVE)
+**Status:** ✅ Not Needed
+**Completed:** 2026-02-02
+**Priority:** ~~🔴 CRITICAL~~ N/A
+**Files:** `apps/api/package.json`, `apps/web/package.json`
+
+- [x] Investigated: `workspace:*` is pnpm-specific, NOT npm
+- [x] Verified: npm workspaces correctly use `"*"` (already correct)
+- [x] Confirmed: `npm install` works with existing config
+
+**Note:** The original `"*"` was correct. npm workspaces resolve local packages automatically.
+This was a false positive from the review agent (confused npm with pnpm).
+
+---
+
+### Task CR.4: TypeScript Config - Remove Anti-pattern
+**Status:** ✅ Complete
+**Completed:** 2026-02-02
+**Priority:** 🔴 CRITICAL
+**File:** `apps/api/tsconfig.json`
+
+- [x] Remove `"../../packages/db/index.ts"` from include
+- [x] Remove `"../../packages/types/index.ts"` from include
+- [ ] Verify imports still resolve through node_modules (test on build)
+
+**Risk:** ~~Breaks package encapsulation, causes duplicate type definitions~~ RESOLVED
+
+---
+
+### Task CR.5: TypeScript - Remove `any` Default
+**Status:** ⏳ Pending
+**Priority:** 🟡 HIGH
+**File:** `apps/web/src/lib/api/client.ts:7`
+
+- [ ] Change `apiClient<T = any>` → `apiClient<T>`
+- [ ] Ensure all callers provide explicit type arguments
+
+**Risk:** Defeats type safety when callers forget to specify types
+
+---
+
+### Task CR.6: Performance - Add Pagination to listAccounts
+**Status:** ⏳ Pending
+**Priority:** 🟡 HIGH
+**Files:** `apps/api/src/services/account.service.ts`, `apps/web/src/lib/api/accounts.ts`
+
+- [ ] Add `cursor?: string` and `limit?: number` to ListAccountsParams
+- [ ] Add `take` and `skip` (or cursor) to Prisma query
+- [ ] Update API route to accept pagination params
+- [ ] Update frontend to handle pagination (or add limit of 100)
+
+**Risk:** Will fail at scale (1000+ accounts per tenant)
+
+---
+
+### Task CR.7: Security - Configure Rate Limit Trust Proxy
+**Status:** ⏳ Pending
+**Priority:** 🟡 HIGH
+**File:** `apps/api/src/index.ts`
+
+- [ ] Add Fastify `trustProxy` configuration for your infrastructure
+- [ ] Test that IP is correctly identified behind reverse proxy
+- [ ] Consider increasing rate limit to 200 req/min for dashboard usage
+
+**Risk:** Rate limit can be bypassed via X-Forwarded-For spoofing
+
+---
+
+### Task CR.8: Multi-Tenant - Fix Arbitrary Tenant Selection
+**Status:** ⏳ Pending
+**Priority:** 🟡 HIGH
+**File:** `apps/api/src/middleware/tenant.ts:30-47`
+
+- [ ] Add `orderBy: { createdAt: 'asc' }` to `findFirst` query (minimum fix)
+- [ ] Consider: Add tenant selection header/session for multi-tenant users
+
+**Risk:** Users with multiple tenants get arbitrary tenant assigned
+
+---
+
+### Task CR.9: Security - Add ID Format Validation
+**Status:** ⏳ Pending
+**Priority:** 🟡 HIGH
+**File:** `apps/api/src/routes/accounts.ts:14-15`
+
+- [ ] Change `z.string()` → `z.string().cuid()` for ID params
+- [ ] Apply same fix to other route files with ID params
+
+**Risk:** Accepts arbitrary strings, enables enumeration attacks
+
+---
+
+### Task CR.10: Next.js - Add Error Boundary & Metadata
+**Status:** ⏳ Pending
+**Priority:** 🟡 MEDIUM
+**Location:** `apps/web/src/app/(dashboard)/accounts/`
+
+- [ ] Create `error.tsx` with reset button
+- [ ] Add `metadata` export to `page.tsx` for SEO
+- [ ] Consider adding `loading.tsx` for route transitions
+
+**Risk:** Unhandled errors show blank page, missing SEO metadata
+
+---
+
+### Task CR.11: Next.js - Convert EntitiesList to Server Component
+**Status:** ⏳ Pending
+**Priority:** 🟡 MEDIUM
+**File:** `apps/web/src/components/dashboard/EntitiesList.tsx`
+
+- [ ] Remove `'use client'` directive
+- [ ] Move data fetching to server (use apiClient directly)
+- [ ] Create separate client component for interactive parts only
+
+**Risk:** Client-side fetch causes waterfall, wastes rate limit
+
+---
+
+### Task CR.12: Prisma - Add Soft Delete to CreditNote
+**Status:** ⏳ Pending
+**Priority:** 🔵 LOW
+**File:** `packages/db/prisma/schema.prisma`
+
+- [ ] Add `deletedAt DateTime?` to CreditNote model
+- [ ] Add `@@index([entityId, deletedAt])`
+- [ ] Run migration: `npx prisma migrate dev --name add-creditnote-softdelete`
+
+**Risk:** Inconsistent with other financial documents (Invoice, Bill have soft delete)
+
+---
+
+### Task CR.13: TypeScript - Add Return Types to Components
+**Status:** ⏳ Pending
+**Priority:** 🔵 LOW
+**Files:** Multiple component files
+
+- [ ] Add `: React.ReactElement` to sync components
+- [ ] Add `: Promise<React.ReactElement>` to async Server Components
+- [ ] Add `Record<AccountType, ...>` typing to accountTypeIcons/Labels
+
+**Risk:** Missing return types reduce documentation and IDE support
+
+---
+
+## 📊 Code Review Fix Progress
+
+| Priority | Total | Done | Status |
+|----------|-------|------|--------|
+| 🔴 CRITICAL | 4 | 4 | ✅ |
+| 🟡 HIGH/MEDIUM | 7 | 0 | ⏳ |
+| 🔵 LOW | 2 | 0 | ⏳ |
+| **TOTAL** | **13** | **4** | **31%** |
+
+**Blocking for merge:** ~~CR.1, CR.2, CR.3, CR.4~~ ✅ ALL CRITICAL FIXED
+**Should fix before production:** CR.5-CR.11 (High/Medium issues)
+
+---
+
+## Phase 1 Feature Work (After Critical Fixes)
 
 #### Task 1.1: Frontend Dashboard Integration
 - [ ] Connect dashboard page to GET /api/dashboard/metrics

@@ -57,42 +57,42 @@ model User {
 }
 
 model Entity {
-  id                String             @id @default(cuid())
-  tenantId          String
-  name              String
-  type              EntityType
-  country           String
-  taxId             String?
+  id                 String             @id @default(cuid())
+  tenantId           String
+  name               String
+  type               EntityType
+  country            String
+  taxId              String?
   functionalCurrency String
-  reportingCurrency String
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  fiscalYearStart   Int?
-  industryCode      String?
-  coaTemplateUsed   String?
-  setupCompletedAt  DateTime?
-  accounts          Account[]
+  reportingCurrency  String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  fiscalYearStart    Int?
+  industryCode       String?
+  coaTemplateUsed    String?
+  setupCompletedAt   DateTime?
+  accounts           Account[]
   accountingPolicies AccountingPolicy[]
-  auditLogs         AuditLog[]
-  bankConnections   BankConnection[]
-  bills             Bill[]
-  budgets           Budget[]
-  clients           Client[]
-  creditNotes       CreditNote[]
-  events            DomainEvent[]
-  tenant            Tenant             @relation(fields: [tenantId], references: [id])
-  fiscalCalendars   FiscalCalendar[]
-  glAccounts        GLAccount[]
-  goals             Goal[]
-  importBatches     ImportBatch[]
-  insights          Insight[]
-  invoices          Invoice[]
-  journalEntries    JournalEntry[]
-  payments          Payment[]
-  projects          Project[]
-  rules             Rule[]
-  taxRates          TaxRate[]
-  vendors           Vendor[]
+  auditLogs          AuditLog[]
+  bankConnections    BankConnection[]
+  bills              Bill[]
+  budgets            Budget[]
+  clients            Client[]
+  creditNotes        CreditNote[]
+  events             DomainEvent[]
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  fiscalCalendars    FiscalCalendar[]
+  glAccounts         GLAccount[]
+  goals              Goal[]
+  importBatches      ImportBatch[]
+  insights           Insight[]
+  invoices           Invoice[]
+  journalEntries     JournalEntry[]
+  payments           Payment[]
+  projects           Project[]
+  rules              Rule[]
+  taxRates           TaxRate[]
+  vendors            Vendor[]
 
   @@index([tenantId])
   @@index([tenantId, type])
@@ -138,6 +138,7 @@ model JournalEntry {
   createdBy      String
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
+  deletedAt      DateTime? // Soft delete - financial data never hard deleted
   entity         Entity                  @relation(fields: [entityId], references: [id])
   linkedEntry    JournalEntry?           @relation("TransferPair", fields: [linkedEntryId], references: [id])
   linkedFrom     JournalEntry[]          @relation("TransferPair")
@@ -147,6 +148,7 @@ model JournalEntry {
   @@index([entityId, status])
   @@index([sourceType, sourceId])
   @@index([date])
+  @@index([entityId, deletedAt])
 }
 
 model JournalLine {
@@ -156,11 +158,13 @@ model JournalLine {
   debitAmount    Int
   creditAmount   Int
   memo           String?
+  deletedAt      DateTime? // Soft delete - financial data never hard deleted
   glAccount      GLAccount    @relation(fields: [glAccountId], references: [id])
   journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
 
   @@index([journalEntryId])
   @@index([glAccountId])
+  @@index([journalEntryId, deletedAt])
 }
 
 model TaxRate {
@@ -219,12 +223,14 @@ model Client {
   status       String    @default("active")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // Soft delete - user-facing data preserved
   entity       Entity    @relation(fields: [entityId], references: [id])
   invoices     Invoice[]
   payments     Payment[]
 
   @@index([entityId])
   @@index([entityId, status])
+  @@index([entityId, deletedAt])
 }
 
 model Invoice {
@@ -243,6 +249,7 @@ model Invoice {
   notes         String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime? // Soft delete - financial data never hard deleted
   client        Client        @relation(fields: [clientId], references: [id])
   entity        Entity        @relation(fields: [entityId], references: [id])
   invoiceLines  InvoiceLine[]
@@ -251,6 +258,7 @@ model Invoice {
   @@index([clientId, status])
   @@index([dueDate])
   @@index([issueDate])
+  @@index([entityId, deletedAt])
 }
 
 model InvoiceLine {
@@ -264,11 +272,13 @@ model InvoiceLine {
   amount      Int
   glAccountId String?
   categoryId  String?
+  deletedAt   DateTime? // Soft delete - financial data never hard deleted
   category    Category?  @relation(fields: [categoryId], references: [id])
   glAccount   GLAccount? @relation(fields: [glAccountId], references: [id])
   invoice     Invoice    @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@index([invoiceId])
+  @@index([invoiceId, deletedAt])
 }
 
 model Vendor {
@@ -282,12 +292,14 @@ model Vendor {
   status       String    @default("active")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // Soft delete - user-facing data preserved
   bills        Bill[]
   payments     Payment[]
   entity       Entity    @relation(fields: [entityId], references: [id])
 
   @@index([entityId])
   @@index([entityId, status])
+  @@index([entityId, deletedAt])
 }
 
 model Bill {
@@ -306,6 +318,7 @@ model Bill {
   notes      String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime? // Soft delete - financial data never hard deleted
   entity     Entity     @relation(fields: [entityId], references: [id])
   vendor     Vendor     @relation(fields: [vendorId], references: [id])
   billLines  BillLine[]
@@ -314,6 +327,7 @@ model Bill {
   @@index([vendorId, status])
   @@index([dueDate])
   @@index([issueDate])
+  @@index([entityId, deletedAt])
 }
 
 model BillLine {
@@ -327,11 +341,13 @@ model BillLine {
   amount      Int
   glAccountId String?
   categoryId  String?
+  deletedAt   DateTime? // Soft delete - financial data never hard deleted
   bill        Bill       @relation(fields: [billId], references: [id], onDelete: Cascade)
   category    Category?  @relation(fields: [categoryId], references: [id])
   glAccount   GLAccount? @relation(fields: [glAccountId], references: [id])
 
   @@index([billId])
+  @@index([billId, deletedAt])
 }
 
 model Payment {
@@ -347,6 +363,7 @@ model Payment {
   notes         String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime? // Soft delete - financial data never hard deleted
   client        Client?       @relation(fields: [clientId], references: [id])
   entity        Entity        @relation(fields: [entityId], references: [id])
   vendor        Vendor?       @relation(fields: [vendorId], references: [id])
@@ -354,6 +371,7 @@ model Payment {
   @@index([entityId, date])
   @@index([clientId])
   @@index([vendorId])
+  @@index([entityId, deletedAt])
 }
 
 model CreditNote {
@@ -386,6 +404,7 @@ model Account {
   isActive       Boolean               @default(true)
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
+  deletedAt      DateTime? // Soft delete - financial data never hard deleted
   entity         Entity                @relation(fields: [entityId], references: [id])
   feedTxns       BankFeedTransaction[]
   transactions   Transaction[]
@@ -393,6 +412,7 @@ model Account {
   @@index([entityId])
   @@index([entityId, type])
   @@index([entityId, isActive])
+  @@index([entityId, deletedAt])
 }
 
 model BankConnection {
@@ -431,6 +451,7 @@ model BankFeedTransaction {
   statusHistory      Json[]
   postedToJournalId  String?
   createdAt          DateTime           @default(now())
+  deletedAt          DateTime? // Soft delete - financial data never hard deleted
   account            Account            @relation(fields: [accountId], references: [id])
   bankConnection     BankConnection     @relation(fields: [bankConnectionId], references: [id])
   transactionMatches TransactionMatch[]
@@ -439,6 +460,7 @@ model BankFeedTransaction {
   @@index([bankConnectionId])
   @@index([status])
   @@index([bankTransactionId])
+  @@index([accountId, deletedAt])
 }
 
 model Transaction {
@@ -457,6 +479,7 @@ model Transaction {
   isSplit        Boolean               @default(false)
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
+  deletedAt      DateTime? // Soft delete - financial data never hard deleted
   importBatchId  String?
   account        Account               @relation(fields: [accountId], references: [id])
   category       Category?             @relation(fields: [categoryId], references: [id])
@@ -468,6 +491,8 @@ model Transaction {
   @@index([accountId, createdAt])
   @@index([categoryId])
   @@index([sourceType, sourceId])
+  @@index([accountId, deletedAt])
+  @@index([importBatchId])
 }
 
 model TransactionSplit {
@@ -515,6 +540,7 @@ model Category {
   isActive          Boolean            @default(true)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
+  deletedAt         DateTime? // Soft delete - user-facing data preserved
   billLines         BillLine[]
   budgets           Budget[]
   parentCategory    Category?          @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
@@ -525,6 +551,10 @@ model Category {
   transactions      Transaction[]
   transactionSplits TransactionSplit[]
 
+  @@index([tenantId])
+  @@index([tenantId, type])
+  @@index([tenantId, isActive])
+  @@index([tenantId, deletedAt])
   @@index([type])
   @@index([isActive])
 }

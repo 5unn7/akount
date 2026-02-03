@@ -92,7 +92,7 @@ try {
   assert(result.transactions[0].amount === -4500, 'Debit is negative (-4500 cents)');
   assert(result.transactions[1].amount === 250000, 'Credit is positive (250000 cents)');
   assert(result.transactions[0].balance === 95500, 'Captures balance (95500 cents)');
-  assert(result.suggestedMappings?.amount.includes('|'), 'Detects debit|credit format');
+  assert(result.suggestedMappings?.amount?.includes('|') ?? false, 'Detects debit|credit format');
 } catch (error: any) {
   console.log(`❌ FAIL: Debit/Credit parsing failed: ${error.message}`);
   failedTests += 5;
@@ -238,32 +238,32 @@ async function testCategorization() {
 
     // Starbucks → Meals & Entertainment
     assert(
-      suggestions[0].categoryName?.includes('Meals') || suggestions[0].categoryName?.includes('Entertainment'),
+      !!(suggestions[0].categoryName?.includes('Meals') || suggestions[0].categoryName?.includes('Entertainment')),
       'Categorizes Starbucks as Meals & Entertainment'
     );
     assert(suggestions[0].confidence === 85, 'Starbucks has 85% confidence');
 
     // Uber → Transportation
     assert(
-      suggestions[1].categoryName?.includes('Transportation'),
+      suggestions[1].categoryName?.includes('Transportation') ?? false,
       'Categorizes Uber as Transportation'
     );
 
     // Shell → Transportation
     assert(
-      suggestions[2].categoryName?.includes('Transportation'),
+      suggestions[2].categoryName?.includes('Transportation') ?? false,
       'Categorizes Shell as Transportation'
     );
 
     // Amazon → Office Supplies
     assert(
-      suggestions[3].categoryName?.includes('Office'),
+      suggestions[3].categoryName?.includes('Office') ?? false,
       'Categorizes Amazon as Office Supplies'
     );
 
     // Microsoft → Software & Subscriptions
     assert(
-      suggestions[4].categoryName?.includes('Software') || suggestions[4].categoryName?.includes('Subscription'),
+      !!(suggestions[4].categoryName?.includes('Software') || suggestions[4].categoryName?.includes('Subscription')),
       'Categorizes Microsoft as Software'
     );
 
@@ -344,7 +344,7 @@ try {
     'Auto-detects "Merchant" as description column'
   );
   assert(
-    result.suggestedMappings?.amount.includes('Withdrawal') && result.suggestedMappings?.amount.includes('Deposit'),
+    !!(result.suggestedMappings?.amount?.includes('Withdrawal') && result.suggestedMappings?.amount?.includes('Deposit')),
     'Auto-detects "Withdrawal|Deposit" as amount columns'
   );
 } catch (error: any) {

@@ -73,38 +73,31 @@ export async function matchAccountToBankConnection(
       continue; // Skip if currency doesn't match
     }
 
-    // Check import batch metadata for external identifiers
-    const importBatch = account.transactions[0]?.importBatch;
-    if (importBatch?.metadata) {
-      const metadata = importBatch.metadata as any;
-      const externalData = metadata.externalAccountData || {};
+    // Match account name with institution (medium confidence)
+    const normalizedAccountName = normalizeInstitutionName(account.name);
+    const normalizedBankInstitution = normalizeInstitutionName(externalAccountData.institutionId);
 
-      // Match masked account number (high confidence)
-      if (externalData.externalAccountId?.endsWith(externalAccountData.mask)) {
-        score += 40;
-        reasons.push(`Account number match (last 4: ${externalAccountData.mask})`);
-      }
+    if (normalizedAccountName.includes(normalizedBankInstitution) ||
+        normalizedBankInstitution.includes(normalizedAccountName)) {
+      score += 20;
+      reasons.push('Account name matches institution');
+    }
 
-      // Match institution name (medium confidence)
-      if (externalData.institutionName) {
-        const normalizedImportInstitution = normalizeInstitutionName(externalData.institutionName);
-        const normalizedBankInstitution = normalizeInstitutionName(externalAccountData.institutionId);
+    // Match account type based on account name keywords (low confidence)
+    const accountNameLower = account.name.toLowerCase();
+    if (
+      (externalAccountData.type === 'checking' && (accountNameLower.includes('checking') || accountNameLower.includes('chequing'))) ||
+      (externalAccountData.type === 'savings' && accountNameLower.includes('savings')) ||
+      (externalAccountData.type === 'credit' && (accountNameLower.includes('credit') || accountNameLower.includes('visa') || accountNameLower.includes('mastercard')))
+    ) {
+      score += 15;
+      reasons.push('Account type match');
+    }
 
-        if (normalizedImportInstitution === normalizedBankInstitution) {
-          score += 20;
-          reasons.push('Institution match');
-        } else if (normalizedImportInstitution.includes(normalizedBankInstitution) ||
-                   normalizedBankInstitution.includes(normalizedImportInstitution)) {
-          score += 10;
-          reasons.push('Institution partial match');
-        }
-      }
-
-      // Match account type (low confidence)
-      if (externalData.accountType === externalAccountData.type) {
-        score += 10;
-        reasons.push('Account type match');
-      }
+    // Match last 4 digits if present in account name (high confidence)
+    if (externalAccountData.mask && account.name.includes(externalAccountData.mask)) {
+      score += 35;
+      reasons.push(`Account number match (last 4: ${externalAccountData.mask})`);
     }
 
     // Update best match if this score is higher

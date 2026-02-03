@@ -63,7 +63,8 @@
       "Bash(FULL_PATH=\".claude/agents/$file\":*)",
       "WebFetch(domain:clerk.com)",
       "Bash(npx tsc:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(npx prisma validate:*)"
     ],
     "deny": [
       "Bash(git reset --hard *)",

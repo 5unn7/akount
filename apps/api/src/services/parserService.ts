@@ -1,5 +1,6 @@
-import Papa from 'papaparse';
-import pdf from 'pdf-parse';
+import Papa, { ParseResult as PapaParseResult } from 'papaparse';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pdfParse = require('pdf-parse');
 import type { ParsedTransaction, ExternalAccountData, ColumnMappings } from '../schemas/import';
 import { randomUUID } from 'crypto';
 
@@ -47,18 +48,17 @@ export function parseCSV(
   const fileContent = fileBuffer.toString('utf-8');
 
   // Parse CSV with Papa Parse
-  const parseResult = Papa.parse(fileContent, {
+  const parseResult: PapaParseResult<Record<string, string>> = Papa.parse(fileContent, {
     header: true,
     skipEmptyLines: true,
     dynamicTyping: false, // Keep everything as strings for manual parsing
-    encoding: 'utf-8',
   });
 
   if (parseResult.errors.length > 0) {
     throw new Error(`CSV parsing error: ${parseResult.errors[0].message}`);
   }
 
-  const rows = parseResult.data as Array<Record<string, string>>;
+  const rows = parseResult.data;
   const columns = parseResult.meta.fields || [];
 
   if (rows.length === 0) {
@@ -329,8 +329,8 @@ export async function parsePDF(
 ): Promise<ParseResult> {
   try {
     // Extract text from PDF
-    const data = await pdf(fileBuffer);
-    const text = data.text;
+    const data = await pdfParse(fileBuffer);
+    const text = data.text as string;
 
     if (!text || text.trim().length === 0) {
       throw new Error('PDF contains no readable text. Please ensure the file is not password-protected or image-only.');

@@ -19,6 +19,20 @@
                 "^lint"
             ]
         },
+        "typecheck": {
+            "dependsOn": [
+                "^typecheck"
+            ]
+        },
+        "test": {
+            "dependsOn": [
+                "^test"
+            ],
+            "env": [
+                "DATABASE_URL",
+                "NODE_ENV"
+            ]
+        },
         "dev": {
             "cache": false,
             "persistent": true

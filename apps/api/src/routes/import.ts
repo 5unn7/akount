@@ -10,7 +10,6 @@ import {
   confirmImportRequestSchema,
   type ParsedTransaction,
   type ExternalAccountData,
-  type ImportBatchMetadata,
   type ColumnMappings,
 } from '../schemas/import';
 import { parseCSV, parsePDF } from '../services/parserService';
@@ -33,7 +32,7 @@ type PreviewData = {
 };
 
 type ParseResult = {
-  columns: string[];
+  columns?: string[];  // Optional - may not be present for all file types
   suggestedMappings?: ColumnMappings;
   preview?: PreviewData;
   transactions: ParsedTransaction[];
@@ -63,7 +62,7 @@ type SuggestedAccount = {
 
 type UploadResponse = {
   parseId: string;
-  accountId: string;
+  accountId?: string;  // Optional - may not be set until account selection
   fileName: string;
   fileSize: number;
   sourceType: 'CSV' | 'PDF' | 'OFX' | 'XLSX';
@@ -104,7 +103,7 @@ const MAX_FILES_PER_USER = 5;  // Maximum files per user in cache
 const parseCache = new Map<string, {
   userId: string;        // SECURITY: Track who uploaded this
   tenantId: string;      // SECURITY: Track which tenant owns this
-  accountId: string;
+  accountId?: string;    // Optional - may not be set until account selection
   fileName: string;
   fileSize: number;
   sourceType: 'CSV' | 'PDF' | 'OFX' | 'XLSX';
@@ -247,7 +246,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         let tenantId: string | null = null;
 
         if (accountId) {
-          account = await prisma.account.findFirst({
+          const accountWithEntity = await prisma.account.findFirst({
             where: {
               id: accountId,
               entity: {
@@ -272,20 +271,21 @@ export async function importRoutes(fastify: FastifyInstance) {
             },
           });
 
-          if (!account) {
+          if (!accountWithEntity) {
             return reply.status(403).send({
               error: 'Forbidden',
               message: 'Account not found or access denied',
             });
           }
 
-          tenantId = account.entity.tenantId;
+          account = accountWithEntity;
+          tenantId = accountWithEntity.entity.tenantId;
         } else {
           // No accountId provided - get user's tenant for later suggestions
           const user = await prisma.user.findUnique({
-            where: { clerkUserId: request.userId },
+            where: { clerkUserId: request.userId ?? undefined },
             include: {
-              tenantMemberships: {
+              memberships: {
                 include: {
                   tenant: true,
                 },
@@ -294,14 +294,14 @@ export async function importRoutes(fastify: FastifyInstance) {
             },
           });
 
-          if (!user || user.tenantMemberships.length === 0) {
+          if (!user || user.memberships.length === 0) {
             return reply.status(403).send({
               error: 'Forbidden',
               message: 'User has no tenant access',
             });
           }
 
-          tenantId = user.tenantMemberships[0].tenant.id;
+          tenantId = user.memberships[0].tenant.id;
         }
 
         // Determine source type
@@ -377,7 +377,7 @@ export async function importRoutes(fastify: FastifyInstance) {
             description: t.description,
             amount: t.amount,
           })),
-          tenantId
+          tenantId!  // Asserted non-null - we verified tenant access above
         );
 
         // Merge duplicate and category data with transactions
@@ -391,10 +391,10 @@ export async function importRoutes(fastify: FastifyInstance) {
             duplicateConfidence: duplicateInfo?.duplicateConfidence,
             matchedTransactionId: duplicateInfo?.matchedTransactionId,
             matchReason: duplicateInfo?.matchReason,
-            suggestedCategory: categorySuggestion.categoryId
+            suggestedCategory: categorySuggestion.categoryId && categorySuggestion.categoryName
               ? {
                   id: categorySuggestion.categoryId,
-                  name: categorySuggestion.categoryName,
+                  name: categorySuggestion.categoryName,  // Now guaranteed non-null
                   confidence: categorySuggestion.confidence,
                   reason: categorySuggestion.matchReason,
                 }
@@ -441,40 +441,24 @@ export async function importRoutes(fastify: FastifyInstance) {
               const externalData = parseResult.externalAccountData;
 
               // Match account type
-              if (externalData.accountType && acc.type.toLowerCase() === externalData.accountType) {
+              if (externalData?.accountType && acc.type.toLowerCase() === externalData.accountType) {
                 score += 20;
                 reasons.push('Account type match');
               }
 
-              // Check import batch metadata for external identifiers
-              const importBatch = acc.transactions[0]?.importBatch;
-              if (importBatch?.metadata) {
-                const metadata = importBatch.metadata as ImportBatchMetadata;
-                const storedExternalData = metadata.externalAccountData || {};
+              // Match institution name from account name/institution field
+              if (externalData?.institutionName && acc.institution) {
+                const normalizedExternal = externalData.institutionName.toLowerCase();
+                const normalizedStored = acc.institution.toLowerCase();
 
-                // Match masked account number
-                if (
-                  externalData.externalAccountId &&
-                  storedExternalData.externalAccountId &&
-                  externalData.externalAccountId.endsWith(
-                    storedExternalData.externalAccountId.slice(-4)
-                  )
-                ) {
-                  score += 50;
-                  reasons.push(`Account number match (${externalData.externalAccountId})`);
-                }
-
-                // Match institution name
-                if (externalData.institutionName && storedExternalData.institutionName) {
-                  const normalizedExternal = externalData.institutionName.toLowerCase();
-                  const normalizedStored = storedExternalData.institutionName.toLowerCase();
-
-                  if (normalizedExternal.includes(normalizedStored) || normalizedStored.includes(normalizedExternal)) {
-                    score += 30;
-                    reasons.push('Institution match');
-                  }
+                if (normalizedExternal.includes(normalizedStored) || normalizedStored.includes(normalizedExternal)) {
+                  score += 30;
+                  reasons.push('Institution match');
                 }
               }
+
+              // TODO: Add ImportBatch.metadata field to schema for external identifier matching
+              // This would allow matching by account number and other identifiers from previous imports
 
               if (score > 0) {
                 suggestedAccounts.push({
@@ -501,7 +485,8 @@ export async function importRoutes(fastify: FastifyInstance) {
         }
 
         // SECURITY: Check cache limits before adding
-        if (!canAddToCache(request.userId, fileSize)) {
+        // Note: userId is guaranteed by authMiddleware
+        if (!canAddToCache(request.userId!, fileSize)) {
           return reply.status(429).send({
             error: 'Too Many Requests',
             message: 'Cache limit reached. Please wait a few minutes and try again, or complete pending imports.',
@@ -510,7 +495,7 @@ export async function importRoutes(fastify: FastifyInstance) {
 
         // Store parsed data in cache with user/tenant tracking
         parseCache.set(parseId, {
-          userId: request.userId,         // SECURITY: Track ownership
+          userId: request.userId!,        // SECURITY: Track ownership (guaranteed by authMiddleware)
           tenantId: tenantId!,            // SECURITY: Track tenant
           accountId,
           fileName,
@@ -664,7 +649,7 @@ export async function importRoutes(fastify: FastifyInstance) {
         const user = await prisma.user.findFirst({
           where: {
             clerkUserId: request.userId,
-            tenantMemberships: {
+            memberships: {
               some: {
                 tenantId: cached.tenantId,
               },

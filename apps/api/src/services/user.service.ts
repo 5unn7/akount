@@ -45,7 +45,7 @@ export class UserService {
         const user = await prisma.user.findUnique({
             where: { clerkUserId },
             include: {
-                tenantUsers: {
+                memberships: {
                     include: {
                         tenant: true
                     }
@@ -59,13 +59,13 @@ export class UserService {
 
         return {
             id: user.id,
-            clerkUserId: user.clerkUserId,
+            clerkUserId: user.clerkUserId!,
             email: user.email,
             name: user.name,
-            tenants: user.tenantUsers.map(tu => ({
-                id: tu.tenant.id,
-                name: tu.tenant.name,
-                role: tu.role,
+            tenants: user.memberships.map(m => ({
+                id: m.tenant.id,
+                name: m.tenant.name,
+                role: m.role,
             })),
         };
     }

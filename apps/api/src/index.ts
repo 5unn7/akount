@@ -1,13 +1,13 @@
 import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
+import rateLimit from '@fastify/rate-limit';
 import multipart from '@fastify/multipart';
 import { prisma } from '@akount/db';
 import { env } from './lib/env';
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
-import { validateBody, validateQuery } from './middleware/validation';
-import { createTestDataSchema, testQuerySchema } from './schemas/common';
+// Validation middleware available for routes (removed debug endpoints for security)
 import { HealthService } from './services/health.service';
 import { UserService, UserNotFoundError } from './services/user.service';
 import { entitiesRoutes } from './routes/entities';
@@ -27,6 +27,32 @@ const userService = new UserService();
 
 // Register error handler
 server.setErrorHandler(errorHandler);
+
+// Rate limiting - Protect against brute force and API abuse
+server.register(rateLimit, {
+    max: 100, // 100 requests per minute
+    timeWindow: '1 minute',
+    keyGenerator: (request) => {
+        // Rate limit by authenticated user ID if available, otherwise by IP
+        return request.userId || request.ip;
+    },
+    errorResponseBuilder: (_request, context) => ({
+        error: 'Too Many Requests',
+        message: `Rate limit exceeded. Try again in ${Math.round(Number(context.after) / 1000)} seconds.`,
+        statusCode: 429,
+        retryAfter: String(context.after),
+    }),
+    addHeaders: {
+        'x-ratelimit-limit': true,
+        'x-ratelimit-remaining': true,
+        'x-ratelimit-reset': true,
+        'retry-after': true,
+    },
+    allowList: (request) => {
+        // Don't rate limit health check endpoints
+        return request.url === '/' || request.url === '/health';
+    },
+});
 
 // Security headers - Protection against common attacks
 server.register(helmet, {
@@ -119,21 +145,6 @@ type UserMeResponse = {
     }>;
 };
 
-type ValidationSuccessResponse = {
-    message: string;
-    received: any;
-};
-
-type ValidationQueryResponse = {
-    message: string;
-    filters: any;
-};
-
-type DebugResponse = {
-    body: any;
-    bodyType: string;
-    headers: any;
-};
 
 // Health check endpoint - minimal, fast, no sensitive data
 server.get<{ Reply: HealthCheckResponse }>(
@@ -171,7 +182,7 @@ server.get<{ Reply: HealthCheckResponse }>(
 
 // Root endpoint redirects to health for convenience
 server.get('/', async (request, reply) => {
-    return reply.redirect(302, '/health');
+    return reply.redirect('/health');
 });
 
 // Simple auth test endpoint - just verifies token is valid
@@ -216,48 +227,6 @@ server.get<{ Reply: UserMeResponse | UserNotFoundResponse | InternalServerError 
                 message: 'Failed to fetch user data',
             });
         }
-    }
-);
-
-// Debug endpoint to check body parsing
-server.post<{ Reply: DebugResponse }>(
-    '/validation/debug',
-    async (request: FastifyRequest, reply: FastifyReply): Promise<DebugResponse> => {
-        return {
-            body: request.body,
-            bodyType: typeof request.body,
-            headers: request.headers,
-        };
-    }
-);
-
-// Validation test endpoint - POST with body validation
-server.post<{ Reply: ValidationSuccessResponse }>(
-    '/validation/test',
-    {
-        preValidation: [validateBody(createTestDataSchema)]
-    },
-    async (request: FastifyRequest, reply: FastifyReply): Promise<ValidationSuccessResponse> => {
-        const data = request.body as any;
-        return {
-            message: 'Validation successful!',
-            received: data,
-        };
-    }
-);
-
-// Validation test endpoint - GET with query validation
-server.get<{ Reply: ValidationQueryResponse }>(
-    '/validation/query',
-    {
-        preValidation: [validateQuery(testQuerySchema)]
-    },
-    async (request: FastifyRequest, reply: FastifyReply): Promise<ValidationQueryResponse> => {
-        const query = request.query as any;
-        return {
-            message: 'Query validation successful!',
-            filters: query,
-        };
     }
 );
 

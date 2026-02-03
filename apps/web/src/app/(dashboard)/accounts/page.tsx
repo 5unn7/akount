@@ -1,0 +1,39 @@
+import { Suspense } from "react";
+import { AccountsList } from "@/components/accounts/AccountsList";
+import { Card, CardContent } from "@/components/ui/card";
+
+export default function AccountsPage() {
+    return (
+        <div className="flex-1 space-y-4 p-8 pt-6">
+            <div className="flex items-center justify-between space-y-2">
+                <h2 className="text-3xl font-bold tracking-tight font-heading">Accounts</h2>
+            </div>
+
+            <Suspense fallback={<AccountsListSkeleton />}>
+                <AccountsList />
+            </Suspense>
+        </div>
+    );
+}
+
+/**
+ * Loading skeleton for accounts list
+ */
+function AccountsListSkeleton() {
+    return (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Card key={i}>
+                    <CardContent className="pt-6">
+                        <div className="space-y-3">
+                            <div className="h-5 w-32 bg-muted animate-pulse rounded" />
+                            <div className="h-4 w-20 bg-muted animate-pulse rounded" />
+                            <div className="h-8 w-28 bg-muted animate-pulse rounded" />
+                            <div className="h-3 w-24 bg-muted animate-pulse rounded" />
+                        </div>
+                    </CardContent>
+                </Card>
+            ))}
+        </div>
+    );
+}
