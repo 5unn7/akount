@@ -1,6 +1,12 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { AccountsList } from "@/components/accounts/AccountsList";
 import { Card, CardContent } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+    title: "Accounts | Akount",
+    description: "Manage your bank accounts, credit cards, investments, and loans",
+};
 
 export default function AccountsPage() {
     return (

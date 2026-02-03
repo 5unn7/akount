@@ -40,17 +40,28 @@ export interface ListAccountsParams {
     entityId?: string;
     type?: AccountType;
     isActive?: boolean;
+    cursor?: string;
+    limit?: number;
 }
 
 /**
- * Fetch list of accounts from the API
+ * Paginated response from the accounts API
+ */
+export interface ListAccountsResponse {
+    accounts: Account[];
+    nextCursor?: string;
+    hasMore: boolean;
+}
+
+/**
+ * Fetch list of accounts from the API with pagination
  *
- * @param params - Query parameters for filtering
- * @returns Array of accounts
+ * @param params - Query parameters for filtering and pagination
+ * @returns Paginated accounts response
  */
 export async function listAccounts(
     params?: ListAccountsParams
-): Promise<Account[]> {
+): Promise<ListAccountsResponse> {
     const searchParams = new URLSearchParams();
 
     if (params?.entityId) {
@@ -65,10 +76,17 @@ export async function listAccounts(
         searchParams.append('isActive', String(params.isActive));
     }
 
+    if (params?.cursor) {
+        searchParams.append('cursor', params.cursor);
+    }
+
+    if (params?.limit !== undefined) {
+        searchParams.append('limit', String(params.limit));
+    }
+
     const endpoint = `/api/accounts${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
 
-    const response = await apiClient<{ accounts: Account[] }>(endpoint);
-    return response.accounts;
+    return apiClient<ListAccountsResponse>(endpoint);
 }
 
 /**

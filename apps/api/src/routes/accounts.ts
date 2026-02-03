@@ -6,13 +6,16 @@ import { tenantMiddleware } from '../middleware/tenant';
 
 // Validation schemas
 const accountsQuerySchema = z.object({
-    entityId: z.string().optional(),
+    entityId: z.string().cuid().optional(),
     type: z.enum(['BANK', 'CREDIT_CARD', 'INVESTMENT', 'LOAN', 'MORTGAGE', 'OTHER']).optional(),
     isActive: z.coerce.boolean().optional(),
+    // Pagination params
+    cursor: z.string().cuid().optional(),
+    limit: z.coerce.number().int().min(1).max(100).optional(),
 });
 
 const accountParamsSchema = z.object({
-    id: z.string(),
+    id: z.string().cuid(),
 });
 
 type AccountsQuery = z.infer<typeof accountsQuerySchema>;
@@ -31,20 +34,33 @@ export async function accountsRoutes(fastify: FastifyInstance) {
             try {
                 const service = new AccountService(request.tenantId as string);
                 const query = request.query as AccountsQuery;
-                const { entityId, type, isActive } = query;
+                const { entityId, type, isActive, cursor, limit } = query;
 
-                const accounts = await service.listAccounts({
+                const result = await service.listAccounts({
                     entityId,
                     type,
                     isActive,
+                    cursor,
+                    limit,
                 });
 
                 request.log.info(
-                    { userId: request.userId, tenantId: request.tenantId, count: accounts.length, filters: { entityId, type, isActive } },
+                    {
+                        userId: request.userId,
+                        tenantId: request.tenantId,
+                        count: result.accounts.length,
+                        hasMore: result.hasMore,
+                        filters: { entityId, type, isActive },
+                        pagination: { cursor, limit },
+                    },
                     'Listed accounts'
                 );
 
-                return { accounts };
+                return {
+                    accounts: result.accounts,
+                    nextCursor: result.nextCursor,
+                    hasMore: result.hasMore,
+                };
             } catch (error) {
                 request.log.error({ error, userId: request.userId, tenantId: request.tenantId }, 'Error listing accounts');
                 return reply.status(500).send({

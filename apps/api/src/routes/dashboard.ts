@@ -6,8 +6,8 @@ import { tenantMiddleware } from '../middleware/tenant';
 
 // Validation schemas
 const dashboardQuerySchema = z.object({
-    entityId: z.string().optional(),
-    currency: z.string().length(3).optional(),
+    entityId: z.string().cuid().optional(),
+    currency: z.string().length(3).toUpperCase().optional(),
 });
 
 type DashboardQuery = z.infer<typeof dashboardQuerySchema>;

@@ -18,7 +18,10 @@ import { dashboardRoutes } from './routes/dashboard';
 import { aiRoutes } from './routes/ai';
 
 const server: FastifyInstance = Fastify({
-    logger: true
+    logger: true,
+    // Trust proxy headers (X-Forwarded-For) for correct client IP behind reverse proxy
+    // Required for rate limiting to work correctly in production
+    trustProxy: true,
 });
 
 // Initialize services

@@ -27,6 +27,8 @@ export async function tenantMiddleware(
 
     try {
         // Fetch user's tenant membership
+        // Use orderBy to ensure deterministic tenant selection for multi-tenant users
+        // (always selects the oldest/first tenant they were added to)
         const tenantUser = await prisma.tenantUser.findFirst({
             where: {
                 user: {
@@ -36,6 +38,9 @@ export async function tenantMiddleware(
             select: {
                 tenantId: true,
                 role: true,
+            },
+            orderBy: {
+                createdAt: 'asc',
             },
         });
 

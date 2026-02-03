@@ -1,21 +1,48 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { EntitiesList } from "@/components/dashboard/EntitiesList";
 import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
+import { DashboardFilters } from "@/components/dashboard/DashboardFilters";
 import { Card, CardContent } from "@/components/ui/card";
+import { listEntities } from "@/lib/api/entities";
 
-export default function DashboardPage() {
+export const metadata: Metadata = {
+    title: "Dashboard | Akount",
+    description: "View your financial overview, net worth, and account summaries",
+};
+
+interface DashboardPageProps {
+    searchParams: Promise<{ entityId?: string; currency?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+    // Await searchParams (Next.js 15+ requirement)
+    const params = await searchParams;
+    const entityId = params.entityId;
+    const currency = params.currency || 'CAD';
+
+    // Fetch entities for the filter dropdown
+    let entities: Awaited<ReturnType<typeof listEntities>> = [];
+    try {
+        entities = await listEntities();
+    } catch {
+        // If entities fail to load, continue with empty list
+        // The EntitiesList component will show its own error
+    }
+
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
+            <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold tracking-tight font-heading">Dashboard</h2>
+                <DashboardFilters entities={entities} />
             </div>
 
             {/* Entities List - Real data from API */}
             <EntitiesList />
 
-            {/* Dashboard metrics - Real data from API */}
+            {/* Dashboard metrics - Real data from API with filters */}
             <Suspense fallback={<DashboardMetricsSkeleton />}>
-                <DashboardMetrics />
+                <DashboardMetrics entityId={entityId} currency={currency} />
             </Suspense>
         </div>
     );
