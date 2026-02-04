@@ -29,9 +29,9 @@ async function main() {
   const user = await prisma.user.create({
     data: {
       id: 'user_test_akount',
-      clerkUserId: 'user_REPLACE_WITH_YOUR_CLERK_ID', // Replace with actual Clerk user ID
-      email: 'demo@akount.com',
-      name: 'Demo User',
+      clerkUserId: 'user_38wV6V6GouPNwdofXmFt1VNFG5z', // Replace with actual Clerk user ID
+      email: 'servicesmarakana@gmail.com',
+      name: 'Sunny',
     },
   });
 

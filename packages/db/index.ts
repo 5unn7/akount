@@ -58,37 +58,47 @@ function hasTenantFilter(where: any): boolean {
 
 // WARNING: This middleware is in development and should be refined before production
 // For now, it logs warnings but doesn't block queries
-prisma.$use(async (params, next) => {
-    const model = params.model as string | undefined;
+// IMPORTANT: Only register middleware if NOT in Edge Runtime (Next.js middleware doesn't support $use)
+if (typeof prisma.$use === 'function') {
+    try {
+        prisma.$use(async (params, next) => {
+            const model = params.model as string | undefined;
 
-    // Check if this is a tenant-scoped model
-    if (model && TENANT_SCOPED_MODELS.includes(model as any)) {
-        const queryActions = ['findMany', 'findFirst', 'count', 'aggregate'];
+            // Check if this is a tenant-scoped model
+            if (model && TENANT_SCOPED_MODELS.includes(model as any)) {
+                const queryActions = ['findMany', 'findFirst', 'count', 'aggregate'];
 
-        if (queryActions.includes(params.action)) {
-            if (!hasTenantFilter(params.args?.where)) {
-                // In development, log warning
-                if (process.env.NODE_ENV === 'development') {
-                    console.warn(
-                        `⚠️  TENANT ISOLATION WARNING: Query on ${model} without tenant filter.`,
-                        `Action: ${params.action}`,
-                        `This could lead to cross-tenant data leaks in production.`
-                    );
+                if (queryActions.includes(params.action)) {
+                    if (!hasTenantFilter(params.args?.where)) {
+                        // In development, log warning
+                        if (process.env.NODE_ENV === 'development') {
+                            console.warn(
+                                `⚠️  TENANT ISOLATION WARNING: Query on ${model} without tenant filter.`,
+                                `Action: ${params.action}`,
+                                `This could lead to cross-tenant data leaks in production.`
+                            );
+                        }
+
+                        // In production, consider throwing an error (uncomment when ready):
+                        // if (process.env.NODE_ENV === 'production') {
+                        //     throw new Error(
+                        //         `SECURITY: Query on ${model} must include tenant isolation. ` +
+                        //         `Action: ${params.action}`
+                        //     );
+                        // }
+                    }
                 }
-
-                // In production, consider throwing an error (uncomment when ready):
-                // if (process.env.NODE_ENV === 'production') {
-                //     throw new Error(
-                //         `SECURITY: Query on ${model} must include tenant isolation. ` +
-                //         `Action: ${params.action}`
-                //     );
-                // }
             }
+
+            return next(params);
+        });
+    } catch (error) {
+        // Silently fail in Edge Runtime - middleware not supported there
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Prisma middleware not registered (Edge Runtime detected)');
         }
     }
-
-    return next(params);
-});
+}
 
 // NOTE: Graceful shutdown handlers (process.on, process.exit) are NOT included here
 // because this package is imported by Next.js middleware which runs in Edge Runtime.

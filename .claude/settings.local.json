@@ -64,7 +64,10 @@
       "WebFetch(domain:clerk.com)",
       "Bash(npx tsc:*)",
       "Bash(npm ls:*)",
-      "Bash(npx prisma validate:*)"
+      "Bash(npx prisma validate:*)",
+      "Bash(npx shadcn@latest add select -y)",
+      "Bash(npx shadcn@latest add skeleton -y)",
+      "Bash(powershell \"Get-Process node -ErrorAction SilentlyContinue | Where-Object { $_Path -like ''*next*'' -or $_CommandLine -like ''*next*'' } | Stop-Process -Force\")"
     ],
     "deny": [
       "Bash(git reset --hard *)",

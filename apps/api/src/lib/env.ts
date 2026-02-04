@@ -11,7 +11,7 @@ const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 
     // Server Configuration
-    PORT: z.coerce.number().positive().int().default(3001),
+    PORT: z.coerce.number().positive().int().default(4000),
     HOST: z.string().default('0.0.0.0'),
 
     // Database

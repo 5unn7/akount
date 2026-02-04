@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AccountService } from '../services/account.service';
 import { authMiddleware } from '../middleware/auth';
 import { tenantMiddleware } from '../middleware/tenant';
+import { validateQuery, validateParams } from '../middleware/validation';
 
 // Validation schemas
 const accountsQuerySchema = z.object({
@@ -25,10 +26,7 @@ export async function accountsRoutes(fastify: FastifyInstance) {
     fastify.get(
         '/accounts',
         {
-            onRequest: [authMiddleware, tenantMiddleware],
-            schema: {
-                querystring: accountsQuerySchema,
-            },
+            onRequest: [authMiddleware, tenantMiddleware, validateQuery(accountsQuerySchema)],
         },
         async (request: FastifyRequest, reply: FastifyReply) => {
             try {
@@ -74,10 +72,7 @@ export async function accountsRoutes(fastify: FastifyInstance) {
     fastify.get(
         '/accounts/:id',
         {
-            onRequest: [authMiddleware, tenantMiddleware],
-            schema: {
-                params: accountParamsSchema,
-            },
+            onRequest: [authMiddleware, tenantMiddleware, validateParams(accountParamsSchema)],
         },
         async (request: FastifyRequest, reply: FastifyReply) => {
             try {

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { DashboardService } from '../services/dashboard.service';
 import { authMiddleware } from '../middleware/auth';
 import { tenantMiddleware } from '../middleware/tenant';
+import { validateQuery } from '../middleware/validation';
 
 // Validation schemas
 const dashboardQuerySchema = z.object({
@@ -16,10 +17,7 @@ export async function dashboardRoutes(fastify: FastifyInstance) {
     fastify.get(
         '/dashboard/metrics',
         {
-            onRequest: [authMiddleware, tenantMiddleware],
-            schema: {
-                querystring: dashboardQuerySchema,
-            },
+            onRequest: [authMiddleware, tenantMiddleware, validateQuery(dashboardQuerySchema)],
         },
         async (request: FastifyRequest, reply: FastifyReply) => {
             try {

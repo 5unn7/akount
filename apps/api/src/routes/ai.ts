@@ -3,31 +3,37 @@ import { z } from 'zod';
 import { aiService } from '../services/ai/aiService';
 import { authMiddleware } from '../middleware/auth';
 import { tenantMiddleware } from '../middleware/tenant';
+import { validateBody } from '../middleware/validation';
 import { categorizeTransaction } from '../services/categorizationService';
+
+// Validation schemas
+const chatBodySchema = z.object({
+    messages: z.array(
+        z.object({
+            role: z.enum(['system', 'user', 'assistant']),
+            content: z.string(),
+        })
+    ),
+    options: z.object({
+        provider: z.string().optional(),
+        model: z.string().optional(),
+        temperature: z.number().optional(),
+        maxTokens: z.number().optional(),
+        systemPrompt: z.string().optional(),
+    }).optional(),
+});
+
+const categorizationBodySchema = z.object({
+    description: z.string(),
+    amount: z.number().int(), // Cents must be an integer
+});
 
 export async function aiRoutes(fastify: FastifyInstance) {
     // Chat endpoint
     fastify.post(
         '/ai/chat',
         {
-            onRequest: [authMiddleware, tenantMiddleware],
-            schema: {
-                body: z.object({
-                    messages: z.array(
-                        z.object({
-                            role: z.enum(['system', 'user', 'assistant']),
-                            content: z.string(),
-                        })
-                    ),
-                    options: z.object({
-                        provider: z.string().optional(),
-                        model: z.string().optional(),
-                        temperature: z.number().optional(),
-                        maxTokens: z.number().optional(),
-                        systemPrompt: z.string().optional(),
-                    }).optional(),
-                }),
-            },
+            onRequest: [authMiddleware, tenantMiddleware, validateBody(chatBodySchema)],
         },
         async (request, reply) => {
             const { messages, options } = request.body as any;
@@ -45,13 +51,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
     fastify.post(
         '/ai/test-categorization',
         {
-            onRequest: [authMiddleware, tenantMiddleware],
-            schema: {
-                body: z.object({
-                    description: z.string(),
-                    amount: z.number().int(), // Cents must be an integer
-                }),
-            },
+            onRequest: [authMiddleware, tenantMiddleware, validateBody(categorizationBodySchema)],
         },
         async (request, reply) => {
             const { description, amount } = request.body as any;

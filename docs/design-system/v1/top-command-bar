@@ -1,0 +1,214 @@
+This is the **brain control strip** of the whole app.
+
+If the sidebar is the *map*,
+the **Top Command Bar** is the *mission console*.
+
+This is where Akount stops feeling like accounting software and starts feeling like a **financial command center**.
+
+---
+
+# 🧠 TOP COMMAND BAR SYSTEM
+
+## 🎯 Purpose
+
+The top bar exists to control:
+
+1. **Scope** → What financial universe am I looking at?
+2. **Time** → When?
+3. **Currency context**
+4. **AI attention**
+5. **Global actions**
+
+This bar should make users feel:
+
+> “I know exactly what data I’m seeing.”
+
+---
+
+# 🧱 1. Layout Structure
+
+```
+| Entity Scope | Time Range | Currency View | Search | AI Status | Global Actions | User |
+```
+
+Sticky. Subtle elevation. Never crowded.
+
+---
+
+# 🌍 2. Entity Scope Switcher (Most Important)
+
+### UI
+
+`🌍 All Entities ▼`
+or
+`🇨🇦 CAN Corp + 🇺🇸 US LLC ▼`
+
+### Behavior
+
+Opens structured selector:
+
+```
+☑ All Entities
+— BUSINESS —
+☑ 🇨🇦 Canadian Corp
+☐ 🇺🇸 US LLC
+☐ 🇮🇳 Sole Prop
+— PERSONAL —
+☑ 👤 Personal
+```
+
+### Why this matters
+
+This prevents the #1 solopreneur error:
+**mixing personal + business in analysis**
+
+This control is **always visible**.
+
+---
+
+# 📅 3. Time Intelligence Selector
+
+Finance = time comparison.
+
+### Display:
+
+`Jan 1 – Mar 31, 2026 ▼`
+
+### Quick Presets
+
+* This Month
+* Last Month
+* This Quarter
+* YTD
+* Last Fiscal Year
+* Custom
+
+### Smart Feature
+
+Show comparison automatically:
+
+`vs Previous Period`
+
+Adds subtle ↑ ↓ indicators in KPIs.
+
+---
+
+# 💱 4. Currency View Mode
+
+This is critical for global users.
+
+### Display:
+
+`Display in: USD ▼`
+
+### Modes:
+
+| Mode      | What it means                  |
+| --------- | ------------------------------ |
+| Native    | Show original currencies       |
+| Converted | Convert everything to one base |
+| Dual      | Native + converted             |
+
+FX rate source shown on hover.
+
+This makes cross-border finances *understandable*.
+
+---
+
+# 🔍 5. Global Financial Search
+
+Not just search — **financial search**.
+
+Search across:
+
+* Transactions
+* Invoices
+* Clients
+* Accounts
+* Journal entries
+
+Examples:
+
+> “AWS February”
+> “$1200 CAD”
+> “Unreconciled”
+
+Search feels like searching a **financial database**, not text.
+
+---
+
+# 🧠 6. AI Awareness Indicator
+
+Right side, subtle but powerful.
+
+### States
+
+| State          | UI                 |
+| -------------- | ------------------ |
+| No alerts      | Violet dot idle    |
+| Insights ready | “3 Insights” badge |
+| Critical alert | Amber highlight    |
+
+Click → opens AI side panel, not new page.
+
+Feels like:
+
+> “Your financial brain has something to say.”
+
+---
+
+# ⚡ 7. Global Action Button
+
+One persistent CTA:
+
+`+ Add`
+
+Opens action palette:
+
+* Transaction
+* Invoice
+* Bill
+* Journal Entry
+* Transfer
+* Client
+* Vendor
+
+Power-user friendly.
+
+---
+
+# 👤 8. User / Workspace Controls
+
+| Element          | Purpose          |
+| ---------------- | ---------------- |
+| Profile          | Account settings |
+| Workspace switch | Multi-company    |
+| Notifications    | System alerts    |
+
+---
+
+# 🎨 Visual Rules
+
+| Element    | Style                         |
+| ---------- | ----------------------------- |
+| Height     | 56–64px                       |
+| Background | Slight elevation over content |
+| Dividers   | Soft vertical lines           |
+| Icons      | Monoline                      |
+| Text       | Compact                       |
+
+---
+
+# 🧠 The Psychological Effect
+
+Without this bar:
+
+> “I’m looking at numbers.”
+
+With this bar:
+
+> “I am controlling a financial system across countries and time.”
+
+That’s the difference between bookkeeping software and **Akount**.
+
+---
