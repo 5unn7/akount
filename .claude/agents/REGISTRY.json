@@ -317,6 +317,39 @@
       ],
       "status": "active",
       "createdDate": "2026-01-31"
+    },
+    "design-system-enforcer": {
+      "file": "review/design-system-enforcer.md",
+      "type": "review",
+      "category": "design",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "design-system",
+        "ui-compliance",
+        "colors",
+        "typography",
+        "styling",
+        "components"
+      ],
+      "status": "active",
+      "createdDate": "2026-02-05"
+    },
+    "rbac-validator": {
+      "file": "review/rbac-validator.md",
+      "type": "review",
+      "category": "security",
+      "model": "claude-sonnet-4-5-20250929",
+      "tier": 3,
+      "patterns": [
+        "rbac",
+        "permissions",
+        "role",
+        "authorization",
+        "access-control"
+      ],
+      "status": "active",
+      "createdDate": "2026-02-05"
     }
   },
   "skills": {
@@ -398,6 +431,31 @@
         "pr-comments",
         "fix-pr",
         "resolve-pr"
+      ]
+    },
+    "braindump": {
+      "file": "commands/braindump.md",
+      "type": "utility",
+      "category": "feedback",
+      "model": "claude-sonnet-4-5-20250929",
+      "patterns": [
+        "feedback",
+        "suggestion",
+        "idea",
+        "validation",
+        "review",
+        "agents",
+        "check",
+        "approach",
+        "decision"
+      ],
+      "status": "active",
+      "createdDate": "2026-02-04",
+      "aliases": [
+        "get-feedback",
+        "agent-feedback",
+        "multi-agent-review",
+        "idea-feedback"
       ]
     },
     "processes:begin": {
@@ -611,21 +669,21 @@
     }
   },
   "statistics": {
-    "totalAgents": 18,
-    "totalSkills": 15,
+    "totalAgents": 20,
+    "totalSkills": 16,
     "agentsByTier": {
       "1": 4,
       "2": 0,
-      "3": 14
+      "3": 16
     },
     "skillsByType": {
-      "utility": 4,
+      "utility": 5,
       "workflow": 7,
       "quality": 4
     },
     "agentsByCategory": {
       "financial": 1,
-      "security": 2,
+      "security": 3,
       "architecture": 1,
       "database": 2,
       "typescript": 1,
@@ -636,13 +694,15 @@
       "quality": 2,
       "history": 1,
       "exploration": 1,
-      "documentation": 2
+      "documentation": 2,
+      "design": 1
     }
   },
   "notes": {
     "phase2Complete": "2026-02-01: Downgraded 4 agents to Haiku (Tier 1) for cost optimization",
     "phase3Complete": "2026-02-01: Added aliases and keywords to all skills for better discovery",
     "phase4Complete": "2026-02-01: Added 4 quality skills (brand, design, testing, accessibility)",
+    "restructurePhase7": "2026-02-05: Added design-system-enforcer and rbac-validator agents; updated context_files for design-system restructure",
     "nextPhase": "After 1 week, evaluate Tier 1 quality. If successful, expand to Tier 2 (5-7 more agents)"
   }
 }

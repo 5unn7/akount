@@ -5,10 +5,10 @@ _source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
 context_files:
   - docs/standards/financial-data.md
-  - docs/product/data-model/README.md
-  - docs/product/overview.md
+  - docs/design-system/01-components/financial-components.md
+  - docs/design-system/05-governance/information-architecture.md
   - docs/architecture/schema-design.md
-  - docs/architecture/SCHEMA-IMPROVEMENTS.md
+  - packages/types/src/financial/
 related_agents:
   - architecture-strategist
   - prisma-migration-reviewer
@@ -333,6 +333,44 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
    - Posting expenses to revenue accounts
    - Using wrong account type for transaction
    - Missing required GL account on line item
+
+## UI Component Validation
+
+When reviewing frontend code that displays financial data:
+
+### Required Components
+- [ ] Financial amounts MUST use `<MoneyAmount>` component
+- [ ] Money inputs MUST use `<MoneyInput>` component
+- [ ] Entity context MUST use `<EntityBadge>` component
+
+### Forbidden Patterns
+- [ ] Raw number display for money (use MoneyAmount)
+- [ ] parseFloat for money calculations (use Cents type)
+- [ ] toFixed(2) for money display (use formatCents)
+- [ ] Hardcoded colors for income/expense (use semantic tokens)
+
+### Example Review
+
+```tsx
+// BAD - Raw number display
+<span>${amount.toFixed(2)}</span>
+<span className="text-green-500">${income}</span>
+
+// GOOD - MoneyAmount component with semantic colors
+import { MoneyAmount } from '@akount/ui/financial';
+<MoneyAmount amount={amount} currency="CAD" />
+<MoneyAmount amount={income} currency="CAD" colorize />
+```
+
+### Component Import Validation
+```typescript
+// CORRECT imports from @akount/ui
+import { MoneyAmount, MoneyInput } from '@akount/ui/financial';
+import { EntityBadge } from '@akount/ui/financial';
+
+// WRONG - building custom money display
+const formatMoney = (cents: number) => (cents / 100).toFixed(2); // ❌
+```
 
 ## Review Output Format
 

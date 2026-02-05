@@ -4,7 +4,8 @@ description: "Use this agent when reviewing Next.js 16+ App Router code, includi
 model: inherit
 context_files:
   - docs/architecture/decisions.md
-  - docs/architecture/evolution.md
+  - docs/design-system/02-patterns/navigation.md
+  - docs/design-system/05-governance/information-architecture.md
 related_agents:
   - kieran-typescript-reviewer
   - clerk-auth-reviewer

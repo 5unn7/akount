@@ -6,7 +6,10 @@ model: inherit
 context_files:
   - docs/standards/security.md
   - docs/standards/multi-tenancy.md
-  - docs/architecture/operations.md
+  - docs/design-system/05-governance/permissions-matrix.md
+  - docs/design-system/06-compliance/soc2.md
+  - docs/design-system/06-compliance/security.md
+  - packages/types/src/rbac/
 related_agents:
   - architecture-strategist
   - clerk-auth-reviewer
@@ -479,6 +482,46 @@ export async function POST(request: NextRequest) {
 
   const response = await fetch(url);
   return NextResponse.json(await response.json());
+}
+```
+
+## RBAC Validation
+
+Verify RBAC implementation matches design-system matrix:
+
+### 6 Canonical Roles
+- OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER, INVESTOR, ADVISOR
+
+### Route Protection
+- [ ] Admin routes check OWNER/ADMIN only
+- [ ] Accounting routes check OWNER/ADMIN/ACCOUNTANT
+- [ ] Audit log routes check OWNER/ADMIN/ACCOUNTANT
+- [ ] BOOKKEEPER cannot access accounting domain
+- [ ] INVESTOR cannot access banking domain
+
+### Audit Logging
+- [ ] All financial changes logged
+- [ ] Security events logged
+- [ ] RBAC denials logged
+
+### Permission Matrix Reference
+See: `docs/design-system/05-governance/permissions-matrix.md`
+
+```typescript
+// CORRECT: Role-based route protection
+import { withPermission } from '@/lib/rbac';
+
+export const GET = withPermission(
+  ['OWNER', 'ADMIN', 'ACCOUNTANT'],
+  async (request, { user }) => {
+    // Only accessible to specified roles
+  }
+);
+
+// WRONG: Missing role check
+export async function GET(request: NextRequest) {
+  const { userId } = await auth();
+  // Any authenticated user can access! ❌
 }
 ```
 

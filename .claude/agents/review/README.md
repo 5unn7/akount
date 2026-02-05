@@ -525,6 +525,75 @@ Use the turborepo-monorepo-reviewer agent to review this workspace change
 
 ---
 
+### design-system-enforcer
+
+**Purpose**: Validates UI code against Akount Design System specifications for colors, typography, components, and layout patterns.
+
+**When to use**:
+- UI component implementations
+- Styling and color changes
+- Typography usage
+- Financial data display components
+- Navigation patterns
+- Layout structure
+
+**How to invoke**:
+```
+Use the design-system-enforcer agent to validate UI compliance
+```
+
+**What it checks**:
+- ✓ Semantic color tokens (text-finance-income, not text-green-500)
+- ✓ Typography fonts (font-heading, font-body, font-mono)
+- ✓ MoneyAmount component for financial display
+- ✓ Design token CSS variables
+- ✓ Layout patterns (8-domain structure)
+- ✓ Component imports from @akount/ui
+
+**Critical rules enforced**:
+- 🔴 No hardcoded colors (use semantic tokens)
+- 🔴 Financial amounts MUST use MoneyAmount component
+- 🔴 Headings use font-heading, body uses font-body
+- 🟡 Money/numbers use font-mono
+- 🟡 Follow design-system spacing patterns
+
+---
+
+### rbac-validator
+
+**Purpose**: Validates RBAC implementation against the design-system permissions matrix for the 6 canonical roles.
+
+**When to use**:
+- Route protection logic
+- Authorization middleware
+- Sidebar/navigation filtering
+- Permission checks in UI
+- API access control
+- Role-based feature visibility
+
+**How to invoke**:
+```
+Use the rbac-validator agent to verify RBAC compliance
+```
+
+**What it checks**:
+- ✓ 6 canonical roles (OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER, INVESTOR, ADVISOR)
+- ✓ Permission levels (HIDDEN, VIEW, ACT, APPROVE, ADMIN)
+- ✓ Per-domain permission matrix compliance
+- ✓ Route protection with withPermission()
+- ✓ UI element hiding for HIDDEN permissions
+- ✓ Audit logging for RBAC denials
+
+**Critical rules enforced**:
+- 🔴 BOOKKEEPER cannot access accounting domain
+- 🔴 INVESTOR cannot access banking domain
+- 🔴 HIDDEN = completely invisible (not just disabled)
+- 🔴 403 returned for unauthorized (not 404)
+- 🟡 All protected routes have permission checks
+- 🟡 RBAC denials are logged
+
+---
+
 ## Agent Categories
 
 ### Financial & Data Integrity
@@ -538,7 +607,10 @@ Use the turborepo-monorepo-reviewer agent to review this workspace change
 - kieran-typescript-reviewer (type safety)
 - code-simplicity-reviewer (minimalism)
 - pattern-recognition-specialist (patterns & anti-patterns)
-- turborepo-monorepo-reviewer (monorepo structure) **NEW - Week 2**
+- turborepo-monorepo-reviewer (monorepo structure)
+
+### Design System & UI
+- design-system-enforcer (UI compliance) **NEW - Restructure Phase 7**
 
 ### Performance & Security
 - performance-oracle (optimization)
@@ -546,10 +618,11 @@ Use the turborepo-monorepo-reviewer agent to review this workspace change
 
 ### Framework-Specific
 - nextjs-app-router-reviewer (Next.js patterns)
-- fastify-api-reviewer (Fastify API patterns) **NEW - Week 2**
+- fastify-api-reviewer (Fastify API patterns)
 
 ### Authentication & Authorization
-- clerk-auth-reviewer (Clerk authentication) **NEW - Week 2**
+- clerk-auth-reviewer (Clerk authentication)
+- rbac-validator (RBAC permissions matrix) **NEW - Restructure Phase 7**
 
 ---
 
@@ -628,3 +701,7 @@ For comprehensive code review, use agents in this order:
 - fastify-api-reviewer (Akount-specific API patterns)
 - clerk-auth-reviewer (Clerk authentication security)
 - turborepo-monorepo-reviewer (Monorepo structure validation)
+
+**Restructure Phase 7 Agents** (2026-02-05):
+- design-system-enforcer (UI design system compliance)
+- rbac-validator (RBAC permissions matrix validation)

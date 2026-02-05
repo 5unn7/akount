@@ -4,12 +4,11 @@ description: "Use this agent when analyzing code changes from an architectural p
 _source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
 context_files:
-  - docs/product/overview.md
   - docs/architecture/decisions.md
-  - docs/architecture/evolution.md
-  - docs/architecture/SCHEMA-IMPROVEMENTS.md
-  - docs/product/data-model/README.md
-  - STATUS.md
+  - docs/design-system/05-governance/information-architecture.md
+  - docs/design-system/02-patterns/navigation.md
+  - docs/standards/multi-tenancy.md
+  - packages/types/src/rbac/
 related_agents:
   - kieran-typescript-reviewer
   - security-sentinel
@@ -224,7 +223,36 @@ model Invoice {
 }
 ```
 
-### 6. Integration Patterns
+### 6. Domain Structure Validation
+
+Verify code follows 8-domain architecture:
+
+#### API Routes
+- [ ] Routes in `apps/api/src/domains/` (not routes/)
+- [ ] Domain folders: overview, banking, business, accounting, planning, ai, services, system
+- [ ] Each domain has routes.ts and services/
+
+#### Web Routes
+- [ ] Routes in `apps/web/src/app/(dashboard)/`
+- [ ] Route groups match domains
+- [ ] Layout uses Sidebar + TopCommandBar
+
+#### Cross-Domain Rules
+- [ ] No imports across domain boundaries (use shared services)
+- [ ] Entity/tenant context from layout, not fetched in pages
+- [ ] Shared components in packages/ui/
+
+```typescript
+// CORRECT: Domain isolation
+// apps/api/src/domains/banking/services/transaction-service.ts
+export async function getTransactions(tenantId: string) { ... }
+
+// WRONG: Cross-domain import
+// apps/api/src/domains/banking/services/transaction-service.ts
+import { createJournalEntry } from '../accounting/services'; // ❌ Cross-domain!
+```
+
+### 7. Integration Patterns
 
 #### API Design
 - Are REST conventions followed (GET, POST, PUT, DELETE)?
