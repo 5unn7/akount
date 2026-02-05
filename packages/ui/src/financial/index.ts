@@ -6,7 +6,7 @@
  *
  * @example
  * ```tsx
- * import { MoneyAmount, MoneyInput, EntityBadge } from '@akount/ui/financial';
+ * import { MoneyAmount, MoneyInput, EntityBadge, KPICard } from '@akount/ui/financial';
  * import { cents } from '@akount/types';
  *
  * // Display formatted money
@@ -17,15 +17,18 @@
  *
  * // Show entity context
  * <EntityBadge name="Acme Inc" countryCode="CA" currency="CAD" />
+ *
+ * // Display KPIs
+ * <KPICard label="Revenue" value={4520000} currency="CAD" />
  * ```
  */
 
 export * from './MoneyAmount';
 export * from './MoneyInput';
 export * from './EntityBadge';
-
-// Future financial components:
-// export * from './AccountCard';
-// export * from './TransactionRow';
-// export * from './KPIIndicator';
-// export * from './BalanceChange';
+export * from './KPICard';
+export * from './AccountCard';
+export * from './BudgetCard';
+export * from './GLAccountSelector';
+export * from './TransactionRow';
+export * from './JournalEntryPreview';

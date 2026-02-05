@@ -4,12 +4,12 @@
  *
  * @example
  * ```tsx
- * import { Button, Input, Badge } from '@akount/ui/primitives';
+ * import { Button, Input, Badge, Chip, Select } from '@akount/ui/primitives';
  * ```
  */
 
-// TODO: Add primitive components
-// export * from './Button';
-// export * from './Input';
-// export * from './Badge';
-// export * from './Card';
+export * from './Button';
+export * from './Input';
+export * from './Select';
+export * from './Badge';
+export * from './Chip';

@@ -13,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/api/webhooks(.*)',
   '/forbidden',
+  '/brand(.*)', // Brand portal - public for demos
 ]);
 
 // Admin-only routes (OWNER, ADMIN)

@@ -1,14 +1,14 @@
 /**
- * Feedback components (toasts, alerts, progress indicators).
+ * Feedback components (toasts, alerts, modals, progress indicators).
  *
  * @example
  * ```tsx
- * import { Toast, Alert, Progress } from '@akount/ui/feedback';
+ * import { Toast, Alert, Modal, ConfirmDialog, ProgressBar } from '@akount/ui/feedback';
  * ```
  */
 
-// TODO: Add feedback components
-// export * from './Toast';
-// export * from './Alert';
-// export * from './Progress';
-// export * from './Skeleton';
+export * from './Toast';
+export * from './Alert';
+export * from './Modal';
+export * from './ConfirmDialog';
+export * from './Progress';
