@@ -1,11 +1,14 @@
 import type { Config } from "tailwindcss";
+import { akountPreset } from "@akount/design-tokens/tailwind";
 
 const config: Config = {
     darkMode: ["class"],
+    presets: [akountPreset],
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+        "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
         extend: {
@@ -63,6 +66,20 @@ const config: Config = {
                     '3': 'hsl(var(--chart-3))',
                     '4': 'hsl(var(--chart-4))',
                     '5': 'hsl(var(--chart-5))'
+                },
+                // Financial semantic colors from design-tokens
+                finance: {
+                    income: 'var(--ak-finance-income, #10B981)',
+                    expense: 'var(--ak-finance-expense, #EF4444)',
+                    transfer: 'var(--ak-finance-transfer, #3B82F6)',
+                    liability: 'var(--ak-finance-liability, #F59E0B)',
+                    equity: 'var(--ak-finance-equity, #14B8A6)',
+                },
+                // AI accent colors
+                ai: {
+                    DEFAULT: 'var(--ak-ai, #8B5CF6)',
+                    accent: 'var(--ak-ai-accent, rgba(139,92,246,0.10))',
+                    border: 'var(--ak-ai-border, rgba(139,92,246,0.35))',
                 }
             }
         }

@@ -1,0 +1,38 @@
+{
+  "name": "@akount/ui",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./primitives": "./src/primitives/index.ts",
+    "./data-display": "./src/data-display/index.ts",
+    "./feedback": "./src/feedback/index.ts",
+    "./financial": "./src/financial/index.ts",
+    "./ai": "./src/ai/index.ts",
+    "./patterns/navigation": "./src/patterns/navigation/index.ts",
+    "./patterns/tables": "./src/patterns/tables/index.ts",
+    "./patterns/forms": "./src/patterns/forms/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@akount/design-tokens": "*",
+    "@akount/types": "*",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}

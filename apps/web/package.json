@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@akount/db": "*",
+        "@akount/design-tokens": "*",
         "@akount/types": "*",
         "@clerk/nextjs": "^6.37.0",
         "@radix-ui/react-avatar": "^1.1.11",

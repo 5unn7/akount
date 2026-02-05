@@ -1,158 +1,130 @@
 # Akount Documentation
 
-**Last Updated:** 2026-02-02
-**Purpose:** Central index for all architecture, product, and technical documentation.
-
----
-
-## Quick Start Paths
-
-### For New Developers
-1. **[/README.md](/README.md)** - Project overview and quick start
-2. **[product/overview.md](./product/overview.md)** - What we're building
-3. **[architecture/decisions.md](./architecture/decisions.md)** - Tech stack and why
-4. **[/STATUS.md](/STATUS.md)** - Current implementation state
-
-### For AI Agents
-**IMPORTANT:** Read **/CLAUDE.md** first - it's automatically loaded and provides comprehensive context.
-
----
+> **Last Updated:** 2026-02-05
+> **Source of Truth:** This `docs/` folder
 
 ## Documentation Structure
 
+| Folder | Purpose | When to Use |
+|--------|---------|-------------|
+| `design-system/` | UI/UX specifications | Building features, reviewing UI |
+| `standards/` | Implementation rules | Writing code, code reviews |
+| `architecture/` | Technical decisions | Understanding system design |
+| `guides/` | How-to guides | Onboarding, setup |
+| `product/` | Product overview | Understanding the product |
+| `restructuring/` | Phase execution plans | Executing restructure |
+| `archive/` | Historical docs | Reference only |
+
+## Quick Links
+
+### For Developers
+
+- **[Setup Guide](./guides/setup.md)** - Get started with development
+- **[API Standards](./standards/api-design.md)** - Fastify route patterns
+- **[Financial Data Rules](./standards/financial-data.md)** - Money handling
+- **[Multi-tenancy](./standards/multi-tenancy.md)** - Tenant isolation
+- **[Security](./standards/security.md)** - OWASP, input validation
+
+### For UI/UX
+
+- **[Design Philosophy](./design-system/00-foundations/philosophy.md)** - Design principles
+- **[Components](./design-system/01-components/)** - Component specifications
+- **[Patterns](./design-system/02-patterns/)** - UI patterns
+- **[Screens](./design-system/03-screens/)** - Feature specifications
+
+### For Reviewers
+
+- **[Information Architecture](./design-system/05-governance/information-architecture.md)** - Domain structure
+- **[Permissions Matrix](./design-system/05-governance/permissions-matrix.md)** - RBAC roles
+- **[SOC 2 Controls](./design-system/06-compliance/soc2.md)** - Compliance
+
+## Folder Details
+
 ```
 docs/
-├── README.md                    # This file (index)
+├── design-system/              # UI/UX specifications
+│   ├── 00-foundations/         # Colors, typography, tokens
+│   ├── 01-components/          # Component specs
+│   ├── 02-patterns/            # Navigation, forms, tables
+│   ├── 03-screens/             # Feature specifications
+│   ├── 04-workflows/           # User flows
+│   ├── 05-governance/          # IA, permissions
+│   ├── 06-compliance/          # Security, SOC 2
+│   └── 07-reference/           # Reference docs
 │
-├── product/                     # Product specifications
-│   ├── overview.md              # Product vision, target users, value prop
-│   └── data-model/README.md     # Database schema (40+ Prisma models)
+├── standards/                  # Implementation rules
+│   ├── api-design.md           # API patterns, validation
+│   ├── financial-data.md       # Money, double-entry
+│   ├── multi-tenancy.md        # Tenant isolation
+│   └── security.md             # OWASP, input validation
 │
-├── architecture/                # Technical decisions
-│   ├── decisions.md             # Tech stack and rationale
-│   ├── evolution.md             # Phase-by-phase architecture evolution
-│   ├── ARCHITECTURE-HOOKS.md    # Future-proof hooks inventory
-│   ├── SCHEMA-IMPROVEMENTS.md   # Schema enhancements backlog
-│   ├── schema-design.md         # Database design patterns
-│   ├── processes.md             # Development workflows
-│   └── operations.md            # Operational procedures
+├── architecture/               # Technical decisions
+│   ├── decisions.md            # Tech stack choices
+│   └── schema-design.md        # Database patterns
 │
-├── features/                    # Feature specifications (7 phases)
-│   ├── 01-accounts-overview.md  # Phase 1: Dashboard
-│   ├── 02-bank-reconciliation.md # Phase 2: Bank feeds
-│   ├── 03-transactions-bookkeeping.md # Phase 3: GL
-│   ├── 04-invoicing-bills.md    # Phase 4: AR/AP
-│   ├── 05-analytics.md          # Phase 5: Reports
-│   ├── 06-planning.md           # Phase 6: Budgets
-│   └── 07-ai-financial-advisor.md # Phase 7: AI
+├── guides/                     # How-to guides
+│   ├── setup.md                # Development setup
+│   ├── passkey-auth.md         # WebAuthn guide
+│   └── TRACKING-GUIDE.md       # STATUS/TASKS guide
 │
-├── standards/                   # Coding standards (CRITICAL)
-│   ├── README.md                # Standards overview
-│   ├── multi-tenancy.md         # Tenant isolation patterns
-│   ├── financial-data.md        # Double-entry, money handling
-│   ├── api-design.md            # Fastify conventions
-│   └── security.md              # OWASP, input validation
+├── product/                    # Product overview
+│   ├── overview.md             # Product vision
+│   └── data-model/README.md    # Schema documentation
 │
-├── design-system/               # UI/UX specifications
-│   ├── README.md                # Design system overview
-│   ├── tailwind-colors.md       # Color palette
-│   ├── fonts.md                 # Typography
-│   ├── theme-system.md          # Light/dark mode
-│   ├── tokens.css               # CSS custom properties
-│   ├── ADDING-TOKENS.md         # Token creation guide
-│   └── COMPONENTS-REFERENCE.md  # Component usage
+├── restructuring/              # Phase execution (current)
+│   ├── README.md               # Phase status
+│   └── phase-*.md              # Phase details
 │
-├── setup/                       # Setup guides
-│   ├── DATABASE-SETUP.md        # PostgreSQL + Prisma
-│   ├── BACKUP-SECURITY.md       # Backup and security
-│   ├── onboarding-setup.md      # Onboarding wizard
-│   ├── TEST_CREDENTIALS.md      # Test credentials
-│   └── NEXT-STEPS.md            # Post-installation
+├── brainstorms/                # Feature exploration
+├── plans/                      # Implementation plans
+├── solutions/                  # Solved problems
 │
-├── guides/                      # Development guides
-│   ├── passkey-auth.md          # WebAuthn implementation
-│   ├── QUICK_START_AGENTS.md    # Agent getting started
-│   ├── CUSTOM_AGENTS_TEMPLATES.md # Agent creation
-│   └── TRACKING-GUIDE.md        # STATUS/TASKS maintenance
-│
-├── brainstorms/                 # Workflow outputs (/processes:brainstorm)
-│   └── [timestamped files]      # Feature exploration docs
-│
-├── plans/                       # Workflow outputs (/processes:plan)
-│   └── [timestamped files]      # Implementation plans
-│
-├── solutions/                   # Workflow outputs (/processes:compound)
-│   ├── README.md                # Solutions guide
-│   └── architecture/            # Documented solutions
-│
-└── archive/                     # Historical documents
-    └── original-engineering-roadmap.md
+└── archive/                    # Historical
+    ├── pre-restructure/        # Superseded docs
+    └── sessions/               # Session reports
 ```
 
----
+## Critical Standards
 
-## Core Documentation
+### Money Handling
+```typescript
+// CORRECT: Integer cents
+amount: 1050 // $10.50
 
-### Product
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| **product/overview.md** | Product vision, multi-jurisdiction AI financial advisor for solopreneurs | Everyone |
-| **product/data-model/README.md** | 40+ Prisma models, schema documentation | Developers |
+// WRONG: Never use float
+amount: 10.50
+```
 
-### Architecture
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| **architecture/decisions.md** | Tech stack (Next.js 16, Fastify, PostgreSQL) | Developers |
-| **architecture/evolution.md** | Phase-by-phase architecture roadmap | Architects |
-| **architecture/SCHEMA-IMPROVEMENTS.md** | Schema enhancements (enums, indexes, multi-jurisdiction) | Database devs |
-| **architecture/ARCHITECTURE-HOOKS.md** | Future feature hooks inventory | Architects |
+### Multi-Tenancy
+```typescript
+// ALWAYS include tenantId
+const data = await prisma.entity.findMany({
+  where: { tenantId: user.tenantId } // REQUIRED
+})
+```
 
-### Standards (CRITICAL - Must Read)
-| Document | Purpose | Audience |
-|----------|---------|----------|
-| **standards/multi-tenancy.md** | Tenant isolation - ALL queries must filter by tenantId | All developers |
-| **standards/financial-data.md** | Integer cents, double-entry, audit trails | All developers |
-| **standards/security.md** | OWASP, input validation, sensitive data | All developers |
-| **standards/api-design.md** | Fastify patterns, Zod validation | Backend devs |
-
----
-
-## Workflow Directories
-
-These directories are created by Claude workflow commands:
-
-| Directory | Created By | Purpose |
-|-----------|------------|---------|
-| `brainstorms/` | `/processes:brainstorm` | Feature exploration and requirements |
-| `plans/` | `/processes:plan` | Implementation plans |
-| `solutions/` | `/processes:compound` | Documented problem solutions |
-
-**Do not manually delete** - these capture valuable decision-making history.
-
----
-
-## Document Update Frequency
-
-| Document | Frequency | Owner |
-|----------|-----------|-------|
-| **/STATUS.md** | Weekly | Engineering |
-| **/ROADMAP.md** | Weekly | Engineering |
-| **product/overview.md** | Rarely | Product |
-| **architecture/*.md** | Rarely | Architecture |
-| **standards/*.md** | Rarely | Engineering |
-| **features/*.md** | Sometimes | Product |
-
----
+### RBAC Roles
+- OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER, INVESTOR, ADVISOR
+- See permissions matrix for access levels
 
 ## Questions?
 
-- **Implementation status?** → Check `/STATUS.md`
-- **What to work on?** → Check `/TASKS.md`
-- **Tech decisions?** → Check `architecture/decisions.md`
-- **Feature requirements?** → Check `features/*.md`
-- **Coding standards?** → Check `standards/*.md`
+| Question | Document |
+|----------|----------|
+| Implementation status? | `/STATUS.md` |
+| What to work on? | `/TASKS.md` |
+| Tech decisions? | `architecture/decisions.md` |
+| Feature specs? | `design-system/03-screens/` |
+| Coding standards? | `standards/` |
+| Project context? | `/CLAUDE.md` |
+
+## Governance
+
+- Design system changes require review
+- Standards changes require team approval
+- Architecture changes require ADR
 
 ---
 
 **Maintainer:** Engineering Team
-**Last Reorganized:** 2026-02-02 (77 → 53 files)
+**Last Restructured:** 2026-02-05

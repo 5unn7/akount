@@ -1,108 +1,95 @@
-# Akount Coding Standards
+# Implementation Standards
 
-**Purpose:** Domain-specific standards for Akount accounting platform
-**Last Updated:** 2026-01-30
+> **Last Updated:** 2026-02-05
 
----
+These standards define **HOW** to implement features correctly.
 
-## Overview
+## Reference Design System
 
-These standards document Akount-specific patterns and requirements. They complement the generic coding standards in `agent-os/standards/` with domain knowledge about accounting, multi-tenancy, and financial data handling.
+For **WHAT** to build, see:
+- `docs/design-system/` - UI/UX specifications
 
----
+## Standards
 
-## Available Standards
+| Standard | Purpose | Criticality |
+|----------|---------|-------------|
+| [multi-tenancy.md](./multi-tenancy.md) | Tenant isolation patterns | **Critical** |
+| [financial-data.md](./financial-data.md) | Money handling, double-entry | **Critical** |
+| [security.md](./security.md) | OWASP, input validation | **Critical** |
+| [api-design.md](./api-design.md) | Fastify conventions | Recommended |
 
-### [multi-tenancy.md](./multi-tenancy.md)
-**Critical:** ALL code must follow tenant isolation patterns
-- Query patterns (ALWAYS filter by tenantId)
-- Middleware enforcement
-- Security requirements
-- Common pitfalls and violations
+## Key Rules (Zero Tolerance)
 
-### [financial-data.md](./financial-data.md)
-**Critical:** ALL financial data must follow these rules
-- Double-entry bookkeeping integrity
-- Money handling (integer cents, NEVER float)
-- Audit trail requirements
-- Soft delete policy
-- Source document preservation
+### 1. TenantId in EVERY Query
+```typescript
+// CORRECT
+const data = await prisma.entity.findMany({
+  where: { tenantId: user.tenantId } // REQUIRED
+})
 
-### [api-design.md](./api-design.md)
-**Recommended:** Fastify API conventions
-- Route structure and naming
-- Error handling patterns
-- Request validation with Zod
-- Response formatting
-- Authentication middleware
-
-### [security.md](./security.md)
-**Critical:** Security requirements and OWASP compliance
-- Input validation and sanitization
-- Authentication and authorization
-- Sensitive data handling
-- SQL injection prevention
-- XSS prevention
-- CSRF protection
-
----
-
-## How to Use
-
-### For Developers
-1. Read relevant standards before implementing features
-2. Reference during code reviews
-3. Update when patterns evolve
-
-### For AI Agents
-```bash
-# CLAUDE.md automatically references these standards
-# Agents should read relevant standards based on task:
-
-# Working with tenant data?
-→ Read docs/standards/multi-tenancy.md
-
-# Handling money or journal entries?
-→ Read docs/standards/financial-data.md
-
-# Creating API endpoints?
-→ Read docs/standards/api-design.md
-
-# Any user input or external data?
-→ Read docs/standards/security.md
+// WRONG - Security violation
+const data = await prisma.entity.findMany({
+  where: { id: entityId } // Missing tenantId
+})
 ```
 
-### Integration with Agent OS
-These standards work alongside `agent-os/standards/`:
-- **Agent OS Standards** - Generic patterns (imports, components, monorepo)
-- **Akount Standards** - Domain patterns (tenancy, accounting, security)
+### 2. Money = Integer Cents
+```typescript
+// CORRECT
+amount: 1050 // $10.50
 
-Use `/inject-standards` to load relevant generic standards.
+// WRONG - Precision errors
+amount: 10.50
+```
 
----
+### 3. Soft Deletes Only
+```typescript
+// CORRECT
+await prisma.invoice.update({
+  where: { id },
+  data: { deletedAt: new Date() }
+})
 
-## Enforcement
+// WRONG - Destroys audit trail
+await prisma.invoice.delete({ where: { id } })
+```
 
-**Critical Standards (Zero Tolerance):**
-- Multi-tenancy isolation
-- Money precision (integer cents)
-- Audit trail preservation
-- Soft delete policy
+### 4. Audit All Financial Changes
+```typescript
+// Every financial write must have:
+createdBy: user.id,
+updatedBy: user.id,
+sourceDocument: JSON.stringify(originalData)
+```
 
-**Recommended Standards (Should Follow):**
-- API design patterns
-- Error handling conventions
-- Code organization
+## When to Read Which Standard
 
----
+| Task | Read |
+|------|------|
+| Working with tenant data | [multi-tenancy.md](./multi-tenancy.md) |
+| Handling money/journals | [financial-data.md](./financial-data.md) |
+| Creating API endpoints | [api-design.md](./api-design.md) |
+| Processing user input | [security.md](./security.md) |
 
 ## Related Documentation
 
-- `docs/architecture/decisions.md` - Tech stack and architecture choices
-- `docs/architecture/ARCHITECTURE-HOOKS.md` - Future-proof architecture patterns
-- `docs/product/data-model/README.md` - Database schema explanations
-- `agent-os/standards/` - Generic coding standards
+| Topic | Location |
+|-------|----------|
+| Tech stack decisions | `docs/architecture/decisions.md` |
+| Database schema | `docs/product/data-model/README.md` |
+| UI specifications | `docs/design-system/` |
+| Component patterns | `docs/design-system/01-components/` |
+| Permission matrix | `docs/design-system/05-governance/permissions-matrix.md` |
+
+## Enforcement
+
+**Critical standards** are enforced by:
+- Code review checklists
+- Review agents (`financial-data-validator`, `security-sentinel`)
+- Middleware validation
+
+**Recommended standards** are guidelines for consistency.
 
 ---
 
-**Questions or proposed changes?** Discuss with team and update standards accordingly.
+**Questions?** Check `/CLAUDE.md` for project context or update standards with team approval.

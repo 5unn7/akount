@@ -36,6 +36,12 @@ Skills are organized into:
 **Description:** Resolve all PR comments using parallel processing
 **Use case:** Resolve PR review comments 4x faster using parallel agent processing
 
+### braindump
+**Command:** `/braindump [your suggestion, idea, code, or architecture question]`
+**Description:** Get multi-agent feedback on suggestions, ideas, code, or architectural decisions
+**Use case:** Validate ideas before implementation by getting feedback from 18 specialized agents
+**Aliases:** `get-feedback`, `agent-feedback`, `multi-agent-review`
+
 ---
 
 ## Workflow Skills (Processes)
@@ -157,6 +163,13 @@ These skills validate code quality, design consistency, testing, and accessibili
 - Want fast resolution (4x faster than sequential)
 - Comments are independent (can be resolved in parallel)
 
+**Use `/braindump`** when:
+- Have an idea and want expert feedback before investing time
+- Wrote code and want multi-perspective validation
+- Proposing architectural decision and want expert input
+- Uncertain about an approach and want specialist feedback
+- Want to validate assumptions against domain knowledge
+
 ### When to Use Quality Skills
 
 **Use `/quality:brand-voice-check`** when:
@@ -258,6 +271,6 @@ Purpose and usage documentation...
 
 ## Last Updated
 
-**Date:** 2026-02-01
-**Reason:** Added 4 quality skills (brand, design, testing, accessibility)
-**Total Skills:** 15 (4 utility + 7 workflow + 4 quality)
+**Date:** 2026-02-04
+**Reason:** Added braindump utility skill for multi-agent feedback on suggestions/ideas/code
+**Total Skills:** 16 (5 utility + 7 workflow + 4 quality)

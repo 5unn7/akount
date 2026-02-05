@@ -406,3 +406,15 @@ export function isSuccessResponse<T>(response: unknown): response is SuccessResp
     response.success === true
   );
 }
+
+// ============================================================================
+// Financial Types (branded Cents, Currency, formatting)
+// ============================================================================
+
+export * from './financial';
+
+// ============================================================================
+// RBAC Types (Role, PermissionLevel, permission matrix)
+// ============================================================================
+
+export * from './rbac';

@@ -23,6 +23,9 @@
             "@akount/db": [
                 "packages/db"
             ],
+            "@akount/design-tokens": [
+                "packages/design-tokens"
+            ],
             "@akount/types": [
                 "packages/types"
             ]

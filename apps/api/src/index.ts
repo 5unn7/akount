@@ -10,12 +10,16 @@ import { errorHandler } from './middleware/errorHandler';
 // Validation middleware available for routes (removed debug endpoints for security)
 import { HealthService } from './services/health.service';
 import { UserService, UserNotFoundError } from './services/user.service';
-import { entitiesRoutes } from './routes/entities';
-import { importRoutes } from './routes/import';
-import { onboardingRoutes } from './routes/onboarding';
-import { accountsRoutes } from './routes/accounts';
-import { dashboardRoutes } from './routes/dashboard';
-import { aiRoutes } from './routes/ai';
+
+// Domain routes (Phase 4 restructure)
+import { overviewRoutes } from './domains/overview';
+import { bankingRoutes } from './domains/banking';
+import { businessRoutes } from './domains/business';
+import { accountingRoutes } from './domains/accounting';
+import { planningRoutes } from './domains/planning';
+import { aiRoutes } from './domains/ai';
+import { servicesRoutes } from './domains/services';
+import { systemRoutes } from './domains/system';
 
 const server: FastifyInstance = Fastify({
     logger: true,
@@ -106,13 +110,15 @@ server.register(multipart, {
     },
 });
 
-// Register API routes
-server.register(entitiesRoutes, { prefix: '/api' });
-server.register(importRoutes, { prefix: '/api' });
-server.register(onboardingRoutes, { prefix: '/api' });
-server.register(accountsRoutes, { prefix: '/api' });
-server.register(dashboardRoutes, { prefix: '/api' });
-server.register(aiRoutes, { prefix: '/api' });
+// Register domain routes with prefixes (Phase 4 restructure)
+server.register(overviewRoutes, { prefix: '/api/overview' });
+server.register(bankingRoutes, { prefix: '/api/banking' });
+server.register(businessRoutes, { prefix: '/api/business' });
+server.register(accountingRoutes, { prefix: '/api/accounting' });
+server.register(planningRoutes, { prefix: '/api/planning' });
+server.register(aiRoutes, { prefix: '/api/ai' });
+server.register(servicesRoutes, { prefix: '/api/services' });
+server.register(systemRoutes, { prefix: '/api/system' });
 
 // Define response types for type safety
 type HealthCheckResponse = {
