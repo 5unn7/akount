@@ -38,7 +38,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             </div>
 
             {/* Entities List - Real data from API */}
-            <EntitiesList />
+            <EntitiesList entities={entities} />
 
             {/* Dashboard metrics - Real data from API with filters */}
             <Suspense fallback={<DashboardMetricsSkeleton />}>
@@ -51,7 +51,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
 /**
  * Loading skeleton for dashboard metrics
  */
-function DashboardMetricsSkeleton() {
+function DashboardMetricsSkeleton(): React.ReactElement {
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (

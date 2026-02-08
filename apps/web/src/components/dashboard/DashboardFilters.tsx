@@ -19,7 +19,7 @@ interface DashboardFiltersProps {
  * Dashboard filter controls - Client Component
  * Manages entity and currency filter state via URL params
  */
-export function DashboardFilters({ entities }: DashboardFiltersProps) {
+export function DashboardFilters({ entities }: DashboardFiltersProps): React.ReactElement {
     const router = useRouter();
     const searchParams = useSearchParams();
 

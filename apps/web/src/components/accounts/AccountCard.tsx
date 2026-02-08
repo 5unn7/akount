@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Account } from "@/lib/api/accounts";
+import { Account, type AccountType } from "@/lib/api/accounts";
 import { formatCurrency } from "@/lib/utils/currency";
 import {
     Landmark,
@@ -8,9 +8,10 @@ import {
     TrendingUp,
     Home,
     DollarSign,
+    type LucideIcon,
 } from "lucide-react";
 
-const accountTypeIcons = {
+const accountTypeIcons: Record<AccountType, LucideIcon> = {
     BANK: Landmark,
     CREDIT_CARD: CreditCard,
     INVESTMENT: TrendingUp,
@@ -19,7 +20,7 @@ const accountTypeIcons = {
     OTHER: DollarSign,
 };
 
-const accountTypeLabels = {
+const accountTypeLabels: Record<AccountType, string> = {
     BANK: "Bank Account",
     CREDIT_CARD: "Credit Card",
     INVESTMENT: "Investment",
@@ -32,7 +33,7 @@ const accountTypeLabels = {
  * Account card component
  * Displays account summary information
  */
-export function AccountCard({ account }: { account: Account }) {
+export function AccountCard({ account }: { account: Account }): React.ReactElement {
     const Icon = accountTypeIcons[account.type];
     const isNegative = account.currentBalance < 0;
 

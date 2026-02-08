@@ -385,11 +385,12 @@ model CreditNote {
   linkedInvoiceId  String?
   linkedBillId     String?
   status           String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  entity           Entity   @relation(fields: [entityId], references: [id])
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+  entity           Entity    @relation(fields: [entityId], references: [id])
 
-  @@index([entityId])
+  @@index([entityId, deletedAt])
 }
 
 model Account {

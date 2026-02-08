@@ -1,108 +1,12 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useAuth } from '@clerk/nextjs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, User, Loader2, AlertCircle } from 'lucide-react';
+import { Building2, User } from 'lucide-react';
+import type { Entity } from '@/lib/api/entities';
 
-type Entity = {
-    id: string;
-    name: string;
-    type: string;
-    currency: string;
-};
-
-type EntitiesResponse = {
+interface EntitiesListProps {
     entities: Entity[];
-};
+}
 
-export function EntitiesList() {
-    const { getToken } = useAuth();
-    const [entities, setEntities] = useState<Entity[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        async function fetchEntities() {
-            try {
-                setLoading(true);
-                setError(null);
-
-                // Get authentication token from Clerk
-                const token = await getToken();
-
-                if (!token) {
-                    throw new Error('Not authenticated');
-                }
-
-                // Fetch entities from API
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-                const response = await fetch(`${apiUrl}/api/entities`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        throw new Error('Authentication failed. Please sign in again.');
-                    }
-                    if (response.status === 404) {
-                        throw new Error('No tenant found. Please contact support.');
-                    }
-                    throw new Error(`Failed to fetch entities: ${response.statusText}`);
-                }
-
-                const data: EntitiesResponse = await response.json();
-                setEntities(data.entities);
-            } catch (err) {
-                const errorMessage = err instanceof Error ? err.message : 'Failed to load entities';
-                setError(errorMessage);
-                console.error('Error fetching entities:', err);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchEntities();
-    }, [getToken]);
-
-    // Loading state
-    if (loading) {
-        return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Your Entities</CardTitle>
-                    <CardDescription>Loading your entities...</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-center py-8">
-                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                    </div>
-                </CardContent>
-            </Card>
-        );
-    }
-
-    // Error state
-    if (error) {
-        return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Your Entities</CardTitle>
-                    <CardDescription>Failed to load entities</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center gap-2 text-destructive">
-                        <AlertCircle className="h-5 w-5" />
-                        <p className="text-sm">{error}</p>
-                    </div>
-                </CardContent>
-            </Card>
-        );
-    }
-
-    // Empty state
+export function EntitiesList({ entities }: EntitiesListProps): React.ReactElement {
     if (entities.length === 0) {
         return (
             <Card>
@@ -119,7 +23,6 @@ export function EntitiesList() {
         );
     }
 
-    // Success state - display entities
     return (
         <Card>
             <CardHeader>

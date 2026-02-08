@@ -13,7 +13,7 @@ export async function DashboardMetrics({
 }: {
     entityId?: string;
     currency?: string;
-}) {
+}): Promise<React.ReactElement> {
     try {
         const metrics = await getDashboardMetrics(entityId, currency);
 
