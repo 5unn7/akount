@@ -1,6 +1,6 @@
 # Akount Project - Agent Context
 
-> **Last Updated:** 2026-02-05
+> **Last Updated:** 2026-02-07
 > **Source of Truth:** `docs/` folder
 
 ## Quick Reference
@@ -12,6 +12,76 @@
 | Architecture decisions | `docs/architecture/` |
 | Setup guide | `docs/guides/setup.md` |
 | Current status | `STATUS.md` |
+
+---
+
+## Visual Context
+
+Load these at session start for system understanding:
+
+| Document | Purpose | Load When |
+|----------|---------|-----------|
+| `docs/architecture.mmd` | 5 Mermaid diagrams (system, flow, states) | Every session |
+| `docs/domain-glossary.md` | Canonical definitions + invariants | Every session |
+| `docs/repo-map.md` | "Change X, look here" navigation | Every session |
+
+### Key Invariants (Memorize These)
+
+1. **Tenant Isolation:** Every query MUST filter by `tenantId`
+2. **Money Precision:** All amounts stored as integer cents (1050 = $10.50)
+3. **Double-Entry:** `SUM(debits) === SUM(credits)` always
+4. **Soft Delete:** Never hard delete, use `deletedAt`
+5. **Source Preservation:** Store `sourceDocument` for journal entries
+
+---
+
+## Session Management
+
+| Command | Purpose |
+|---------|---------|
+| `/processes:begin` | Start session with full context loading |
+| `/processes:eod` | End session with cleanup and documentation |
+| `/processes:reset` | Reload context if rules violated |
+
+### CLI Scripts (Alternative)
+
+```bash
+./scripts/ai/begin.sh [focus-area]   # Quick session start
+./scripts/ai/end.sh                   # Quick session end
+./scripts/ai/update-context.sh        # Check for doc updates needed
+```
+
+---
+
+## Guardrails
+
+### Automatic Enforcement (Hooks)
+
+The following rules are enforced by hooks and will BLOCK violations:
+
+| Rule | Violation | Hook |
+|------|-----------|------|
+| Integer cents | `amount: 10.50` | `hard-rules.sh` |
+| Hard delete on financial | `prisma.invoice.delete()` | `hard-rules.sh` |
+| File location | Brainstorm not in `docs/brainstorms/` | `hard-rules.sh` |
+| Float in schema | `amount Float` in Prisma | `context-validate.sh` |
+
+### Reset Triggers
+
+Use `/processes:reset` when:
+- AI uses floats for money
+- AI forgets tenantId in queries
+- AI creates files in wrong locations
+- AI proposes destructive actions without warning
+- Session feels "off track"
+
+### Trigger Phrases
+
+Say any of these to trigger context reset:
+- "Reset context"
+- "You're off track"
+- "Check the rules"
+- "Reload context"
 
 ---
 

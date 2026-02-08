@@ -80,7 +80,8 @@
       "Bash(pnpm --filter @akount/api exec tsc:*)",
       "Bash(powershell -Command \"Remove-Item -Recurse -Force ''W:\\\\Marakana Corp\\\\Companies\\\\akount\\\\Development\\\\Brand\\\\aggoogle\\\\product-plan\\\\apps\\\\api\\\\src\\\\domains\\\\money-movement''\")",
       "Bash([ -d docs/features ])",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "mcp__figma-console__figma_get_status"
     ],
     "deny": [
       "Bash(git reset --hard *)",
@@ -140,6 +141,10 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/hard-rules.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/context-validate.sh"
           }
         ]
       },
@@ -161,6 +166,10 @@
           {
             "type": "command",
             "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/auto-format.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-track.sh"
           }
         ]
       }

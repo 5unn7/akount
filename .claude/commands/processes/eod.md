@@ -357,6 +357,122 @@ Before closing your session, verify:
 
 ---
 
+## Phase 8: Context Documentation Update
+
+Check if session changes require updates to context documentation.
+
+### Step 8a: Review Session Changes
+
+```bash
+# Check what files were modified this session
+if [ -f .claude/session-changes.log ]; then
+  echo "Files modified this session:"
+  cat .claude/session-changes.log
+fi
+
+# Check context update flags
+if [ -f .claude/context-update-flags.txt ]; then
+  echo ""
+  echo "Context updates needed:"
+  cat .claude/context-update-flags.txt
+fi
+```
+
+### Step 8b: Schema Changes → Update domain-glossary.md
+
+**If schema.prisma was modified:**
+
+```bash
+# Check for schema changes
+git diff HEAD~5 -- packages/database/prisma/schema.prisma | head -50
+```
+
+**Update checklist:**
+- [ ] New models added → Add to domain glossary
+- [ ] Fields renamed → Update references
+- [ ] Relationships changed → Update cross-references
+- [ ] Invariants affected → Update invariant documentation
+
+```bash
+# Open glossary for update
+cat docs/domain-glossary.md
+```
+
+### Step 8c: Route/Service Changes → Update repo-map.md
+
+**If API routes or services were added/modified:**
+
+```bash
+# Check for route changes
+git diff HEAD~5 -- apps/api/src/domains/ --stat
+```
+
+**Update checklist:**
+- [ ] New domain created → Add to domain list
+- [ ] New routes added → Update quick navigation table
+- [ ] Patterns changed → Update "Common Patterns" section
+
+```bash
+# Open repo map for update
+cat docs/repo-map.md | head -80
+```
+
+### Step 8d: Architecture Changes → Update architecture.mmd
+
+**If middleware, plugins, or system structure changed:**
+
+```bash
+# Check for architectural changes
+git diff HEAD~5 -- apps/api/src/middleware/ apps/api/src/plugins/ --stat
+```
+
+**Update checklist:**
+- [ ] New service added → Update System Overview diagram
+- [ ] Request flow changed → Update Request Flow sequence
+- [ ] State machine modified → Update relevant state diagram
+- [ ] Permissions changed → Update Permission Model diagram
+
+```bash
+# Open architecture diagrams for update
+cat docs/architecture.mmd | head -100
+```
+
+### Step 8e: Clear Context Flags
+
+```bash
+# Archive today's context flags
+if [ -f .claude/context-update-flags.txt ]; then
+  mv .claude/context-update-flags.txt \
+     docs/archive/sessions/context-flags-$(date +%Y-%m-%d).txt
+fi
+
+# Clear session state for next session
+rm -f .claude/session-state.json
+rm -f .claude/session-changes.log
+```
+
+### Step 8f: Context Update Summary
+
+Generate summary of context documentation updates:
+
+```markdown
+## Context Documentation Updates - [Date]
+
+### Updated Files
+- [ ] docs/domain-glossary.md - [Reason if updated]
+- [ ] docs/repo-map.md - [Reason if updated]
+- [ ] docs/architecture.mmd - [Reason if updated]
+- [ ] CLAUDE.md - [Reason if updated]
+
+### Deferred Updates
+- [Any updates deferred to next session]
+
+### Notes for Next Session
+- [Any context notes for continuity]
+```
+
+---
+
 ## Quick Reference
 
 **Files to Update:**

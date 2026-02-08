@@ -57,7 +57,7 @@ This is a **canonical IA document** that:
 
 ---
 
-### Money Movement
+### Banking
 
 **Purpose:** What actually moved money (bank truth)
 
