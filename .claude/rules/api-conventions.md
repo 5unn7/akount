@@ -89,3 +89,52 @@ Requests flow through:
 2. **Tenant** (`middleware/tenant.ts`) — Load tenant, set `request.tenant`
 3. **Validation** (Fastify Zod) — Validate request schema
 4. **Route Handler** — Execute business logic
+
+## Single Responsibility Principle (SRP)
+
+**Every file should have ONE clear purpose.** Can you describe it without using "and"?
+
+### ✅ Good Examples (Current Pattern)
+```typescript
+// account.service.ts - ONE responsibility: Account data operations
+class AccountService {
+  listAccounts() { }
+  getAccount() { }
+  createAccount() { }
+}
+
+// duplication.service.ts - ONE responsibility: Duplicate detection
+class DuplicationService {
+  detectDuplicates() { }
+}
+
+// parser.service.ts - ONE responsibility: Parse bank statements
+// (Multiple formats is still ONE job: parsing)
+```
+
+### ❌ Anti-Patterns to Avoid
+```typescript
+// ❌ BAD: Service doing HTTP + business logic + email
+class AccountService {
+  handleRequest() { }      // HTTP concern - belongs in route
+  createAccount() { }      // Business logic - OK
+  sendWelcomeEmail() { }   // Email concern - belongs in email service
+}
+
+// ❌ BAD: Service mixing unrelated domains
+class MixedService {
+  createAccount() { }      // Banking domain
+  createInvoice() { }      // Invoicing domain
+  sendEmail() { }          // Communication domain
+}
+```
+
+### When to Split Files
+
+Split when **any** of these occur:
+- File exceeds **~300-400 lines** with distinct sections
+- Testing requires complex mocking
+- File has multiple reasons to change
+- Team members frequently conflict on same file
+
+**Don't split prematurely** - wait for actual pain points.

@@ -94,3 +94,65 @@ const invoices = await apiClient<Invoice[]>({
 ```
 
 Auth tokens automatically included via Clerk.
+
+## Single Responsibility Principle (SRP)
+
+**Every component/file should have ONE clear purpose.**
+
+### ✅ Good Examples (Current Pattern)
+```typescript
+// accounts.ts - ONE responsibility: API client functions
+export function listAccounts() { }
+export function getAccount() { }
+export function createAccount() { }
+
+// account-list.tsx - ONE responsibility: Display account list
+'use client'
+export function AccountList({ accounts }) {
+  return <Table>{accounts.map(...)}</Table>
+}
+
+// account-form.tsx - ONE responsibility: Account form logic
+'use client'
+export function AccountForm() {
+  const [data, setData] = useState({})
+  return <form>...</form>
+}
+```
+
+### ❌ Anti-Patterns to Avoid
+```typescript
+// ❌ BAD: Component doing data fetch + display + form logic
+'use client'
+export function AccountPage() {
+  const [accounts, setAccounts] = useState([])
+  const [formData, setFormData] = useState({})
+
+  useEffect(() => { fetch(...) }, [])  // Fetching
+  return (
+    <div>
+      <Table>{accounts}</Table>         {/* Display */}
+      <Form>{formData}</Form>           {/* Form */}
+    </div>
+  )
+}
+
+// ✅ BETTER: Split into focused components
+// page.tsx (Server Component)
+export default async function Page() {
+  const accounts = await getAccounts()
+  return <AccountList accounts={accounts} />
+}
+
+// account-list.tsx (Client Component)
+'use client'
+export function AccountList({ accounts }) { }
+```
+
+### File Size Guidelines
+
+- **Components**: Keep under ~200 lines
+- **API clients**: Keep under ~300 lines
+- **Split when**: File has multiple distinct sections or concerns
+
+**Rule of thumb**: If you're scrolling a lot, consider splitting.
