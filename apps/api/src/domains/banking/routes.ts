@@ -36,10 +36,18 @@ const updateAccountBodySchema = z.object({
   type: z.enum(['BANK', 'CREDIT_CARD', 'INVESTMENT', 'LOAN', 'MORTGAGE', 'OTHER']).optional(),
 });
 
+const accountTransactionsQuerySchema = z.object({
+  cursor: z.string().cuid().optional(),
+  limit: z.coerce.number().int().min(1).max(100).optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
+});
+
 type AccountsQuery = z.infer<typeof accountsQuerySchema>;
 type AccountParams = z.infer<typeof accountParamsSchema>;
 type CreateAccountBody = z.infer<typeof createAccountBodySchema>;
 type UpdateAccountBody = z.infer<typeof updateAccountBodySchema>;
+type AccountTransactionsQuery = z.infer<typeof accountTransactionsQuerySchema>;
 
 /**
  * Banking Domain Routes
@@ -296,6 +304,75 @@ export async function bankingRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({
           error: 'Internal Server Error',
           message: 'Failed to delete account',
+        });
+      }
+    }
+  );
+
+  /**
+   * GET /api/banking/accounts/:id/transactions
+   *
+   * Get transactions for a specific account with running balance calculation.
+   * Transactions are ordered by date ascending (oldest first).
+   * Running balance is calculated incrementally for each transaction.
+   */
+  fastify.get(
+    '/accounts/:id/transactions',
+    {
+      ...withPermission('banking', 'accounts', 'VIEW'),
+      preValidation: [validateParams(accountParamsSchema), validateQuery(accountTransactionsQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const service = new AccountService(request.tenantId as string);
+        const params = request.params as AccountParams;
+        const query = request.query as AccountTransactionsQuery;
+
+        const result = await service.getAccountTransactions(params.id, {
+          cursor: query.cursor,
+          limit: query.limit,
+          startDate: query.startDate,
+          endDate: query.endDate,
+        });
+
+        if (!result) {
+          return reply.status(404).send({
+            error: 'Not Found',
+            message: 'Account not found',
+          });
+        }
+
+        request.log.info(
+          {
+            userId: request.userId,
+            tenantId: request.tenantId,
+            accountId: params.id,
+            count: result.transactions.length,
+            hasMore: result.hasMore,
+            filters: { startDate: query.startDate, endDate: query.endDate },
+            pagination: { cursor: query.cursor, limit: query.limit },
+          },
+          'Listed account transactions with running balance'
+        );
+
+        return {
+          transactions: result.transactions,
+          nextCursor: result.nextCursor,
+          hasMore: result.hasMore,
+        };
+      } catch (error) {
+        request.log.error(
+          {
+            error,
+            userId: request.userId,
+            tenantId: request.tenantId,
+            accountId: (request.params as AccountParams).id,
+          },
+          'Error fetching account transactions'
+        );
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to fetch account transactions',
         });
       }
     }

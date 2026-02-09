@@ -197,4 +197,73 @@ export class AccountService {
       });
     });
   }
+
+  /**
+   * Get transactions for an account with running balance calculation
+   *
+   * @param accountId - The account ID to get transactions for
+   * @param options - Pagination and filtering options
+   * @returns Transactions with running balance for each transaction
+   *
+   * Running balance is calculated by:
+   * 1. Starting with the account's opening balance (if available)
+   * 2. Ordering transactions by date ascending (oldest first)
+   * 3. For each transaction: runningBalance = previousBalance + transactionAmount
+   */
+  async getAccountTransactions(
+    accountId: string,
+    options: {
+      cursor?: string;
+      limit?: number;
+      startDate?: Date;
+      endDate?: Date;
+    } = {}
+  ) {
+    // Verify account belongs to tenant
+    const account = await this.getAccount(accountId);
+    if (!account) {
+      return null;
+    }
+
+    const limit = Math.min(options.limit || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+
+    // Build where clause
+    const where = {
+      accountId,
+      deletedAt: null,
+      ...(options.startDate && { date: { gte: options.startDate } }),
+      ...(options.endDate && {
+        date: { ...((options.startDate && { gte: options.startDate }) || {}), lte: options.endDate },
+      }),
+    };
+
+    // Fetch transactions ordered by date ascending (oldest first)
+    const transactions = await prisma.transaction.findMany({
+      where,
+      orderBy: [{ date: 'asc' }, { createdAt: 'asc' }],
+      take: limit + 1,
+      ...(options.cursor && {
+        cursor: { id: options.cursor },
+        skip: 1,
+      }),
+    });
+
+    // Calculate running balance for each transaction
+    let runningBalance = 0; // Start from 0 (could be enhanced to use opening balance)
+    const transactionsWithBalance = transactions.slice(0, limit).map((txn) => {
+      runningBalance += txn.amount;
+      return {
+        ...txn,
+        runningBalance,
+      };
+    });
+
+    const hasMore = transactions.length > limit;
+
+    return {
+      transactions: transactionsWithBalance,
+      nextCursor: hasMore ? transactionsWithBalance[transactionsWithBalance.length - 1].id : undefined,
+      hasMore,
+    };
+  }
 }

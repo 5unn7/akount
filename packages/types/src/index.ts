@@ -187,6 +187,16 @@ export const transactionSchema = z.object({
 
 export type Transaction = z.infer<typeof transactionSchema>;
 
+/**
+ * Transaction with running balance schema
+ * Used when fetching transactions for an account with cumulative balance
+ */
+export const transactionWithBalanceSchema = transactionSchema.extend({
+  runningBalance: moneyAmountSchema,
+});
+
+export type TransactionWithBalance = z.infer<typeof transactionWithBalanceSchema>;
+
 // ============================================================================
 // Category Schemas
 // ============================================================================

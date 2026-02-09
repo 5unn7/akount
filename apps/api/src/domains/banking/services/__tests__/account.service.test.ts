@@ -20,6 +20,9 @@ vi.mock('@akount/db', () => ({
     entity: {
       findFirst: vi.fn(),
     },
+    transaction: {
+      findMany: vi.fn(),
+    },
     $transaction: vi.fn((fn: (tx: typeof mockTxClient) => Promise<unknown>) => fn(mockTxClient)),
   },
 }));
@@ -349,6 +352,135 @@ describe('AccountService', () => {
           deletedAt: null,
           entity: { tenantId: TENANT_ID },
         },
+      });
+    });
+  });
+
+  describe('getAccountTransactions', () => {
+    function mockTransaction(overrides: Record<string, unknown> = {}) {
+      return {
+        id: 'txn-1',
+        accountId: 'acc-1',
+        date: new Date('2024-01-01'),
+        description: 'Transaction',
+        amount: 5000, // $50.00 in cents
+        currency: 'USD',
+        sourceType: 'MANUAL',
+        sourceId: null,
+        categoryId: null,
+        notes: null,
+        journalEntryId: null,
+        isStaged: false,
+        isSplit: false,
+        createdAt: new Date('2024-01-01'),
+        updatedAt: new Date('2024-01-01'),
+        deletedAt: null,
+        importBatchId: null,
+        ...overrides,
+      };
+    }
+
+    it('should return null if account not found', async () => {
+      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null as never);
+
+      const result = await service.getAccountTransactions('nonexistent');
+
+      expect(result).toBeNull();
+      expect(prisma.transaction.findMany).not.toHaveBeenCalled();
+    });
+
+    it('should calculate running balance correctly', async () => {
+      const account = mockAccount({ id: 'acc-1' });
+      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(account as never);
+
+      const transactions = [
+        mockTransaction({ id: 'txn-1', amount: 10000, date: new Date('2024-01-01') }), // +$100.00
+        mockTransaction({ id: 'txn-2', amount: -2500, date: new Date('2024-01-02') }), // -$25.00
+        mockTransaction({ id: 'txn-3', amount: 5000, date: new Date('2024-01-03') }), // +$50.00
+      ];
+      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce(transactions as never);
+
+      const result = await service.getAccountTransactions('acc-1');
+
+      expect(result).not.toBeNull();
+      expect(result!.transactions).toHaveLength(3);
+
+      // Check running balances: 0 + 10000 = 10000, 10000 - 2500 = 7500, 7500 + 5000 = 12500
+      expect(result!.transactions[0].runningBalance).toBe(10000); // $100.00
+      expect(result!.transactions[1].runningBalance).toBe(7500); // $75.00
+      expect(result!.transactions[2].runningBalance).toBe(12500); // $125.00
+    });
+
+    it('should order transactions by date ascending', async () => {
+      const account = mockAccount({ id: 'acc-1' });
+      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(account as never);
+      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([] as never);
+
+      await service.getAccountTransactions('acc-1');
+
+      const callArgs = vi.mocked(prisma.transaction.findMany).mock.calls[0][0]!;
+      expect(callArgs.orderBy).toEqual([{ date: 'asc' }, { createdAt: 'asc' }]);
+    });
+
+    it('should filter by date range', async () => {
+      const account = mockAccount({ id: 'acc-1' });
+      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(account as never);
+      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([] as never);
+
+      const startDate = new Date('2024-01-01');
+      const endDate = new Date('2024-01-31');
+
+      await service.getAccountTransactions('acc-1', { startDate, endDate });
+
+      const callArgs = vi.mocked(prisma.transaction.findMany).mock.calls[0][0]!;
+      expect(callArgs.where).toMatchObject({
+        accountId: 'acc-1',
+        deletedAt: null,
+        date: { gte: startDate, lte: endDate },
+      });
+    });
+
+    it('should support pagination with cursor', async () => {
+      const account = mockAccount({ id: 'acc-1' });
+      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(account as never);
+      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([] as never);
+
+      await service.getAccountTransactions('acc-1', { cursor: 'cursor-123', limit: 10 });
+
+      const callArgs = vi.mocked(prisma.transaction.findMany).mock.calls[0][0]!;
+      expect(callArgs.take).toBe(11); // limit + 1
+      expect(callArgs.cursor).toEqual({ id: 'cursor-123' });
+      expect(callArgs.skip).toBe(1);
+    });
+
+    it('should return hasMore=true when extra record exists', async () => {
+      const account = mockAccount({ id: 'acc-1' });
+      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(account as never);
+
+      // Return 11 records for limit of 10
+      const transactions = Array.from({ length: 11 }, (_, i) =>
+        mockTransaction({ id: `txn-${i}`, amount: 1000 * (i + 1) })
+      );
+      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce(transactions as never);
+
+      const result = await service.getAccountTransactions('acc-1', { limit: 10 });
+
+      expect(result!.hasMore).toBe(true);
+      expect(result!.transactions).toHaveLength(10); // Trimmed to limit
+      expect(result!.nextCursor).toBe('txn-9'); // Last returned record
+    });
+
+    it('should filter out soft-deleted transactions', async () => {
+      const account = mockAccount({ id: 'acc-1' });
+      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(account as never);
+      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([] as never);
+
+      await service.getAccountTransactions('acc-1');
+
+      const callArgs = vi.mocked(prisma.transaction.findMany).mock.calls[0][0]!;
+      expect(callArgs.where).toMatchObject({
+        accountId: 'acc-1',
+        deletedAt: null,
       });
     });
   });
