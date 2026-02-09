@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { AccountsList } from "@/components/accounts/AccountsList";
+import { AccountsPageHeader } from "@/components/accounts/AccountsPageHeader";
+import { listEntities } from "@/lib/api/entities";
+import type { AccountType } from "@/lib/api/accounts";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -8,15 +11,21 @@ export const metadata: Metadata = {
     description: "Manage your bank accounts, credit cards, investments, and loans",
 };
 
-export default function AccountsPage() {
+interface AccountsPageProps {
+    searchParams: Promise<{ type?: string }>;
+}
+
+export default async function AccountsPage({ searchParams }: AccountsPageProps) {
+    const params = await searchParams;
+    const typeFilter = params.type as AccountType | undefined;
+    const entities = await listEntities();
+
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Accounts</h2>
-            </div>
+            <AccountsPageHeader entities={entities} />
 
-            <Suspense fallback={<AccountsListSkeleton />}>
-                <AccountsList />
+            <Suspense key={typeFilter ?? 'all'} fallback={<AccountsListSkeleton />}>
+                <AccountsList type={typeFilter} entities={entities} />
             </Suspense>
         </div>
     );

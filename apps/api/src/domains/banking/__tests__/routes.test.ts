@@ -43,10 +43,16 @@ vi.mock('../routes/import', () => ({
 // Mock AccountService - use function constructor so `new` works
 const mockListAccounts = vi.fn();
 const mockGetAccount = vi.fn();
+const mockCreateAccount = vi.fn();
+const mockUpdateAccount = vi.fn();
+const mockSoftDeleteAccount = vi.fn();
 vi.mock('../services/account.service', () => ({
   AccountService: function () {
     this.listAccounts = mockListAccounts;
     this.getAccount = mockGetAccount;
+    this.createAccount = mockCreateAccount;
+    this.updateAccount = mockUpdateAccount;
+    this.softDeleteAccount = mockSoftDeleteAccount;
   },
 }));
 
@@ -73,6 +79,9 @@ describe('Banking Routes', () => {
     vi.clearAllMocks();
     mockListAccounts.mockResolvedValue(MOCK_PAGINATED);
     mockGetAccount.mockResolvedValue(MOCK_ACCOUNT);
+    mockCreateAccount.mockResolvedValue(MOCK_ACCOUNT);
+    mockUpdateAccount.mockResolvedValue(MOCK_ACCOUNT);
+    mockSoftDeleteAccount.mockResolvedValue(MOCK_ACCOUNT);
 
     app = Fastify({ logger: false });
     await app.register(bankingRoutes, { prefix: '/api/banking' });
@@ -148,6 +157,94 @@ describe('Banking Routes', () => {
       expect(response.statusCode).toBe(500);
       const body = response.json();
       expect(body.error).toBe('Internal Server Error');
+    });
+  });
+
+  describe('POST /api/banking/accounts', () => {
+    it('should return 201 on successful creation', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/banking/accounts',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          entityId: 'clxxxxxxxxxxxxxxxxxxxxxxxxx',
+          name: 'New Account',
+          type: 'BANK',
+          currency: 'USD',
+          country: 'US',
+        },
+      });
+
+      expect(response.statusCode).toBe(201);
+      expect(mockCreateAccount).toHaveBeenCalled();
+    });
+
+    it('should return 401 without auth', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/banking/accounts',
+        payload: {
+          entityId: 'clxxxxxxxxxxxxxxxxxxxxxxxxx',
+          name: 'New Account',
+          type: 'BANK',
+          currency: 'USD',
+          country: 'US',
+        },
+      });
+
+      expect(response.statusCode).toBe(401);
+    });
+  });
+
+  describe('PATCH /api/banking/accounts/:id', () => {
+    it('should return 200 on successful update', async () => {
+      const response = await app.inject({
+        method: 'PATCH',
+        url: '/api/banking/accounts/clxxxxxxxxxxxxxxxxxxxxxxxxx',
+        headers: { authorization: 'Bearer test-token' },
+        payload: { name: 'Updated Name' },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(mockUpdateAccount).toHaveBeenCalled();
+    });
+
+    it('should return 404 when account not found', async () => {
+      mockUpdateAccount.mockResolvedValueOnce(null);
+
+      const response = await app.inject({
+        method: 'PATCH',
+        url: '/api/banking/accounts/clxxxxxxxxxxxxxxxxxxxxxxxxx',
+        headers: { authorization: 'Bearer test-token' },
+        payload: { name: 'Updated Name' },
+      });
+
+      expect(response.statusCode).toBe(404);
+    });
+  });
+
+  describe('DELETE /api/banking/accounts/:id', () => {
+    it('should return 204 on successful soft-delete', async () => {
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/api/banking/accounts/clxxxxxxxxxxxxxxxxxxxxxxxxx',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      expect(response.statusCode).toBe(204);
+      expect(mockSoftDeleteAccount).toHaveBeenCalled();
+    });
+
+    it('should return 404 when account not found', async () => {
+      mockSoftDeleteAccount.mockResolvedValueOnce(null);
+
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/api/banking/accounts/clxxxxxxxxxxxxxxxxxxxxxxxxx',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      expect(response.statusCode).toBe(404);
     });
   });
 });

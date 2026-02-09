@@ -131,4 +131,63 @@ export class AccountService {
       },
     });
   }
+
+  async updateAccount(
+    id: string,
+    data: {
+      name?: string;
+      institution?: string | null;
+      isActive?: boolean;
+      type?: string;
+    }
+  ) {
+    // Verify account belongs to tenant
+    const existing = await prisma.account.findFirst({
+      where: {
+        id,
+        entity: { tenantId: this.tenantId },
+      },
+    });
+
+    if (!existing) {
+      return null;
+    }
+
+    return prisma.account.update({
+      where: { id },
+      data: {
+        ...(data.name !== undefined && { name: data.name }),
+        ...(data.institution !== undefined && { institution: data.institution }),
+        ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.type !== undefined && {
+          type: data.type as 'BANK' | 'CREDIT_CARD' | 'INVESTMENT' | 'LOAN' | 'MORTGAGE' | 'OTHER',
+        }),
+      },
+      include: {
+        entity: true,
+      },
+    });
+  }
+
+  async softDeleteAccount(id: string) {
+    // Verify account belongs to tenant
+    const existing = await prisma.account.findFirst({
+      where: {
+        id,
+        entity: { tenantId: this.tenantId },
+      },
+    });
+
+    if (!existing) {
+      return null;
+    }
+
+    return prisma.account.update({
+      where: { id },
+      data: {
+        deletedAt: new Date(),
+        isActive: false,
+      },
+    });
+  }
 }

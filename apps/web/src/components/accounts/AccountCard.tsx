@@ -29,16 +29,32 @@ const accountTypeLabels: Record<AccountType, string> = {
     OTHER: "Other",
 };
 
+interface AccountCardProps {
+    account: Account;
+    onClick?: () => void;
+}
+
 /**
  * Account card component
  * Displays account summary information
  */
-export function AccountCard({ account }: { account: Account }): React.ReactElement {
+export function AccountCard({ account, onClick }: AccountCardProps): React.ReactElement {
     const Icon = accountTypeIcons[account.type];
     const isNegative = account.currentBalance < 0;
 
     return (
-        <Card className="hover:shadow-md transition-shadow">
+        <Card
+            className="hover:shadow-md transition-shadow cursor-pointer"
+            role="button"
+            tabIndex={0}
+            onClick={onClick}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onClick?.();
+                }
+            }}
+        >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-base font-medium">
                     {account.name}

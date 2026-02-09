@@ -20,8 +20,26 @@ const accountParamsSchema = z.object({
   id: z.string().cuid(),
 });
 
+const createAccountBodySchema = z.object({
+  entityId: z.string().cuid(),
+  name: z.string().min(1).max(255),
+  type: z.enum(['BANK', 'CREDIT_CARD', 'INVESTMENT', 'LOAN', 'MORTGAGE', 'OTHER']),
+  currency: z.string().length(3),
+  country: z.string().min(2).max(3),
+  institution: z.string().max(255).optional(),
+});
+
+const updateAccountBodySchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  institution: z.string().max(255).nullable().optional(),
+  isActive: z.boolean().optional(),
+  type: z.enum(['BANK', 'CREDIT_CARD', 'INVESTMENT', 'LOAN', 'MORTGAGE', 'OTHER']).optional(),
+});
+
 type AccountsQuery = z.infer<typeof accountsQuerySchema>;
 type AccountParams = z.infer<typeof accountParamsSchema>;
+type CreateAccountBody = z.infer<typeof createAccountBodySchema>;
+type UpdateAccountBody = z.infer<typeof updateAccountBodySchema>;
 
 /**
  * Banking Domain Routes
@@ -153,13 +171,133 @@ export async function bankingRoutes(fastify: FastifyInstance) {
     '/accounts',
     {
       ...withPermission('banking', 'accounts', 'ACT'),
+      preValidation: [validateBody(createAccountBodySchema)],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Account creation will be implemented in a future phase',
-      });
+      try {
+        const service = new AccountService(request.tenantId as string);
+        const body = request.body as CreateAccountBody;
+
+        const account = await service.createAccount(request.userId as string, {
+          entityId: body.entityId,
+          name: body.name,
+          type: body.type,
+          currency: body.currency,
+          country: body.country,
+          institution: body.institution,
+        });
+
+        request.log.info(
+          { userId: request.userId, tenantId: request.tenantId, accountId: account.id },
+          'Created account'
+        );
+
+        return reply.status(201).send(account);
+      } catch (error) {
+        if (error instanceof Error && error.message === 'Entity not found or access denied') {
+          return reply.status(404).send({
+            error: 'Not Found',
+            message: error.message,
+          });
+        }
+        request.log.error(
+          { error, userId: request.userId, tenantId: request.tenantId },
+          'Error creating account'
+        );
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to create account',
+        });
+      }
+    }
+  );
+
+  /**
+   * PATCH /api/banking/accounts/:id
+   *
+   * Update an existing account.
+   */
+  fastify.patch(
+    '/accounts/:id',
+    {
+      ...withPermission('banking', 'accounts', 'ACT'),
+      preValidation: [validateParams(accountParamsSchema), validateBody(updateAccountBodySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const service = new AccountService(request.tenantId as string);
+        const params = request.params as AccountParams;
+        const body = request.body as UpdateAccountBody;
+
+        const account = await service.updateAccount(params.id, body);
+
+        if (!account) {
+          return reply.status(404).send({
+            error: 'Not Found',
+            message: 'Account not found',
+          });
+        }
+
+        request.log.info(
+          { userId: request.userId, tenantId: request.tenantId, accountId: params.id },
+          'Updated account'
+        );
+
+        return account;
+      } catch (error) {
+        request.log.error(
+          { error, userId: request.userId, tenantId: request.tenantId },
+          'Error updating account'
+        );
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to update account',
+        });
+      }
+    }
+  );
+
+  /**
+   * DELETE /api/banking/accounts/:id
+   *
+   * Soft-delete an account.
+   */
+  fastify.delete(
+    '/accounts/:id',
+    {
+      ...withPermission('banking', 'accounts', 'ACT'),
+      preValidation: [validateParams(accountParamsSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const service = new AccountService(request.tenantId as string);
+        const params = request.params as AccountParams;
+
+        const result = await service.softDeleteAccount(params.id);
+
+        if (!result) {
+          return reply.status(404).send({
+            error: 'Not Found',
+            message: 'Account not found',
+          });
+        }
+
+        request.log.info(
+          { userId: request.userId, tenantId: request.tenantId, accountId: params.id },
+          'Soft-deleted account'
+        );
+
+        return reply.status(204).send();
+      } catch (error) {
+        request.log.error(
+          { error, userId: request.userId, tenantId: request.tenantId },
+          'Error deleting account'
+        );
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to delete account',
+        });
+      }
     }
   );
 
