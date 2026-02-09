@@ -255,7 +255,7 @@ This roadmap outlines the path from current state (5% complete) to a production-
 - [ ] Add filters (matched/unmatched/all)
 - [ ] Show reconciliation status card
 
-#### 2.5 Cash Flow Forecasting (NEW - LunchMoney Priority)
+#### 2.5 Cash Flow Forecasting 
 - [ ] Create ForecastingService with projection algorithm
 - [ ] POST /api/forecasting/cash-flow - Project future balance
 - [ ] Calculate 7/30/90 day projections
@@ -264,9 +264,8 @@ This roadmap outlines the path from current state (5% complete) to a production-
 - [ ] Show projected low balance warnings
 - [ ] List assumptions made in forecast
 
-**Why Added:** High demand (208 user votes), differentiator, 15-20 hours
+
 **Dependencies:** Works better with recurring transactions (Phase 3), but can show basic projections
-**See:** `docs/architecture/lunchmoney-feature-analysis.md`
 
 #### 2.6 Testing
 - [ ] Test CSV import with various formats
