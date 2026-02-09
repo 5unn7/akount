@@ -6,850 +6,238 @@ argument-hint: "[optional focus area]"
 
 # Workflow: Begin
 
-Your session startup ritual. Get Claude and yourself up to speed in 2-3 minutes.
+Your concise session startup ritual. Context-aware dashboard in under 2 minutes.
 
-**Current Date:** 2026-02-07
+**Current Date:** 2026-02-09
 
 ---
 
 ## Purpose
 
-Start every coding session with context:
-- 🧠 **Visual Context** - Architecture and domain understanding
-- 📊 **Overview** - Project status at a glance
-- 🎯 **Next Tasks** - What to work on
+Start coding sessions with focused context:
+- 📋 **Session Context** - Git status, recent changes (auto-injected)
+- 🎯 **Tasks** - What's pending from TASKS.md
 - ⚠️ **Blockers** - Issues to watch
-- 📰 **Updates** - Relevant news and changes
-- 💡 **Recommendations** - Smart suggestions
+- 🧠 **Memory** - Recent learnings and patterns
+- 💡 **Recommendations** - What to work on next
 
-**Like a morning standup with your AI pair programmer.**
+**Like a 2-minute standup with your AI pair.**
 
----
-
-## Usage
-
-```bash
-# Standard session start
-/processes:begin
-
-# Focus on specific area
-/processes:begin api
-/processes:begin frontend
-/processes:begin database
-
-# Quick mode (30 seconds)
-/processes:begin --quick
-
-# Deep dive (5 minutes)
-/processes:begin --deep
-```
+**What's New (v2.2):**
+- Phase 0 (Visual Context) → Now auto-loaded via `CLAUDE.md` hierarchy
+- Phase 1 (Git Status) → Now auto-injected via SessionStart hook
+- Repo map, architecture → Now in `docs/context-map.md`
 
 ---
 
 ## Workflow
 
-### Phase 0: Load Visual Context (15 seconds)
+### Phase 1: Load Task List (20 seconds)
 
-Load architecture diagrams and domain knowledge to ensure correct mental model.
+Read pending tasks from TASKS.md:
 
-#### 0.1 Read Architecture Overview
 ```bash
-# Load system architecture diagrams
-cat docs/architecture.mmd | head -100
-```
-
-**Extract from diagrams:**
-- System boundaries (Frontend → API → Database)
-- Request flow sequence
-- Transaction and Invoice state machines
-- Permission model (6 roles)
-
-#### 0.2 Load Domain Invariants
-```bash
-# Load key invariants from glossary
-cat docs/domain-glossary.md | grep -A 3 "Invariants:"
-```
-
-**Key invariants to remember:**
-- Every query MUST filter by `tenantId`
-- Money stored as integer cents (1050 = $10.50)
-- `SUM(debits) === SUM(credits)` always
-- Soft delete only (`deletedAt`), never hard delete
-- Preserve `sourceDocument` for journal entries
-
-#### 0.3 Load Repo Map (Focus Area)
-```bash
-# Load relevant section based on focus
-cat docs/repo-map.md | grep -A 20 "I want to..."
-```
-
-**Know where to look:**
-- API endpoint → `apps/api/src/domains/<domain>/routes/`
-- Page → `apps/web/src/app/(dashboard)/<domain>/`
-- Component → `packages/ui/src/components/`
-- Schema → `packages/database/prisma/schema.prisma`
-
-#### 0.4 Check Previous Session State
-```bash
-# Load previous session context if exists
-if [ -f .claude/session-state.json ]; then
-  cat .claude/session-state.json
+# Read task file if it exists
+if [ -f "TASKS.md" ]; then
+  cat TASKS.md
+else
+  echo "No TASKS.md found - create one if needed"
 fi
 ```
 
-**Restore context:**
-- What was being worked on?
-- Which files were modified?
-- Any pending flags?
+**Extract and categorize:**
+- `[ ]` Pending tasks
+- `[→]` In progress
+- `[x]` Recently completed
+- 🔥 Priority items
+- ⏳ Blocked/waiting
+
+**Output:**
+- Total pending count
+- Top 3 priority tasks
+- Any blocked items
 
 ---
 
-### Phase 1: Project Health Check (30 seconds)
+### Phase 2: Check for Blockers (15 seconds)
 
-Quick scan of project status:
+Scan for potential blockers:
 
-#### Git Status
 ```bash
-# Uncommitted changes
-git status --short
+# Check for TODOs in recent commits
+git log --oneline -5 --grep="TODO\|FIXME\|BLOCKED"
 
-# Recent commits
-git log --oneline -5
+# Check for failing tests (if test files exist)
+if [ -f "vitest.config.ts" ]; then
+  echo "Test suite available - run 'npm test' if needed"
+fi
 
-# Current branch
-git branch --show-current
-
-# Ahead/behind remote
-git status -sb
+# Check for merge conflicts
+git diff --check
 ```
 
-**Check for:**
-- Uncommitted work
-- Untracked files
-- Stale branches
-- Conflicts
+**Look for:**
+- Merge conflicts
+- Broken tests mentioned in commits
+- Dependencies issues (package-lock changes)
+- Environment mismatches
 
-#### Repository State
-```bash
-# Open PRs
-gh pr list --json number,title,author,updatedAt --limit 5
-
-# Recent issues
-gh issue list --json number,title,labels,updatedAt --limit 5
-
-# CI/CD status
-gh run list --limit 3
-```
-
-**Check for:**
-- PRs needing review
-- Critical issues
-- Failed builds
-- Deployment status
+**Output:**
+- "🚫 Blocker: [description]" for each issue found
+- "✅ No blockers detected" if clean
 
 ---
 
-### Phase 2: Task Overview (45 seconds)
+### Phase 3: Recent Context from Memory (15 seconds)
 
-Identify what's next:
+Point to recent learnings:
 
-#### From TASKS.md
 ```bash
-# Read current tasks
-cat TASKS.md | grep -E "\[ \]|\[x\]" | head -20
+# Check MEMORY.md current state
+if [ -f "$HOME/.claude/projects/$(basename $PWD)/memory/MEMORY.md" ]; then
+  echo "📚 Memory files available:"
+  echo "  - MEMORY.md: Current state, recent work"
+  echo "  - codebase-quirks.md: Path issues, gotchas"
+  echo "  - api-patterns.md: Service/route patterns"
+  echo "  - debugging-log.md: Past bugs, solutions"
+fi
 ```
 
-**Extract:**
-- Pending tasks [ ]
-- In progress tasks [→]
-- Completed today [x]
-- Priority items 🔥
+**Quick pointers:**
+- Current phase of work (from MEMORY.md)
+- Recent gotchas discovered
+- Patterns learned
+- Known issues
 
-#### From TODO Comments
-```bash
-# Find TODO/FIXME in code
-grep -r "TODO\|FIXME\|HACK" apps/ packages/ --include="*.ts" --include="*.tsx" | head -10
-```
-
-**Categorize:**
-- Critical TODOs
-- Quick wins
-- Technical debt
-- Future enhancements
-
-#### From Recent Activity
-```bash
-# Files changed recently
-git diff --name-only HEAD~3..HEAD
-
-# Active work areas
-git log --oneline --since="3 days ago" --pretty=format:"%s" | head -10
-```
-
-**Identify:**
-- Active features
-- Recent fixes
-- Current focus area
+**Output:**
+- Current work phase (e.g., "Context Optimization v2.2 - Phase A Step 8")
+- "⚠️ Check memory/codebase-quirks.md" if relevant path issues exist
+- Recent wins/lessons (1-2 bullet points from MEMORY.md)
 
 ---
 
-### Phase 3: Problems & Blockers (30 seconds)
+### Phase 4: Generate Recommendations (30 seconds)
 
-Surface issues needing attention:
+Based on loaded context, provide actionable recommendations:
 
-#### Code Issues
-```bash
-# TypeScript errors
-npx tsc --noEmit 2>&1 | grep "error TS" | head -5
+**Decision tree:**
 
-# ESLint warnings
-npm run lint 2>&1 | grep -E "warning|error" | head -5
+1. **If uncommitted changes exist** (from SessionStart hook):
+   - → "Commit current work before starting new tasks"
+   - → "Review staged changes: [files from git status]"
 
-# Test failures
-npm test 2>&1 | grep -E "FAIL|ERROR" | head -3
+2. **If TASKS.md has high-priority items**:
+   - → "Priority task: [top task description]"
+   - → "Estimated complexity: [guess based on description]"
+   - → "Relevant files: [guess based on task]"
+
+3. **If no pending tasks**:
+   - → "✅ Task list clear! Options:"
+   - → "  - Check ROADMAP.md for next phase"
+   - → "  - Run `/processes:review` on recent commits"
+   - → "  - Update documentation if needed"
+
+4. **If blockers detected**:
+   - → "🚫 Resolve blockers first:"
+   - → "  - [blocker 1 with suggested fix]"
+   - → "  - [blocker 2 with suggested fix]"
+
+5. **If recent compaction occurred**:
+   - → "📝 Context was compacted. Critical invariants preserved:"
+   - → "  - tenantId required in all queries"
+   - → "  - Money as integer cents"
+   - → "  - SUM(debits)===SUM(credits)"
+
+**Output format:**
 ```
+## 🎯 Recommendations
 
-#### Build/Deploy Issues
-```bash
-# Check build status
-npm run build --dry-run 2>&1 | grep -E "ERROR|WARN"
+**Next Action:** [Primary recommendation]
 
-# Database status
-npx prisma migrate status
+**Context:**
+- [Relevant file paths]
+- [Related commands]
+- [Estimated time]
+
+**Alternative Actions:**
+1. [Option 2]
+2. [Option 3]
 ```
-
-#### Recent Errors
-```bash
-# Search error logs
-tail -100 server.log 2>/dev/null | grep -i "error" | tail -5
-
-# Recent exceptions
-grep -r "throw new Error" apps/api/src --include="*.ts" | wc -l
-```
-
-**Flag:**
-- Build failures
-- Test failures
-- Type errors
-- Database issues
-- Recent exceptions
 
 ---
 
-### Phase 4: Recent Learnings (15 seconds)
+### Phase 5: Session Dashboard Output
 
-Quick review of solved problems:
-
-```bash
-# Recent solutions
-ls -lt docs/solutions/**/*.md | head -3
-
-# Read latest learning
-cat $(ls -t docs/solutions/**/*.md | head -1) | head -30
-```
-
-**Surface:**
-- Recent fixes
-- New patterns
-- Lessons learned
-- Preventions
-
----
-
-### Phase 5: Stack News & Updates (30 seconds)
-
-Check for relevant updates:
-
-#### Framework Updates
-```bash
-# Check outdated packages (critical only)
-npm outdated | grep -E "next|fastify|prisma|clerk"
-
-# Check for security advisories
-npm audit --audit-level=high 2>&1 | head -10
-```
-
-#### Technology News (Quick Search)
-```bash
-# Use research agents
-Task(best-practices-researcher, "Check for Next.js 16 breaking changes 2026")
-Task(framework-docs-researcher, "Clerk authentication updates January 2026")
-```
-
-**Focus on:**
-- Breaking changes
-- Security patches
-- Deprecations
-- Best practice updates
-
-#### Akount-Specific
-- Railway status
-- Clerk service status
-- Database health
-- API performance
-
----
-
-### Phase 6: Generate Dashboard (30 seconds)
-
-Compile findings into readable summary:
+Consolidate everything into a concise dashboard:
 
 ```markdown
-# Session Dashboard - [Date] [Time]
-
-## 📊 Project Status: [HEALTHY / NEEDS ATTENTION / BLOCKED]
-
-### Git Status
-- Branch: [current-branch]
-- Uncommitted: [X files]
-- Behind origin: [X commits]
-- Untracked: [X files]
-
-### Build Health
-- ✅ TypeScript: No errors
-- ⚠️ ESLint: 3 warnings
-- ✅ Tests: 142 passing
-- ✅ Build: Successful
+# 🚀 Session Start Dashboard
+**Date:** 2026-02-09
+**Project:** Akount (Next.js 16 + Fastify API + Prisma)
 
 ---
 
-## 🎯 Next Tasks (Priority Order)
-
-### 🔥 High Priority
-1. **Fix auth timeout issue** (Bug #234)
-   - Status: In Progress
-   - Blocker: Needs Clerk SDK update
-   - Est: 2 hours
-
-2. **Add invoice pagination** (Feature #345)
-   - Status: Ready to start
-   - Depends on: API changes merged
-   - Est: 4 hours
-
-### 📋 Medium Priority
-3. Review PR #123 - Multi-currency support
-4. Update Prisma schema for new entity types
-5. Fix TODO in invoice calculation (apps/api/src/routes/invoices.ts:45)
-
-### 💡 Quick Wins (< 30 min)
-- Fix TypeScript error in dashboard component
-- Update README with new API endpoints
-- Add test for edge case in payment processing
+## 📊 Session Context (Auto-injected)
+[SessionStart hook output will appear above this workflow]
+- Branch: main
+- Uncommitted files: [count]
+- Recent commits: [last 3]
 
 ---
 
-## ⚠️ Things to Watch Out For
-
-### Critical
-- 🔴 **Security:** 2 high-severity npm vulnerabilities
-  - Action: Run `npm audit fix`
-  - Affects: Clerk authentication
-
-- 🔴 **Build:** TypeScript error in new feature branch
-  - Location: apps/web/src/components/InvoiceList.tsx:23
-  - Action: Fix type mismatch
-
-### Important
-- 🟡 **Performance:** Dashboard slow on 100+ invoices
-  - Potential N+1 query issue
-  - Location: apps/api/src/routes/dashboard.ts
-  - Consider: Add pagination
-
-- 🟡 **Tech Debt:** 15 TODO comments in invoice module
-  - 3 marked as FIXME
-  - 2 marked as HACK
-
-### Monitoring
-- ⚪ Database connections: 45/100 (healthy)
-- ⚪ API response time: 180ms avg (good)
-- ⚪ Memory usage: 512MB/2GB (healthy)
+## 🎯 Pending Tasks ([count] total)
+- [ ] [Task 1 - Priority]
+- [ ] [Task 2]
+- [→] [Task 3 - In Progress]
 
 ---
 
-## 📰 Recent Updates (Last 3 Days)
-
-### Completed
-- ✅ Fixed tenant isolation in invoice API (2026-01-29)
-- ✅ Added Zod validation to all routes (2026-01-28)
-- ✅ Optimized N+1 query in dashboard (2026-01-27)
-
-### In Progress
-- 🚧 Multi-currency invoice support (PR #123)
-- 🚧 Performance optimization sprint
-- 🚧 Clerk SDK v6 migration
-
-### Recent PRs
-- #123: Multi-currency support (Waiting for review)
-- #124: Fix auth timeout (Merged yesterday)
-- #125: Add pagination (Draft)
+## ⚠️ Blockers
+[None detected / List of blockers]
 
 ---
 
-## 💡 Smart Recommendations
-
-### Based on Recent Activity
-1. **Continue multi-currency work** - PR #123 is close to done
-   - Needs: Final review from @bob
-   - Then: Document with /workflows:compound
-
-2. **Address auth timeout issue** - High priority
-   - Related: Recent Clerk updates
-   - Check: docs/solutions/security/ for similar issues
-
-3. **Plan performance sprint** - Multiple slow queries identified
-   - Run: /deepen-plan on performance optimization
-   - Review: docs/solutions/performance/ learnings
-
-### Based on Stack News
-4. **Update Clerk SDK** - Version 6.0 released
-   - Breaking changes in JWT verification
-   - Security patches included
-   - Migration guide available
-
-5. **Next.js 16.1 available** - Performance improvements
-   - Faster server actions
-   - Better error boundaries
-   - Consider upgrading soon
-
-### Technical Debt
-6. **Refactor invoice module** - 15 TODOs accumulated
-   - Dedicate 2 hours to cleanup
-   - Extract common patterns
-   - Update tests
+## 🧠 Recent Context
+**Current Phase:** [From MEMORY.md]
+**Last Session:** [Summary from MEMORY.md]
+**Gotchas to Remember:**
+- [Top 2-3 from codebase-quirks.md]
 
 ---
 
-## 🎯 Suggested Session Plan
+## 💡 Recommendations
 
-**Morning Session (2-4 hours):**
-1. Fix critical security vulnerabilities (30 min)
-2. Address auth timeout bug (2 hours)
-3. Review and merge PR #123 (30 min)
-4. Document learnings with /workflows:compound (15 min)
+**Next Action:** [Primary recommendation with file paths]
 
-**Afternoon Session (2-3 hours):**
-1. Start invoice pagination feature (1.5 hours)
-2. Clean up 5 TODO comments (45 min)
-3. Write tests for new features (30 min)
-4. Review code with /workflows:review (15 min)
+**Quick Commands:**
+- `/processes:plan` - Plan next feature
+- `/processes:work` - Execute implementation
+- `/processes:review` - Code review before merge
 
 ---
 
-## 📚 Helpful Resources
-
-### Recent Learnings
-- [N+1 Query Fix](docs/solutions/performance/2026-01-27-n-plus-one.md)
-- [Tenant Isolation](docs/solutions/security/2026-01-25-tenant-isolation.md)
-- [Clerk JWT Verification](docs/solutions/security/2026-01-20-clerk-jwt.md)
-
-### Relevant Docs
-- [API Design Standards](docs/standards/api-design.md)
-- [Multi-tenancy Standards](docs/standards/multi-tenancy.md)
-- [Security Standards](docs/standards/security.md)
-
-### Quick Commands
-```bash
-# Start work on high priority task
-/workflows:work "Fix auth timeout issue"
-
-# Review before merging
-/workflows:review
-
-# Document when done
-/workflows:compound "Fixed auth timeout"
+**Ready to start! 🎉**
 ```
 
 ---
 
-## 🚦 Session Status: READY TO CODE
+## Notes
 
-**Focus:** Fix auth timeout issue
-**Blocker:** None
-**Support:** All systems operational
+**Replaced by hierarchical context:**
+- Phase 0 (Visual Context): Now auto-loaded via `CLAUDE.md` + `docs/context-map.md`
+- Git status/recent changes: Now auto-injected via SessionStart hook
 
-**Let's ship it! 🚀**
+**Memory system:**
+- `MEMORY.md`: Index + high-level work state
+- `memory/codebase-quirks.md`: Path issues, gotchas
+- `memory/api-patterns.md`: Service patterns learned
+- `memory/debugging-log.md`: Past bugs, solutions
 
----
-
-_Generated by /processes:begin on 2026-02-07 at 9:00 AM_
-_Refresh: Run /processes:begin again anytime_
-```
-
----
-
-### Phase 7: Session State Capture (10 seconds)
-
-Create session state file for continuity and tracking.
-
-#### 7.1 Create Session State File
-```bash
-# Create or update session state
-cat > .claude/session-state.json << EOF
-{
-  "sessionStart": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-  "branch": "$(git branch --show-current 2>/dev/null || echo 'main')",
-  "focusArea": "[FOCUS_AREA]",
-  "initialStatus": {
-    "uncommittedFiles": $(git status --short 2>/dev/null | wc -l),
-    "currentBranch": "$(git branch --show-current 2>/dev/null || echo 'main')"
-  },
-  "previousSession": {
-    "filesModified": [],
-    "domainsAffected": [],
-    "contextUpdateFlags": []
-  },
-  "activeGuards": [
-    "tenantId-filter",
-    "integer-cents",
-    "soft-delete",
-    "file-location"
-  ]
-}
-EOF
-```
-
-#### 7.2 Load Previous Context Flags
-```bash
-# Check for pending context update flags
-if [ -f .claude/context-update-flags.txt ]; then
-  echo "📋 Pending context updates from previous session:"
-  cat .claude/context-update-flags.txt
-fi
-```
-
-**Review flags for:**
-- Schema changes needing glossary update
-- Route changes needing repo-map update
-- Architecture changes needing diagram update
-
-#### 7.3 Record Session Goals
-```markdown
-## Session Goals
-
-**Primary Focus:** [From user or inferred]
-**Expected Outcomes:**
-1. [Goal 1]
-2. [Goal 2]
-
-**Guard Rails Active:**
-- [ ] tenantId in all queries
-- [ ] Integer cents for money
-- [ ] Soft delete only
-- [ ] Files in correct locations
-```
+**References:**
+- Architecture: `CLAUDE.md` (auto-loaded)
+- Deep reference: `docs/context-map.md` (explicit read)
+- Rules: `.claude/rules/*.md` (path-scoped auto-load)
 
 ---
 
-## Output Variants
-
-### Quick Mode (--quick)
-
-**30 seconds:** Essential info only
-
-```
-📊 Status: HEALTHY | Branch: main | Uncommitted: 2 files
-
-🎯 Next: Fix auth timeout (#234) → Add pagination (#345)
-
-⚠️ Watch: 2 npm vulnerabilities, TypeScript error in InvoiceList.tsx
-
-📰 Recent: Fixed N+1 query, Multi-currency PR ready
-
-💡 Start: Fix security issues → Work on auth timeout
-
-Ready! 🚀
-```
-
-### Deep Mode (--deep)
-
-**5 minutes:** Comprehensive analysis
-
-- Run all checks
-- Read recent commits in detail
-- Analyze TODO comments by module
-- Check all open PRs and issues
-- Review last 3 solutions
-- Search for relevant stack news
-- Generate detailed recommendations
-- Create session plan with time estimates
-
----
-
-## Focus Modes
-
-### API Focus
-```bash
-/workflows:begin api
-```
-
-**Checks:**
-- API routes and tests
-- Fastify configuration
-- Database queries
-- Authentication
-- Recent API PRs
-
-### Frontend Focus
-```bash
-/workflows:begin frontend
-```
-
-**Checks:**
-- Next.js components
-- Client/Server boundaries
-- UI tests
-- Styling issues
-- Recent frontend PRs
-
-### Database Focus
-```bash
-/workflows:begin database
-```
-
-**Checks:**
-- Prisma schema
-- Migrations status
-- Query performance
-- Recent database changes
-- Data integrity
-
----
-
-## Best Practices
-
-### Daily Ritual
-
-**Every morning:**
-```bash
-# Start your day
-/workflows:begin
-
-# Review dashboard
-# Pick high priority task
-# Start focused work
-
-# Mid-day check
-/workflows:begin --quick
-```
-
-**After breaks:**
-```bash
-# Quick refresh
-/workflows:begin --quick
-```
-
-**Before EOD:**
-```bash
-# Final check
-/workflows:begin
-
-# Document what you learned
-/workflows:compound
-
-# Generate changelog
-/changelog 1
-```
-
----
-
-## Integration with Other Workflows
-
-### Start Session → Work → End Session
-
-```bash
-# 1. Start: Get context
-/workflows:begin
-
-# 2. Plan: If needed
-/workflows:plan "Task from dashboard"
-
-# 3. Work: Execute
-/workflows:work
-
-# 4. Review: Before commit
-/workflows:review
-
-# 5. Document: After solving
-/workflows:compound
-
-# 6. Share: End of day
-/changelog 1
-```
-
----
-
-## Customization
-
-### Add Custom Checks
-
-Edit this file to include Akount-specific checks:
-
-```bash
-# Check Railway deployment status
-railway status
-
-# Check Clerk service status
-curl https://status.clerk.com/api/v2/status.json
-
-# Check database health
-psql $DATABASE_URL -c "SELECT COUNT(*) FROM tenants;"
-
-# Check API health
-curl https://api.akount.com/health
-```
-
-### Add Team Metrics
-
-```bash
-# Team velocity
-gh pr list --state merged --since "7 days ago" | wc -l
-
-# Bug closure rate
-gh issue list --state closed --label bug --since "7 days ago" | wc -l
-
-# Test coverage
-npm test -- --coverage --silent | grep "All files"
-```
-
----
-
-## Automation
-
-### Auto-run on Terminal Start
-
-Add to `.bashrc` or `.zshrc`:
-
-```bash
-# Run workflows:begin when starting work
-if [ -d ".git" ]; then
-  echo "🚀 Starting session..."
-  claude-code "/workflows:begin --quick"
-fi
-```
-
-### Scheduled Reminders
-
-```bash
-# Cron job for mid-day refresh
-0 12 * * 1-5 cd /path/to/project && claude-code "/workflows:begin --quick"
-```
-
----
-
-## Example Real Output
-
-```
-🚀 Session Dashboard - 2026-01-30 @ 9:00 AM
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 PROJECT STATUS: HEALTHY ✅
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Git: main | Clean | ✓ Up to date
-Build: ✓ Passing | Tests: 142/142 | TypeScript: ✓ No errors
-Deployment: ✓ Production healthy | API: 180ms avg
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎯 NEXT TASKS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🔥 HIGH PRIORITY (Do First)
-   1. Fix auth timeout issue (#234) - 2h
-   2. Review PR #123 (Multi-currency) - 30m
-
-📋 MEDIUM PRIORITY (Do Today)
-   3. Add invoice pagination (#345) - 4h
-   4. Clean up 5 TODO comments - 1h
-
-💡 QUICK WINS (< 30m)
-   5. Fix type error in InvoiceList.tsx
-   6. Update API documentation
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️ WATCH OUT FOR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-🔴 CRITICAL
-   • 2 npm security vulnerabilities (Run: npm audit fix)
-   • TypeScript error in InvoiceList.tsx:23
-
-🟡 IMPORTANT
-   • Dashboard slow with 100+ invoices (N+1 query suspected)
-   • 15 TODO comments in invoice module (3 marked FIXME)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📰 RECENT UPDATES (Last 3 Days)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-COMPLETED ✅
-   • Fixed tenant isolation in invoice API
-   • Added Zod validation to all routes
-   • Optimized N+1 query (14x faster!)
-
-IN PROGRESS 🚧
-   • Multi-currency invoice support (PR #123)
-   • Clerk SDK v6 migration
-
-STACK NEWS 📡
-   • Clerk v6.0 released - Security patches included
-   • Next.js 16.1 available - Performance improvements
-   • Prisma 6.0 beta - New query engine
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 SMART RECOMMENDATIONS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. START HERE: Fix security vulnerabilities (10 min)
-   → npm audit fix
-   → Test auth flow
-   → Document if issues found
-
-2. THEN: Work on auth timeout issue (2 hours)
-   → Check docs/solutions/security/ for similar issues
-   → May relate to recent Clerk updates
-   → Document with /workflows:compound when done
-
-3. REVIEW: Multi-currency PR #123 is ready
-   → Needs your approval
-   → Then merge and document
-
-4. PLAN: Performance optimization sprint
-   → Multiple slow queries identified
-   → Use /deepen-plan for approach
-   → Schedule for this afternoon
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚦 SESSION STATUS: READY TO CODE ✅
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Focus: Fix security vulnerabilities → Auth timeout issue
-Time Estimate: 2-3 hours for high priority tasks
-Blocker: None - All systems go! 🚀
-
-Commands:
-  npm audit fix              # Fix security issues
-  /workflows:work "auth"     # Start auth timeout work
-  /workflows:review          # Review before commit
-  /workflows:compound        # Document when done
-
-Let's ship it! 💪
-```
-
----
-
-## Time Investment
-
-**Standard mode:** 2-3 minutes
-**Quick mode:** 30 seconds
-**Deep mode:** 5 minutes
-
-**Value:** Immediate context, prioritized tasks, proactive problem detection
-
----
-
-**Start your next session:**
-```bash
-/workflows:begin
-```
-
-🚀 **Get up to speed instantly!**
+_Lines: ~150 (slimmed from 856). SessionStart hook handles context injection._
