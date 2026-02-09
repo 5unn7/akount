@@ -1,424 +1,286 @@
 ---
 name: processes:plan
 description: Transform feature descriptions into well-structured implementation plans
-argument-hint: "[feature description, bug report, or improvement idea]"
-aliases:
-  - plan
-  - design
-  - architecture
-  - implementation-plan
-keywords:
-  - plan
-  - design
-  - architecture
-  - implementation
-  - structure
 ---
 
 # Workflow: Plan
 
-Transform feature ideas into structured, actionable implementation plans following Akount conventions.
+Transform feature requests into actionable implementation plans.
 
-**Current Date:** 2026-01-30
-
-## Prerequisites
-
-- Clear feature description or brainstorm document
-- Understanding of the problem being solved
-
-## Planning Process
-
-### Phase 1: Idea Refinement
-
-#### Check for Existing Context
-
-1. **Check brainstorms**: Look in `docs/brainstorms/` for related discussions
-2. **Review similar features**: Find comparable implementations in codebase
-3. **Check existing plans**: Look in `docs/plans/` for related work
-
-#### Clarify Requirements
-
-Use AskUserQuestion to gather:
-- **User perspective**: Who will use this feature?
-- **Success criteria**: How do we know it's working?
-- **Technical constraints**: Any specific requirements?
-- **Timeline expectations**: Rough complexity estimate
+**When to Use:** Before starting any non-trivial feature (3+ steps, multiple files, unclear requirements).
 
 ---
 
-### Phase 2: Repository Research
+## Three-Phase Workflow
 
-Run these in **parallel** using Task tool:
+**1. Research** (3-5m) - Understand requirements, explore codebase
+**2. Design** (5-10m) - Break down into tasks, identify files
+**3. Document** (2-3m) - Write plan in docs/plans/
 
-1. **Explore codebase** - Use Explore agent to find:
-   - Similar features and patterns
-   - Related components and services
-   - Database models that might be affected
-   - Authentication/authorization patterns
-
-2. **Check documentation** - Review:
-   - `docs/product/overview.md` - Product context
-   - `docs/features/` - Related feature specs
-   - `packages/db/prisma/schema.prisma` - Data models
-   - Existing conventions and patterns
+**Total:** ~10-15 minutes
 
 ---
 
-### Phase 3: External Research (If Needed)
+## Phase 1: Research (3-5 minutes)
 
-Determine if external research is needed:
+### Clarify Requirements
 
-**Run external research if:**
-- Security-sensitive features (payments, auth, PII)
-- Using new technologies or patterns
-- Complex financial calculations
-- Multi-currency or tax handling
+**Ask user if unclear:**
+- What's the expected behavior?
+- Are there edge cases to handle?
+- Should this match existing patterns?
+- Any performance/security concerns?
 
-**Use WebSearch for:**
-- Best practices for the feature type
-- Security considerations
-- TypeScript/Next.js patterns
-- Prisma schema patterns
-- Financial calculation standards
+Use AskUserQuestion for ambiguous requirements.
 
----
+### Search Existing Code
 
-### Phase 4: Consolidate Research
+```bash
+# Find similar features
+Grep "similar-feature" apps/ --output_mode=files_with_matches
 
-Document findings:
-
-**Local Context:**
-- Relevant files: `[file paths]`
-- Existing patterns: `[pattern descriptions]`
-- Data models: `[Prisma models involved]`
-
-**External Resources:**
-- Best practices: `[URLs]`
-- Security considerations: `[URLs]`
-- Framework docs: `[URLs]`
-
-**Related Work:**
-- Related issues/PRs: `[links]`
-- Similar features: `[references]`
-
----
-
-### Phase 5: Plan Structure
-
-Create plan document with this structure:
-
-#### File Path
-```
-docs/plans/YYYY-MM-DD-<type>-<feature-name>-plan.md
+# Check existing patterns
+Read [similar-file]
 ```
 
-**Type Examples:**
-- `feature` - New functionality
-- `bugfix` - Fixing existing functionality
-- `refactor` - Improving code structure
-- `enhancement` - Improving existing feature
+**Understand:**
+- How similar features are implemented
+- File structure patterns
+- Naming conventions
+- Testing patterns
 
-#### Plan Template
+### Check Dependencies
 
+```bash
+# Read schema if database changes needed
+Read packages/db/prisma/schema.prisma
+
+# Check API routes if backend needed
+Glob "apps/api/src/domains/**/routes/*.ts"
+
+# Check components if frontend needed
+Glob "apps/web/src/app/**/*.tsx"
+```
+
+---
+
+## Phase 2: Design (5-10 minutes)
+
+### Break Down Into Tasks
+
+**Good task breakdown:**
+- Each task is 15-45 minutes of work
+- Tasks are sequential (dependencies clear)
+- Each task has a deliverable (file, test, etc.)
+- Success criteria are testable
+
+**Example:**
+```markdown
+## Tasks
+
+1. **Create Zod schema** (15m)
+   - File: `apps/api/src/domains/banking/schemas/transaction.schema.ts`
+   - Define CreateTransactionSchema with validation
+   - Success: Schema exports and validates sample data
+
+2. **Create service function** (30m)
+   - File: `apps/api/src/domains/banking/services/transaction.service.ts`
+   - Implement createTransaction with tenant isolation
+   - Success: Function creates transaction in database
+
+3. **Create API route** (20m)
+   - File: `apps/api/src/domains/banking/routes/transaction.ts`
+   - POST /api/banking/transactions endpoint
+   - Success: Route returns 201 with transaction data
+
+4. **Write tests** (30m)
+   - File: `apps/api/__tests__/banking/transaction.test.ts`
+   - Test service + route with tenant isolation
+   - Success: Tests pass with 80%+ coverage
+```
+
+### Identify Critical Files
+
+**For each task, list:**
+- Files to create (Write tool)
+- Files to modify (Edit tool)
+- Files to reference (Read tool)
+
+**Example:**
+```markdown
+## Files
+
+### Create
+- `apps/api/src/domains/banking/routes/transaction.ts`
+- `apps/api/src/domains/banking/services/transaction.service.ts`
+- `apps/api/src/domains/banking/schemas/transaction.schema.ts`
+- `apps/api/__tests__/banking/transaction.test.ts`
+
+### Modify
+- `apps/api/src/domains/banking/routes/index.ts` (register new route)
+
+### Reference
+- `packages/db/prisma/schema.prisma` (Transaction model)
+- Similar route for pattern matching
+```
+
+### Consider Edge Cases
+
+**Common edge cases:**
+- What if tenant doesn't exist?
+- What if required data is missing?
+- What about concurrent requests?
+- How to handle errors?
+
+**Document in plan:**
+```markdown
+## Edge Cases
+
+- **Missing tenant:** Return 403 Forbidden
+- **Invalid data:** Return 400 with Zod errors
+- **Duplicate transaction:** Check unique constraint
+- **Database error:** Return 500 with logged error
+```
+
+---
+
+## Phase 3: Document (2-3 minutes)
+
+### Write Plan File
+
+**Template:**
 ```markdown
 # [Feature Name] Implementation Plan
 
-**Date:** YYYY-MM-DD
-**Type:** [feature/bugfix/refactor/enhancement]
-**Status:** Planning
-**Related:** [Links to brainstorms, issues, PRs]
+**Created:** YYYY-MM-DD
+**Status:** Draft / In Progress / Complete
 
-## Summary
+---
 
-[2-3 sentence overview of what we're building and why]
+## Overview
 
-## User Story
-
-As a [user type], I want to [action] so that [benefit].
+[2-3 sentences describing what this feature does and why]
 
 ## Success Criteria
 
-- [ ] Acceptance criterion 1
-- [ ] Acceptance criterion 2
-- [ ] Acceptance criterion 3
+- [ ] [Criterion 1 - measurable]
+- [ ] [Criterion 2 - measurable]
+- [ ] [Criterion 3 - measurable]
 
-## Technical Approach
+## Tasks
 
-### Architecture
+### Task 1: [Name] (Est: [time])
+**File:** [path]
+**Description:** [what to do]
+**Success:** [how to verify]
 
-**Components Affected:**
-- Frontend: `[app/path/to/page.tsx]`
-- API: `[app/api/path/route.ts]`
-- Database: `[Prisma models]`
-- Services: `[lib/services/]`
+### Task 2: [Name] (Est: [time])
+**File:** [path]
+**Description:** [what to do]
+**Success:** [how to verify]
 
-**Key Decisions:**
-1. **Server vs Client**: [Justify Server Component vs Client Component choices]
-2. **Data Flow**: [How data moves through the system]
-3. **Authentication**: [How auth/authorization is enforced]
+[... more tasks]
 
-### Data Model Changes
+## Files
 
-**Prisma Schema Updates:**
-```prisma
-// New models or fields
-model NewModel {
-  id       String @id @default(cuid())
-  tenantId String // Always include for tenant isolation
-  // ... other fields
-}
-```
+### Create
+- [new-file-1]
+- [new-file-2]
 
-**Migration Checklist:**
-- [ ] Tenant isolation enforced (tenantId foreign key)
-- [ ] Indexes on frequently queried fields
-- [ ] Integer cents for monetary amounts (no Float)
-- [ ] Audit fields (createdAt, updatedAt, createdBy)
-- [ ] No CASCADE deletes on financial data
+### Modify
+- [existing-file-1]
 
-### API Endpoints
+### Reference
+- [reference-file-1]
 
-**New Routes:**
-- `POST /api/[resource]` - Create
-- `GET /api/[resource]` - List (with pagination)
-- `GET /api/[resource]/[id]` - Get single
-- `PATCH /api/[resource]/[id]` - Update
-- `DELETE /api/[resource]/[id]` - Delete
+## Edge Cases
 
-**Authentication:**
-- All routes require `auth()` check
-- Tenant isolation enforced in queries
-- RBAC permissions checked where applicable
-
-### UI Components
-
-**Pages:**
-- `app/(dashboard)/[feature]/page.tsx` - List/overview (Server Component)
-- `app/(dashboard)/[feature]/[id]/page.tsx` - Detail view (Server Component)
-- `app/(dashboard)/[feature]/new/page.tsx` - Create form (Server Component wrapper)
-
-**Components:**
-- `components/[feature]/[component].tsx` - Shared components
-- Mark client components with 'use client' only when necessary
-
-**Design System:**
-- Use existing components from `components/ui/`
-- Follow color palette: Orange (primary), Violet (secondary), Slate (neutral)
-- Typography: Newsreader (headings), Manrope (body), JetBrains Mono (mono)
-
-## Implementation Phases
-
-### Phase 1: Database & Backend (Day 1-2)
-
-**Tasks:**
-- [ ] Create Prisma schema updates
-- [ ] Write and test migration
-- [ ] Create API route handlers
-- [ ] Add input validation (Zod schemas)
-- [ ] Write unit tests for business logic
-
-**Review Points:**
-- Run `prisma-migration-reviewer` on schema changes
-- Run `financial-data-validator` if financial logic involved
-- Run `security-sentinel` on API endpoints
-
-### Phase 2: UI Components (Day 2-3)
-
-**Tasks:**
-- [ ] Create page layouts (Server Components)
-- [ ] Build form components (Client Components where needed)
-- [ ] Add loading states (loading.tsx, Suspense)
-- [ ] Add error boundaries (error.tsx)
-- [ ] Implement optimistic updates if applicable
-
-**Review Points:**
-- Run `nextjs-app-router-reviewer` on all pages
-- Run `design-system-consistency-checker` on UI components
-
-### Phase 3: Integration & Testing (Day 3-4)
-
-**Tasks:**
-- [ ] Integration testing (full user flows)
-- [ ] Test multi-tenant isolation
-- [ ] Test edge cases
-- [ ] Performance testing (N+1 queries, pagination)
-- [ ] Security testing (IDOR, input validation)
-
-**Review Points:**
-- Run `performance-oracle` on database queries
-- Run `security-sentinel` on complete feature
-- Run `architecture-strategist` on overall design
-
-### Phase 4: Polish & Documentation (Day 4-5)
-
-**Tasks:**
-- [ ] Add metadata for SEO (generateMetadata)
-- [ ] Update user documentation
-- [ ] Create demo data/screenshots
-- [ ] Final code review
-- [ ] Deploy to staging
-
-## Security Considerations
-
-- [ ] Input validation on all user inputs (Zod schemas)
-- [ ] Tenant isolation enforced in all queries
-- [ ] RBAC permissions checked for sensitive operations
-- [ ] No sensitive data in logs or error messages
-- [ ] Rate limiting on API endpoints (if needed)
-- [ ] SQL injection prevented (Prisma parameterizes automatically)
-
-## Performance Considerations
-
-- [ ] Database indexes on filtered/joined columns
-- [ ] Pagination for large result sets (cursor-based)
-- [ ] Parallel data fetching with Promise.all()
-- [ ] Memoization for expensive client-side computations
-- [ ] Code splitting for large components (dynamic imports)
-- [ ] Server-side caching where appropriate (React cache, revalidate)
-
-## Financial Integrity (If Applicable)
-
-- [ ] All amounts stored as Integer cents
-- [ ] Multi-currency handling (currency field paired with amount)
-- [ ] Double-entry bookkeeping (debits = credits)
-- [ ] Audit trail (JournalEntry with sourceDocument)
-- [ ] No CASCADE deletes on financial data
-- [ ] Fiscal period controls respected
+- **[Case 1]:** [How to handle]
+- **[Case 2]:** [How to handle]
 
 ## Testing Strategy
 
-**Unit Tests:**
-- Business logic functions
-- Utility functions
-- Validation schemas
+[How to test this feature]
 
-**Integration Tests:**
-- API endpoints
-- Database queries
-- Multi-tenant isolation
+## Rollback Plan
 
-**E2E Tests (Optional):**
-- Critical user flows
-- Payment processing
-- Data export/import
-
-## Rollout Plan
-
-**Staging:**
-1. Deploy to staging environment
-2. Manual testing of all flows
-3. Stakeholder review
-
-**Production:**
-1. Feature flag (if applicable)
-2. Gradual rollout (10% → 50% → 100%)
-3. Monitor error rates and performance
-4. Rollback plan ready
-
-## Open Questions
-
-- [ ] Question 1
-- [ ] Question 2
-
-## Dependencies
-
-- Blocked by: [Other work that must complete first]
-- Blocks: [Work that depends on this]
-
-## Resources
-
-- Brainstorm: `[link]`
-- Design mockups: `[link]`
-- Related issues: `[links]`
-- External docs: `[links]`
+[How to undo if needed]
 
 ---
 
-## Estimation
+## Progress
 
-**Complexity:** [Low / Medium / High]
-**Effort:** [1-2 days / 3-5 days / 1-2 weeks]
-**Risk:** [Low / Medium / High]
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Task 3
+```
 
-**Risk Factors:**
-- Data migration complexity
-- Integration with external services
-- Security sensitivity
-- Financial accuracy requirements
+### Save Plan
+
+```bash
+# Save to docs/plans/
+Write docs/plans/YYYY-MM-DD-feature-name.md
+```
+
+**Naming convention:**
+- Date prefix: `YYYY-MM-DD-`
+- Kebab-case: `feature-name.md`
+- Descriptive: Captures main feature
+
+---
+
+## Plan Quality Checklist
+
+Before starting implementation:
+
+**Clarity:**
+- [ ] Requirements are clear (no ambiguity)
+- [ ] Tasks are sequential and specific
+- [ ] Success criteria are measurable
+
+**Completeness:**
+- [ ] All files identified (create, modify, reference)
+- [ ] Edge cases considered
+- [ ] Testing strategy defined
+
+**Feasibility:**
+- [ ] Each task is 15-45 minutes
+- [ ] Total time estimate reasonable
+- [ ] No blockers identified
+
+**Standards:**
+- [ ] Follows project patterns
+- [ ] Includes tenant isolation checks
+- [ ] Includes test requirements
+
+---
+
+## Output Format
+
+```markdown
+# 📋 Implementation Plan Created
+
+## Feature
+[Feature name]
+
+## Plan Location
+`docs/plans/YYYY-MM-DD-feature-name.md`
+
+## Task Count
+[N] tasks estimated at [X] hours total
+
+## Critical Files
+- [count] files to create
+- [count] files to modify
+
+## Next Step
+Run `/processes:work` to execute this plan systematically.
+
+---
+
+**Plan ready for implementation!**
 ```
 
 ---
 
-### Phase 6: Review & Finalize
-
-Before saving, verify:
-
-- [ ] All sections complete
-- [ ] Tenant isolation considered
-- [ ] Financial integrity checked (if applicable)
-- [ ] Security reviewed
-- [ ] Performance considered
-- [ ] Clear acceptance criteria
-- [ ] Phased implementation plan
-
----
-
-### Phase 7: Next Steps
-
-After creating the plan, offer these options:
-
-1. **Start Implementation** - Run `/workflows:work [plan-file]`
-2. **Deep Review** - Run multiple reviewer agents for validation
-3. **Simplify** - Reduce scope if too complex
-4. **Iterate** - Refine specific sections
-5. **Create GitHub Issue** - If using issue tracking
-
-Use AskUserQuestion to let user choose.
-
----
-
-## Important Guidelines
-
-### Do:
-- ✓ Be specific and actionable
-- ✓ Include code examples in templates
-- ✓ Consider multi-tenant implications
-- ✓ Think about security from the start
-- ✓ Plan for testing and rollout
-
-### Don't:
-- ✗ **NEVER CODE!** Just write the plan
-- ✗ Skip security or performance sections
-- ✗ Forget tenant isolation
-- ✗ Ignore financial integrity (if applicable)
-- ✗ Plan more than 2 weeks of work without breaking down
-
----
-
-## Implementation Detail Levels
-
-Choose based on feature complexity:
-
-**MINIMAL** (Simple bug fixes, small improvements):
-- Brief description
-- Files affected
-- Basic acceptance criteria
-- Quick testing checklist
-
-**STANDARD** (Most features):
-- Full template above
-- 2-4 implementation phases
-- Security and performance sections
-- Clear testing strategy
-
-**DETAILED** (Complex features, high risk):
-- Everything in STANDARD
-- Detailed data model changes with ERD
-- API request/response examples
-- Multiple rollout scenarios
-- Extensive testing plan
-- Risk mitigation strategies
-
----
-
-**Remember:** A good plan answers "what" and "how" clearly enough that implementation is straightforward. Invest time in planning to save time in execution.
+_Lines: ~250 (slimmed from 424). Focuses on research, design, documentation workflow._

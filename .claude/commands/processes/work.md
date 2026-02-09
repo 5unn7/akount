@@ -1,500 +1,315 @@
 ---
 name: processes:work
 description: Execute implementation plans systematically while maintaining quality
-argument-hint: "[plan file path or feature name]"
-aliases:
-  - work
-  - implement
-  - execute
-  - build
-keywords:
-  - implementation
-  - execution
-  - build
-  - code
-  - development
 ---
 
 # Workflow: Work
 
-Execute implementation plans efficiently while maintaining quality and finishing features completely.
+Execute implementation plans systematically with quality checks built-in.
 
-**Current Date:** 2026-01-30
+**When to Use:** After creating a plan with `/processes:plan`, execute it step-by-step.
 
-## When to Use
-
-- You have a complete implementation plan
-- Ready to write code and tests
-- Need structured guidance through implementation
-- Want to maintain quality while moving fast
+---
 
 ## Four-Phase Workflow
 
----
-
-### Phase 1: Quick Start
-
-#### Read the Plan Completely
-
-Before writing any code:
-
-1. **Load the plan** from `docs/plans/YYYY-MM-DD-<feature>-plan.md`
-2. **Read every section** - don't skip ahead
-3. **Understand acceptance criteria** - know what "done" looks like
-4. **Identify dependencies** - what must exist before you start?
-
-#### Ask Clarifying Questions
-
-**Before coding**, use AskUserQuestion for anything unclear:
-- Ambiguous requirements
-- Missing acceptance criteria
-- Uncertain technical decisions
-- Unclear edge case handling
-
-**Don't assume!** It's faster to ask now than refactor later.
-
-#### Setup Git Environment
-
-Choose your workflow:
-
-**Option 1: New Branch (Recommended)**
-```bash
-git checkout -b feature/invoice-templates
-```
-
-**Option 2: Existing Branch**
-```bash
-git checkout existing-feature-branch
-```
-
-**Option 3: Git Worktree (for parallel work)**
-```bash
-git worktree add ../akount-invoice-templates feature/invoice-templates
-cd ../akount-invoice-templates
-```
+**1. Quick Start** (2m) - Read plan, setup environment
+**2. Execute** (varies) - Implement tasks systematically
+**3. Quality Check** (5m) - Tests, self-review
+**4. Document** (2m) - Update plan, commit progress
 
 ---
 
-### Phase 2: Execute
+## Phase 1: Quick Start (2 minutes)
 
-#### Task Loop
-
-Work through implementation phases from the plan:
-
-**For each task:**
-
-1. **Mark in Progress** ✏️
-   - Update plan: `- [x]` → task in progress
-
-2. **Implement**
-   - Follow existing code patterns in codebase
-   - Keep Server Components server by default
-   - Use integer cents for all monetary amounts
-   - Enforce tenant isolation in all queries
-   - Write self-documenting code (clear names, simple logic)
-
-3. **Test as You Go**
-   - Don't wait until the end to test!
-   - Test each function/component as you write it
-   - Verify tenant isolation works
-   - Check edge cases
-
-4. **Commit Incrementally**
-   - Commit when you complete a logical unit
-   - Use clear commit messages
-   - Include Co-Authored-By line
-
-**Example Commit Message:**
-```
-Add invoice template creation endpoint
-
-- POST /api/templates/invoices route handler
-- Input validation with Zod schema
-- Tenant isolation enforced
-- Unit tests for validation logic
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+### Read the Plan Completely
+```bash
+# Read implementation plan
+cat docs/plans/[plan-name].md
 ```
 
-#### When to Commit
+**Extract:**
+- Task list (what to build)
+- File locations (where to work)
+- Success criteria (when done)
+- Dependencies (what's needed first)
 
-**DO commit when:**
-- ✓ Feature slice complete (e.g., API route + tests working)
-- ✓ Database migration is ready and tested
-- ✓ Component fully functional with its styles
-- ✓ Bug fix verified and tested
-- ✓ Refactoring complete and not breaking
+### Ask Clarifying Questions
 
-**DON'T commit when:**
-- ✗ Tests are failing
-- ✗ Code doesn't compile
-- ✗ Only half of a feature (incomplete state)
-- ✗ Console has errors
-- ✗ Leaving for the day (finish or stash)
+**If unclear:**
+- Requirements ambiguous → Use AskUserQuestion
+- Multiple valid approaches → Ask for preferred direction
+- Security/compliance implications → Confirm approach
 
-#### Follow Existing Patterns
+**Don't guess** - clarity prevents rework.
 
-**Database Queries:**
+### Setup Environment
+```bash
+# Check git status
+git status
+
+# Create feature branch (if needed)
+git checkout -b feature/[feature-name]
+
+# Verify tests pass
+npm test
+```
+
+---
+
+## Phase 2: Execute (Varies by Task)
+
+### Task Loop
+
+For each task in plan:
+
+**1. Read relevant files**
+```bash
+# Read files mentioned in plan
+Read [file-path]
+```
+
+**2. Implement changes**
+- Follow existing patterns (check similar code)
+- Use Edit for modifications, Write for new files
+- Test incrementally (don't batch all changes)
+
+**3. Verify locally**
+```bash
+# Run tests frequently
+npm test
+
+# Check types
+npm run typecheck
+
+# Run linter
+npm run lint
+```
+
+**4. Commit working slices**
+- Commit when feature slice works
+- Don't wait to complete all tasks
+- Each commit should be functional
+
+### When to Commit
+
+**Commit when:**
+- ✅ Feature slice complete (e.g., API endpoint + tests pass)
+- ✅ Database migration ready and tested
+- ✅ Component fully functional
+- ✅ Bug fix verified
+
+**Don't commit when:**
+- ❌ Tests failing
+- ❌ Code doesn't compile
+- ❌ Only half of a feature
+- ❌ Console has errors
+
+### Follow Existing Patterns
+
+**Before writing new code:**
+```bash
+# Find similar implementations
+Grep "similar-pattern" apps/ --output_mode=files_with_matches
+
+# Read existing code
+Read [similar-file]
+```
+
+**Match:**
+- File structure (where files go)
+- Naming conventions (camelCase, PascalCase)
+- Import patterns (relative vs absolute)
+- Error handling (try/catch, error types)
+
+### Avoid Common Pitfalls
+
+**Tenant Isolation:**
 ```typescript
-// Always include tenant isolation
+// ❌ WRONG: Missing tenantId filter
+const invoices = await prisma.invoice.findMany()
+
+// ✅ CORRECT: Always filter by tenant
 const invoices = await prisma.invoice.findMany({
-  where: {
-    entity: { tenantId: userTenant.id },
-  },
-});
+  where: { entity: { tenantId: ctx.tenantId } }
+})
 ```
 
-**API Routes:**
+**Money Precision:**
 ```typescript
-// Standard pattern for protected routes
-export async function GET(request: NextRequest) {
-  const { userId } = await auth();
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+// ❌ WRONG: Float for money
+amount: 10.50
 
-  // Get user's tenant
-  const userTenant = await getUserTenant(userId);
-
-  // Query with tenant isolation
-  const data = await prisma.model.findMany({
-    where: { entity: { tenantId: userTenant.id } },
-  });
-
-  return NextResponse.json(data);
-}
+// ✅ CORRECT: Integer cents
+amount: 1050 // $10.50
 ```
 
-**Server Components:**
+**Soft Delete:**
 ```typescript
-// Fetch data server-side
-export default async function Page() {
-  const data = await fetchData();
-  return <ClientComponent data={data} />;
-}
+// ❌ WRONG: Hard delete
+await prisma.invoice.delete({ where: { id } })
+
+// ✅ CORRECT: Soft delete
+await prisma.invoice.update({
+  where: { id },
+  data: { deletedAt: new Date() }
+})
 ```
-
-**Client Components:**
-```typescript
-// Only use 'use client' when necessary
-'use client';
-import { useState } from 'react';
-
-export function InteractiveComponent({ data }) {
-  const [selected, setSelected] = useState(null);
-  // Only UI state here, not data fetching
-}
-```
-
-#### Avoid Common Pitfalls
-
-**Analysis Paralysis:**
-- Don't overthink - follow the plan
-- Don't abstract prematurely - wait for 3+ uses
-- Don't add features not in plan
-
-**80% Done Syndrome:**
-- Finish one phase before starting another
-- Don't skip tests "for now"
-- Complete error handling, not just happy path
-- Add loading states and error boundaries
 
 ---
 
-### Phase 3: Quality Check
+## Phase 3: Quality Check (5 minutes)
 
-#### Run Tests
-
-Before considering work "done":
-
+### Run Tests
 ```bash
 # Run all tests
 npm test
 
-# Run linter
-npm run lint
+# Run specific test file
+npm test [test-file]
 
-# Check TypeScript
-npx tsc --noEmit
+# Check coverage
+npm run test:coverage
 ```
 
-**All must pass!** Fix any failures before proceeding.
+**Fix failing tests before proceeding.**
 
-#### Code Review (For Complex Changes)
-
-For non-trivial features, run relevant review agents:
-
-```
-Use code-simplicity-reviewer to check for unnecessary complexity
-```
-
-```
-Use performance-oracle to identify bottlenecks
-```
-
-```
-Use security-sentinel to audit security
-```
-
-**For simple changes:** Skip this step to avoid analysis paralysis.
-
-#### Self-Review Checklist
-
-Before submitting:
-
-**Functionality:**
-- [ ] All acceptance criteria met
-- [ ] Edge cases handled
-- [ ] Error states have good UX
-- [ ] Loading states present
+### Self-Review Checklist
 
 **Code Quality:**
-- [ ] TypeScript types explicit
-- [ ] No `any` types
-- [ ] Clear variable/function names
-- [ ] No premature abstractions
+- [ ] No commented-out code
+- [ ] No console.log statements (unless intentional)
+- [ ] No TODOs left in code
+- [ ] Types are correct (no `any`)
+- [ ] Error handling present
+
+**Standards Compliance:**
+- [ ] tenantId filter in all queries
+- [ ] Money as integer cents
+- [ ] Soft delete used (deletedAt)
+- [ ] Zod validation for inputs
+- [ ] Server/Client components used correctly
 
 **Testing:**
-- [ ] Tests written and passing
-- [ ] Manual testing complete
-- [ ] Tested in different scenarios
+- [ ] Tests pass
+- [ ] New features have tests
+- [ ] Edge cases covered
 
-**Security:**
-- [ ] Input validated
-- [ ] Tenant isolation enforced
-- [ ] No sensitive data in logs
-- [ ] Authentication checked
+### Code Review (For Complex Changes)
 
-**Performance:**
-- [ ] No N+1 queries
-- [ ] Pagination if needed
-- [ ] Client bundle size reasonable
+**When to use agents:**
+- Multi-file changes (3+ files)
+- Financial logic (double-entry, multi-currency)
+- Security-sensitive code (auth, permissions)
+- Database schema changes
 
-**Financial (If Applicable):**
-- [ ] Integer cents used
-- [ ] Double-entry balanced
-- [ ] Multi-currency handled
-- [ ] Audit trail present
-
----
-
-### Phase 4: Ship It
-
-#### Final Commit
-
-Create final commit with all changes:
-
+**Run review agents:**
 ```bash
-git add .
-git commit -m "$(cat <<'EOF'
-Implement invoice template system
+# Financial validation
+Task tool: financial-data-validator
 
-Complete implementation of:
-- Database schema (InvoiceTemplate model)
-- API endpoints (CRUD operations)
-- UI components (template list, form, detail)
-- Tests (unit + integration)
-- Documentation updates
+# Architecture check
+Task tool: architecture-strategist
 
-Acceptance Criteria:
-✓ Users can save invoices as templates
-✓ Templates include line items and tax rates
-✓ Templates are tenant-isolated
-✓ Templates can be loaded when creating invoices
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
-EOF
-)"
-```
-
-#### Push Branch
-
-```bash
-git push -u origin feature/invoice-templates
-```
-
-#### Create Pull Request
-
-Use GitHub CLI:
-
-```bash
-gh pr create --title "Implement invoice template system" --body "$(cat <<'EOF'
-## Summary
-Adds invoice template functionality to allow users to save and reuse invoice structures.
-
-## Changes
-- Added `InvoiceTemplate` Prisma model with tenant isolation
-- Created CRUD API endpoints with input validation
-- Built template management UI (list, create, edit, delete)
-- Added ability to load templates when creating invoices
-- Tests: 15 unit tests, 8 integration tests
-
-## Testing
-- [x] Manual testing complete
-- [x] All unit tests pass
-- [x] All integration tests pass
-- [x] Tenant isolation verified
-- [x] Multi-entity support tested
-
-## Screenshots
-[If UI changes, add screenshots here]
-
-## Checklist
-- [x] Code follows project conventions
-- [x] Tests written and passing
-- [x] Documentation updated
-- [x] No console errors
-- [x] TypeScript compiles without errors
-- [x] Security considerations addressed
-- [x] Performance considerations addressed
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-EOF
-)"
-```
-
-#### Notify User
-
-Let the user know work is complete:
-
-```
-✅ Implementation Complete!
-
-Feature: Invoice Templates
-Branch: feature/invoice-templates
-PR: #123
-Status: Ready for Review
-
-Summary:
-- ✓ Database schema added
-- ✓ API endpoints implemented
-- ✓ UI components created
-- ✓ Tests passing (23/23)
-- ✓ Documentation updated
-
-Next Steps:
-1. Review the PR
-2. Test in staging
-3. Merge when approved
+# Security audit
+Task tool: security-sentinel
 ```
 
 ---
 
-## Important Guidelines
+## Phase 4: Document & Commit (2 minutes)
 
-### Do:
-- ✓ Read the entire plan before coding
-- ✓ Ask clarifying questions upfront
-- ✓ Commit incrementally (logical units)
-- ✓ Test continuously, not just at the end
-- ✓ Follow existing code patterns
-- ✓ Run quality checks before submitting
+### Update Plan
 
-### Don't:
-- ✗ Skip reading the plan
-- ✗ Add features not in the plan
-- ✗ Leave tests for the end
-- ✗ Commit failing code
-- ✗ Abstract prematurely
-- ✗ Skip the self-review checklist
+Mark completed tasks in implementation plan:
+```markdown
+## Task List
+- [x] Task 1 (completed)
+- [x] Task 2 (completed)
+- [ ] Task 3 (pending)
+```
 
----
+### Commit Changes
 
-## Handling Issues
+```bash
+# Stage files
+git add [files]
 
-### Blocked by Dependencies
+# Commit with clear message
+git commit -m "feat: [description]
 
-If you discover missing dependencies:
+[Optional details about implementation]
 
-1. **Document the blocker** in the plan
-2. **Ask user** if you should:
-   - Implement the dependency first
-   - Switch to a different task
-   - Update the plan to remove dependency
+Completed:
+- Task 1
+- Task 2
 
-### Plan Needs Adjustment
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
-If the plan doesn't work as written:
+# Verify
+git log --oneline -1
+```
 
-1. **Don't just improvise!**
-2. **Document the issue**
-3. **Propose alternative approach**
-4. **Get user approval** before proceeding
+### Update TASKS.md (If Applicable)
 
-### Tests Failing
-
-If tests fail:
-
-1. **Don't commit anyway!**
-2. **Debug the issue**
-3. **Fix the code or test**
-4. **Verify fix works**
-5. **Then commit**
+If plan completes a task from TASKS.md:
+```bash
+# Mark task as done
+# Move to "Recently Completed" section
+# Add date completed
+```
 
 ---
 
 ## Progress Tracking
 
-### Update the Plan Document
+Use TodoWrite to track multi-step work:
 
-As you work, update the plan file:
+```bash
+TodoWrite: [
+  { content: "Read plan", status: "completed", activeForm: "Reading plan" },
+  { content: "Implement API endpoint", status: "in_progress", activeForm: "Implementing API endpoint" },
+  { content: "Write tests", status: "pending", activeForm: "Writing tests" },
+  { content: "Run quality checks", status: "pending", activeForm: "Running quality checks" }
+]
+```
+
+**Update immediately** when tasks complete (don't batch).
+
+---
+
+## Workflow Output
 
 ```markdown
-## Implementation Phases
+# 🚧 Work Session Progress
 
-### Phase 1: Database & Backend ✅ COMPLETE
+## Plan
+[Plan name from docs/plans/]
 
-**Tasks:**
-- [x] Create Prisma schema updates ✅
-- [x] Write and test migration ✅
-- [x] Create API route handlers ✅
-- [x] Add input validation ✅
-- [x] Write unit tests ✅
+## Completed Tasks
+- [x] Task 1: [description]
+- [x] Task 2: [description]
 
-### Phase 2: UI Components 🔄 IN PROGRESS
+## Current Task
+- [→] Task 3: [description] (60% done)
 
-**Tasks:**
-- [x] Create page layouts ✅
-- [x] Build form components ✅
-- [ ] Add loading states
-- [ ] Add error boundaries
-- [ ] Implement optimistic updates
-```
+## Blockers
+[None / List blockers encountered]
 
-**Living Document:** The plan shows real-time progress.
+## Next Steps
+- [ ] Task 4: [description]
+- [ ] Task 5: [description]
+
+## Quality Status
+- [x] Tests passing
+- [x] Types correct
+- [x] Standards compliant
 
 ---
 
-## Example: Working Through a Plan
-
-### Starting State
-
-Plan says:
-```
-Phase 1: Create API endpoint
-- [ ] POST /api/templates/invoices
-- [ ] Input validation
-- [ ] Tests
-```
-
-### Execution
-
-1. **Read requirement**: Need API endpoint to create invoice templates
-2. **Ask if unclear**: "Should templates be per-entity or per-tenant?"
-3. **Implement**: Create `app/api/templates/invoices/route.ts`
-4. **Test**: Write tests, verify tenant isolation
-5. **Commit**: `git commit -m "Add invoice template creation endpoint"`
-6. **Update plan**: Mark task complete `[x]`
-
-### Result
-
-```
-Phase 1: Create API endpoint ✅
-- [x] POST /api/templates/invoices ✅
-- [x] Input validation ✅
-- [x] Tests ✅
+**Ready to continue or commit progress.**
 ```
 
 ---
 
-**Remember:** The goal is to finish features completely, not just write code. Follow the plan, test continuously, commit incrementally, and ship with confidence.
+_Lines: ~300 (slimmed from 500). Focuses on systematic execution with quality checks._

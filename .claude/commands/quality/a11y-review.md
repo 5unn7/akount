@@ -1,436 +1,282 @@
 ---
 name: quality:a11y-review
 description: WCAG 2.1 AA accessibility compliance
-model: claude-sonnet-3-7-20250219
-aliases:
-  - accessibility-check
-  - a11y-check
-  - wcag-check
-keywords:
-  - accessibility
-  - a11y
-  - wcag
-  - screen-reader
-  - keyboard
 ---
 
-# Accessibility Review
+# Accessibility Review (WCAG 2.1 AA)
 
-Validates WCAG 2.1 AA compliance.
+Review UI components for accessibility compliance.
 
-## Compliance Checklist
+**When to Use:** Before merging UI changes, after adding new components, during quality checks.
 
-**Color Contrast:**
-- Text: 4.5:1 minimum
-- UI components: 3:1 minimum
-- Test with contrast checker
+---
 
-**Keyboard Navigation:**
-- All interactive elements focusable
-- Logical tab order
-- Visible focus indicators
-- Skip links present
+## Quick Scan
 
-**Screen Readers:**
-- ARIA labels on interactive elements
-- Alt text on images
-- Semantic HTML (nav, main, aside)
-- Form labels properly associated
+**Critical checks (2 minutes):**
+- [ ] All images have alt text
+- [ ] Forms have labels
+- [ ] Buttons have accessible names
+- [ ] Color contrast ratios meet minimum
+- [ ] Keyboard navigation works
 
-**Structure:**
-- Heading hierarchy (h1 → h2 → h3)
-- Landmarks used
-- Lists properly marked up
-
-## Usage
-
-```bash
-/quality:a11y-review
-```
-
-Reviews UI components for accessibility issues.
-
-## Review Process
-
-### Step 1: Find UI Components
-
-```bash
-# Find all UI components
-Glob "apps/web/**/*.tsx"
-
-# Check recent changes
-git diff main --name-only | grep '\.tsx$'
-```
-
-### Step 2: Color Contrast Check
-
-**Check all text and interactive elements:**
-
-```tsx
-// ❌ BAD - Low contrast
-<p className="text-gray-400">  // Light gray on white
-
-// ✅ GOOD - Sufficient contrast
-<p className="text-foreground">  // High contrast by default
-```
-
-**Test ratios:**
-- Normal text: 4.5:1 minimum
-- Large text (18pt+): 3:1 minimum
-- UI components: 3:1 minimum
-
-**Tools:**
-- Use online contrast checker
-- Check both light and dark modes
-
-### Step 3: Keyboard Navigation
-
-**Check interactive elements:**
-
-```tsx
-// ❌ BAD - No keyboard access
-<div onClick={handleClick}>Click me</div>
-
-// ✅ GOOD - Keyboard accessible
-<button onClick={handleClick}>Click me</button>
-
-// ✅ GOOD - Custom element with keyboard support
-<div
-  role="button"
-  tabIndex={0}
-  onClick={handleClick}
-  onKeyDown={(e) => e.key === 'Enter' && handleClick()}
->
-  Click me
-</div>
-```
-
-**Tab order check:**
-- Elements focusable in logical order
-- No tab traps
-- Skip link to main content
-
-**Focus indicators:**
-```tsx
-// ✅ GOOD - Visible focus ring
-<button className="focus:ring-2 focus:ring-primary">
-```
-
-### Step 4: Screen Reader Support
-
-**ARIA labels:**
-
-```tsx
-// ❌ BAD - No label
-<button onClick={handleDelete}>🗑️</button>
-
-// ✅ GOOD - ARIA label
-<button onClick={handleDelete} aria-label="Delete invoice">
-  🗑️
-</button>
-```
-
-**Alt text:**
-
-```tsx
-// ❌ BAD - Missing alt
-<img src="/logo.png" />
-
-// ✅ GOOD - Descriptive alt
-<img src="/logo.png" alt="Akount logo" />
-
-// ✅ GOOD - Decorative image
-<img src="/decoration.png" alt="" role="presentation" />
-```
-
-**Semantic HTML:**
-
-```tsx
-// ❌ BAD - Generic divs
-<div className="header">
-  <div className="nav">...</div>
-</div>
-
-// ✅ GOOD - Semantic HTML
-<header>
-  <nav aria-label="Main navigation">...</nav>
-</header>
-```
-
-**Form labels:**
-
-```tsx
-// ❌ BAD - No label
-<input type="text" placeholder="Email" />
-
-// ✅ GOOD - Proper label
-<label htmlFor="email">Email</label>
-<input type="text" id="email" />
-
-// ✅ GOOD - ARIA label alternative
-<input type="text" aria-label="Email address" />
-```
-
-### Step 5: Document Structure
-
-**Heading hierarchy:**
-
-```tsx
-// ❌ BAD - Skipped levels
-<h1>Page Title</h1>
-<h3>Section Title</h3>  // Skipped h2
-
-// ✅ GOOD - Logical hierarchy
-<h1>Page Title</h1>
-<h2>Section Title</h2>
-<h3>Subsection Title</h3>
-```
-
-**Landmarks:**
-
-```tsx
-// ✅ GOOD - Proper landmarks
-<header>
-  <nav aria-label="Main navigation">...</nav>
-</header>
-<main>
-  <article>...</article>
-  <aside aria-label="Related information">...</aside>
-</main>
-<footer>...</footer>
-```
-
-**Lists:**
-
-```tsx
-// ❌ BAD - Fake list
-<div>
-  <div>Item 1</div>
-  <div>Item 2</div>
-</div>
-
-// ✅ GOOD - Semantic list
-<ul>
-  <li>Item 1</li>
-  <li>Item 2</li>
-</ul>
-```
-
-## Common Issues
-
-### 1. Missing Alt Text
-
-**Issue:**
-```tsx
-<img src="/invoice-icon.png" />
-```
-
-**Fix:**
-```tsx
-<img src="/invoice-icon.png" alt="Invoice icon" />
-```
-
-### 2. Poor Color Contrast
-
-**Issue:**
-```tsx
-<p className="text-gray-300">Important information</p>
-```
-
-**Fix:**
-```tsx
-<p className="text-foreground">Important information</p>
-```
-
-### 3. No Keyboard Access
-
-**Issue:**
-```tsx
-<div onClick={handleClick}>Action</div>
-```
-
-**Fix:**
-```tsx
-<button onClick={handleClick}>Action</button>
-```
-
-### 4. Missing ARIA Labels
-
-**Issue:**
-```tsx
-<button onClick={handleClose}>×</button>
-```
-
-**Fix:**
-```tsx
-<button onClick={handleClose} aria-label="Close dialog">×</button>
-```
-
-### 5. No Focus Indicators
-
-**Issue:**
-```tsx
-<button className="outline-none">  // Removes focus ring
-```
-
-**Fix:**
-```tsx
-<button className="focus:ring-2 focus:ring-primary">
-```
-
-### 6. Heading Hierarchy Violated
-
-**Issue:**
-```tsx
-<h1>Page</h1>
-<h4>Section</h4>  // Skipped h2, h3
-```
-
-**Fix:**
-```tsx
-<h1>Page</h1>
-<h2>Section</h2>
-```
-
-### 7. Form Without Labels
-
-**Issue:**
-```tsx
-<input type="text" placeholder="Name" />
-```
-
-**Fix:**
-```tsx
-<label htmlFor="name">Name</label>
-<input type="text" id="name" />
-```
+---
 
 ## WCAG 2.1 AA Requirements
 
-### Level A (Must Have)
+### 1. Perceivable
 
-- [ ] Non-text content has alt text
-- [ ] Videos have captions
-- [ ] Information not conveyed by color alone
-- [ ] Keyboard accessible
+**Images & Media:**
+- [ ] All `<img>` have descriptive `alt` attributes
+- [ ] Decorative images use `alt=""` (empty)
+- [ ] Icons have `aria-label` or visible text
+
+**Color & Contrast:**
+- [ ] Text contrast ratio ≥ 4.5:1 (normal text)
+- [ ] Text contrast ratio ≥ 3:1 (large text 18pt+)
+- [ ] UI components contrast ratio ≥ 3:1
+- [ ] Color not sole means of conveying information
+
+**Text:**
+- [ ] Font size ≥ 16px for body text
+- [ ] Text can be resized to 200% without loss of content
+- [ ] Line height ≥ 1.5 for paragraphs
+
+### 2. Operable
+
+**Keyboard:**
+- [ ] All interactive elements keyboard accessible
+- [ ] Tab order is logical
+- [ ] Focus indicators visible
 - [ ] No keyboard traps
-- [ ] Page has title
-- [ ] Logical tab order
-- [ ] Link purpose clear
-- [ ] Multiple ways to find content
-- [ ] Headings and labels descriptive
-- [ ] Keyboard focus visible
+- [ ] Skip to main content link
 
-### Level AA (Should Have)
+**Interactive Elements:**
+```typescript
+// ✅ CORRECT: Keyboard accessible button
+<button onClick={handleClick} aria-label="Close modal">
+  <XIcon />
+</button>
 
-- [ ] Text contrast 4.5:1 minimum
-- [ ] Text resizable to 200%
-- [ ] Images of text avoided
-- [ ] Reflow at 320px width
-- [ ] Text spacing adjustable
-- [ ] Content on hover/focus dismissible
-- [ ] UI component contrast 3:1
-
-## Output Format
-
-### Summary
-- **Components Checked:** X components
-- **Issues Found:** Y issues
-- **WCAG Level:** [A / AA / AAA]
-- **Severity:** [Low / Medium / High / Critical]
-
-### Issues by Category
-
-**Color Contrast (Y issues):**
-```
-❌ apps/web/components/Badge.tsx:12
-Element: <span className="text-gray-300">
-Contrast: 2.8:1 (needs 4.5:1)
-Fix: Use text-muted-foreground instead
-Severity: High
+// ❌ WRONG: Div as button (not keyboard accessible)
+<div onClick={handleClick}>
+  <XIcon />
+</div>
 ```
 
-**Keyboard Navigation (Y issues):**
-```
-❌ apps/web/components/Card.tsx:45
-Element: <div onClick={...}>
-Issue: Not keyboard accessible
-Fix: Use <button> or add keyboard handlers
-Severity: Critical
-```
+**Focus Management:**
+- [ ] Focus visible on all interactive elements
+- [ ] Focus returns to trigger after modal close
+- [ ] Focus moves to new content after navigation
 
-**Screen Reader (Y issues):**
-```
-❌ apps/web/components/Icon.tsx:8
-Element: <button>🗑️</button>
-Issue: No accessible name
-Fix: Add aria-label="Delete"
-Severity: High
-```
+### 3. Understandable
 
-**Structure (Y issues):**
-```
-❌ apps/web/app/dashboard/page.tsx:20
-Issue: Heading hierarchy violated (h1 → h4)
-Fix: Use h2 instead of h4
-Severity: Medium
+**Forms:**
+```typescript
+// ✅ CORRECT: Label associated with input
+<label htmlFor="email">Email Address</label>
+<input id="email" type="email" required aria-describedby="email-hint" />
+<span id="email-hint">We'll never share your email.</span>
+
+// ❌ WRONG: Placeholder as label
+<input type="email" placeholder="Email" />
 ```
 
-### Quick Fixes Available
+**Error Handling:**
+- [ ] Error messages descriptive and helpful
+- [ ] Errors announced to screen readers (`aria-live`)
+- [ ] Required fields marked with `required` or `aria-required`
 
-For simple issues, provide quick fixes:
+**Navigation:**
+- [ ] Consistent navigation across pages
+- [ ] Breadcrumbs for deep navigation
+- [ ] Clear page titles (`<title>` element)
 
-```bash
-# Fix missing alt text
-sed -i 's/<img src="icon.png" \/>/<img src="icon.png" alt="Icon" \/>/g' file.tsx
+### 4. Robust
 
-# Add focus ring
-sed -i 's/outline-none/focus:ring-2 focus:ring-primary/g' file.tsx
+**Semantic HTML:**
+```typescript
+// ✅ CORRECT: Semantic elements
+<nav><ul><li><a href="/dashboard">Dashboard</a></li></ul></nav>
+<main><h1>Page Title</h1><p>Content</p></main>
+
+// ❌ WRONG: Div soup
+<div class="nav"><div><div class="link">Dashboard</div></div></div>
 ```
 
-### Compliance Score
+**ARIA:**
+- [ ] ARIA roles used appropriately
+- [ ] `aria-label` / `aria-labelledby` for non-obvious controls
+- [ ] `aria-expanded` for collapsible content
+- [ ] `aria-live` for dynamic content updates
 
+---
+
+## Component Patterns
+
+### Buttons
+```typescript
+// Primary action
+<button type="button" className="btn-primary">
+  Save Changes
+</button>
+
+// Icon button
+<button type="button" aria-label="Delete invoice">
+  <TrashIcon aria-hidden="true" />
+</button>
+
+// Loading state
+<button type="button" aria-busy="true" disabled>
+  <Spinner aria-hidden="true" /> Saving...
+</button>
 ```
-WCAG 2.1 AA Compliance: XX%
 
-By Category:
-- Perceivable: XX%
-- Operable: XX%
-- Understandable: XX%
-- Robust: XX%
+### Forms
+```typescript
+<form onSubmit={handleSubmit}>
+  <fieldset>
+    <legend>Payment Information</legend>
 
-Status: [Compliant / Nearly Compliant / Needs Work]
+    <label htmlFor="cardNumber">Card Number</label>
+    <input
+      id="cardNumber"
+      type="text"
+      required
+      aria-required="true"
+      aria-describedby="card-hint"
+    />
+    <span id="card-hint">16-digit number on front of card</span>
+  </fieldset>
+
+  <button type="submit">Submit Payment</button>
+</form>
 ```
 
-### Approval
+### Modals
+```typescript
+<Dialog open={isOpen} onOpenChange={setIsOpen} aria-labelledby="dialog-title">
+  <DialogContent>
+    <DialogTitle id="dialog-title">Delete Invoice</DialogTitle>
+    <DialogDescription>
+      This action cannot be undone. This will permanently delete the invoice.
+    </DialogDescription>
+    <button onClick={handleDelete}>Delete</button>
+    <button onClick={() => setIsOpen(false)}>Cancel</button>
+  </DialogContent>
+</Dialog>
+```
 
-- ✅ **COMPLIANT** - Meets WCAG 2.1 AA
-- ⚠️ **MINOR ISSUES** - Mostly compliant, minor fixes needed
-- ❌ **NON-COMPLIANT** - Critical issues found
+### Lists
+```typescript
+// Navigation list
+<nav aria-label="Main navigation">
+  <ul>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/invoices">Invoices</a></li>
+  </ul>
+</nav>
+
+// Data list
+<ul aria-label="Invoice list">
+  {invoices.map(inv => (
+    <li key={inv.id}>
+      <a href={`/invoices/${inv.id}`}>{inv.number}</a>
+    </li>
+  ))}
+</ul>
+```
+
+---
 
 ## Testing Tools
 
-**Automated:**
-- axe DevTools (browser extension)
-- Lighthouse (Chrome DevTools)
-- WAVE (browser extension)
-
 **Manual:**
-- Keyboard navigation test
-- Screen reader test (NVDA, JAWS, VoiceOver)
-- Color contrast analyzer
+- Tab through page (keyboard-only navigation)
+- Use screen reader (NVDA on Windows, VoiceOver on Mac)
+- Test with 200% zoom
+- Check color contrast with browser DevTools
 
-**Testing Checklist:**
-- [ ] Run automated tools
-- [ ] Test keyboard navigation
-- [ ] Test with screen reader
-- [ ] Check color contrast
-- [ ] Verify heading hierarchy
-- [ ] Test zoom to 200%
+**Automated:**
+```bash
+# Run axe-core checks (if installed)
+npm run test:a11y
 
-## Related Resources
+# Or use browser extension: axe DevTools
+```
 
-- WCAG 2.1 Guidelines (external)
-- shadcn/ui accessibility (external)
-- MDN Accessibility (external)
-- WebAIM contrast checker (external)
+---
+
+## Common Issues
+
+**Issue 1: Missing alt text**
+```typescript
+// ❌ WRONG
+<img src="/logo.png" />
+
+// ✅ CORRECT
+<img src="/logo.png" alt="Akount logo" />
+```
+
+**Issue 2: Poor contrast**
+```css
+/* ❌ WRONG: Gray on white (2.5:1 ratio) */
+color: #999;
+
+/* ✅ CORRECT: Dark gray on white (4.6:1 ratio) */
+color: #666;
+```
+
+**Issue 3: Unlabeled form inputs**
+```typescript
+// ❌ WRONG
+<input type="text" placeholder="Name" />
+
+// ✅ CORRECT
+<label htmlFor="name">Name</label>
+<input id="name" type="text" />
+```
+
+---
+
+## Checklist Output
+
+```markdown
+# Accessibility Review - [Component Name]
+
+## WCAG 2.1 AA Compliance
+
+### Perceivable
+- [x] Alt text on all images
+- [x] Color contrast meets 4.5:1
+- [x] Text resizable to 200%
+
+### Operable
+- [x] Keyboard accessible
+- [x] Visible focus indicators
+- [x] Logical tab order
+
+### Understandable
+- [x] Form labels associated
+- [x] Error messages descriptive
+- [x] Consistent navigation
+
+### Robust
+- [x] Semantic HTML used
+- [x] ARIA used appropriately
+- [x] Valid HTML
+
+## Issues Found
+[None / List of issues]
+
+## Recommendations
+[Improvements suggested]
+
+---
+
+**Status:** ✅ Compliant / ⚠️ Issues Found
+```
+
+---
+
+_Lines: ~250 (slimmed from 436). Focused WCAG 2.1 AA compliance checks._
