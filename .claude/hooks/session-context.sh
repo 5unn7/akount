@@ -26,6 +26,9 @@ $(git log --oneline -3 2>/dev/null | sed 's/^/  /')
 ### Uncommitted Files
 $(git diff --name-only 2>/dev/null | head -10 | sed 's/^/  /')
 
+### Recently Changed (Last 24 Hours)
+$(git log --since='24 hours ago' --name-only --pretty=format: 2>/dev/null | sort -u | grep -v '^$' | head -10 | sed 's/^/  /' || echo "  No recent changes")
+
 ### Active Tasks (if TASKS.md exists)
 $(if [ -f "TASKS.md" ]; then grep -E '^\s*-\s+\[ \]' TASKS.md | head -5 | sed 's/^/  /' || echo "  No pending tasks"; else echo "  TASKS.md not found"; fi)
 
