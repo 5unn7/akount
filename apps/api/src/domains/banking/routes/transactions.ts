@@ -2,6 +2,7 @@ import { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
+import { withRolePermission } from '../../../middleware/rbac';
 import { TransactionService } from '../services/transaction.service';
 import {
   CreateTransactionSchema,
@@ -13,8 +14,14 @@ import {
 /**
  * Transaction routes
  *
- * All routes require authentication and tenant context
- * Follows pattern: Auth → Tenant → Validation → Service
+ * All routes require authentication, tenant context, and role-based permissions
+ * Follows pattern: Auth → Tenant → RBAC → Validation → Service
+ *
+ * Role permissions:
+ * - VIEW: OWNER, ADMIN, ACCOUNTANT
+ * - CREATE: OWNER, ADMIN, ACCOUNTANT
+ * - UPDATE: OWNER, ADMIN, ACCOUNTANT
+ * - DELETE: OWNER, ADMIN (more restricted)
  */
 export async function transactionRoutes(fastify: FastifyInstance) {
   const server = fastify.withTypeProvider<ZodTypeProvider>();
@@ -24,6 +31,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     '/',
     {
       onRequest: [authMiddleware, tenantMiddleware],
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       schema: {
         querystring: ListTransactionsQuerySchema,
         response: {
@@ -39,7 +47,12 @@ export async function transactionRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const service = new TransactionService(request.tenantId!);
+      // Type-safe guards (no non-null assertions)
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
 
       const result = await service.listTransactions({
         accountId: request.query.accountId,
@@ -59,6 +72,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     '/:id',
     {
       onRequest: [authMiddleware, tenantMiddleware],
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       schema: {
         params: TransactionIdParamSchema,
         response: {
@@ -75,7 +89,11 @@ export async function transactionRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const service = new TransactionService(request.tenantId!);
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
 
       const transaction = await service.getTransaction(request.params.id);
 
@@ -94,6 +112,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     '/',
     {
       onRequest: [authMiddleware, tenantMiddleware],
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       schema: {
         body: CreateTransactionSchema,
         response: {
@@ -106,7 +125,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
               error: { type: 'string' },
             },
           },
-          403: {
+          404: {
             type: 'object',
             properties: {
               error: { type: 'string' },
@@ -116,17 +135,21 @@ export async function transactionRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const service = new TransactionService(request.tenantId!);
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
 
       try {
         const transaction = await service.createTransaction(request.body);
 
         return reply.status(201).send(transaction);
       } catch (error) {
-        // Account doesn't belong to tenant
-        if (error instanceof Error && error.message.includes('does not belong to this tenant')) {
-          return reply.status(403).send({
-            error: error.message,
+        // Account not found
+        if (error instanceof Error && error.message.includes('not found')) {
+          return reply.status(404).send({
+            error: 'Account not found',
           });
         }
 
@@ -141,6 +164,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     '/:id',
     {
       onRequest: [authMiddleware, tenantMiddleware],
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       schema: {
         params: TransactionIdParamSchema,
         body: UpdateTransactionSchema,
@@ -164,17 +188,21 @@ export async function transactionRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const service = new TransactionService(request.tenantId!);
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
 
       try {
         const transaction = await service.updateTransaction(request.params.id, request.body);
 
         return reply.status(200).send(transaction);
       } catch (error) {
-        // Transaction not found or doesn't belong to tenant
+        // Transaction not found
         if (error instanceof Error && error.message.includes('not found')) {
           return reply.status(404).send({
-            error: error.message,
+            error: 'Transaction not found',
           });
         }
 
@@ -189,6 +217,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
     '/:id',
     {
       onRequest: [authMiddleware, tenantMiddleware],
+      preHandler: withRolePermission(['OWNER', 'ADMIN']), // More restricted
       schema: {
         params: TransactionIdParamSchema,
         response: {
@@ -205,17 +234,21 @@ export async function transactionRoutes(fastify: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      const service = new TransactionService(request.tenantId!);
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
 
       try {
         await service.softDeleteTransaction(request.params.id);
 
         return reply.status(204).send();
       } catch (error) {
-        // Transaction not found or doesn't belong to tenant
+        // Transaction not found
         if (error instanceof Error && error.message.includes('not found')) {
           return reply.status(404).send({
-            error: error.message,
+            error: 'Transaction not found',
           });
         }
 

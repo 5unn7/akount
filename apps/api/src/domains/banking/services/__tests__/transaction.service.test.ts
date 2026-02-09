@@ -18,6 +18,7 @@ vi.mock('@akount/db', () => ({
 import { prisma } from '@akount/db';
 
 const TENANT_ID = 'tenant-abc-123';
+const USER_ID = 'user-123';
 const ACCOUNT_ID = 'acc-xyz-789';
 const ENTITY_ID = 'entity-123';
 
@@ -73,7 +74,7 @@ describe('TransactionService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    service = new TransactionService(TENANT_ID);
+    service = new TransactionService(TENANT_ID, USER_ID);
   });
 
   describe('listTransactions', () => {
@@ -374,6 +375,10 @@ describe('TransactionService', () => {
             tenantId: TENANT_ID,
           },
         },
+        select: {
+          id: true,
+          entityId: true,
+        },
       });
     });
 
@@ -385,14 +390,14 @@ describe('TransactionService', () => {
           ...validInput,
           accountId: 'acc-other-tenant',
         })
-      ).rejects.toThrow('Account not found or does not belong to this tenant');
+      ).rejects.toThrow('Account not found');
     });
 
     it('should throw if account is soft-deleted', async () => {
       vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(service.createTransaction(validInput)).rejects.toThrow(
-        'does not belong to this tenant'
+        'not found'
       );
     });
 
@@ -480,7 +485,7 @@ describe('TransactionService', () => {
       vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(service.updateTransaction('nonexistent', updateData)).rejects.toThrow(
-        'Transaction not found or does not belong to this tenant'
+        'Transaction not found'
       );
 
       expect(prisma.transaction.update).not.toHaveBeenCalled();
@@ -568,7 +573,7 @@ describe('TransactionService', () => {
       vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(service.softDeleteTransaction('nonexistent')).rejects.toThrow(
-        'Transaction not found or does not belong to this tenant'
+        'Transaction not found'
       );
 
       expect(prisma.transaction.update).not.toHaveBeenCalled();
@@ -592,7 +597,7 @@ describe('TransactionService', () => {
       vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(service.softDeleteTransaction('txn-other-tenant')).rejects.toThrow(
-        'Transaction not found or does not belong to this tenant'
+        'Transaction not found'
       );
 
       expect(prisma.transaction.update).not.toHaveBeenCalled();
@@ -603,7 +608,7 @@ describe('TransactionService', () => {
       vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(service.softDeleteTransaction('txn-deleted')).rejects.toThrow(
-        'Transaction not found or does not belong to this tenant'
+        'Transaction not found'
       );
 
       expect(prisma.transaction.update).not.toHaveBeenCalled();

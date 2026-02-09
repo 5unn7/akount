@@ -1,8 +1,61 @@
-import { prisma } from '@akount/db';
+import { prisma, Prisma, TransactionSourceType } from '@akount/db';
+import { createAuditLog } from '../../../lib/audit';
 
 // Constants for pagination
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
+
+// Standard include pattern for transaction queries
+const TRANSACTION_INCLUDE = {
+  account: {
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      currency: true,
+    },
+  },
+  category: {
+    select: {
+      id: true,
+      name: true,
+      color: true,
+    },
+  },
+} as const;
+
+const TRANSACTION_INCLUDE_WITH_ENTITY = {
+  account: {
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      currency: true,
+      entity: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  },
+  category: {
+    select: {
+      id: true,
+      name: true,
+      color: true,
+    },
+  },
+} as const;
+
+// Explicit type definitions (replaces Awaited<ReturnType<>>)
+type TransactionWithRelations = Prisma.TransactionGetPayload<{
+  include: typeof TRANSACTION_INCLUDE;
+}>;
+
+type TransactionWithEntity = Prisma.TransactionGetPayload<{
+  include: typeof TRANSACTION_INCLUDE_WITH_ENTITY;
+}>;
 
 // Types for pagination and filtering
 export interface ListTransactionsParams {
@@ -15,7 +68,7 @@ export interface ListTransactionsParams {
 }
 
 export interface PaginatedTransactions {
-  transactions: Awaited<ReturnType<typeof prisma.transaction.findMany>>;
+  transactions: TransactionWithRelations[];
   nextCursor?: string;
   hasMore: boolean;
 }
@@ -28,7 +81,7 @@ export interface CreateTransactionInput {
   currency: string; // ISO 4217 (USD, CAD, EUR)
   categoryId?: string;
   notes?: string;
-  sourceType: 'MANUAL' | 'BANK_FEED' | 'INVOICE' | 'BILL';
+  sourceType: TransactionSourceType; // Use Prisma enum
   sourceId?: string;
 }
 
@@ -47,7 +100,10 @@ export interface UpdateTransactionInput {
  * - NO parsing or import logic (that's in ImportService)
  */
 export class TransactionService {
-  constructor(private tenantId: string) {}
+  constructor(
+    private tenantId: string,
+    private userId: string
+  ) {}
 
   /**
    * List transactions with filters and cursor-based pagination
@@ -58,8 +114,8 @@ export class TransactionService {
     // Ensure limit is within bounds
     const limit = Math.min(params.limit || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
 
-    // Build where clause with tenant isolation
-    const where: any = {
+    // Build where clause with tenant isolation (use Prisma type)
+    const where: Prisma.TransactionWhereInput = {
       deletedAt: null, // Soft delete filter
     };
 
@@ -106,23 +162,7 @@ export class TransactionService {
     // Fetch one extra to determine if there are more results
     const transactions = await prisma.transaction.findMany({
       where,
-      include: {
-        account: {
-          select: {
-            id: true,
-            name: true,
-            type: true,
-            currency: true,
-          },
-        },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            color: true,
-          },
-        },
-      },
+      include: TRANSACTION_INCLUDE, // Use extracted constant
       orderBy: { date: 'desc' }, // Newest first
       take: limit + 1,
     });
@@ -146,7 +186,7 @@ export class TransactionService {
    *
    * @returns Transaction if found and belongs to tenant, null otherwise
    */
-  async getTransaction(id: string): Promise<Awaited<ReturnType<typeof prisma.transaction.findFirst>> | null> {
+  async getTransaction(id: string): Promise<TransactionWithEntity | null> {
     const transaction = await prisma.transaction.findFirst({
       where: {
         id,
@@ -157,29 +197,7 @@ export class TransactionService {
         },
         deletedAt: null, // Soft delete filter
       },
-      include: {
-        account: {
-          select: {
-            id: true,
-            name: true,
-            type: true,
-            currency: true,
-            entity: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-        },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            color: true,
-          },
-        },
-      },
+      include: TRANSACTION_INCLUDE_WITH_ENTITY, // Use extracted constant
     });
 
     return transaction;
@@ -190,7 +208,7 @@ export class TransactionService {
    *
    * @throws Error if account doesn't belong to tenant
    */
-  async createTransaction(data: CreateTransactionInput): Promise<Awaited<ReturnType<typeof prisma.transaction.create>>> {
+  async createTransaction(data: CreateTransactionInput): Promise<TransactionWithRelations> {
     // Verify account belongs to tenant (tenant isolation check)
     const account = await prisma.account.findFirst({
       where: {
@@ -200,10 +218,14 @@ export class TransactionService {
         },
         deletedAt: null,
       },
+      select: {
+        id: true,
+        entityId: true, // Need for audit log
+      },
     });
 
     if (!account) {
-      throw new Error('Account not found or does not belong to this tenant');
+      throw new Error('Account not found');
     }
 
     // Create transaction with defaults
@@ -221,22 +243,23 @@ export class TransactionService {
         isStaged: false, // Default
         isSplit: false, // Default
       },
-      include: {
-        account: {
-          select: {
-            id: true,
-            name: true,
-            type: true,
-            currency: true,
-          },
-        },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            color: true,
-          },
-        },
+      include: TRANSACTION_INCLUDE, // Use extracted constant
+    });
+
+    // Audit logging (P0 security requirement)
+    await createAuditLog({
+      tenantId: this.tenantId,
+      userId: this.userId,
+      entityId: account.entityId,
+      model: 'Transaction',
+      recordId: transaction.id,
+      action: 'CREATE',
+      after: {
+        accountId: transaction.accountId,
+        amount: transaction.amount,
+        currency: transaction.currency,
+        description: transaction.description,
+        date: transaction.date,
       },
     });
 
@@ -251,12 +274,33 @@ export class TransactionService {
   async updateTransaction(
     id: string,
     data: UpdateTransactionInput
-  ): Promise<Awaited<ReturnType<typeof prisma.transaction.update>>> {
-    // Verify transaction belongs to tenant
-    const existing = await this.getTransaction(id);
+  ): Promise<TransactionWithRelations> {
+    // Lightweight ownership check (optimized - only fetch ID and before state)
+    const existing = await prisma.transaction.findFirst({
+      where: {
+        id,
+        account: {
+          entity: {
+            tenantId: this.tenantId,
+          },
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        description: true,
+        categoryId: true,
+        notes: true,
+        account: {
+          select: {
+            entityId: true, // Need for audit log
+          },
+        },
+      },
+    });
 
     if (!existing) {
-      throw new Error('Transaction not found or does not belong to this tenant');
+      throw new Error('Transaction not found');
     }
 
     // Update transaction (only allowed fields)
@@ -267,22 +311,26 @@ export class TransactionService {
         categoryId: data.categoryId === null ? null : data.categoryId, // Allow unsetting
         notes: data.notes === null ? null : data.notes, // Allow unsetting
       },
-      include: {
-        account: {
-          select: {
-            id: true,
-            name: true,
-            type: true,
-            currency: true,
-          },
-        },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            color: true,
-          },
-        },
+      include: TRANSACTION_INCLUDE, // Use extracted constant
+    });
+
+    // Audit logging (P0 security requirement)
+    await createAuditLog({
+      tenantId: this.tenantId,
+      userId: this.userId,
+      entityId: existing.account.entityId,
+      model: 'Transaction',
+      recordId: transaction.id,
+      action: 'UPDATE',
+      before: {
+        description: existing.description,
+        categoryId: existing.categoryId,
+        notes: existing.notes,
+      },
+      after: {
+        description: transaction.description,
+        categoryId: transaction.categoryId,
+        notes: transaction.notes,
       },
     });
 
@@ -295,11 +343,31 @@ export class TransactionService {
    * @throws Error if transaction doesn't belong to tenant or already deleted
    */
   async softDeleteTransaction(id: string): Promise<void> {
-    // Verify transaction belongs to tenant
-    const existing = await this.getTransaction(id);
+    // Lightweight ownership check (optimized)
+    const existing = await prisma.transaction.findFirst({
+      where: {
+        id,
+        account: {
+          entity: {
+            tenantId: this.tenantId,
+          },
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        description: true,
+        amount: true,
+        account: {
+          select: {
+            entityId: true, // Need for audit log
+          },
+        },
+      },
+    });
 
     if (!existing) {
-      throw new Error('Transaction not found or does not belong to this tenant');
+      throw new Error('Transaction not found');
     }
 
     // Soft delete by setting deletedAt timestamp
@@ -307,6 +375,20 @@ export class TransactionService {
       where: { id },
       data: {
         deletedAt: new Date(),
+      },
+    });
+
+    // Audit logging (P0 security requirement)
+    await createAuditLog({
+      tenantId: this.tenantId,
+      userId: this.userId,
+      entityId: existing.account.entityId,
+      model: 'Transaction',
+      recordId: id,
+      action: 'DELETE',
+      before: {
+        description: existing.description,
+        amount: existing.amount,
       },
     });
   }

@@ -458,6 +458,7 @@ model BankFeedTransaction {
   transactionMatches TransactionMatch[]
 
   @@index([accountId, date])
+  @@index([accountId, date, id])
   @@index([bankConnectionId])
   @@index([status])
   @@index([bankTransactionId])
@@ -489,6 +490,7 @@ model Transaction {
   splits         TransactionSplit[]
 
   @@index([accountId, date])
+  @@index([accountId, date, id])
   @@index([accountId, createdAt])
   @@index([categoryId])
   @@index([sourceType, sourceId])
