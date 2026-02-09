@@ -1,7 +1,7 @@
 # Akount - Task List
 
 **Last Updated:** 2026-02-09
-**Current Phase:** Phase 2 - Bank Reconciliation (Starting)
+**Current Phase:** Phase 2 - Bank Reconciliation (Sprint 1 ✅ COMPLETE)
 **Previous Phase:** Phase 1 - Accounts Overview (✅ COMPLETE)
 
 ---
@@ -108,6 +108,20 @@
 
 ### Phase 2: Bank Reconciliation - API & Services
 
+**Sprint 1: Transaction Management (✅ COMPLETE)**
+- [x] **BE-2.0:** Transaction CRUD Infrastructure
+  - TransactionService with business logic (277 lines)
+  - Zod validation schemas (86 lines)
+  - Fastify route handlers (216 lines)
+  - 35 service tests (unit + integration)
+  - 20 route tests (HTTP layer)
+  - Total: 55 tests passing
+  - Features: GET/POST/PATCH/DELETE /api/banking/transactions
+  - Filtering: by accountId, date range, category, pagination
+  - Security: tenant isolation, soft delete, auth enforced
+
+**Sprint 2: Import Infrastructure (NEXT)**
+
 - [ ] **BE-2.1:** Import Infrastructure
   - POST /api/imports/csv - Upload and parse CSV file
   - Create ImportBatch model to track uploads
@@ -170,20 +184,18 @@
 
 ## 🎯 Current Sprint (Week of 2026-02-09)
 
-**Focus:** Phase 2 Planning & Initial Implementation
+**Sprint 1: Transaction Management - COMPLETE ✅**
+- ✅ TransactionService implementation (CRUD, pagination, tenant isolation)
+- ✅ Zod validation schemas
+- ✅ Fastify route handlers
+- ✅ 55 tests passing (35 service + 20 route)
 
-**This Week:**
+**Sprint 2: CSV & PDF Import Infrastructure (NEXT)**
 1. PM: Define CSV import requirements (PM-2.1)
 2. PM: Design matching algorithm rules (PM-2.2)
 3. BE: Build CSV import infrastructure (BE-2.1)
 4. BE: Create import batch management (BE-2.2)
 5. FE: Build CSV upload component (FE-2.1)
-
-**Next Week:**
-1. BE: Implement matching algorithm (BE-2.3)
-2. BE: Build matching API endpoints (BE-2.4)
-3. FE: Build column mapping UI (FE-2.2)
-4. FE: Build transaction matching UI (FE-2.3)
 
 ---
 
@@ -193,13 +205,21 @@
 |-------|----------|----------|----------|--------|
 | Phase 0: Foundation | 0/0 | 0/0 | 0/0 | ✅ 100% |
 | Phase 1: Accounts | 5/5 | 6/6 | 7/7 | ✅ 100% |
-| Phase 2: Reconciliation | 0/5 | 0/6 | 0/7 | 🚧 0% |
+| Phase 2: Reconciliation | 0/5 | 0/6 | 1/8 | 🚧 12% (Sprint 1 ✅) |
 
-**Overall Progress:** Phase 1 Complete → Phase 2 Starting
+**Overall Progress:** Phase 1 Complete → Phase 2 Sprint 1 Complete
 
 ---
 
 ## 🏆 Recent Accomplishments
+
+### 2026-02-09 - Phase 2 Sprint 1 Complete (Transaction Management)
+- ✅ TransactionService with CRUD operations (277 lines)
+- ✅ Zod validation schemas for transactions (86 lines)
+- ✅ Fastify route handlers (216 lines)
+- ✅ 35 service tests (tenant isolation, soft delete, pagination)
+- ✅ 20 route tests (HTTP layer, auth, error handling)
+- ✅ Total: 55 tests passing
 
 ### 2026-02-09 - Phase 1 Complete + 3 Quick Wins
 - ✅ Running balance computation (backend + 8 tests)
