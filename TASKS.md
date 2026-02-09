@@ -962,10 +962,72 @@ This was a false positive from the review agent (confused npm with pnpm).
 
 ---
 
+---
+
+## ✨ Phase 1 Polish - Quick Wins (Post-Completion)
+
+**Completed:** 2026-02-09
+**Goal:** Polish accounts feature with 3 deferred enhancement items
+
+### Quick Win #1: Running Balance Computation ✅
+**Status:** Complete (Commit: ad36f29)
+**Duration:** 45 minutes
+
+- [x] Backend: AccountService.getAccountTransactions method with running balance
+- [x] API Route: GET /api/banking/accounts/:id/transactions with cursor pagination
+- [x] Type: TransactionWithBalance extends Transaction
+- [x] Tests: 8 new tests (null check, balance calc, ordering, filters, pagination)
+- [x] All 30 account tests passing
+
+**Deliverable:** Backend API returns transactions with incremental running balance
+
+### Quick Win #2: Account Detail Page ✅
+**Status:** Complete (Commit: 480f199)
+**Duration:** 1 hour
+
+- [x] API Client: listAccountTransactions function with date filters
+- [x] Page: /money-movement/accounts/[id] with Server Component data fetching
+- [x] Components: AccountDetailHeader (shows account info, balance, badges)
+- [x] Components: TransactionsList (table with Date, Description, Amount, Running Balance)
+- [x] UI: Empty state with Inbox icon when no transactions
+- [x] UI: Visual indicators (green/red, arrows) for positive/negative amounts
+- [x] Navigation: AccountsListClient updated to navigate to detail page
+- [x] Loading/Error States: loading.tsx and error.tsx boundaries
+- [x] Dependencies: Installed date-fns, shadcn table component
+
+**Deliverable:** Full account detail page with transaction history and running balance
+
+### Quick Win #3: E2E Test Structure ✅
+**Status:** Complete (Commit: 33ee540)
+**Duration:** 30 minutes
+
+- [x] Playwright: Installed testing framework with chromium browser
+- [x] Config: playwright.config.ts with webServer setup
+- [x] Tests: 8 comprehensive test cases for account flows
+- [x] .gitignore: Added playwright test artifacts exclusion
+- [x] Documentation: Tests skipped with note about authentication requirement
+
+**Test Coverage:**
+1. Display accounts list page
+2. Navigate to account detail when clicking card
+3. Display account details and balance
+4. Display transactions table with running balance
+5. Navigate back to accounts list
+6. Show error page for invalid account ID
+7. Display transaction amount with correct sign
+8. Verify table structure and currency formatting
+
+**Known Limitation:** Tests require Clerk authentication setup (deferred to Phase 2)
+
+**Deliverable:** E2E test infrastructure and comprehensive test documentation
+
+---
+
 ## 🎊 Phase 1 COMPLETE - Ready for Phase 2! 🎊
 
 **Completed:** 2026-02-09
 **Duration:** ~1 week (from 2026-02-02)
+**Polish:** 3 Quick Wins completed same day ✅
 **Next Phase:** Phase 2 - Bank Reconciliation
 
 **Next Update:** 2026-02-16

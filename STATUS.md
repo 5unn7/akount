@@ -21,6 +21,7 @@
 
 **Completed:** 2026-02-09
 **Duration:** ~1 week
+**Polish:** 3 Quick Wins completed same day
 
 **All Success Criteria Met:**
 - ✅ Dashboard connected to real API data (metrics, KPIs)
@@ -35,10 +36,10 @@
 - ✅ Loading states, error boundaries, SEO metadata
 - ✅ Code review items CR.1-CR.13 all resolved
 
-**Enhancement Items Moved to Phase 2:**
-- Running balance computation
-- E2E tests
-- Account detail page with transaction history
+**Quick Wins (Post-Phase 1 Polish):**
+- ✅ Running balance computation (API + 8 tests)
+- ✅ Account detail page with transaction history
+- ✅ E2E test structure (Playwright, 8 test cases, auth pending)
 
 ---
 
