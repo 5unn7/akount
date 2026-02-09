@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Account } from '@/lib/api/accounts';
 import type { Entity } from '@/lib/api/entities';
 import { AccountCard } from './AccountCard';
@@ -17,12 +18,13 @@ export function AccountsListClient({
     hasMore,
     entities,
 }: AccountsListClientProps) {
+    const router = useRouter();
     const [sheetOpen, setSheetOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
 
     function handleCardClick(account: Account) {
-        setSelectedAccount(account);
-        setSheetOpen(true);
+        // Navigate to account detail page
+        router.push(`/money-movement/accounts/${account.id}`);
     }
 
     return (

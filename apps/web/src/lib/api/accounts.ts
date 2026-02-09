@@ -148,3 +148,79 @@ export async function deleteAccount(id: string): Promise<void> {
         method: 'DELETE',
     });
 }
+
+/**
+ * Transaction with running balance
+ */
+export interface Transaction {
+    id: string;
+    accountId: string;
+    date: string;
+    description: string;
+    amount: number; // cents
+    currency: string;
+    categoryId?: string;
+    notes?: string;
+    sourceType: string;
+    sourceId?: string;
+    journalEntryId?: string;
+    isStaged: boolean;
+    isSplit: boolean;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt?: string;
+    runningBalance: number; // cents - calculated running balance
+}
+
+/**
+ * Query parameters for listing account transactions
+ */
+export interface ListAccountTransactionsParams {
+    cursor?: string;
+    limit?: number;
+    startDate?: string; // ISO date string
+    endDate?: string; // ISO date string
+}
+
+/**
+ * Paginated response from the account transactions API
+ */
+export interface ListAccountTransactionsResponse {
+    transactions: Transaction[];
+    nextCursor?: string;
+    hasMore: boolean;
+}
+
+/**
+ * Fetch transactions for a specific account with running balance
+ *
+ * @param accountId - The account ID
+ * @param params - Query parameters for filtering and pagination
+ * @returns Paginated transactions with running balance
+ */
+export async function listAccountTransactions(
+    accountId: string,
+    params?: ListAccountTransactionsParams
+): Promise<ListAccountTransactionsResponse> {
+    const searchParams = new URLSearchParams();
+
+    if (params?.cursor) {
+        searchParams.append('cursor', params.cursor);
+    }
+
+    if (params?.limit !== undefined) {
+        searchParams.append('limit', String(params.limit));
+    }
+
+    if (params?.startDate) {
+        searchParams.append('startDate', params.startDate);
+    }
+
+    if (params?.endDate) {
+        searchParams.append('endDate', params.endDate);
+    }
+
+    const endpoint = `/api/banking/accounts/${accountId}/transactions${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+
+    return apiClient<ListAccountTransactionsResponse>(endpoint);
+}

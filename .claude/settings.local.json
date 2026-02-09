@@ -123,6 +123,9 @@
       "Bash(taskkill *)",
       "Bash(taskkill:*)",
       "Bash(pkill *)"
+    ],
+    "additionalDirectories": [
+      "w:\\Marakana Corp\\Companies\\akount\\Development\\Brand\\aggoogle\\product-plan\\apps\\web\\src\\app\\(dashboard)\\money-movement\\accounts"
     ]
   },
   "enableAllProjectMcpServers": true,
