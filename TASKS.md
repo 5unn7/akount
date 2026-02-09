@@ -182,6 +182,33 @@
 
 ---
 
+## 📅 Tomorrow's Focus (2026-02-10)
+
+**Primary Goal:** Start Sprint 2 - CSV & PDF Import Infrastructure
+
+**Tasks:**
+1. [ ] **PM-2.1:** Define CSV import flow and column mapping UX
+   - Specify supported bank formats (at least 3 major Canadian banks)
+   - Define error handling for malformed CSV files
+   - Document required columns (date, description, amount, balance)
+   - Define deduplication strategy
+
+2. [ ] **BE-2.1:** Start Import Infrastructure
+   - Create ImportBatch Prisma model
+   - Create BankFeedTransaction Prisma model
+   - Add CSV parsing service skeleton
+
+3. [ ] **BE-2.2:** CSV Parser Implementation (if time permits)
+   - Implement CSV parsing with configurable column mapping
+   - Add deduplication logic (hash of date+amount+description)
+
+**Context:**
+- Sprint 1 complete with 55 tests passing
+- Plan document ready: `docs/plans/2026-02-09-phase2-bank-reconciliation.md`
+- Start with PM requirements to align on CSV format expectations
+
+---
+
 ## 🎯 Current Sprint (Week of 2026-02-09)
 
 **Sprint 1: Transaction Management - COMPLETE ✅**
