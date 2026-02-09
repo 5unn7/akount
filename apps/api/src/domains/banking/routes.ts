@@ -6,6 +6,7 @@ import { tenantMiddleware } from '../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../middleware/validation';
 import { withPermission } from '../../middleware/withPermission';
 import { importRoutes } from './routes/import';
+import { transactionRoutes } from './routes/transactions';
 
 // Validation schemas
 const accountsQuerySchema = z.object({
@@ -62,6 +63,7 @@ export async function bankingRoutes(fastify: FastifyInstance) {
 
   // Register sub-routes
   await fastify.register(importRoutes, { prefix: '/import' });
+  await fastify.register(transactionRoutes, { prefix: '/transactions' });
 
   // ============================================================================
   // ACCOUNTS
@@ -375,48 +377,6 @@ export async function bankingRoutes(fastify: FastifyInstance) {
           message: 'Failed to fetch account transactions',
         });
       }
-    }
-  );
-
-  // ============================================================================
-  // TRANSACTIONS
-  // ============================================================================
-
-  /**
-   * GET /api/banking/transactions
-   *
-   * List transactions with filtering and pagination.
-   */
-  fastify.get(
-    '/transactions',
-    {
-      ...withPermission('banking', 'transactions', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Transaction listing will be implemented in a future phase',
-      });
-    }
-  );
-
-  /**
-   * POST /api/banking/transactions
-   *
-   * Create a new transaction.
-   */
-  fastify.post(
-    '/transactions',
-    {
-      ...withPermission('banking', 'transactions', 'ACT'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Transaction creation will be implemented in a future phase',
-      });
     }
   );
 
