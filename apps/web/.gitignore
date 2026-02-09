@@ -1,3 +1,8 @@
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# playwright test artifacts
+/test-results/
+/playwright-report/
+/playwright/.cache/
