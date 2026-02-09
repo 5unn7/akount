@@ -1,87 +1,7 @@
 # Akount Project - Agent Context
 
-> **Last Updated:** 2026-02-07
-> **Source of Truth:** `docs/` folder
-
-## Quick Reference
-
-| Need | Location |
-|------|----------|
-| UI/UX specs | `docs/design-system/` |
-| Implementation rules | `docs/standards/` |
-| Architecture decisions | `docs/architecture/` |
-| Setup guide | `docs/guides/setup.md` |
-| Current status | `STATUS.md` |
-
----
-
-## Visual Context
-
-Load these at session start for system understanding:
-
-| Document | Purpose | Load When |
-|----------|---------|-----------|
-| `docs/architecture.mmd` | 5 Mermaid diagrams (system, flow, states) | Every session |
-| `docs/domain-glossary.md` | Canonical definitions + invariants | Every session |
-| `docs/repo-map.md` | "Change X, look here" navigation | Every session |
-
-### Key Invariants (Memorize These)
-
-1. **Tenant Isolation:** Every query MUST filter by `tenantId`
-2. **Money Precision:** All amounts stored as integer cents (1050 = $10.50)
-3. **Double-Entry:** `SUM(debits) === SUM(credits)` always
-4. **Soft Delete:** Never hard delete, use `deletedAt`
-5. **Source Preservation:** Store `sourceDocument` for journal entries
-
----
-
-## Session Management
-
-| Command | Purpose |
-|---------|---------|
-| `/processes:begin` | Start session with full context loading |
-| `/processes:eod` | End session with cleanup and documentation |
-| `/processes:reset` | Reload context if rules violated |
-
-### CLI Scripts (Alternative)
-
-```bash
-./scripts/ai/begin.sh [focus-area]   # Quick session start
-./scripts/ai/end.sh                   # Quick session end
-./scripts/ai/update-context.sh        # Check for doc updates needed
-```
-
----
-
-## Guardrails
-
-### Automatic Enforcement (Hooks)
-
-The following rules are enforced by hooks and will BLOCK violations:
-
-| Rule | Violation | Hook |
-|------|-----------|------|
-| Integer cents | `amount: 10.50` | `hard-rules.sh` |
-| Hard delete on financial | `prisma.invoice.delete()` | `hard-rules.sh` |
-| File location | Brainstorm not in `docs/brainstorms/` | `hard-rules.sh` |
-| Float in schema | `amount Float` in Prisma | `context-validate.sh` |
-
-### Reset Triggers
-
-Use `/processes:reset` when:
-- AI uses floats for money
-- AI forgets tenantId in queries
-- AI creates files in wrong locations
-- AI proposes destructive actions without warning
-- Session feels "off track"
-
-### Trigger Phrases
-
-Say any of these to trigger context reset:
-- "Reset context"
-- "You're off track"
-- "Check the rules"
-- "Reload context"
+> **Last Updated:** 2026-02-09
+> **Context Architecture:** Hierarchical (root + directory-specific + rules)
 
 ---
 
@@ -89,50 +9,68 @@ Say any of these to trigger context reset:
 
 **Akount** is an AI-powered financial command center for globally-operating solopreneurs.
 
-**Key Features:**
-- Multi-entity management across countries
-- Multi-currency support (CAD, USD, EUR, GBP, INR, etc.)
-- Double-entry accounting with audit trails
-- AI-powered categorization and insights
-
-**Tech Stack:**
-- Frontend: Next.js 16 (App Router)
-- Backend: Fastify
-- Database: PostgreSQL + Prisma
-- Auth: Clerk (passkeys/WebAuthn)
-- Monorepo: Turborepo
+**Tech Stack:** Next.js 16 (App Router), Fastify API, PostgreSQL + Prisma, Clerk Auth, Turborepo
 
 ---
 
-## Critical Rules (ZERO EXCEPTIONS)
+## Architecture Snapshot (verified: 2026-02-09)
 
-### 1. Multi-Tenancy
-```typescript
-// ALWAYS filter by tenantId - NO EXCEPTIONS
-const data = await prisma.entity.findMany({
-  where: { tenantId: user.tenantId } // REQUIRED
-})
+**Request Flow:** Browser → Next.js SSR → Fastify API → Middleware chain (Auth → Tenant → Validation) → Domain services → Prisma → PostgreSQL. Auth via Clerk JWT; tenant loaded from TenantUser membership; all queries filtered by tenantId. Frontend: Server Components (data fetch) + Client Components (interactivity). Backend: Route → Schema (Zod) → Service (business logic) → Prisma.
+
+**8 Domains:** Overview (dashboard), Banking (accounts, transactions), Invoicing (invoices, clients), Vendors (bills, payments), Accounting (GL, journal entries), Planning (budgets, forecasts), AI Advisor (insights, rules), Services (integrations), System (settings, users).
+
+**Actual API folder names:** `domains/overview/`, `domains/banking/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`, `domains/accounting/`. **Note:** Folder is `banking/` not `money-movement/`.
+
+---
+
+## Core Model Hierarchy (verified: 2026-02-09)
+
 ```
-See: `docs/standards/multi-tenancy.md`
-
-### 2. Money as Integer Cents
-```typescript
-// CORRECT: Integer cents
-amount: 1050 // $10.50
-
-// WRONG: Never float
-amount: 10.50
+Tenant (subscription account)
+└── Entity (business unit)
+    ├── GLAccount (chart of accounts)
+    ├── JournalEntry (debits = credits)
+    ├── Invoice/Bill (AR/AP)
+    ├── Payment (allocations)
+    ├── Account (bank, credit card)
+    ├── Transaction (bank feed or manual)
+    ├── Client/Vendor
+    └── Category (for AI categorization)
 ```
-See: `docs/standards/financial-data.md`
 
-### 3. RBAC with 6 Roles
-- OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER, INVESTOR, ADVISOR
-- See: `docs/design-system/05-governance/permissions-matrix.md`
+**38 Prisma models total.** Entity-scoped models require `entity: { tenantId }` filter. See `packages/db/CLAUDE.md` for full model table. See `docs/context-map.md` for comprehensive glossary.
 
-### 4. 8 Domain Structure
-- Overview, Money Movement, Business, Accounting
-- Planning, AI Advisor, Services, System
-- See: `docs/design-system/05-governance/information-architecture.md`
+---
+
+## Design System Reference (verified: 2026-02-09)
+
+**Base:** shadcn/ui + shadcn-glass-ui@2.11.2 (glass morphism)
+**Styling:** Tailwind v4.1.18 (CSS config, NO tailwind.config.ts)
+**Tokens:** `packages/design-tokens/` (colors, typography, spacing)
+**Fonts:** Newsreader (headings), Manrope (body), JetBrains Mono (code)
+
+**Glass components available:** ButtonGlass, InputGlass, GlassCard, BadgeGlass, TabsGlass, ModalGlass, SwitchGlass, TooltipGlass, SeparatorGlass. **Button radius:** 8px standard.
+
+See `apps/web/CLAUDE.md` for full design system context (loaded when working in apps/web/).
+
+---
+
+## 5 Key Invariants (Zero Exceptions)
+
+1. **Tenant Isolation:** Every query MUST filter by `tenantId` (entity-scoped: `entity: { tenantId }`).
+2. **Money Precision:** All amounts are **integer cents** (1050 = $10.50). Never use floats.
+3. **Double-Entry:** `SUM(debitAmount) === SUM(creditAmount)` always. Validate before creating JournalEntry.
+4. **Soft Delete:** Financial records use `deletedAt: DateTime?`. Filter: `WHERE deletedAt IS NULL`. Never hard delete.
+5. **Source Preservation:** Journal entries store `sourceType`, `sourceId`, `sourceDocument` (JSON snapshot).
+
+---
+
+## Financial Standards
+
+@docs/standards/financial-data.md
+@docs/standards/multi-tenancy.md
+
+_(Content auto-imported from standards docs - always fresh)_
 
 ---
 
@@ -140,55 +78,37 @@ See: `docs/standards/financial-data.md`
 
 | Type | Location |
 |------|----------|
-| Feature specs | `docs/design-system/03-screens/` |
-| Component specs | `docs/design-system/01-components/` |
-| API routes | `apps/api/src/domains/` |
-| Web routes | `apps/web/src/app/(dashboard)/` |
-| UI components | `packages/ui/src/` |
+| API routes | `apps/api/src/domains/<domain>/routes/` |
+| API services | `apps/api/src/domains/<domain>/services/` |
+| Web pages | `apps/web/src/app/(dashboard)/<domain>/` |
+| UI components | `packages/ui/src/components/` |
 | Shared types | `packages/types/src/` |
 | Design tokens | `packages/design-tokens/src/` |
+| Prisma schema | `packages/db/prisma/schema.prisma` |
+| Feature specs | `docs/design-system/03-screens/` |
+| Component specs | `docs/design-system/01-components/` |
+| Implementation plans | `docs/plans/` |
+| Brainstorms | `docs/brainstorms/` |
 
 ---
 
-## Available Skills
+## Context Hierarchy
 
-**Planning:** `/processes:brainstorm`, `/processes:plan`, `/deepen-plan`
-**Implementation:** `/processes:work`
-**Review:** `/processes:review`, `/quality:design-system-enforce`
-**Utility:** `/changelog`, `/processes:compound`
+**Layer 1 (Always loaded):**
+- This file (CLAUDE.md) — core invariants, tech stack, structure
+- `MEMORY.md` — work state, learned patterns, gotchas
+- `.claude/rules/*.md` — modular rules (path-scoped)
 
----
+**Layer 2 (Loaded when working in directory):**
+- `apps/api/CLAUDE.md` — API patterns, middleware, built endpoints
+- `apps/web/CLAUDE.md` — Next.js patterns, design system, components
+- `packages/db/CLAUDE.md` — Prisma models table, enums, schema conventions
 
-## Review Agents
+**Layer 3 (Explicit read for deep-dive):**
+- `docs/context-map.md` — Full model glossary, enum reference, journal patterns, how-tos
 
-| Agent | Use For |
-|-------|---------|
-| `financial-data-validator` | Money handling, double-entry |
-| `architecture-strategist` | System design, domains |
-| `security-sentinel` | OWASP, tenant isolation |
-| `prisma-migration-reviewer` | Schema changes |
-| `kieran-typescript-reviewer` | TypeScript patterns |
-| `nextjs-app-router-reviewer` | Next.js patterns |
-
-See: `.claude/agents/review/README.md`
-
----
-
-## Decision Protocol
-
-**ALWAYS ASK when:**
-- Requirements are ambiguous
-- Multiple valid approaches exist
-- Security/compliance implications unknown
-- Financial calculations involved
-- Destructive actions proposed
-
-**Search first:**
-```bash
-# Before creating anything new
-Grep "feature-name" docs/
-Glob "**/*similar*.ts*"
-```
+**Layer 4 (Human-only reference):**
+- `docs/architecture.mmd` — Mermaid diagrams (for human viewing in VS Code)
 
 ---
 
@@ -196,42 +116,67 @@ Glob "**/*similar*.ts*"
 
 **Allowed at root:** README.md, CLAUDE.md, STATUS.md, ROADMAP.md, TASKS.md, config files
 
-**Where files belong:**
-| Type | Location |
-|------|----------|
-| Feature brainstorms | `docs/brainstorms/` |
-| Implementation plans | `docs/plans/` |
-| Session reports | `docs/archive/sessions/` |
-| Design system | `docs/design-system/` (ONLY) |
+**Strict locations:**
+- Brainstorms: `docs/brainstorms/`
+- Implementation plans: `docs/plans/`
+- Session reports: `docs/archive/sessions/`
+- Design system: `docs/design-system/` ONLY
+
+**Hooks enforce these rules.** Violations will block commits.
 
 ---
 
-## Implementation Standards
+## Workflows & Review
 
-**Before editing code:**
-1. Read relevant docs (CLAUDE.md, feature specs)
-2. Summarize understanding before changes
-3. Make small, incremental edits
+**Skills & Agents:** See `.claude/rules/workflows.md` for comprehensive trigger table.
 
-**Testing:**
-- Run tests after changes
-- Write tests for new behavior
+**Common commands:**
+- `/processes:begin` — Start session (loads git status, tasks, recommendations)
+- `/processes:plan` — Create implementation plan
+- `/processes:work` — Execute plan systematically
+- `/processes:review` — Multi-agent code review
+- `/processes:eod` — End session with documentation
 
-**Troubleshooting:**
-- After 2 failed attempts, stop and propose alternative
+**Review agents:** `financial-data-validator`, `architecture-strategist`, `security-sentinel`, `prisma-migration-reviewer`, `kieran-typescript-reviewer`, `nextjs-app-router-reviewer`. See `.claude/rules/workflows.md` for full list.
 
 ---
 
-## Getting Help
+## Decision Protocol
 
-| Question | Check |
-|----------|-------|
-| Architecture? | `docs/architecture/` |
-| Schema? | `docs/product/data-model/` |
-| Standards? | `docs/standards/` |
-| Current work? | `TASKS.md`, `STATUS.md` |
-| Agents? | `.claude/agents/review/README.md` |
-| Skills? | `.claude/SKILLS-INDEX.md` |
+**ALWAYS ASK when:**
+- Requirements are ambiguous or multiple valid approaches exist
+- Security/compliance implications are unknown
+- Financial calculations or audit trails are involved
+- Destructive actions are proposed (delete, hard reset, force push)
+
+**Search first** before creating:
+```bash
+Grep "feature-name" docs/
+Glob "**/*similar*.ts*"
+```
+
+---
+
+## Quick Reference
+
+| Need | Check |
+|------|-------|
+| Current status | `STATUS.md` |
+| Pending tasks | `TASKS.md` |
+| Roadmap | `ROADMAP.md` |
+| API patterns | `apps/api/CLAUDE.md` |
+| Frontend patterns | `apps/web/CLAUDE.md` |
+| Database schema | `packages/db/CLAUDE.md` |
+| Deep reference | `docs/context-map.md` |
+| Financial rules | `.claude/rules/financial-rules.md` |
+| API conventions | `.claude/rules/api-conventions.md` |
+| Frontend conventions | `.claude/rules/frontend-conventions.md` |
+
+---
+
+## Compaction Preservation
+
+When compacting context in long sessions, ALWAYS preserve: tenantId requirement, integer cents rule, modified files list, current task context, and test commands used this session.
 
 ---
 

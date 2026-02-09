@@ -91,7 +91,9 @@
       "Bash(npx shadcn@latest add:*)",
       "Bash(npx vitest run)",
       "Bash(npx next build:*)",
-      "WebFetch(domain:medium.com)"
+      "WebFetch(domain:medium.com)",
+      "Bash(gh pr list:*)",
+      "Bash(gh issue list:*)"
     ],
     "deny": [
       "Bash(git reset --hard *)",
