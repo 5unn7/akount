@@ -142,6 +142,28 @@
   },
   "enableAllProjectMcpServers": true,
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-context.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"additionalContext\": \"PRESERVE: tenantId required in all queries. Money as integer cents. SUM(debits)===SUM(credits). Soft delete only. Modified files list and test commands.\"}'"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit|Write",
