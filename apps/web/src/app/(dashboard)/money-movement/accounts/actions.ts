@@ -7,21 +7,55 @@ import {
     deleteAccount,
     type CreateAccountInput,
     type UpdateAccountInput,
+    type Account,
 } from '@/lib/api/accounts';
 
-export async function createAccountAction(input: CreateAccountInput) {
-    const account = await createAccount(input);
-    revalidatePath('/money-movement/accounts');
-    return account;
+export type ActionResult<T = void> =
+    | { success: true; data: T }
+    | { success: false; error: string };
+
+export async function createAccountAction(
+    input: CreateAccountInput
+): Promise<ActionResult<Account>> {
+    try {
+        const account = await createAccount(input);
+        revalidatePath('/money-movement/accounts');
+        return { success: true, data: account };
+    } catch (err) {
+        return {
+            success: false,
+            error: err instanceof Error ? err.message : 'Failed to create account',
+        };
+    }
 }
 
-export async function updateAccountAction(id: string, input: UpdateAccountInput) {
-    const account = await updateAccount(id, input);
-    revalidatePath('/money-movement/accounts');
-    return account;
+export async function updateAccountAction(
+    id: string,
+    input: UpdateAccountInput
+): Promise<ActionResult<Account>> {
+    try {
+        const account = await updateAccount(id, input);
+        revalidatePath('/money-movement/accounts');
+        return { success: true, data: account };
+    } catch (err) {
+        return {
+            success: false,
+            error: err instanceof Error ? err.message : 'Failed to update account',
+        };
+    }
 }
 
-export async function deleteAccountAction(id: string) {
-    await deleteAccount(id);
-    revalidatePath('/money-movement/accounts');
+export async function deleteAccountAction(
+    id: string
+): Promise<ActionResult> {
+    try {
+        await deleteAccount(id);
+        revalidatePath('/money-movement/accounts');
+        return { success: true, data: undefined };
+    } catch (err) {
+        return {
+            success: false,
+            error: err instanceof Error ? err.message : 'Failed to delete account',
+        };
+    }
 }

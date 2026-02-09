@@ -2,6 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AccountService } from '../account.service';
 
 // Mock Prisma client
+const mockTxClient = {
+  account: {
+    findFirst: vi.fn(),
+    update: vi.fn(),
+  },
+};
+
 vi.mock('@akount/db', () => ({
   prisma: {
     account: {
@@ -13,6 +20,7 @@ vi.mock('@akount/db', () => ({
     entity: {
       findFirst: vi.fn(),
     },
+    $transaction: vi.fn((fn: (tx: typeof mockTxClient) => Promise<unknown>) => fn(mockTxClient)),
   },
 }));
 
@@ -41,6 +49,10 @@ describe('AccountService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Re-wire $transaction mock after clearAllMocks
+    vi.mocked(prisma.$transaction).mockImplementation(
+      (fn: (tx: typeof mockTxClient) => Promise<unknown>) => fn(mockTxClient) as never
+    );
     service = new AccountService(TENANT_ID);
   });
 
@@ -171,7 +183,7 @@ describe('AccountService', () => {
   });
 
   describe('getAccount', () => {
-    it('should find account by id with tenant isolation', async () => {
+    it('should find account by id with tenant isolation and soft-delete filter', async () => {
       const account = mockAccount({ id: 'acc-xyz' });
       vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(account as never);
 
@@ -181,6 +193,7 @@ describe('AccountService', () => {
       expect(prisma.account.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'acc-xyz',
+          deletedAt: null,
           entity: {
             tenantId: TENANT_ID,
           },
@@ -258,30 +271,31 @@ describe('AccountService', () => {
 
   describe('updateAccount', () => {
     it('should return null when account not found', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null as never);
+      vi.mocked(mockTxClient.account.findFirst).mockResolvedValueOnce(null as never);
 
       const result = await service.updateAccount('nonexistent', { name: 'New Name' });
 
       expect(result).toBeNull();
-      expect(prisma.account.update).not.toHaveBeenCalled();
+      expect(mockTxClient.account.update).not.toHaveBeenCalled();
     });
 
-    it('should update account when found with tenant isolation', async () => {
+    it('should update account when found with tenant isolation and deletedAt filter', async () => {
       const existing = mockAccount({ id: 'acc-1' });
       const updated = mockAccount({ id: 'acc-1', name: 'Updated Name' });
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.account.update).mockResolvedValueOnce(updated as never);
+      vi.mocked(mockTxClient.account.findFirst).mockResolvedValueOnce(existing as never);
+      vi.mocked(mockTxClient.account.update).mockResolvedValueOnce(updated as never);
 
       const result = await service.updateAccount('acc-1', { name: 'Updated Name' });
 
       expect(result).toEqual(updated);
-      expect(prisma.account.findFirst).toHaveBeenCalledWith({
+      expect(mockTxClient.account.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'acc-1',
+          deletedAt: null,
           entity: { tenantId: TENANT_ID },
         },
       });
-      expect(prisma.account.update).toHaveBeenCalledWith({
+      expect(mockTxClient.account.update).toHaveBeenCalledWith({
         where: { id: 'acc-1' },
         data: { name: 'Updated Name' },
         include: { entity: true },
@@ -290,48 +304,49 @@ describe('AccountService', () => {
 
     it('should only include provided fields in update', async () => {
       const existing = mockAccount({ id: 'acc-1' });
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.account.update).mockResolvedValueOnce(existing as never);
+      vi.mocked(mockTxClient.account.findFirst).mockResolvedValueOnce(existing as never);
+      vi.mocked(mockTxClient.account.update).mockResolvedValueOnce(existing as never);
 
       await service.updateAccount('acc-1', { isActive: false });
 
-      const updateArgs = vi.mocked(prisma.account.update).mock.calls[0][0]!;
+      const updateArgs = vi.mocked(mockTxClient.account.update).mock.calls[0][0]!;
       expect(updateArgs.data).toEqual({ isActive: false });
     });
   });
 
   describe('softDeleteAccount', () => {
     it('should return null when account not found', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null as never);
+      vi.mocked(mockTxClient.account.findFirst).mockResolvedValueOnce(null as never);
 
       const result = await service.softDeleteAccount('nonexistent');
 
       expect(result).toBeNull();
-      expect(prisma.account.update).not.toHaveBeenCalled();
+      expect(mockTxClient.account.update).not.toHaveBeenCalled();
     });
 
     it('should set deletedAt and isActive=false', async () => {
       const existing = mockAccount({ id: 'acc-1' });
       const deleted = mockAccount({ id: 'acc-1', deletedAt: new Date(), isActive: false });
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.account.update).mockResolvedValueOnce(deleted as never);
+      vi.mocked(mockTxClient.account.findFirst).mockResolvedValueOnce(existing as never);
+      vi.mocked(mockTxClient.account.update).mockResolvedValueOnce(deleted as never);
 
       const result = await service.softDeleteAccount('acc-1');
 
       expect(result).toEqual(deleted);
-      const updateArgs = vi.mocked(prisma.account.update).mock.calls[0][0]!;
+      const updateArgs = vi.mocked(mockTxClient.account.update).mock.calls[0][0]!;
       expect(updateArgs.data).toHaveProperty('deletedAt');
       expect(updateArgs.data).toHaveProperty('isActive', false);
     });
 
-    it('should verify tenant isolation before deleting', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null as never);
+    it('should verify tenant isolation and deletedAt filter before deleting', async () => {
+      vi.mocked(mockTxClient.account.findFirst).mockResolvedValueOnce(null as never);
 
       await service.softDeleteAccount('acc-other-tenant');
 
-      expect(prisma.account.findFirst).toHaveBeenCalledWith({
+      expect(mockTxClient.account.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'acc-other-tenant',
+          deletedAt: null,
           entity: { tenantId: TENANT_ID },
         },
       });

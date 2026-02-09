@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransition, useState } from 'react';
+import { useTransition, useState, useEffect } from 'react';
 import {
     Sheet,
     SheetContent,
@@ -61,6 +61,7 @@ export function AccountFormSheet({
 }: AccountFormSheetProps) {
     const isEdit = !!account;
     const [isPending, startTransition] = useTransition();
+    const [error, setError] = useState<string | null>(null);
     const [name, setName] = useState(account?.name ?? '');
     const [type, setType] = useState<AccountType>(account?.type ?? 'BANK');
     const [entityId, setEntityId] = useState(account?.entity.id ?? entities[0]?.id ?? '');
@@ -68,18 +69,29 @@ export function AccountFormSheet({
     const [currency, setCurrency] = useState(account?.currency ?? 'CAD');
     const [country, setCountry] = useState(account?.country ?? 'CA');
 
+    // Reset form state when account prop changes (opening different account)
+    useEffect(() => {
+        setName(account?.name ?? '');
+        setType(account?.type ?? 'BANK');
+        setEntityId(account?.entity.id ?? entities[0]?.id ?? '');
+        setInstitution(account?.institution ?? '');
+        setCurrency(account?.currency ?? 'CAD');
+        setCountry(account?.country ?? 'CA');
+        setError(null);
+    }, [account, entities]);
+
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setError(null);
 
         startTransition(async () => {
-            if (isEdit) {
-                await updateAccountAction(account.id, {
+            const result = isEdit
+                ? await updateAccountAction(account.id, {
                     name,
                     type,
                     institution: institution || null,
-                });
-            } else {
-                await createAccountAction({
+                })
+                : await createAccountAction({
                     entityId,
                     name,
                     type,
@@ -87,6 +99,10 @@ export function AccountFormSheet({
                     country,
                     institution: institution || undefined,
                 });
+
+            if (!result.success) {
+                setError(result.error);
+                return;
             }
             onOpenChange(false);
         });
@@ -94,8 +110,13 @@ export function AccountFormSheet({
 
     function handleDelete() {
         if (!account) return;
+        setError(null);
         startTransition(async () => {
-            await deleteAccountAction(account.id);
+            const result = await deleteAccountAction(account.id);
+            if (!result.success) {
+                setError(result.error);
+                return;
+            }
             onOpenChange(false);
         });
     }
@@ -111,6 +132,10 @@ export function AccountFormSheet({
                             : 'Fill in the details to create a new account.'}
                     </SheetDescription>
                 </SheetHeader>
+
+                {error && (
+                    <p className="text-sm text-destructive mt-2">{error}</p>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                     <div className="space-y-2">

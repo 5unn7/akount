@@ -82,6 +82,7 @@ export class AccountService {
     return prisma.account.findFirst({
       where: {
         id,
+        deletedAt: null,
         entity: {
           tenantId: this.tenantId,
         },
@@ -141,53 +142,59 @@ export class AccountService {
       type?: string;
     }
   ) {
-    // Verify account belongs to tenant
-    const existing = await prisma.account.findFirst({
-      where: {
-        id,
-        entity: { tenantId: this.tenantId },
-      },
-    });
+    // Atomic: verify tenant ownership + update in one transaction
+    return prisma.$transaction(async (tx) => {
+      const existing = await tx.account.findFirst({
+        where: {
+          id,
+          deletedAt: null,
+          entity: { tenantId: this.tenantId },
+        },
+      });
 
-    if (!existing) {
-      return null;
-    }
+      if (!existing) {
+        return null;
+      }
 
-    return prisma.account.update({
-      where: { id },
-      data: {
-        ...(data.name !== undefined && { name: data.name }),
-        ...(data.institution !== undefined && { institution: data.institution }),
-        ...(data.isActive !== undefined && { isActive: data.isActive }),
-        ...(data.type !== undefined && {
-          type: data.type as 'BANK' | 'CREDIT_CARD' | 'INVESTMENT' | 'LOAN' | 'MORTGAGE' | 'OTHER',
-        }),
-      },
-      include: {
-        entity: true,
-      },
+      return tx.account.update({
+        where: { id },
+        data: {
+          ...(data.name !== undefined && { name: data.name }),
+          ...(data.institution !== undefined && { institution: data.institution }),
+          ...(data.isActive !== undefined && { isActive: data.isActive }),
+          ...(data.type !== undefined && {
+            type: data.type as 'BANK' | 'CREDIT_CARD' | 'INVESTMENT' | 'LOAN' | 'MORTGAGE' | 'OTHER',
+          }),
+        },
+        include: {
+          entity: true,
+        },
+      });
     });
   }
 
   async softDeleteAccount(id: string) {
-    // Verify account belongs to tenant
-    const existing = await prisma.account.findFirst({
-      where: {
-        id,
-        entity: { tenantId: this.tenantId },
-      },
-    });
+    // Atomic: verify tenant ownership + soft delete in one transaction
+    return prisma.$transaction(async (tx) => {
+      const existing = await tx.account.findFirst({
+        where: {
+          id,
+          deletedAt: null,
+          entity: { tenantId: this.tenantId },
+        },
+      });
 
-    if (!existing) {
-      return null;
-    }
+      if (!existing) {
+        return null;
+      }
 
-    return prisma.account.update({
-      where: { id },
-      data: {
-        deletedAt: new Date(),
-        isActive: false,
-      },
+      return tx.account.update({
+        where: { id },
+        data: {
+          deletedAt: new Date(),
+          isActive: false,
+        },
+      });
     });
   }
 }
