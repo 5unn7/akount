@@ -12,6 +12,10 @@ export interface OnboardingState {
   // Account type selection
   accountType: AccountType | null
 
+  // User details
+  phoneNumber: string
+  timezone: string
+
   // Entity details
   entityName: string
   entityType: EntityType | null
@@ -25,6 +29,8 @@ export interface OnboardingState {
 
   // State transitions
   setAccountType: (type: AccountType) => void
+  setPhoneNumber: (phone: string) => void
+  setTimezone: (timezone: string) => void
   setEntityName: (name: string) => void
   setEntityType: (type: EntityType) => void
   setCountry: (country: string) => void
@@ -41,6 +47,8 @@ const initialState = {
   currentStep: 0,
   totalSteps: 2, // Will be adjusted based on accountType
   accountType: null,
+  phoneNumber: '',
+  timezone: 'America/Toronto', // Default to Eastern Time
   entityName: '',
   entityType: null,
   country: 'CA',
@@ -64,6 +72,10 @@ export const useOnboardingStore = create<OnboardingState>()(
           totalSteps: type === 'business' ? 4 : 3,
           currentStep: 1, // Move to entity details after selection
         })),
+
+      setPhoneNumber: (phone: string) => set({ phoneNumber: phone }),
+
+      setTimezone: (timezone: string) => set({ timezone }),
 
       setEntityName: (name: string) => set({ entityName: name }),
 

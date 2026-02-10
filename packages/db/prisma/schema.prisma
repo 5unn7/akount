@@ -8,14 +8,14 @@ datasource db {
 }
 
 model Tenant {
-  id                    String             @id @default(cuid())
+  id                    String              @id @default(cuid())
   name                  String
   region                TenantRegion
   status                TenantStatus
   plan                  TenantPlan
-  createdAt             DateTime           @default(now())
-  updatedAt             DateTime           @updatedAt
-  onboardingStatus      OnboardingStatus   @default(NEW)
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  onboardingStatus      OnboardingStatus    @default(NEW)
   onboardingStep        String?
   onboardingData        Json?
   onboardingCompletedAt DateTime?
@@ -26,6 +26,7 @@ model Tenant {
   importBatches         ImportBatch[]
   memberships           TenantUser[]
   categories            Category[]
+  onboardingProgress    OnboardingProgress?
 }
 
 model TenantUser {
@@ -46,6 +47,8 @@ model User {
   id          String       @id @default(cuid())
   email       String       @unique
   name        String?
+  phoneNumber String?
+  timezone    String?      @default("America/Toronto")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   clerkUserId String?      @unique
@@ -71,6 +74,13 @@ model Entity {
   industryCode       String?
   coaTemplateUsed    String?
   setupCompletedAt   DateTime?
+  // Business details (collected post-onboarding)
+  address            String?
+  city               String?
+  state              String?
+  postalCode         String?
+  industry           String?
+  businessSize       String?
   accounts           Account[]
   accountingPolicies AccountingPolicy[]
   auditLogs          AuditLog[]
@@ -375,7 +385,7 @@ model Payment {
 }
 
 model CreditNote {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   entityId         String
   creditNoteNumber String
   date             DateTime
@@ -773,6 +783,35 @@ model ConsolidationElimination {
   @@index([fiscalPeriodId])
   @@index([fromEntityId])
   @@index([toEntityId])
+}
+
+model OnboardingProgress {
+  id       String @id @default(cuid())
+  tenantId String @unique
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Step completion tracking
+  completedSteps String[] @default([])
+  skippedSteps   String[] @default([])
+
+  // Individual step flags
+  basicInfoComplete       Boolean @default(false)
+  entitySetupComplete     Boolean @default(false)
+  businessDetailsComplete Boolean @default(false)
+  bankConnectionComplete  Boolean @default(false)
+  goalsSetupComplete      Boolean @default(false)
+
+  // Progress metrics
+  completionPercentage Int @default(0)
+
+  // Nudge management
+  lastNudgedAt             DateTime?
+  dashboardCardDismissedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
 }
 
 model RuleSuggestion {

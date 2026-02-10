@@ -14,6 +14,8 @@ const initializeOnboardingSchema = z.object({
   accountType: z.enum(['personal', 'business', 'accountant']),
   entityName: z.string().min(1).max(255),
   entityType: z.enum(['PERSONAL', 'CORPORATION', 'SOLE_PROPRIETORSHIP', 'PARTNERSHIP', 'LLC']),
+  phoneNumber: z.string().min(1).optional(),
+  timezone: z.string().default('America/Toronto'),
   country: z.string().length(2).toUpperCase(),
   currency: z.string().length(3).toUpperCase(),
 });
@@ -105,6 +107,17 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
       };
       const region = regionMap[data.country] || 'CA';
 
+      // Save user phone and timezone
+      if (data.phoneNumber || data.timezone) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
+            ...(data.timezone && { timezone: data.timezone }),
+          },
+        });
+      }
+
       // Create tenant in a transaction
       const result = await prisma.$transaction(async (tx) => {
         // Create tenant
@@ -140,6 +153,17 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
             country: data.country,
             functionalCurrency: data.currency,
             reportingCurrency: data.currency,
+          },
+        });
+
+        // Create onboarding progress (40% complete: basic_info + entity_setup)
+        await tx.onboardingProgress.create({
+          data: {
+            tenantId: tenant.id,
+            completedSteps: ['basic_info', 'entity_setup'],
+            basicInfoComplete: true,
+            entitySetupComplete: true,
+            completionPercentage: 40,
           },
         });
 

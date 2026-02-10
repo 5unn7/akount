@@ -1,23 +1,29 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { WelcomeStep } from './steps/WelcomeStep'
-import { EntityDetailsStep } from './steps/EntityDetailsStep'
+import { EssentialInfoStep } from './steps/EssentialInfoStep'
 import { CompletionStep } from './steps/CompletionStep'
-import { ProgressIndicator } from './ProgressIndicator'
 
+/**
+ * Simplified Onboarding Wizard - 2 Steps + Completion
+ *
+ * Flow:
+ * 1. Welcome + Account Type Selection (WelcomeStep)
+ * 2. Essential Info Form (EssentialInfoStep) - single page, glass morphism
+ * 3. Success Animation (CompletionStep) → Auto-redirect to dashboard
+ *
+ * Target time: 60-90 seconds from start to dashboard
+ */
 export function OnboardingWizard() {
   const router = useRouter()
   const { userId, isLoaded } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   const {
     currentStep,
-    totalSteps,
     accountType,
     tenantId,
     entityId,
@@ -35,91 +41,91 @@ export function OnboardingWizard() {
   // Redirect to dashboard if onboarding is complete
   useEffect(() => {
     if (tenantId && entityId) {
-      router.push('/(dashboard)/dashboard')
+      router.push('/dashboard')
     }
   }, [tenantId, entityId, router])
 
+  // Loading state
   if (!isLoaded || !userId) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-orange-500" />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-orange-500" />
+          <p className="text-sm text-slate-600">Loading...</p>
+        </div>
       </div>
     )
   }
 
-  const handleNext = async () => {
-    setError(null)
-
-    // Validate current step before proceeding
-    if (currentStep === 0 && !accountType) {
-      setError('Please select an account type')
-      return
-    }
-
-    try {
-      nextStep()
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'An error occurred'
-      setError(message)
-    }
+  const handleNext = () => {
+    nextStep()
   }
 
   const handlePrevious = () => {
-    setError(null)
     previousStep()
   }
 
-  // Step components
+  // 2 main steps + 1 completion step
   const steps = [
     <WelcomeStep key="welcome" onNext={handleNext} />,
-    <EntityDetailsStep key="entity" onNext={handleNext} />,
+    <EssentialInfoStep key="essential" onNext={handleNext} />,
     <CompletionStep key="completion" />,
   ]
 
   const currentStepComponent = steps[currentStep] || steps[0]
   const isFirstStep = currentStep === 0
-  const isLastStep = currentStep === totalSteps - 1
 
   return (
-    <div className="space-y-8">
-      {/* Progress indicator */}
-      {accountType && <ProgressIndicator currentStep={currentStep} totalSteps={totalSteps} />}
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-slate-50 py-12 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Progress dots (only show after account type selected) */}
+        {accountType && currentStep < 2 && (
+          <div className="flex justify-center gap-2 mb-8">
+            {[0, 1].map((step) => (
+              <div
+                key={step}
+                className={`h-2 w-2 rounded-full transition-all ${
+                  step === currentStep
+                    ? 'bg-orange-500 w-8'
+                    : step < currentStep
+                      ? 'bg-orange-300'
+                      : 'bg-slate-200'
+                }`}
+              />
+            ))}
+          </div>
+        )}
 
-      {/* Error message */}
-      {error && (
-        <div className="rounded-lg bg-red-50 p-4 text-sm text-red-900">
-          <p className="font-medium">Error</p>
-          <p>{error}</p>
+        {/* Step content */}
+        <div className="transition-all duration-300 ease-in-out">
+          {currentStepComponent}
         </div>
-      )}
 
-      {/* Step content */}
-      <div className="rounded-lg bg-white p-8 shadow-sm border border-slate-200">
-        {currentStepComponent}
-      </div>
-
-      {/* Navigation buttons */}
-      {accountType && (
-        <div className="flex justify-between gap-4">
-          <button
-            onClick={handlePrevious}
-            disabled={isFirstStep || isLoading}
-            className="px-6 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Back
-          </button>
-
-          {!isLastStep && (
+        {/* Back button (only on Essential Info step) */}
+        {accountType && !isFirstStep && currentStep < 2 && (
+          <div className="mt-6 text-center">
             <button
-              onClick={handleNext}
-              disabled={isLoading}
-              className="ml-auto px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              onClick={handlePrevious}
+              className="text-sm text-slate-600 hover:text-slate-900 transition-colors inline-flex items-center gap-1"
             >
-              {isLoading ? 'Loading...' : 'Next'}
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to account type
             </button>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

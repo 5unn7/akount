@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { EntitiesList } from "@/components/dashboard/EntitiesList";
 import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
 import { DashboardFilters } from "@/components/dashboard/DashboardFilters";
+import { OnboardingHeroCard } from "@/components/dashboard/OnboardingHeroCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { listEntities } from "@/lib/api/entities";
 
@@ -36,6 +37,9 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
                 <h2 className="text-3xl font-bold tracking-tight font-heading">Overview</h2>
                 <DashboardFilters entities={entities} />
             </div>
+
+            {/* Onboarding progress hero card */}
+            <OnboardingHeroCard />
 
             {/* Entities List - Real data from API */}
             <EntitiesList entities={entities} />

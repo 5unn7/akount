@@ -8,6 +8,8 @@ import { withPermission, adminOnly } from '../../middleware/withPermission';
 import { auditQueryService } from '../../services/audit-query.service';
 import { EntityService } from './services/entity.service';
 import { onboardingRoutes } from './routes/onboarding';
+import { onboardingProgressRoutes } from './routes/onboarding-progress';
+import { entityRoutes } from './routes/entity';
 
 // Validation schemas
 const auditLogQuerySchema = z.object({
@@ -50,6 +52,8 @@ export async function systemRoutes(fastify: FastifyInstance) {
 
   // Register sub-routes
   await fastify.register(onboardingRoutes, { prefix: '/onboarding' });
+  await fastify.register(onboardingProgressRoutes, { prefix: '/onboarding' });
+  await fastify.register(entityRoutes, { prefix: '/entity' });
 
   // Routes below require tenant context
   fastify.addHook('preHandler', tenantMiddleware);
