@@ -46,3 +46,42 @@ export function withRolePermission(allowedRoles: TenantUserRole[]) {
     );
   };
 }
+
+/**
+ * Check if user has required permission level for a domain resource.
+ *
+ * TODO: Phase 3 - Implement granular permission checking
+ * Currently delegates to role-based permissions as a stub.
+ *
+ * @param domain - Domain name (e.g., 'banking', 'accounting')
+ * @param resource - Resource name (e.g., 'accounts', 'transactions')
+ * @param level - Permission level ('VIEW', 'ACT', 'APPROVE', 'ADMIN')
+ */
+export function requirePermission(
+  domain: string,
+  resource: string,
+  level: string
+) {
+  // TODO: Phase 3 - Query PermissionMatrix and check against user's role
+  // For now, use role-based permissions as fallback
+
+  // Map permission levels to roles (conservative approach)
+  const rolesByLevel: Record<string, TenantUserRole[]> = {
+    VIEW: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'VIEWER'],
+    ACT: ['OWNER', 'ADMIN', 'ACCOUNTANT'],
+    APPROVE: ['OWNER', 'ADMIN'],
+    ADMIN: ['OWNER', 'ADMIN'],
+  };
+
+  const allowedRoles = rolesByLevel[level] || ['OWNER'];
+  return withRolePermission(allowedRoles);
+}
+
+/**
+ * Check if user has one of the allowed roles.
+ *
+ * @param allowedRoles - Array of roles that can access this route
+ */
+export function requireRole(allowedRoles: TenantUserRole[]) {
+  return withRolePermission(allowedRoles);
+}

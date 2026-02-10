@@ -1,7 +1,7 @@
-import { FastifyInstance } from 'fastify';
-import { ZodTypeProvider } from 'fastify-type-provider-zod';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
+import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { withRolePermission } from '../../../middleware/rbac';
 import { TransactionService } from '../services/transaction.service';
 import {
@@ -9,6 +9,10 @@ import {
   UpdateTransactionSchema,
   ListTransactionsQuerySchema,
   TransactionIdParamSchema,
+  type CreateTransactionInput,
+  type UpdateTransactionInput,
+  type ListTransactionsQuery,
+  type TransactionIdParam,
 } from '../schemas/transaction.schema';
 
 /**
@@ -24,43 +28,33 @@ import {
  * - DELETE: OWNER, ADMIN (more restricted)
  */
 export async function transactionRoutes(fastify: FastifyInstance) {
-  const server = fastify.withTypeProvider<ZodTypeProvider>();
+  // Apply auth and tenant middleware to all routes
+  fastify.addHook('onRequest', authMiddleware);
+  fastify.addHook('preHandler', tenantMiddleware);
 
   // GET /api/banking/transactions - List transactions
-  server.get(
+  fastify.get(
     '/',
     {
-      onRequest: [authMiddleware, tenantMiddleware],
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
-      schema: {
-        querystring: ListTransactionsQuerySchema,
-        response: {
-          200: {
-            type: 'object',
-            properties: {
-              transactions: { type: 'array' },
-              nextCursor: { type: 'string' },
-              hasMore: { type: 'boolean' },
-            },
-          },
-        },
-      },
+      preValidation: [validateQuery(ListTransactionsQuerySchema)],
     },
-    async (request, reply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
       // Type-safe guards (no non-null assertions)
       if (!request.tenantId || !request.userId) {
         return reply.status(500).send({ error: 'Context not initialized' });
       }
 
       const service = new TransactionService(request.tenantId, request.userId);
+      const query = request.query as ListTransactionsQuery;
 
       const result = await service.listTransactions({
-        accountId: request.query.accountId,
-        startDate: request.query.startDate,
-        endDate: request.query.endDate,
-        categoryId: request.query.categoryId,
-        cursor: request.query.cursor,
-        limit: request.query.limit,
+        accountId: query.accountId,
+        startDate: query.startDate,
+        endDate: query.endDate,
+        categoryId: query.categoryId,
+        cursor: query.cursor,
+        limit: query.limit,
       });
 
       return reply.status(200).send(result);
@@ -68,34 +62,21 @@ export async function transactionRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/banking/transactions/:id - Get single transaction
-  server.get(
+  fastify.get(
     '/:id',
     {
-      onRequest: [authMiddleware, tenantMiddleware],
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
-      schema: {
-        params: TransactionIdParamSchema,
-        response: {
-          200: {
-            type: 'object',
-          },
-          404: {
-            type: 'object',
-            properties: {
-              error: { type: 'string' },
-            },
-          },
-        },
-      },
+      preValidation: [validateParams(TransactionIdParamSchema)],
     },
-    async (request, reply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {
         return reply.status(500).send({ error: 'Context not initialized' });
       }
 
       const service = new TransactionService(request.tenantId, request.userId);
+      const params = request.params as TransactionIdParam;
 
-      const transaction = await service.getTransaction(request.params.id);
+      const transaction = await service.getTransaction(params.id);
 
       if (!transaction) {
         return reply.status(404).send({
@@ -108,44 +89,32 @@ export async function transactionRoutes(fastify: FastifyInstance) {
   );
 
   // POST /api/banking/transactions - Create transaction
-  server.post(
+  fastify.post(
     '/',
     {
-      onRequest: [authMiddleware, tenantMiddleware],
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
-      schema: {
-        body: CreateTransactionSchema,
-        response: {
-          201: {
-            type: 'object',
-          },
-          400: {
-            type: 'object',
-            properties: {
-              error: { type: 'string' },
-            },
-          },
-          404: {
-            type: 'object',
-            properties: {
-              error: { type: 'string' },
-            },
-          },
-        },
-      },
+      preValidation: [validateBody(CreateTransactionSchema)],
     },
-    async (request, reply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {
         return reply.status(500).send({ error: 'Context not initialized' });
       }
 
       const service = new TransactionService(request.tenantId, request.userId);
+      const body = request.body as CreateTransactionInput;
 
       try {
-        const transaction = await service.createTransaction(request.body);
+        const transaction = await service.createTransaction(body);
 
         return reply.status(201).send(transaction);
       } catch (error) {
+        // Tenant ownership violation
+        if (error instanceof Error && error.message.includes('does not belong to this tenant')) {
+          return reply.status(403).send({
+            error: error.message,
+          });
+        }
+
         // Account not found
         if (error instanceof Error && error.message.includes('not found')) {
           return reply.status(404).send({
@@ -160,42 +129,26 @@ export async function transactionRoutes(fastify: FastifyInstance) {
   );
 
   // PATCH /api/banking/transactions/:id - Update transaction
-  server.patch(
+  fastify.patch(
     '/:id',
     {
-      onRequest: [authMiddleware, tenantMiddleware],
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
-      schema: {
-        params: TransactionIdParamSchema,
-        body: UpdateTransactionSchema,
-        response: {
-          200: {
-            type: 'object',
-          },
-          400: {
-            type: 'object',
-            properties: {
-              error: { type: 'string' },
-            },
-          },
-          404: {
-            type: 'object',
-            properties: {
-              error: { type: 'string' },
-            },
-          },
-        },
-      },
+      preValidation: [
+        validateParams(TransactionIdParamSchema),
+        validateBody(UpdateTransactionSchema),
+      ],
     },
-    async (request, reply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {
         return reply.status(500).send({ error: 'Context not initialized' });
       }
 
       const service = new TransactionService(request.tenantId, request.userId);
+      const params = request.params as TransactionIdParam;
+      const body = request.body as UpdateTransactionInput;
 
       try {
-        const transaction = await service.updateTransaction(request.params.id, request.body);
+        const transaction = await service.updateTransaction(params.id, body);
 
         return reply.status(200).send(transaction);
       } catch (error) {
@@ -213,35 +166,22 @@ export async function transactionRoutes(fastify: FastifyInstance) {
   );
 
   // DELETE /api/banking/transactions/:id - Soft delete transaction
-  server.delete(
+  fastify.delete(
     '/:id',
     {
-      onRequest: [authMiddleware, tenantMiddleware],
       preHandler: withRolePermission(['OWNER', 'ADMIN']), // More restricted
-      schema: {
-        params: TransactionIdParamSchema,
-        response: {
-          204: {
-            type: 'null',
-          },
-          404: {
-            type: 'object',
-            properties: {
-              error: { type: 'string' },
-            },
-          },
-        },
-      },
+      preValidation: [validateParams(TransactionIdParamSchema)],
     },
-    async (request, reply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {
         return reply.status(500).send({ error: 'Context not initialized' });
       }
 
       const service = new TransactionService(request.tenantId, request.userId);
+      const params = request.params as TransactionIdParam;
 
       try {
-        await service.softDeleteTransaction(request.params.id);
+        await service.softDeleteTransaction(params.id);
 
         return reply.status(204).send();
       } catch (error) {

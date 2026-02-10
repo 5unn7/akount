@@ -65,18 +65,13 @@ export const ListTransactionsQuerySchema = z.object({
     .optional(),
   categoryId: z.string().cuid('Invalid category ID format').optional(),
   cursor: z.string().cuid('Invalid cursor format').optional(),
-  limit: z
-    .string()
+  limit: z.coerce
+    .number()
+    .int('Limit must be an integer')
+    .min(1, 'Limit must be at least 1')
+    .max(100, 'Limit cannot exceed 100')
     .optional()
-    .transform((val) => (val ? parseInt(val, 10) : undefined))
-    .pipe(
-      z
-        .number()
-        .int('Limit must be an integer')
-        .min(1, 'Limit must be at least 1')
-        .max(100, 'Limit cannot exceed 100')
-        .optional()
-    ),
+    .default(50),
 });
 
 export type ListTransactionsQuery = z.infer<typeof ListTransactionsQuerySchema>;

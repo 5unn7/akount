@@ -17,15 +17,20 @@ vi.mock('../../../../middleware/auth', () => ({
 vi.mock('../../../../middleware/tenant', () => ({
   tenantMiddleware: vi.fn(async (request) => {
     request.tenantId = 'tenant-abc-123';
+    request.tenantRole = 'OWNER'; // Set role for RBAC checks
   }),
 }));
 
-// Mock Zod schemas
-vi.mock('../../schemas/transaction.schema', () => ({
-  CreateTransactionSchema: {},
-  UpdateTransactionSchema: {},
-  ListTransactionsQuerySchema: {},
-  TransactionIdParamSchema: {},
+// Mock RBAC middleware to always allow
+vi.mock('../../../../middleware/rbac', () => ({
+  withRolePermission: vi.fn(() => async () => {}),
+}));
+
+// Mock validation middleware to always pass
+vi.mock('../../../../middleware/validation', () => ({
+  validateQuery: vi.fn(() => async () => {}),
+  validateParams: vi.fn(() => async () => {}),
+  validateBody: vi.fn(() => async () => {}),
 }));
 
 // Mock TransactionService - use function constructor so `new` works
