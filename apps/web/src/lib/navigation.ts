@@ -4,6 +4,7 @@ import {
   ArrowLeftRight,
   CheckSquare,
   ArrowRightLeft,
+  Upload,
   Users,
   Building2,
   FileText,
@@ -114,6 +115,11 @@ export const navigationDomains: NavDomain[] = [
         label: 'Reconciliation',
         icon: CheckSquare,
         href: '/banking/reconciliation',
+      },
+      {
+        label: 'Imports',
+        icon: Upload,
+        href: '/banking/imports',
       },
       {
         label: 'Transfers',
