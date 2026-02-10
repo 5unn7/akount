@@ -2,7 +2,7 @@
 
 **Version:** 1.4
 **Last Updated:** 2026-02-09
-**Current Phase:** Phase 2 - Bank Reconciliation (STARTING)
+**Current Phase:** Phase 2 - Bank Reconciliation (Backend Complete, Frontend Remaining)
 **Previous Phase:** Phase 1 - Accounts Overview (COMPLETE - 100% ✅)
 
 ---
@@ -713,7 +713,7 @@ This roadmap outlines the path from current state (5% complete) to a production-
 |-------|----------|----------------|--------|--------------|
 | 0: Foundation | 1-2 weeks | 20-30 | ✅ COMPLETE (2026-02-01) | Bank Import, AI Categorization, Performance Opt |
 | 1: Accounts Overview | 1 week | 32-43 | ✅ COMPLETE (2026-02-09) | Running Balance deferred to Phase 2 |
-| 2: Bank Reconciliation | 2-3 weeks | 55-70 | 🚧 Starting Now | +Cash Flow Forecasting (+15-20h) |
+| 2: Bank Reconciliation | 2-3 weeks | 55-70 | 🚧 Backend ✅ FE Remaining | +Cash Flow Forecasting (+15-20h) |
 | 3: Transactions | 2-3 weeks | 63-80 | ⏸️ Not Started | +Recurring Txns (+15-20h), +Keyboard Shortcuts (+8-10h) |
 | 4: Invoicing & Bills | 2-3 weeks | 40-50 | ⏸️ Not Started | - |
 | 5: Analytics | 2-3 weeks | 45-57 | ⏸️ Not Started | +Data Export (+10-12h) |
@@ -795,5 +795,5 @@ See `planning/akount-engineering-roadmap.md` for detailed cost breakdown.
 
 ---
 
-**Last Updated:** 2026-01-30
-**Next Review:** 2026-02-06 (1 week from now)
+**Last Updated:** 2026-02-09
+**Next Review:** 2026-02-16 (weekly review)

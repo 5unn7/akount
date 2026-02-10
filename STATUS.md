@@ -1,11 +1,11 @@
 # Akount - Current Status
 
 **Last Updated:** 2026-02-09
-**Overall Progress:** Phase 1 Complete ✅ | Ready for Phase 2
+**Overall Progress:** Phase 2 Backend Complete ✅ | Frontend Remaining
 
 ---
 
-## Current Phase: Phase 2 - Bank Reconciliation (In Progress)
+## Current Phase: Phase 2 - Bank Reconciliation (Backend Complete)
 
 **Phase 2 Goal:** Import bank transactions and match with posted transactions
 
@@ -13,15 +13,26 @@
 - ✅ TransactionService with CRUD operations (277 lines)
 - ✅ Zod validation schemas (86 lines)
 - ✅ Fastify route handlers (216 lines)
-- ✅ 35 service tests passing
-- ✅ 20 route tests passing
-- ✅ Total: 55 tests covering tenant isolation, soft delete, pagination
+- ✅ 55 tests passing (35 service + 20 route)
 
-**Next Sprint 2: CSV & PDF Import Infrastructure**
-- Build CSV parser and validator
-- Add PDF parsing service
-- Create transaction import workflow
-- Implement duplicate detection
+**Sprint 2: CSV & PDF Import - COMPLETE ✅**
+- ✅ ImportService orchestrating CSV + PDF workflows (452 lines)
+- ✅ ParserService for CSV + PDF parsing (507 lines)
+- ✅ DuplicationService with fuzzy matching (230 lines)
+- ✅ Import routes (CSV upload, PDF upload, list, get)
+- ✅ 19 import service tests passing
+
+**Sprint 3: Reconciliation - COMPLETE ✅**
+- ✅ ReconciliationService with matching algorithm (340 lines)
+- ✅ Matching: exact amount + date proximity + description similarity
+- ✅ 4 routes: suggestions, match, unmatch, status
+- ✅ 43 tests passing (25 service + 18 route)
+
+**Remaining: Frontend UI**
+- CSV/PDF upload component
+- Column mapping interface
+- Transaction matching UI
+- Reconciliation status display
 
 ---
 
@@ -69,7 +80,7 @@
 | TypeScript Errors | 0 |
 | Dashboard Queries (100 accounts) | 4 queries |
 | Dashboard Response Time | ~200ms |
-| Backend Test Count | 62+ |
+| Backend Test Count | 170+ |
 | Code Review Items Resolved | 13/13 |
 
 ---

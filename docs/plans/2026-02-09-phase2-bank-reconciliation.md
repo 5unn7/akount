@@ -787,29 +787,29 @@ Before merging each service:
 
 ## Progress Tracking
 
-### Sprint 1: Transaction Foundation
-- [ ] Task 1: TransactionService (3-4h)
-- [ ] Task 2: Transaction Schemas (1-2h)
-- [ ] Task 3: Transaction Routes (3-4h)
-- [ ] Task 4: Register Routes (15m)
-- [ ] Task 5: Service Tests (4-5h)
-- [ ] Task 6: Route Tests (2-3h)
+### Sprint 1: Transaction Foundation ✅ COMPLETE
+- [x] Task 1: TransactionService (3-4h) — Commit: ff37830
+- [x] Task 2: Transaction Schemas (1-2h)
+- [x] Task 3: Transaction Routes (3-4h)
+- [x] Task 4: Register Routes (15m)
+- [x] Task 5: Service Tests (4-5h) — 35 tests
+- [x] Task 6: Route Tests (2-3h) — 20 tests
 
-**Total:** 15-20 hours
+**Total:** 55 tests passing
 
-### Sprint 2: CSV & PDF Import
-- [ ] Task 7: ImportService with CSV + PDF support (5-6h)
-- [ ] Task 8: Enhance Import Routes (CSV + PDF endpoints) (3-4h)
-- [ ] Frontend: CSV/PDF Upload UI (deferred or async)
+### Sprint 2: CSV & PDF Import ✅ COMPLETE
+- [x] Task 7: ImportService with CSV + PDF support (5-6h) — Commit: 4e89ae5
+- [x] Task 8: Enhance Import Routes (CSV + PDF endpoints) (3-4h) — Commit: 376a030
+- [ ] Frontend: CSV/PDF Upload UI (deferred)
 
-**Total:** 8-10 hours (backend only)
+**Total:** 19 tests passing
 
-### Sprint 3: Reconciliation
-- [ ] Task 9: ReconciliationService (5-6h)
-- [ ] Task 10: Reconciliation Routes (2-3h)
-- [ ] Task 11: Reconciliation Tests (4-5h)
+### Sprint 3: Reconciliation ✅ COMPLETE
+- [x] Task 9: ReconciliationService (5-6h) — Commit: a1e3340
+- [x] Task 10: Reconciliation Routes (2-3h) — Commit: a1e3340
+- [x] Task 11: Reconciliation Tests (4-5h) — 43 tests (25 service + 18 route)
 
-**Total:** 11-14 hours
+**Total:** 43 tests passing
 
 ### Grand Total
 **Backend:** 34-44 hours
@@ -852,5 +852,5 @@ Before merging each service:
 
 ---
 
-**Plan Status:** ✅ Ready for Implementation
-**Next Action:** Run `/processes:work` to begin Task 1
+**Plan Status:** ✅ Backend COMPLETE (117+ tests) | Frontend remaining
+**Completed:** 2026-02-09 (all 3 backend sprints)
