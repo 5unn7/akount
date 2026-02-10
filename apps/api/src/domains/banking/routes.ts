@@ -8,6 +8,7 @@ import { withPermission } from '../../middleware/withPermission';
 import { importRoutes } from './routes/import';
 import { importsRoutes } from './routes/imports';
 import { transactionRoutes } from './routes/transactions';
+import { reconciliationRoutes } from './routes/reconciliation';
 
 // Validation schemas
 const accountsQuerySchema = z.object({
@@ -66,6 +67,7 @@ export async function bankingRoutes(fastify: FastifyInstance) {
   await fastify.register(importRoutes, { prefix: '/import' }); // Legacy route (will be deprecated)
   await fastify.register(importsRoutes, { prefix: '/imports' }); // New simplified import routes
   await fastify.register(transactionRoutes, { prefix: '/transactions' });
+  await fastify.register(reconciliationRoutes, { prefix: '/reconciliation' });
 
   // ============================================================================
   // ACCOUNTS
@@ -382,45 +384,4 @@ export async function bankingRoutes(fastify: FastifyInstance) {
     }
   );
 
-  // ============================================================================
-  // RECONCILIATION
-  // ============================================================================
-
-  /**
-   * GET /api/banking/reconciliation
-   *
-   * Get reconciliation status and pending items.
-   */
-  fastify.get(
-    '/reconciliation',
-    {
-      ...withPermission('banking', 'reconciliation', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Reconciliation will be implemented in a future phase',
-      });
-    }
-  );
-
-  /**
-   * POST /api/banking/reconciliation/approve
-   *
-   * Approve reconciliation items.
-   */
-  fastify.post(
-    '/reconciliation/approve',
-    {
-      ...withPermission('banking', 'reconciliation', 'APPROVE'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Reconciliation approval will be implemented in a future phase',
-      });
-    }
-  );
 }
