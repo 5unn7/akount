@@ -5,311 +5,127 @@ description: Execute implementation plans systematically while maintaining quali
 
 # Workflow: Work
 
-Execute implementation plans systematically with quality checks built-in.
+Execute implementation plans step-by-step with quality checks built into each task.
 
-**When to Use:** After creating a plan with `/processes:plan`, execute it step-by-step.
-
----
-
-## Four-Phase Workflow
-
-**1. Quick Start** (2m) - Read plan, setup environment
-**2. Execute** (varies) - Implement tasks systematically
-**3. Quality Check** (5m) - Tests, self-review
-**4. Document** (2m) - Update plan, commit progress
+**Pipeline:** Plan → **Work** → Review
+**When to use:** After creating a plan with `/processes:plan`.
 
 ---
 
-## Phase 1: Quick Start (2 minutes)
+## Phase 1: Load Plan
 
-### Read the Plan Completely
-```bash
-# Read implementation plan
-cat docs/plans/[plan-name].md
+### Read the Plan
+
+```
+Read docs/plans/[plan-name].md
 ```
 
-**Extract:**
-- Task list (what to build)
-- File locations (where to work)
-- Success criteria (when done)
-- Dependencies (what's needed first)
+Extract: task list, file locations, success criteria, dependencies, high-risk tasks.
 
-### Ask Clarifying Questions
+### Clarify Before Starting
 
-**If unclear:**
-- Requirements ambiguous → Use AskUserQuestion
-- Multiple valid approaches → Ask for preferred direction
-- Security/compliance implications → Confirm approach
+If anything is ambiguous, use AskUserQuestion. Don't guess — clarity prevents rework.
 
-**Don't guess** - clarity prevents rework.
+### Check Environment
 
-### Setup Environment
 ```bash
-# Check git status
 git status
-
-# Create feature branch (if needed)
-git checkout -b feature/[feature-name]
-
-# Verify tests pass
-npm test
 ```
+
+Verify clean working directory. Create a feature branch if needed.
 
 ---
 
-## Phase 2: Execute (Varies by Task)
+## Phase 2: Execute Tasks
 
-### Task Loop
+Use TodoWrite to track each task from the plan. Mark tasks `in_progress` one at a time.
 
-For each task in plan:
+### Per-Task Loop
 
-**1. Read relevant files**
+For each task in the plan:
+
+**1. Read** — Read files mentioned in the task and reference files for patterns
+
+**2. Implement** — Follow existing patterns. Use Edit for modifications, Write for new files.
+
+**3. Test** — Run tests after each task, not just at the end:
 ```bash
-# Read files mentioned in plan
-Read [file-path]
+npx vitest run [test-file]        # specific tests
+npx vitest run                     # all tests
 ```
 
-**2. Implement changes**
-- Follow existing patterns (check similar code)
-- Use Edit for modifications, Write for new files
-- Test incrementally (don't batch all changes)
-
-**3. Verify locally**
-```bash
-# Run tests frequently
-npm test
-
-# Check types
-npm run typecheck
-
-# Run linter
-npm run lint
-```
-
-**4. Commit working slices**
-- Commit when feature slice works
-- Don't wait to complete all tasks
-- Each commit should be functional
-
-### When to Commit
-
-**Commit when:**
-- ✅ Feature slice complete (e.g., API endpoint + tests pass)
-- ✅ Database migration ready and tested
-- ✅ Component fully functional
-- ✅ Bug fix verified
-
-**Don't commit when:**
-- ❌ Tests failing
-- ❌ Code doesn't compile
-- ❌ Only half of a feature
-- ❌ Console has errors
-
-### Follow Existing Patterns
-
-**Before writing new code:**
-```bash
-# Find similar implementations
-Grep "similar-pattern" apps/ --output_mode=files_with_matches
-
-# Read existing code
-Read [similar-file]
-```
-
-**Match:**
-- File structure (where files go)
-- Naming conventions (camelCase, PascalCase)
-- Import patterns (relative vs absolute)
-- Error handling (try/catch, error types)
-
-### Avoid Common Pitfalls
-
-**Tenant Isolation:**
-```typescript
-// ❌ WRONG: Missing tenantId filter
-const invoices = await prisma.invoice.findMany()
-
-// ✅ CORRECT: Always filter by tenant
-const invoices = await prisma.invoice.findMany({
-  where: { entity: { tenantId: ctx.tenantId } }
-})
-```
-
-**Money Precision:**
-```typescript
-// ❌ WRONG: Float for money
-amount: 10.50
-
-// ✅ CORRECT: Integer cents
-amount: 1050 // $10.50
-```
-
-**Soft Delete:**
-```typescript
-// ❌ WRONG: Hard delete
-await prisma.invoice.delete({ where: { id } })
-
-// ✅ CORRECT: Soft delete
-await prisma.invoice.update({
-  where: { id },
-  data: { deletedAt: new Date() }
-})
-```
-
----
-
-## Phase 3: Quality Check (5 minutes)
-
-### Run Tests
-```bash
-# Run all tests
-npm test
-
-# Run specific test file
-npm test [test-file]
-
-# Check coverage
-npm run test:coverage
-```
-
-**Fix failing tests before proceeding.**
-
-### Self-Review Checklist
-
-**Code Quality:**
+**4. Verify** — Check against the task's success criteria. Quick self-review:
+- [ ] No `any` types without justification
+- [ ] No console.log left behind
 - [ ] No commented-out code
-- [ ] No console.log statements (unless intentional)
-- [ ] No TODOs left in code
-- [ ] Types are correct (no `any`)
 - [ ] Error handling present
-
-**Standards Compliance:**
-- [ ] tenantId filter in all queries
-- [ ] Money as integer cents
-- [ ] Soft delete used (deletedAt)
-- [ ] Zod validation for inputs
-- [ ] Server/Client components used correctly
-
-**Testing:**
-- [ ] Tests pass
 - [ ] New features have tests
-- [ ] Edge cases covered
 
-### Code Review (For Complex Changes)
-
-**When to use agents:**
-- Multi-file changes (3+ files)
-- Financial logic (double-entry, multi-currency)
-- Security-sensitive code (auth, permissions)
-- Database schema changes
-
-**Run review agents:**
+**5. Commit** — If the task is a complete, working slice:
 ```bash
-# Financial validation
-Task tool: financial-data-validator
+git add [specific files]
+git commit -m "feat: [description]
 
-# Architecture check
-Task tool: architecture-strategist
-
-# Security audit
-Task tool: security-sentinel
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
 ```
+
+Only commit when tests pass and the slice is functional. See `guardrails.md` for commit rules.
+
+### When the Plan is Wrong
+
+If a task takes 2x expected effort or reveals a design flaw:
+1. **STOP** — don't power through a broken plan
+2. Update the plan file with what you learned
+3. Inform the user of the deviation
+4. Get alignment before continuing
+
+This is normal — ~30% of plans need adjustment during implementation.
+
+### High-Risk Tasks
+
+For tasks tagged `Risk: high` in the plan (financial logic, auth, schema changes):
+- Run the relevant review agent after completing the task
+- Financial logic → `financial-data-validator`
+- Auth changes → `security-sentinel`
+- Schema migrations → `prisma-migration-reviewer`
 
 ---
 
-## Phase 4: Document & Commit (2 minutes)
+## Phase 3: Wrap Up
 
 ### Update Plan
 
-Mark completed tasks in implementation plan:
+Mark completed tasks in the plan file:
 ```markdown
-## Task List
-- [x] Task 1 (completed)
-- [x] Task 2 (completed)
-- [ ] Task 3 (pending)
+- [x] Task 1: Create schema
+- [x] Task 2: Create service
+- [ ] Task 3: Write tests (in progress)
 ```
 
-### Commit Changes
+### Update TASKS.md
 
-```bash
-# Stage files
-git add [files]
+If the plan completes a task from TASKS.md, mark it done.
 
-# Commit with clear message
-git commit -m "feat: [description]
+### Final Validation
 
-[Optional details about implementation]
-
-Completed:
-- Task 1
-- Task 2
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
-
-# Verify
-git log --oneline -1
-```
-
-### Update TASKS.md (If Applicable)
-
-If plan completes a task from TASKS.md:
-```bash
-# Mark task as done
-# Move to "Recently Completed" section
-# Add date completed
-```
+After all tasks complete:
+- Run full test suite: `npx vitest run`
+- Suggest: "Run `/processes:review` for final multi-agent validation"
 
 ---
 
 ## Progress Tracking
 
-Use TodoWrite to track multi-step work:
+Use TodoWrite throughout. Update immediately when tasks complete — don't batch.
 
-```bash
+```
 TodoWrite: [
-  { content: "Read plan", status: "completed", activeForm: "Reading plan" },
-  { content: "Implement API endpoint", status: "in_progress", activeForm: "Implementing API endpoint" },
-  { content: "Write tests", status: "pending", activeForm: "Writing tests" },
-  { content: "Run quality checks", status: "pending", activeForm: "Running quality checks" }
+  { content: "Create schema", status: "completed", activeForm: "Creating schema" },
+  { content: "Create service", status: "in_progress", activeForm: "Creating service" },
+  { content: "Write tests", status: "pending", activeForm: "Writing tests" }
 ]
 ```
 
-**Update immediately** when tasks complete (don't batch).
-
 ---
 
-## Workflow Output
-
-```markdown
-# 🚧 Work Session Progress
-
-## Plan
-[Plan name from docs/plans/]
-
-## Completed Tasks
-- [x] Task 1: [description]
-- [x] Task 2: [description]
-
-## Current Task
-- [→] Task 3: [description] (60% done)
-
-## Blockers
-[None / List blockers encountered]
-
-## Next Steps
-- [ ] Task 4: [description]
-- [ ] Task 5: [description]
-
-## Quality Status
-- [x] Tests passing
-- [x] Types correct
-- [x] Standards compliant
-
----
-
-**Ready to continue or commit progress.**
-```
-
----
-
-_Lines: ~300 (slimmed from 500). Focuses on systematic execution with quality checks._
+_~135 lines. Per-task quality loop, plan deviation handling, review handoff._
