@@ -35,7 +35,7 @@
   --ak-border-strong: #64748b;
 
   /* Actions */
-  --ak-action-primary: #f97316;
+  --ak-action-primary: #F59E0B;
   --ak-action-secondary: #8b5cf6;
   --ak-action-danger: #ef4444;
 
@@ -77,8 +77,8 @@
   --popover-foreground: 222 47% 11%;
 
   /* Brand */
-  --primary: 24 94% 53%;
-  /* orange-500 */
+  --primary: 38 92% 50%;
+  /* amber-500 #F59E0B */
   --primary-foreground: 0 0% 100%;
 
   --secondary: 252 94% 67%;
@@ -175,76 +175,96 @@
    6. DARK MODE OVERRIDES
    ========================================== */
 .dark {
-  /* Background Surfaces */
-  --ak-bg-primary: #0f172a;
-  --ak-bg-secondary: #334155;
-  --ak-bg-surface: rgba(15, 23, 42, 0.90);
-  --ak-bg-elevated: rgba(51, 65, 85, 0.40);
+  /* ── Financial Clarity Dark Surfaces ──
+     Near-black with subtle purple undertones.
+     Reference: brand/inspirations/financial-clarity-final.html */
+  --ak-bg-primary: #09090F;
+  --ak-bg-secondary: #0F0F17;
+  --ak-bg-surface: #15151F;
+  --ak-bg-elevated: #1A1A26;
 
   /* Text Colors */
-  --ak-text-primary: #ffffff;
-  --ak-text-secondary: #f1f5f9;
-  --ak-text-muted: #cbd5e1;
+  --ak-text-primary: #F0F0F5;
+  --ak-text-secondary: #9494A8;
+  --ak-text-muted: #5C5C72;
 
-  /* Borders */
-  --ak-border-default: rgba(203, 213, 225, 0.18);
-  --ak-border-subtle: rgba(203, 213, 225, 0.10);
-  --ak-border-strong: rgba(203, 213, 225, 0.28);
+  /* Borders (white-alpha for glass aesthetic) */
+  --ak-border-default: rgba(255, 255, 255, 0.06);
+  --ak-border-subtle: rgba(255, 255, 255, 0.04);
+  --ak-border-strong: rgba(255, 255, 255, 0.13);
 
-  /* shadcn/ui Base Surfaces */
-  --background: 222 47% 11%;
-  /* slate-900 */
-  --foreground: 210 40% 98%;
-  /* slate-50 */
+  /* Glass Layers */
+  --ak-glass: rgba(255, 255, 255, 0.025);
+  --ak-glass-2: rgba(255, 255, 255, 0.04);
+  --ak-glass-3: rgba(255, 255, 255, 0.06);
 
-  --card: 222 47% 13%;
-  --card-foreground: 210 40% 98%;
+  /* shadcn/ui Base Surfaces (near-black) */
+  --background: 240 24% 4%;
+  /* #09090F */
+  --foreground: 240 10% 95%;
+  /* #F0F0F5 */
 
-  --popover: 222 47% 13%;
-  --popover-foreground: 210 40% 98%;
+  --card: 240 18% 5%;
+  /* #0F0F17 */
+  --card-foreground: 240 10% 95%;
 
-  /* Brand stays consistent */
-  --primary: 24 94% 53%;
+  --popover: 240 16% 7%;
+  /* #15151F */
+  --popover-foreground: 240 10% 95%;
+
+  /* Brand (amber-500) */
+  --primary: 38 92% 50%;
+  /* #F59E0B */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 252 94% 67%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 263 70% 71%;
+  /* #A78BFA purple-400 */
+  --secondary-foreground: 240 10% 95%;
 
-  /* Neutral UI (darkened) */
-  --muted: 215 28% 17%;
-  /* slate-800-ish */
-  --muted-foreground: 215 20% 65%;
-  /* slate-300-ish */
+  /* Neutral UI */
+  --muted: 240 14% 10%;
+  /* bg-2 level */
+  --muted-foreground: 240 8% 55%;
+  /* #5C5C72 */
 
-  --accent: 215 28% 17%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 240 14% 10%;
+  --accent-foreground: 240 10% 95%;
 
   /* System */
-  --destructive: 0 84% 60%;
+  --destructive: 0 91% 71%;
+  /* #F87171 red-400 */
   --destructive-foreground: 0 0% 100%;
 
-  --border: 215 25% 25%;
-  --input: 215 25% 25%;
-  --ring: 24 94% 53%;
+  --border: 240 14% 10%;
+  /* rgba(255,255,255,0.06) equivalent */
+  --input: 240 14% 12%;
+  --ring: 38 92% 50%;
+  /* primary amber */
 
-  /* AI System (enhanced for dark mode) */
-  --ai: 252 94% 67%;
-  --ai-bg: 252 94% 67% / 0.12;
-  --ai-border: 252 94% 67% / 0.40;
+  /* AI System (purple-400 for dark contrast) */
+  --ai: 263 70% 71%;
+  /* #A78BFA */
+  --ai-bg: 263 70% 71% / 0.10;
+  --ai-border: 263 70% 71% / 0.20;
 
-  /* Financial Semantic (brightened for visibility) */
-  --ak-finance-income: #10b981;
-  --finance-income: 160 84% 39%;
+  /* Financial Semantic (400-level for dark mode contrast) */
+  --ak-finance-income: #34D399;
+  --finance-income: 160 67% 52%;
+  /* emerald-400 */
 
-  --ak-finance-expense: #ef4444;
-  --finance-expense: 0 84% 60%;
+  --ak-finance-expense: #F87171;
+  --finance-expense: 0 91% 71%;
+  /* red-400 */
 
-  --ak-finance-transfer: #3b82f6;
-  --finance-transfer: 217 91% 60%;
+  --ak-finance-transfer: #60A5FA;
+  --finance-transfer: 213 94% 68%;
+  /* blue-400 */
 
-  --ak-finance-liability: #f59e0b;
-  --finance-liability: 38 92% 50%;
+  --ak-finance-liability: #FBBF24;
+  --finance-liability: 45 93% 56%;
+  /* amber-400 */
 
-  --ak-finance-equity: #14b8a6;
-  --finance-equity: 173 80% 40%;
+  --ak-finance-equity: #2DD4BF;
+  --finance-equity: 172 66% 50%;
+  /* teal-400 */
 }

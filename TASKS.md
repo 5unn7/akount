@@ -1,286 +1,179 @@
 # Akount - Task List
 
 **Last Updated:** 2026-02-09
-**Current Phase:** Phase 2 - Bank Reconciliation (Sprint 3 ✅ COMPLETE — Backend Done)
-**Previous Phase:** Phase 1 - Accounts Overview (✅ COMPLETE)
+**Current Phase:** Phase 2 - Track Your Money (Backend Complete, Frontend In Progress)
 
 ---
 
-## 📋 Product Management Tasks
+## Active Work
 
-### Phase 2: Bank Reconciliation - Requirements & Planning
-
-- [ ] **PM-2.1:** Define CSV import flow and column mapping UX
-  - Specify supported bank formats (at least 3 major Canadian banks)
-  - Define error handling for malformed CSV files
-  - Document required columns (date, description, amount, balance)
-  - Define deduplication strategy (hash of date+amount+description?)
-
-- [ ] **PM-2.2:** Design transaction matching algorithm rules
-  - Exact match criteria (amount + date + description)
-  - Fuzzy match rules (amount + date range ±3 days)
-  - Manual match workflow (user confirms suggested matches)
-  - Unmatch workflow (undo reconciliation)
-
-- [ ] **PM-2.3:** Define reconciliation status states
-  - Unmatched (bank transaction exists, no GL transaction)
-  - Matched (bank transaction linked to GL transaction)
-  - Manually Matched (user confirmed match)
-  - Ignored (user marked as "don't match")
-
-- [ ] **PM-2.4:** Cash flow forecasting requirements
-  - Define projection periods (7/30/90 days)
-  - Specify confidence levels (high/medium/low based on data quality)
-  - Define assumptions to display (recurring transactions, average burn rate)
-  - Identify when to show "low balance" warnings
-
-- [ ] **PM-2.5:** Acceptance criteria for Phase 2
-  - Users can upload CSV and see parsed transactions
-  - System suggests matches with confidence scores
-  - Users can confirm/reject/manually match transactions
-  - Reconciliation status displays on accounts page
-  - Cash flow forecast shows on dashboard
-
-### Phase 1: Accounts Overview (✅ COMPLETE)
-
-- [x] **PM-1.1:** Defined multi-currency display strategy (base/USD toggle)
-- [x] **PM-1.2:** Defined account CRUD workflows (Sheet panel for create/edit)
-- [x] **PM-1.3:** Specified dashboard KPI metrics (net worth, cash position, assets/liabilities)
-- [x] **PM-1.4:** Documented entity filtering behavior (dropdown, default to all)
-- [x] **PM-1.5:** Defined account type filtering (CHECKING, SAVINGS, CREDIT_CARD, etc.)
-
----
-
-## 🎨 Frontend Tasks
-
-### Phase 2: Bank Reconciliation - UI Implementation
+### Phase 2 Frontend: Banking UI (~15-20 hours)
 
 - [ ] **FE-2.1:** CSV Upload Component
   - Create FileUploadZone with drag-and-drop
-  - Add file validation (CSV only, max 10MB)
-  - Show upload progress indicator
-  - Display parse errors with line numbers
+  - File validation (CSV only, max 10MB)
+  - Upload progress indicator
+  - Parse error display with line numbers
 
 - [ ] **FE-2.2:** Column Mapping Interface
-  - Create interactive table for mapping CSV columns → expected fields
-  - Add dropdown for each column (Date, Description, Amount, Balance, Ignore)
-  - Show preview of first 5 rows
-  - Add "Auto-detect" button for common formats
+  - Interactive table mapping CSV columns → expected fields
+  - Dropdown per column (Date, Description, Amount, Balance, Ignore)
+  - Preview first 5 rows
+  - Auto-detect for common bank formats
 
-- [ ] **FE-2.3:** Transaction Matching UI
-  - Create BankFeedTransactionTable component
-  - Show unmatched bank transactions with suggested GL matches
-  - Add "Match" / "Unmatch" / "Ignore" action buttons
-  - Display confidence score for suggestions (green/yellow/red)
-  - Add bulk selection for multi-match
+- [x] **FE-2.3:** Transaction Matching UI (commit 2256742)
+  - Reconciliation page with match/unmatch actions
+  - Suggested matches with confidence scores
+  - Status badges on transaction rows
 
-- [ ] **FE-2.4:** Reconciliation Status Display
-  - Add "Reconciliation" tab to accounts detail page
-  - Show matched/unmatched counts
-  - Add filter: All / Matched / Unmatched / Ignored
-  - Display reconciliation status badges on transaction rows
+- [x] **FE-2.4:** Reconciliation Status Display (commit 2256742)
+  - Reconciliation status on accounts detail page
+  - Matched/unmatched counts and filters
 
-- [ ] **FE-2.5:** Cash Flow Forecast Widget
-  - Create CashFlowForecastCard component for dashboard
-  - Display 7/30/90 day projections with chart (Recharts)
-  - Show confidence indicator (high/medium/low)
-  - List assumptions used in forecast
-  - Add "Low Balance Warning" alert if projection dips below threshold
+- [x] **FE-2.5:** Import History Page (commit 2256742)
+  - `/money-movement/imports` page
+  - List import batches with status
 
-- [ ] **FE-2.6:** Import History Page
-  - Create /money-movement/imports page
-  - List import batches with status (Processing, Complete, Failed)
-  - Show import details (filename, date, row count, errors)
-  - Add "Re-import" button for failed imports
+- [ ] **FE-2.3b:** Transaction Matching Improvements
+  - Bulk selection for multi-match
+  - GL match confidence color coding (green/yellow/red)
 
-### Phase 1: Accounts Overview (✅ COMPLETE)
+- [ ] **FE-2.5b:** Import History Enhancements
+  - Import details drill-down (filename, row count, errors)
+  - Re-import button for failed imports
 
-- [x] **FE-1.1:** Dashboard integration (metrics, entity filter, currency toggle)
-- [x] **FE-1.2:** Account list page with type filtering
-- [x] **FE-1.3:** AccountFormSheet (create/edit/delete in Sheet panel)
-- [x] **FE-1.4:** Account detail page with transaction history
-- [x] **FE-1.5:** Running balance display in transactions table
-- [x] **FE-1.6:** Loading states (loading.tsx), error boundaries (error.tsx), SEO metadata
+- [ ] **FE-2.6:** Transaction List Improvements
+  - Bulk actions (categorize, delete)
+  - Category badges
+  - Improved filters
 
----
+### Phase 2: Onboarding Redesign (~10-12 hours)
 
-## ⚙️ Backend Tasks
+**Plan:** [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
 
-### Phase 2: Bank Reconciliation - API & Services
-
-**Sprint 1: Transaction Management (✅ COMPLETE)**
-- [x] **BE-2.0:** Transaction CRUD Infrastructure
-  - TransactionService with business logic (277 lines)
-  - Zod validation schemas (86 lines)
-  - Fastify route handlers (216 lines)
-  - 35 service tests (unit + integration)
-  - 20 route tests (HTTP layer)
-  - Total: 55 tests passing
-  - Features: GET/POST/PATCH/DELETE /api/banking/transactions
-  - Filtering: by accountId, date range, category, pagination
-  - Security: tenant isolation, soft delete, auth enforced
-
-**Sprint 2: CSV & PDF Import Infrastructure (✅ COMPLETE)**
-- [x] **BE-2.1:** Import Infrastructure
-  - ImportService orchestrating CSV + PDF workflows (452 lines)
-  - ParserService for CSV + PDF parsing (507 lines)
-  - DuplicationService with fuzzy matching (230 lines)
-  - POST /api/banking/imports/csv and /pdf endpoints
-  - 19 import service tests passing
-
-- [x] **BE-2.2:** Import Batch Management
-  - GET /api/banking/imports - List import batches with pagination
-  - GET /api/banking/imports/:id - Get import details + transactions
-  - Status tracking (PROCESSING, PROCESSED, FAILED)
-
-**Sprint 3: Reconciliation (✅ COMPLETE)**
-- [x] **BE-2.3:** Transaction Matching Algorithm
-  - ReconciliationService with matching algorithm (340 lines)
-  - Exact amount + date proximity (±3/7 days) + description similarity
-  - Confidence scores (0-1.0), top 5 suggestions
-  - 25 service tests passing
-
-- [x] **BE-2.4:** Matching API Endpoints
-  - GET /api/banking/reconciliation/:id/suggestions - Match suggestions
-  - POST /api/banking/reconciliation/matches - Create manual match
-  - DELETE /api/banking/reconciliation/matches/:id - Unmatch
-  - 18 route tests passing
-
-- [x] **BE-2.5:** Reconciliation Status Tracking
-  - GET /api/banking/reconciliation/status/:accountId
-  - Returns matched/unmatched/suggested counts + percent
-
-**Remaining (Future Sprints)**
-
-- [ ] **BE-2.6:** Cash Flow Forecasting Service
-  - Create ForecastingService with projection algorithm
-  - POST /api/forecasting/cash-flow - Generate forecast
-  - Calculate 7/30/90 day projections based on historical burn rate
-  - Detect recurring patterns (monthly subscriptions, payroll)
-  - Return confidence level (HIGH if >6 months data, MEDIUM if 3-6, LOW if <3)
-  - Identify low balance warnings (balance < $500 projected)
-
-### Phase 1: Accounts Overview (✅ COMPLETE)
-
-- [x] **BE-1.1:** Account CRUD endpoints (POST/GET/PATCH/DELETE /api/banking/accounts)
-- [x] **BE-1.2:** Dashboard metrics endpoint (GET /api/dashboard/metrics)
-- [x] **BE-1.3:** Multi-currency support (base/USD conversion via FX rates)
-- [x] **BE-1.4:** Cursor-based pagination for accounts list
-- [x] **BE-1.5:** Running balance computation (GET /api/banking/accounts/:id/transactions)
-- [x] **BE-1.6:** Soft delete implementation for accounts
-- [x] **BE-1.7:** 62+ backend tests passing (services + routes)
+- [ ] **OB-1:** OnboardingProgress Prisma model + migration
+- [ ] **OB-2:** Progress API routes (GET progress, POST update, POST skip, POST dismiss)
+- [ ] **OB-3:** Update POST /initialize to create OnboardingProgress (40%)
+- [ ] **OB-4:** API tests for progress routes
+- [ ] **OB-5:** Update onboarding store (phone, timezone fields)
+- [ ] **OB-6:** Minimal wizard (2 steps: Welcome + EssentialInfo)
+- [ ] **OB-7:** CircularProgress component (recharts donut)
+- [ ] **OB-8:** OnboardingHeroCard on dashboard
+- [ ] **OB-9:** SidebarProgressIndicator
+- [ ] **OB-10:** Frontend tests for onboarding components
 
 ---
 
-## 📅 Tomorrow's Focus (2026-02-10)
+## Next Up (Phase 3: Post Your Money)
 
-**Primary Goal:** Phase 2 Frontend UI or Cash Flow Forecasting
-
-**Options:**
-1. [ ] **FE-2.1:** CSV Upload Component (drag-and-drop, file validation)
-2. [ ] **FE-2.3:** Transaction Matching UI (suggestions table, match/unmatch)
-3. [ ] **BE-2.6:** Cash Flow Forecasting Service (7/30/90 day projections)
-
-**Context:**
-- Phase 2 backend complete (3 sprints, 117+ tests)
-- All API endpoints ready for frontend integration
-- Plan document: `docs/plans/2026-02-09-phase2-bank-reconciliation.md`
+- [ ] **BE-3.1:** Chart of Accounts API (CRUD, hierarchy, default COA seeding)
+- [ ] **BE-3.2:** Transaction Posting Service (double-entry validation + journal entry generation)
+- [ ] **BE-3.3:** Journal Entry API (list, detail, filtering)
+- [ ] **BE-3.4:** Multi-currency posting support
+- [ ] **BE-3.5:** Split transaction support
+- [ ] **FE-3.1:** Chart of Accounts page (tree view, CRUD, balances)
+- [ ] **FE-3.2:** Transaction entry form (splits, multi-currency, journal preview)
+- [ ] **FE-3.3:** Journal entries list page
+- [ ] **FE-3.4:** Transaction detail view
 
 ---
 
-## 🎯 Current Sprint (Week of 2026-02-09)
+## Completed Work
 
-**Sprint 1: Transaction Management - COMPLETE ✅**
-- ✅ TransactionService (CRUD, pagination, tenant isolation) — 55 tests
+### Foundation (COMPLETE)
+- [x] Clerk authentication (passkeys/WebAuthn)
+- [x] PostgreSQL + Prisma (38 models, 26 enums)
+- [x] Fastify API with middleware chain
+- [x] Design system in Figma (76 variables, 41+ components)
+- [x] shadcn/ui + shadcn-glass-ui integration, Tailwind v4
+- [x] Turborepo monorepo
+- [x] AI categorization foundation
+- [x] Bank statement import foundation (PDF parsing)
+- [x] Performance optimization (50x query reduction)
 
-**Sprint 2: CSV & PDF Import - COMPLETE ✅**
-- ✅ ImportService + ParserService + DuplicationService — 19 tests
+### Phase 1: See Your Money (COMPLETE — 62 tests)
+- [x] Dashboard with real-time metrics (net worth, cash position, assets/liabilities)
+- [x] Account list page with cursor pagination + type filtering
+- [x] Account CRUD (create, edit, soft-delete via Sheet panel)
+- [x] Account detail page with transaction history + running balance
+- [x] Entity filter dropdown + currency toggle (CAD/USD)
+- [x] FX rate service with caching
+- [x] 62 backend tests (services + routes)
+- [x] Loading states, error boundaries, SEO metadata
 
-**Sprint 3: Reconciliation - COMPLETE ✅**
-- ✅ ReconciliationService (matching, match/unmatch, status) — 43 tests
+### Phase 2 Backend: Track Your Money (COMPLETE — 117 tests)
 
-**Phase 2 Backend: COMPLETE (117+ backend tests)**
+**Sprint 1: Transaction Management (55 tests, commit ff37830)**
+- [x] TransactionService with CRUD operations (277 lines)
+- [x] Zod validation schemas (86 lines)
+- [x] Fastify route handlers (216 lines)
+- [x] GET/POST/PATCH/DELETE /api/banking/transactions
+- [x] Filtering by accountId, date range, category, pagination
+- [x] 35 service tests + 20 route tests
 
-**Next: Frontend UI or Cash Flow Forecasting**
-1. FE: Build CSV/PDF upload component (FE-2.1)
-2. FE: Build transaction matching UI (FE-2.3)
-3. BE: Cash flow forecasting service (BE-2.6)
+**Sprint 2: CSV & PDF Import (19 tests, commits 376a030, 4e89ae5)**
+- [x] ImportService orchestrating CSV + PDF workflows (452 lines)
+- [x] ParserService for CSV + PDF parsing (507 lines)
+- [x] DuplicationService with fuzzy matching (230 lines)
+- [x] POST /api/banking/imports/csv and /pdf endpoints
+- [x] GET /api/banking/imports (list batches, pagination)
+- [x] GET /api/banking/imports/:id (import details + transactions)
 
----
-
-## 📊 Phase Progress
-
-| Phase | PM Tasks | FE Tasks | BE Tasks | Status |
-|-------|----------|----------|----------|--------|
-| Phase 0: Foundation | 0/0 | 0/0 | 0/0 | ✅ 100% |
-| Phase 1: Accounts | 5/5 | 6/6 | 7/7 | ✅ 100% |
-| Phase 2: Reconciliation | 0/5 | 0/6 | 5/8 | 🚧 62% (Backend ✅, FE remaining) |
-
-**Overall Progress:** Phase 2 Backend Complete → Frontend + Cash Flow remaining
-
----
-
-## 🏆 Recent Accomplishments
-
-### 2026-02-09 - Phase 2 Sprint 3 Complete (Reconciliation)
-- ✅ ReconciliationService with matching algorithm (340 lines)
-- ✅ Matching: exact amount + date proximity (±3/7 days) + description similarity
-- ✅ 4 routes: suggestions, match, unmatch, reconciliation status
-- ✅ Zod validation schemas for reconciliation
-- ✅ 25 service tests + 18 route tests = 43 new tests
-- ✅ Replaced placeholder 501 endpoints with real implementation
-- ✅ Commit: a1e3340
-
-### 2026-02-09 - Phase 2 Sprint 2 Complete (CSV & PDF Import)
-- ✅ ImportService orchestrating CSV + PDF workflows (452 lines)
-- ✅ ParserService for CSV + PDF parsing (507 lines)
-- ✅ DuplicationService with fuzzy matching (230 lines)
-- ✅ Import routes (CSV upload, PDF upload, list batches, get batch)
-- ✅ 19 import service tests passing
-
-### 2026-02-09 - Phase 2 Sprint 1 Complete (Transaction Management)
-- ✅ TransactionService with CRUD operations (277 lines)
-- ✅ Zod validation schemas for transactions (86 lines)
-- ✅ Fastify route handlers (216 lines)
-- ✅ 35 service tests (tenant isolation, soft delete, pagination)
-- ✅ 20 route tests (HTTP layer, auth, error handling)
-- ✅ Total: 55 tests passing
-
-### 2026-02-09 - Phase 1 Complete + 3 Quick Wins
-- ✅ Running balance computation (backend + 8 tests)
-- ✅ Account detail page with transaction history
-- ✅ E2E test structure (Playwright, 8 test cases)
-
-### 2026-02-08 - Phase 1 CRUD + Testing
-- ✅ Account CRUD operations (POST/PATCH/DELETE)
-- ✅ Account type filtering in UI
-- ✅ 62 backend tests passing
-
-### 2026-02-03 - Phase 1 Foundation
-- ✅ Dashboard connected to API
-- ✅ Entity filter + currency toggle
-- ✅ Code review fixes (CR.1-CR.13)
+**Sprint 3: Reconciliation (43 tests, commit a1e3340)**
+- [x] ReconciliationService with matching algorithm (340 lines)
+- [x] Exact amount + date proximity (±3/7 days) + description similarity
+- [x] Confidence scores (0-1.0), top 5 suggestions
+- [x] GET /api/banking/reconciliation/:id/suggestions
+- [x] POST /api/banking/reconciliation/matches
+- [x] DELETE /api/banking/reconciliation/matches/:id
+- [x] GET /api/banking/reconciliation/status/:accountId
+- [x] 25 service tests + 18 route tests
 
 ---
 
-## 📝 Notes
+## Phase Progress
+
+| Phase | Backend | Frontend | Status |
+|-------|---------|----------|--------|
+| Foundation | COMPLETE | COMPLETE | COMPLETE |
+| 1: See Your Money | COMPLETE (62 tests) | COMPLETE | COMPLETE |
+| 2: Track Your Money | COMPLETE (117 tests) | 0/6 tasks | 70% |
+| 3: Post Your Money | Not started | Not started | Not started |
+
+**Total Backend Tests:** 235 (62 + 117 + 35 system + 21 overview)
+
+---
+
+## Tomorrow's Focus (2026-02-10)
+
+**Primary Goal:** Phase 2 Frontend — CSV upload flow + onboarding backend
+
+**Recommended Order:**
+1. **FE-2.1:** CSV Upload Component — enables the core import flow (drag-and-drop, validation)
+2. **FE-2.2:** Column Mapping Interface — complete the import UX
+3. **OB-1 to OB-4:** Onboarding backend (Prisma model + API routes + tests)
+4. **FE-2.3b / FE-2.5b:** Polish matching UI + import history enhancements
+
+---
+
+## Notes
 
 **Task Naming Convention:**
-- PM-X.Y: Product Management (requirements, specs, acceptance criteria)
-- FE-X.Y: Frontend (UI components, pages, client-side logic)
-- BE-X.Y: Backend (API routes, services, database, tests)
+- FE-X.Y: Frontend task in Phase X
+- BE-X.Y: Backend task in Phase X
+- OB-Y: Onboarding redesign (cross-cutting)
 
 **How to Use This File:**
-1. Pick tasks from your discipline (PM/FE/BE)
-2. Update checkboxes as you complete work
-3. Move completed tasks to "Recent Accomplishments"
-4. Update STATUS.md when milestones are reached
+1. Pick tasks from "Active Work" section
+2. Check boxes as you complete work
+3. Move to "Completed Work" when phase finishes
+4. Keep "Next Up" section populated with upcoming phase
 
 **Weekly Rhythm:**
-- Monday: Review current sprint, pick tasks
+- Monday: Review active tasks, pick sprint focus
 - Friday: Update progress, plan next week
 - End of Phase: Update ROADMAP.md and STATUS.md
 
 ---
 
-**Next Update:** 2026-02-16 (Weekly review)
+**Next Update:** 2026-02-16

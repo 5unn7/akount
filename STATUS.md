@@ -1,87 +1,79 @@
 # Akount - Current Status
 
 **Last Updated:** 2026-02-09
-**Overall Progress:** Phase 2 Backend Complete ✅ | Frontend Remaining
+**Overall Progress:** Phase 2 — Backend Complete, Frontend In Progress
 
 ---
 
-## Current Phase: Phase 2 - Bank Reconciliation (Backend Complete)
+## Current Phase: Phase 2 - Track Your Money
 
-**Phase 2 Goal:** Import bank transactions and match with posted transactions
+**Goal:** Import bank transactions, view history, reconcile against posted records.
 
-**Sprint 1: Transaction Management - COMPLETE ✅**
-- ✅ TransactionService with CRUD operations (277 lines)
-- ✅ Zod validation schemas (86 lines)
-- ✅ Fastify route handlers (216 lines)
-- ✅ 55 tests passing (35 service + 20 route)
+### Backend (COMPLETE — 117 tests)
 
-**Sprint 2: CSV & PDF Import - COMPLETE ✅**
-- ✅ ImportService orchestrating CSV + PDF workflows (452 lines)
-- ✅ ParserService for CSV + PDF parsing (507 lines)
-- ✅ DuplicationService with fuzzy matching (230 lines)
-- ✅ Import routes (CSV upload, PDF upload, list, get)
-- ✅ 19 import service tests passing
+| Sprint | Scope | Tests |
+|--------|-------|-------|
+| Transaction CRUD | GET/POST/PATCH/DELETE, filtering, pagination | 55 |
+| CSV/PDF Import | Parsing, column mapping, deduplication | 19 |
+| Reconciliation | Matching algorithm, match/unmatch, status | 43 |
 
-**Sprint 3: Reconciliation - COMPLETE ✅**
-- ✅ ReconciliationService with matching algorithm (340 lines)
-- ✅ Matching: exact amount + date proximity + description similarity
-- ✅ 4 routes: suggestions, match, unmatch, status
-- ✅ 43 tests passing (25 service + 18 route)
+**Services built:** TransactionService, ImportService, ParserService, DuplicationService, ReconciliationService
 
-**Remaining: Frontend UI**
-- CSV/PDF upload component
-- Column mapping interface
-- Transaction matching UI
-- Reconciliation status display
+### Frontend (IN PROGRESS)
 
----
+| Task | Status |
+|------|--------|
+| Reconciliation UI (match/unmatch) | Built (commit 2256742) |
+| Import history page | Built (commit 2256742) |
+| CSV upload component | Not started |
+| Column mapping interface | Not started |
+| Transaction matching improvements | Not started |
+| Transaction list bulk actions | Not started |
 
-## Phase 1: Accounts Overview (100% COMPLETE ✅)
+### Onboarding Redesign (PLANNED)
 
-**Completed:** 2026-02-09
-**Duration:** ~1 week
-**Polish:** 3 Quick Wins completed same day
+Minimal 2-step wizard + dashboard progress tracking.
+- Plan: [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
+- Brainstorm: [docs/brainstorms/2026-02-09-onboarding-flow-redesign-brainstorm.md](docs/brainstorms/2026-02-09-onboarding-flow-redesign-brainstorm.md)
 
-**All Success Criteria Met:**
-- ✅ Dashboard connected to real API data (metrics, KPIs)
-- ✅ Entity filter dropdown + currency toggle (CAD/USD)
-- ✅ Account list page with pagination + type filtering
-- ✅ Account CRUD: create, edit, soft-delete via Sheet panel
-- ✅ Multi-currency support (display in base or USD)
-- ✅ Net worth + cash position calculations
-- ✅ Backend: POST/PATCH/DELETE routes with Zod validation
-- ✅ Frontend: server actions, API client, clickable cards
-- ✅ 62+ backend tests passing (services + routes)
-- ✅ Loading states, error boundaries, SEO metadata
-- ✅ Code review items CR.1-CR.13 all resolved
+### Design Aesthetic (NEW)
 
-**Quick Wins (Post-Phase 1 Polish):**
-- ✅ Running balance computation (API + 8 tests)
-- ✅ Account detail page with transaction history
-- ✅ E2E test structure (Playwright, 8 test cases, auth pending)
+Defined "Financial Clarity" design aesthetic — dark-first, glass morphism, amber orange primary.
+- Rule: `.claude/rules/design-aesthetic.md`
+- Tokens updated: `globals.css`, `css-variables.css`, `colors.md`
+- Brand inspirations: `brand/inspirations/`
+
+### Roadmap Restructure (DONE)
+
+Restructured ROADMAP.md by user value phases (See → Track → Post → Bill → Understand → Launch).
+- Plan: [docs/plans/2026-02-09-roadmap-restructure.md](docs/plans/2026-02-09-roadmap-restructure.md)
 
 ---
 
-## Phase 0: Foundation (100% Complete)
+## Completed Phases
 
-- Authentication (Clerk with passkeys/WebAuthn)
-- Database (PostgreSQL + Prisma, 40+ models)
-- API Foundation (Fastify + JWT auth + Zod validation)
-- Bank Statement Import (PDF parsing, account matching, categorization)
-- AI-powered transaction categorization (Perplexity integration)
-- Code Review & Performance Optimization (50x improvement)
+### Phase 1: See Your Money (COMPLETE — 2026-02-09)
+
+Dashboard, account management, multi-currency, entity filtering. 62 backend tests. Full frontend with loading states, error boundaries, SEO.
+
+### Foundation (COMPLETE — 2026-02-01)
+
+Auth (Clerk), DB (38 models), API (Fastify), design system (Figma + glass UI), monorepo (Turborepo).
 
 ---
 
-## Performance
+## Metrics
 
 | Metric | Value |
 |--------|-------|
+| Backend Tests | 235 |
 | TypeScript Errors | 0 |
-| Dashboard Queries (100 accounts) | 4 queries |
+| API Endpoints (functional) | 38 |
+| API Endpoints (stubs) | 11 |
+| Backend Services | 11 |
+| Frontend Pages (functional) | 5 |
+| Frontend Pages (placeholder) | 27 |
 | Dashboard Response Time | ~200ms |
-| Backend Test Count | 170+ |
-| Code Review Items Resolved | 13/13 |
 
 ---
 
@@ -96,5 +88,5 @@
 
 ---
 
-**For detailed roadmap, see ROADMAP.md**
+**For roadmap, see ROADMAP.md**
 **For actionable tasks, see TASKS.md**

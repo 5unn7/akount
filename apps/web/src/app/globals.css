@@ -79,7 +79,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 25 95% 53%;
+    --primary: 38 92% 50%;
+    /* amber-500 #F59E0B */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 258 90% 66%;
@@ -102,34 +103,44 @@
   }
 
   .dark {
-    /* Dark Mode - Akount Brand Colors */
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* Dark Mode - Financial Clarity Aesthetic
+       Near-black surfaces with purple undertones.
+       Ref: brand/inspirations/financial-clarity-final.html */
+    --background: 240 24% 4%;
+    /* #09090F */
+    --foreground: 240 10% 95%;
+    /* #F0F0F5 */
 
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 18% 5%;
+    /* #0F0F17 */
+    --card-foreground: 240 10% 95%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 16% 7%;
+    /* #15151F */
+    --popover-foreground: 240 10% 95%;
 
-    --primary: 25 95% 53%;
+    --primary: 38 92% 50%;
+    /* #F59E0B amber-500 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 262 83% 58%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 263 70% 71%;
+    /* #A78BFA purple-400 */
+    --secondary-foreground: 240 10% 95%;
 
-    --muted: 215 28% 17%;
-    --muted-foreground: 217 19% 60%;
+    --muted: 240 14% 10%;
+    --muted-foreground: 240 8% 55%;
+    /* #5C5C72 */
 
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 240 14% 10%;
+    --accent-foreground: 240 10% 95%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 91% 71%;
+    /* #F87171 red-400 */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 215 28% 17%;
-    --input: 215 28% 17%;
-    --ring: 25 95% 53%;
+    --border: 240 14% 10%;
+    --input: 240 14% 12%;
+    --ring: 38 92% 50%;
   }
 }
 
@@ -143,9 +154,37 @@
 }
 
 @utility glass {
-  background: hsl(var(--card) / 0.85);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  border: 1px solid hsl(var(--border) / 0.2);
+  background: rgba(255, 255, 255, 0.025);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transform: translateZ(0);
+}
+
+@utility glass-2 {
+  background: rgba(255, 255, 255, 0.04);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  transform: translateZ(0);
+}
+
+@utility glass-3 {
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  transform: translateZ(0);
+}
+
+@utility glow-primary {
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.08);
+}
+
+@utility glow-success {
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.06);
+}
+
+@utility glow-danger {
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.06);
 }

@@ -158,25 +158,28 @@ Akount blends **glassmorphism** (translucent layers) with **skeuomorphism** (mat
 
 ### Glassmorphism: Glass Backgrounds
 
-**Frosted glass effect colors:**
+**Financial Clarity glass uses very subtle overlays — not heavy frosted glass:**
 
 ```css
-/* Glass base: Semi-transparent overlays */
---ak-glass-light: rgba(255, 255, 255, 0.7);    /* Light mode glass */
---ak-glass-medium: rgba(255, 255, 255, 0.5);   /* Medium transparency */
---ak-glass-strong: rgba(255, 255, 255, 0.3);   /* Strong transparency */
+/* Light mode glass (white overlay) */
+--ak-glass-light: rgba(255, 255, 255, 0.7);
+--ak-glass-medium: rgba(255, 255, 255, 0.5);
+--ak-glass-strong: rgba(255, 255, 255, 0.3);
 
-/* Dark mode glass */
---ak-glass-dark-light: rgba(15, 23, 42, 0.4);  /* Dark mode glass (light) */
---ak-glass-dark-medium: rgba(15, 23, 42, 0.6); /* Dark mode glass (medium) */
---ak-glass-dark-strong: rgba(15, 23, 42, 0.8); /* Dark mode glass (strong) */
+/* Dark mode glass (white-alpha, NOT slate-alpha)
+   These are the primary values used in Financial Clarity aesthetic */
+--ak-glass:   rgba(255, 255, 255, 0.025);  /* Default: barely there */
+--ak-glass-2: rgba(255, 255, 255, 0.04);   /* Hover: slightly visible */
+--ak-glass-3: rgba(255, 255, 255, 0.06);   /* Active: gentle surface */
 ```
 
 **Usage:**
-- **Cards:** `--ak-glass-medium` + `backdrop-filter: blur(10px)` + subtle shadow
-- **Modals:** `--ak-glass-strong` + overlay + border highlight
-- **Panels:** `--ak-glass-light` + floating effect
-- **Tooltips:** `--ak-glass-medium` + fine border
+- **Cards:** `glass` utility + `backdrop-filter: blur(16px)` + subtle border lift on hover
+- **Modals:** `glass-3` + overlay backdrop
+- **Panels:** `glass` + border-right
+- **Tooltips:** `glass-2` + stronger border
+
+**Tailwind utilities:** `glass`, `glass-2`, `glass-3` defined in globals.css
 
 ### Skeuomorphism: Material Depth
 
@@ -227,19 +230,48 @@ Layer 4 (Accent):         Highlights, borders, interactive elements
 
 ---
 
-## Dark Mode
+## Dark Mode — Financial Clarity Aesthetic
 
-All colors are specified with HSL values for better dark mode contrast control. The CSS variables override in `.dark` class:
+> **Canonical reference:** `brand/inspirations/financial-clarity-final.html`
+
+Dark mode is the **primary** mode for Akount. The aesthetic is "Financial Clarity" — near-black surfaces with purple undertones, subtle glass morphism, and amber orange accents.
+
+### Surface Hierarchy (5 Levels)
+
+| Level | Token | Hex | Use |
+|-------|-------|-----|-----|
+| 0 (deepest) | `--ak-bg-primary` | `#09090F` | Page background |
+| 1 | `--ak-bg-secondary` | `#0F0F17` | Sidebar, panels |
+| 2 | `--ak-bg-surface` | `#15151F` | Cards, dropdowns |
+| 3 | `--ak-bg-elevated` | `#1A1A26` | Hover, tooltips |
+| 4 | — | `#22222E` | Active states |
+
+**Not slate.** These are purple-tinted near-blacks for warmth.
+
+### Semantic Colors (400-level for Dark)
+
+In dark mode, semantic colors shift from 500-level to 400-level for better contrast against dark surfaces:
+
+| Role | Light Mode (500) | Dark Mode (400) |
+|------|-----------------|-----------------|
+| Income | `#10B981` | `#34D399` |
+| Expense | `#EF4444` | `#F87171` |
+| Transfer | `#3B82F6` | `#60A5FA` |
+| AI | `#8B5CF6` | `#A78BFA` |
+| Equity | `#14B8A6` | `#2DD4BF` |
+
+### Glass in Dark Mode
+
+Three tiers of glass using white-alpha overlays:
 
 ```css
-.dark {
-  --ak-finance-income: #10b981;  /* Stays consistent */
-  --ak-finance-expense: #ef4444; /* Stays consistent */
-  /* Colors are absolute, not lightness-relative */
-}
+--ak-glass:   rgba(255, 255, 255, 0.025);  /* Default cards */
+--ak-glass-2: rgba(255, 255, 255, 0.04);   /* Hover states */
+--ak-glass-3: rgba(255, 255, 255, 0.06);   /* Active/focused */
 ```
 
-**Note:** Financial semantic colors don't change in dark mode—they maintain the same absolute RGB values to preserve meaning consistency.
+**Blur:** `backdrop-filter: blur(16px)` — subtle, refined.
+**Borders:** `rgba(255, 255, 255, 0.06)` — barely visible, implies depth.
 
 ---
 

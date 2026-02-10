@@ -1,4 +1,6 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { z } from 'zod';
+import { prisma } from '@akount/db';
 import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
 import { withPermission } from '../../middleware/withPermission';
@@ -61,16 +63,86 @@ export async function planningRoutes(fastify: FastifyInstance) {
     }
   );
 
+  // Create Goal Schema
+  const CreateGoalSchema = z.object({
+    revenueTarget: z.number().int().min(0), // In cents
+    expenseTarget: z.number().int().min(0), // In cents
+    savingsTarget: z.number().int().min(0), // In cents
+    timeframe: z.enum(['monthly', 'quarterly', 'yearly']),
+  });
+
   fastify.post(
     '/goals',
     {
       ...withPermission('planning', 'goals', 'ACT'),
+      schema: {
+        body: CreateGoalSchema,
+      },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Goal creation will be implemented in Phase 6',
-      });
+      try {
+        const data = request.body as z.infer<typeof CreateGoalSchema>;
+
+        // Get user's entity
+        const tenantUser = await prisma.tenantUser.findFirst({
+          where: { userId: request.userId },
+          include: {
+            tenant: {
+              include: {
+                entities: {
+                  take: 1,
+                  where: { deletedAt: null },
+                },
+              },
+            },
+          },
+        });
+
+        if (!tenantUser || !tenantUser.tenant.entities[0]) {
+          return reply.status(404).send({
+            error: 'Not Found',
+            message: 'No entity found for this user',
+          });
+        }
+
+        const entity = tenantUser.tenant.entities[0];
+
+        // Create goal record
+        // TODO: Add Goal model to Prisma schema in Phase 6
+        // For now, we'll store as JSON in entity metadata
+        const updatedEntity = await prisma.entity.update({
+          where: { id: entity.id },
+          data: {
+            // Store goals as metadata for now
+            metadata: {
+              ...(entity.metadata as object || {}),
+              financialGoals: {
+                revenueTarget: data.revenueTarget,
+                expenseTarget: data.expenseTarget,
+                savingsTarget: data.savingsTarget,
+                timeframe: data.timeframe,
+                createdAt: new Date().toISOString(),
+              },
+            },
+          },
+        });
+
+        return reply.status(201).send({
+          success: true,
+          goal: {
+            revenueTarget: data.revenueTarget,
+            expenseTarget: data.expenseTarget,
+            savingsTarget: data.savingsTarget,
+            timeframe: data.timeframe,
+          },
+        });
+      } catch (error) {
+        request.log.error(error);
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to create goal',
+        });
+      }
     }
   );
 
