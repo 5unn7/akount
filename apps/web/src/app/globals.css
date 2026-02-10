@@ -177,6 +177,43 @@
   transform: translateZ(0);
 }
 
+@utility glow-track {
+  position: relative;
+  overflow: hidden;
+}
+
+/*
+ * Mouse-tracking radial glow for cards.
+ * Set --glow-x / --glow-y via JS (0-100%) and --glow-color (default: primary amber).
+ * Usage: add `glow-track` utility + attach the useGlowTrack hook or onMouseMove handler.
+ */
+.glow-track::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at var(--glow-x, 50%) var(--glow-y, 0%),
+    var(--glow-color, rgba(245, 158, 11, 0.04)),
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-track:hover::after {
+  opacity: 1;
+}
+
+/* Ensure card content sits above the glow layer */
+.glow-track > * {
+  position: relative;
+  z-index: 1;
+}
+
 @utility glow-primary {
   box-shadow: 0 0 16px rgba(245, 158, 11, 0.08);
 }
