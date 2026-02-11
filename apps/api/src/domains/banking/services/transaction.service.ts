@@ -392,4 +392,110 @@ export class TransactionService {
       },
     });
   }
+
+  /**
+   * Bulk categorize transactions
+   *
+   * Updates categoryId for multiple transactions. All must belong to tenant.
+   * @returns Number of transactions updated
+   */
+  async bulkCategorize(
+    transactionIds: string[],
+    categoryId: string | null
+  ): Promise<{ updated: number }> {
+    // Verify all transactions belong to tenant
+    const owned = await prisma.transaction.findMany({
+      where: {
+        id: { in: transactionIds },
+        account: { entity: { tenantId: this.tenantId } },
+        deletedAt: null,
+      },
+      select: { id: true, account: { select: { entityId: true } } },
+    });
+
+    if (owned.length !== transactionIds.length) {
+      throw new Error(
+        `Some transactions not found or not accessible. Requested: ${transactionIds.length}, Found: ${owned.length}`
+      );
+    }
+
+    // Batch update
+    const result = await prisma.transaction.updateMany({
+      where: {
+        id: { in: transactionIds },
+        account: { entity: { tenantId: this.tenantId } },
+        deletedAt: null,
+      },
+      data: { categoryId },
+    });
+
+    // Audit log for bulk operation
+    await createAuditLog({
+      tenantId: this.tenantId,
+      userId: this.userId,
+      entityId: owned[0]?.account.entityId || '',
+      model: 'Transaction',
+      recordId: 'bulk',
+      action: 'UPDATE',
+      after: {
+        operation: 'bulk_categorize',
+        transactionIds,
+        categoryId,
+        count: result.count,
+      },
+    });
+
+    return { updated: result.count };
+  }
+
+  /**
+   * Bulk soft delete transactions
+   *
+   * Soft-deletes multiple transactions. All must belong to tenant.
+   * @returns Number of transactions deleted
+   */
+  async bulkSoftDelete(transactionIds: string[]): Promise<{ deleted: number }> {
+    // Verify all transactions belong to tenant
+    const owned = await prisma.transaction.findMany({
+      where: {
+        id: { in: transactionIds },
+        account: { entity: { tenantId: this.tenantId } },
+        deletedAt: null,
+      },
+      select: { id: true, account: { select: { entityId: true } } },
+    });
+
+    if (owned.length !== transactionIds.length) {
+      throw new Error(
+        `Some transactions not found or not accessible. Requested: ${transactionIds.length}, Found: ${owned.length}`
+      );
+    }
+
+    // Batch soft delete
+    const result = await prisma.transaction.updateMany({
+      where: {
+        id: { in: transactionIds },
+        account: { entity: { tenantId: this.tenantId } },
+        deletedAt: null,
+      },
+      data: { deletedAt: new Date() },
+    });
+
+    // Audit log for bulk operation
+    await createAuditLog({
+      tenantId: this.tenantId,
+      userId: this.userId,
+      entityId: owned[0]?.account.entityId || '',
+      model: 'Transaction',
+      recordId: 'bulk',
+      action: 'DELETE',
+      before: {
+        operation: 'bulk_delete',
+        transactionIds,
+        count: result.count,
+      },
+    });
+
+    return { deleted: result.count };
+  }
 }

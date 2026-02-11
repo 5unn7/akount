@@ -7,10 +7,15 @@ import type { Transaction } from '@/lib/api/transactions';
 import type { Account } from '@/lib/api/accounts';
 import { TransactionsTable } from './TransactionsTable';
 import { TransactionsFilters } from './TransactionsFilters';
+import { BulkActionBar } from './BulkActionBar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, Upload, FileText } from 'lucide-react';
-import { fetchMoreTransactions } from '@/app/(dashboard)/money-movement/transactions/actions';
+import {
+    fetchMoreTransactions,
+    bulkCategorizeAction,
+    bulkDeleteAction,
+} from '@/app/(dashboard)/money-movement/transactions/actions';
 
 interface TransactionsListClientProps {
     transactions: Transaction[];
@@ -32,6 +37,7 @@ export function TransactionsListClient({
     const [hasMore, setHasMore] = useState(initialHasMore);
     const [nextCursor, setNextCursor] = useState(initialNextCursor);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
     const accountId = searchParams.get('accountId') || undefined;
     const startDate = searchParams.get('startDate') || undefined;
@@ -71,6 +77,26 @@ export function TransactionsListClient({
         } finally {
             setIsLoadingMore(false);
         }
+    }
+
+    async function handleBulkUncategorize() {
+        const ids = Array.from(selectedIds);
+        await bulkCategorizeAction(ids, null);
+        // Update local state: clear category on affected transactions
+        setTransactions((prev) =>
+            prev.map((t) =>
+                selectedIds.has(t.id) ? { ...t, categoryId: undefined, category: undefined } : t
+            )
+        );
+        setSelectedIds(new Set());
+    }
+
+    async function handleBulkDelete() {
+        const ids = Array.from(selectedIds);
+        await bulkDeleteAction(ids);
+        // Remove deleted transactions from local state
+        setTransactions((prev) => prev.filter((t) => !selectedIds.has(t.id)));
+        setSelectedIds(new Set());
     }
 
     if (transactions.length === 0) {
@@ -123,7 +149,11 @@ export function TransactionsListClient({
                 onClearFilters={handleClearFilters}
             />
 
-            <TransactionsTable transactions={transactions} />
+            <TransactionsTable
+                transactions={transactions}
+                selectedIds={selectedIds}
+                onSelectionChange={setSelectedIds}
+            />
 
             {hasMore && (
                 <div className="flex justify-center">
@@ -144,6 +174,13 @@ export function TransactionsListClient({
                     </Button>
                 </div>
             )}
+
+            <BulkActionBar
+                selectedCount={selectedIds.size}
+                onClearSelection={() => setSelectedIds(new Set())}
+                onBulkUncategorize={handleBulkUncategorize}
+                onBulkDelete={handleBulkDelete}
+            />
         </div>
     );
 }

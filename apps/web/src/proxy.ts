@@ -70,7 +70,7 @@ export default clerkMiddleware(async (auth, request) => {
 
   // Get user role from session claims (set in Clerk user metadata)
   // Default to INVESTOR (most restrictive) if no role found
-  const role = (sessionClaims?.metadata?.role as Role) || 'INVESTOR';
+  const role = ((sessionClaims?.metadata as Record<string, unknown>)?.role as Role) || 'INVESTOR';
 
   // ============================================================================
   // RBAC Checks

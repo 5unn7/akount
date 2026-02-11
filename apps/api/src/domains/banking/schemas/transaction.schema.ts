@@ -82,3 +82,27 @@ export const TransactionIdParamSchema = z.object({
 });
 
 export type TransactionIdParam = z.infer<typeof TransactionIdParamSchema>;
+
+// PATCH /api/banking/transactions/bulk/categorize - Bulk categorize
+export const BulkCategorizeSchema = z.object({
+  transactionIds: z
+    .array(z.string().cuid('Invalid transaction ID format'))
+    .min(1, 'At least one transaction ID is required')
+    .max(100, 'Cannot process more than 100 transactions at once'),
+  categoryId: z
+    .string()
+    .cuid('Invalid category ID format')
+    .nullable(),
+});
+
+export type BulkCategorizeInput = z.infer<typeof BulkCategorizeSchema>;
+
+// DELETE /api/banking/transactions/bulk - Bulk soft delete
+export const BulkDeleteSchema = z.object({
+  transactionIds: z
+    .array(z.string().cuid('Invalid transaction ID format'))
+    .min(1, 'At least one transaction ID is required')
+    .max(100, 'Cannot process more than 100 transactions at once'),
+});
+
+export type BulkDeleteInput = z.infer<typeof BulkDeleteSchema>;

@@ -155,6 +155,31 @@ export async function deleteTransaction(id: string): Promise<void> {
 }
 
 /**
+ * Bulk categorize transactions
+ */
+export async function bulkCategorizeTransactions(
+    transactionIds: string[],
+    categoryId: string | null
+): Promise<{ updated: number }> {
+    return apiClient<{ updated: number }>('/api/banking/transactions/bulk/categorize', {
+        method: 'PATCH',
+        body: JSON.stringify({ transactionIds, categoryId }),
+    });
+}
+
+/**
+ * Bulk soft-delete transactions
+ */
+export async function bulkDeleteTransactions(
+    transactionIds: string[]
+): Promise<{ deleted: number }> {
+    return apiClient<{ deleted: number }>('/api/banking/transactions/bulk/delete', {
+        method: 'POST',
+        body: JSON.stringify({ transactionIds }),
+    });
+}
+
+/**
  * Format amount from cents to currency string
  */
 export function formatAmount(cents: number, currency: string = 'CAD'): string {

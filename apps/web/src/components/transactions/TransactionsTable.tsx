@@ -15,6 +15,8 @@ import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 interface TransactionsTableProps {
     transactions: Transaction[];
+    selectedIds?: Set<string>;
+    onSelectionChange?: (selectedIds: Set<string>) => void;
 }
 
 const SOURCE_BADGE_STYLES: Record<string, string> = {
@@ -25,13 +27,52 @@ const SOURCE_BADGE_STYLES: Record<string, string> = {
     API: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
 };
 
-export function TransactionsTable({ transactions }: TransactionsTableProps) {
+export function TransactionsTable({
+    transactions,
+    selectedIds,
+    onSelectionChange,
+}: TransactionsTableProps) {
+    const selectable = !!onSelectionChange;
+    const allSelected = selectable && transactions.length > 0 && transactions.every(t => selectedIds?.has(t.id));
+    const someSelected = selectable && transactions.some(t => selectedIds?.has(t.id)) && !allSelected;
+
+    function toggleAll() {
+        if (!onSelectionChange) return;
+        if (allSelected) {
+            onSelectionChange(new Set());
+        } else {
+            onSelectionChange(new Set(transactions.map(t => t.id)));
+        }
+    }
+
+    function toggleOne(id: string) {
+        if (!onSelectionChange || !selectedIds) return;
+        const next = new Set(selectedIds);
+        if (next.has(id)) {
+            next.delete(id);
+        } else {
+            next.add(id);
+        }
+        onSelectionChange(next);
+    }
+
     return (
         <Card className="glass rounded-[14px]">
             <CardContent className="p-0">
                 <Table>
                     <TableHeader>
                         <TableRow className="border-b border-white/[0.06] hover:bg-transparent">
+                            {selectable && (
+                                <TableHead className="w-10 pl-4">
+                                    <input
+                                        type="checkbox"
+                                        checked={allSelected}
+                                        ref={(el) => { if (el) el.indeterminate = !!someSelected; }}
+                                        onChange={toggleAll}
+                                        className="h-4 w-4 rounded border-white/[0.13] bg-transparent accent-[#F59E0B] cursor-pointer"
+                                    />
+                                </TableHead>
+                            )}
                             <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
                                 Date
                             </TableHead>
@@ -57,12 +98,25 @@ export function TransactionsTable({ transactions }: TransactionsTableProps) {
                             const isIncome = transaction.amount > 0;
                             const Icon = isIncome ? ArrowUpRight : ArrowDownRight;
                             const sourceStyle = SOURCE_BADGE_STYLES[transaction.sourceType] || SOURCE_BADGE_STYLES.MANUAL;
+                            const isSelected = selectedIds?.has(transaction.id);
 
                             return (
                                 <TableRow
                                     key={transaction.id}
-                                    className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"
+                                    className={`border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors ${
+                                        isSelected ? 'bg-[#F59E0B]/[0.04]' : ''
+                                    }`}
                                 >
+                                    {selectable && (
+                                        <TableCell className="pl-4">
+                                            <input
+                                                type="checkbox"
+                                                checked={!!isSelected}
+                                                onChange={() => toggleOne(transaction.id)}
+                                                className="h-4 w-4 rounded border-white/[0.13] bg-transparent accent-[#F59E0B] cursor-pointer"
+                                            />
+                                        </TableCell>
+                                    )}
                                     <TableCell className="text-sm">
                                         {formatDate(transaction.date)}
                                     </TableCell>

@@ -9,10 +9,14 @@ import {
   UpdateTransactionSchema,
   ListTransactionsQuerySchema,
   TransactionIdParamSchema,
+  BulkCategorizeSchema,
+  BulkDeleteSchema,
   type CreateTransactionInput,
   type UpdateTransactionInput,
   type ListTransactionsQuery,
   type TransactionIdParam,
+  type BulkCategorizeInput,
+  type BulkDeleteInput,
 } from '../schemas/transaction.schema';
 
 /**
@@ -160,6 +164,60 @@ export async function transactionRoutes(fastify: FastifyInstance) {
         }
 
         // Re-throw other errors for global error handler
+        throw error;
+      }
+    }
+  );
+
+  // PATCH /api/banking/transactions/bulk/categorize - Bulk categorize
+  fastify.patch(
+    '/bulk/categorize',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateBody(BulkCategorizeSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
+      const body = request.body as BulkCategorizeInput;
+
+      try {
+        const result = await service.bulkCategorize(body.transactionIds, body.categoryId);
+        return reply.status(200).send(result);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('not found')) {
+          return reply.status(400).send({ error: error.message });
+        }
+        throw error;
+      }
+    }
+  );
+
+  // POST /api/banking/transactions/bulk/delete - Bulk soft delete
+  fastify.post(
+    '/bulk/delete',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN']), // More restricted
+      preValidation: [validateBody(BulkDeleteSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
+      const body = request.body as BulkDeleteInput;
+
+      try {
+        const result = await service.bulkSoftDelete(body.transactionIds);
+        return reply.status(200).send(result);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('not found')) {
+          return reply.status(400).send({ error: error.message });
+        }
         throw error;
       }
     }
