@@ -21,6 +21,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 /**
  * Domain navigation group component.
  * Collapsible section showing domain items.
+ * Financial Clarity: glass-2 active + amber left border, glass-1 hover
  */
 function DomainGroup({
     domain,
@@ -39,9 +40,13 @@ function DomainGroup({
     return (
         <Collapsible open={isExpanded} onOpenChange={onToggle}>
             <CollapsibleTrigger asChild>
-                <Button
-                    variant={isActive ? "secondary" : "ghost"}
-                    className="w-full justify-between"
+                <button
+                    className={cn(
+                        "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
+                        isActive
+                            ? "bg-[rgba(255,255,255,0.04)] border-l-2 border-l-primary text-foreground"
+                            : "text-muted-foreground hover:bg-[rgba(255,255,255,0.025)] hover:text-foreground"
+                    )}
                 >
                     <span className="flex items-center">
                         <domain.icon className="h-4 w-4 mr-2" />
@@ -52,23 +57,27 @@ function DomainGroup({
                     ) : (
                         <ChevronRight className="h-4 w-4" />
                     )}
-                </Button>
+                </button>
             </CollapsibleTrigger>
-            <CollapsibleContent className="pl-4 space-y-1 mt-1">
-                {domain.items.map((item) => (
-                    <Button
-                        key={item.href}
-                        variant={pathname === item.href ? "secondary" : "ghost"}
-                        size="sm"
-                        className="w-full justify-start"
-                        asChild
-                    >
-                        <Link href={item.href}>
+            <CollapsibleContent className="pl-4 space-y-0.5 mt-1">
+                {domain.items.map((item) => {
+                    const isItemActive = pathname === item.href;
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                                "flex items-center px-3 py-1.5 rounded-md text-sm transition-colors",
+                                isItemActive
+                                    ? "bg-[rgba(255,255,255,0.04)] text-primary font-medium"
+                                    : "text-muted-foreground hover:bg-[rgba(255,255,255,0.025)] hover:text-foreground"
+                            )}
+                        >
                             <item.icon className="h-4 w-4 mr-2" />
                             {item.label}
                         </Link>
-                    </Button>
-                ))}
+                    );
+                })}
             </CollapsibleContent>
         </Collapsible>
     );
@@ -104,11 +113,11 @@ export function Sidebar({ className }: SidebarProps) {
     };
 
     return (
-        <div className={cn("pb-12 h-full glass flex flex-col", className)}>
+        <div className={cn("pb-12 h-full flex flex-col bg-[#0F0F17]", className)}>
             <ScrollArea className="flex-1">
                 <div className="space-y-4 py-4">
                     <div className="px-3 py-2">
-                        <h2 className="mb-4 px-4 text-lg font-bold tracking-tight font-heading">
+                        <h2 className="mb-4 px-4 text-lg font-normal tracking-tight font-heading text-primary">
                             Akount
                         </h2>
                         <nav className="space-y-1">
@@ -127,7 +136,7 @@ export function Sidebar({ className }: SidebarProps) {
             </ScrollArea>
 
             {/* Onboarding progress indicator */}
-            <div className="px-4 py-3 border-t border-slate-200/10">
+            <div className="px-4 py-3 border-t border-[rgba(255,255,255,0.06)]">
                 <SidebarProgressIndicator />
             </div>
         </div>
@@ -142,7 +151,7 @@ export function MobileSidebar() {
                     <Menu />
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0">
+            <SheetContent side="left" className="p-0 bg-[#0F0F17] border-r border-[rgba(255,255,255,0.06)]">
                 <Sidebar className="w-full" />
             </SheetContent>
         </Sheet>

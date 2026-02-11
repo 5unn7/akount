@@ -52,21 +52,21 @@ export function AccountsPageHeader({ entities }: AccountsPageHeaderProps) {
 
     return (
         <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight font-heading">Accounts</h2>
+            <h2 className="text-3xl font-heading font-normal tracking-tight">Accounts</h2>
 
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                     <label
                         htmlFor="type-filter"
-                        className="text-sm font-medium text-muted-foreground"
+                        className="text-xs uppercase tracking-[0.05em] font-medium text-muted-foreground"
                     >
-                        Type:
+                        Type
                     </label>
                     <Select value={currentType} onValueChange={handleTypeChange}>
-                        <SelectTrigger id="type-filter" className="w-[150px]">
+                        <SelectTrigger id="type-filter" className="w-[150px] glass-2 rounded-lg border-[rgba(255,255,255,0.06)] focus:ring-primary">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="glass-2 rounded-lg border-[rgba(255,255,255,0.09)]">
                             {ACCOUNT_TYPE_OPTIONS.map((opt) => (
                                 <SelectItem key={opt.value} value={opt.value}>
                                     {opt.label}
@@ -76,7 +76,7 @@ export function AccountsPageHeader({ entities }: AccountsPageHeaderProps) {
                     </Select>
                 </div>
 
-                <Button onClick={() => setCreateOpen(true)}>
+                <Button onClick={() => setCreateOpen(true)} className="rounded-lg bg-primary hover:bg-[#FBBF24] text-black font-medium">
                     <Plus className="h-4 w-4 mr-1" />
                     Add Account
                 </Button>

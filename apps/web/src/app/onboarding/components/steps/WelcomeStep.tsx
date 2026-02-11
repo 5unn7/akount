@@ -27,15 +27,15 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-bold text-slate-900">Welcome to Akount</h1>
-        <p className="text-lg text-slate-600">
+        <h1 className="text-3xl font-heading font-normal text-foreground">Welcome to Akount</h1>
+        <p className="text-lg text-muted-foreground">
           Let's set up your financial command center
         </p>
       </div>
 
       {/* Subtitle */}
       <div className="text-center">
-        <p className="text-sm text-slate-600 mb-8">
+        <p className="text-sm text-muted-foreground mb-8">
           Tell us a bit about yourself so we can customize your experience
         </p>
       </div>
@@ -85,7 +85,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
       </div>
 
       {/* Footer note */}
-      <div className="text-center text-sm text-slate-500">
+      <div className="text-center text-sm text-muted-foreground">
         <p>You can change this anytime in settings</p>
       </div>
     </div>
@@ -115,23 +115,23 @@ function AccountTypeCard({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`group relative rounded-lg border-2 p-6 text-left transition-all ${
+      className={`group relative rounded-[14px] border p-6 text-left transition-all ${
         disabled
-          ? 'opacity-50 cursor-not-allowed bg-slate-50 border-slate-200'
+          ? 'opacity-50 cursor-not-allowed bg-[rgba(255,255,255,0.015)] border-[rgba(255,255,255,0.04)]'
           : highlighted
-            ? 'border-orange-500 bg-orange-50 hover:shadow-md hover:shadow-orange-100'
-            : 'border-slate-200 bg-white hover:border-orange-300 hover:shadow-md hover:shadow-slate-100'
+            ? 'border-primary bg-[rgba(245,158,11,0.06)] hover:border-[rgba(245,158,11,0.4)] glow-primary'
+            : 'glass border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.13)] hover:bg-[rgba(255,255,255,0.04)]'
       }`}
     >
       {/* Badge */}
       {highlighted && (
-        <div className="absolute top-3 right-3 bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded">
+        <div className="absolute top-3 right-3 bg-primary text-black text-xs font-semibold px-2 py-1 rounded-lg">
           Recommended
         </div>
       )}
 
       {disabled && (
-        <div className="absolute top-3 right-3 bg-slate-300 text-slate-600 text-xs font-semibold px-2 py-1 rounded">
+        <div className="absolute top-3 right-3 bg-[rgba(255,255,255,0.06)] text-muted-foreground text-xs font-semibold px-2 py-1 rounded-lg">
           Coming soon
         </div>
       )}
@@ -140,16 +140,16 @@ function AccountTypeCard({
       <div className="text-4xl mb-4">{icon}</div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-slate-900 mb-1">{title}</h3>
+      <h3 className="text-lg font-medium text-foreground mb-1">{title}</h3>
 
       {/* Description */}
-      <p className="text-sm text-slate-600 mb-4">{description}</p>
+      <p className="text-sm text-muted-foreground mb-4">{description}</p>
 
       {/* Features list */}
       <ul className="space-y-2">
         {features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-            <span className="text-orange-500 font-bold mt-0.5">✓</span>
+          <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
+            <span className="text-primary font-bold mt-0.5">✓</span>
             <span>{feature}</span>
           </li>
         ))}

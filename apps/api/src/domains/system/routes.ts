@@ -124,6 +124,66 @@ export async function systemRoutes(fastify: FastifyInstance) {
     }
   );
 
+  /**
+   * POST /api/system/entities
+   *
+   * Create a new entity for the tenant.
+   * RBAC: OWNER, ADMIN only.
+   */
+  fastify.post(
+    '/entities',
+    {
+      ...withPermission('system', 'entities', 'ADMIN'),
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const CreateEntitySchema = z.object({
+          name: z.string().min(1).max(200),
+          type: z.enum([
+            'PERSONAL',
+            'CORPORATION',
+            'SOLE_PROPRIETORSHIP',
+            'PARTNERSHIP',
+            'LLC',
+          ]),
+          country: z.string().min(2).max(3),
+          currency: z.string().min(3).max(3),
+        });
+
+        const parsed = CreateEntitySchema.safeParse(request.body);
+        if (!parsed.success) {
+          return reply.status(400).send({
+            error: 'Validation Error',
+            message: 'Invalid entity data',
+            details: parsed.error.errors,
+          });
+        }
+
+        const service = new EntityService(request.tenantId as string);
+        const entity = await service.createEntity(request.userId as string, {
+          name: parsed.data.name,
+          type: parsed.data.type,
+          country: parsed.data.country,
+          functionalCurrency: parsed.data.currency,
+        });
+
+        return reply.status(201).send({
+          id: entity.id,
+          name: entity.name,
+          type: entity.type,
+          currency: entity.functionalCurrency,
+          country: entity.country,
+        });
+      } catch (error) {
+        request.log.error({ error }, 'Error creating entity');
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to create entity',
+        });
+      }
+    }
+  );
+
   // ============================================================================
   // USERS
   // ============================================================================

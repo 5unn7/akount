@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { CircularProgress } from './CircularProgress'
-import { GlassCard } from 'shadcn-glass-ui'
+import { Card } from '@/components/ui/card'
 import { X, ChevronDown, ChevronUp } from 'lucide-react'
 
 interface OnboardingProgress {
@@ -55,7 +55,7 @@ export function OnboardingHeroCard() {
 
   if (isLoading) {
     return (
-      <div className="h-64 bg-slate-100 animate-pulse rounded-2xl" />
+      <div className="h-64 glass animate-pulse rounded-2xl" />
     )
   }
 
@@ -97,30 +97,30 @@ export function OnboardingHeroCard() {
   const nextStep = steps.find(s => !s.complete)
 
   return (
-    <GlassCard className="border-2 border-orange-500/20 bg-gradient-to-br from-orange-50/80 to-transparent">
+    <Card variant="glass" className="border-[rgba(245,158,11,0.2)] glow-primary">
       <div className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center gap-4">
             <CircularProgress value={progress.completionPercentage} />
             <div>
-              <h2 className="text-2xl font-bold mb-1">🎯 Complete Your Setup</h2>
-              <p className="text-slate-600">
-                {progress.completionPercentage}% complete - Just a few more steps
+              <h2 className="text-2xl font-normal font-heading mb-1">Complete Your Setup</h2>
+              <p className="text-muted-foreground">
+                <span className="font-mono text-primary">{progress.completionPercentage}%</span> complete — Just a few more steps
               </p>
             </div>
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-[rgba(255,255,255,0.04)] rounded-lg transition-colors"
               aria-label={isExpanded ? 'Collapse' : 'Expand'}
             >
               {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
             </button>
             <button
               onClick={handleDismiss}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-[rgba(255,255,255,0.04)] rounded-lg transition-colors"
               aria-label="Dismiss"
             >
               <X className="h-5 w-5" />
@@ -137,19 +137,21 @@ export function OnboardingHeroCard() {
                 <div key={step.key} className="flex items-center gap-3">
                   <div className={`
                     h-6 w-6 rounded-full flex items-center justify-center text-sm font-medium
-                    ${step.complete ? 'bg-green-500 text-white' : 'bg-slate-200 text-slate-500'}
+                    ${step.complete
+                      ? 'bg-[#34D399] text-white'
+                      : 'bg-[rgba(255,255,255,0.06)] text-muted-foreground'}
                   `}>
-                    {step.complete ? '✓' : '○'}
+                    {step.complete ? '\u2713' : '\u25CB'}
                   </div>
-                  <span className={step.complete ? 'line-through text-slate-500' : 'text-slate-900'}>
+                  <span className={step.complete ? 'line-through text-muted-foreground' : 'text-foreground'}>
                     {step.label}
                   </span>
                   {!step.complete && step.action && (
                     <button
                       onClick={step.action}
-                      className="ml-auto text-xs text-orange-500 hover:text-orange-600 font-medium"
+                      className="ml-auto text-xs text-primary hover:text-[#FBBF24] font-medium transition-colors"
                     >
-                      Start →
+                      Start &rarr;
                     </button>
                   )}
                 </div>
@@ -161,14 +163,14 @@ export function OnboardingHeroCard() {
               {nextStep && nextStep.action && (
                 <button
                   onClick={nextStep.action}
-                  className="flex-1 px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg"
+                  className="flex-1 px-6 py-3 text-sm font-medium text-white bg-primary rounded-lg hover:bg-[#FBBF24] transition-all glow-primary"
                 >
-                  Continue Setup →
+                  Continue Setup &rarr;
                 </button>
               )}
               <button
                 onClick={handleDismiss}
-                className="px-6 py-3 text-sm font-medium text-slate-700 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-all"
+                className="px-6 py-3 text-sm font-medium text-foreground glass rounded-lg hover:bg-[rgba(255,255,255,0.04)] transition-all"
               >
                 Skip for now
               </button>
@@ -176,6 +178,6 @@ export function OnboardingHeroCard() {
           </>
         )}
       </div>
-    </GlassCard>
+    </Card>
   )
 }

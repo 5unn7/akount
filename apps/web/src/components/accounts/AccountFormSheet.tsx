@@ -125,7 +125,7 @@ export function AccountFormSheet({
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetContent>
                 <SheetHeader>
-                    <SheetTitle>{isEdit ? 'Edit Account' : 'Add Account'}</SheetTitle>
+                    <SheetTitle className="font-heading font-normal">{isEdit ? 'Edit Account' : 'Add Account'}</SheetTitle>
                     <SheetDescription>
                         {isEdit
                             ? 'Update account details below.'
@@ -134,7 +134,7 @@ export function AccountFormSheet({
                 </SheetHeader>
 
                 {error && (
-                    <p className="text-sm text-destructive mt-2">{error}</p>
+                    <p className="text-sm text-[#F87171] mt-2">{error}</p>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4 mt-4">

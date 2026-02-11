@@ -22,8 +22,8 @@ export function CircularProgress({
   const innerRadius = radius - strokeWidth
   const outerRadius = radius
 
-  // Color based on completion
-  const color = value >= 80 ? 'hsl(142, 76%, 36%)' : 'hsl(47, 96%, 53%)'
+  // Amber primary for progress, green for completion
+  const color = value >= 80 ? '#34D399' : '#F59E0B'
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
@@ -39,7 +39,7 @@ export function CircularProgress({
           dataKey="value"
         >
           <Cell fill={color} />
-          <Cell fill="hsl(var(--muted))" />
+          <Cell fill="rgba(255,255,255,0.06)" />
         </Pie>
       </PieChart>
 

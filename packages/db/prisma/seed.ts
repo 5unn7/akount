@@ -6,6 +6,7 @@ async function main() {
   console.log('🌱 Starting database seed...');
 
   // Clean existing data (in development only)
+  // Order: leaf tables first, then parents (respects FK constraints)
   console.log('🧹 Cleaning existing data...');
   await prisma.journalLine.deleteMany();
   await prisma.journalEntry.deleteMany();
@@ -14,9 +15,12 @@ async function main() {
   await prisma.billLine.deleteMany();
   await prisma.bill.deleteMany();
   await prisma.payment.deleteMany();
+  await prisma.transaction.deleteMany();
+  await prisma.account.deleteMany();
   await prisma.client.deleteMany();
   await prisma.vendor.deleteMany();
   await prisma.gLAccount.deleteMany();
+  await prisma.fXRate.deleteMany();
   await prisma.tenantUser.deleteMany();
   await prisma.user.deleteMany();
   await prisma.entity.deleteMany();
@@ -29,8 +33,8 @@ async function main() {
   const user = await prisma.user.create({
     data: {
       id: 'user_test_akount',
-      clerkUserId: 'user_38wV6V6GouPNwdofXmFt1VNFG5z', // Replace with actual Clerk user ID
-      email: 'servicesmarakana@gmail.com',
+      clerkUserId: 'user_39V6t9dREA97CJTVkj09ymdF7nX',
+      email: 'dev+clerk_test@akount.ai',
       name: 'Sunny',
     },
   });

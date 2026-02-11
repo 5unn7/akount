@@ -58,27 +58,31 @@ export function TransactionsFilters({
     }
 
     return (
-        <Card>
+        <Card className="glass rounded-[14px]">
             <CardContent className="pt-6">
                 <div className="flex items-center gap-2 mb-4">
                     <Filter className="h-4 w-4 text-muted-foreground" />
-                    <h3 className="text-sm font-medium">Filters</h3>
+                    <h3 className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
+                        Filters
+                    </h3>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-4">
-                    {/* Account filter */}
                     <div className="space-y-2">
-                        <Label htmlFor="account-filter" className="text-xs">
+                        <Label htmlFor="account-filter" className="text-xs text-muted-foreground">
                             Account
                         </Label>
                         <Select
                             value={localAccountId}
                             onValueChange={setLocalAccountId}
                         >
-                            <SelectTrigger id="account-filter">
+                            <SelectTrigger
+                                id="account-filter"
+                                className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
+                            >
                                 <SelectValue placeholder="All accounts" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="glass-2 rounded-lg border-white/[0.09]">
                                 <SelectItem value="all">All accounts</SelectItem>
                                 {accounts.map((account) => (
                                     <SelectItem key={account.id} value={account.id}>
@@ -89,9 +93,8 @@ export function TransactionsFilters({
                         </Select>
                     </div>
 
-                    {/* Start date filter */}
                     <div className="space-y-2">
-                        <Label htmlFor="start-date" className="text-xs">
+                        <Label htmlFor="start-date" className="text-xs text-muted-foreground">
                             Start Date
                         </Label>
                         <Input
@@ -99,12 +102,12 @@ export function TransactionsFilters({
                             type="date"
                             value={localStartDate}
                             onChange={(e) => setLocalStartDate(e.target.value)}
+                            className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
                         />
                     </div>
 
-                    {/* End date filter */}
                     <div className="space-y-2">
-                        <Label htmlFor="end-date" className="text-xs">
+                        <Label htmlFor="end-date" className="text-xs text-muted-foreground">
                             End Date
                         </Label>
                         <Input
@@ -112,12 +115,15 @@ export function TransactionsFilters({
                             type="date"
                             value={localEndDate}
                             onChange={(e) => setLocalEndDate(e.target.value)}
+                            className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
                         />
                     </div>
 
-                    {/* Action buttons */}
                     <div className="flex items-end gap-2">
-                        <Button onClick={handleApplyFilters} className="flex-1">
+                        <Button
+                            onClick={handleApplyFilters}
+                            className="flex-1 rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                        >
                             Apply
                         </Button>
                         {hasFilters && (
@@ -126,6 +132,7 @@ export function TransactionsFilters({
                                 size="icon"
                                 onClick={handleClear}
                                 title="Clear filters"
+                                className="rounded-lg border-white/[0.09] hover:bg-white/[0.04]"
                             >
                                 <X className="h-4 w-4" />
                             </Button>

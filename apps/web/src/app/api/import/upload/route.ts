@@ -4,14 +4,14 @@ import { NextRequest, NextResponse } from 'next/server';
 /**
  * Proxy route for file upload to Fastify API
  *
- * This route forwards multipart form data to the Fastify API
- * while adding authentication headers from Clerk.
+ * Forwards multipart form data to the correct Fastify endpoint
+ * (CSV or PDF) with Bearer token authentication from Clerk.
  */
-
 export async function POST(request: NextRequest) {
-  const { userId } = await auth();
+  const { getToken } = await auth();
+  const token = await getToken();
 
-  if (!userId) {
+  if (!token) {
     return NextResponse.json(
       { error: 'Unauthorized', message: 'You must be logged in to upload files' },
       { status: 401 }
@@ -19,18 +19,52 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Get the form data from the request
     const formData = await request.formData();
+    const file = formData.get('file') as File | null;
 
-    // Forward to Fastify API
-    const apiUrl = process.env.API_URL || 'http://localhost:3001';
-    const response = await fetch(`${apiUrl}/api/import/upload`, {
+    if (!file) {
+      return NextResponse.json(
+        { error: 'Bad Request', message: 'No file provided' },
+        { status: 400 }
+      );
+    }
+
+    // Determine backend endpoint based on file extension
+    const fileName = file.name.toLowerCase();
+    let endpoint: string;
+    if (fileName.endsWith('.pdf')) {
+      endpoint = '/api/banking/imports/pdf';
+    } else if (fileName.endsWith('.csv')) {
+      endpoint = '/api/banking/imports/csv';
+    } else {
+      return NextResponse.json(
+        { error: 'Bad Request', message: 'Unsupported file type. Use CSV or PDF.' },
+        { status: 400 }
+      );
+    }
+
+    // Build backend form data
+    const backendFormData = new FormData();
+    backendFormData.append('file', file);
+
+    // Forward accountId and optional fields
+    const accountId = formData.get('accountId');
+    if (accountId) backendFormData.append('accountId', accountId as string);
+
+    const dateFormat = formData.get('dateFormat');
+    if (dateFormat) backendFormData.append('dateFormat', dateFormat as string);
+
+    const columnMappings = formData.get('columnMappings');
+    if (columnMappings) backendFormData.append('columnMappings', columnMappings as string);
+
+    // Forward to Fastify API with Bearer token
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+    const response = await fetch(`${apiUrl}${endpoint}`, {
       method: 'POST',
       headers: {
-        // Forward Clerk authentication
-        'x-clerk-user-id': userId,
+        Authorization: `Bearer ${token}`,
       },
-      body: formData,
+      body: backendFormData,
     });
 
     const data = await response.json();
@@ -39,8 +73,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(data, { status: response.status });
     }
 
-    return NextResponse.json(data);
-  } catch (error: any) {
+    return NextResponse.json(data, { status: 201 });
+  } catch (error) {
     console.error('Upload proxy error:', error);
     return NextResponse.json(
       {

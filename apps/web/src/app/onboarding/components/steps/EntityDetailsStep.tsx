@@ -104,8 +104,8 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-slate-900">Tell us about your business</h2>
-        <p className="text-slate-600">
+        <h2 className="text-2xl font-heading font-normal text-foreground">Tell us about your business</h2>
+        <p className="text-muted-foreground">
           This information helps us set up your accounting system correctly
         </p>
       </div>
@@ -114,14 +114,14 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Error message */}
         {apiError && (
-          <div className="rounded-lg bg-red-50 p-4 text-sm text-red-900">
+          <div className="rounded-lg bg-[rgba(248,113,113,0.08)] border border-[rgba(248,113,113,0.2)] p-4 text-sm text-[#F87171]">
             {apiError}
           </div>
         )}
 
         {/* Business Name */}
         <div>
-          <label htmlFor="entityName" className="block text-sm font-medium text-slate-900 mb-2">
+          <label htmlFor="entityName" className="block text-sm font-medium text-foreground mb-2">
             Business Name
           </label>
           <input
@@ -131,13 +131,13 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
             onChange={(e) => setEntityName(e.target.value)}
             placeholder="e.g., Sunny's Design Studio"
             disabled={isLoading}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500"
+            className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
           />
         </div>
 
         {/* Entity Type */}
         <div>
-          <label htmlFor="entityType" className="block text-sm font-medium text-slate-900 mb-2">
+          <label htmlFor="entityType" className="block text-sm font-medium text-foreground mb-2">
             Business Type
           </label>
           <select
@@ -145,7 +145,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
             value={entityType || ''}
             onChange={(e) => setEntityType(e.target.value as any)}
             disabled={isLoading}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500"
+            className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
           >
             <option value="">Select a business type</option>
             <option value="PERSONAL">Personal (Sole Proprietor)</option>
@@ -159,7 +159,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
         {/* Country and Currency */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="country" className="block text-sm font-medium text-slate-900 mb-2">
+            <label htmlFor="country" className="block text-sm font-medium text-foreground mb-2">
               Country
             </label>
             <select
@@ -167,7 +167,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               disabled={isLoading}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500"
+              className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
             >
               <option value="CA">Canada</option>
               <option value="US">United States</option>
@@ -177,7 +177,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
           </div>
 
           <div>
-            <label htmlFor="currency" className="block text-sm font-medium text-slate-900 mb-2">
+            <label htmlFor="currency" className="block text-sm font-medium text-foreground mb-2">
               Currency
             </label>
             <select
@@ -185,7 +185,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
               disabled={isLoading}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500"
+              className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
             >
               <option value="CAD">CAD - Canadian Dollar</option>
               <option value="USD">USD - US Dollar</option>
@@ -198,7 +198,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
 
         {/* Fiscal Year Start */}
         <div>
-          <label htmlFor="fiscalYearStart" className="block text-sm font-medium text-slate-900 mb-2">
+          <label htmlFor="fiscalYearStart" className="block text-sm font-medium text-foreground mb-2">
             Fiscal Year Start Month
           </label>
           <div className="flex gap-2 flex-wrap">
@@ -215,8 +215,8 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
                   disabled={isLoading}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     fiscalYearStart === month
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                      ? 'bg-primary text-black'
+                      : 'glass border border-[rgba(255,255,255,0.06)] text-foreground hover:bg-[rgba(255,255,255,0.04)]'
                   } disabled:opacity-50`}
                 >
                   {monthName}
@@ -224,7 +224,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
               )
             })}
           </div>
-          <p className="text-xs text-slate-500 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             Most Canadian businesses use January. You can change this later.
           </p>
         </div>
@@ -234,7 +234,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full px-6 py-2 text-sm font-medium text-black bg-primary rounded-lg hover:bg-[#FBBF24] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? 'Setting up your workspace...' : 'Continue'}
           </button>

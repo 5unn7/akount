@@ -1,22 +1,36 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Building2, User } from 'lucide-react';
 import type { Entity } from '@/lib/api/entities';
+import { EntityFormSheet } from './EntityFormSheet';
 
 interface EntitiesListProps {
     entities: Entity[];
 }
 
+const TYPE_LABELS: Record<string, string> = {
+    PERSONAL: 'Personal',
+    CORPORATION: 'Corporation',
+    SOLE_PROPRIETORSHIP: 'Sole Proprietorship',
+    PARTNERSHIP: 'Partnership',
+    LLC: 'LLC',
+};
+
 export function EntitiesList({ entities }: EntitiesListProps): React.ReactElement {
     if (entities.length === 0) {
         return (
-            <Card>
+            <Card variant="glass">
                 <CardHeader>
-                    <CardTitle>Your Entities</CardTitle>
-                    <CardDescription>No entities found</CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle className="font-heading font-normal">Your Entities</CardTitle>
+                            <CardDescription>No entities yet</CardDescription>
+                        </div>
+                        <EntityFormSheet />
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-muted-foreground">
-                        You don't have any entities yet. Contact support to set up your first entity.
+                        Create your first entity to start managing your finances.
                     </p>
                 </CardContent>
             </Card>
@@ -24,25 +38,30 @@ export function EntitiesList({ entities }: EntitiesListProps): React.ReactElemen
     }
 
     return (
-        <Card>
+        <Card variant="glass">
             <CardHeader>
-                <CardTitle>Your Entities</CardTitle>
-                <CardDescription>
-                    Manage your business and personal entities
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle className="font-heading font-normal">Your Entities</CardTitle>
+                        <CardDescription>
+                            Manage your business and personal entities
+                        </CardDescription>
+                    </div>
+                    <EntityFormSheet />
+                </div>
             </CardHeader>
             <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {entities.map((entity) => (
                         <div
                             key={entity.id}
-                            className="flex items-center gap-4 rounded-lg border p-4 hover:bg-accent transition-colors"
+                            className="flex items-center gap-4 rounded-lg border border-[rgba(255,255,255,0.06)] p-4 hover:bg-[rgba(255,255,255,0.04)] transition-colors"
                         >
                             <div className="flex-shrink-0">
-                                {entity.type === 'BUSINESS' ? (
-                                    <Building2 className="h-8 w-8 text-blue-500" />
+                                {entity.type === 'PERSONAL' ? (
+                                    <User className="h-8 w-8 text-[#34D399]" />
                                 ) : (
-                                    <User className="h-8 w-8 text-green-500" />
+                                    <Building2 className="h-8 w-8 text-[#60A5FA]" />
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
@@ -50,7 +69,7 @@ export function EntitiesList({ entities }: EntitiesListProps): React.ReactElemen
                                     {entity.name}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
-                                    {entity.type} • {entity.currency}
+                                    {TYPE_LABELS[entity.type] || entity.type} &bull; <span className="font-mono">{entity.currency}</span>
                                 </p>
                             </div>
                         </div>

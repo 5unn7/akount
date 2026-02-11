@@ -11,13 +11,13 @@ export default function EntitiesPage() {
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Entities</h2>
+                <h2 className="text-3xl font-heading font-normal tracking-tight">Entities</h2>
             </div>
 
-            <Card>
+            <Card variant="glass">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Building className="h-5 w-5" />
+                    <CardTitle className="flex items-center gap-2 font-heading font-normal">
+                        <Building className="h-5 w-5 text-muted-foreground" />
                         Coming Soon
                     </CardTitle>
                     <CardDescription>

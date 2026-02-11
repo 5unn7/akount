@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useOnboardingStore } from '@/stores/onboardingStore'
-import { GlassCard } from 'shadcn-glass-ui'
+import { apiFetch } from '@/lib/api/client-browser'
+import { Card } from '@/components/ui/card'
 
 interface EssentialInfoStepProps {
   onNext: () => void
@@ -87,13 +88,6 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
     setIsLoading(true)
 
     try {
-      // Get auth token from Clerk
-      const token = await (window as any).Clerk?.session?.getToken()
-
-      if (!token) {
-        throw new Error('Not authenticated')
-      }
-
       // Determine entity type based on account type
       const entityTypeMap: Record<string, string> = {
         personal: 'PERSONAL',
@@ -102,30 +96,25 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
       }
       const entityType = entityTypeMap[accountType]
 
-      // Call initialization endpoint
-      const response = await fetch('/api/onboarding/initialize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          accountType,
-          entityName: entityName.trim(),
-          entityType,
-          phoneNumber: phoneNumber.trim(),
-          timezone,
-          country,
-          currency,
-        }),
-      })
+      // Persist entityType in store for CompletionStep
+      useOnboardingStore.setState({ entityType: entityType as any })
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || 'Failed to create workspace')
-      }
-
-      const data = await response.json()
+      // Call Fastify API initialization endpoint
+      const data = await apiFetch<{ tenantId: string; entityId: string }>(
+        '/api/system/onboarding/initialize',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            accountType,
+            entityName: entityName.trim(),
+            entityType,
+            phoneNumber: phoneNumber.trim(),
+            timezone,
+            country,
+            currency,
+          }),
+        }
+      )
 
       // Store tenant/entity IDs
       useOnboardingStore.setState({
@@ -133,9 +122,9 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
         entityId: data.entityId,
       })
 
-      // Auto-redirect to dashboard (2 second delay for success animation)
+      // Auto-redirect to overview (2 second delay for success animation)
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push('/overview')
       }, 2000)
 
       onNext()
@@ -151,26 +140,26 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
     <div className="space-y-6 max-w-2xl mx-auto">
       {/* Header */}
       <div className="space-y-2 text-center">
-        <h2 className="text-2xl font-bold text-slate-900">
+        <h2 className="text-2xl font-heading font-normal text-foreground">
           Let's set up your workspace
         </h2>
-        <p className="text-slate-600">Just a few quick details to get started</p>
+        <p className="text-muted-foreground">Just a few quick details to get started</p>
       </div>
 
       {/* Glass Card Form */}
-      <GlassCard className="p-8">
+      <Card variant="glass" className="p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Error message */}
           {apiError && (
-            <div className="rounded-lg bg-red-50 p-4 text-sm text-red-900 border border-red-200">
+            <div className="rounded-lg bg-[rgba(248,113,113,0.08)] p-4 text-sm text-[#F87171] border border-[rgba(248,113,113,0.2)]">
               <p className="font-medium">Error</p>
-              <p>{apiError}</p>
+              <p className="text-[rgba(248,113,113,0.8)]">{apiError}</p>
             </div>
           )}
 
           {/* Phone Number */}
           <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-slate-900 mb-2">
+            <label htmlFor="phoneNumber" className="block text-sm font-medium text-foreground mb-2">
               Phone Number
             </label>
             <input
@@ -181,16 +170,16 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
               placeholder="e.g., +1 (555) 123-4567"
               disabled={isLoading}
               required
-              className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+              className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               For important account notifications
             </p>
           </div>
 
           {/* Timezone */}
           <div>
-            <label htmlFor="timezone" className="block text-sm font-medium text-slate-900 mb-2">
+            <label htmlFor="timezone" className="block text-sm font-medium text-foreground mb-2">
               Time Zone
             </label>
             <select
@@ -198,7 +187,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
               disabled={isLoading}
-              className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+              className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
             >
               <option value="America/Toronto">🇨🇦 Eastern Time (Toronto)</option>
               <option value="America/Vancouver">🇨🇦 Pacific Time (Vancouver)</option>
@@ -210,14 +199,14 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
               <option value="Europe/Paris">🇪🇺 Paris (CET/CEST)</option>
               <option value="Australia/Sydney">🇦🇺 Sydney (AEST/AEDT)</option>
             </select>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Auto-detected based on your location
             </p>
           </div>
 
           {/* Workspace Name */}
           <div>
-            <label htmlFor="entityName" className="block text-sm font-medium text-slate-900 mb-2">
+            <label htmlFor="entityName" className="block text-sm font-medium text-foreground mb-2">
               {accountType === 'personal' ? 'Your Name' : 'Workspace Name'}
             </label>
             <input
@@ -232,9 +221,9 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
               }
               disabled={isLoading}
               required
-              className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+              className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
             />
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {accountType === 'personal'
                 ? 'This will be your workspace name'
                 : 'You can change this later in settings'}
@@ -245,7 +234,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
           <div className="grid grid-cols-2 gap-4">
             {/* Country */}
             <div>
-              <label htmlFor="country" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="country" className="block text-sm font-medium text-foreground mb-2">
                 Country
               </label>
               <select
@@ -253,7 +242,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
                 value={country}
                 onChange={(e) => handleCountryChange(e.target.value)}
                 disabled={isLoading}
-                className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
               >
                 <option value="CA">🇨🇦 Canada</option>
                 <option value="US">🇺🇸 United States</option>
@@ -264,7 +253,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
 
             {/* Currency (auto-filled, read-only) */}
             <div>
-              <label htmlFor="currency" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="currency" className="block text-sm font-medium text-foreground mb-2">
                 Currency
               </label>
               <div className="relative">
@@ -274,22 +263,22 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
                   value={currency}
                   readOnly
                   disabled
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-600 cursor-not-allowed"
+                  className="w-full px-4 py-3 bg-[rgba(255,255,255,0.015)] border border-[rgba(255,255,255,0.04)] rounded-lg text-muted-foreground cursor-not-allowed"
                 />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                   Auto
                 </div>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Based on your country
               </p>
             </div>
           </div>
 
           {/* Time estimate */}
-          <div className="flex items-center gap-2 text-sm text-slate-600 bg-slate-50 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground glass rounded-lg p-3">
             <svg
-              className="w-4 h-4 text-slate-400"
+              className="w-4 h-4 text-muted-foreground"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -309,7 +298,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:from-orange-600 hover:to-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+              className="w-full px-6 py-3 text-sm font-medium text-black bg-primary rounded-lg hover:bg-[#FBBF24] disabled:opacity-50 disabled:cursor-not-allowed transition-all glow-primary"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -337,10 +326,10 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
             </button>
           </div>
         </form>
-      </GlassCard>
+      </Card>
 
       {/* Footer note */}
-      <div className="text-center text-sm text-slate-500">
+      <div className="text-center text-sm text-muted-foreground">
         <p>
           You can add more details later • Takes less than 60 seconds
         </p>

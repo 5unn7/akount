@@ -6,11 +6,7 @@ import { AlertTriangle, Tag, CheckCircle } from 'lucide-react';
 
 /**
  * Import Preview Table
- *
- * Displays parsed transactions with:
- * - Duplicate detection indicators
- * - Auto-categorization suggestions
- * - Column mapping preview (for CSV/XLSX)
+ * Financial Clarity: glass cards, font-mono amounts, dim badges, dark table
  */
 
 interface Transaction {
@@ -77,9 +73,9 @@ export function ImportPreviewTable({
   return (
     <div className="space-y-4">
       {/* Summary Stats */}
-      <Card>
+      <Card variant="glass">
         <CardHeader>
-          <CardTitle>Import Summary</CardTitle>
+          <CardTitle className="font-heading font-normal">Import Summary</CardTitle>
           <CardDescription>
             Review the transactions before importing
           </CardDescription>
@@ -87,20 +83,20 @@ export function ImportPreviewTable({
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Total Transactions</p>
-              <p className="text-2xl font-bold">{summary.total}</p>
+              <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground">Total Transactions</p>
+              <p className="text-2xl font-bold font-mono">{summary.total}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Duplicates Found</p>
-              <p className="text-2xl font-bold text-yellow-600">{summary.duplicates}</p>
+              <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground">Duplicates Found</p>
+              <p className="text-2xl font-bold font-mono text-primary">{summary.duplicates}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Auto-Categorized</p>
-              <p className="text-2xl font-bold text-green-600">{summary.categorized}</p>
+              <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground">Auto-Categorized</p>
+              <p className="text-2xl font-bold font-mono text-[#34D399]">{summary.categorized}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Need Review</p>
-              <p className="text-2xl font-bold text-blue-600">{summary.needsReview}</p>
+              <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground">Need Review</p>
+              <p className="text-2xl font-bold font-mono text-[#60A5FA]">{summary.needsReview}</p>
             </div>
           </div>
         </CardContent>
@@ -108,9 +104,9 @@ export function ImportPreviewTable({
 
       {/* Column Mapping Preview (CSV/XLSX only) */}
       {sourceType === 'CSV' && columns && columnMappings && (
-        <Card>
+        <Card variant="glass">
           <CardHeader>
-            <CardTitle>Column Mapping</CardTitle>
+            <CardTitle className="font-heading font-normal">Column Mapping</CardTitle>
             <CardDescription>
               Detected column mappings (auto-detected)
             </CardDescription>
@@ -118,21 +114,21 @@ export function ImportPreviewTable({
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Date Column</p>
-                <p className="text-sm">{columnMappings.date}</p>
+                <p className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">Date Column</p>
+                <p className="text-sm font-mono">{columnMappings.date}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Description Column</p>
-                <p className="text-sm">{columnMappings.description}</p>
+                <p className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">Description Column</p>
+                <p className="text-sm font-mono">{columnMappings.description}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Amount Column</p>
-                <p className="text-sm">{columnMappings.amount}</p>
+                <p className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">Amount Column</p>
+                <p className="text-sm font-mono">{columnMappings.amount}</p>
               </div>
               {columnMappings.balance && (
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Balance Column</p>
-                  <p className="text-sm">{columnMappings.balance}</p>
+                  <p className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">Balance Column</p>
+                  <p className="text-sm font-mono">{columnMappings.balance}</p>
                 </div>
               )}
             </div>
@@ -141,9 +137,9 @@ export function ImportPreviewTable({
       )}
 
       {/* Transaction Preview Table */}
-      <Card>
+      <Card variant="glass">
         <CardHeader>
-          <CardTitle>Transaction Preview</CardTitle>
+          <CardTitle className="font-heading font-normal">Transaction Preview</CardTitle>
           <CardDescription>
             Showing first {previewTransactions.length} of {summary.total} transactions
           </CardDescription>
@@ -152,20 +148,20 @@ export function ImportPreviewTable({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                <tr className="border-b border-[rgba(255,255,255,0.06)]">
+                  <th className="text-left py-3 px-4 text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                     Date
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                  <th className="text-left py-3 px-4 text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                     Description
                   </th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">
+                  <th className="text-right py-3 px-4 text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                     Amount
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                  <th className="text-left py-3 px-4 text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                     Category
                   </th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">
+                  <th className="text-left py-3 px-4 text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                     Status
                   </th>
                 </tr>
@@ -174,12 +170,12 @@ export function ImportPreviewTable({
                 {previewTransactions.map((transaction) => (
                   <tr
                     key={transaction.tempId}
-                    className={`border-b hover:bg-muted/50 transition-colors ${
-                      transaction.isDuplicate ? 'bg-yellow-50' : ''
+                    className={`border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.025)] transition-colors ${
+                      transaction.isDuplicate ? 'bg-[rgba(245,158,11,0.04)]' : ''
                     }`}
                   >
                     {/* Date */}
-                    <td className="py-3 px-4 text-sm">
+                    <td className="py-3 px-4 text-sm font-mono">
                       {formatDate(transaction.date)}
                     </td>
 
@@ -191,8 +187,8 @@ export function ImportPreviewTable({
                     </td>
 
                     {/* Amount */}
-                    <td className="py-3 px-4 text-sm text-right font-medium">
-                      <span className={transaction.amount < 0 ? 'text-red-600' : 'text-green-600'}>
+                    <td className="py-3 px-4 text-sm text-right">
+                      <span className={`font-mono font-medium ${transaction.amount < 0 ? 'text-[#F87171]' : 'text-[#34D399]'}`}>
                         {formatAmount(transaction.amount)}
                       </span>
                     </td>
@@ -209,7 +205,7 @@ export function ImportPreviewTable({
                             {transaction.suggestedCategory.name}
                           </span>
                           {transaction.suggestedCategory.confidence >= 85 && (
-                            <CheckCircle className="h-3 w-3 text-green-600" />
+                            <CheckCircle className="h-3 w-3 text-[#34D399]" />
                           )}
                         </div>
                       ) : (

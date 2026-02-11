@@ -91,6 +91,16 @@ Subtle use of `box-shadow` with color-matched transparency:
 - Green glow: `0 0 12px rgba(52,211,153, 0.06)`
 - The Pulse orb: `radial-gradient` with breathing animation
 
+### Mouse-Tracking Radial Glow (Cards)
+
+Interactive cards use a cursor-following radial glow via `GlowCard` component.
+A `::after` pseudo-element renders a `radial-gradient` positioned at CSS vars `--glow-x`/`--glow-y`, updated on `mousemove`. Fades in on hover, invisible otherwise.
+
+**Usage:** `<GlowCard variant="glass">` (see `components/ui/glow-card.tsx`)
+**CSS utility:** `glow-track` (in `globals.css`)
+**Custom color:** pass `glowColor="rgba(139,92,246,0.04)"` for non-default hues (e.g. purple for AI cards)
+**Where to use:** Feature cards, stat cards, settings panels — any glass card that benefits from interactivity. Not for dense lists or small items.
+
 ## Anti-Patterns (DO NOT)
 
 - No heavy drop shadows — prefer subtle border + glow

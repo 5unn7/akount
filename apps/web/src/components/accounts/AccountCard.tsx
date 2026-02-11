@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlowCard } from "@/components/ui/glow-card";
 import { Badge } from "@/components/ui/badge";
 import { Account, type AccountType } from "@/lib/api/accounts";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -43,8 +44,9 @@ export function AccountCard({ account, onClick }: AccountCardProps): React.React
     const isNegative = account.currentBalance < 0;
 
     return (
-        <Card
-            className="hover:shadow-md transition-shadow cursor-pointer"
+        <GlowCard
+            variant="glass"
+            className="cursor-pointer"
             role="button"
             tabIndex={0}
             onClick={onClick}
@@ -63,31 +65,31 @@ export function AccountCard({ account, onClick }: AccountCardProps): React.React
             </CardHeader>
             <CardContent className="space-y-3">
                 <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge className="text-xs bg-[rgba(255,255,255,0.04)] text-muted-foreground border-[rgba(255,255,255,0.06)]">
                         {accountTypeLabels[account.type]}
                     </Badge>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge className="text-xs bg-[rgba(255,255,255,0.04)] text-foreground border-[rgba(255,255,255,0.06)] font-mono">
                         {account.currency}
                     </Badge>
                 </div>
 
                 <div>
-                    <p className="text-xs text-muted-foreground mb-1">Current Balance</p>
+                    <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground mb-1">Current Balance</p>
                     <p
                         className={`text-2xl font-bold font-mono ${
-                            isNegative ? "text-destructive" : ""
+                            isNegative ? "text-[#F87171]" : ""
                         }`}
                     >
                         {formatCurrency(account.currentBalance, account.currency)}
                     </p>
                 </div>
 
-                <div className="pt-2 border-t">
+                <div className="pt-2 border-t border-[rgba(255,255,255,0.06)]">
                     <p className="text-xs text-muted-foreground">
-                        {account.entity.name} • {account.entity.type}
+                        {account.entity.name} &bull; {account.entity.type}
                     </p>
                 </div>
             </CardContent>
-        </Card>
+        </GlowCard>
     );
 }

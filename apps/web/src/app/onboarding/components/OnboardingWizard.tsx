@@ -38,10 +38,10 @@ export function OnboardingWizard() {
     }
   }, [isLoaded, userId, router])
 
-  // Redirect to dashboard if onboarding is complete
+  // Redirect to overview if onboarding is complete
   useEffect(() => {
     if (tenantId && entityId) {
-      router.push('/dashboard')
+      router.push('/overview')
     }
   }, [tenantId, entityId, router])
 
@@ -50,8 +50,8 @@ export function OnboardingWizard() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-orange-500" />
-          <p className="text-sm text-slate-600">Loading...</p>
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-[rgba(255,255,255,0.06)] border-t-primary" />
+          <p className="text-sm text-muted-foreground">Loading...</p>
         </div>
       </div>
     )
@@ -76,7 +76,7 @@ export function OnboardingWizard() {
   const isFirstStep = currentStep === 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-slate-50 py-12 px-4">
+    <div className="min-h-screen bg-[#09090F] py-12 px-4">
       <div className="max-w-5xl mx-auto">
         {/* Progress dots (only show after account type selected) */}
         {accountType && currentStep < 2 && (
@@ -86,10 +86,10 @@ export function OnboardingWizard() {
                 key={step}
                 className={`h-2 w-2 rounded-full transition-all ${
                   step === currentStep
-                    ? 'bg-orange-500 w-8'
+                    ? 'bg-primary w-8'
                     : step < currentStep
-                      ? 'bg-orange-300'
-                      : 'bg-slate-200'
+                      ? 'bg-[rgba(245,158,11,0.5)]'
+                      : 'bg-[rgba(255,255,255,0.06)]'
                 }`}
               />
             ))}
@@ -106,7 +106,7 @@ export function OnboardingWizard() {
           <div className="mt-6 text-center">
             <button
               onClick={handlePrevious}
-              className="text-sm text-slate-600 hover:text-slate-900 transition-colors inline-flex items-center gap-1"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
             >
               <svg
                 className="w-4 h-4"

@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function Navbar() {
     return (
-        <div className="flex items-center p-4 border-b h-16 glass">
+        <div className="flex items-center p-4 h-16 glass border-t-0 border-x-0 rounded-none">
             <MobileSidebar />
             <div className="flex w-full justify-end items-center gap-4">
                 <ThemeToggle />

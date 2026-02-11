@@ -47,7 +47,7 @@ export async function getDashboardMetrics(
 
     params.append('currency', currency);
 
-    const endpoint = `/api/dashboard/metrics?${params.toString()}`;
+    const endpoint = `/api/overview/dashboard?${params.toString()}`;
 
     return apiClient<DashboardMetrics>(endpoint);
 }
