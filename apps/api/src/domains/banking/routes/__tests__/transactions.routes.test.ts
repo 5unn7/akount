@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { transactionRoutes } from '../transactions';
+import { assertIntegerCents } from '../../../../test-utils/financial-assertions';
 
 // Mock auth middleware
 vi.mock('../../../../middleware/auth', () => ({
@@ -111,6 +112,9 @@ describe('Transaction Routes', () => {
       expect(body.transactions).toHaveLength(1);
       expect(body.transactions[0].description).toBe('Coffee shop');
       expect(body.hasMore).toBe(false);
+
+      // Financial invariant: amounts must be integer cents
+      assertIntegerCents(body.transactions[0].amount, 'transaction amount');
     });
 
     it('should return 401 without auth', async () => {
@@ -149,10 +153,12 @@ describe('Transaction Routes', () => {
         headers: { authorization: 'Bearer test-token' },
       });
 
-      expect(mockListTransactions).toHaveBeenCalledWith({
-        startDate,
-        endDate,
-      });
+      expect(mockListTransactions).toHaveBeenCalledWith(
+        expect.objectContaining({
+          startDate,
+          endDate,
+        })
+      );
     });
 
     // Note: Zod validation tests skipped when schemas are mocked
@@ -214,6 +220,10 @@ describe('Transaction Routes', () => {
 
       expect(response.statusCode).toBe(201);
       expect(mockCreateTransaction).toHaveBeenCalledWith(validPayload);
+
+      // Financial invariant: created transaction amount must be integer cents
+      const body = response.json();
+      assertIntegerCents(body.amount, 'created transaction amount');
     });
 
     it('should return 401 without auth', async () => {
@@ -354,6 +364,12 @@ describe('Transaction Routes', () => {
 
   describe('DELETE /transactions/:id', () => {
     it('should return 204 on successful delete', async () => {
+      // Mock returns record with deletedAt set (proving soft delete, not hard delete)
+      mockSoftDeleteTransaction.mockResolvedValueOnce({
+        ...MOCK_TRANSACTION,
+        deletedAt: new Date('2024-01-15T12:00:00Z'),
+      });
+
       const response = await app.inject({
         method: 'DELETE',
         url: '/transactions/txn-1',
@@ -362,6 +378,11 @@ describe('Transaction Routes', () => {
 
       expect(response.statusCode).toBe(204);
       expect(mockSoftDeleteTransaction).toHaveBeenCalledWith('txn-1');
+
+      // Financial invariant: soft delete returns record with deletedAt set
+      const result = await mockSoftDeleteTransaction.mock.results[0].value;
+      expect(result.deletedAt).toBeTruthy();
+      expect(result.id).toBe(MOCK_TRANSACTION.id); // Record still exists
     });
 
     it('should return 401 without auth', async () => {

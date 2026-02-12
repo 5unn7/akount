@@ -217,7 +217,7 @@ function InvoiceNotes({ notes }: { notes: string }) {
 
 ```typescript
 // ❌ CRITICAL: Hardcoded API key
-const STRIPE_KEY = 'sk_live_abc123def456'; // Exposed in source code!
+const STRIPE_KEY = 'sk_live_EXAMPLE_REDACTED'; // Exposed in source code!
 
 fetch('https://api.stripe.com/charges', {
   headers: { Authorization: `Bearer ${STRIPE_KEY}` },

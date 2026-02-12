@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import multipart from '@fastify/multipart';
 import { importsRoutes } from '../imports';
+import { assertIntegerCents } from '../../../../test-utils/financial-assertions';
 
 // Mock auth middleware
 vi.mock('../../../../middleware/auth', () => ({
@@ -371,6 +372,10 @@ describe('Import Routes', () => {
       expect(body.batches).toHaveLength(1);
       expect(body.hasMore).toBe(false);
       expect(mockListImportBatches).toHaveBeenCalledWith({});
+
+      // Financial invariant: transaction amounts in batches must be integer cents
+      const txn = body.batches[0].transactions[0];
+      assertIntegerCents(txn.amount, 'import transaction amount');
     });
 
     it('should filter by sourceType', async () => {
@@ -443,6 +448,9 @@ describe('Import Routes', () => {
       expect(body.id).toBe(IMPORT_BATCH_ID);
       expect(body.transactions).toHaveLength(1);
       expect(mockGetImportBatch).toHaveBeenCalledWith(IMPORT_BATCH_ID);
+
+      // Financial invariant: transaction amounts must be integer cents
+      assertIntegerCents(body.transactions[0].amount, 'transaction amount');
     });
 
     it('should return 404 when batch not found', async () => {

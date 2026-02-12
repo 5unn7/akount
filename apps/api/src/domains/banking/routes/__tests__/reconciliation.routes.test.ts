@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { reconciliationRoutes } from '../reconciliation';
+import { assertIntegerCents } from '../../../../test-utils/financial-assertions';
 
 // Mock auth middleware
 vi.mock('../../../../middleware/auth', () => ({
@@ -129,6 +130,9 @@ describe('Reconciliation Routes', () => {
       expect(body.suggestions).toHaveLength(1);
       expect(body.suggestions[0].transactionId).toBe('txn-1');
       expect(body.suggestions[0].confidence).toBe(0.95);
+
+      // Financial invariant: monetary fields must be integer cents
+      assertIntegerCents(body.suggestions[0].transaction.amount, 'suggestion transaction amount');
     });
 
     it('should return 401 without auth', async () => {
@@ -201,6 +205,10 @@ describe('Reconciliation Routes', () => {
       const body = JSON.parse(response.body);
       expect(body.id).toBe('match-1');
       expect(body.status).toBe('MATCHED');
+
+      // Financial invariant: matched amounts must be integer cents
+      assertIntegerCents(body.bankFeedTransaction.amount, 'bankFeedTransaction amount');
+      assertIntegerCents(body.transaction.amount, 'matched transaction amount');
     });
 
     it('should return 401 without auth', async () => {

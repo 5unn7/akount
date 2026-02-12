@@ -45,7 +45,10 @@ const accountTransactionsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-});
+}).refine(
+  (data) => !data.startDate || !data.endDate || data.startDate <= data.endDate,
+  { message: 'startDate must be on or before endDate', path: ['endDate'] }
+);
 
 type AccountsQuery = z.infer<typeof accountsQuerySchema>;
 type AccountParams = z.infer<typeof accountParamsSchema>;

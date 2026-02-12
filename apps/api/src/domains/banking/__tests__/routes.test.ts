@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { bankingRoutes } from '../routes';
+import { assertIntegerCents, assertMoneyFields } from '../../../test-utils/financial-assertions';
 
 // Mock auth middleware
 vi.mock('../../../middleware/auth', () => ({
@@ -105,6 +106,9 @@ describe('Banking Routes', () => {
       expect(body.accounts).toHaveLength(1);
       expect(body.accounts[0].name).toBe('Checking Account');
       expect(body.hasMore).toBe(false);
+
+      // Financial invariant: monetary fields must be integer cents
+      assertIntegerCents(body.accounts[0].currentBalance, 'currentBalance');
     });
 
     it('should return 401 without auth', async () => {
@@ -225,6 +229,12 @@ describe('Banking Routes', () => {
 
   describe('DELETE /api/banking/accounts/:id', () => {
     it('should return 204 on successful soft-delete', async () => {
+      // Mock returns record with deletedAt set (proving soft delete, not hard delete)
+      mockSoftDeleteAccount.mockResolvedValueOnce({
+        ...MOCK_ACCOUNT,
+        deletedAt: new Date('2024-01-15T10:00:00Z'),
+      });
+
       const response = await app.inject({
         method: 'DELETE',
         url: '/api/banking/accounts/clxxxxxxxxxxxxxxxxxxxxxxxxx',
@@ -233,6 +243,11 @@ describe('Banking Routes', () => {
 
       expect(response.statusCode).toBe(204);
       expect(mockSoftDeleteAccount).toHaveBeenCalled();
+
+      // Financial invariant: soft delete returns record with deletedAt set
+      const result = await mockSoftDeleteAccount.mock.results[0].value;
+      expect(result.deletedAt).toBeTruthy();
+      expect(result.id).toBe(MOCK_ACCOUNT.id); // Record still exists
     });
 
     it('should return 404 when account not found', async () => {
