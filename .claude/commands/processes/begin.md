@@ -6,27 +6,24 @@ argument-hint: "[optional focus area]"
 
 # Workflow: Begin
 
-Your concise session startup ritual. Context-aware dashboard in under 2 minutes.
+Your concise session startup ritual. Context-aware dashboard with industry intel.
 
-**Current Date:** 2026-02-09
+**Current Date:** Use today's actual date.
 
 ---
 
 ## Purpose
 
 Start coding sessions with focused context:
-- 📋 **Session Context** - Git status, recent changes (auto-injected)
-- 🎯 **Tasks** - What's pending from TASKS.md
-- ⚠️ **Blockers** - Issues to watch
-- 🧠 **Memory** - Recent learnings and patterns
-- 💡 **Recommendations** - What to work on next
+- **Session Context** - Git status, recent changes (auto-injected via hook)
+- **Tasks** - What's pending from TASKS.md
+- **Blockers** - Issues to watch
+- **Memory** - Recent learnings and patterns
+- **Recommendations** - What to work on next
+- **Pro Tips** - Workflow improvements and better approaches
+- **Industry Intel** - Fintech news, competitor moves, relevant tech updates
 
-**Like a 2-minute standup with your AI pair.**
-
-**What's New (v2.2):**
-- Phase 0 (Visual Context) → Now auto-loaded via `CLAUDE.md` hierarchy
-- Phase 1 (Git Status) → Now auto-injected via SessionStart hook
-- Repo map, architecture → Now in `docs/context-map.md`
+**Like a morning briefing from your AI co-founder.**
 
 ---
 
@@ -47,10 +44,10 @@ fi
 
 **Extract and categorize:**
 - `[ ]` Pending tasks
-- `[→]` In progress
+- `[->]` In progress
 - `[x]` Recently completed
-- 🔥 Priority items
-- ⏳ Blocked/waiting
+- Priority items
+- Blocked/waiting
 
 **Output:**
 - Total pending count
@@ -83,36 +80,23 @@ git diff --check
 - Environment mismatches
 
 **Output:**
-- "🚫 Blocker: [description]" for each issue found
-- "✅ No blockers detected" if clean
+- "Blocker: [description]" for each issue found
+- "No blockers detected" if clean
 
 ---
 
 ### Phase 3: Recent Context from Memory (15 seconds)
 
-Point to recent learnings:
-
-```bash
-# Check MEMORY.md current state
-if [ -f "$HOME/.claude/projects/$(basename $PWD)/memory/MEMORY.md" ]; then
-  echo "📚 Memory files available:"
-  echo "  - MEMORY.md: Current state, recent work"
-  echo "  - codebase-quirks.md: Path issues, gotchas"
-  echo "  - api-patterns.md: Service/route patterns"
-  echo "  - debugging-log.md: Past bugs, solutions"
-fi
-```
-
-**Quick pointers:**
-- Current phase of work (from MEMORY.md)
+Read MEMORY.md from auto memory directory for:
+- Current phase of work
 - Recent gotchas discovered
 - Patterns learned
 - Known issues
 
 **Output:**
-- Current work phase (e.g., "Context Optimization v2.2 - Phase A Step 8")
-- "⚠️ Check memory/codebase-quirks.md" if relevant path issues exist
-- Recent wins/lessons (1-2 bullet points from MEMORY.md)
+- Current work phase
+- Recent wins/lessons (1-2 bullet points)
+- Any active known issues from the Known Issues table
 
 ---
 
@@ -123,100 +107,176 @@ Based on loaded context, provide actionable recommendations:
 **Decision tree:**
 
 1. **If uncommitted changes exist** (from SessionStart hook):
-   - → "Commit current work before starting new tasks"
-   - → "Review staged changes: [files from git status]"
+   - "Commit current work before starting new tasks"
+   - "Review staged changes: [files from git status]"
 
 2. **If TASKS.md has high-priority items**:
-   - → "Priority task: [top task description]"
-   - → "Estimated complexity: [guess based on description]"
-   - → "Relevant files: [guess based on task]"
+   - "Priority task: [top task description]"
+   - "Relevant files: [guess based on task]"
 
 3. **If no pending tasks**:
-   - → "✅ Task list clear! Options:"
-   - → "  - Check ROADMAP.md for next phase"
-   - → "  - Run `/processes:review` on recent commits"
-   - → "  - Update documentation if needed"
+   - "Task list clear! Options:"
+   - "  - Check ROADMAP.md for next phase"
+   - "  - Run `/processes:review` on recent commits"
 
 4. **If blockers detected**:
-   - → "🚫 Resolve blockers first:"
-   - → "  - [blocker 1 with suggested fix]"
-   - → "  - [blocker 2 with suggested fix]"
+   - "Resolve blockers first:"
+   - "  - [blocker with suggested fix]"
 
-5. **If recent compaction occurred**:
-   - → "📝 Context was compacted. Critical invariants preserved:"
-   - → "  - tenantId required in all queries"
-   - → "  - Money as integer cents"
-   - → "  - SUM(debits)===SUM(credits)"
+---
+
+### Phase 5: Pro Tips (20 seconds)
+
+Review the user's recent workflow patterns from MEMORY.md and session history to surface **one actionable tip** per session. Rotate through categories:
+
+**Tip categories (cycle through these):**
+
+1. **Workflow Efficiency**
+   - Skills or commands they might not know about
+   - Faster ways to accomplish common tasks
+   - Agent delegation patterns (e.g., "use /fast for searches to save cost")
+
+2. **Code Quality**
+   - Patterns from the codebase they could adopt more consistently
+   - TypeScript tricks relevant to their stack
+   - Testing strategies they haven't tried
+
+3. **Architecture Insights**
+   - Design patterns that would benefit their current phase
+   - Scalability considerations for what they're building
+   - How similar products solve the same problems
+
+4. **Tool Mastery**
+   - Claude Code features they haven't used (hooks, agents, skills)
+   - VS Code shortcuts or extensions relevant to their work
+   - Git workflows that could help (interactive rebase, bisect, etc.)
+
+**Rules for tips:**
+- ONE tip per session (don't overwhelm)
+- Must be actionable and specific to their project, not generic advice
+- Reference their actual code/files when possible
+- Track which tips have been given in memory to avoid repeats
 
 **Output format:**
 ```
-## 🎯 Recommendations
+## Pro Tip
 
-**Next Action:** [Primary recommendation]
-
-**Context:**
-- [Relevant file paths]
-- [Related commands]
-- [Estimated time]
-
-**Alternative Actions:**
-1. [Option 2]
-2. [Option 3]
+**[Category]:** [Concise tip with specific example from their codebase]
 ```
 
 ---
 
-### Phase 5: Session Dashboard Output
+### Phase 6: Industry Intelligence (30 seconds)
+
+Use **WebSearch** to fetch fresh, relevant intelligence. Run 2-3 targeted searches:
+
+**Search queries (pick 2-3 most relevant):**
+
+1. **Competitor moves:**
+   - `"QuickBooks OR Xero OR FreshBooks OR Wave" new features 2026`
+   - `AI accounting software startup funding 2026`
+
+2. **Fintech/accounting trends:**
+   - `fintech accounting SaaS trends 2026`
+   - `AI bookkeeping automation news`
+
+3. **Tech stack updates:**
+   - `Next.js release updates 2026` (or Prisma, Clerk, Tailwind — whichever is most relevant)
+   - `PostgreSQL new features` if database work is in progress
+
+4. **Regulatory/compliance:**
+   - `accounting software compliance changes` (only if relevant to current work)
+
+**Selection logic:**
+- If building new features: search competitors for inspiration
+- If doing infrastructure work: search tech stack updates
+- If planning phase: search market trends
+- Default: rotate through categories session to session
+
+**Output rules:**
+- Max 3-4 bullet points, each 1-2 sentences
+- Include source links
+- Flag anything that directly impacts Akount's roadmap
+- Skip if search returns nothing relevant (don't force it)
+
+**Output format:**
+```
+## Industry Intel
+
+- **[Competitor/Trend]:** [What happened] — [Why it matters for Akount] [source link]
+- **[Tech Update]:** [What changed] — [Action item if any] [source link]
+- **[Market Signal]:** [Insight] — [Opportunity or threat] [source link]
+```
+
+---
+
+### Phase 7: Session Dashboard Output
 
 Consolidate everything into a concise dashboard:
 
 ```markdown
-# 🚀 Session Start Dashboard
-**Date:** 2026-02-09
+# Session Start Dashboard
+**Date:** [today]
 **Project:** Akount (Next.js 16 + Fastify API + Prisma)
 
 ---
 
-## 📊 Session Context (Auto-injected)
-[SessionStart hook output will appear above this workflow]
-- Branch: main
+## Session Context
+- Branch: [branch]
 - Uncommitted files: [count]
 - Recent commits: [last 3]
 
 ---
 
-## 🎯 Pending Tasks ([count] total)
+## Pending Tasks ([count] total)
 - [ ] [Task 1 - Priority]
 - [ ] [Task 2]
-- [→] [Task 3 - In Progress]
+- [->] [Task 3 - In Progress]
 
 ---
 
-## ⚠️ Blockers
+## Blockers
 [None detected / List of blockers]
 
 ---
 
-## 🧠 Recent Context
+## Recent Context
 **Current Phase:** [From MEMORY.md]
-**Last Session:** [Summary from MEMORY.md]
-**Gotchas to Remember:**
-- [Top 2-3 from codebase-quirks.md]
+**Last Session:** [Summary]
+**Known Issues:** [Any active from Known Issues table]
 
 ---
 
-## 💡 Recommendations
+## Recommendations
 
 **Next Action:** [Primary recommendation with file paths]
+
+**Alternative Actions:**
+1. [Option 2]
+2. [Option 3]
+
+---
+
+## Pro Tip
+
+**[Category]:** [Specific actionable tip]
+
+---
+
+## Industry Intel
+
+- **[Item 1]:** [Summary] [link]
+- **[Item 2]:** [Summary] [link]
+- **[Item 3]:** [Summary] [link]
+
+---
 
 **Quick Commands:**
 - `/processes:plan` - Plan next feature
 - `/processes:work` - Execute implementation
 - `/processes:review` - Code review before merge
 
----
-
-**Ready to start! 🎉**
+**Ready to start!**
 ```
 
 ---
@@ -240,4 +300,4 @@ Consolidate everything into a concise dashboard:
 
 ---
 
-_Lines: ~150 (slimmed from 856). SessionStart hook handles context injection._
+_v3.0 — Added Pro Tips + Industry Intelligence. ~200 lines._

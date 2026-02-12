@@ -1,65 +1,25 @@
 # Akount - Task List
 
-**Last Updated:** 2026-02-09
-**Current Phase:** Phase 2 - Track Your Money (Backend Complete, Frontend In Progress)
+**Last Updated:** 2026-02-12
+**Current Phase:** Phase 2 - Track Your Money (COMPLETE) | Onboarding (9/10 done)
 
 ---
 
 ## Active Work
 
-### Phase 2 Frontend: Banking UI (~15-20 hours)
-
-- [ ] **FE-2.1:** CSV Upload Component
-  - Create FileUploadZone with drag-and-drop
-  - File validation (CSV only, max 10MB)
-  - Upload progress indicator
-  - Parse error display with line numbers
-
-- [ ] **FE-2.2:** Column Mapping Interface
-  - Interactive table mapping CSV columns → expected fields
-  - Dropdown per column (Date, Description, Amount, Balance, Ignore)
-  - Preview first 5 rows
-  - Auto-detect for common bank formats
-
-- [x] **FE-2.3:** Transaction Matching UI (commit 2256742)
-  - Reconciliation page with match/unmatch actions
-  - Suggested matches with confidence scores
-  - Status badges on transaction rows
-
-- [x] **FE-2.4:** Reconciliation Status Display (commit 2256742)
-  - Reconciliation status on accounts detail page
-  - Matched/unmatched counts and filters
-
-- [x] **FE-2.5:** Import History Page (commit 2256742)
-  - `/money-movement/imports` page
-  - List import batches with status
-
-- [ ] **FE-2.3b:** Transaction Matching Improvements
-  - Bulk selection for multi-match
-  - GL match confidence color coding (green/yellow/red)
-
-- [ ] **FE-2.5b:** Import History Enhancements
-  - Import details drill-down (filename, row count, errors)
-  - Re-import button for failed imports
-
-- [ ] **FE-2.6:** Transaction List Improvements
-  - Bulk actions (categorize, delete)
-  - Category badges
-  - Improved filters
-
-### Phase 2: Onboarding Redesign (~10-12 hours)
+### Onboarding Redesign — 1 remaining task
 
 **Plan:** [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
 
-- [ ] **OB-1:** OnboardingProgress Prisma model + migration
-- [ ] **OB-2:** Progress API routes (GET progress, POST update, POST skip, POST dismiss)
-- [ ] **OB-3:** Update POST /initialize to create OnboardingProgress (40%)
-- [ ] **OB-4:** API tests for progress routes
-- [ ] **OB-5:** Update onboarding store (phone, timezone fields)
-- [ ] **OB-6:** Minimal wizard (2 steps: Welcome + EssentialInfo)
-- [ ] **OB-7:** CircularProgress component (recharts donut)
-- [ ] **OB-8:** OnboardingHeroCard on dashboard
-- [ ] **OB-9:** SidebarProgressIndicator
+- [x] **OB-1:** OnboardingProgress Prisma model + migration (commit b4c00a3)
+- [x] **OB-2:** Progress API routes — GET progress, POST update, POST skip, POST dismiss (commit b4c00a3)
+- [x] **OB-3:** Update POST /initialize to create OnboardingProgress (commit b4c00a3)
+- [x] **OB-4:** API tests for progress routes — 176 lines (commit b4c00a3)
+- [x] **OB-5:** Update onboarding store — phone, timezone fields (commit b4c00a3)
+- [x] **OB-6:** Minimal wizard — Welcome + EssentialInfo + EntityDetails + Completion steps (commits b4c00a3, b0cbdf4, af98f04)
+- [x] **OB-7:** CircularProgress component (commit b4c00a3)
+- [x] **OB-8:** OnboardingHeroCard on dashboard (commit b4c00a3)
+- [x] **OB-9:** SidebarProgressIndicator (commit b4c00a3)
 - [ ] **OB-10:** Frontend tests for onboarding components
 
 ---
@@ -129,6 +89,25 @@
 - [x] GET /api/banking/reconciliation/status/:accountId
 - [x] 25 service tests + 18 route tests
 
+### Phase 2 Frontend: Banking UI (COMPLETE — commits 95eb7e4, b0cbdf4, af98f04)
+
+- [x] **FE-2.1:** CSV Upload Component — ImportUploadForm with drag-and-drop, validation (commit 95eb7e4)
+- [x] **FE-2.2:** Column Mapping Interface — ColumnMappingEditor, 291 lines (commit 95eb7e4)
+- [x] **FE-2.3:** Transaction Matching UI — ReconciliationDashboard (commit 2256742)
+- [x] **FE-2.4:** Reconciliation Status Display (commit 2256742)
+- [x] **FE-2.5:** Import History Page — ImportHistoryClient (commit 2256742)
+- [x] **FE-2.3b:** Transaction Matching Improvements — BulkActionBar, bulk selection (commit 95eb7e4)
+- [x] **FE-2.5b:** Import History Enhancements — ImportConfirmation, drill-down (commits b0cbdf4, af98f04)
+- [x] **FE-2.6:** Transaction List Improvements — bulk actions, filters, BulkActionBar (commit 95eb7e4)
+- [x] **Bonus:** Full sign-up → onboarding → dashboard flow repaired (commit af98f04)
+- [x] **Bonus:** Route rename money-movement → banking (commit af98f04)
+
+### Onboarding Redesign (9/10 tasks — commit b4c00a3)
+- [x] OnboardingProgress Prisma model + API routes + tests
+- [x] Wizard (Welcome + EssentialInfo + EntityDetails + Completion)
+- [x] CircularProgress, OnboardingHeroCard, SidebarProgressIndicator
+- [x] Complete onboarding flow with progressive completion modals
+
 ---
 
 ## Phase Progress
@@ -137,22 +116,11 @@
 |-------|---------|----------|--------|
 | Foundation | COMPLETE | COMPLETE | COMPLETE |
 | 1: See Your Money | COMPLETE (62 tests) | COMPLETE | COMPLETE |
-| 2: Track Your Money | COMPLETE (117 tests) | 0/6 tasks | 70% |
+| 2: Track Your Money | COMPLETE (117 tests) | COMPLETE (8/8 tasks) | COMPLETE |
+| Onboarding Redesign | COMPLETE (tests) | 9/10 tasks | 95% |
 | 3: Post Your Money | Not started | Not started | Not started |
 
-**Total Backend Tests:** 235 (62 + 117 + 35 system + 21 overview)
-
----
-
-## Tomorrow's Focus (2026-02-10)
-
-**Primary Goal:** Phase 2 Frontend — CSV upload flow + onboarding backend
-
-**Recommended Order:**
-1. **FE-2.1:** CSV Upload Component — enables the core import flow (drag-and-drop, validation)
-2. **FE-2.2:** Column Mapping Interface — complete the import UX
-3. **OB-1 to OB-4:** Onboarding backend (Prisma model + API routes + tests)
-4. **FE-2.3b / FE-2.5b:** Polish matching UI + import history enhancements
+**Total Backend Tests:** 235+ (62 + 117 + 35 system + 21 overview)
 
 ---
 

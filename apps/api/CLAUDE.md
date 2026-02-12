@@ -32,7 +32,6 @@ Requests flow through this pipeline:
 | Vendors | `domains/vendors/` | Stub (planned) |
 | Accounting | `domains/accounting/` | Stub (planned) |
 
-**Note:** Folder is `banking/`, NOT `money-movement/`.
 
 ## Built Endpoints
 

@@ -84,7 +84,7 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 ### Task 1.5: Account Creation Flow
 **Files:**
 - `apps/web/src/components/accounts/AccountFormSheet.tsx` (modify/verify)
-- `apps/web/src/app/(dashboard)/money-movement/accounts/page.tsx` (modify)
+- `apps/web/src/app/(dashboard)/banking/accounts/page.tsx` (modify)
 **What:** Ensure AccountFormSheet works end-to-end: entity selector dropdown (from fetched entities), account name, type (BANK, CREDIT_CARD, INVESTMENT, LOAN, MORTGAGE, OTHER), currency, institution. POST to `/api/banking/accounts`. After creation, user can immediately upload statements for this account.
 **Depends on:** Task 1.4
 **Success:** User can create accounts linked to entities.
@@ -106,7 +106,7 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 ### Task 2.1: Refine Import Upload Form
 **Files:**
 - `apps/web/src/components/import/ImportUploadForm.tsx` (modify)
-- `apps/web/src/app/(dashboard)/money-movement/import/page.tsx` (modify)
+- `apps/web/src/app/(dashboard)/banking/import/page.tsx` (modify)
 **What:** Update ImportUploadForm to use the new simplified API endpoints:
 - CSV: POST `/api/banking/imports/csv` with multipart form data
 - PDF: POST `/api/banking/imports/pdf` with multipart form data
@@ -124,7 +124,7 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 
 ### Task 2.3: Transaction List with Real Data
 **Files:**
-- `apps/web/src/app/(dashboard)/money-movement/transactions/page.tsx` (modify)
+- `apps/web/src/app/(dashboard)/banking/transactions/page.tsx` (modify)
 - `apps/web/src/components/transactions/TransactionsListClient.tsx` (modify)
 - `apps/web/src/components/transactions/TransactionsTable.tsx` (modify)
 - `apps/web/src/components/transactions/TransactionsFilters.tsx` (modify)
@@ -134,7 +134,7 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 
 ### Task 2.4: Import History Page Enhancement
 **Files:**
-- `apps/web/src/app/(dashboard)/money-movement/imports/page.tsx` (modify)
+- `apps/web/src/app/(dashboard)/banking/imports/page.tsx` (modify)
 - `apps/web/src/components/import/ImportHistoryClient.tsx` (modify)
 **What:** Wire import history to GET `/api/banking/imports`. Show table: File Name, Source Type (CSV/PDF badge), Status (color-coded), Date, Transaction Count, Actions. Click row → drill down to GET `/api/banking/imports/:id` showing all transactions from that batch. Add "Upload New" button linking to import page.
 **Depends on:** Task 2.1

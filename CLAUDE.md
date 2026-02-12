@@ -19,7 +19,7 @@
 
 **8 Domains:** Overview (dashboard), Banking (accounts, transactions), Invoicing (invoices, clients), Vendors (bills, payments), Accounting (GL, journal entries), Planning (budgets, forecasts), AI Advisor (insights, rules), Services (integrations), System (settings, users).
 
-**Actual API folder names:** `domains/overview/`, `domains/banking/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`, `domains/accounting/`. **Note:** Folder is `banking/` not `money-movement/`.
+**Actual API folder names:** `domains/overview/`, `domains/banking/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`, `domains/accounting/`.
 
 ---
 

@@ -21,16 +21,20 @@ export default async function OnboardingLayout({
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
-  // If already onboarded, redirect to dashboard
+  // If already onboarded, redirect to dashboard (3s timeout to avoid hanging)
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
     const onboarding = await apiClient<OnboardingStatus>(
-      '/api/system/onboarding/status'
+      '/api/system/onboarding/status',
+      { signal: controller.signal }
     )
+    clearTimeout(timeout);
     if (onboarding.status === 'completed') {
       redirect('/overview')
     }
   } catch {
-    // Status check failed — let user proceed to onboarding
+    // API down or status check failed — let user proceed to onboarding
   }
 
   return (

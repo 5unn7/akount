@@ -187,7 +187,7 @@ No path scope — always loaded.
 
 **3a. `apps/api/CLAUDE.md` (~60 lines)**
 - Middleware chain: auth > tenant > validation > service
-- Domain folder structure with ACTUAL names (banking, not money-movement)
+- Domain folder structure with ACTUAL names (banking, not banking)
 - Built endpoints vs stubs (from actual route registration)
 - Service patterns with tenantId
 - Test patterns (vitest)

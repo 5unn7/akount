@@ -355,7 +355,6 @@ These are tracked but not phase-gated — they happen alongside phase work:
 | RBAC role expansion (4 → 6 roles) | Phase 4 (needs multi-user) | Schema designed |
 | FX rate historical lookup (nearest-date) | Phase 3 (multi-currency posting) | Not started |
 | Row-Level Security (PostgreSQL) | Phase 6 (production hardening) | Not started |
-| Navigation rename (banking → money-movement) | Phase 2 FE work | Known issue |
 
 ---
 

@@ -136,8 +136,9 @@ After writing the plan, present a summary:
 - Plan location (`docs/plans/YYYY-MM-DD-*.md`)
 - Task count
 - High-risk tasks (if any)
+- save the plan in docs/plans/YYYY-MM-DD-short-description.md
 
-Then: "Run `/processes:work` to execute this plan."
+Then ask user: "Run `/processes:work` to execute this plan." or modify
 
 ---
 
