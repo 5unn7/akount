@@ -34,7 +34,7 @@ export default async function ImportsPage({ searchParams }: ImportsPageProps) {
                     </p>
                 </div>
                 <Button asChild>
-                    <Link href="/money-movement/import">
+                    <Link href="/banking/import">
                         <Upload className="h-4 w-4 mr-2" />
                         New Import
                     </Link>

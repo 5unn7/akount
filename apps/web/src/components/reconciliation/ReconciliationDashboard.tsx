@@ -12,7 +12,7 @@ import {
     fetchSuggestions,
     matchTransactions,
     fetchAccountTransactions,
-} from '@/app/(dashboard)/money-movement/reconciliation/actions';
+} from '@/app/(dashboard)/banking/reconciliation/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -68,7 +68,7 @@ export function ReconciliationDashboard({
         setSuggestions({});
         setError(null);
 
-        router.push(`/money-movement/reconciliation?accountId=${accountId}`);
+        router.push(`/banking/reconciliation?accountId=${accountId}`);
 
         startTransition(async () => {
             try {

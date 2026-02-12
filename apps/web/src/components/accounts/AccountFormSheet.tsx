@@ -35,7 +35,7 @@ import {
     createAccountAction,
     updateAccountAction,
     deleteAccountAction,
-} from '@/app/(dashboard)/money-movement/accounts/actions';
+} from '@/app/(dashboard)/banking/accounts/actions';
 
 const ACCOUNT_TYPES: { value: AccountType; label: string }[] = [
     { value: 'BANK', label: 'Bank Account' },

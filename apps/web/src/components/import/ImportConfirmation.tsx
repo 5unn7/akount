@@ -30,14 +30,15 @@ interface ImportConfirmationProps {
       isDuplicate?: boolean;
     }>;
   };
+  currency?: string;
   onUploadAnother: () => void;
 }
 
-function formatAmount(cents: number): string {
+function formatAmount(cents: number, currency = 'CAD'): string {
   const dollars = Math.abs(cents) / 100;
   return new Intl.NumberFormat('en-CA', {
     style: 'currency',
-    currency: 'CAD',
+    currency,
   }).format(dollars);
 }
 
@@ -49,7 +50,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export function ImportConfirmation({ result, onUploadAnother }: ImportConfirmationProps) {
+export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }: ImportConfirmationProps) {
   const isSuccess = result.status === 'PROCESSED' || result.processedRows > 0;
   const hasErrors = result.errorRows > 0;
   const transactions = result.transactions || [];
@@ -159,7 +160,7 @@ export function ImportConfirmation({ result, onUploadAnother }: ImportConfirmati
                 <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
                   Total Volume
                 </p>
-                <p className="text-sm font-mono font-medium">{formatAmount(totalAmount)}</p>
+                <p className="text-sm font-mono font-medium">{formatAmount(totalAmount, currency)}</p>
               </div>
             </div>
           </CardContent>
@@ -214,7 +215,7 @@ export function ImportConfirmation({ result, onUploadAnother }: ImportConfirmati
                             txn.amount < 0 ? 'text-[#F87171]' : 'text-[#34D399]'
                           }`}
                         >
-                          {formatAmount(txn.amount)}
+                          {formatAmount(txn.amount, currency)}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-sm">
@@ -248,7 +249,7 @@ export function ImportConfirmation({ result, onUploadAnother }: ImportConfirmati
           className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
           asChild
         >
-          <Link href="/money-movement/transactions">
+          <Link href="/banking/transactions">
             View Transactions
             <ArrowRight className="h-4 w-4 ml-2" />
           </Link>
@@ -266,7 +267,7 @@ export function ImportConfirmation({ result, onUploadAnother }: ImportConfirmati
           className="rounded-lg"
           asChild
         >
-          <Link href="/money-movement/imports">
+          <Link href="/banking/imports">
             <FileText className="h-4 w-4 mr-2" />
             Import History
           </Link>

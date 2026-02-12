@@ -14,9 +14,12 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { SidebarProgressIndicator } from "@/components/layout/SidebarProgressIndicator";
-import { navigationDomains, type NavDomain } from "@/lib/navigation";
+import { navigationDomains, getNavigationForRole, type NavDomain } from "@/lib/navigation";
+import type { Role } from "@akount/types";
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
+    role?: Role;
+}
 
 /**
  * Domain navigation group component.
@@ -83,14 +86,15 @@ function DomainGroup({
     );
 }
 
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, role }: SidebarProps) {
     const pathname = usePathname();
+    const domains = role ? getNavigationForRole(role) : navigationDomains;
 
     // Track which domains are expanded (default: domain containing current page)
     const [expandedDomains, setExpandedDomains] = useState<Set<string>>(() => {
         const initial = new Set<string>();
         // Auto-expand the domain containing the current page
-        for (const domain of navigationDomains) {
+        for (const domain of domains) {
             if (domain.items.some((item) => pathname.startsWith(item.href))) {
                 initial.add(domain.id);
             }
@@ -121,7 +125,7 @@ export function Sidebar({ className }: SidebarProps) {
                             Akount
                         </h2>
                         <nav className="space-y-1">
-                            {navigationDomains.map((domain) => (
+                            {domains.map((domain) => (
                                 <DomainGroup
                                     key={domain.id}
                                     domain={domain}

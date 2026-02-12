@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { X, Building2, CheckCircle } from 'lucide-react'
 import { GlassCard } from 'shadcn-glass-ui'
+import { apiFetch } from '@/lib/api/client-browser'
 
 interface BankConnectionModalProps {
   onClose: () => void
@@ -23,9 +24,8 @@ export function BankConnectionModal({ onClose, onComplete }: BankConnectionModal
       await new Promise(resolve => setTimeout(resolve, 1000))
 
       // Update onboarding progress
-      await fetch('/api/system/onboarding/update-progress', {
+      await apiFetch('/api/system/onboarding/update-progress', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           step: 'bank_connection',
           completed: true,

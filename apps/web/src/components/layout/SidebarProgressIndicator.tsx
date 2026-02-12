@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { apiFetch } from '@/lib/api/client-browser'
 
 interface Progress {
   completionPercentage: number
@@ -12,8 +13,7 @@ export function SidebarProgressIndicator() {
   const router = useRouter()
 
   useEffect(() => {
-    fetch('/api/system/onboarding/progress')
-      .then(res => res.json())
+    apiFetch<Progress>('/api/system/onboarding/progress')
       .then(setProgress)
       .catch(console.error)
   }, [])

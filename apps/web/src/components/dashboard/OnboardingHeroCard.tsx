@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { apiFetch } from '@/lib/api/client-browser'
 import { CircularProgress } from './CircularProgress'
 import { Card } from '@/components/ui/card'
 import { X, ChevronDown, ChevronUp } from 'lucide-react'
@@ -29,8 +30,7 @@ export function OnboardingHeroCard() {
 
   async function fetchProgress() {
     try {
-      const response = await fetch('/api/system/onboarding/progress')
-      const data = await response.json()
+      const data = await apiFetch<OnboardingProgress>('/api/system/onboarding/progress')
       setProgress(data)
     } catch (error) {
       console.error('Failed to fetch progress:', error)
@@ -40,14 +40,13 @@ export function OnboardingHeroCard() {
   }
 
   async function handleDismiss() {
-    await fetch('/api/system/onboarding/dismiss-card', { method: 'POST' })
+    await apiFetch('/api/system/onboarding/dismiss-card', { method: 'POST' })
     setProgress(null)
   }
 
   async function handleSkipStep(step: string) {
-    await fetch('/api/system/onboarding/skip-step', {
+    await apiFetch('/api/system/onboarding/skip-step', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ step, skipDurationDays: 7 })
     })
     fetchProgress()

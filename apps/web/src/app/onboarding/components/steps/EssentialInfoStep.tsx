@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { apiFetch } from '@/lib/api/client-browser'
 import { Card } from '@/components/ui/card'
@@ -22,7 +21,6 @@ interface EssentialInfoStepProps {
  * Total time to complete: ~60 seconds.
  */
 export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
-  const router = useRouter()
   const {
     accountType,
     entityName,
@@ -52,7 +50,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
         console.log('Could not auto-detect timezone:', error)
       }
     }
-  }, [])
+  }, [timezone, setTimezone])
 
   // Auto-update currency when country changes
   const handleCountryChange = (newCountry: string) => {
@@ -122,11 +120,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
         entityId: data.entityId,
       })
 
-      // Auto-redirect to overview (2 second delay for success animation)
-      setTimeout(() => {
-        router.push('/overview')
-      }, 2000)
-
+      // Advance to CompletionStep (which handles the redirect)
       onNext()
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An error occurred'

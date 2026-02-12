@@ -15,7 +15,7 @@ import {
     fetchMoreTransactions,
     bulkCategorizeAction,
     bulkDeleteAction,
-} from '@/app/(dashboard)/money-movement/transactions/actions';
+} from '@/app/(dashboard)/banking/transactions/actions';
 
 interface TransactionsListClientProps {
     transactions: Transaction[];
@@ -53,11 +53,11 @@ export function TransactionsListClient({
         if (filters.startDate) params.set('startDate', filters.startDate);
         if (filters.endDate) params.set('endDate', filters.endDate);
         const query = params.toString();
-        router.push(`/money-movement/transactions${query ? `?${query}` : ''}`);
+        router.push(`/banking/transactions${query ? `?${query}` : ''}`);
     }
 
     function handleClearFilters() {
-        router.push('/money-movement/transactions');
+        router.push('/banking/transactions');
     }
 
     async function handleLoadMore() {
@@ -127,7 +127,7 @@ export function TransactionsListClient({
                             className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
                             asChild
                         >
-                            <Link href="/money-movement/import">
+                            <Link href="/banking/import">
                                 <Upload className="h-4 w-4 mr-2" />
                                 Import Statement
                             </Link>

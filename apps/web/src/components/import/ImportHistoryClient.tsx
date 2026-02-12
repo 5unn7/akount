@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { ImportBatch } from '@/lib/api/imports';
-import { fetchImportBatches } from '@/app/(dashboard)/money-movement/imports/actions';
+import { fetchImportBatches } from '@/app/(dashboard)/banking/imports/actions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -106,7 +106,7 @@ export function ImportHistoryClient({
             params.delete(key);
         }
         const query = params.toString();
-        router.push(`/money-movement/imports${query ? `?${query}` : ''}`);
+        router.push(`/banking/imports${query ? `?${query}` : ''}`);
     }
 
     async function handleLoadMore() {
@@ -216,7 +216,7 @@ export function ImportHistoryClient({
                                         <TableRow
                                             key={batch.id}
                                             className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors cursor-pointer"
-                                            onClick={() => router.push(`/money-movement/imports/${batch.id}`)}
+                                            onClick={() => router.push(`/banking/imports/${batch.id}`)}
                                         >
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
@@ -303,7 +303,7 @@ export function ImportHistoryClient({
                             className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
                             asChild
                         >
-                            <Link href="/money-movement/import">
+                            <Link href="/banking/import">
                                 <Upload className="h-4 w-4 mr-2" />
                                 Upload Statement
                             </Link>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { GlassCard } from 'shadcn-glass-ui'
+import { apiFetch } from '@/lib/api/client-browser'
 
 interface BusinessDetailsModalProps {
   onClose: () => void
@@ -30,20 +31,14 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
 
     try {
       // Update entity with business details
-      const response = await fetch('/api/system/entity/business-details', {
+      await apiFetch('/api/system/entity/business-details', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to save business details')
-      }
-
       // Update onboarding progress
-      await fetch('/api/system/onboarding/update-progress', {
+      await apiFetch('/api/system/onboarding/update-progress', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           step: 'business_details',
           completed: true,

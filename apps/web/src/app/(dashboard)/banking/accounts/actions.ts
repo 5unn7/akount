@@ -19,7 +19,7 @@ export async function createAccountAction(
 ): Promise<ActionResult<Account>> {
     try {
         const account = await createAccount(input);
-        revalidatePath('/money-movement/accounts');
+        revalidatePath('/banking/accounts');
         return { success: true, data: account };
     } catch (err) {
         return {
@@ -35,7 +35,7 @@ export async function updateAccountAction(
 ): Promise<ActionResult<Account>> {
     try {
         const account = await updateAccount(id, input);
-        revalidatePath('/money-movement/accounts');
+        revalidatePath('/banking/accounts');
         return { success: true, data: account };
     } catch (err) {
         return {
@@ -50,7 +50,7 @@ export async function deleteAccountAction(
 ): Promise<ActionResult> {
     try {
         await deleteAccount(id);
-        revalidatePath('/money-movement/accounts');
+        revalidatePath('/banking/accounts');
         return { success: true, data: undefined };
     } catch (err) {
         return {

@@ -25,8 +25,6 @@ export function OnboardingWizard() {
   const {
     currentStep,
     accountType,
-    tenantId,
-    entityId,
     nextStep,
     previousStep,
   } = useOnboardingStore()
@@ -37,13 +35,6 @@ export function OnboardingWizard() {
       router.push('/sign-in')
     }
   }, [isLoaded, userId, router])
-
-  // Redirect to overview if onboarding is complete
-  useEffect(() => {
-    if (tenantId && entityId) {
-      router.push('/overview')
-    }
-  }, [tenantId, entityId, router])
 
   // Loading state
   if (!isLoaded || !userId) {

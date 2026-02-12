@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { X, Target, TrendingUp, TrendingDown } from 'lucide-react'
 import { GlassCard } from 'shadcn-glass-ui'
+import { apiFetch } from '@/lib/api/client-browser'
 
 interface GoalsSetupModalProps {
   onClose: () => void
@@ -27,9 +28,8 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
 
     try {
       // TODO: Save goals to database
-      const response = await fetch('/api/goals/create', {
+      await apiFetch('/api/goals/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           revenueTarget: parseFloat(formData.revenueTarget) * 100, // Convert to cents
@@ -38,14 +38,9 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
         }),
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to save goals')
-      }
-
       // Update onboarding progress
-      await fetch('/api/system/onboarding/update-progress', {
+      await apiFetch('/api/system/onboarding/update-progress', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           step: 'goals_setup',
           completed: true,

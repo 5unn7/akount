@@ -24,7 +24,7 @@ test.describe.skip('Account Management', () => {
   test.beforeEach(async ({ page }) => {
     // TODO: Add Clerk authentication setup here
     // Example: await clerkSetup(page, { userId: 'test-user-id' });
-    await page.goto('/money-movement/accounts');
+    await page.goto('/banking/accounts');
   });
 
   test('should display accounts list page', async ({ page }) => {
@@ -177,7 +177,7 @@ test.describe.skip('Account Management', () => {
 
   test('should show error page for invalid account ID', async ({ page }) => {
     // Navigate to a non-existent account
-    await page.goto('/money-movement/accounts/invalid-account-id-12345');
+    await page.goto('/banking/accounts/invalid-account-id-12345');
 
     // Wait for error state or 404
     await page.waitForLoadState('networkidle');

@@ -24,7 +24,7 @@ export function AccountsListClient({
 
     function handleCardClick(account: Account) {
         // Navigate to account detail page
-        router.push(`/money-movement/accounts/${account.id}`);
+        router.push(`/banking/accounts/${account.id}`);
     }
 
     return (

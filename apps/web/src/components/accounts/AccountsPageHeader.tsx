@@ -45,7 +45,7 @@ export function AccountsPageHeader({ entities }: AccountsPageHeaderProps) {
                 params.set('type', value);
             }
             const qs = params.toString();
-            router.push(qs ? `?${qs}` : '/money-movement/accounts', { scroll: false });
+            router.push(qs ? `?${qs}` : '/banking/accounts', { scroll: false });
         },
         [router, searchParams]
     );

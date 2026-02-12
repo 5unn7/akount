@@ -34,7 +34,7 @@ export function AccountDetailHeader({ account }: AccountDetailHeaderProps) {
     return (
         <div className="space-y-4">
             {/* Back button */}
-            <Link href="/money-movement/accounts">
+            <Link href="/banking/accounts">
                 <Button variant="ghost" size="sm" className="gap-2">
                     <ArrowLeft className="h-4 w-4" />
                     Back to Accounts

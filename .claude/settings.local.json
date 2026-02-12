@@ -86,7 +86,11 @@
       "WebFetch(domain:www.builder.io)",
       "WebFetch(domain:claudefa.st)",
       "WebFetch(domain:medium.com)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "mcp__figma-console__figma_get_styles",
+      "mcp__figma-console__figma_batch_update_variables",
+      "Bash(wmic process where \"name=''node.exe''\" get processid,commandline)",
+      "Bash(cmd /c \"where pnpm\")"
     ],
     "deny": [
       "Bash(git reset --hard *)",
@@ -133,7 +137,7 @@
       "Bash(pkill *)"
     ],
     "additionalDirectories": [
-      "w:\\Marakana Corp\\Companies\\akount\\Development\\Brand\\aggoogle\\product-plan\\apps\\web\\src\\app\\(dashboard)\\money-movement\\accounts"
+      "w:\\Marakana Corp\\Companies\\akount\\Development\\Brand\\aggoogle\\product-plan\\apps\\web\\src\\app\\(dashboard)\\banking\\accounts"
     ]
   },
   "enableAllProjectMcpServers": true,

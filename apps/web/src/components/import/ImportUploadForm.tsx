@@ -235,9 +235,11 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
 
   // Step 4: Results
   if (step === 'results' && importResult) {
+    const selectedAccount = accounts.find(a => a.id === selectedAccountId);
     return (
       <ImportConfirmation
         result={importResult}
+        currency={selectedAccount?.currency}
         onUploadAnother={handleReset}
       />
     );

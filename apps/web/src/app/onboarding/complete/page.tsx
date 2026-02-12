@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { GlassCard } from 'shadcn-glass-ui'
+import { apiFetch } from '@/lib/api/client-browser'
+import { Card } from '@/components/ui/card'
 import { CheckCircle2, Circle, ArrowRight } from 'lucide-react'
 import { BusinessDetailsModal } from './components/BusinessDetailsModal'
 import { BankConnectionModal } from './components/BankConnectionModal'
@@ -36,8 +37,7 @@ export default function OnboardingCompletePage() {
 
   async function fetchProgress() {
     try {
-      const response = await fetch('/api/system/onboarding/progress')
-      const data = await response.json()
+      const data = await apiFetch<OnboardingProgress>('/api/system/onboarding/progress')
       setProgress(data)
     } catch (error) {
       console.error('Failed to fetch progress:', error)
@@ -53,13 +53,13 @@ export default function OnboardingCompletePage() {
   }
 
   function handleSkipAll() {
-    router.push('/dashboard')
+    router.push('/overview')
   }
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-orange-500" />
+      <div className="min-h-screen bg-[#09090F] flex items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-[rgba(255,255,255,0.06)] border-t-primary" />
       </div>
     )
   }
@@ -93,29 +93,29 @@ export default function OnboardingCompletePage() {
   const totalSteps = steps.length
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-slate-50 py-12 px-4">
+    <div className="min-h-screen bg-[#09090F] py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Complete Your Setup</h1>
-          <p className="text-lg text-slate-600">
-            You're {progress.completionPercentage}% done! Just a few more details to unlock all features.
+          <h1 className="text-4xl font-heading font-normal text-foreground mb-4">Complete Your Setup</h1>
+          <p className="text-lg text-muted-foreground">
+            You're <span className="font-mono text-primary">{progress.completionPercentage}%</span> done! Just a few more details to unlock all features.
           </p>
         </div>
 
         {/* Progress bar */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-600">
+            <span className="text-sm font-medium text-muted-foreground">
               {completedCount} of {totalSteps} steps completed
             </span>
-            <span className="text-sm font-mono font-bold text-orange-500">
+            <span className="text-sm font-mono font-bold text-primary">
               {progress.completionPercentage}%
             </span>
           </div>
-          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div className="h-2 bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-500"
+              className="h-full bg-primary transition-all duration-500"
               style={{ width: `${progress.completionPercentage}%` }}
             />
           </div>
@@ -124,18 +124,19 @@ export default function OnboardingCompletePage() {
         {/* Steps list */}
         <div className="space-y-4 mb-8">
           {steps.map((step) => (
-            <GlassCard
+            <Card
               key={step.id}
+              variant="glass"
               className={`p-6 cursor-pointer transition-all ${
                 step.complete
                   ? 'opacity-60'
-                  : 'hover:shadow-lg hover:border-orange-300'
+                  : 'hover:border-[rgba(245,158,11,0.3)]'
               }`}
               onClick={() => !step.complete && setActiveStep(step.id)}
             >
               <div className="flex items-center gap-4">
                 {/* Status icon */}
-                <div className={`flex-shrink-0 ${step.complete ? 'text-green-500' : 'text-slate-300'}`}>
+                <div className={`flex-shrink-0 ${step.complete ? 'text-[#34D399]' : 'text-[rgba(255,255,255,0.2)]'}`}>
                   {step.complete ? (
                     <CheckCircle2 className="h-8 w-8" />
                   ) : (
@@ -145,10 +146,10 @@ export default function OnboardingCompletePage() {
 
                 {/* Content */}
                 <div className="flex-1">
-                  <h3 className={`text-lg font-semibold ${step.complete ? 'line-through text-slate-500' : 'text-slate-900'}`}>
+                  <h3 className={`text-lg font-medium ${step.complete ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
                     {step.label}
                   </h3>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-muted-foreground">
                     {step.description}
                   </p>
                 </div>
@@ -160,14 +161,14 @@ export default function OnboardingCompletePage() {
                       e.stopPropagation()
                       setActiveStep(step.id)
                     }}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black bg-primary rounded-lg hover:bg-[#FBBF24] transition-colors"
                   >
                     Start
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 )}
               </div>
-            </GlassCard>
+            </Card>
           ))}
         </div>
 
@@ -175,16 +176,16 @@ export default function OnboardingCompletePage() {
         <div className="flex gap-4 justify-center">
           <button
             onClick={handleSkipAll}
-            className="px-6 py-3 text-sm font-medium text-slate-700 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition-all"
+            className="px-6 py-3 text-sm font-medium text-foreground glass border border-[rgba(255,255,255,0.06)] rounded-lg hover:bg-[rgba(255,255,255,0.04)] transition-all"
           >
             Skip for now
           </button>
           {completedCount === totalSteps && (
             <button
-              onClick={() => router.push('/dashboard')}
-              className="px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg hover:from-green-600 hover:to-green-700 transition-all shadow-md hover:shadow-lg"
+              onClick={() => router.push('/overview')}
+              className="px-6 py-3 text-sm font-medium text-black bg-[#34D399] rounded-lg hover:bg-[#6EE7B7] transition-all"
             >
-              Go to Dashboard →
+              Go to Dashboard &rarr;
             </button>
           )}
         </div>
