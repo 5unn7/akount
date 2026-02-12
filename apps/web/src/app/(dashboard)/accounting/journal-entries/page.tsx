@@ -1,36 +1,141 @@
-import type { Metadata } from "next";
-import { BookOpen } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { listJournalEntries } from '@/lib/api/accounting';
+import { listEntities } from '@/lib/api/entities';
+import { JournalEntriesClient } from './journal-entries-client';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const metadata: Metadata = {
-    title: "Journal Entries | Akount",
-    description: "Create and manage journal entries",
+    title: 'Journal Entries | Akount',
+    description: 'Create and manage journal entries',
 };
 
-export default function JournalEntriesPage() {
+interface JournalEntriesPageProps {
+    searchParams: Promise<{
+        entityId?: string;
+        status?: string;
+        startDate?: string;
+        endDate?: string;
+    }>;
+}
+
+export default async function JournalEntriesPage({
+    searchParams,
+}: JournalEntriesPageProps) {
+    const params = await searchParams;
+
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Journal Entries</h2>
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight font-heading">
+                        Journal Entries
+                    </h2>
+                    <p className="text-muted-foreground">
+                        View, approve, and manage double-entry journal entries
+                    </p>
+                </div>
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <BookOpen className="h-5 w-5" />
-                        Coming Soon
-                    </CardTitle>
-                    <CardDescription>
-                        Create double-entry journal entries for your accounts.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        This feature is under development. It will provide journal entry creation
-                        with multi-line support, reversing entries, and audit trails.
-                    </p>
-                </CardContent>
-            </Card>
+            <Suspense
+                key={`${params.entityId}-${params.status}-${params.startDate}-${params.endDate}`}
+                fallback={<JournalEntriesSkeleton />}
+            >
+                <JournalEntriesData
+                    entityId={params.entityId}
+                    status={params.status}
+                    startDate={params.startDate}
+                    endDate={params.endDate}
+                />
+            </Suspense>
+        </div>
+    );
+}
+
+async function JournalEntriesData({
+    entityId,
+    status,
+    startDate,
+    endDate,
+}: {
+    entityId?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+}) {
+    try {
+        const entities = await listEntities();
+
+        if (entities.length === 0) {
+            return (
+                <Card className="glass rounded-[14px]">
+                    <CardContent className="py-12 text-center">
+                        <p className="text-muted-foreground">
+                            No entities found. Create a business entity first.
+                        </p>
+                    </CardContent>
+                </Card>
+            );
+        }
+
+        const selectedEntityId = entityId || entities[0].id;
+        const validStatuses = ['DRAFT', 'POSTED', 'VOIDED', 'ARCHIVED'];
+        const statusParam = status && validStatuses.includes(status)
+            ? (status as 'DRAFT' | 'POSTED' | 'VOIDED' | 'ARCHIVED')
+            : undefined;
+
+        const result = await listJournalEntries({
+            entityId: selectedEntityId,
+            status: statusParam,
+            startDate,
+            endDate,
+        });
+
+        return (
+            <JournalEntriesClient
+                entries={result.entries}
+                hasMore={result.hasMore}
+                nextCursor={result.nextCursor}
+                entityId={selectedEntityId}
+            />
+        );
+    } catch (error) {
+        return (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+                <p className="text-destructive mb-2">Failed to load journal entries</p>
+                <p className="text-sm text-muted-foreground">
+                    {error instanceof Error ? error.message : 'Unknown error occurred'}
+                </p>
+            </div>
+        );
+    }
+}
+
+function JournalEntriesSkeleton() {
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-3">
+                <div className="h-10 w-36 bg-muted animate-pulse rounded-lg" />
+                <div className="h-10 w-40 bg-muted animate-pulse rounded-lg" />
+                <div className="h-10 w-40 bg-muted animate-pulse rounded-lg" />
+                <div className="flex-1" />
+                <div className="h-10 w-32 bg-muted animate-pulse rounded-lg" />
+            </div>
+            <div className="rounded-[14px] border border-white/[0.06] overflow-hidden">
+                <div className="p-4 space-y-3">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="flex gap-4">
+                            <div className="h-10 w-6 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-24 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-20 bg-muted animate-pulse rounded" />
+                            <div className="h-10 flex-1 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-20 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-20 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-28 bg-muted animate-pulse rounded" />
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

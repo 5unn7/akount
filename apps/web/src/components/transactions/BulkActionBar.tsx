@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trash2, X, Loader2, Tag } from 'lucide-react';
 
@@ -9,6 +9,7 @@ interface BulkActionBarProps {
     onClearSelection: () => void;
     onBulkUncategorize: () => Promise<void>;
     onBulkDelete: () => Promise<void>;
+    extraActions?: React.ReactNode;
 }
 
 export function BulkActionBar({
@@ -16,6 +17,7 @@ export function BulkActionBar({
     onClearSelection,
     onBulkUncategorize,
     onBulkDelete,
+    extraActions,
 }: BulkActionBarProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isUncategorizing, setIsUncategorizing] = useState(false);
@@ -83,6 +85,13 @@ export function BulkActionBar({
                     )}
                     Delete
                 </Button>
+
+                {extraActions && (
+                    <>
+                        <div className="h-4 w-px bg-white/[0.09]" />
+                        {extraActions}
+                    </>
+                )}
 
                 <div className="h-4 w-px bg-white/[0.09]" />
 

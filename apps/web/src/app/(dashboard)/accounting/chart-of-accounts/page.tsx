@@ -1,36 +1,112 @@
-import type { Metadata } from "next";
-import { ListTree } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import { listGLAccounts, getAccountBalances } from '@/lib/api/accounting';
+import { listEntities } from '@/lib/api/entities';
+import { ChartOfAccountsClient } from './chart-of-accounts-client';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const metadata: Metadata = {
-    title: "Chart of Accounts | Akount",
-    description: "Manage your chart of accounts",
+    title: 'Chart of Accounts | Akount',
+    description: 'Manage your chart of accounts',
 };
 
-export default function ChartOfAccountsPage() {
+interface ChartOfAccountsPageProps {
+    searchParams: Promise<{ entityId?: string }>;
+}
+
+export default async function ChartOfAccountsPage({
+    searchParams,
+}: ChartOfAccountsPageProps) {
+    const params = await searchParams;
+
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Chart of Accounts</h2>
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight font-heading">
+                        Chart of Accounts
+                    </h2>
+                    <p className="text-muted-foreground">
+                        Manage your general ledger account structure
+                    </p>
+                </div>
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <ListTree className="h-5 w-5" />
-                        Coming Soon
-                    </CardTitle>
-                    <CardDescription>
-                        Configure your general ledger account structure.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        This feature is under development. It will provide account management,
-                        hierarchical organization, and Canadian GAAP compliance templates.
-                    </p>
-                </CardContent>
-            </Card>
+            <Suspense
+                key={params.entityId}
+                fallback={<COASkeleton />}
+            >
+                <COAData entityId={params.entityId} />
+            </Suspense>
+        </div>
+    );
+}
+
+async function COAData({ entityId }: { entityId?: string }) {
+    try {
+        const entities = await listEntities();
+
+        if (entities.length === 0) {
+            return (
+                <Card className="glass rounded-[14px]">
+                    <CardContent className="py-12 text-center">
+                        <p className="text-muted-foreground">
+                            No entities found. Create a business entity first.
+                        </p>
+                    </CardContent>
+                </Card>
+            );
+        }
+
+        const selectedEntityId = entityId || entities[0].id;
+
+        const [accounts, balances] = await Promise.all([
+            listGLAccounts({ entityId: selectedEntityId }),
+            getAccountBalances(selectedEntityId).catch(() => []),
+        ]);
+
+        return (
+            <ChartOfAccountsClient
+                accounts={accounts}
+                balances={balances}
+                entities={entities}
+                selectedEntityId={selectedEntityId}
+            />
+        );
+    } catch (error) {
+        return (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+                <p className="text-destructive mb-2">Failed to load chart of accounts</p>
+                <p className="text-sm text-muted-foreground">
+                    {error instanceof Error ? error.message : 'Unknown error occurred'}
+                </p>
+            </div>
+        );
+    }
+}
+
+function COASkeleton() {
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-3">
+                <div className="h-10 w-40 bg-muted animate-pulse rounded-lg" />
+                <div className="flex-1" />
+                <div className="h-10 w-32 bg-muted animate-pulse rounded-lg" />
+                <div className="h-10 w-36 bg-muted animate-pulse rounded-lg" />
+            </div>
+            <div className="rounded-[14px] border border-white/[0.06] overflow-hidden">
+                <div className="p-4 space-y-3">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                        <div key={i} className="flex gap-4">
+                            <div className="h-10 w-20 bg-muted animate-pulse rounded" />
+                            <div className="h-10 flex-1 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-24 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-16 bg-muted animate-pulse rounded" />
+                            <div className="h-10 w-28 bg-muted animate-pulse rounded" />
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }
