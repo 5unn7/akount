@@ -1,108 +1,54 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { withPermission } from '../../../middleware/withPermission';
+import { validateBody, validateQuery, validateParams } from '../../../middleware/validation';
+import { JournalEntryService } from '../services/journal-entry.service';
+import { PostingService } from '../services/posting.service';
+import { AccountingError } from '../errors';
+import {
+  CreateJournalEntrySchema,
+  ListJournalEntriesSchema,
+  JournalEntryParamsSchema,
+  PostTransactionSchema,
+  PostBulkTransactionsSchema,
+  type CreateJournalEntryInput,
+  type ListJournalEntriesQuery,
+  type JournalEntryParams,
+  type PostTransactionInput,
+  type PostBulkTransactionsInput,
+} from '../schemas/journal-entry.schema';
 
 /**
  * Journal Entry Routes
  *
  * CRUD, approval, voiding, and transaction posting.
- * Implemented in Sprint 2.
+ * Static routes (/post-transaction, /post-transactions) registered BEFORE /:id.
  */
 export async function journalEntryRoutes(fastify: FastifyInstance) {
-  // GET /journal-entries — List with filters + cursor pagination
-  fastify.get(
-    '/',
-    {
-      ...withPermission('accounting', 'journal-entries', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Journal entries listing will be implemented in Sprint 2',
-      });
-    }
-  );
-
-  // GET /journal-entries/:id — Full detail with lines
-  fastify.get(
-    '/:id',
-    {
-      ...withPermission('accounting', 'journal-entries', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Journal entry details will be implemented in Sprint 2',
-      });
-    }
-  );
-
-  // POST /journal-entries — Create manual entry (DRAFT)
-  fastify.post(
-    '/',
-    {
-      ...withPermission('accounting', 'journal-entries', 'ACT'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Journal entry creation will be implemented in Sprint 2',
-      });
-    }
-  );
-
-  // POST /journal-entries/:id/approve — Approve (DRAFT → POSTED)
-  fastify.post(
-    '/:id/approve',
-    {
-      ...withPermission('accounting', 'journal-entries', 'APPROVE'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Journal entry approval will be implemented in Sprint 2',
-      });
-    }
-  );
-
-  // POST /journal-entries/:id/void — Void a POSTED entry
-  fastify.post(
-    '/:id/void',
-    {
-      ...withPermission('accounting', 'journal-entries', 'APPROVE'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Journal entry void will be implemented in Sprint 2',
-      });
-    }
-  );
-
-  // DELETE /journal-entries/:id — Soft delete DRAFT only
-  fastify.delete(
-    '/:id',
-    {
-      ...withPermission('accounting', 'journal-entries', 'ACT'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Journal entry deletion will be implemented in Sprint 2',
-      });
-    }
-  );
+  // ============================================================================
+  // Static routes FIRST (before /:id to avoid route conflicts)
+  // ============================================================================
 
   // POST /journal-entries/post-transaction — Post a bank transaction to GL
   fastify.post(
     '/post-transaction',
     {
       ...withPermission('accounting', 'journal-entries', 'ACT'),
+      preValidation: [validateBody(PostTransactionSchema)],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Transaction posting will be implemented in Sprint 2',
-      });
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const body = request.body as PostTransactionInput;
+      const service = new PostingService(request.tenantId, request.userId);
+
+      try {
+        const result = await service.postTransaction(body.transactionId, body.glAccountId);
+        return reply.status(201).send(result);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
     }
   );
 
@@ -111,12 +57,192 @@ export async function journalEntryRoutes(fastify: FastifyInstance) {
     '/post-transactions',
     {
       ...withPermission('accounting', 'journal-entries', 'ACT'),
+      preValidation: [validateBody(PostBulkTransactionsSchema)],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Bulk transaction posting will be implemented in Sprint 2',
-      });
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const body = request.body as PostBulkTransactionsInput;
+      const service = new PostingService(request.tenantId, request.userId);
+
+      try {
+        const result = await service.postBulkTransactions(body.transactionIds, body.glAccountId);
+        return reply.status(201).send(result);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
     }
   );
+
+  // ============================================================================
+  // List + Create (root routes)
+  // ============================================================================
+
+  // GET /journal-entries — List with filters + cursor pagination
+  fastify.get(
+    '/',
+    {
+      ...withPermission('accounting', 'journal-entries', 'VIEW'),
+      preValidation: [validateQuery(ListJournalEntriesSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const query = request.query as ListJournalEntriesQuery;
+      const service = new JournalEntryService(request.tenantId, request.userId);
+
+      try {
+        const result = await service.listEntries(query);
+        return reply.send(result);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+
+  // POST /journal-entries — Create manual entry (DRAFT)
+  fastify.post(
+    '/',
+    {
+      ...withPermission('accounting', 'journal-entries', 'ACT'),
+      preValidation: [validateBody(CreateJournalEntrySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const body = request.body as CreateJournalEntryInput;
+      const service = new JournalEntryService(request.tenantId, request.userId);
+
+      try {
+        const entry = await service.createEntry(body);
+        return reply.status(201).send(entry);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+
+  // ============================================================================
+  // Parameterized routes (/:id)
+  // ============================================================================
+
+  // GET /journal-entries/:id — Full detail with lines
+  fastify.get(
+    '/:id',
+    {
+      ...withPermission('accounting', 'journal-entries', 'VIEW'),
+      preValidation: [validateParams(JournalEntryParamsSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const params = request.params as JournalEntryParams;
+      const service = new JournalEntryService(request.tenantId, request.userId);
+
+      try {
+        const entry = await service.getEntry(params.id);
+        return reply.send(entry);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+
+  // POST /journal-entries/:id/approve — Approve (DRAFT → POSTED)
+  fastify.post(
+    '/:id/approve',
+    {
+      ...withPermission('accounting', 'journal-entries', 'APPROVE'),
+      preValidation: [validateParams(JournalEntryParamsSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const params = request.params as JournalEntryParams;
+      const service = new JournalEntryService(
+        request.tenantId,
+        request.userId,
+        request.tenantRole
+      );
+
+      try {
+        const entry = await service.approveEntry(params.id);
+        return reply.send(entry);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+
+  // POST /journal-entries/:id/void — Void a POSTED entry (creates reversal)
+  fastify.post(
+    '/:id/void',
+    {
+      ...withPermission('accounting', 'journal-entries', 'APPROVE'),
+      preValidation: [validateParams(JournalEntryParamsSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const params = request.params as JournalEntryParams;
+      const service = new JournalEntryService(request.tenantId, request.userId);
+
+      try {
+        const result = await service.voidEntry(params.id);
+        return reply.send(result);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+
+  // DELETE /journal-entries/:id — Soft delete DRAFT only
+  fastify.delete(
+    '/:id',
+    {
+      ...withPermission('accounting', 'journal-entries', 'ACT'),
+      preValidation: [validateParams(JournalEntryParamsSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const params = request.params as JournalEntryParams;
+      const service = new JournalEntryService(request.tenantId, request.userId);
+
+      try {
+        const result = await service.deleteEntry(params.id);
+        return reply.send(result);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+}
+
+/**
+ * Map AccountingError to HTTP response. Re-throw unknown errors.
+ */
+function handleAccountingError(error: unknown, reply: FastifyReply) {
+  if (error instanceof AccountingError) {
+    return reply.status(error.statusCode).send({
+      error: error.code,
+      message: error.message,
+      details: error.details,
+    });
+  }
+  throw error;
 }

@@ -140,6 +140,7 @@ export class AccountService {
       institution?: string | null;
       isActive?: boolean;
       type?: string;
+      glAccountId?: string | null;
     }
   ) {
     // Atomic: verify tenant ownership + update in one transaction
@@ -156,6 +157,23 @@ export class AccountService {
         return null;
       }
 
+      // Validate GL account belongs to same entity + tenant if provided
+      if (data.glAccountId) {
+        const glAccount = await tx.gLAccount.findFirst({
+          where: {
+            id: data.glAccountId,
+            entityId: existing.entityId,
+            entity: { tenantId: this.tenantId },
+            isActive: true,
+          },
+          select: { id: true, type: true },
+        });
+
+        if (!glAccount) {
+          throw new Error('GL account not found, inactive, or belongs to different entity');
+        }
+      }
+
       return tx.account.update({
         where: { id },
         data: {
@@ -165,6 +183,7 @@ export class AccountService {
           ...(data.type !== undefined && {
             type: data.type as 'BANK' | 'CREDIT_CARD' | 'INVESTMENT' | 'LOAN' | 'MORTGAGE' | 'OTHER',
           }),
+          ...(data.glAccountId !== undefined && { glAccountId: data.glAccountId }),
         },
         include: {
           entity: true,

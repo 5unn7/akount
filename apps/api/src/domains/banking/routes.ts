@@ -37,6 +37,7 @@ const updateAccountBodySchema = z.object({
   institution: z.string().max(255).nullable().optional(),
   isActive: z.boolean().optional(),
   type: z.enum(['BANK', 'CREDIT_CARD', 'INVESTMENT', 'LOAN', 'MORTGAGE', 'OTHER']).optional(),
+  glAccountId: z.string().cuid('Invalid GL account ID').nullable().optional(),
 });
 
 const accountTransactionsQuerySchema = z.object({
