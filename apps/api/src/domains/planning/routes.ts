@@ -4,6 +4,7 @@ import { prisma } from '@akount/db';
 import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
 import { withPermission } from '../../middleware/withPermission';
+import { validateBody } from '../../middleware/validation';
 
 /**
  * Planning Domain Routes
@@ -75,9 +76,7 @@ export async function planningRoutes(fastify: FastifyInstance) {
     '/goals',
     {
       ...withPermission('planning', 'goals', 'ACT'),
-      schema: {
-        body: CreateGoalSchema,
-      },
+      preValidation: [validateBody(CreateGoalSchema)],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {

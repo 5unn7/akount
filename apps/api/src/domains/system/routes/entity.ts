@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '@akount/db';
+import { validateBody } from '../../../middleware/validation';
 
 /**
  * Entity Management Routes
@@ -25,9 +26,7 @@ export async function entityRoutes(fastify: FastifyInstance) {
    * Update business details for the current user's entity
    */
   fastify.patch('/business-details', {
-    schema: {
-      body: UpdateBusinessDetailsSchema,
-    },
+    preValidation: [validateBody(UpdateBusinessDetailsSchema)],
   }, async (request, reply) => {
     try {
       // Get user's tenant
