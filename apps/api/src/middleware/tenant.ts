@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { prisma } from '@akount/db';
+import { prisma, TenantUserRole } from '@akount/db';
 
 /**
  * Tenant Middleware
@@ -72,6 +72,6 @@ export async function tenantMiddleware(
 declare module 'fastify' {
     interface FastifyRequest {
         tenantId?: string;
-        tenantRole?: string;
+        tenantRole?: TenantUserRole;
     }
 }

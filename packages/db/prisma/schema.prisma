@@ -109,7 +109,7 @@ model Entity {
 }
 
 model GLAccount {
-  id                   String        @id @default(cuid())
+  id                   String             @id @default(cuid())
   entityId             String
   code                 String
   name                 String
@@ -117,18 +117,20 @@ model GLAccount {
   normalBalance        NormalBalance
   description          String?
   parentAccountId      String?
-  isActive             Boolean       @default(true)
-  isCTAAccount         Boolean       @default(false)
-  isEliminationAccount Boolean       @default(false)
+  isActive             Boolean            @default(true)
+  isCTAAccount         Boolean            @default(false)
+  isEliminationAccount Boolean            @default(false)
   consolidationCode    String?
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  bankAccounts         Account[]
   billLines            BillLine[]
-  entity               Entity        @relation(fields: [entityId], references: [id])
-  parentAccount        GLAccount?    @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
-  childAccounts        GLAccount[]   @relation("AccountHierarchy")
+  entity               Entity             @relation(fields: [entityId], references: [id])
+  parentAccount        GLAccount?         @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
+  childAccounts        GLAccount[]        @relation("AccountHierarchy")
   invoiceLines         InvoiceLine[]
   journalLines         JournalLine[]
+  transactionSplits    TransactionSplit[]
 
   @@unique([entityId, code])
   @@index([entityId, type])
@@ -138,6 +140,7 @@ model GLAccount {
 model JournalEntry {
   id             String                  @id @default(cuid())
   entityId       String
+  entryNumber    String?                 // Sequential per entity (JE-001, JE-002)
   date           DateTime
   memo           String
   sourceType     JournalEntrySourceType?
@@ -146,6 +149,7 @@ model JournalEntry {
   linkedEntryId  String?
   status         JournalEntryStatus
   createdBy      String
+  updatedBy      String?                 // Who last modified (approve, void)
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
   deletedAt      DateTime? // Soft delete - financial data never hard deleted
@@ -153,24 +157,30 @@ model JournalEntry {
   linkedEntry    JournalEntry?           @relation("TransferPair", fields: [linkedEntryId], references: [id])
   linkedFrom     JournalEntry[]          @relation("TransferPair")
   journalLines   JournalLine[]
+  transactions   Transaction[]
 
   @@index([entityId, date])
   @@index([entityId, status])
+  @@index([entityId, entryNumber])
   @@index([sourceType, sourceId])
   @@index([date])
   @@index([entityId, deletedAt])
 }
 
 model JournalLine {
-  id             String       @id @default(cuid())
-  journalEntryId String
-  glAccountId    String
-  debitAmount    Int
-  creditAmount   Int
-  memo           String?
-  deletedAt      DateTime? // Soft delete - financial data never hard deleted
-  glAccount      GLAccount    @relation(fields: [glAccountId], references: [id])
-  journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+  id                 String       @id @default(cuid())
+  journalEntryId     String
+  glAccountId        String
+  debitAmount        Int
+  creditAmount       Int
+  memo               String?
+  currency           String?      // ISO currency code of original amount (null = entity base currency)
+  exchangeRate       Float?       // FX rate at posting time (immutable once set)
+  baseCurrencyDebit  Int?         // debitAmount converted to entity functionalCurrency
+  baseCurrencyCredit Int?         // creditAmount converted to entity functionalCurrency
+  deletedAt          DateTime?    // Soft delete - financial data never hard deleted
+  glAccount          GLAccount    @relation(fields: [glAccountId], references: [id])
+  journalEntry       JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
 
   @@index([journalEntryId])
   @@index([glAccountId])
@@ -413,11 +423,13 @@ model Account {
   country        String
   currentBalance Int
   isActive       Boolean               @default(true)
+  glAccountId    String?               // Bank-to-GL mapping for posting
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
   deletedAt      DateTime? // Soft delete - financial data never hard deleted
   entity         Entity                @relation(fields: [entityId], references: [id])
   feedTxns       BankFeedTransaction[]
+  glAccount      GLAccount?            @relation(fields: [glAccountId], references: [id])
   transactions   Transaction[]
 
   @@index([entityId])
@@ -496,6 +508,7 @@ model Transaction {
   account        Account               @relation(fields: [accountId], references: [id])
   category       Category?             @relation(fields: [categoryId], references: [id])
   importBatch    ImportBatch?          @relation(fields: [importBatchId], references: [id])
+  journalEntry   JournalEntry?         @relation(fields: [journalEntryId], references: [id])
   matches        TransactionMatch[]
   splits         TransactionSplit[]
 
@@ -513,6 +526,7 @@ model TransactionSplit {
   transactionId String
   amount        Int
   categoryId    String?
+  glAccountId   String?     // GL account for posting split to ledger
   description   String?
   notes         String?
   projectId     String?
@@ -520,6 +534,7 @@ model TransactionSplit {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   category      Category?   @relation(fields: [categoryId], references: [id])
+  glAccount     GLAccount?  @relation(fields: [glAccountId], references: [id])
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
   @@index([transactionId])
@@ -882,6 +897,7 @@ enum NormalBalance {
 enum JournalEntryStatus {
   DRAFT
   POSTED
+  VOIDED
   ARCHIVED
 }
 
