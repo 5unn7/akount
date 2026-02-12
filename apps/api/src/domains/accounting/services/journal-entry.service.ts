@@ -27,6 +27,10 @@ const JOURNAL_ENTRY_SELECT = {
       debitAmount: true,
       creditAmount: true,
       memo: true,
+      currency: true,
+      exchangeRate: true,
+      baseCurrencyDebit: true,
+      baseCurrencyCredit: true,
       glAccount: {
         select: { id: true, code: true, name: true, type: true },
       },
@@ -170,7 +174,7 @@ export class JournalEntryService {
         );
       }
 
-      // 4. Defense-in-depth: double-entry balance check
+      // 4. Defense-in-depth: double-entry balance check (original currency)
       const totalDebits = data.lines.reduce((s, l) => s + l.debitAmount, 0);
       const totalCredits = data.lines.reduce((s, l) => s + l.creditAmount, 0);
       if (totalDebits !== totalCredits) {
@@ -179,6 +183,20 @@ export class JournalEntryService {
           'UNBALANCED_ENTRY',
           400
         );
+      }
+
+      // 4b. Defense-in-depth: base currency balance check (if multi-currency)
+      const hasMultiCurrency = data.lines.some(l => l.currency);
+      if (hasMultiCurrency) {
+        const baseTotalDebits = data.lines.reduce((s, l) => s + (l.baseCurrencyDebit ?? l.debitAmount), 0);
+        const baseTotalCredits = data.lines.reduce((s, l) => s + (l.baseCurrencyCredit ?? l.creditAmount), 0);
+        if (baseTotalDebits !== baseTotalCredits) {
+          throw new AccountingError(
+            `Journal entry not balanced in base currency: debits ${baseTotalDebits} ≠ credits ${baseTotalCredits}`,
+            'UNBALANCED_ENTRY',
+            400
+          );
+        }
       }
 
       // 5. Generate sequential entry number
@@ -202,6 +220,12 @@ export class JournalEntryService {
               debitAmount: line.debitAmount,
               creditAmount: line.creditAmount,
               memo: line.memo,
+              ...(line.currency ? {
+                currency: line.currency,
+                exchangeRate: line.exchangeRate,
+                baseCurrencyDebit: line.baseCurrencyDebit ?? (line.debitAmount > 0 ? line.debitAmount : undefined),
+                baseCurrencyCredit: line.baseCurrencyCredit ?? (line.creditAmount > 0 ? line.creditAmount : undefined),
+              } : {}),
             })),
           },
         },
@@ -330,6 +354,10 @@ export class JournalEntryService {
               debitAmount: true,
               creditAmount: true,
               memo: true,
+              currency: true,
+              exchangeRate: true,
+              baseCurrencyDebit: true,
+              baseCurrencyCredit: true,
             },
           },
         },
@@ -377,6 +405,13 @@ export class JournalEntryService {
               debitAmount: line.creditAmount,   // Swap
               creditAmount: line.debitAmount,   // Swap
               memo: line.memo ? `REVERSAL: ${line.memo}` : null,
+              // Carry over multi-currency fields with swapped base amounts
+              ...(line.currency ? {
+                currency: line.currency,
+                exchangeRate: line.exchangeRate,
+                baseCurrencyDebit: line.baseCurrencyCredit,   // Swap
+                baseCurrencyCredit: line.baseCurrencyDebit,   // Swap
+              } : {}),
             })),
           },
         },

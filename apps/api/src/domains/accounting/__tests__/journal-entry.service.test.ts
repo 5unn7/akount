@@ -382,4 +382,103 @@ describe('JournalEntryService', () => {
       await expect(service.deleteEntry('nonexistent')).rejects.toThrow(AccountingError);
     });
   });
+
+  // ==========================================================================
+  // Multi-Currency Journal Entry Creation
+  // ==========================================================================
+
+  describe('createEntry (multi-currency)', () => {
+    const multiCurrencyInput = {
+      entityId: ENTITY_ID,
+      date: '2026-01-15T00:00:00.000Z',
+      memo: 'USD invoice payment',
+      lines: [
+        {
+          glAccountId: GL_ACCOUNT_1,
+          debitAmount: 1000,
+          creditAmount: 0,
+          currency: 'USD',
+          exchangeRate: 1.35,
+          baseCurrencyDebit: 1350,
+          baseCurrencyCredit: 0,
+        },
+        {
+          glAccountId: GL_ACCOUNT_2,
+          debitAmount: 0,
+          creditAmount: 1000,
+          currency: 'USD',
+          exchangeRate: 1.35,
+          baseCurrencyDebit: 0,
+          baseCurrencyCredit: 1350,
+        },
+      ],
+    };
+
+    it('should create entry with multi-currency fields', async () => {
+      mockGLAccountFindMany.mockResolvedValue([{ id: GL_ACCOUNT_1 }, { id: GL_ACCOUNT_2 }]);
+      mockFindFirst.mockResolvedValue(null); // No existing entry for number generation
+      mockCreate.mockResolvedValue({ ...MOCK_ENTRY, status: 'DRAFT' });
+
+      const result = await service.createEntry(multiCurrencyInput);
+      expect(result.status).toBe('DRAFT');
+
+      // Verify multi-currency fields passed to Prisma create
+      const createCall = mockCreate.mock.calls[0][0];
+      const lines = createCall.data.journalLines.create;
+      expect(lines[0].currency).toBe('USD');
+      expect(lines[0].exchangeRate).toBe(1.35);
+      expect(lines[0].baseCurrencyDebit).toBe(1350);
+      expect(lines[1].baseCurrencyCredit).toBe(1350);
+    });
+
+    it('should reject unbalanced base currency amounts', async () => {
+      mockGLAccountFindMany.mockResolvedValue([{ id: GL_ACCOUNT_1 }, { id: GL_ACCOUNT_2 }]);
+
+      const unbalancedBase = {
+        ...multiCurrencyInput,
+        lines: [
+          {
+            glAccountId: GL_ACCOUNT_1,
+            debitAmount: 1000,
+            creditAmount: 0,
+            currency: 'USD',
+            exchangeRate: 1.35,
+            baseCurrencyDebit: 1350,
+            baseCurrencyCredit: 0,
+          },
+          {
+            glAccountId: GL_ACCOUNT_2,
+            debitAmount: 0,
+            creditAmount: 1000,
+            currency: 'USD',
+            exchangeRate: 1.30, // Different rate!
+            baseCurrencyDebit: 0,
+            baseCurrencyCredit: 1300, // 1350 ≠ 1300
+          },
+        ],
+      };
+
+      await expect(service.createEntry(unbalancedBase)).rejects.toThrow('not balanced');
+    });
+
+    it('should skip base currency check for same-currency entries', async () => {
+      const sameCurrencyInput = {
+        entityId: ENTITY_ID,
+        date: '2026-01-15T00:00:00.000Z',
+        memo: 'CAD entry',
+        lines: [
+          { glAccountId: GL_ACCOUNT_1, debitAmount: 1000, creditAmount: 0 },
+          { glAccountId: GL_ACCOUNT_2, debitAmount: 0, creditAmount: 1000 },
+        ],
+      };
+
+      mockGLAccountFindMany.mockResolvedValue([{ id: GL_ACCOUNT_1 }, { id: GL_ACCOUNT_2 }]);
+      mockFindFirst.mockResolvedValue(null);
+      mockCreate.mockResolvedValue(MOCK_ENTRY);
+
+      // Should not throw — no currency field means no base currency check
+      const result = await service.createEntry(sameCurrencyInput);
+      expect(result).toBeDefined();
+    });
+  });
 });

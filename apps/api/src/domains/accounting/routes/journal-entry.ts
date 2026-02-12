@@ -10,11 +10,13 @@ import {
   JournalEntryParamsSchema,
   PostTransactionSchema,
   PostBulkTransactionsSchema,
+  PostSplitTransactionSchema,
   type CreateJournalEntryInput,
   type ListJournalEntriesQuery,
   type JournalEntryParams,
   type PostTransactionInput,
   type PostBulkTransactionsInput,
+  type PostSplitTransactionInput,
 } from '../schemas/journal-entry.schema';
 
 /**
@@ -44,7 +46,7 @@ export async function journalEntryRoutes(fastify: FastifyInstance) {
       const service = new PostingService(request.tenantId, request.userId);
 
       try {
-        const result = await service.postTransaction(body.transactionId, body.glAccountId);
+        const result = await service.postTransaction(body.transactionId, body.glAccountId, body.exchangeRate);
         return reply.status(201).send(result);
       } catch (error) {
         return handleAccountingError(error, reply);
@@ -68,7 +70,35 @@ export async function journalEntryRoutes(fastify: FastifyInstance) {
       const service = new PostingService(request.tenantId, request.userId);
 
       try {
-        const result = await service.postBulkTransactions(body.transactionIds, body.glAccountId);
+        const result = await service.postBulkTransactions(body.transactionIds, body.glAccountId, body.exchangeRate);
+        return reply.status(201).send(result);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+
+  // POST /journal-entries/post-split-transaction — Post a split transaction to GL
+  fastify.post(
+    '/post-split-transaction',
+    {
+      ...withPermission('accounting', 'journal-entries', 'ACT'),
+      preValidation: [validateBody(PostSplitTransactionSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const body = request.body as PostSplitTransactionInput;
+      const service = new PostingService(request.tenantId, request.userId);
+
+      try {
+        const result = await service.postSplitTransaction(
+          body.transactionId,
+          body.splits,
+          body.exchangeRate
+        );
         return reply.status(201).send(result);
       } catch (error) {
         return handleAccountingError(error, reply);

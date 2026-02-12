@@ -63,11 +63,13 @@ vi.mock('../services/journal-entry.service', () => ({
 // Mock PostingService
 const mockPostTransaction = vi.fn();
 const mockPostBulkTransactions = vi.fn();
+const mockPostSplitTransaction = vi.fn();
 
 vi.mock('../services/posting.service', () => ({
   PostingService: function () {
     this.postTransaction = mockPostTransaction;
     this.postBulkTransactions = mockPostBulkTransactions;
+    this.postSplitTransaction = mockPostSplitTransaction;
   },
 }));
 
@@ -99,6 +101,10 @@ describe('JournalEntry Routes', () => {
       journalEntryId: 'je-3', entryNumber: 'JE-003', transactionId: 'txn-1', amount: 500,
     });
     mockPostBulkTransactions.mockResolvedValue({ posted: 2, entries: [] });
+    mockPostSplitTransaction.mockResolvedValue({
+      journalEntryId: 'je-split', entryNumber: 'JE-004', transactionId: 'txn-1',
+      amount: 500, splitCount: 2, lines: [],
+    });
 
     app = Fastify({ logger: false });
     await app.register(journalEntryRoutes, { prefix: '/journal-entries' });
@@ -418,6 +424,111 @@ describe('JournalEntry Routes', () => {
       });
 
       expect(response.statusCode).toBe(403);
+    });
+  });
+
+  // ==========================================================================
+  // POST /journal-entries/post-split-transaction
+  // ==========================================================================
+
+  describe('POST /journal-entries/post-split-transaction', () => {
+    it('should return 201 on successful split posting', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/post-split-transaction',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionId: 'txn-1',
+          splits: [
+            { glAccountId: 'gl-1', amount: 300 },
+            { glAccountId: 'gl-2', amount: 200 },
+          ],
+        },
+      });
+
+      expect(response.statusCode).toBe(201);
+      expect(response.json().splitCount).toBe(2);
+    });
+
+    it('should return 400 on split amount mismatch', async () => {
+      mockPostSplitTransaction.mockRejectedValue(
+        new AccountingError('Split amounts mismatch', 'SPLIT_AMOUNT_MISMATCH', 400)
+      );
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/post-split-transaction',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionId: 'txn-1',
+          splits: [
+            { glAccountId: 'gl-1', amount: 300 },
+            { glAccountId: 'gl-2', amount: 100 },
+          ],
+        },
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().error).toBe('SPLIT_AMOUNT_MISMATCH');
+    });
+
+    it('should return 403 on cross-entity split GL accounts', async () => {
+      mockPostSplitTransaction.mockRejectedValue(
+        new AccountingError('Cross-entity', 'CROSS_ENTITY_REFERENCE', 403)
+      );
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/post-split-transaction',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionId: 'txn-1',
+          splits: [
+            { glAccountId: 'gl-1', amount: 300 },
+            { glAccountId: 'gl-other', amount: 200 },
+          ],
+        },
+      });
+
+      expect(response.statusCode).toBe(403);
+    });
+  });
+
+  // ==========================================================================
+  // POST /journal-entries/post-transaction (with exchangeRate)
+  // ==========================================================================
+
+  describe('POST /journal-entries/post-transaction (multi-currency)', () => {
+    it('should pass exchangeRate override to service', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/post-transaction',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionId: 'txn-1',
+          glAccountId: 'gl-1',
+          exchangeRate: 1.35,
+        },
+      });
+
+      expect(response.statusCode).toBe(201);
+      expect(mockPostTransaction).toHaveBeenCalledWith('txn-1', 'gl-1', 1.35);
+    });
+
+    it('should return 400 when FX rate not found', async () => {
+      mockPostTransaction.mockRejectedValue(
+        new AccountingError('No FX rate found', 'MISSING_FX_RATE', 400)
+      );
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/post-transaction',
+        headers: { authorization: 'Bearer test-token' },
+        payload: { transactionId: 'txn-1', glAccountId: 'gl-1' },
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().error).toBe('MISSING_FX_RATE');
     });
   });
 });
