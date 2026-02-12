@@ -8,6 +8,7 @@ set -e
 REGISTRY=".claude/agents/REGISTRY.json"
 ERRORS=0
 WARNINGS=0
+JQ_AVAILABLE=0
 
 echo "🔍 Validating .claude/ configuration..."
 echo ""
@@ -29,6 +30,7 @@ else
         exit 1
     fi
     echo "✓ REGISTRY.json is valid JSON"
+    JQ_AVAILABLE=1
 fi
 
 # Check agents in registry exist as files
@@ -190,7 +192,10 @@ if [ -d ".claude/agents/research" ]; then
     done
 fi
 
-if [ $ORPHANED -eq 0 ]; then
+if [ $JQ_AVAILABLE -eq 0 ]; then
+    echo "  ⚠️  Skipping orphaned agent check (jq not available)"
+    WARNINGS=$((WARNINGS + 1))
+elif [ $ORPHANED -eq 0 ]; then
     echo "  ✓ No orphaned agent files found"
 else
     WARNINGS=$((WARNINGS + ORPHANED))
@@ -224,7 +229,10 @@ if [ -d ".claude/commands" ]; then
     done
 fi
 
-if [ $ORPHANED_SKILLS -eq 0 ]; then
+if [ $JQ_AVAILABLE -eq 0 ]; then
+    echo "  ⚠️  Skipping orphaned skill check (jq not available)"
+    WARNINGS=$((WARNINGS + 1))
+elif [ $ORPHANED_SKILLS -eq 0 ]; then
     echo "  ✓ No orphaned skill files found"
 else
     WARNINGS=$((WARNINGS + ORPHANED_SKILLS))

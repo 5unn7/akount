@@ -43,22 +43,19 @@ echo "  → Checking multi-tenancy enforcement..."
 MISSING_TENANT_ID=0
 
 # Get list of staged TypeScript files that contain prisma queries
-STAGED_TS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' || true)
-
-if [ -n "$STAGED_TS_FILES" ]; then
-  for file in $STAGED_TS_FILES; do
-    if [ -f "$file" ]; then
-      # Check if file has prisma queries
-      if grep -q 'prisma\.\w\+\.find\|prisma\.\w\+\.update\|prisma\.\w\+\.delete\|prisma\.\w\+\.create' "$file"; then
-        # Check if file has tenantId filter
-        if ! grep -q 'tenantId' "$file"; then
-          echo "  ⚠️  Warning: $file contains Prisma queries without tenantId filter" >&2
-          MISSING_TENANT_ID=1
-        fi
+# Use process substitution + while-read to safely handle filenames with spaces
+while IFS= read -r file; do
+  if [ -f "$file" ]; then
+    # Check if file has prisma queries
+    if grep -q 'prisma\.\w\+\.find\|prisma\.\w\+\.update\|prisma\.\w\+\.delete\|prisma\.\w\+\.create' "$file"; then
+      # Check if file has tenantId filter
+      if ! grep -q 'tenantId' "$file"; then
+        echo "  ⚠️  Warning: $file contains Prisma queries without tenantId filter" >&2
+        MISSING_TENANT_ID=1
       fi
     fi
-  done
-fi
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$' || true)
 
 if [ $MISSING_TENANT_ID -eq 1 ]; then
   echo "" >&2

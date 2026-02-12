@@ -196,7 +196,6 @@ import { Button } from '@/components/ui/button'
 ```tsx
 // Background colors
 bg-background          // Main background
-bg-foreground         // Inverse background
 bg-card               // Card background
 bg-popover            // Popover background
 bg-primary            // Primary actions
