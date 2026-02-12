@@ -1,13 +1,13 @@
 # Akount - Task List
 
 **Last Updated:** 2026-02-12
-**Current Phase:** Phase 2 - Track Your Money (COMPLETE) | Onboarding (9/10 done)
+**Current Phase:** Phase 2 - Track Your Money (COMPLETE) | Onboarding (COMPLETE)
 
 ---
 
 ## Active Work
 
-### Onboarding Redesign — 1 remaining task
+### Onboarding Redesign — COMPLETE
 
 **Plan:** [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
 
@@ -20,7 +20,7 @@
 - [x] **OB-7:** CircularProgress component (commit b4c00a3)
 - [x] **OB-8:** OnboardingHeroCard on dashboard (commit b4c00a3)
 - [x] **OB-9:** SidebarProgressIndicator (commit b4c00a3)
-- [ ] **OB-10:** Frontend tests for onboarding components
+- [x] **OB-10:** Frontend tests for onboarding components — 55 tests across 7 files
 
 ---
 
@@ -117,7 +117,7 @@
 | Foundation | COMPLETE | COMPLETE | COMPLETE |
 | 1: See Your Money | COMPLETE (62 tests) | COMPLETE | COMPLETE |
 | 2: Track Your Money | COMPLETE (117 tests) | COMPLETE (8/8 tasks) | COMPLETE |
-| Onboarding Redesign | COMPLETE (tests) | 9/10 tasks | 95% |
+| Onboarding Redesign | COMPLETE (tests) | COMPLETE (55 tests) | COMPLETE |
 | 3: Post Your Money | Not started | Not started | Not started |
 
 **Total Backend Tests:** 235+ (62 + 117 + 35 system + 21 overview)
