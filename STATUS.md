@@ -1,7 +1,7 @@
 # Akount - Current Status
 
-**Last Updated:** 2026-02-09
-**Overall Progress:** Phase 2 — Backend Complete, Frontend In Progress
+**Last Updated:** 2026-02-12
+**Overall Progress:** Phase 2 Complete, Onboarding Complete, Phase 3 Next
 
 ---
 
@@ -19,16 +19,23 @@
 
 **Services built:** TransactionService, ImportService, ParserService, DuplicationService, ReconciliationService
 
-### Frontend (IN PROGRESS)
+### Frontend (COMPLETE)
 
 | Task | Status |
 |------|--------|
 | Reconciliation UI (match/unmatch) | Built (commit 2256742) |
 | Import history page | Built (commit 2256742) |
-| CSV upload component | Not started |
-| Column mapping interface | Not started |
-| Transaction matching improvements | Not started |
-| Transaction list bulk actions | Not started |
+| CSV upload component | Built (commit 95eb7e4) |
+| Column mapping interface | Built (commit 95eb7e4) |
+| Transaction matching improvements | Built (commit 95eb7e4) |
+| Transaction list bulk actions | Built (commit 95eb7e4) |
+
+### Bug Fixes (2026-02-12)
+
+- Fixed PDF import end-to-end: wrong API endpoint, FormData field ordering, pdf-parse ESM/CJS crash
+- Replaced `pdf-parse` with `pdfjs-dist` (Mozilla PDF.js) for reliable PDF text extraction
+- Added CIBC bank statement format support (Mon DD date pattern)
+- Cleaned up debug logging from ImportUploadForm and parser.service
 
 ### Onboarding Redesign (PLANNED)
 

@@ -1,8 +1,18 @@
 import Papa, { ParseResult as PapaParseResult } from 'papaparse';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pdfParse = require('pdf-parse');
 import type { ParsedTransaction, ExternalAccountData, ColumnMappings } from '../../../schemas/import';
 import { randomUUID } from 'crypto';
+
+// Using PDF.js (Mozilla's PDF parser - more reliable)
+// Use dynamic import to handle ESM/CJS compatibility
+let pdfjsLib: any = null;
+
+async function getPdfJs() {
+  if (!pdfjsLib) {
+    // @ts-ignore
+    pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  }
+  return pdfjsLib;
+}
 
 /**
  * Parser service for extracting transactions from various file formats
@@ -328,9 +338,54 @@ function parseAmountValue(amountStr: string | undefined): number {
  */
 export async function parsePDF(fileBuffer: Buffer, dateFormat?: string): Promise<ParseResult> {
   try {
-    // Extract text from PDF
-    const data = await pdfParse(fileBuffer);
-    const text = data.text as string;
+    // Load PDF.js dynamically
+    const pdfjs = await getPdfJs();
+
+    // Use PDF.js to extract text
+    const loadingTask = pdfjs.getDocument({
+      data: new Uint8Array(fileBuffer),
+      useSystemFonts: true,
+    });
+
+    const pdfDoc = await loadingTask.promise;
+    let text = '';
+
+    // Extract text from all pages, preserving line structure using Y positions
+    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+      const page = await pdfDoc.getPage(pageNum);
+      const textContent = await page.getTextContent();
+
+      // Group items by Y position to reconstruct lines
+      const items = textContent.items as any[];
+      if (items.length === 0) continue;
+
+      // Sort by Y (descending = top to bottom) then X (left to right)
+      const sorted = [...items].sort((a, b) => {
+        const yDiff = b.transform[5] - a.transform[5];
+        if (Math.abs(yDiff) > 2) return yDiff; // Different line
+        return a.transform[4] - b.transform[4]; // Same line, sort by X
+      });
+
+      let currentY = sorted[0]?.transform[5];
+      let currentLine = '';
+
+      for (const item of sorted) {
+        const y = item.transform[5];
+        if (Math.abs(y - currentY) > 2) {
+          // New line
+          text += currentLine.trim() + '\n';
+          currentLine = item.str;
+          currentY = y;
+        } else {
+          // Same line - add space if needed
+          currentLine += (currentLine && !currentLine.endsWith(' ') ? ' ' : '') + item.str;
+        }
+      }
+      // Don't forget the last line
+      if (currentLine.trim()) {
+        text += currentLine.trim() + '\n';
+      }
+    }
 
     if (!text || text.trim().length === 0) {
       throw new Error(
@@ -371,7 +426,10 @@ export async function parsePDF(fileBuffer: Buffer, dateFormat?: string): Promise
 /**
  * Extract transactions from PDF text using regex patterns
  *
- * Supports common bank statement formats
+ * Supports multiple bank statement formats:
+ * - CIBC: "Aug 08  Aug 11  DESCRIPTION  1,234.56"
+ * - Generic: "MM/DD/YYYY DESCRIPTION $1,234.56"
+ * - Pipe-separated: "Date | Description | Amount | Balance"
  */
 function parseTransactionsFromPDFText(
   text: string,
@@ -383,17 +441,91 @@ function parseTransactionsFromPDFText(
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
-  // Common transaction patterns:
-  // Pattern 1: MM/DD/YYYY Description Amount Balance
-  // Pattern 2: DD/MM/YYYY Description $Amount
-  // Pattern 3: Date | Description | Amount | Balance
+  // Detect statement year from text (e.g., "August 5 to September 4, 2025")
+  const yearMatch = text.match(/(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}.*?(\d{4})/i);
+  const statementYear = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
 
-  const datePattern = /(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})/;
-  const amountPattern = /([+-]?\$?\s*\d{1,3}(?:,\d{3})*(?:\.\d{2})?)/;
+  const MONTHS: Record<string, number> = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
+  };
+
+  // Skip lines that are headers, totals, or summary rows
+  const skipPatterns = [
+    /^total\s/i, /^previous\s/i, /^payments\s/i, /^purchases\s/i,
+    /^interest\s/i, /^fees\s/i, /^cash\s+advances/i, /^other\s+credits/i,
+    /^total\s+credits/i, /^total\s+charges/i, /^total\s+balance/i,
+    /^amount\s+due/i, /^minimum\s+payment/i, /^available\s/i,
+    /^summary\s/i, /^annual$/i, /^trans\s+post/i, /^date\s+date/i,
+  ];
+
+  // Pattern A: CIBC format — "Mon DD  Mon DD  Description  Amount"
+  // e.g. "Aug 08  Aug 11  PAYMENT THANK YOU  5,390.44"
+  const cibcPattern = /^([A-Z][a-z]{2})\s+(\d{2})\s+([A-Z][a-z]{2})\s+(\d{2})\s+(.+?)\s{2,}([\d,]+\.\d{2})\s*$/;
+
+  // Pattern B: Generic — "MM/DD/YYYY Description Amount"
+  const genericDatePattern = /(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})/;
+  const amountPattern = /([+-]?\$?\s*\d{1,3}(?:,\d{3})*\.\d{2})/;
 
   for (const line of lines) {
-    // Try to find date and amount in the line
-    const dateMatch = line.match(datePattern);
+    // Skip summary/header lines
+    if (skipPatterns.some((p) => p.test(line))) continue;
+
+    // --- Try Pattern A: CIBC "Mon DD  Mon DD  Description  Amount" ---
+    const cibcMatch = line.match(cibcPattern);
+    if (cibcMatch) {
+      try {
+        const [, transMonth, transDay, , , description, amountStr] = cibcMatch;
+        const monthIdx = MONTHS[transMonth.toLowerCase()];
+        if (monthIdx === undefined) continue;
+
+        const date = new Date(statementYear, monthIdx, parseInt(transDay, 10));
+        const amount = parseAmountValue(amountStr);
+
+        transactions.push({
+          tempId: `temp_${randomUUID()}`,
+          date: date.toISOString().split('T')[0],
+          description: description.replace(/\s+/g, ' ').trim(),
+          amount,
+          balance: undefined,
+          isDuplicate: false,
+          duplicateConfidence: undefined,
+        });
+        continue;
+      } catch {
+        // Fall through to next pattern
+      }
+    }
+
+    // --- Try Pattern A2: CIBC single-date — "Mon DD  Description  Amount" ---
+    const cibcSinglePattern = /^([A-Z][a-z]{2})\s+(\d{2})\s+(.+?)\s{2,}([\d,]+\.\d{2})\s*$/;
+    const cibcSingle = line.match(cibcSinglePattern);
+    if (cibcSingle) {
+      try {
+        const [, transMonth, transDay, description, amountStr] = cibcSingle;
+        const monthIdx = MONTHS[transMonth.toLowerCase()];
+        if (monthIdx === undefined) continue;
+
+        const date = new Date(statementYear, monthIdx, parseInt(transDay, 10));
+        const amount = parseAmountValue(amountStr);
+
+        transactions.push({
+          tempId: `temp_${randomUUID()}`,
+          date: date.toISOString().split('T')[0],
+          description: description.replace(/\s+/g, ' ').trim(),
+          amount,
+          balance: undefined,
+          isDuplicate: false,
+          duplicateConfidence: undefined,
+        });
+        continue;
+      } catch {
+        // Fall through
+      }
+    }
+
+    // --- Try Pattern B: Generic numeric date format ---
+    const dateMatch = line.match(genericDatePattern);
     const amountMatches = line.match(new RegExp(amountPattern, 'g'));
 
     if (dateMatch && amountMatches && amountMatches.length > 0) {
@@ -401,27 +533,20 @@ function parseTransactionsFromPDFText(
         const dateStr = dateMatch[1];
         const date = parseDate(dateStr, dateFormat);
 
-        // Amount is usually the last number on the line (sometimes second-to-last if balance is included)
         const amountStr = amountMatches[amountMatches.length - 1];
         const amount = parseAmountValue(amountStr);
 
-        // Balance might be the last number if there are 2+ numbers
         const balance =
           amountMatches.length > 1
             ? parseAmountValue(amountMatches[amountMatches.length - 2])
             : undefined;
 
-        // Extract description (everything between date and amount)
         const dateIndex = line.indexOf(dateMatch[0]);
         const amountIndex = line.lastIndexOf(amountStr);
         let description = line.substring(dateIndex + dateMatch[0].length, amountIndex).trim();
-
-        // Clean up description (remove extra spaces, special chars)
         description = description.replace(/\s+/g, ' ').trim();
 
-        if (description.length === 0) {
-          description = 'Transaction';
-        }
+        if (description.length === 0) description = 'Transaction';
 
         transactions.push({
           tempId: `temp_${randomUUID()}`,
@@ -432,8 +557,7 @@ function parseTransactionsFromPDFText(
           isDuplicate: false,
           duplicateConfidence: undefined,
         });
-      } catch (error) {
-        // Skip lines that can't be parsed
+      } catch {
         continue;
       }
     }

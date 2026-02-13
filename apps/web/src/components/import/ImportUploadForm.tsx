@@ -162,54 +162,66 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
   const handleUpload = async () => {
     if (!selectedFile) return;
 
+    // Validate accountId before upload
+    if (!selectedAccountId) {
+      setError('Please select an account before uploading');
+      return;
+    }
+
     setStep('uploading');
     setIsUploading(true);
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
+      // Get Clerk auth token
+      const clerk = (window as any).Clerk;
+      const token = await clerk?.session?.getToken();
 
-      console.log('[Import] Uploading with:', {
-        fileName: selectedFile.name,
-        accountId: selectedAccountId,
-        hasColumnMappings: !!columnMappings,
-      });
-
-      if (selectedAccountId) {
-        formData.append('accountId', selectedAccountId);
-      } else {
-        console.error('[Import] No accountId selected - upload will fail');
+      if (!token) {
+        throw new Error('Not authenticated. Please sign in again.');
       }
+
+      // IMPORTANT: Fields must come BEFORE the file for Fastify multipart to read them
+      const formData = new FormData();
+      formData.append('accountId', selectedAccountId);
 
       if (columnMappings && isCSV) {
         formData.append('columnMappings', JSON.stringify(columnMappings));
       }
 
-      const response = await fetch('/api/import/upload', {
+      formData.append('file', selectedFile);
+
+      // Use correct API endpoint based on file type
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+      const endpoint = isCSV ? '/api/banking/imports/csv' : '/api/banking/imports/pdf';
+
+      const response = await fetch(`${apiUrl}${endpoint}`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
         body: formData,
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Upload failed');
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || errorData.error || 'Upload failed');
       }
 
       const data = await response.json();
 
+      // Backend returns ImportBatchWithStats format:
+      // { id, status, stats: { total, imported, duplicates, skipped } }
       setImportResult({
-        id: data.id || data.parseId || '',
+        id: data.id,
         sourceType: isCSV ? 'CSV' : 'PDF',
         sourceFileName: selectedFile.name,
-        status: data.status || 'PROCESSED',
-        totalRows: data.summary?.total ?? data.totalRows ?? 0,
-        processedRows: data.summary?.total
-          ? data.summary.total - (data.summary?.duplicates ?? 0)
-          : data.processedRows ?? 0,
-        duplicateRows: data.summary?.duplicates ?? data.duplicateRows ?? 0,
-        errorRows: data.errorRows ?? 0,
-        transactions: data.transactions,
+        status: data.status,
+        totalRows: data.stats?.total ?? 0,
+        processedRows: data.stats?.imported ?? 0,
+        duplicateRows: data.stats?.duplicates ?? 0,
+        errorRows: data.stats?.skipped ?? 0,
+        transactions: [], // New endpoints don't return transaction list
       });
 
       setStep('results');
