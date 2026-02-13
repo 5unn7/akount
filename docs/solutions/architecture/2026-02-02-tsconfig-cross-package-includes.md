@@ -24,6 +24,7 @@ Found this anti-pattern in `apps/api/tsconfig.json`:
 ```
 
 **Problems with direct file includes:**
+
 1. Breaks package encapsulation
 2. Can cause duplicate type definitions
 3. Makes dependency graph unclear
@@ -61,12 +62,14 @@ Likely added to fix "cannot find module" errors when packages weren't properly b
 **For imports to work, ensure:**
 
 1. **Packages are built first:**
+
    ```bash
    # packages/db generates Prisma client
    cd packages/db && npm run build
    ```
 
 2. **Turborepo pipeline is correct:**
+
    ```json
    // turbo.json
    {
@@ -79,6 +82,7 @@ Likely added to fix "cannot find module" errors when packages weren't properly b
    ```
 
 3. **Path aliases in base tsconfig (optional):**
+
    ```json
    // tsconfig.base.json
    {
@@ -92,6 +96,7 @@ Likely added to fix "cannot find module" errors when packages weren't properly b
    ```
 
 4. **npm workspaces symlinks packages:**
+
    ```bash
    # Verify symlinks exist
    ls -la node_modules/@akount/
@@ -119,12 +124,14 @@ Prisma client + types
 **Don't:** Add direct file paths to `include`
 
 **Do:**
+
 1. Run `npm install` (creates symlinks)
 2. Run `npm run build` (generates Prisma client)
 3. Restart TypeScript server in IDE
 4. Check `node_modules/@akount/` symlinks exist
 
 ### Code Review Checklist
+
 - [ ] Does tsconfig `include` only reference local `src/**/*`?
 - [ ] Are there any `../../packages/` paths in tsconfig?
 - [ ] Do imports use package names (`@akount/db`) not relative paths?

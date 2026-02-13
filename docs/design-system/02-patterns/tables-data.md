@@ -29,6 +29,7 @@ Not a "line item"—a **financial event** with semantic meaning, state, and cont
 ### 2. Monospace Numbers
 
 All monetary values use monospace fonts (JetBrains Mono) for:
+
 - Scanability
 - Vertical alignment
 - Trust (signals precision)
@@ -54,6 +55,7 @@ Each row has **state** (AI Categorized, Reconciled, Locked, Error) not just data
 ### 6. Multi-Currency Handling
 
 Display format:
+
 ```
 –$1,200 CAD
 ≈ –$890 USD
@@ -103,6 +105,7 @@ FX rate shown on hover with timestamp. Never hide original currency.
 ### Bulk Action System
 
 Once ≥1 row selected, a **floating action bar** appears with:
+
 - Categorize
 - Assign Entity
 - Mark Reconciled
@@ -115,6 +118,7 @@ Power users love this.
 ### Expandable Rows
 
 Click row → **slide-down details panel** showing:
+
 - Journal entry (debit / credit breakdown)
 - Linked invoice / bill
 - Attachments
@@ -127,11 +131,13 @@ Avoids navigation hell.
 ### Transfer & Split Handling
 
 **Transfers:**
+
 - Show paired rows (Account A → Account B)
 - Visual connector line
 - Marked as "Internal Transfer"
 
 **Splits:**
+
 - Parent transaction collapsible
 - Child rows indented
 - Totals always visible
@@ -139,6 +145,7 @@ Avoids navigation hell.
 ### Reconciliation Mode
 
 Table switches to **matching mode**:
+
 - Left panel: Bank feed transactions
 - Right panel: Book transactions
 - Drag to match or auto-match with confidence score
@@ -166,6 +173,7 @@ This is a separate **mode**, not a different table.
 ## Guardrails & Safety
 
 Before destructive actions:
+
 - **Locked transactions** require confirmation
 - **Entity mismatch** warnings
 - **Fiscal period lock** enforcement
@@ -177,6 +185,7 @@ Accounting UX must prevent mistakes, not allow them.
 ## Component Decomposition
 
 ### Primitives
+
 - `AmountCell` - Monospace, color-coded amount display
 - `EntityBadge` - Flag + label with hover details
 - `StatusBadge` - State indicator (reconciled, AI, error, etc)
@@ -185,6 +194,7 @@ Accounting UX must prevent mistakes, not allow them.
 - `CategoryCell` - Dropdown with AI suggestion
 
 ### Composites
+
 - `TableRow` - Complete row with all columns
 - `ExpandableDetailsPanel` - Slide-down context
 - `BulkActionBar` - Floating action toolbar
@@ -192,6 +202,7 @@ Accounting UX must prevent mistakes, not allow them.
 - `TransferConnector` - Visual link between paired transactions
 
 ### Modes
+
 - **View Mode** - Read-only display
 - **Edit Mode** - Inline editing, AI suggestions
 - **Reconciliation Mode** - Matching interface
@@ -322,16 +333,19 @@ function TableRow({ row, isSelected, isExpanded, onSelect, onExpand, onCategoryC
 ## Responsive Behavior
 
 ### Desktop (1280px+)
+
 - All columns visible
 - Horizontal scroll for overflow
 - Sticky header and amount column
 
 ### Tablet (768px–1279px)
+
 - Columns: Date, Description, Amount, Status (essential only)
 - Swipe to see more columns
 - Expandable row for full details
 
 ### Mobile (<768px)
+
 - Card-based layout instead of table
 - Date, Amount, Description stacked
 - Tap to expand full details

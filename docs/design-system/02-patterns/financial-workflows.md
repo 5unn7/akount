@@ -25,6 +25,7 @@ These workflows are the difference between "bookkeeping software" and "accountin
 Every financial workflow enforces: **Debits = Credits**
 
 Before allowing confirmation, the system must verify:
+
 - Total debits calculated
 - Total credits calculated
 - Difference calculated and displayed
@@ -33,6 +34,7 @@ Before allowing confirmation, the system must verify:
 ### 2. Audit Trail Everything
 
 Every action creates a record:
+
 - Who made the change?
 - When?
 - What changed?
@@ -48,6 +50,7 @@ Every action creates a record:
 ### 4. Locked Fiscal Periods
 
 Once a period is locked:
+
 - Cannot modify posted entries (except reversals)
 - Cannot post new entries
 - Clear visual indicator
@@ -55,6 +58,7 @@ Once a period is locked:
 ### 5. Progressive Confirmation
 
 Users must confirm at multiple checkpoints before posting to general ledger:
+
 1. Initial entry
 2. Entity validation
 3. Balance verification
@@ -69,6 +73,7 @@ Users must confirm at multiple checkpoints before posting to general ledger:
 Create or modify double-entry journal entries that post directly to the general ledger.
 
 Used for:
+
 - Manual adjustments
 - Tax provision entries
 - Consolidation entries
@@ -90,6 +95,7 @@ Description: [Tax provision adjustment]
 ```
 
 **Validation:**
+
 - Date must be within open fiscal period
 - Entity must be selected
 - Description required
@@ -109,6 +115,7 @@ Total                   1,200           1,200  ✓
 ```
 
 **Rules:**
+
 - Alternate between debit/credit columns
 - Numbers in monospace
 - GL Account searchable/autocomplete
@@ -135,6 +142,7 @@ Audit trail: Entry will be timestamped, user recorded
 ```
 
 **Final checks:**
+
 - Sum of debits = sum of credits
 - All required fields filled
 - Clear action buttons
@@ -177,6 +185,7 @@ $1,200 - Client Payment     |  $320 - Office Supplies
 ```
 
 **Matching modes:**
+
 - Drag & drop
 - Auto-match (confidence score)
 - Manual entry
@@ -184,6 +193,7 @@ $1,200 - Client Payment     |  $320 - Office Supplies
 #### State 2: Matching Process
 
 **Manual match:**
+
 ```
 Matching: Bank $2,400 ← → Book $2,400
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -203,6 +213,7 @@ Linked to: Invoice INV-0234
 ```
 
 **Auto-match:**
+
 ```
 Found 87% confidence match:
 
@@ -380,6 +391,7 @@ Draft → Pending Review → Approved → Posted
 ```
 
 #### Draft State
+
 ```
 [Entry by: John]
 Status: Draft
@@ -387,6 +399,7 @@ Status: Draft
 ```
 
 #### Pending Review
+
 ```
 [Entry by: John]
 Status: Awaiting accountant review
@@ -397,6 +410,7 @@ Sarah's options:
 ```
 
 #### Approved
+
 ```
 [Entry by: John, Approved by: Sarah]
 Status: Approved
@@ -404,6 +418,7 @@ Status: Approved
 ```
 
 #### Posted
+
 ```
 [Entry by: John, Approved by: Sarah, Posted by: Sarah]
 Status: Posted
@@ -439,6 +454,7 @@ Never delete. Always document.
 ## Component Decomposition
 
 ### Primitives
+
 - `AmountInput` - Enforces monospace, decimal handling
 - `GLAccountSelector` - Searchable GL account picker
 - `EntitySelector` - Multi-entity aware
@@ -447,6 +463,7 @@ Never delete. Always document.
 - `ConfirmationButton` - Multi-step confirmation UI
 
 ### Composites
+
 - `JournalEntryForm` - Complete entry editor
 - `ReconciliationMatcher` - Drag-and-drop matching
 - `EntryPreview` - Read-only summary before posting
@@ -454,6 +471,7 @@ Never delete. Always document.
 - `TransferBuilder` - Multi-account transfer UI
 
 ### Workflows
+
 - **Create Entry** - New journal entry
 - **Reconcile Account** - Match transactions
 - **Create Transfer** - Between-account movement
@@ -521,6 +539,7 @@ sum(entry.lines.map(l => l.debitAmount)) === sum(entry.lines.map(l => l.creditAm
 ## Audit Trail
 
 Every workflow state creates audit entries:
+
 - Who took the action?
 - When?
 - What field changed?
@@ -538,6 +557,7 @@ This is the heart of compliance.
 **Future enhancement:** Guided workflows that explain financial consequences when correcting mistakes.
 
 **What's planned:**
+
 - Correction wizards for common scenarios:
   - Invoice posted to wrong entity
   - Expense should've been capitalized, not expensed
@@ -562,6 +582,7 @@ Prevents costly accounting errors and builds user confidence in fixing mistakes.
 **Future enhancement:** Require and track attachments for compliance-grade documentation.
 
 **What's planned:**
+
 - Required attachments for certain transaction types (configurable by entity)
 - Attachment completeness checks (prevents posting without receipt)
 - OCR with verification (not blind ingestion)
@@ -584,6 +605,7 @@ Makes audits seamless. Instead of "send us your receipts," audit trail includes 
 **Future enhancement:** Track which rule version applied to each transaction.
 
 **What's planned:**
+
 - Versioned rule engine (rules have v1.0, v1.1, v2.0 etc.)
 - "This transaction was processed under rule v1.2" notation
 - Audit trail: "Rule changed on X date, these transactions before that use old logic"

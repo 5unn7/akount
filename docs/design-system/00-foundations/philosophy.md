@@ -21,6 +21,7 @@ More like **Bloomberg Terminal × Notion clarity × Apple-level calm**.
 Akount blends **skeuomorphism with glassmorphism** to create a sophisticated, approachable interface:
 
 **Skeuomorphism elements:**
+
 - Physical depth and layering (cards feel tangible)
 - Realistic shadows that suggest affordance
 - Material-like surfaces that feel substantial
@@ -29,6 +30,7 @@ Akount blends **skeuomorphism with glassmorphism** to create a sophisticated, ap
 **Why:** Financial data deserves visual weight. Users should feel they're handling something valuable.
 
 **Glassmorphism elements:**
+
 - Frosted glass backgrounds (semi-transparent, blurred)
 - Layered transparency (content floats over context)
 - Light gradients (sophisticated, not playful)
@@ -37,6 +39,7 @@ Akount blends **skeuomorphism with glassmorphism** to create a sophisticated, ap
 **Why:** Modern elegance. Reduces visual noise while maintaining clarity.
 
 **The blend:**
+
 - Cards: Subtle shadow (skeuomorphic) + frosted glass background (glassmorphic)
 - Modals: Material depth + translucent overlay
 - Panels: Layered glass cards with realistic light

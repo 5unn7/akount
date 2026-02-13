@@ -11,6 +11,7 @@ Reference documents contain technical debt, missing features, and other long-ter
 ## When to Use
 
 Reference these files when:
+
 - Evaluating what features are planned but not yet implemented
 - Planning future design system work
 - Reviewing technical debt

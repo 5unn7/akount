@@ -49,12 +49,14 @@ For each task in the plan:
 **2. Implement** — Follow existing patterns. Use Edit for modifications, Write for new files.
 
 **3. Test** — Run tests after each task, not just at the end:
+
 ```bash
 npx vitest run [test-file]        # specific tests
 npx vitest run                     # all tests
 ```
 
 **4. Verify** — Check against the task's success criteria. Quick self-review:
+
 - [ ] No `any` types without justification
 - [ ] No console.log left behind
 - [ ] No commented-out code
@@ -62,11 +64,10 @@ npx vitest run                     # all tests
 - [ ] New features have tests
 
 **5. Commit** — If the task is a complete, working slice:
+
 ```bash
 git add [specific files]
-git commit -m "feat: [description]
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+git commit -m "feat: [description]"
 ```
 
 Only commit when tests pass and the slice is functional. See `guardrails.md` for commit rules.
@@ -74,6 +75,7 @@ Only commit when tests pass and the slice is functional. See `guardrails.md` for
 ### When the Plan is Wrong
 
 If a task takes 2x expected effort or reveals a design flaw:
+
 1. **STOP** — don't power through a broken plan
 2. Update the plan file with what you learned
 3. Inform the user of the deviation
@@ -84,6 +86,7 @@ This is normal — ~30% of plans need adjustment during implementation.
 ### High-Risk Tasks
 
 For tasks tagged `Risk: high` in the plan (financial logic, auth, schema changes):
+
 - Run the relevant review agent after completing the task
 - Financial logic → `financial-data-validator`
 - Auth changes → `security-sentinel`
@@ -96,6 +99,7 @@ For tasks tagged `Risk: high` in the plan (financial logic, auth, schema changes
 ### Update Plan
 
 Mark completed tasks in the plan file:
+
 ```markdown
 - [x] Task 1: Create schema
 - [x] Task 2: Create service
@@ -109,6 +113,7 @@ If the plan completes a task from TASKS.md, mark it done.
 ### Final Validation
 
 After all tasks complete:
+
 - Run full test suite: `npx vitest run`
 - Suggest: "Run `/processes:review` for final multi-agent validation"
 

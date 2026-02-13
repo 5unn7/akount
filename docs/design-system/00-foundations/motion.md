@@ -182,12 +182,14 @@ height: 100px;
 ### Avoid Animating Large Elements
 
 Limit animations to:
+
 - Small UI components
 - Icons
 - Text changes
 - Modal overlays
 
 **Avoid animating:**
+
 - Page backgrounds
 - Full-screen transitions
 - Large data table rows
@@ -245,6 +247,7 @@ theme: {
 ```
 
 Usage:
+
 ```jsx
 <button className="transition duration-fast ease-standard hover:bg-primary-600">
   Click me

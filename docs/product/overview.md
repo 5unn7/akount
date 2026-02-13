@@ -5,6 +5,7 @@
 **Akount is an AI-powered financial command center for globally-operating solopreneurs.**
 
 It's NOT a simple bookkeeping tool. It's a sophisticated multi-jurisdiction financial management platform for business owners who:
+
 - Operate legal entities across multiple countries (e.g., Canada, India, US)
 - Work with clients globally (Australia, UK, Europe, etc.)
 - Need consolidated oversight of personal AND business finances
@@ -15,6 +16,7 @@ It's NOT a simple bookkeeping tool. It's a sophisticated multi-jurisdiction fina
 ## Target User
 
 **The Global Solopreneur:**
+
 - Freelancers, consultants, and small business owners operating internationally
 - People with bank accounts and entities in multiple countries
 - Those who need financial clarity across jurisdictions
@@ -22,6 +24,7 @@ It's NOT a simple bookkeeping tool. It's a sophisticated multi-jurisdiction fina
 - Solopreneurs who can't afford a full-time CFO but need CFO-level insights
 
 **NOT for:**
+
 - Simple single-country freelancers (Wave, FreshBooks serve them)
 - Large enterprises (QuickBooks Enterprise, NetSuite serve them)
 - Accountants managing client books (Xero Practice Manager serves them)

@@ -26,12 +26,14 @@ Close out your session productively: save work, update docs, set up tomorrow.
 ## Phase 1: Assess Current State (30 seconds)
 
 ### Git Status
+
 ```bash
 git status --short
 git diff HEAD --stat
 ```
 
 **Check for:**
+
 - Untracked files (??
 )
 - Modified uncommitted files (M)
@@ -40,6 +42,7 @@ git diff HEAD --stat
 ### Identify Temp Files
 
 **Common patterns:**
+
 - Session notes: `WEEK_YYYY-MM-DD*.md`
 - Review reports: `CODE_REVIEW_*.md`
 - Temp notes: `*_TEMP.md`, `*_SCRATCH.md`
@@ -47,6 +50,7 @@ git diff HEAD --stat
 - Build output: `*_errors.txt`, `*_output.json`
 
 **Keep (but organize):**
+
 - Implementation plans → `docs/plans/`
 - Brainstorms → `docs/brainstorms/`
 - Session reports → `docs/archive/sessions/`
@@ -56,6 +60,7 @@ git diff HEAD --stat
 ## Phase 2: Clean Up (1 minute)
 
 ### Delete Temp Files
+
 ```bash
 # Delete session temp files
 rm -f *_TEMP.md *_SCRATCH.md *_errors.txt *_output.json
@@ -65,6 +70,7 @@ rm -rf .agent/
 ```
 
 ### Move Artifacts to Correct Locations
+
 ```bash
 # Move plans
 mv *_plan.md docs/plans/ 2>/dev/null || true
@@ -122,6 +128,7 @@ cat TASKS.md
 ```
 
 **Format:**
+
 ```markdown
 # Tasks
 
@@ -152,6 +159,7 @@ cat "$HOME/.claude/projects/$(basename $PWD)/memory/MEMORY.md"
 ```
 
 **Update sections:**
+
 - Current State: Update phase/step progress
 - Recent Work Summary: Add today's accomplishments
 - Known Issues: Add newly discovered issues
@@ -169,18 +177,16 @@ git add [files]
 # Commit with clear message
 git commit -m "feat: [description of what was done]
 
-[Optional details]
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+[Optional details]"
 
 # Check status
 git status
 ```
 
 **Commit message guidelines:**
+
 - Use conventional commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
 - Keep first line under 72 characters
-- Include Co-Authored-By line
 - Reference issue/PR if relevant
 
 ### If Already Committed
@@ -218,15 +224,18 @@ Add to top of TASKS.md:
 Based on today's work:
 
 **If you completed a feature:**
+
 - → Tomorrow: Run `/processes:review` for code review
 - → Write tests if not already done
 - → Update documentation
 
 **If you're mid-implementation:**
+
 - → Tomorrow: Continue from [specific file/function]
 - → Remember: [any gotchas discovered today]
 
 **If you hit blockers:**
+
 - → Tomorrow: Resolve [blocker] first
 - → Consider: [alternative approach if blocker persists]
 

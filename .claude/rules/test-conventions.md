@@ -2,10 +2,12 @@
 
 ---
 paths:
-  - "apps/api/src/**/__tests__/**"
-  - "apps/api/src/**/*.test.ts"
-  - "apps/web/src/**/__tests__/**"
-  - "apps/web/tests/**"
+
+- "apps/api/src/**/**tests**/**"
+- "apps/api/src/**/*.test.ts"
+- "apps/web/src/**/**tests**/**"
+- "apps/web/tests/**"
+
 ---
 
 ## Financial Invariant Assertions (REQUIRED)

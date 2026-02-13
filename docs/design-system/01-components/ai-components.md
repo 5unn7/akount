@@ -11,6 +11,7 @@ AI components surface insights without being intrusive. They follow the principl
 > **Advisor, not authority. Suggest, never dictate.**
 
 All AI components include:
+
 - **Confidence level** - How sure is the AI?
 - **Reasoning** - Why is this suggested?
 - **Action mapping** - What should the user do?
@@ -37,12 +38,14 @@ Core component for displaying a single AI insight:
 ```
 
 **Components:**
+
 - **Icon + Title:** Visual + text label
 - **Summary:** 1-2 sentences, benefit-focused
 - **Context strip:** Entity, period, jurisdiction
 - **Action buttons:** Primary + secondary
 
 **Insight Types:**
+
 | Type | Icon | Color | Use Case |
 |------|------|-------|----------|
 | Optimization | 💡 | Violet | Tax, cost savings, efficiency |
@@ -89,6 +92,7 @@ Expands card to show full reasoning:
 ```
 
 **Sections:**
+
 1. **What we noticed** - Observable facts
 2. **Why this matters** - Business/financial impact
 3. **Estimated impact** - Quantified benefit
@@ -111,12 +115,14 @@ Low     ██░░░░░░░░ 42%
 ```
 
 **Display variants:**
+
 - **Percentage:** "87% confident"
 - **Label:** "High confidence"
 - **Visual bar:** Filled portion represents confidence
 - **Text only:** For space-constrained areas
 
 **Thresholds:**
+
 - High: 75%+ (show confidently)
 - Medium: 50-74% (show with caveat)
 - Low: <50% (tentative, show sparingly)
@@ -137,6 +143,7 @@ AI Suggests: Cloud Services
 ```
 
 **Components:**
+
 - Current value in dropdown
 - "AI Suggests:" label
 - Suggested value
@@ -145,6 +152,7 @@ AI Suggests: Cloud Services
 - [Ignore] - Dismisses, records feedback
 
 **Behavior:**
+
 - Only show if confidence >75%
 - Auto-dismiss if user types/selects manually
 - Record feedback for model improvement
@@ -168,6 +176,7 @@ Reasoning:
 ```
 
 **Features:**
+
 - Show current and suggested value
 - Explain reasoning
 - "Always use this" option (creates rule)
@@ -211,12 +220,14 @@ Main access point for all AI insights:
 ```
 
 **Layout:**
+
 - Header: "Akount Advisor" + subtitle
 - Grouped by type: Attention, Optimization, Observations
 - Card per insight (max 5-7 visible)
 - [View History] link for dismissed insights
 
 **Behavior:**
+
 - Slides in from right (doesn't replace main view)
 - Click card to expand detail view
 - Dismiss/apply from detail
@@ -244,6 +255,7 @@ Trained on: 18 months of data
 ```
 
 **Usage:**
+
 - Help icon (?) that triggers tooltip
 - Explain AI reasoning concisely
 - Link to documentation
@@ -270,6 +282,7 @@ Rare, serious alert that requires action:
 ```
 
 **When to use:**
+
 - Tax law changes (not optional)
 - Hard compliance deadlines
 - Material financial risk
@@ -291,12 +304,14 @@ Secondary:    [Learn more] [Ignore]
 ```
 
 **Types:**
+
 - **Apply:** Accept and execute
 - **Learn more:** Get more information
 - **Ignore:** Dismiss this suggestion
 - **Always:** Create rule from suggestion
 
 **Behavior:**
+
 - Primary button: Benefit of accepting
 - Secondary button: Escape option
 - Clear result: What happens on click?
@@ -316,12 +331,14 @@ Was this helpful?
 ```
 
 **Usage:**
+
 - After user acts on suggestion
 - Helps improve AI model
 - Optional detailed feedback form
 - Tracks suggestion quality
 
 **Data collected:**
+
 - Helpful? (yes/no)
 - Optional comment
 - Context (transaction, category, etc.)
@@ -344,6 +361,7 @@ Current accuracy: 87%
 ```
 
 **When to show:**
+
 - After user provides feedback
 - When confidence improves
 - Quarterly progress reports
@@ -368,12 +386,14 @@ Route complex issue to human:
 ```
 
 **When AI doesn't know:**
+
 - Complex tax scenarios
 - Jurisdiction-specific rules
 - Multi-entity scenarios
 - Unusual transactions
 
 **Behavior:**
+
 - Clear statement: "This is beyond AI scope"
 - Connection option (vetted professionals)
 - Learn more link
@@ -418,6 +438,7 @@ View past suggestions (reviewed/applied/dismissed):
 ```
 
 **Features:**
+
 - Group by action (applied, reviewed, dismissed)
 - Show date and summary
 - Re-apply dismissed suggestions
@@ -455,6 +476,7 @@ Every AI component MUST include:
 6. **Escape hatch** - How to dismiss/override
 
 **Never:**
+
 - ❌ "You might save money" (vague)
 - ❌ "This is wrong" (judgmental)
 - ❌ "AI thinks you should..." (authority)
@@ -465,6 +487,7 @@ Every AI component MUST include:
 ## Accessibility
 
 All AI components:
+
 - ✓ Keyboard accessible (Tab, Enter, Escape)
 - ✓ Screen reader friendly (proper labels, ARIA)
 - ✓ Clear focus indicators
@@ -477,6 +500,7 @@ All AI components:
 ## Dark Mode
 
 AI components in dark mode:
+
 - Violet accent color (--ak-ai-primary) remains consistent
 - Background panels elevated for contrast
 - Icon colors adjusted for visibility

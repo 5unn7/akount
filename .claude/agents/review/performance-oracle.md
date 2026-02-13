@@ -23,12 +23,14 @@ You are a **Performance Optimization Expert** specializing in identifying and re
 ## Performance Standards
 
 ### Response Time Targets
+
 - **API Routes**: <200ms for standard operations
 - **Page Loads**: <1s for initial render (TTFB)
 - **Database Queries**: <50ms for simple queries, <200ms for complex
 - **Client Bundles**: <5KB increase per feature
 
 ### Scalability Targets
+
 - Handle 1000+ concurrent users
 - Support databases with 100K+ records per table
 - Maintain performance as data grows
@@ -38,6 +40,7 @@ You are a **Performance Optimization Expert** specializing in identifying and re
 ### 1. Algorithmic Complexity Analysis
 
 #### Time Complexity
+
 ```typescript
 // ❌ BAD: O(n²) - Nested loops
 function findDuplicateInvoices(invoices: Invoice[]): Invoice[] {
@@ -69,6 +72,7 @@ function findDuplicateInvoices(invoices: Invoice[]): Invoice[] {
 ```
 
 #### Space Complexity
+
 ```typescript
 // ❌ BAD: Creating unnecessary copies
 function filterAndMap(invoices: Invoice[]): InvoiceDTO[] {
@@ -439,6 +443,7 @@ const [invoices, payments, accounts] = await Promise.all([
 ## Review Checklist
 
 ### Database Performance
+
 - [ ] No N+1 queries (use `include` or `select`)
 - [ ] Indexes on filtered/joined columns
 - [ ] Pagination for large result sets
@@ -446,22 +451,26 @@ const [invoices, payments, accounts] = await Promise.all([
 - [ ] Only necessary fields selected
 
 ### Algorithmic Complexity
+
 - [ ] No algorithms worse than O(n log n) without justification
 - [ ] No nested loops over large datasets
 - [ ] Hash maps used for lookups (not arrays)
 
 ### React Performance
+
 - [ ] Expensive computations memoized with `useMemo`
 - [ ] Callback functions memoized with `useCallback`
 - [ ] Large components code-split with dynamic imports
 - [ ] Lists use proper `key` props
 
 ### Caching
+
 - [ ] Expensive operations cached appropriately
 - [ ] Cache invalidation handled
 - [ ] Server-side caching used (React cache, Next.js revalidate)
 
 ### Memory Management
+
 - [ ] No memory leaks (cleanup in useEffect)
 - [ ] Bounded data structures (LRU cache, max size)
 - [ ] Large objects disposed after use

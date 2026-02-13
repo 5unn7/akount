@@ -43,6 +43,7 @@ Week 5:     [Phase 7]
 ```
 
 **Estimated Timeline:**
+
 - With parallel execution: **16 days (~128 hours)**
 - Sequential: **28 days (~220 hours)**
 
@@ -64,6 +65,7 @@ Week 5:     [Phase 7]
 ## Governance
 
 Each phase file contains:
+
 - Clear objectives
 - Step-by-step tasks with checkboxes
 - Files to create/modify/delete

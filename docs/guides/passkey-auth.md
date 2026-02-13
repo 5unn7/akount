@@ -17,17 +17,20 @@ Passkeys are a passwordless authentication standard built on **WebAuthn** (Web A
 ## Platform Support
 
 ### Desktop
+
 - **Windows 10/11**: Windows Hello (fingerprint, facial recognition, PIN)
 - **macOS**: Touch ID, Face ID (on supported Macs)
 - **Linux**: FIDO2-compatible authenticators
 
 ### Mobile
+
 - **iOS 16+**: Face ID, Touch ID with iCloud Keychain sync
 - **Android 9+**: Biometric authentication with Google Password Manager sync
 
 ## How It Works
 
 ### Registration Flow
+
 1. User signs up with email
 2. System prompts to create a passkey
 3. User authenticates with biometric (Face ID, Touch ID, Windows Hello, etc.)
@@ -37,6 +40,7 @@ Passkeys are a passwordless authentication standard built on **WebAuthn** (Web A
 5. Passkey is registered and named (e.g., "iPhone 15 Pro", "Work Laptop")
 
 ### Login Flow
+
 1. User enters email (or selects from saved accounts)
 2. System challenges for passkey authentication
 3. User authenticates with biometric
@@ -45,11 +49,13 @@ Passkeys are a passwordless authentication standard built on **WebAuthn** (Web A
 6. User is logged in
 
 ### Multi-Device Support
+
 - Users can register passkeys for multiple devices (phone, laptop, tablet)
 - Each device has its own key pair
 - Users can manage passkeys in account settings (add, rename, remove)
 
 ### Sync Across Devices
+
 - **Apple ecosystem**: Passkeys sync via iCloud Keychain (iPhone, iPad, Mac)
 - **Android ecosystem**: Passkeys sync via Google Password Manager
 - **Cross-platform**: Users can register passkeys on both Apple and Android devices
@@ -59,12 +65,14 @@ Passkeys are a passwordless authentication standard built on **WebAuthn** (Web A
 While passkeys are the primary method, Akount provides fallback options:
 
 ### Email Magic Links
+
 - User enters email
 - System sends one-time login link
 - Click link to authenticate
 - No password required
 
 ### Traditional Password + MFA (Optional)
+
 - User can optionally set a password
 - MFA required for password-based login:
   - TOTP (Google Authenticator, Authy, etc.)
@@ -78,6 +86,7 @@ While passkeys are the primary method, Akount provides fallback options:
 Akount uses **Clerk** for authentication, which has built-in passkey support via WebAuthn.
 
 #### Clerk Configuration
+
 ```typescript
 {
   // Enable passkeys as primary authentication
@@ -104,6 +113,7 @@ Akount uses **Clerk** for authentication, which has built-in passkey support via
 ```
 
 #### API Integration
+
 ```typescript
 // Register a passkey
 await clerk.user.createPasskey({
@@ -123,6 +133,7 @@ await clerk.user.passkeys.delete(passkeyId)
 ## User Experience Flow
 
 ### First-Time User
+
 1. User visits Akount
 2. Clicks "Sign Up"
 3. Enters email and workspace name
@@ -132,6 +143,7 @@ await clerk.user.passkeys.delete(passkeyId)
 7. User is logged in
 
 ### Returning User
+
 1. User visits Akount
 2. Clicks "Sign In"
 3. System shows: "Sign in with Face ID" (or Touch ID, Windows Hello)
@@ -139,6 +151,7 @@ await clerk.user.passkeys.delete(passkeyId)
 5. User is logged in (< 2 seconds)
 
 ### New Device Setup
+
 1. User visits Akount on new device
 2. Enters email
 3. System sends magic link to email
@@ -148,6 +161,7 @@ await clerk.user.passkeys.delete(passkeyId)
 7. Passkey registered for new device
 
 ### Device Management
+
 1. User goes to Settings → Security → Passkeys
 2. Sees list of registered devices:
    - iPhone 15 Pro (registered Jan 15, 2026)
@@ -159,6 +173,7 @@ await clerk.user.passkeys.delete(passkeyId)
 ## Security Benefits
 
 ### Resistant to Common Attacks
+
 - **Phishing** - Private key never leaves device, can't be stolen
 - **Password reuse** - No passwords to reuse
 - **Credential stuffing** - No shared credentials to stuff
@@ -166,6 +181,7 @@ await clerk.user.passkeys.delete(passkeyId)
 - **Social engineering** - Can't trick users into revealing something they don't have
 
 ### Regulatory Compliance
+
 - **GDPR** - Reduces personal data storage (no passwords)
 - **SOC 2** - Strong authentication controls
 - **PCI DSS** - Multi-factor authentication by design
@@ -184,16 +200,19 @@ No additional cost for passkey authentication (included in base Clerk pricing).
 ## Migration Path
 
 ### Phase 1: Launch (Week 1-2)
+
 - Enable passkeys as primary authentication
 - Email magic links as fallback
 - Passkey management UI
 
 ### Phase 2: Enhancements (Week 8-12)
+
 - Optional password + MFA for users who prefer it
 - Security keys (YubiKey) support via WebAuthn
 - Device trust scoring
 
 ### Phase 3: Advanced Features (Phase 3)
+
 - Passkey recovery flows (for lost all devices)
 - Organization-wide passkey policies
 - Conditional authentication (high-risk actions require re-auth)
@@ -201,14 +220,17 @@ No additional cost for passkey authentication (included in base Clerk pricing).
 ## User Communication
 
 ### Marketing Messaging
+
 - "Sign in with your face or fingerprint - no passwords needed"
 - "Your accounting data, secured by biometrics"
 - "Faster than typing a password, more secure than any other method"
 
 ### Onboarding Copy
+>
 > **Welcome to Akount!** We use passkeys to keep your financial data secure. You'll sign in with Face ID, Touch ID, or Windows Hello - no passwords to remember. Let's set that up now.
 
 ### Help Documentation
+
 - "What are passkeys and why should I use them?"
 - "How do I add a new device?"
 - "What if I lose my device?"
@@ -233,16 +255,19 @@ No additional cost for passkey authentication (included in base Clerk pricing).
 ## Success Metrics
 
 ### Adoption
+
 - % of users with at least one passkey registered
 - % of logins via passkey (vs email/password)
 - Average time to login (passkey vs other methods)
 
 ### Security
+
 - Phishing attempt success rate (should be 0%)
 - Password reset requests (should decrease)
 - Account takeover attempts (should decrease)
 
 ### UX
+
 - Login friction (time from click to authenticated)
 - Support tickets related to login issues
 - User satisfaction with authentication

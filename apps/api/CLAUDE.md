@@ -13,6 +13,7 @@ Requests flow through this pipeline:
 4. **Route Handler** — Execute business logic via service layer
 
 **TenantContext structure:**
+
 ```typescript
 {
   tenantId: string,
@@ -32,13 +33,14 @@ Requests flow through this pipeline:
 | Vendors | `domains/vendors/` | Stub (planned) |
 | Accounting | `domains/accounting/` | Stub (planned) |
 
-
 ## Built Endpoints
 
 ### Dashboard
+
 - `GET /api/dashboard/metrics` — KPIs with entity/currency filters
 
 ### Accounts (Banking)
+
 - `GET /api/banking/accounts` — List with cursor pagination
 - `POST /api/banking/accounts` — Create new account
 - `PATCH /api/banking/accounts/:id` — Update account
@@ -49,6 +51,7 @@ All routes enforce tenant isolation via middleware.
 ## Service Pattern
 
 **Every service function signature:**
+
 ```typescript
 export async function createResource(
   data: CreateResourceInput,
@@ -76,10 +79,12 @@ export async function createResource(
 ## Test Pattern (Vitest)
 
 Tests in `apps/api/__tests__/`:
+
 - **Service tests:** Test business logic with mock Prisma
 - **Route tests:** Test HTTP layer with test server
 
 **62 tests passing** (as of 2026-02-08):
+
 - Account service: 23 tests
 - Account routes: 11 tests
 - Dashboard service + routes: 16 tests
@@ -98,11 +103,13 @@ Tests in `apps/api/__tests__/`:
 ## Error Responses
 
 Standard format:
+
 ```typescript
 { error: string, details?: any }
 ```
 
 Status codes:
+
 - 400: Validation error
 - 401: Unauthorized
 - 403: Forbidden
@@ -112,6 +119,7 @@ Status codes:
 ## Prisma Usage
 
 **Always filter by tenantId:**
+
 ```typescript
 // For tenant-scoped models
 await prisma.category.findMany({
@@ -125,6 +133,7 @@ await prisma.invoice.findMany({
 ```
 
 **Soft delete filter:**
+
 ```typescript
 where: { deletedAt: null }
 ```

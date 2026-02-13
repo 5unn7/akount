@@ -3,6 +3,9 @@ import { auth } from '@clerk/nextjs/server';
 /**
  * Base API client for making authenticated requests to the Akount API
  * Automatically handles authentication via Clerk JWT tokens
+ *
+ * NOTE: This file is SERVER-ONLY (uses @clerk/nextjs/server)
+ * For client components, use @/lib/api/client-browser instead
  */
 export async function apiClient<T>(
     endpoint: string,

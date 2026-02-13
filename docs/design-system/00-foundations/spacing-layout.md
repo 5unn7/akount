@@ -256,6 +256,7 @@ theme: {
 ```
 
 Usage:
+
 ```jsx
 <div className="p-md mb-lg">Card content</div>
 <section className="p-lg space-y-xl">Section</section>

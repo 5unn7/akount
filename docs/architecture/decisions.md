@@ -30,6 +30,7 @@
 | **Validation** | Zod | Runtime type validation, integrates with Prisma | Free |
 
 **Monthly Cost Estimate:**
+
 - Development: $0 (free tiers)
 - Production (MVP): $15-35/mo (Railway PostgreSQL + Upstash Redis)
 - Production (Scale): $100-300/mo (dedicated DB, more Redis memory)
@@ -51,6 +52,7 @@
 | **Tables** | TanStack Table | Powerful, flexible, free | Free |
 
 **Monthly Cost Estimate:**
+
 - Hosting: $0 (Vercel free tier for hobby) → $20/mo (Pro for production)
 
 ---
@@ -70,6 +72,7 @@
 | **CI/CD** | GitHub Actions | 2000 mins/mo free, integrated | Free |
 
 **Monthly Cost Estimate:**
+
 - Development: $0
 - MVP (100 users): $30-60/mo
 - Scale (1000 users): $150-300/mo
@@ -91,7 +94,9 @@
 ## Cost Analysis
 
 ### Development Phase
+
 **Target: $0-50/mo**
+
 - Railway: Free tier (500 hrs) or $5/mo
 - Upstash Redis: Free tier
 - Vercel: Free tier
@@ -100,7 +105,9 @@
 - **Total: $0-10/mo**
 
 ### MVP Launch (100 users)
+
 **Target: $100-150/mo**
+
 - Railway (DB + API): $20-30/mo
 - Upstash Redis: $10/mo
 - Vercel Pro: $20/mo
@@ -111,7 +118,9 @@
 - **Total: $100-110/mo**
 
 ### Growth Phase (1000 users)
+
 **Target: $400-600/mo**
+
 - Railway (scaled): $100-150/mo
 - Upstash Redis: $30/mo
 - Vercel Pro: $20/mo
@@ -122,7 +131,9 @@
 - **Total: $314-364/mo**
 
 ### Scale Phase (10k users)
+
 **Target: $1500-2500/mo**
+
 - Railway or AWS: $500-800/mo
 - Redis: $100/mo
 - Vercel: $20-150/mo
@@ -137,30 +148,35 @@
 ## Alternative Considerations
 
 ### Why Fastify over Express?
+
 - **Performance**: 2x faster request throughput
 - **Cost**: Lower hosting costs due to efficiency
 - **DX**: Better TypeScript support, async/await first-class
 - **Plugins**: Mature ecosystem (CORS, JWT, validation)
 
 ### Why Prisma over Drizzle/TypeORM?
+
 - **Type Safety**: Best-in-class TypeScript integration
 - **Migrations**: Excellent migration workflow
 - **DX**: Prisma Studio for database exploration
 - **Maturity**: Production-proven for financial apps
 
 ### Why Next.js over Remix?
+
 - **Maturity**: Larger ecosystem, more resources
 - **Vercel**: Optimized hosting with generous free tier
 - **App Router**: Modern patterns (Server Components, streaming)
 - **Community**: Easier to hire Next.js developers
 
 ### Why Clerk over Auth0/Firebase Auth?
+
 - **Passkeys**: First-class WebAuthn support
 - **DX**: Easiest setup, great documentation
 - **Pricing**: Free tier suitable for MVP
 - **Features**: MFA, magic links, device management included
 
 ### Why Railway over AWS/GCP?
+
 - **Simplicity**: Zero DevOps, click to deploy
 - **Cost**: Generous free tier, no surprise bills
 - **DX**: Great for startups, focus on product
@@ -171,6 +187,7 @@
 ## Decision Log
 
 ### 2026-01-27: Initial Tech Stack
+
 - Selected all technologies listed above
 - Prioritized budget-friendly options with free tiers
 - Focused on developer velocity for MVP phase

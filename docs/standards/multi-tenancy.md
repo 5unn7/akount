@@ -18,6 +18,7 @@ Cross-tenant data leaks are catastrophic security failures. Tenant isolation is 
 ### 1. Database Queries - ALWAYS Filter by tenantId
 
 **✅ CORRECT:**
+
 ```typescript
 // Get invoice for current user's tenant
 const invoice = await prisma.invoice.findFirst({
@@ -53,6 +54,7 @@ await prisma.transaction.update({
 ```
 
 **❌ WRONG:**
+
 ```typescript
 // SECURITY VULNERABILITY: Missing tenantId check
 const invoice = await prisma.invoice.findFirst({
@@ -72,6 +74,7 @@ await prisma.transaction.update({
 ### 2. API Routes - Validate Tenant
 
 **✅ CORRECT:**
+
 ```typescript
 // GET /api/invoices/:id
 fastify.get('/invoices/:id', {
@@ -106,6 +109,7 @@ fastify.get('/invoices/:id', {
 ```
 
 **❌ WRONG:**
+
 ```typescript
 // SECURITY VULNERABILITY
 fastify.get('/invoices/:id', async (request, reply) => {
@@ -121,6 +125,7 @@ fastify.get('/invoices/:id', async (request, reply) => {
 ### 3. Next.js Server Components - Get Tenant Context
 
 **✅ CORRECT:**
+
 ```typescript
 // app/(dashboard)/invoices/[id]/page.tsx
 import { auth } from '@clerk/nextjs/server'
@@ -159,6 +164,7 @@ export default async function InvoicePage({
 ```
 
 **❌ WRONG:**
+
 ```typescript
 // SECURITY VULNERABILITY
 export default async function InvoicePage({ params }) {

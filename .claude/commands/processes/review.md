@@ -23,6 +23,7 @@ Multi-agent code review. Catches issues across type safety, architecture, perfor
 ## Phase 1: Identify Changes
 
 Determine the review target:
+
 - **PR number/URL** — fetch metadata with `gh pr view`
 - **Current branch** — `git diff main...HEAD`
 - **Specific files** — review only those files
@@ -60,15 +61,18 @@ Run agents **in parallel** using the Task tool. Provide each agent with the diff
 Consolidate all agent reports. Categorize by severity:
 
 **P1 Critical (blocks merge):**
+
 - Security vulnerabilities, tenant isolation breaches
 - Financial calculation errors, data corruption risks
 - Breaking changes without migration path
 
 **P2 Important (should fix):**
+
 - Performance bottlenecks, type safety issues
 - Missing error handling, missing tests for critical paths
 
 **P3 Nice-to-Have (optional):**
+
 - Code simplification, minor optimizations, consistency
 
 ---
@@ -76,12 +80,14 @@ Consolidate all agent reports. Categorize by severity:
 ## Phase 4: Present Results
 
 For each finding, include:
+
 - **Location:** `file:line`
 - **Issue:** what's wrong
 - **Impact:** what could go wrong
 - **Fix:** suggested code change
 
 End with a verdict:
+
 - **P1 findings exist** → BLOCK merge, list required fixes
 - **P2 only** → recommend fixes, safe to merge after
 - **P3 only** → approve, note optional improvements

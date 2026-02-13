@@ -82,6 +82,7 @@ Every monetary transaction stores **4 fields**:
 ```
 
 **Rules:**
+
 1. Amount and baseCurrencyAmount are **integer cents**
 2. Exchange rate captured once, **never recalculated**
 3. Reporting uses baseCurrencyAmount for consolidation
@@ -111,6 +112,7 @@ Every monetary transaction stores **4 fields**:
 ### Add an API Endpoint
 
 1. **Schema** (`apps/api/src/domains/<domain>/schemas/<resource>.schema.ts`):
+
    ```typescript
    export const CreateResourceSchema = z.object({
      name: z.string().min(1),
@@ -119,6 +121,7 @@ Every monetary transaction stores **4 fields**:
    ```
 
 2. **Service** (`apps/api/src/domains/<domain>/services/<resource>.service.ts`):
+
    ```typescript
    export async function createResource(data, ctx: TenantContext) {
      return prisma.resource.create({
@@ -128,6 +131,7 @@ Every monetary transaction stores **4 fields**:
    ```
 
 3. **Route** (`apps/api/src/domains/<domain>/routes/<resource>.ts`):
+
    ```typescript
    fastify.post('/', {
      schema: { body: CreateResourceSchema },
@@ -143,6 +147,7 @@ Every monetary transaction stores **4 fields**:
 ### Add a Page
 
 1. **Server Component** (`apps/web/src/app/(dashboard)/<domain>/<resource>/page.tsx`):
+
    ```typescript
    export default async function ResourcePage() {
      const data = await getResources()
@@ -151,6 +156,7 @@ Every monetary transaction stores **4 fields**:
    ```
 
 2. **Client Component** (`resource-list-client.tsx`):
+
    ```typescript
    'use client'
    export function ResourceListClient({ data }) {

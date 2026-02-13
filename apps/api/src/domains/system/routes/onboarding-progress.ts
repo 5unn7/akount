@@ -5,39 +5,60 @@ import { prisma } from '@akount/db';
 /**
  * Onboarding Progress Routes
  *
- * Tracks user progress through onboarding steps (basic info, entity, business details, bank, goals).
- * Used by dashboard hero card and sidebar progress indicator.
+ * Manages the onboarding progress tracking for dashboard hero card and sidebar indicator.
+ * All routes require authentication and tenant context (applied via middleware hooks).
+ *
+ * SECURITY:
+ * - Auth + tenant middleware enforced via fastify hooks
+ * - RBAC validation (OWNER only for mutations)
+ * - Strict enum validation for steps
+ * - Percentage calculated from boolean flags (source of truth)
+ * - Read-modify-write pattern for array updates
  */
+
+// Valid onboarding step names (strict allowlist)
+const VALID_STEPS = [
+  'basic_info',
+  'entity_setup',
+  'business_details',
+  'bank_connection',
+  'goals_setup',
+] as const;
+
+type OnboardingStep = (typeof VALID_STEPS)[number];
 
 // Validation schemas
 const UpdateProgressSchema = z.object({
-  step: z.enum([
-    'basic_info',
-    'entity_setup',
-    'business_details',
-    'bank_connection',
-    'goals_setup',
-  ]),
+  step: z.enum(VALID_STEPS), // ✅ SECURITY: Strict enum validation
   completed: z.boolean(),
 });
 
 const SkipStepSchema = z.object({
-  step: z.string(),
-  skipDurationDays: z.number().default(7),
+  step: z.enum(VALID_STEPS), // ✅ SECURITY: Strict enum (was z.string())
+  skipDays: z.number().int().min(1).max(90).default(7), // Max 90 days
+});
+
+const DismissCardSchema = z.object({
+  // No body needed - just marks card as dismissed
 });
 
 // Response types
 type ProgressResponse = {
   completionPercentage: number;
   completedSteps: string[];
-  skippedSteps: string[];
   basicInfoComplete: boolean;
   entitySetupComplete: boolean;
   businessDetailsComplete: boolean;
   bankConnectionComplete: boolean;
   goalsSetupComplete: boolean;
-  lastNudgedAt?: string | null;
-  dashboardCardDismissedAt?: string | null;
+  dashboardCardDismissedAt: string | null;
+  skippedSteps: string[];
+};
+
+type UpdateResponse = {
+  success: boolean;
+  completionPercentage: number;
+  message: string;
 };
 
 type ErrorResponse = {
@@ -45,72 +66,90 @@ type ErrorResponse = {
   message: string;
 };
 
-// Step weights for percentage calculation (total = 100%)
-const STEP_WEIGHTS = {
-  basic_info: 20,
-  entity_setup: 20,
-  business_details: 20,
-  bank_connection: 20,
-  goals_setup: 20,
-};
+/**
+ * Calculate completion percentage from boolean flags (source of truth)
+ * Prevents corruption from increment/decrement operations.
+ */
+function calculateCompletionPercentage(progress: {
+  basicInfoComplete: boolean;
+  entitySetupComplete: boolean;
+  businessDetailsComplete: boolean;
+  bankConnectionComplete: boolean;
+  goalsSetupComplete: boolean;
+}): number {
+  const steps = [
+    progress.basicInfoComplete,
+    progress.entitySetupComplete,
+    progress.businessDetailsComplete,
+    progress.bankConnectionComplete,
+    progress.goalsSetupComplete,
+  ];
+  const completedCount = steps.filter(Boolean).length;
+  return Math.round((completedCount / 5) * 100);
+}
+
+/**
+ * Get field name for a step (maps step enum to boolean field)
+ */
+function getStepFieldName(step: OnboardingStep): keyof Omit<ProgressResponse, 'completionPercentage' | 'completedSteps' | 'cardDismissedUntil' | 'skippedSteps'> {
+  const fieldMap: Record<OnboardingStep, keyof Omit<ProgressResponse, 'completionPercentage' | 'completedSteps' | 'cardDismissedUntil' | 'skippedSteps'>> = {
+    basic_info: 'basicInfoComplete',
+    entity_setup: 'entitySetupComplete',
+    business_details: 'businessDetailsComplete',
+    bank_connection: 'bankConnectionComplete',
+    goals_setup: 'goalsSetupComplete',
+  };
+  return fieldMap[step];
+}
 
 export async function onboardingProgressRoutes(fastify: FastifyInstance) {
   /**
    * GET /progress
    *
-   * Returns current onboarding progress for authenticated user's tenant.
-   * Used by dashboard hero card and sidebar indicator.
+   * Fetch current onboarding progress for the authenticated user's tenant.
+   * ✅ SECURITY: Uses request.tenantId from middleware
    */
   fastify.get<{
     Reply: ProgressResponse | ErrorResponse;
   }>('/progress', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      // Get user's tenant
-      const tenantUser = await prisma.tenantUser.findFirst({
-        where: { userId: request.userId as string },
-        include: {
-          tenant: {
-            include: { onboardingProgress: true },
-          },
-        },
-      });
-
-      if (!tenantUser) {
-        return reply.status(404).send({
-          error: 'NoTenant',
-          message: 'No tenant found for user',
+      if (!request.tenantId) {
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'No tenant access',
         });
       }
 
-      // Return progress or default state
-      const progress = tenantUser.tenant.onboardingProgress;
+      // Fetch onboarding progress
+      const progress = await prisma.onboardingProgress.findUnique({
+        where: { tenantId: request.tenantId },
+      });
 
       if (!progress) {
+        // Return default state (no progress created yet)
         return reply.status(200).send({
           completionPercentage: 0,
           completedSteps: [],
-          skippedSteps: [],
           basicInfoComplete: false,
           entitySetupComplete: false,
           businessDetailsComplete: false,
           bankConnectionComplete: false,
           goalsSetupComplete: false,
-          lastNudgedAt: null,
           dashboardCardDismissedAt: null,
+          skippedSteps: [],
         });
       }
 
       return reply.status(200).send({
         completionPercentage: progress.completionPercentage,
         completedSteps: progress.completedSteps,
-        skippedSteps: progress.skippedSteps,
         basicInfoComplete: progress.basicInfoComplete,
         entitySetupComplete: progress.entitySetupComplete,
         businessDetailsComplete: progress.businessDetailsComplete,
         bankConnectionComplete: progress.bankConnectionComplete,
         goalsSetupComplete: progress.goalsSetupComplete,
-        lastNudgedAt: progress.lastNudgedAt?.toISOString() || null,
         dashboardCardDismissedAt: progress.dashboardCardDismissedAt?.toISOString() || null,
+        skippedSteps: progress.skippedSteps,
       });
     } catch (error) {
       request.log.error({ error }, 'Error fetching onboarding progress');
@@ -124,96 +163,96 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
   /**
    * POST /update-progress
    *
-   * Updates completion status for a specific onboarding step.
-   * Recalculates completion percentage based on step weights.
+   * Mark a step as complete or incomplete.
+   * ✅ SECURITY: OWNER-only access (RBAC enforced)
+   * ✅ SECURITY: Read-modify-write pattern for arrays
+   * ✅ SECURITY: Percentage calculated from boolean flags
    */
   fastify.post<{
     Body: z.infer<typeof UpdateProgressSchema>;
-    Reply: ProgressResponse | ErrorResponse;
+    Reply: UpdateResponse | ErrorResponse;
   }>('/update-progress', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const { step, completed } = UpdateProgressSchema.parse(request.body);
+      // Validate request body
+      const data = UpdateProgressSchema.parse(request.body);
 
-      // Get user's tenant
-      const tenantUser = await prisma.tenantUser.findFirst({
-        where: { userId: request.userId as string },
-      });
-
-      if (!tenantUser) {
-        return reply.status(404).send({
-          error: 'NoTenant',
-          message: 'No tenant found for user',
+      if (!request.tenantId || !request.userId) {
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'No tenant access',
         });
       }
 
-      // Get current progress
-      const currentProgress = await prisma.onboardingProgress.findUnique({
-        where: { tenantId: tenantUser.tenantId },
+      // ✅ SECURITY: RBAC check - only OWNER can update progress
+      const tenantUser = await prisma.tenantUser.findFirst({
+        where: {
+          tenantId: request.tenantId,
+          userId: request.userId,
+        },
       });
 
-      // Calculate new completion percentage
-      let newPercentage = currentProgress?.completionPercentage || 0;
-
-      if (completed) {
-        // Add step weight if not already completed
-        const stepField = `${step}Complete` as
-          | 'basicInfoComplete'
-          | 'entitySetupComplete'
-          | 'businessDetailsComplete'
-          | 'bankConnectionComplete'
-          | 'goalsSetupComplete';
-
-        const alreadyCompleted = currentProgress?.[stepField] || false;
-
-        if (!alreadyCompleted) {
-          newPercentage += STEP_WEIGHTS[step];
-        }
-      } else {
-        // Subtract step weight if was completed
-        newPercentage -= STEP_WEIGHTS[step];
+      if (!tenantUser || tenantUser.role !== 'OWNER') {
+        request.log.warn(
+          { userId: request.userId, tenantId: request.tenantId, role: tenantUser?.role },
+          'Non-owner attempted to update onboarding progress'
+        );
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'Only account owners can update onboarding progress',
+        });
       }
 
-      // Clamp percentage between 0 and 100
-      newPercentage = Math.max(0, Math.min(100, newPercentage));
+      // ✅ CORRECT: Read-modify-write pattern for array updates
+      const currentProgress = await prisma.onboardingProgress.findUnique({
+        where: { tenantId: request.tenantId },
+      });
 
-      // Update or create progress
-      const progress = await prisma.onboardingProgress.upsert({
-        where: { tenantId: tenantUser.tenantId },
-        create: {
-          tenantId: tenantUser.tenantId,
-          [`${step}Complete`]: completed,
-          completedSteps: completed ? [step] : [],
-          completionPercentage: newPercentage,
-        },
-        update: {
-          [`${step}Complete`]: completed,
-          completedSteps: completed
-            ? {
-                push: step,
-              }
-            : {
-                set: (currentProgress?.completedSteps || []).filter((s) => s !== step),
-              },
+      if (!currentProgress) {
+        return reply.status(404).send({
+          error: 'NotFound',
+          message: 'Onboarding progress not found',
+        });
+      }
+
+      // Update completedSteps array
+      const currentSteps = currentProgress.completedSteps;
+      const newSteps = data.completed
+        ? Array.from(new Set([...currentSteps, data.step])) // Add step (dedupe)
+        : currentSteps.filter((s) => s !== data.step); // Remove step
+
+      // Update boolean field for the step
+      const stepField = getStepFieldName(data.step);
+      const updatedBooleans = {
+        basicInfoComplete: currentProgress.basicInfoComplete,
+        entitySetupComplete: currentProgress.entitySetupComplete,
+        businessDetailsComplete: currentProgress.businessDetailsComplete,
+        bankConnectionComplete: currentProgress.bankConnectionComplete,
+        goalsSetupComplete: currentProgress.goalsSetupComplete,
+        [stepField]: data.completed,
+      };
+
+      // ✅ CORRECT: Calculate new percentage from boolean flags (source of truth)
+      const newPercentage = calculateCompletionPercentage(updatedBooleans);
+
+      // Update progress
+      const updatedProgress = await prisma.onboardingProgress.update({
+        where: { tenantId: request.tenantId },
+        data: {
+          completedSteps: newSteps,
+          [stepField]: data.completed,
           completionPercentage: newPercentage,
         },
       });
 
       request.log.info(
-        { tenantId: tenantUser.tenantId, step, completed, newPercentage },
+        { tenantId: request.tenantId, step: data.step, completed: data.completed },
         'Onboarding progress updated'
       );
 
       return reply.status(200).send({
-        completionPercentage: progress.completionPercentage,
-        completedSteps: progress.completedSteps,
-        skippedSteps: progress.skippedSteps,
-        basicInfoComplete: progress.basicInfoComplete,
-        entitySetupComplete: progress.entitySetupComplete,
-        businessDetailsComplete: progress.businessDetailsComplete,
-        bankConnectionComplete: progress.bankConnectionComplete,
-        goalsSetupComplete: progress.goalsSetupComplete,
-        lastNudgedAt: progress.lastNudgedAt?.toISOString() || null,
-        dashboardCardDismissedAt: progress.dashboardCardDismissedAt?.toISOString() || null,
+        success: true,
+        completionPercentage: updatedProgress.completionPercentage,
+        message: `Step ${data.step} marked as ${data.completed ? 'complete' : 'incomplete'}`,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -235,64 +274,75 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
   /**
    * POST /skip-step
    *
-   * Marks a step as skipped temporarily (default 7 days).
-   * Sets lastNudgedAt to avoid immediate re-prompts.
+   * Skip a step for N days (1-90 days, default 7).
+   * ✅ SECURITY: OWNER-only access
+   * ✅ SECURITY: Strict enum validation + max validation
    */
   fastify.post<{
     Body: z.infer<typeof SkipStepSchema>;
-    Reply: ProgressResponse | ErrorResponse;
+    Reply: UpdateResponse | ErrorResponse;
   }>('/skip-step', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      const { step, skipDurationDays } = SkipStepSchema.parse(request.body);
+      const data = SkipStepSchema.parse(request.body);
 
-      // Get user's tenant
-      const tenantUser = await prisma.tenantUser.findFirst({
-        where: { userId: request.userId as string },
-      });
-
-      if (!tenantUser) {
-        return reply.status(404).send({
-          error: 'NoTenant',
-          message: 'No tenant found for user',
+      if (!request.tenantId || !request.userId) {
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'No tenant access',
         });
       }
 
-      // Calculate skip expiry date
-      const skipUntil = new Date();
-      skipUntil.setDate(skipUntil.getDate() + skipDurationDays);
-
-      // Update or create progress
-      const progress = await prisma.onboardingProgress.upsert({
-        where: { tenantId: tenantUser.tenantId },
-        create: {
-          tenantId: tenantUser.tenantId,
-          skippedSteps: [step],
-          lastNudgedAt: skipUntil,
+      // ✅ SECURITY: RBAC check
+      const tenantUser = await prisma.tenantUser.findFirst({
+        where: {
+          tenantId: request.tenantId,
+          userId: request.userId,
         },
-        update: {
-          skippedSteps: {
-            push: step,
-          },
-          lastNudgedAt: skipUntil,
+      });
+
+      if (!tenantUser || tenantUser.role !== 'OWNER') {
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'Only account owners can skip onboarding steps',
+        });
+      }
+
+      const currentProgress = await prisma.onboardingProgress.findUnique({
+        where: { tenantId: request.tenantId },
+      });
+
+      if (!currentProgress) {
+        return reply.status(404).send({
+          error: 'NotFound',
+          message: 'Onboarding progress not found',
+        });
+      }
+
+      // Calculate skip until date (for lastNudgedAt)
+      const skipUntil = new Date();
+      skipUntil.setDate(skipUntil.getDate() + data.skipDays);
+
+      // ✅ CORRECT: Read-modify-write for skippedSteps array
+      const currentSkipped = currentProgress.skippedSteps;
+      const newSkipped = Array.from(new Set([...currentSkipped, data.step])); // Add step (dedupe)
+
+      await prisma.onboardingProgress.update({
+        where: { tenantId: request.tenantId },
+        data: {
+          skippedSteps: newSkipped,
+          lastNudgedAt: skipUntil, // Track when to re-show
         },
       });
 
       request.log.info(
-        { tenantId: tenantUser.tenantId, step, skipDurationDays },
+        { tenantId: request.tenantId, step: data.step, skipDays: data.skipDays },
         'Onboarding step skipped'
       );
 
       return reply.status(200).send({
-        completionPercentage: progress.completionPercentage,
-        completedSteps: progress.completedSteps,
-        skippedSteps: progress.skippedSteps,
-        basicInfoComplete: progress.basicInfoComplete,
-        entitySetupComplete: progress.entitySetupComplete,
-        businessDetailsComplete: progress.businessDetailsComplete,
-        bankConnectionComplete: progress.bankConnectionComplete,
-        goalsSetupComplete: progress.goalsSetupComplete,
-        lastNudgedAt: progress.lastNudgedAt?.toISOString() || null,
-        dashboardCardDismissedAt: progress.dashboardCardDismissedAt?.toISOString() || null,
+        success: true,
+        completionPercentage: currentProgress.completionPercentage,
+        message: `Step ${data.step} skipped for ${data.skipDays} days`,
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -314,56 +364,80 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
   /**
    * POST /dismiss-card
    *
-   * Records when user dismisses the dashboard onboarding card.
-   * Card will reappear after 24 hours or on next login.
+   * Dismiss the onboarding hero card until a specified date (or indefinitely).
+   * ✅ SECURITY: OWNER-only access
    */
   fastify.post<{
-    Reply: ProgressResponse | ErrorResponse;
+    Body: z.infer<typeof DismissCardSchema>;
+    Reply: UpdateResponse | ErrorResponse;
   }>('/dismiss-card', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      // Get user's tenant
-      const tenantUser = await prisma.tenantUser.findFirst({
-        where: { userId: request.userId as string },
-      });
-
-      if (!tenantUser) {
-        return reply.status(404).send({
-          error: 'NoTenant',
-          message: 'No tenant found for user',
+      if (!request.tenantId || !request.userId) {
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'No tenant access',
         });
       }
 
-      // Update progress with dismissal timestamp
-      const progress = await prisma.onboardingProgress.upsert({
-        where: { tenantId: tenantUser.tenantId },
-        create: {
-          tenantId: tenantUser.tenantId,
-          dashboardCardDismissedAt: new Date(),
-        },
-        update: {
-          dashboardCardDismissedAt: new Date(),
+      // ✅ SECURITY: RBAC check
+      const tenantUser = await prisma.tenantUser.findFirst({
+        where: {
+          tenantId: request.tenantId,
+          userId: request.userId,
         },
       });
 
-      request.log.info({ tenantId: tenantUser.tenantId }, 'Dashboard card dismissed');
+      if (!tenantUser || tenantUser.role !== 'OWNER') {
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'Only account owners can dismiss onboarding card',
+        });
+      }
+
+      const currentProgress = await prisma.onboardingProgress.findUnique({
+        where: { tenantId: request.tenantId },
+      });
+
+      if (!currentProgress) {
+        return reply.status(404).send({
+          error: 'NotFound',
+          message: 'Onboarding progress not found',
+        });
+      }
+
+      // Record dismissal timestamp
+      const dismissedAt = new Date();
+
+      await prisma.onboardingProgress.update({
+        where: { tenantId: request.tenantId },
+        data: {
+          dashboardCardDismissedAt: dismissedAt,
+        },
+      });
+
+      request.log.info(
+        { tenantId: request.tenantId, dismissedAt: dismissedAt.toISOString() },
+        'Onboarding card dismissed'
+      );
 
       return reply.status(200).send({
-        completionPercentage: progress.completionPercentage,
-        completedSteps: progress.completedSteps,
-        skippedSteps: progress.skippedSteps,
-        basicInfoComplete: progress.basicInfoComplete,
-        entitySetupComplete: progress.entitySetupComplete,
-        businessDetailsComplete: progress.businessDetailsComplete,
-        bankConnectionComplete: progress.bankConnectionComplete,
-        goalsSetupComplete: progress.goalsSetupComplete,
-        lastNudgedAt: progress.lastNudgedAt?.toISOString() || null,
-        dashboardCardDismissedAt: progress.dashboardCardDismissedAt?.toISOString() || null,
+        success: true,
+        completionPercentage: currentProgress.completionPercentage,
+        message: 'Onboarding card dismissed',
       });
     } catch (error) {
-      request.log.error({ error }, 'Error dismissing dashboard card');
+      if (error instanceof z.ZodError) {
+        request.log.error({ error: error.errors }, 'Validation error');
+        return reply.status(400).send({
+          error: 'ValidationError',
+          message: 'Invalid request data',
+        });
+      }
+
+      request.log.error({ error }, 'Error dismissing onboarding card');
       return reply.status(500).send({
         error: 'InternalError',
-        message: 'Failed to dismiss dashboard card',
+        message: 'Failed to dismiss onboarding card',
       });
     }
   });

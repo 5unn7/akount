@@ -13,7 +13,7 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { SidebarProgressIndicator } from "@/components/layout/SidebarProgressIndicator";
+import { SidebarProgressIndicator } from "@/components/onboarding/SidebarProgressIndicator";
 import { navigationDomains, getNavigationForRole, type NavDomain } from "@/lib/navigation";
 import type { Role } from "@akount/types";
 

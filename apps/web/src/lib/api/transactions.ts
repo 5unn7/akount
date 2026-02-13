@@ -1,56 +1,33 @@
 import { apiClient } from './client';
 
-/**
- * Transaction from API
- */
-export interface Transaction {
-    id: string;
-    accountId: string;
-    date: string;
-    description: string;
-    amount: number; // cents
-    currency: string;
-    categoryId?: string;
-    notes?: string;
-    sourceType: string;
-    sourceId?: string;
-    journalEntryId?: string;
-    isStaged: boolean;
-    isSplit: boolean;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt?: string;
-    account?: {
-        id: string;
-        name: string;
-        type: string;
-    };
-    category?: {
-        id: string;
-        name: string;
-    };
-}
+// Re-export types and utilities (safe for client components)
+export type {
+    Transaction,
+    ListTransactionsParams,
+    ListTransactionsResponse,
+    CreateTransactionInput,
+    UpdateTransactionInput,
+} from './transactions.types';
+
+export { formatAmount, formatDate } from './transactions.types';
+
+// Import types for use in this file
+import type {
+    Transaction,
+    ListTransactionsParams,
+    ListTransactionsResponse,
+    CreateTransactionInput,
+    UpdateTransactionInput,
+} from './transactions.types';
 
 /**
- * Query parameters for listing transactions
+ * SERVER-ONLY API Functions
+ *
+ * These functions use the server-only apiClient and must only be called from:
+ * - Server Components
+ * - Server Actions
+ * - Route Handlers
  */
-export interface ListTransactionsParams {
-    accountId?: string;
-    categoryId?: string;
-    startDate?: string; // ISO date string
-    endDate?: string; // ISO date string
-    cursor?: string;
-    limit?: number;
-}
-
-/**
- * Paginated response from the transactions API
- */
-export interface ListTransactionsResponse {
-    transactions: Transaction[];
-    nextCursor?: string;
-    hasMore: boolean;
-}
 
 /**
  * Fetch list of transactions from the API with pagination
@@ -100,18 +77,6 @@ export async function getTransaction(transactionId: string): Promise<Transaction
 }
 
 /**
- * Input for creating a transaction
- */
-export interface CreateTransactionInput {
-    accountId: string;
-    date: string; // ISO date string
-    description: string;
-    amount: number; // cents
-    categoryId?: string;
-    notes?: string;
-}
-
-/**
  * Create a new transaction
  */
 export async function createTransaction(input: CreateTransactionInput): Promise<Transaction> {
@@ -119,17 +84,6 @@ export async function createTransaction(input: CreateTransactionInput): Promise<
         method: 'POST',
         body: JSON.stringify(input),
     });
-}
-
-/**
- * Input for updating a transaction
- */
-export interface UpdateTransactionInput {
-    date?: string; // ISO date string
-    description?: string;
-    amount?: number; // cents
-    categoryId?: string | null;
-    notes?: string | null;
 }
 
 /**
@@ -176,27 +130,5 @@ export async function bulkDeleteTransactions(
     return apiClient<{ deleted: number }>('/api/banking/transactions/bulk/delete', {
         method: 'POST',
         body: JSON.stringify({ transactionIds }),
-    });
-}
-
-/**
- * Format amount from cents to currency string
- */
-export function formatAmount(cents: number, currency: string = 'CAD'): string {
-    const dollars = cents / 100;
-    return new Intl.NumberFormat('en-CA', {
-        style: 'currency',
-        currency,
-    }).format(dollars);
-}
-
-/**
- * Format date for display
- */
-export function formatDate(isoDate: string): string {
-    return new Date(isoDate).toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
     });
 }

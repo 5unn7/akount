@@ -30,6 +30,7 @@ async function getDashboardMetrics(tenantId: string) {
 ```
 
 **Performance Impact:**
+
 - 201 queries for 100 accounts
 - O(n×m) complexity (n = accounts, m = currencies)
 - 500ms+ response time for dashboard
@@ -119,6 +120,7 @@ async function getDashboardMetrics(tenantId: string) {
 ```
 
 **Performance Improvement:**
+
 - **Before:** 201 queries (1 accounts + 100 FX rates per account type × 2)
 - **After:** 4 queries (1 accounts + 1 currencies + 1 FX rates + 1 aggregation)
 - **50x faster** (500ms → 10ms)
@@ -126,6 +128,7 @@ async function getDashboardMetrics(tenantId: string) {
 ## Prevention
 
 ### Code Review Checklist
+
 - [ ] Are there any `await` calls inside `for` loops?
 - [ ] Can database queries be batched with `WHERE IN`?
 - [ ] Are repeated queries happening for same data?
@@ -133,6 +136,7 @@ async function getDashboardMetrics(tenantId: string) {
 ### Prisma Best Practices
 
 **❌ Bad: Async in loop**
+
 ```typescript
 for (const item of items) {
   const related = await prisma.related.findUnique({
@@ -142,6 +146,7 @@ for (const item of items) {
 ```
 
 **✅ Good: Use include or batch query**
+
 ```typescript
 // Option 1: Include related data
 const items = await prisma.item.findMany({
@@ -184,10 +189,12 @@ test('dashboard should not have N+1 queries', async () => {
 ## Related Patterns
 
 **Similar issues fixed:**
+
 - Account list pagination (was fetching all, now cursor-based with limit 100)
 - Invoice aging report (batch customer lookups)
 
 **Watch for these patterns:**
+
 - `for (const x of items) { await ... }`
 - `Promise.all(items.map(async x => await ...))` (better but still N queries)
 - Multiple `findUnique` calls in sequence

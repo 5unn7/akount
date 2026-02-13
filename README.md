@@ -40,13 +40,16 @@
 **⚠️ Protect your work before you start coding!**
 
 **Quick Start (10 minutes):**
+
 - **[BACKUP-QUICKSTART.md](./BACKUP-QUICKSTART.md)** - 4 commands to run now
 
 **Complete Guide:**
+
 - **[BACKUP-SECURITY.md](./BACKUP-SECURITY.md)** - Full backup & security implementation
 - **[scripts/README.md](./scripts/README.md)** - Automated backup scripts
 
 **What you get:**
+
 - Dual Git remotes (GitHub + backup)
 - Encrypted configuration backups (daily)
 - Database backups (daily)
@@ -54,6 +57,7 @@
 - Security hardening checklist
 
 **Run this first:**
+
 ```bash
 ./scripts/setup-git-backup.sh
 ./scripts/backup-config.sh
@@ -86,6 +90,7 @@ akount/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 20+
 - npm 10+
 - PostgreSQL 15+ (or Railway/Supabase account)
@@ -94,11 +99,13 @@ akount/
 ### Setup
 
 1. **Clone and Install**
+
    ```bash
    npm install
    ```
 
 2. **Configure Environment**
+
    ```bash
    cp .env.example .env
    # Edit .env with your credentials
@@ -114,13 +121,16 @@ akount/
    - Run migrations: `cd packages/db && npx prisma migrate dev`
 
 5. **Start Development**
+
    ```bash
    npm run dev
    ```
-   - Web: http://localhost:3000
-   - API: http://localhost:3001
+
+   - Web: <http://localhost:3000>
+   - API: <http://localhost:3001>
 
 ### First Time Setup Guide
+
 👉 **See TASKS.md for step-by-step setup instructions**
 
 ---
@@ -128,16 +138,19 @@ akount/
 ## 📖 Documentation
 
 ### Implementation Tracking
+
 - **STATUS.md** - What's implemented vs planned
 - **ROADMAP.md** - 8-phase development plan
 - **TASKS.md** - Current week's tasks
 
 ### Product Specifications
+
 - **planning/product-overview.md** - Product vision and features
 - **planning/sections/** - Feature section specs
 - **planning/data-model/** - Database entity documentation
 
 ### Architecture & Design
+
 - **planning/akount-engineering-roadmap.md** - 32-week implementation plan
 - **planning/akount_foundation_checklist.md** - Schema design checklist
 - **planning/design-system/** - Design tokens, colors, typography
@@ -148,6 +161,7 @@ akount/
 ## 🏗️ Tech Stack
 
 ### Frontend
+
 - **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript 5
 - **Styling:** Tailwind CSS v4
@@ -157,6 +171,7 @@ akount/
 - **Tables:** TanStack Table
 
 ### Backend
+
 - **Framework:** Fastify
 - **Language:** TypeScript 5
 - **Database:** PostgreSQL 15+
@@ -164,6 +179,7 @@ akount/
 - **Validation:** Zod
 
 ### Infrastructure
+
 - **Monorepo:** Turborepo
 - **Auth:** Clerk (passkeys/WebAuthn)
 - **Database Host:** Railway (recommended)
@@ -176,6 +192,7 @@ akount/
 **Goal:** Get authentication, database, and API foundation working
 
 **Tasks This Week:**
+
 1. ✅ Set up Clerk authentication
 2. ✅ Connect PostgreSQL database
 3. ✅ Run initial migrations
@@ -238,6 +255,7 @@ npm run clean
 **Location:** `packages/db/prisma/schema.prisma`
 
 **Key Models:**
+
 - Tenant, User, Entity (multi-tenant, multi-entity)
 - Account, Transaction (financial accounts)
 - Invoice, Bill, Payment (AR/AP)
@@ -247,6 +265,7 @@ npm run clean
 - AuditLog, DomainEvent (compliance)
 
 **To view schema:**
+
 ```bash
 cd packages/db
 npx prisma studio
@@ -261,7 +280,8 @@ npx prisma studio
 **Status:** Not configured
 
 **Setup:**
-1. Create account at https://clerk.com
+
+1. Create account at <https://clerk.com>
 2. Get API keys
 3. Add to .env
 4. Follow TASKS.md Task 0.1.1-0.1.9
@@ -286,6 +306,7 @@ npx prisma studio
 This is currently in early development. Contributions welcome once foundation is complete.
 
 **Before contributing:**
+
 1. Read STATUS.md to understand current state
 2. Check ROADMAP.md for planned features
 3. See TASKS.md for current priorities

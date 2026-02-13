@@ -28,6 +28,7 @@ server.get('/validation/query', ...);  // Exposes query validation
 ```
 
 **Risk:** An attacker could:
+
 1. Probe API for parsing behavior
 2. See all request headers (potentially including leaked tokens)
 3. Use endpoints for reconnaissance before targeted attacks
@@ -35,6 +36,7 @@ server.get('/validation/query', ...);  // Exposes query validation
 ## Root Cause
 
 Test/debug endpoints created during development were not:
+
 1. Protected with authentication middleware
 2. Removed before production
 3. Restricted to development environment only
@@ -77,11 +79,13 @@ if (process.env.NODE_ENV === 'development') {
 ## Prevention
 
 ### Code Review Checklist
+
 - [ ] Are all endpoints protected with `authMiddleware`?
 - [ ] Do any endpoints return `request.headers` or `request.body` directly?
 - [ ] Are test endpoints removed or environment-gated?
 
 ### Fastify Best Practice
+
 ```typescript
 // Always protect non-health endpoints
 server.addHook('onRequest', async (request, reply) => {
@@ -94,6 +98,7 @@ server.addHook('onRequest', async (request, reply) => {
 ```
 
 ### OWASP Reference
+
 - **A01:2021 - Broken Access Control**: Endpoints must enforce authentication
 - **A05:2021 - Security Misconfiguration**: Debug features enabled in production
 

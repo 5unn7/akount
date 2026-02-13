@@ -18,17 +18,20 @@ Complete design specifications for all Akount UI components, organized hierarchi
 ### Visual Direction
 
 **Skeuomorphism + Glassmorphism Blend:**
+
 - **Physical depth**: Cards feel tangible with realistic shadows
 - **Frosted glass**: Semi-transparent backgrounds with blur effects
 - **Material surfaces**: Substantial, weighted, valuable-feeling
 - **Light gradients**: Sophisticated, not playful
 
 **Brand Personality:**
+
 ```
 Bloomberg Terminal × Notion clarity × Apple-level calm
 ```
 
 **Emotional Goals:**
+
 - Intelligent (not cute)
 - Trustworthy (not flashy)
 - Global (not localized)
@@ -155,6 +158,7 @@ shadow   shadow    shadow    no shadow
 ```
 
 **Pressed State (Skeuomorphic):**
+
 - Transform: `scale(0.98)`
 - Shadow: `--ak-shadow-pressed`
 - Duration: 120ms
@@ -168,6 +172,7 @@ shadow   shadow    shadow    no shadow
 | lg | 48px | 12px 20px | 18px |
 
 **Props:**
+
 ```typescript
 interface ButtonProps {
   variant: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -183,6 +188,7 @@ interface ButtonProps {
 ```
 
 **Accessibility:**
+
 - Focus: 2px ring in brand color
 - Keyboard: Tab, Enter/Space to activate
 - Min touch target: 44px
@@ -195,6 +201,7 @@ interface ButtonProps {
 **Types:** text, number, email, password, search
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Label *                             │
@@ -216,6 +223,7 @@ interface ButtonProps {
 | Disabled | `--ak-border-muted` | `--ak-bg-secondary` | `--ak-text-muted` |
 
 **Styling:**
+
 ```css
 .input {
   height: 40px;
@@ -235,6 +243,7 @@ interface ButtonProps {
 ```
 
 **Props:**
+
 ```typescript
 interface InputProps {
   type: 'text' | 'number' | 'email' | 'password' | 'search';
@@ -255,11 +264,13 @@ interface InputProps {
 #### 1.3 Textarea
 
 **Features:**
+
 - Auto-expand (up to maxRows)
 - Character counter (optional)
 - Resize handle (vertical only)
 
 **Styling:**
+
 ```css
 .textarea {
   min-height: 80px;
@@ -278,6 +289,7 @@ interface InputProps {
 #### 1.4 Select/Dropdown
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Label                               │
@@ -297,6 +309,7 @@ interface InputProps {
 ```
 
 **Features:**
+
 - Keyboard navigation (Arrow keys, Enter, Escape)
 - Search/filter (type to filter)
 - Grouped options
@@ -304,6 +317,7 @@ interface InputProps {
 - Option icons
 
 **Dropdown Panel Styling (Glassmorphism):**
+
 ```css
 .dropdown-panel {
   background: var(--ak-glass-medium);
@@ -346,6 +360,7 @@ interface InputProps {
 | Error | `#ef4444/10%` | `#ef4444` | ✕ | Validation error |
 
 **Styling:**
+
 ```css
 .badge {
   display: inline-flex;
@@ -360,6 +375,7 @@ interface InputProps {
 ```
 
 **Props:**
+
 ```typescript
 interface BadgeProps {
   variant: 'reconciled' | 'ai' | 'review' | 'locked' | 'error' | 'default';
@@ -373,6 +389,7 @@ interface BadgeProps {
 #### 1.6 Chip
 
 **Filter Chip:**
+
 ```css
 .filter-chip {
   display: inline-flex;
@@ -398,6 +415,7 @@ interface BadgeProps {
 ```
 
 **Suggestion Chip (AI):**
+
 ```css
 .suggestion-chip {
   background: var(--ak-ai-bg);
@@ -416,6 +434,7 @@ interface BadgeProps {
 **CRITICAL: Always monospace, always explicit sign, always currency code**
 
 **Anatomy:**
+
 ```
 –$1,234.56 CAD
 ↑ ↑        ↑
@@ -433,6 +452,7 @@ interface BadgeProps {
 | Transfer | Slate/Blue | `--ak-finance-transfer` |
 
 **Styling:**
+
 ```css
 .money-amount {
   font-family: 'JetBrains Mono', monospace;
@@ -455,12 +475,14 @@ interface BadgeProps {
 ```
 
 **With FX Conversion:**
+
 ```
 –$1,234.56 CAD
 ≈ –$935.42 USD
 ```
 
 **Props:**
+
 ```typescript
 interface MoneyAmountProps {
   amount: number;          // In cents (integer)
@@ -487,6 +509,7 @@ interface MoneyAmountProps {
 #### 2.2 MoneyInput (Editable)
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Amount *                            │
@@ -498,6 +521,7 @@ interface MoneyAmountProps {
 ```
 
 **Features:**
+
 - Currency selector (if multi-currency)
 - Auto-formatting on blur
 - Real-time FX preview
@@ -505,11 +529,13 @@ interface MoneyAmountProps {
 - Numeric-only input
 
 **Validation:**
+
 - Rejects non-numeric characters
 - Limits decimal places (2 for most currencies)
 - Warns on unusually large amounts
 
 **Props:**
+
 ```typescript
 interface MoneyInputProps {
   value: number;           // In cents
@@ -530,11 +556,13 @@ interface MoneyInputProps {
 #### 2.3 EntityBadge
 
 **Anatomy:**
+
 ```
 🇨🇦 Canadian Corp
 ```
 
 **Tooltip on Hover:**
+
 ```
 ┌─────────────────────────────────┐
 │ Canadian Corp                   │
@@ -546,6 +574,7 @@ interface MoneyInputProps {
 ```
 
 **Styling:**
+
 ```css
 .entity-badge {
   display: inline-flex;
@@ -571,6 +600,7 @@ interface MoneyInputProps {
 ```
 
 **Props:**
+
 ```typescript
 interface EntityBadgeProps {
   entity: {
@@ -593,6 +623,7 @@ interface EntityBadgeProps {
 #### 2.4 GLAccountSelector
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────┐
 │ Category / GL Account               │
@@ -613,6 +644,7 @@ interface EntityBadgeProps {
 ```
 
 **Features:**
+
 - Grouped by account class
 - Show account code + name
 - Search by code or name
@@ -630,6 +662,7 @@ interface EntityBadgeProps {
 | Expenses | Red | 5000-5999 |
 
 **Props:**
+
 ```typescript
 interface GLAccountSelectorProps {
   value: string | null;
@@ -658,6 +691,7 @@ interface GLAccount {
 #### 2.5 TransactionRow
 
 **Anatomy (Table Row):**
+
 ```
 ☐ │ 2025-12-15 │ Amazon AWS │ 🇨🇦 │ Chase │ Cloud Services │ AWS │ –$1,200.00 │ CAD │ ✓
 ```
@@ -690,6 +724,7 @@ interface GLAccount {
 | Error | `red-50` | Red border |
 
 **Styling:**
+
 ```css
 .transaction-row {
   display: grid;
@@ -711,6 +746,7 @@ interface GLAccount {
 ```
 
 **Props:**
+
 ```typescript
 interface TransactionRowProps {
   transaction: {
@@ -738,6 +774,7 @@ interface TransactionRowProps {
 #### 2.6 JournalEntryPreview
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────────┐
 │ Journal Entry Preview                   │
@@ -768,12 +805,14 @@ interface TransactionRowProps {
 | Unbalanced | Red | ✕ | "Difference: –$100.00" |
 
 **Line Items:**
+
 - Account code + name (left)
 - Debit amount (monospace, right)
 - Credit amount (monospace, right)
 - Totals row (bold, separator above)
 
 **Props:**
+
 ```typescript
 interface JournalEntryPreviewProps {
   entry: {
@@ -804,6 +843,7 @@ interface JournalLine {
 #### 2.7 KPICard
 
 **Anatomy:**
+
 ```
 ┌────────────────────────────────┐
 │ Revenue                        │ ← Label (H5, Newsreader)
@@ -825,6 +865,7 @@ interface JournalLine {
 | Neutral | → | Slate |
 
 **Card Styling (Glassmorphism):**
+
 ```css
 .kpi-card {
   background: var(--ak-glass-medium);
@@ -868,6 +909,7 @@ interface JournalLine {
 ```
 
 **Props:**
+
 ```typescript
 interface KPICardProps {
   label: string;
@@ -886,6 +928,7 @@ interface KPICardProps {
 #### 2.8 AccountCard
 
 **Anatomy:**
+
 ```
 ┌────────────────────────────────────┐
 │ Chase Checking              ▸      │ ← Name + expand
@@ -899,6 +942,7 @@ interface KPICardProps {
 ```
 
 **Props:**
+
 ```typescript
 interface AccountCardProps {
   account: {
@@ -924,6 +968,7 @@ interface AccountCardProps {
 #### 2.9 BudgetCard
 
 **Anatomy:**
+
 ```
 ┌────────────────────────────────────┐
 │ Marketing Budget (Q4)              │ ← Label
@@ -953,6 +998,7 @@ interface AccountCardProps {
 #### 3.1 InsightCard
 
 **Anatomy:**
+
 ```
 ┌────────────────────────────────────────┐
 │ ✨ 💡 Tax Optimization                 │ ← AI icon + type icon + title
@@ -978,6 +1024,7 @@ interface AccountCardProps {
 | Confirmation | ✓ | Green | "Good job" |
 
 **Card Styling:**
+
 ```css
 .insight-card {
   background: var(--ak-ai-bg);
@@ -1009,6 +1056,7 @@ interface AccountCardProps {
 ```
 
 **Props:**
+
 ```typescript
 interface InsightCardProps {
   insight: {
@@ -1034,6 +1082,7 @@ interface InsightCardProps {
 #### 3.2 ConfidenceBadge
 
 **Anatomy:**
+
 ```
 ████████░░ 87%
 High confidence
@@ -1048,11 +1097,13 @@ High confidence
 | Low | 0-49% | Red bar | `--ak-finance-expense` |
 
 **Variants:**
+
 - **Full:** Bar + percentage + label
 - **Compact:** Bar + percentage only
 - **Text:** "87% confident"
 
 **Props:**
+
 ```typescript
 interface ConfidenceBadgeProps {
   confidence: number;         // 0-100
@@ -1066,6 +1117,7 @@ interface ConfidenceBadgeProps {
 #### 3.3 SuggestionChip
 
 **Anatomy:**
+
 ```
 Category: [Marketing ▼]
           ↓
@@ -1077,12 +1129,14 @@ Category: [Marketing ▼]
 ```
 
 **Behavior:**
+
 - Shows when confidence >75%
 - Apply → Updates field, dismisses
 - Ignore → Dismisses, records feedback
 - Auto-dismiss if user types manually
 
 **Props:**
+
 ```typescript
 interface SuggestionChipProps {
   currentValue?: string;
@@ -1099,6 +1153,7 @@ interface SuggestionChipProps {
 #### 3.4 AIPanel (Side Panel)
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────┐
 │ ✨ Akount Advisor               │
@@ -1123,12 +1178,14 @@ interface SuggestionChipProps {
 ```
 
 **Layout:**
+
 - Width: 360px
 - Position: Slides in from right
 - Background: Glassmorphism panel
 - Shadow: `--ak-shadow-xl`
 
 **Props:**
+
 ```typescript
 interface AIPanelProps {
   isOpen: boolean;
@@ -1143,6 +1200,7 @@ interface AIPanelProps {
 #### 3.5 CriticalAlert
 
 **Anatomy:**
+
 ```
 ┌────────────────────────────────────────┐
 │ ⚠ CRITICAL ALERT                       │
@@ -1158,12 +1216,14 @@ interface AIPanelProps {
 ```
 
 **When to use:**
+
 - Tax law changes
 - Hard compliance deadlines
 - Material financial risk
 - **NOT for normal suggestions**
 
 **Styling:**
+
 ```css
 .critical-alert {
   background: rgba(239, 68, 68, 0.1);
@@ -1187,6 +1247,7 @@ interface AIPanelProps {
 #### 3.6 FeedbackComponent
 
 **Anatomy:**
+
 ```
 Was this helpful?
 
@@ -1197,6 +1258,7 @@ Was this helpful?
 ```
 
 **Props:**
+
 ```typescript
 interface FeedbackComponentProps {
   insightId: string;
@@ -1212,6 +1274,7 @@ interface FeedbackComponentProps {
 #### 4.1 Card
 
 **Base Card (Glassmorphism):**
+
 ```css
 .card {
   background: var(--ak-glass-medium);
@@ -1238,6 +1301,7 @@ interface FeedbackComponentProps {
 ```
 
 **Props:**
+
 ```typescript
 interface CardProps {
   variant?: 'default' | 'elevated' | 'flat';
@@ -1252,6 +1316,7 @@ interface CardProps {
 #### 4.2 Table
 
 **Anatomy:**
+
 ```
 ┌───────────────────────────────────────────────────┐
 │ [Search...]         [Filter ▼]  [Export]  [+ New] │
@@ -1267,6 +1332,7 @@ interface CardProps {
 ```
 
 **Header Styling:**
+
 ```css
 .table-header {
   display: flex;
@@ -1307,6 +1373,7 @@ interface CardProps {
 #### 4.3 Empty State
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────┐
 │                                     │
@@ -1323,6 +1390,7 @@ interface CardProps {
 ```
 
 **Props:**
+
 ```typescript
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -1340,6 +1408,7 @@ interface EmptyStateProps {
 #### 4.4 Loading State
 
 **Skeleton Loading:**
+
 ```css
 .skeleton {
   background: linear-gradient(
@@ -1360,6 +1429,7 @@ interface EmptyStateProps {
 ```
 
 **Spinner:**
+
 ```css
 .spinner {
   width: 20px;
@@ -1380,6 +1450,7 @@ interface EmptyStateProps {
 #### 4.5 Toast
 
 **Anatomy:**
+
 ```
 ┌────────────────────────────────────────┐
 │ ✓ Transaction saved successfully    ✕  │
@@ -1404,6 +1475,7 @@ interface EmptyStateProps {
 #### 4.6 Modal
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────────┐
 │ Modal Title                          ✕  │
@@ -1420,6 +1492,7 @@ interface EmptyStateProps {
 **Overlay:** `rgba(15, 23, 42, 0.5)` with blur
 
 **Panel Styling (Glassmorphism):**
+
 ```css
 .modal-overlay {
   position: fixed;
@@ -1445,6 +1518,7 @@ interface EmptyStateProps {
 ```
 
 **Animation:**
+
 - Entrance: Fade in + translateY(-20px), 180ms emphasized
 - Exit: Fade out + translateY(10px), 120ms standard
 
@@ -1455,6 +1529,7 @@ interface EmptyStateProps {
 #### 5.1 Alert (Inline)
 
 **Anatomy:**
+
 ```
 ┌─────────────────────────────────────────┐
 │ ⚠ Warning title                         │
@@ -1493,6 +1568,7 @@ interface EmptyStateProps {
 ```
 
 **Rules:**
+
 - Primary button = safe action (Cancel)
 - Danger button = destructive action
 - Clear explanation of consequences
@@ -1502,12 +1578,14 @@ interface EmptyStateProps {
 #### 5.3 Progress Indicator
 
 **Linear:**
+
 ```
 Importing transactions...
 ████████████░░░░░░░░░░░░ 45%
 ```
 
 **Circular:**
+
 ```css
 .progress-circle {
   width: 40px;

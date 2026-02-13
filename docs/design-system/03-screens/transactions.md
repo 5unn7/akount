@@ -31,6 +31,7 @@ The Transactions screen is **the control center for financial events**. It displ
 ```
 
 **Components:**
+
 - Entity filter (respect multi-tenant isolation)
 - Time period selector (month/quarter/year)
 - Currency view toggle (native or functional currency)
@@ -44,12 +45,14 @@ The Transactions screen is **the control center for financial events**. It displ
 ### Reference: Table Pattern
 
 Uses the canonical data table pattern from [`02-patterns/tables-data.md`](../02-patterns/tables-data.md):
+
 - **11-column default:** Date, Description, Entity, Account, Category, Counterparty, Amount, Currency, FX, Status
 - **Row states:** AI Categorized, Reconciled, Locked, Error
 - **Bulk actions:** Select ≥1 row → Floating action bar
 - **Expandable rows:** Click row → Side panel with full details
 
 **Customizations for transactions:**
+
 - Default sort: Date (descending - newest first)
 - Amount column sticky right (always visible while scrolling)
 - Entity column always shown (multi-entity visibility)
@@ -60,12 +63,14 @@ Uses the canonical data table pattern from [`02-patterns/tables-data.md`](../02-
 ## Tabs / Views
 
 ### Tab 1: All Transactions
+
 **Default view.** Shows every transaction regardless of state.
 
 **Count:** Total transactions in period
 **Sort:** Most recent first
 
 ### Tab 2: Uncategorized
+
 **For review.** Transactions missing GL account mapping.
 
 **Count:** N uncategorized
@@ -73,12 +78,14 @@ Uses the canonical data table pattern from [`02-patterns/tables-data.md`](../02-
 **Action:** Click to categorize, or use bulk action to apply rule
 
 ### Tab 3: Categorized
+
 **For verification.** All mapped transactions (manual or AI).
 
 **Count:** N categorized
 **Shows:** Category source (AI badge vs neutral for manual)
 
 ### Tab 4: Reconciled
+
 **For assurance.** Transactions matched with bank feed.
 
 **Count:** N reconciled / N total
@@ -86,9 +93,11 @@ Uses the canonical data table pattern from [`02-patterns/tables-data.md`](../02-
 **Status:** "Bank verified — all matched"
 
 ### Tab 5: Exceptions
+
 **For attention.** Transactions needing intervention.
 
 **Issues that appear here:**
+
 - Duplicate detection (potential duplicates)
 - FX differences (exchange rate mismatches)
 - Amount mismatches (posted vs. received)
@@ -98,6 +107,7 @@ Uses the canonical data table pattern from [`02-patterns/tables-data.md`](../02-
 **Action:** Drill down to understand and resolve
 
 ### Tab 6: AI Suggestions
+
 **For optimization.** Transactions where AI has high-confidence categorization.
 
 **Count:** N suggestions available
@@ -168,31 +178,37 @@ Actions:
 ### Key Sections
 
 **1. Transaction Basics**
+
 - Date, description, amount (monospace)
 - Quick category editor with AI suggestion chip
 - Status badge (reconciled, error, etc.)
 
 **2. Context & Linking**
+
 - Related invoice/bill if applicable
 - Source (bank feed, manual entry, import)
 - Counterparty name with hover details
 
 **3. Financial Details**
+
 - Account & account code
 - Native currency + FX rate (if multi-currency)
 - Original amount in source currency
 
 **4. Journal Entry Breakdown**
+
 - Double-entry lines (debit/credit)
 - GL account mapping
 - Shows exact accounting impact
 
 **5. Audit Trail**
+
 - Chronological history of changes
 - Who made the change, when, what
 - Confidence scores if AI-involved
 
 **6. Actions**
+
 - Change category (inline editor with suggestions)
 - Reconcile/unreconcile toggle
 - Split into multiple categories
@@ -208,6 +224,7 @@ Actions:
 **Current state:** Transaction with no category
 
 **Steps:**
+
 1. Find transaction in "Uncategorized" tab
 2. Click row to open detail panel
 3. Click category dropdown
@@ -218,6 +235,7 @@ Actions:
 8. System records: "Categorized by [user]" in audit log
 
 **Bulk version:**
+
 1. Select ≥2 rows in "Uncategorized" tab
 2. Floating action bar appears: [Categorize] [Create Rule]
 3. Click [Categorize]
@@ -230,6 +248,7 @@ Actions:
 **Current state:** Transaction not yet matched with bank
 
 **Steps:**
+
 1. Open transaction detail panel
 2. Click [Reconcile] button
 3. System matches with bank feed automatically (if match found)
@@ -244,9 +263,11 @@ Actions:
 **Example:** Invoice payment split between 2 projects
 
 **Steps:**
+
 1. Open transaction detail panel
 2. Click [Split Transaction]
 3. Split modal appears:
+
    ```
    Original: –$1,500
 
@@ -256,6 +277,7 @@ Actions:
    ─────────────
      $1,500 ✓
    ```
+
 4. Create separate GL lines for each split
 5. Save → Creates child transactions
 6. Parent row now shows "Split into 2" badge
@@ -266,6 +288,7 @@ Actions:
 **Current state:** Transaction has wrong category
 
 **Steps:**
+
 1. Open transaction detail panel
 2. Click category dropdown
 3. Select new category
@@ -279,6 +302,7 @@ Actions:
 **Current state:** Transactions appear to be duplicates
 
 **Steps:**
+
 1. Navigate to "Exceptions" tab
 2. Find pair flagged as "Potential duplicate"
 3. Click to expand both rows side-by-side
@@ -310,6 +334,7 @@ Actions:
 | `Cmd+Enter` (Mac) / `Ctrl+Enter` (Windows) | Save & move to next |
 
 **Bulk actions:**
+
 - Click checkbox (or `Space` to toggle)
 - `Cmd+A` / `Ctrl+A` → Select all visible
 - Selected action buttons appear in floating bar
@@ -327,25 +352,30 @@ Appears when ≥1 row selected:
 ### Actions
 
 **[Categorize]**
+
 - Apply same category to all selected rows
 - Shows AI suggestion if high confidence
 - Can also choose manually
 - Action: "Categorized 3 transactions"
 
 **[Reconcile]**
+
 - Mark all selected as reconciled
 - Action: "Marked 3 as reconciled"
 
 **[Split]**
+
 - Only if single row selected (otherwise grayed)
 - Opens split modal
 
 **[Create Rule]**
+
 - Generates rule from selected transactions
 - Example: "All transactions from Amazon → Cloud Services"
 - Applies to future matching transactions
 
 **[Delete]**
+
 - Guarded confirmation
 - Soft delete only (preserves audit trail)
 - Action: "Deleted 3 transactions"
@@ -357,19 +387,23 @@ Appears when ≥1 row selected:
 ### Large Dataset Handling
 
 **Virtual scrolling:** Required for 1000+ rows
+
 - Render only visible rows + buffer
 - Smooth 60fps scrolling
 
 **Pagination:** Cursor-based (after ID)
+
 ```
 [Prev]  Showing 50–100 of 2,450  [Next]
 ```
 
 **Lazy loading:** Details panel loads on demand
+
 - Don't fetch until row expanded
 - Cache for 5 minutes
 
 **Debouncing:**
+
 - Search filter: 300ms
 - Category changes: Auto-save, but debounce updates
 - Column resize: 200ms
@@ -381,20 +415,24 @@ Appears when ≥1 row selected:
 ## Responsive Behavior
 
 ### Desktop (1280px+)
+
 - Full table with all 11 columns
 - Sticky header, sticky amount column
 - Horizontal scroll for overflow
 - Detail panel slides from right (doesn't replace table)
 
 ### Tablet (768px–1279px)
+
 - Essential columns only: Date, Description, Amount, Status
 - Swipe left to reveal Category, Entity, FX
 - Detail panel fullscreen (overlays table)
 - Reduce bulk action count (show only top 3 actions)
 
 ### Mobile (<768px)
+
 - Card-based layout instead of table
 - Each row is a card:
+
   ```
   [Date]       [Amount: –$1,200 CAD]
 
@@ -402,6 +440,7 @@ Appears when ≥1 row selected:
 
   [View Details]
   ```
+
 - Tap to expand full details
 - Swipe for quick actions (reconcile, split)
 
@@ -412,35 +451,42 @@ Appears when ≥1 row selected:
 ### Column-Level Filters
 
 **Date Range:**
+
 - Quick options: This month, Last 30 days, This quarter, Custom range
 - Respects period selector at top
 
 **Entity Filter:**
+
 - Dropdown of available entities
 - Only shows entities user has access to
 - "All entities" option for multi-entity view
 
 **Account Filter:**
+
 - Bank, credit card, loan, etc.
 - Only shows accounts with transactions
 
 **Category Filter:**
+
 - Searchable dropdown of GL accounts
 - "Uncategorized" pseudo-category
 - Recent categories appear first
 
 **Amount Range:**
+
 - Input: "Between $[amount] and $[amount]"
 - Quick filters: ">$1,000", "<$100"
 
 ### Search
 
 **Global search (top right):**
+
 - Searches description, counterparty, amount
 - Real-time as you type (debounce 300ms)
 - Highlights matching terms
 
 **Advanced search** (optional button):
+
 ```
 Description  [contains] [text]
 Amount       [equals/between] [value]
@@ -459,16 +505,19 @@ Status       [is] [dropdown]
 ### Specific Adjustments
 
 **Row states:**
+
 - AI Categorized: Violet dot becomes brighter (higher contrast)
 - Reconciled: Green checkmark remains green (semantic)
 - Locked: Gray text becomes lighter gray
 - Error: Red highlight becomes brighter red
 
 **Amounts:**
+
 - Monospace text color: Light gray (not black)
 - Maintains contrast ratio ≥4.5:1 (WCAG AA)
 
 **Detail panel:**
+
 - Background elevated from page background
 - Card-like appearance with subtle shadow
 
@@ -477,26 +526,31 @@ Status       [is] [dropdown]
 ## Accessibility
 
 **Keyboard Navigation:**
+
 - Tab through table, arrow keys to move rows
 - Enter to expand, Escape to collapse
 - All actions keyboard-accessible
 
 **Screen Readers:**
+
 - Proper ARIA labels on all interactive elements
 - Row headers announce: "[Date], [Description], [Amount], [Category], [Status]"
 - State changes announced: "Marked as reconciled"
 - Alerts for errors: "Duplicate detected"
 
 **Focus Indicators:**
+
 - Visible focus ring on all interactive elements (min 2px)
 - Color: Akount brand color (not blue default)
 
 **Color + Icons:**
+
 - Never rely on color alone (always add icon/text)
 - Status badges: Icon + text label
 - Financial direction: Icon (arrow) + sign (+ or –)
 
 **Mobile Touch:**
+
 - Touch targets: ≥44px square
 - Swipe actions clearly labeled
 - Avoid hover-dependent interactions
@@ -564,6 +618,7 @@ interface TransactionState {
 **Future enhancement:** Transactions will support project-level tracking and cost allocation.
 
 **What's planned:**
+
 - Project-aware transactions (tag transactions with project)
 - Optional allocation % across multiple projects
 - Project-level reporting and profitability analysis
@@ -578,6 +633,7 @@ interface TransactionState {
 **Future enhancement:** Graceful handling of incomplete data without validation errors.
 
 **What's planned:**
+
 - Explicit "incomplete data" state (not treated as error)
 - Deferred resolution flags ("come back to this later")
 - AI-assisted enrichment without auto-commit
@@ -590,6 +646,7 @@ interface TransactionState {
 **Future enhancement:** Required attachments for audit compliance.
 
 **What's planned:**
+
 - Attachment requirements by transaction type
 - Completeness checks before posting
 - OCR with verification (not blind ingestion)

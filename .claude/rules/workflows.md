@@ -47,6 +47,7 @@
 ## Model Selection (Cost Optimization)
 
 **Use /fast (Haiku) for:**
+
 - File searches (Glob, Grep, Read)
 - Simple single-file edits
 - Running tests and checking output
@@ -54,6 +55,7 @@
 - Answering factual questions
 
 **Stay on Opus for:**
+
 - Multi-file feature implementation
 - Architecture decisions and planning
 - Complex debugging

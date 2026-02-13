@@ -19,6 +19,7 @@ These issues prevent both the API and web servers from starting. The goal is to 
 2. **Convert transactions.ts to validation middleware pattern** - Replace type-provider setup with `validateQuery()`, `validateBody()`, `validateParams()` middleware to match the pattern used in 100% of other route files.
 
 **Rationale:**
+
 - Only 2 files modified (rbac.ts, transactions.ts)
 - No breaking changes to existing routes
 - Maintains architectural consistency
@@ -81,6 +82,7 @@ export function requireRole(allowedRoles: TenantUserRole[]) {
 **File:** `apps/api/src/domains/banking/routes/transactions.ts`
 
 **Changes:**
+
 1. Remove `ZodTypeProvider` import and `withTypeProvider<ZodTypeProvider>()` wrapper
 2. Remove inline `schema` definitions from route options
 3. Add `preValidation` with validation middleware (`validateQuery`, `validateParams`, `validateBody`)
@@ -107,6 +109,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
 ```
 
 **Update all 5 routes:**
+
 - GET / (list transactions) - Add `validateQuery(ListTransactionsQuerySchema)`
 - GET /:id (get transaction) - Add `validateParams(TransactionIdParamSchema)`
 - POST / (create) - Add `validateBody(CreateTransactionSchema)`
@@ -127,16 +130,19 @@ export async function transactionRoutes(fastify: FastifyInstance) {
 ## Verification
 
 ### 1. Server Startup
+
 ```bash
 npm run dev
 ```
 
 **Expected:**
+
 - Both API (port 3001) and web (port 3000) servers start successfully
 - No TypeError about missing exports
 - No schema validation errors
 
 ### 2. Test Suite
+
 ```bash
 cd apps/api && npm test
 ```
@@ -144,6 +150,7 @@ cd apps/api && npm test
 **Expected:** All 55 tests pass (no regressions)
 
 ### 3. Manual Route Testing
+
 ```bash
 # Should return 401 (auth required) but not crash
 curl http://localhost:3001/api/banking/transactions
@@ -157,11 +164,13 @@ curl http://localhost:3001/api/banking/transactions/cm8abc123
 ## Trade-offs
 
 **Why stub RBAC instead of full implementation?**
+
 - Full permission system requires PermissionMatrix table, UI, extensive testing (4-8 hours)
 - Phase 3 is planned implementation phase per roadmap
 - Conservative role mapping maintains security
 
 **Why convert transactions.ts instead of fixing type-provider?**
+
 - Matches 100% of existing route patterns (7+ files use validation middleware)
 - Only 1 file uses type-provider (inconsistency)
 - Easier to maintain one pattern vs two

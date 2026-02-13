@@ -32,11 +32,13 @@ Build all design tokens as Figma Variables with Light/Dark modes:
 5. **Border Radius** - 4 values (6px, 10px, 14px, 18px)
 
 **Text Styles (Figma native):**
+
 - Headings: Newsreader (h1=30px, h2=24px, h3=20px) semibold, tight line-height
 - Body: Manrope (default=16px, muted=14px) regular, normal line-height
 - Mono: JetBrains Mono (amount=14px) medium, normal line-height
 
 **Effect Styles:**
+
 - Elevation: none, sm (1px blur), md (6px/18px blur), lg (16px/40px blur)
 
 ### Phase 2: Figma Page Structure (8-Domain Sitemap)
@@ -108,12 +110,15 @@ From `akount.tokens.json`:
 ## Alternatives Considered
 
 ### Token Studio Plugin Import
+
 **Why Not:** User chose native Variables API for tighter Figma integration and no plugin dependency.
 
 ### Code-First Approach
+
 **Why Not:** User wants visual design iteration before code completion. Figma-first enables faster design exploration.
 
 ### Manual Styles Only
+
 **Why Not:** Variables API provides better mode support (light/dark), aliasing, and future scalability.
 
 ## Open Questions

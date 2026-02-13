@@ -18,6 +18,7 @@
 ## Usage
 
 ### In CSS
+
 ```css
 .invoice-amount {
   color: var(--ak-finance-income);
@@ -26,6 +27,7 @@
 ```
 
 ### In Tailwind
+
 [Map to Tailwind configuration]
 
 ## Updating Tokens

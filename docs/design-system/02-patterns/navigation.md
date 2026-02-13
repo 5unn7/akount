@@ -18,18 +18,23 @@ Navigation should feel like:
 ## Mental Model
 
 ### Sidebar: The Map
+
 The sidebar answers: **"Where am I in my financial world?"**
+
 - Organized by how solopreneurs think, not accounting terms
 - Persistent anchor point (never scrolls away)
 - 8 semantic sections grouped by user intent
 
 ### Top Command Bar: The Mission Console
+
 The top bar answers: **"What financial universe am I looking at?"**
+
 - Controls scope (entities), time, currency
 - Provides global search and AI status
 - Makes users feel: "I know exactly what data I'm seeing"
 
 ### Together
+>
 > "I am inside my financial control room."
 
 ---
@@ -39,6 +44,7 @@ The top bar answers: **"What financial universe am I looking at?"**
 ### Purpose
 
 The sidebar must:
+
 1. Orient users in a **complex financial world**
 2. Reflect **entity + global structure**
 3. Separate **operations** from **intelligence**
@@ -68,6 +74,7 @@ The sidebar must:
 ### Sidebar Sections (8 Categories)
 
 #### 🏠 OVERVIEW
+
 **Mental Mode:** "Where am I financially?"
 
 | Item      | Icon       | Why                 |
@@ -78,6 +85,7 @@ The sidebar must:
 | Insights  | Sparkles   | AI global insights  |
 
 #### 🧾 MONEY MOVEMENT
+
 **Mental Mode:** "What happened to my money?"
 
 | Item           | Icon           | Why                 |
@@ -88,6 +96,7 @@ The sidebar must:
 | Transfers      | ArrowUpDown    | Internal movement   |
 
 #### 🧮 ACCOUNTING
+
 **Mental Mode:** "How is this recorded?"
 
 | Item              | Icon          | Why                    |
@@ -100,6 +109,7 @@ The sidebar must:
 **Note:** Hidden from beginners → progressive disclosure as they advance.
 
 #### 💼 BUSINESS OPERATIONS
+
 **Mental Mode:** "How do I run my business?"
 
 | Item     | Icon     | Why           |
@@ -111,6 +121,7 @@ The sidebar must:
 | Payments | Wallet   | Payment log   |
 
 #### 📊 PLANNING & ANALYTICS
+
 **Mental Mode:** "What's my future?"
 
 | Item        | Icon       | Why                |
@@ -121,6 +132,7 @@ The sidebar must:
 | Forecasting | TrendingUp | Financial forecast |
 
 #### 🧠 AI ADVISOR (Differentiator)
+
 **Mental Mode:** "What should I do?"
 
 | Item              | Icon      | Why                     |
@@ -135,6 +147,7 @@ The sidebar must:
 **AI Notification Badge:** If new insight exists, show small violet dot with count badge (e.g., "3").
 
 #### 👥 ACCOUNTANT & SERVICES
+
 **Mental Mode:** "Who helps me?"
 
 | Item             | Icon      | Why              |
@@ -144,6 +157,7 @@ The sidebar must:
 | Documents        | Paperclip | Doc management   |
 
 #### ⚙️ SYSTEM
+
 **Mental Mode:** "How do I configure this?"
 
 | Item               | Icon        | Why                   |
@@ -194,6 +208,7 @@ Creates a stable anchor feeling.
 ### Purpose
 
 The top bar controls:
+
 1. **Scope** → What financial universe am I looking at?
 2. **Time** → When?
 3. **Currency context** → In what currency?
@@ -216,11 +231,13 @@ This bar should make users feel:
 #### 1. Entity Scope Switcher (Most Important)
 
 **Display:**
+
 ```
 🌍 All Entities ▼
 ```
 
 or when specific entities selected:
+
 ```
 🇨🇦 CAN Corp + 🇺🇸 US LLC ▼
 ```
@@ -242,11 +259,13 @@ or when specific entities selected:
 #### 2. Time Intelligence Selector
 
 **Display:**
+
 ```
 Jan 1 – Mar 31, 2026 ▼
 ```
 
 **Quick Presets:**
+
 - This Month
 - Last Month
 - This Quarter
@@ -259,6 +278,7 @@ Jan 1 – Mar 31, 2026 ▼
 #### 3. Currency View Mode
 
 **Display:**
+
 ```
 Display in: USD ▼
 ```
@@ -280,6 +300,7 @@ Display in: USD ▼
 Not just text search—**financial search**.
 
 Search across:
+
 - Transactions
 - Invoices
 - Clients
@@ -287,6 +308,7 @@ Search across:
 - Journal entries
 
 Examples:
+
 ```
 "AWS February"
 "$1200 CAD"
@@ -315,11 +337,13 @@ Feels like:
 #### 6. Global Action Button
 
 One persistent CTA:
+
 ```
 + Add
 ```
 
 Opens action palette:
+
 - Transaction
 - Invoice
 - Bill
@@ -379,18 +403,21 @@ That's the difference between bookkeeping software and **Akount**.
 ### Sidebar Section Visibility by Role
 
 **OVERVIEW** (Always visible, read-only for all)
+
 - Dashboard (role-specific): Owner/Admin/Accountant see different dashboards
 - Net Worth: All roles
 - Cash Flow: All roles except Bookkeeper
 - Insights: All except Investor
 
 **MONEY MOVEMENT** (Access varies)
+
 - Accounts: All roles
 - Transactions: Owner/Admin/Bookkeeper can create; Accountant reads only
 - Reconciliation: Owner/Admin/Accountant can act; Bookkeeper can assist
 - Transfers: Owner/Admin only
 
 **ACCOUNTING** (Advanced users only)
+
 - Journal Entries: Owner/Admin/Accountant
 - Chart of Accounts: Owner/Admin/Accountant
 - Assets & Depreciation: Owner/Admin/Accountant
@@ -399,28 +426,33 @@ That's the difference between bookkeeping software and **Akount**.
 - **Hidden from:** Bookkeeper, Investor
 
 **BUSINESS OPERATIONS** (AR/AP)
+
 - Clients/Vendors: Owner/Admin/Accountant/Bookkeeper
 - Invoices/Bills: Owner/Admin/Accountant/Bookkeeper
 - Payments: Owner/Admin/Accountant/Bookkeeper
 
 **PLANNING & ANALYTICS**
+
 - Reports: All roles (read-only)
 - Budgets: Owner/Admin only
 - Goals: Owner only
 - Forecasts: Owner/Admin/Investor
 
 **AI ADVISOR**
+
 - AI Advisor: Owner/Admin/Accountant
 - Tax Opportunities: Owner/Admin/Accountant
 - Policy Alerts: Owner/Admin/Accountant
 - **Hidden from:** Bookkeeper, Investor
 
 **ACCOUNTANT & SERVICES**
+
 - My Accountant: All roles
 - Bookkeeping Help: All roles
 - Documents: All roles
 
 **SYSTEM**
+
 - Entities: Owner/Admin
 - Integrations: Owner/Admin
 - Rules & Automation: Owner/Admin
@@ -434,6 +466,7 @@ That's the difference between bookkeeping software and **Akount**.
 ### Dark Mode
 
 Both sidebar and top bar adapt to dark mode:
+
 - Sidebar: Slightly darker than content area for anchor effect
 - Top bar: Maintains subtle elevation
 - Icons: Remain visible with adjusted contrast
@@ -441,14 +474,17 @@ Both sidebar and top bar adapt to dark mode:
 ### Responsive Behavior
 
 **Desktop (1280px+):**
+
 - Sidebar: 240px expanded, collapsible to 80px
 - Top bar: Full width with all controls
 
 **Tablet (768px–1279px):**
+
 - Sidebar: Collapsed to 80px by default, swipeable
 - Top bar: Compact layout, some controls in menu
 
 **Mobile (<768px):**
+
 - Sidebar: Hidden, accessible via hamburger menu
 - Top bar: Essential controls only (scope, search, user)
 

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { EntitiesList } from "@/components/dashboard/EntitiesList";
 import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
 import { DashboardFilters } from "@/components/dashboard/DashboardFilters";
-import { OnboardingHeroCard } from "@/components/dashboard/OnboardingHeroCard";
+import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { listEntities } from "@/lib/api/entities";
 

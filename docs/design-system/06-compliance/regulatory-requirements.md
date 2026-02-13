@@ -381,4 +381,3 @@ Any implementation that violates:
 * role accountability
 
 is **non-compliant with Akount’s product contract**.
-

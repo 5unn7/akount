@@ -95,19 +95,23 @@ _(Content auto-imported from standards docs - always fresh)_
 ## Context Hierarchy
 
 **Layer 1 (Always loaded):**
+
 - This file (CLAUDE.md) — core invariants, tech stack, structure
 - `MEMORY.md` — work state, learned patterns, gotchas
 - `.claude/rules/*.md` — modular rules (path-scoped)
 
 **Layer 2 (Loaded when working in directory):**
+
 - `apps/api/CLAUDE.md` — API patterns, middleware, built endpoints
 - `apps/web/CLAUDE.md` — Next.js patterns, design system, components
 - `packages/db/CLAUDE.md` — Prisma models table, enums, schema conventions
 
 **Layer 3 (Explicit read for deep-dive):**
+
 - `docs/context-map.md` — Full model glossary, enum reference, journal patterns, how-tos
 
 **Layer 4 (Human-only reference):**
+
 - `docs/architecture.mmd` — Mermaid diagrams (for human viewing in VS Code)
 
 ---
@@ -117,6 +121,7 @@ _(Content auto-imported from standards docs - always fresh)_
 **Allowed at root:** README.md, CLAUDE.md, STATUS.md, ROADMAP.md, TASKS.md, config files
 
 **Strict locations:**
+
 - Brainstorms: `docs/brainstorms/`
 - Implementation plans: `docs/plans/`
 - Session reports: `docs/archive/sessions/`
@@ -131,6 +136,7 @@ _(Content auto-imported from standards docs - always fresh)_
 **Skills & Agents:** See `.claude/rules/workflows.md` for comprehensive trigger table.
 
 **Common commands:**
+
 - `/processes:begin` — Start session (loads git status, tasks, recommendations)
 - `/processes:plan` — Create implementation plan
 - `/processes:work` — Execute plan systematically
@@ -144,12 +150,14 @@ _(Content auto-imported from standards docs - always fresh)_
 ## Decision Protocol
 
 **ALWAYS ASK when:**
+
 - Requirements are ambiguous or multiple valid approaches exist
 - Security/compliance implications are unknown
 - Financial calculations or audit trails are involved
 - Destructive actions are proposed (delete, hard reset, force push)
 
 **Search first** before creating:
+
 ```bash
 Grep "feature-name" docs/
 Glob "**/*similar*.ts*"

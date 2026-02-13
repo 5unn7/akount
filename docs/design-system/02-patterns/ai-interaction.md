@@ -22,6 +22,7 @@ Not a chatbot. Not noisy. Not "ask me anything."
 ### AI = Advisor, Not Authority
 
 AI exists to:
+
 1. **Surface what the user would miss**
 2. **Explain why it matters**
 3. **Recommend an action**
@@ -32,6 +33,7 @@ That's it.
 ### AI Transparency Rules
 
 All AI suggestions must include:
+
 - **What we noticed** - Observable facts
 - **Why this matters** - Business/financial impact
 - **Recommended action** - Specific, actionable recommendation
@@ -49,9 +51,11 @@ Think: **GitHub Copilot for finance**, not ChatGPT in a box.
 Multiple intentional ways to access AI insights:
 
 ### Primary
+
 - Click **AI Indicator** in top command bar (violet dot or badge)
 
 ### Secondary (Contextual)
+
 - "AI Suggestion" chip inline in transaction table
 - "View insight" link in reports
 - Warning banner ("New policy affects you")
@@ -156,6 +160,7 @@ Was this helpful?  👍  👎
 ## Context Awareness (Critical)
 
 Every insight shows:
+
 - **Entity** - Which legal entity does this affect?
 - **Jurisdiction** - Which tax jurisdiction applies?
 - **Period** - Which fiscal period?
@@ -164,9 +169,11 @@ Every insight shows:
 Never generic. Always specific.
 
 ### Bad AI Says
+>
 > "You might save money."
 
 ### Good AI Says
+>
 > "Your 🇨🇦 Canadian Corp may save $2,300 CAD this year (March 2025 tax year, based on 6 months of data, high confidence)."
 
 ---
@@ -212,6 +219,7 @@ Was this helpful?  👍  👎
 ```
 
 **Negative feedback trains the system:**
+
 - Adjusts confidence thresholds
 - Refines insight triggers
 - Makes AI more conservative over time
@@ -225,6 +233,7 @@ The AI learns from being wrong.
 Only for compliance risk, hard deadlines, or material tax impact.
 
 Example:
+
 ```
 ⚠ New US tax law affects your LLC
 Review required before next filing
@@ -253,6 +262,7 @@ Would you like to speak to a vetted CPA?
 ## Tone & Language Rules
 
 AI voice must be:
+
 - **Calm** - Never alarmist
 - **Specific** - Always with numbers and context
 - **Non-absolute** - Acknowledges uncertainty
@@ -335,6 +345,7 @@ Low (42%)      - Tentative suggestion
 ```
 
 Use as:
+
 - Badge in insight cards
 - Percentage in detail view
 - Line thickness in suggestions (thicker = more confident)
@@ -354,6 +365,7 @@ That's the product moat.
 ## Component Decomposition
 
 ### Primitives
+
 - `InsightCard` - Card with icon, title, description, action
 - `ConfidenceBadge` - Displays confidence level
 - `AIActionButton` - "Apply", "Ignore", "Learn why"
@@ -361,6 +373,7 @@ That's the product moat.
 - `AIIndicator` - Violet dot with notification badge
 
 ### Composites
+
 - `AIAdvisorPanel` - Main side panel
 - `InsightFeed` - Prioritized list of insights
 - `InsightDetail` - Expanded view with full context
@@ -368,6 +381,7 @@ That's the product moat.
 - `CriticalAlert` - Urgent, important notification
 
 ### Patterns
+
 - **Suggestion Workflow** - User sees suggestion → applies/ignores → feedback loop
 - **Contextual Help** - AI explains why something matters
 - **Progressive Disclosure** - Summary → detail on demand
@@ -446,6 +460,7 @@ function AIInsightCard({ insight, onApply }) {
 **Future enhancement:** Detect when AI suggestions degrade in accuracy and alert users.
 
 **What's planned:**
+
 - Confidence decay model over time (adjusts as patterns change)
 - "AI unsure" states when accuracy drops below threshold
 - Periodic re-learning checkpoints to retrain on new patterns
@@ -467,6 +482,7 @@ Prevents **silent AI erosion** — where suggestions degrade without visible war
 **Future enhancement:** Store and audit complete reasoning for every AI decision.
 
 **What's planned:**
+
 - Stored explanation layers for each AI decision:
   - Inputs considered (which transactions, rules, patterns)
   - Reasoning summary (how the model arrived at conclusion)
@@ -477,6 +493,7 @@ Prevents **silent AI erosion** — where suggestions degrade without visible war
 - Regulator-facing documentation of AI usage
 
 **Why it matters:**
+
 - Auditors may ask: "Why was this categorized as X?"
 - Regulators may scrutinize AI usage in future enforcement actions
 - Builds legal defensibility for financial decisions influenced by AI

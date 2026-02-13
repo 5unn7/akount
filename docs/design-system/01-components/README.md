@@ -15,6 +15,7 @@ Components are reusable UI building blocks that apply design foundations to solv
 ## When to Use
 
 Reference these files when:
+
 - Building new UI elements
 - Ensuring component consistency across the application
 - Looking for reusable patterns to avoid duplication

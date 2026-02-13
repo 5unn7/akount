@@ -12,6 +12,7 @@
 **Issue:** `UserNotFoundError` imported from service conflicted with local type definition
 
 **Fix Applied:**
+
 ```typescript
 // Before
 import { UserService, UserNotFoundError as UserServiceError } from './services/user.service';
@@ -23,6 +24,7 @@ type UserNotFoundResponse = { ... }  // Renamed to avoid conflict
 ```
 
 **Files Changed:**
+
 - `apps/api/src/index.ts` (lines 12, 100-103, 193, 206)
 
 ---
@@ -32,6 +34,7 @@ type UserNotFoundResponse = { ... }  // Renamed to avoid conflict
 **Issue:** Fastify `redirect()` requires status code as first parameter
 
 **Fix Applied:**
+
 ```typescript
 // Before
 return reply.redirect('/health');
@@ -41,6 +44,7 @@ return reply.redirect(302, '/health');
 ```
 
 **Files Changed:**
+
 - `apps/api/src/index.ts` (line 174)
 
 ---
@@ -50,6 +54,7 @@ return reply.redirect(302, '/health');
 **Issue:** `aiRoutes` import was in the middle of route registrations
 
 **Fix Applied:**
+
 ```typescript
 // Before
 import { accountsRoutes } from './routes/accounts';
@@ -64,6 +69,7 @@ import { aiRoutes } from './routes/ai';  // ✅ Correct location
 ```
 
 **Files Changed:**
+
 - `apps/api/src/index.ts` (lines 13-17, 85-86)
 
 ---
@@ -73,6 +79,7 @@ import { aiRoutes } from './routes/ai';  // ✅ Correct location
 **Issue:** Pino logger expects Error object directly, not wrapped in object
 
 **Fix Applied:**
+
 ```typescript
 // Before
 server.log.error({ error }, 'Error during shutdown');
@@ -85,6 +92,7 @@ server.log.error(
 ```
 
 **Files Changed:**
+
 - `apps/api/src/index.ts` (line 273)
 
 ---
@@ -94,6 +102,7 @@ server.log.error(
 **Issue:** Service queried non-existent `userId` field on `TenantUser` model
 
 **Fix Applied:**
+
 ```typescript
 // Before
 const tenantUser = await prisma.tenantUser.findFirst({
@@ -113,6 +122,7 @@ const tenantUser = await prisma.tenantUser.findFirst({
 ```
 
 **Files Changed:**
+
 - `apps/api/src/services/account.service.ts` (lines 8-15, 43-50)
 - `apps/api/src/services/dashboard.service.ts` (lines 13-22)
 
@@ -125,6 +135,7 @@ const tenantUser = await prisma.tenantUser.findFirst({
 **Issue:** Routes performed manual auth checks without middleware, making them unauthenticated
 
 **Fix Applied:**
+
 ```typescript
 // Before
 fastify.get('/accounts', {
@@ -145,6 +156,7 @@ fastify.get('/accounts', {
 ```
 
 **Files Changed:**
+
 - `apps/api/src/routes/accounts.ts` (complete rewrite)
 - `apps/api/src/routes/dashboard.ts` (complete rewrite)
 
@@ -155,6 +167,7 @@ fastify.get('/accounts', {
 **Issue:** Multiple instances of `as any` bypassed TypeScript type checking
 
 **Fix Applied:**
+
 ```typescript
 // Before
 const query = request.query as any;  // ❌ No type safety
@@ -173,6 +186,7 @@ const query = request.query as AccountsQuery;  // ✅ Type-safe inference
 ```
 
 **Files Changed:**
+
 - `apps/api/src/routes/accounts.ts` (lines 7-18, 32)
 - `apps/api/src/routes/dashboard.ts` (lines 7-12, 26)
 
@@ -183,6 +197,7 @@ const query = request.query as AccountsQuery;  // ✅ Type-safe inference
 **Issue:** No try-catch blocks around service calls; exceptions would crash API
 
 **Fix Applied:**
+
 ```typescript
 // Before
 async (request, reply) => {
@@ -214,6 +229,7 @@ async (request: FastifyRequest, reply: FastifyReply) => {
 ```
 
 **Files Changed:**
+
 - `apps/api/src/routes/accounts.ts` (both routes)
 - `apps/api/src/routes/dashboard.ts`
 
@@ -224,11 +240,13 @@ async (request: FastifyRequest, reply: FastifyReply) => {
 **Issue:** No logging of successful operations or context for debugging
 
 **Fix Applied:**
+
 - Added `request.log.info()` for successful operations
 - Added `request.log.error()` with context (userId, resourceId) for failures
 - Included relevant context (filters, entity IDs, etc.)
 
 **Files Changed:**
+
 - `apps/api/src/routes/accounts.ts` (lines 41-44, 78-81, 85)
 - `apps/api/src/routes/dashboard.ts` (lines 31-34, 38)
 
@@ -239,6 +257,7 @@ async (request: FastifyRequest, reply: FastifyReply) => {
 **Issue:** Weak validation schemas without proper constraints
 
 **Fix Applied:**
+
 ```typescript
 // Before
 type: z.string().optional(),  // ❌ Any string accepted
@@ -250,6 +269,7 @@ currency: z.string().length(3).optional(),  // ✅ Validates currency code lengt
 ```
 
 **Files Changed:**
+
 - `apps/api/src/routes/accounts.ts` (lines 7-11)
 - `apps/api/src/routes/dashboard.ts` (lines 7-10)
 
@@ -260,6 +280,7 @@ currency: z.string().length(3).optional(),  // ✅ Validates currency code lengt
 **Issue:** Console log said `demo@akount.com` but seed used `testuser1@akount.local`
 
 **Fix Applied:**
+
 ```typescript
 // Before
 email: 'testuser1@akount.local',
@@ -271,6 +292,7 @@ name: 'Demo User',
 ```
 
 **Files Changed:**
+
 - `packages/db/prisma/seed.ts` (lines 33-34)
 
 ---
@@ -278,17 +300,20 @@ name: 'Demo User',
 ## ✅ Impact Summary
 
 ### Security
+
 - ✅ Routes now properly authenticated via middleware
 - ✅ Tenant isolation correctly enforced (routes functional)
 - ✅ Input validation strengthened with enum constraints
 - ✅ Type safety improved (removed `as any` casts)
 
 ### Functionality
+
 - ✅ Tenant queries fixed - routes now work correctly
 - ✅ Error handling prevents API crashes
 - ✅ Structured logging aids debugging
 
 ### Code Quality
+
 - ✅ TypeScript compilation errors resolved
 - ✅ Consistent patterns with existing routes (entities, onboarding)
 - ✅ Better type inference from Zod schemas
@@ -298,15 +323,18 @@ name: 'Demo User',
 ## 📊 Files Modified
 
 ### API Core
+
 - ✅ `apps/api/src/index.ts` - Import conflict, redirect, error logging
 - ✅ `apps/api/src/routes/accounts.ts` - Complete rewrite (auth, error handling, validation)
 - ✅ `apps/api/src/routes/dashboard.ts` - Complete rewrite (auth, error handling, validation)
 
 ### Services
+
 - ✅ `apps/api/src/services/account.service.ts` - Fixed tenant query
 - ✅ `apps/api/src/services/dashboard.service.ts` - Fixed tenant query
 
 ### Database
+
 - ✅ `packages/db/prisma/seed.ts` - Fixed email mismatch
 
 **Total Files Modified:** 6
@@ -317,11 +345,13 @@ name: 'Demo User',
 ## ⏭️ Remaining Work (Future PRs)
 
 ### Phase 2: Performance Optimization (Non-Blocking)
+
 - ⚠️ Batch FX rate queries in dashboard (N+1 query pattern)
 - ⚠️ Add tenant middleware to avoid duplicate queries per request
 - ⚠️ Add database indexes for FXRate lookups
 
 ### Phase 3: Quality Improvements (Technical Debt)
+
 - ⚠️ Fix FX rate Float → Decimal for precision
 - ⚠️ Remove placeholder trend data (netWorth.previous, change, changePercent)
 - ⚠️ Add response schema validation
@@ -334,6 +364,7 @@ name: 'Demo User',
 ### Immediate Testing Required
 
 1. **Authentication Flow**
+
    ```bash
    # Test routes are now authenticated
    curl http://localhost:4000/api/accounts  # Should return 401
@@ -341,18 +372,21 @@ name: 'Demo User',
    ```
 
 2. **Tenant Isolation**
+
    ```bash
    # Verify user can only see their tenant's accounts
    # Test with different users from different tenants
    ```
 
 3. **Error Handling**
+
    ```bash
    # Test with invalid input
    curl http://localhost:4000/api/accounts?type=INVALID  # Should return validation error
    ```
 
 4. **TypeScript Compilation**
+
    ```bash
    cd apps/api
    npx tsc --noEmit  # Should have 0 errors (down from 40+)
@@ -379,12 +413,14 @@ name: 'Demo User',
 **Current Status:** ✅ **READY FOR TESTING**
 
 **Blockers Resolved:**
+
 1. ✅ Authentication middleware added
 2. ✅ Tenant queries fixed
 3. ✅ TypeScript compilation errors resolved
 4. ✅ Error handling implemented
 
 **Next Steps:**
+
 1. Run TypeScript compilation (`tsc --noEmit`)
 2. Test authentication flow
 3. Test tenant isolation

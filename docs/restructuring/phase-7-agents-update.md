@@ -23,6 +23,7 @@
 All agents need context_files updated from `docs/design-system/v1/` to `docs/design-system/`.
 
 - [ ] Update `financial-data-validator.md`:
+
   ```yaml
   context_files:
     - docs/design-system/01-components/financial-components.md
@@ -31,6 +32,7 @@ All agents need context_files updated from `docs/design-system/v1/` to `docs/des
   ```
 
 - [ ] Update `architecture-strategist.md`:
+
   ```yaml
   context_files:
     - docs/design-system/05-governance/information-architecture.md
@@ -39,6 +41,7 @@ All agents need context_files updated from `docs/design-system/v1/` to `docs/des
   ```
 
 - [ ] Update `security-sentinel.md`:
+
   ```yaml
   context_files:
     - docs/design-system/05-governance/permissions-matrix.md
@@ -48,6 +51,7 @@ All agents need context_files updated from `docs/design-system/v1/` to `docs/des
   ```
 
 - [ ] Update `nextjs-app-router-reviewer.md`:
+
   ```yaml
   context_files:
     - docs/design-system/02-patterns/navigation.md
@@ -55,6 +59,7 @@ All agents need context_files updated from `docs/design-system/v1/` to `docs/des
   ```
 
 - [ ] Update `prisma-migration-reviewer.md`:
+
   ```yaml
   context_files:
     - docs/architecture/schema-design.md
@@ -62,6 +67,7 @@ All agents need context_files updated from `docs/design-system/v1/` to `docs/des
   ```
 
 - [ ] Update `kieran-typescript-reviewer.md`:
+
   ```yaml
   context_files:
     - packages/types/src/financial/
@@ -71,6 +77,7 @@ All agents need context_files updated from `docs/design-system/v1/` to `docs/des
 - [ ] Update all other agents in `.claude/agents/review/`
 
 **Verification:**
+
 ```bash
 # Should return no results
 grep -r "design-system/v1" .claude/agents/
@@ -83,6 +90,7 @@ grep -r "design-system/v1" .claude/agents/
 #### 7.2.1 financial-data-validator.md Enhancements
 
 - [ ] Add UI component validation rules:
+
   ```markdown
   ## UI Component Validation
 
@@ -107,11 +115,13 @@ grep -r "design-system/v1" .claude/agents/
   // GOOD - MoneyAmount component
   <MoneyAmount amount={amount} currency="CAD" />
   ```
+
   ```
 
 #### 7.2.2 architecture-strategist.md Enhancements
 
 - [ ] Add domain structure validation:
+
   ```markdown
   ## Domain Structure Validation
 
@@ -135,6 +145,7 @@ grep -r "design-system/v1" .claude/agents/
 #### 7.2.3 security-sentinel.md Enhancements
 
 - [ ] Add RBAC validation:
+
   ```markdown
   ## RBAC Validation
 
@@ -165,6 +176,7 @@ grep -r "design-system/v1" .claude/agents/
 #### 7.3.1 design-system-enforcer.md
 
 - [ ] Create `.claude/agents/review/design-system-enforcer.md`:
+
   ```markdown
   ---
   name: design-system-enforcer
@@ -221,6 +233,7 @@ grep -r "design-system/v1" .claude/agents/
   ## Review Output Format
 
   ```
+
   ## Design System Compliance Review
 
   ### Violations Found
@@ -239,6 +252,7 @@ grep -r "design-system/v1" .claude/agents/
   ### Recommendations
 
   - ...
+
   ```
 
   ## Critical Patterns
@@ -249,14 +263,17 @@ grep -r "design-system/v1" .claude/agents/
   ```
 
   NOT:
+
   ```tsx
   <span className="text-green-500">${(amount / 100).toFixed(2)}</span>
   ```
+
   ```
 
 #### 7.3.2 rbac-validator.md
 
 - [ ] Create `.claude/agents/review/rbac-validator.md`:
+
   ```markdown
   ---
   name: rbac-validator
@@ -353,6 +370,7 @@ grep -r "design-system/v1" .claude/agents/
   ## Review Output Format
 
   ```
+
   ## RBAC Compliance Review
 
   ### Issues Found
@@ -370,6 +388,7 @@ grep -r "design-system/v1" .claude/agents/
   ### Recommendations
 
   - ...
+
   ```
   ```
 
@@ -378,6 +397,7 @@ grep -r "design-system/v1" .claude/agents/
 ### 7.4 Update Agent Registry
 
 - [ ] Update `.claude/agents/REGISTRY.json`:
+
   ```json
   {
     "agents": {
@@ -417,11 +437,13 @@ grep -r "design-system/v1" .claude/agents/
 ### 7.5 Validate Agent Configuration
 
 - [ ] Run validation script:
+
   ```bash
   bash .claude/hooks/validate-config.sh
   ```
 
 - [ ] Test each agent manually:
+
   ```bash
   # Test design-system-enforcer
   # Create a file with intentional violations and verify detection
@@ -448,6 +470,7 @@ Before marking Phase 7 complete:
 - [ ] validate-config.sh passes
 
 **Test:**
+
 ```bash
 # Check for old paths
 grep -r "design-system/v1" .claude/
@@ -469,6 +492,7 @@ When Phase 7 is complete:
 ## Post-Restructure Maintenance
 
 After restructure:
+
 - New features reference `docs/design-system/03-screens/`
 - New components follow `docs/design-system/01-components/`
 - Code reviews use updated agents

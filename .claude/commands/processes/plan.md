@@ -17,6 +17,7 @@ Transform feature requests into actionable implementation plans.
 ### Check for Prior Work
 
 Before anything else:
+
 - Read `docs/brainstorms/YYYY-MM-DD-*` if a brainstorm exists for this feature — don't redo that work
 - Search `docs/plans/` for related plans
 - Search codebase for similar implementations
@@ -24,6 +25,7 @@ Before anything else:
 ### Clarify Requirements
 
 If requirements are ambiguous, use AskUserQuestion:
+
 - What's the expected behavior?
 - Edge cases to handle?
 - Performance or security concerns?
@@ -47,6 +49,7 @@ Understand existing patterns, file structure, naming conventions, and testing ap
 Each task should be **one commit-able unit** — a coherent slice that works independently.
 
 For each task, specify:
+
 - **File:** path to create or modify
 - **What:** description of the work
 - **Depends on:** which prior task(s) must complete first (or "none")
@@ -54,6 +57,7 @@ For each task, specify:
 - **Success:** how to verify it works
 
 **Example:**
+
 ```markdown
 ### Task 1: Create Zod schema
 **File:** `apps/api/src/domains/banking/schemas/reconciliation.schema.ts`
@@ -76,6 +80,7 @@ Document how to handle: missing tenant, invalid data, duplicates, database error
 ### Identify Reference Files
 
 List files to read for pattern-matching (don't duplicate the file paths already in tasks):
+
 ```markdown
 ## Reference Files
 - `packages/db/prisma/schema.prisma` — data model
@@ -132,6 +137,7 @@ Save to `docs/plans/YYYY-MM-DD-feature-name.md`:
 ## Handoff
 
 After writing the plan, present a summary:
+
 - Feature name
 - Plan location (`docs/plans/YYYY-MM-DD-*.md`)
 - Task count

@@ -7,6 +7,7 @@ These standards define **HOW** to implement features correctly.
 ## Reference Design System
 
 For **WHAT** to build, see:
+
 - `docs/design-system/` - UI/UX specifications
 
 ## Standards
@@ -21,6 +22,7 @@ For **WHAT** to build, see:
 ## Key Rules (Zero Tolerance)
 
 ### 1. TenantId in EVERY Query
+
 ```typescript
 // CORRECT
 const data = await prisma.entity.findMany({
@@ -34,6 +36,7 @@ const data = await prisma.entity.findMany({
 ```
 
 ### 2. Money = Integer Cents
+
 ```typescript
 // CORRECT
 amount: 1050 // $10.50
@@ -43,6 +46,7 @@ amount: 10.50
 ```
 
 ### 3. Soft Deletes Only
+
 ```typescript
 // CORRECT
 await prisma.invoice.update({
@@ -55,6 +59,7 @@ await prisma.invoice.delete({ where: { id } })
 ```
 
 ### 4. Audit All Financial Changes
+
 ```typescript
 // Every financial write must have:
 createdBy: user.id,
@@ -84,6 +89,7 @@ sourceDocument: JSON.stringify(originalData)
 ## Enforcement
 
 **Critical standards** are enforced by:
+
 - Code review checklists
 - Review agents (`financial-data-validator`, `security-sentinel`)
 - Middleware validation

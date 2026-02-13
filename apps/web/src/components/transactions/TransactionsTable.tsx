@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { type Transaction, formatAmount, formatDate } from '@/lib/api/transactions';
+import { type Transaction, formatAmount, formatDate } from '@/lib/api/transactions.types';
 import {
     Table,
     TableBody,

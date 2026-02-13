@@ -18,12 +18,13 @@ export function CompletionStep() {
   const [isCompleting, setIsCompleting] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const { tenantId, entityId, reset } = useOnboardingStore()
+  const { tenantId, entityId, reset, goToStep } = useOnboardingStore()
 
   useEffect(() => {
     const completeOnboarding = async () => {
       if (!tenantId || !entityId || !userId) {
-        setError('Missing required information')
+        // Missing data means we got here prematurely — restart onboarding
+        goToStep(0)
         return
       }
 

@@ -23,11 +23,13 @@
 Before deleting, archive everything:
 
 - [ ] Create archive directory:
+
   ```bash
   mkdir -p docs/archive/pre-restructure
   ```
 
 - [ ] Archive superseded docs:
+
   ```bash
   # Features folder (superseded by design-system/03-screens/)
   mv docs/features docs/archive/pre-restructure/features
@@ -47,6 +49,7 @@ Before deleting, archive everything:
   ```
 
 - [ ] Create archive README:
+
   ```bash
   cat > docs/archive/pre-restructure/README.md << 'EOF'
   # Pre-Restructure Archive
@@ -81,17 +84,20 @@ Before deleting, archive everything:
 After archiving, these locations should be empty or removed:
 
 - [ ] Remove old design-system folder:
+
   ```bash
   rm -rf docs/design-system/old
   ```
 
 - [ ] Remove features folder (already archived):
+
   ```bash
   # Verify archived first, then remove if exists
   [ -d docs/archive/pre-restructure/features ] && rm -rf docs/features
   ```
 
 - [ ] Remove legacy .agent folder (if exists):
+
   ```bash
   rm -rf .agent
   ```
@@ -103,6 +109,7 @@ After archiving, these locations should be empty or removed:
 #### 6.3.1 Product Documentation
 
 - [ ] Consolidate to single `docs/product/README.md`:
+
   ```markdown
   # Akount Product Overview
 
@@ -138,6 +145,7 @@ After archiving, these locations should be empty or removed:
 #### 6.3.2 Setup Documentation
 
 - [ ] Consolidate to single `docs/guides/setup.md`:
+
   ```markdown
   # Development Setup Guide
 
@@ -178,8 +186,8 @@ After archiving, these locations should be empty or removed:
 
   ## Services
 
-  - **Web:** http://localhost:3000 (Next.js)
-  - **API:** http://localhost:4000 (Fastify)
+  - **Web:** <http://localhost:3000> (Next.js)
+  - **API:** <http://localhost:4000> (Fastify)
 
   ## Database
 
@@ -201,9 +209,11 @@ After archiving, these locations should be empty or removed:
   3. **Build errors**
      - Run `pnpm install` to update dependencies
      - Clear `.next` and `node_modules` if needed
+
   ```
 
 - [ ] Remove old setup files:
+
   ```bash
   rm -f docs/setup/backup-security.md
   rm -f docs/setup/database-setup.md
@@ -266,6 +276,7 @@ docs/
 ```
 
 - [ ] Create/update `docs/README.md`:
+
   ```markdown
   # Akount Documentation
 
@@ -310,6 +321,7 @@ docs/
   ```
 
 - [ ] Update `docs/standards/README.md`:
+
   ```markdown
   # Implementation Standards
 
@@ -342,6 +354,7 @@ docs/
 ### 6.5 Rewrite CLAUDE.md
 
 - [ ] Create new simplified `CLAUDE.md`:
+
   ```markdown
   # Akount Project - Agent Context
 
@@ -368,6 +381,7 @@ docs/
   ```
 
   ### 2. Money as Integer Cents
+
   ```typescript
   // CORRECT: Integer cents
   amount: 1050 // $10.50
@@ -377,10 +391,12 @@ docs/
   ```
 
   ### 3. RBAC with 6 Roles
+
   - OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER, INVESTOR, ADVISOR
   - See: `docs/design-system/05-governance/permissions-matrix.md`
 
   ### 4. 8 Domain Structure
+
   - Overview, Money Movement, Business, Accounting
   - Planning, AI Advisor, Services, System
   - See: `docs/design-system/05-governance/information-architecture.md`
@@ -413,6 +429,7 @@ docs/
   - Multiple valid approaches exist
   - Security/compliance implications unknown
   - Financial calculations involved
+
   ```
 
 ---
@@ -432,6 +449,7 @@ Before marking Phase 6 complete:
 - [ ] No broken links in docs/
 
 **Test:**
+
 ```bash
 # Check for broken links
 grep -r "design-system/v1" docs/
@@ -447,6 +465,7 @@ ls -la docs/
 ## Handoff
 
 When complete:
+
 - Phase 7 can update agent instructions
 - All documentation points to new structure
 - Update status in `docs/restructuring/README.md` to ✅ COMPLETE

@@ -30,6 +30,7 @@ Conduct thorough repository research to understand project structure, convention
 ## When to Use
 
 Use this agent when you need to:
+
 - Understand codebase structure and organization
 - Learn project conventions and patterns
 - Find how similar features are implemented
@@ -41,6 +42,7 @@ Use this agent when you need to:
 ## Research Areas
 
 ### 1. Architecture Analysis
+
 - Project structure and organization
 - Package/workspace layout
 - Dependency architecture
@@ -48,6 +50,7 @@ Use this agent when you need to:
 - Shared code patterns
 
 ### 2. Documentation Review
+
 - README files and setup guides
 - Contributing guidelines
 - Coding standards
@@ -55,6 +58,7 @@ Use this agent when you need to:
 - API documentation
 
 ### 3. Implementation Patterns
+
 - How features are structured
 - Common code patterns (API routes, components, etc.)
 - Error handling approaches
@@ -62,12 +66,14 @@ Use this agent when you need to:
 - Database query patterns
 
 ### 4. Testing Strategies
+
 - Test file organization
 - Testing frameworks used
 - Coverage expectations
 - Integration vs unit tests
 
 ### 5. Build & Deployment
+
 - Build configuration (turbo.json, etc.)
 - CI/CD pipelines
 - Environment configuration
@@ -76,6 +82,7 @@ Use this agent when you need to:
 ## Research Methodology
 
 ### Phase 1: High-Level Documentation
+
 ```
 1. Read root README.md
 2. Check CONTRIBUTING.md or similar
@@ -85,6 +92,7 @@ Use this agent when you need to:
 ```
 
 ### Phase 2: Codebase Patterns
+
 ```
 1. Find example implementations of common features
 2. Identify naming conventions
@@ -94,6 +102,7 @@ Use this agent when you need to:
 ```
 
 ### Phase 3: Configuration Analysis
+
 ```
 1. Review TypeScript config
 2. Check build configurations
@@ -103,6 +112,7 @@ Use this agent when you need to:
 ```
 
 ### Phase 4: Synthesis
+
 ```
 1. Verify findings across multiple sources
 2. Distinguish official guidelines from observed patterns
@@ -113,6 +123,7 @@ Use this agent when you need to:
 ## Key Tools & Techniques
 
 ### File Discovery
+
 ```bash
 # Find README files
 glob **/README.md
@@ -125,6 +136,7 @@ glob **/*.test.{ts,tsx}
 ```
 
 ### Pattern Search
+
 ```bash
 # Find API routes
 grep -r "fastify.get" --type=ts
@@ -137,6 +149,7 @@ grep -r "prisma\." --type=ts
 ```
 
 ### Structure Analysis
+
 ```bash
 # List directory structure
 ls -la
@@ -151,12 +164,14 @@ cat tsconfig.json
 ## Output Format
 
 ### Project Overview
+
 - Tech stack summary
 - Architecture style (monorepo, microservices, etc.)
 - Key dependencies
 - Development workflow
 
 ### Structure & Organization
+
 ```
 apps/
   web/         - Next.js frontend
@@ -169,16 +184,19 @@ packages/
 ### Conventions Discovered
 
 **File Naming:**
+
 - Components: PascalCase (AccountCard.tsx)
 - Utilities: camelCase (formatCurrency.ts)
 - Routes: kebab-case (entities.ts)
 
 **Code Patterns:**
+
 - API routes use Zod validation
 - Components use TypeScript interfaces
 - Database queries filter by tenantId
 
 **Testing:**
+
 - Tests colocated with source files
 - Using Vitest framework
 - Focus on integration tests
@@ -186,6 +204,7 @@ packages/
 ### Implementation Examples
 
 **API Route Pattern:**
+
 ```typescript
 // Location: apps/api/src/routes/entities.ts
 server.get('/entities', {
@@ -197,6 +216,7 @@ server.get('/entities', {
 ```
 
 **Component Pattern:**
+
 ```typescript
 // Location: apps/web/src/components/AccountCard.tsx
 export function AccountCard({ account }: AccountCardProps) {
@@ -205,6 +225,7 @@ export function AccountCard({ account }: AccountCardProps) {
 ```
 
 ### Guidelines & Standards
+
 - All API routes require authentication
 - Database queries must filter by tenant
 - Components export named functions
@@ -212,6 +233,7 @@ export function AccountCard({ account }: AccountCardProps) {
 - Commit messages follow conventional commits
 
 ### Recommendations
+
 1. Follow existing patterns for consistency
 2. Add tests for new features
 3. Document architectural decisions

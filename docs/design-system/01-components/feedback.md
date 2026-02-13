@@ -32,12 +32,14 @@ Brief, temporary messages that appear and auto-dismiss:
 ```
 
 **Properties:**
+
 - Icon: Green checkmark (✓)
 - Duration: 4 seconds (auto-dismiss)
 - Position: Bottom-right corner
 - Dismissible: X button
 
 **Content:**
+
 - Title (short, action-oriented)
 - Optional detail line
 - Optional action link
@@ -59,6 +61,7 @@ Brief, temporary messages that appear and auto-dismiss:
 - Dismissible: X button
 
 **Content:**
+
 - Clear error title
 - Specific explanation (not "Error")
 - Optional [Fix] action link
@@ -283,6 +286,7 @@ Request user confirmation for important actions:
 ```
 
 **Properties:**
+
 - Modal overlay
 - Clear consequence list
 - Destructive button (red) on right
@@ -328,6 +332,7 @@ conversion on transaction date
 ```
 
 **Properties:**
+
 - Trigger: Hover or focus
 - Display: 100ms delay
 - Dismiss: Leave, click, or Escape
@@ -399,6 +404,7 @@ Persistent, non-intrusive notification at bottom:
 ```
 
 **Properties:**
+
 - Bottom of screen
 - Span full width or partial
 - Optional action button
@@ -481,6 +487,7 @@ When no data to display:
 ```
 
 **Components:**
+
 - Icon (large, soft color)
 - Heading (14px, medium)
 - Description (12px, muted)
@@ -594,6 +601,7 @@ Feedback Components
 **Future enhancement:** Intelligent notifications for accounting events with user preferences.
 
 **What's planned:**
+
 - Accounting-awareness notifications (not marketing emails)
 - Smart alerts for important events:
   - "Your accountant posted adjustments" (with preview)
@@ -616,6 +624,7 @@ Builds confidence and reduces anxiety. Users want to know when important things 
 **Future enhancement:** Graceful handling of incomplete data without validation errors.
 
 **What's planned:**
+
 - Explicit "incomplete data" state (not treated as error)
 - Deferred resolution flags ("come back to this later")
 - AI-assisted enrichment without auto-commit
@@ -627,6 +636,7 @@ Builds confidence and reduces anxiety. Users want to know when important things 
 - Flag for follow-up (show which fields need attention)
 
 **Real-world patterns:**
+
 - Missing vendor tax ID
 - Unknown client country
 - Bank feeds with vague descriptions ("PAYMENT TO ACCOUNT")

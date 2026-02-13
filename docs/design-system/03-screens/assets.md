@@ -15,7 +15,7 @@ Depreciation, capitalization, and disposals have **unique characteristics** that
 * Journals
 * Reports
 
-### Key reasons:
+### Key reasons
 
 1. **Assets live across time**
    Transactions are moments. Assets are timelines.

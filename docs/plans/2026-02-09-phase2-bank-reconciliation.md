@@ -12,6 +12,7 @@
 Phase 2 enables users to import bank transactions from CSV files, match them with manually posted transactions, and track reconciliation status. This is the foundation for automated bookkeeping and cash flow management.
 
 **Key Features:**
+
 1. **Transaction Management** - CRUD operations for posted transactions
 2. **CSV & PDF Import** - Upload and parse bank statements (CSV/PDF) with deduplication
 3. **Auto-Matching** - Suggest matches between bank feeds and posted transactions
@@ -37,6 +38,7 @@ Phase 2 enables users to import bank transactions from CSV files, match them wit
 ## Architecture
 
 ### Data Flow
+
 ```
 CSV/PDF Upload → File Type Detection → Parser (CSV or PDF) → Deduplicator → ImportBatch + BankFeedTransactions
                                                                                      ↓
@@ -48,6 +50,7 @@ Posted Transactions ← Manual Entry                                            
 ```
 
 ### Services (SRP-Compliant)
+
 1. **TransactionService** - Manage posted Transaction records (CRUD)
 2. **ImportService** - Orchestrate CSV import workflow
 3. **ReconciliationService** - Match bank feeds to posted transactions
@@ -59,9 +62,11 @@ Posted Transactions ← Manual Entry                                            
 ## Sprint Breakdown
 
 ### Sprint 1: Transaction Foundation (Week 1 - 15-20 hours)
+
 **Goal:** Enable manual transaction posting
 
 **Tasks:**
+
 - Create TransactionService with CRUD operations
 - Create transaction routes with Zod validation
 - Write comprehensive tests (20+ tests)
@@ -72,9 +77,11 @@ Posted Transactions ← Manual Entry                                            
 ---
 
 ### Sprint 2: CSV & PDF Import Infrastructure (Week 2 - 18-24 hours)
+
 **Goal:** Enable CSV and PDF bank statement imports
 
 **Tasks:**
+
 - Create ImportService (orchestrator for both CSV and PDF)
 - Enhance existing import.ts route for CSV upload
 - Add PDF upload route
@@ -87,9 +94,11 @@ Posted Transactions ← Manual Entry                                            
 ---
 
 ### Sprint 3: Auto-Matching & Reconciliation (Week 2-3 - 15-20 hours)
+
 **Goal:** Match imported transactions with posted transactions
 
 **Tasks:**
+
 - Create ReconciliationService with matching algorithm
 - Create match/unmatch routes
 - Add reconciliation status endpoint
@@ -102,6 +111,7 @@ Posted Transactions ← Manual Entry                                            
 ## Tasks (Detailed)
 
 ### Task 1: Create TransactionService (Est: 3-4 hours)
+
 **Priority:** 🔴 CRITICAL
 **File:** `apps/api/src/domains/banking/services/transaction.service.ts`
 
@@ -109,6 +119,7 @@ Posted Transactions ← Manual Entry                                            
 Create service class following AccountService pattern with CRUD operations for Transaction model.
 
 **Methods to Implement:**
+
 ```typescript
 class TransactionService {
   constructor(private tenantId: string) {}
@@ -131,10 +142,12 @@ class TransactionService {
 ```
 
 **Tenant Isolation:**
+
 - All queries filter by `account.entity.tenantId`
 - Verify account belongs to tenant before creating transaction
 
 **Success Criteria:**
+
 - [ ] Service class exported with all 5 methods
 - [ ] Tenant isolation enforced (nested entity check)
 - [ ] Soft delete filter applied (deletedAt: null)
@@ -142,6 +155,7 @@ class TransactionService {
 - [ ] TypeScript types defined for inputs/outputs
 
 **Edge Cases:**
+
 - **Account doesn't belong to tenant:** Throw 403 error
 - **Transaction not found:** Return null (getTransaction) or throw 404
 - **Invalid data:** Zod validation in route will catch
@@ -149,6 +163,7 @@ class TransactionService {
 ---
 
 ### Task 2: Create Transaction Schemas (Est: 1-2 hours)
+
 **Priority:** 🔴 CRITICAL
 **File:** `apps/api/src/domains/banking/schemas/transaction.schema.ts`
 
@@ -156,6 +171,7 @@ class TransactionService {
 Define Zod schemas for transaction validation following existing schema patterns.
 
 **Schemas to Create:**
+
 ```typescript
 // POST /api/banking/transactions
 export const CreateTransactionSchema = z.object({
@@ -189,6 +205,7 @@ export const ListTransactionsQuerySchema = z.object({
 ```
 
 **Success Criteria:**
+
 - [ ] All schemas export successfully
 - [ ] Integer cents validation for amount
 - [ ] Date validation (ISO 8601)
@@ -198,6 +215,7 @@ export const ListTransactionsQuerySchema = z.object({
 ---
 
 ### Task 3: Create Transaction Routes (Est: 3-4 hours)
+
 **Priority:** 🔴 CRITICAL
 **File:** `apps/api/src/domains/banking/routes/transactions.ts`
 
@@ -205,6 +223,7 @@ export const ListTransactionsQuerySchema = z.object({
 Create RESTful routes for transaction CRUD operations.
 
 **Routes to Implement:**
+
 ```typescript
 // GET /api/banking/transactions - List transactions
 fastify.get('/', { onRequest: [authMiddleware, tenantMiddleware] })
@@ -223,12 +242,14 @@ fastify.delete('/:id', { onRequest: [authMiddleware, tenantMiddleware] })
 ```
 
 **Middleware Chain:**
+
 1. authMiddleware → set request.userId
 2. tenantMiddleware → set request.tenantId
 3. Zod validation → validate request body/params
 4. Route handler → call TransactionService
 
 **Success Criteria:**
+
 - [ ] All 5 routes registered
 - [ ] Zod schemas applied to all routes
 - [ ] Auth + tenant middleware on all routes
@@ -236,6 +257,7 @@ fastify.delete('/:id', { onRequest: [authMiddleware, tenantMiddleware] })
 - [ ] Error handling for all edge cases
 
 **Edge Cases:**
+
 - **Missing required fields:** Return 400 with Zod errors
 - **Invalid transaction ID format:** Return 400 (CUID validation)
 - **Transaction not found:** Return 404
@@ -244,6 +266,7 @@ fastify.delete('/:id', { onRequest: [authMiddleware, tenantMiddleware] })
 ---
 
 ### Task 4: Register Transaction Routes (Est: 15 minutes)
+
 **Priority:** 🔴 CRITICAL
 **File:** `apps/api/src/domains/banking/routes/index.ts`
 
@@ -251,6 +274,7 @@ fastify.delete('/:id', { onRequest: [authMiddleware, tenantMiddleware] })
 Register new transaction routes in banking routes index.
 
 **Changes:**
+
 ```typescript
 import { transactionRoutes } from './transactions'
 
@@ -261,6 +285,7 @@ export async function bankingRoutes(fastify: FastifyInstance) {
 ```
 
 **Success Criteria:**
+
 - [ ] Route registered with /transactions prefix
 - [ ] No TypeScript errors
 - [ ] Server starts without errors
@@ -269,6 +294,7 @@ export async function bankingRoutes(fastify: FastifyInstance) {
 ---
 
 ### Task 5: Write Transaction Service Tests (Est: 4-5 hours)
+
 **Priority:** 🔴 CRITICAL
 **File:** `apps/api/src/domains/banking/services/__tests__/transaction.service.test.ts`
 
@@ -278,6 +304,7 @@ Comprehensive unit tests for TransactionService following existing test patterns
 **Test Cases (25+ tests):**
 
 **listTransactions:**
+
 - [ ] Returns transactions for tenant accounts only
 - [ ] Filters by accountId correctly
 - [ ] Filters by date range (startDate, endDate)
@@ -289,12 +316,14 @@ Comprehensive unit tests for TransactionService following existing test patterns
 - [ ] Includes account + entity relations
 
 **getTransaction:**
+
 - [ ] Returns transaction for valid ID in tenant
 - [ ] Returns null for transaction in different tenant
 - [ ] Returns null for soft-deleted transaction
 - [ ] Returns null for non-existent ID
 
 **createTransaction:**
+
 - [ ] Creates transaction with valid data
 - [ ] Enforces tenant isolation (account must belong to tenant)
 - [ ] Sets default values (isStaged: false, isSplit: false)
@@ -302,6 +331,7 @@ Comprehensive unit tests for TransactionService following existing test patterns
 - [ ] Rejects if account doesn't belong to tenant
 
 **updateTransaction:**
+
 - [ ] Updates description successfully
 - [ ] Updates categoryId successfully
 - [ ] Updates notes successfully
@@ -309,11 +339,13 @@ Comprehensive unit tests for TransactionService following existing test patterns
 - [ ] Rejects if transaction is soft-deleted
 
 **softDeleteTransaction:**
+
 - [ ] Sets deletedAt timestamp
 - [ ] Rejects if already deleted
 - [ ] Rejects if transaction in different tenant
 
 **Success Criteria:**
+
 - [ ] 25+ tests passing
 - [ ] Test coverage >80%
 - [ ] Uses mockDeep<PrismaClient>() pattern
@@ -323,6 +355,7 @@ Comprehensive unit tests for TransactionService following existing test patterns
 ---
 
 ### Task 6: Write Transaction Route Tests (Est: 2-3 hours)
+
 **Priority:** 🟡 HIGH
 **File:** `apps/api/src/domains/banking/routes/__tests__/transactions.test.ts`
 
@@ -332,36 +365,42 @@ Integration tests for transaction routes.
 **Test Cases (15+ tests):**
 
 **GET /api/banking/transactions:**
+
 - [ ] Returns 200 with transactions array
 - [ ] Returns 401 without auth
 - [ ] Respects query filters (accountId, dates)
 - [ ] Returns pagination metadata
 
 **GET /api/banking/transactions/:id:**
+
 - [ ] Returns 200 with transaction
 - [ ] Returns 404 for non-existent ID
 - [ ] Returns 400 for invalid ID format
 - [ ] Returns 404 for other tenant's transaction
 
 **POST /api/banking/transactions:**
+
 - [ ] Returns 201 with created transaction
 - [ ] Returns 400 for invalid data
 - [ ] Returns 403 if account not in tenant
 - [ ] Validates required fields (accountId, date, description, amount)
 
 **PATCH /api/banking/transactions/:id:**
+
 - [ ] Returns 200 with updated transaction
 - [ ] Returns 404 for non-existent ID
 - [ ] Returns 400 for invalid data
 - [ ] Prevents updating immutable fields (amount, date)
 
 **DELETE /api/banking/transactions/:id:**
+
 - [ ] Returns 204 on success
 - [ ] Returns 404 for non-existent ID
 - [ ] Soft deletes (sets deletedAt)
 - [ ] Transaction excluded from future queries
 
 **Success Criteria:**
+
 - [ ] 15+ tests passing
 - [ ] Tests all status codes (200, 201, 204, 400, 401, 403, 404)
 - [ ] Tests Zod validation errors
@@ -370,6 +409,7 @@ Integration tests for transaction routes.
 ---
 
 ### Task 7: Create ImportService (Est: 5-6 hours)
+
 **Priority:** 🔴 CRITICAL
 **File:** `apps/api/src/domains/banking/services/import.service.ts`
 
@@ -377,6 +417,7 @@ Integration tests for transaction routes.
 Orchestrate CSV and PDF import workflow: detect format → parse → deduplicate → store.
 
 **Methods to Implement:**
+
 ```typescript
 class ImportService {
   constructor(private tenantId: string) {}
@@ -403,6 +444,7 @@ class ImportService {
 ```
 
 **Workflow (CSV):**
+
 1. Validate account belongs to tenant
 2. Create ImportBatch record (status: PROCESSING, sourceType: CSV)
 3. Call ParserService.parseCSV(file, columnMappings)
@@ -413,6 +455,7 @@ class ImportService {
 8. Return batch with stats (total, imported, duplicates)
 
 **Workflow (PDF):**
+
 1. Validate account belongs to tenant
 2. Create ImportBatch record (status: PROCESSING, sourceType: PDF)
 3. Call ParserService.parsePDF(file) ✅ (already exists)
@@ -423,6 +466,7 @@ class ImportService {
 8. Return batch with stats (total, imported, duplicates)
 
 **Success Criteria:**
+
 - [ ] Service orchestrates full import workflow for both CSV and PDF
 - [ ] Creates ImportBatch + BankFeedTransactions atomically
 - [ ] Handles parser errors gracefully (status: FAILED)
@@ -431,6 +475,7 @@ class ImportService {
 - [ ] PDF parsing uses existing parsePDF function
 
 **Edge Cases:**
+
 - **Account doesn't belong to tenant:** Throw 403
 - **CSV/PDF parsing fails:** Set batch status to FAILED, store error
 - **All transactions are duplicates:** Import 0, status COMPLETED
@@ -441,6 +486,7 @@ class ImportService {
 ---
 
 ### Task 8: Enhance Import Routes (Est: 3-4 hours)
+
 **Priority:** 🔴 CRITICAL
 **File:** `apps/api/src/domains/banking/routes/import.ts` (modify existing)
 
@@ -448,10 +494,12 @@ class ImportService {
 Update existing import route to use new ImportService with both CSV and PDF support.
 
 **Current State:**
+
 - Route exists but may be incomplete or use old patterns
 - Check and refactor to follow new service pattern
 
 **Routes to Implement:**
+
 ```typescript
 // POST /api/banking/imports/csv - Upload CSV file
 fastify.post('/csv', {
@@ -494,11 +542,13 @@ fastify.get('/:id', { onRequest: [authMiddleware, tenantMiddleware] })
 ```
 
 **File Type Validation:**
+
 - CSV: Check `file.mimetype === 'text/csv'` or `.csv` extension
 - PDF: Check `file.mimetype === 'application/pdf'` or `.pdf` extension
 - Return 400 if wrong file type for endpoint
 
 **Success Criteria:**
+
 - [ ] CSV upload working with multipart/form-data
 - [ ] PDF upload working with multipart/form-data (NEW)
 - [ ] Column mappings passed to ImportService for CSV
@@ -511,6 +561,7 @@ fastify.get('/:id', { onRequest: [authMiddleware, tenantMiddleware] })
 ---
 
 ### Task 9: Create ReconciliationService (Est: 5-6 hours)
+
 **Priority:** 🟡 HIGH
 **File:** `apps/api/src/domains/banking/services/reconciliation.service.ts`
 
@@ -518,6 +569,7 @@ fastify.get('/:id', { onRequest: [authMiddleware, tenantMiddleware] })
 Match bank feed transactions with posted transactions using fuzzy matching algorithm.
 
 **Methods to Implement:**
+
 ```typescript
 class ReconciliationService {
   constructor(private tenantId: string) {}
@@ -543,6 +595,7 @@ class ReconciliationService {
 ```
 
 **Matching Algorithm:**
+
 ```typescript
 // Confidence scoring (0.0 - 1.0)
 1. Exact amount match + date within ±3 days + description fuzzy >70% = 0.95 (HIGH)
@@ -554,11 +607,13 @@ class ReconciliationService {
 ```
 
 **Fuzzy Description Matching:**
+
 - Use Levenshtein distance or similar algorithm
 - Normalize: lowercase, remove extra spaces, remove special chars
 - Match threshold: >70% similarity
 
 **Success Criteria:**
+
 - [ ] Suggests top 5 matches with confidence scores
 - [ ] Exact amount + close date = high confidence
 - [ ] CreateMatch updates TransactionMatch table
@@ -566,6 +621,7 @@ class ReconciliationService {
 - [ ] Reconciliation status shows matched/unmatched counts
 
 **Edge Cases:**
+
 - **No matches found:** Return empty array
 - **Already matched:** Throw error (409 Conflict)
 - **Transaction in different tenant:** Throw 403
@@ -574,6 +630,7 @@ class ReconciliationService {
 ---
 
 ### Task 10: Create Reconciliation Routes (Est: 2-3 hours)
+
 **Priority:** 🟡 HIGH
 **File:** `apps/api/src/domains/banking/routes/reconciliation.ts`
 
@@ -581,6 +638,7 @@ class ReconciliationService {
 Create routes for matching and reconciliation status.
 
 **Routes to Implement:**
+
 ```typescript
 // GET /api/banking/reconciliation/:bankFeedTransactionId/suggestions
 // Returns suggested matches with confidence scores
@@ -607,6 +665,7 @@ fastify.get('/status/:accountId', { ... })
 ```
 
 **Success Criteria:**
+
 - [ ] All 4 routes registered
 - [ ] Zod validation on all inputs
 - [ ] Auth + tenant middleware on all routes
@@ -615,6 +674,7 @@ fastify.get('/status/:accountId', { ... })
 ---
 
 ### Task 11: Write Reconciliation Tests (Est: 4-5 hours)
+
 **Priority:** 🟡 HIGH
 **File:** `apps/api/src/domains/banking/services/__tests__/reconciliation.service.test.ts`
 
@@ -624,6 +684,7 @@ Unit tests for matching algorithm and reconciliation service.
 **Test Cases (20+ tests):**
 
 **suggestMatches:**
+
 - [ ] Returns exact amount + close date as HIGH confidence
 - [ ] Returns exact amount + far date as MEDIUM confidence
 - [ ] Returns top 5 suggestions max
@@ -632,23 +693,27 @@ Unit tests for matching algorithm and reconciliation service.
 - [ ] Returns empty array if no matches
 
 **createMatch:**
+
 - [ ] Creates TransactionMatch record
 - [ ] Updates BankFeedTransaction status to MATCHED
 - [ ] Rejects if already matched
 - [ ] Rejects if transaction in different tenant
 
 **unmatch:**
+
 - [ ] Deletes TransactionMatch
 - [ ] Updates BankFeedTransaction status to PENDING
 - [ ] Rejects if match doesn't exist
 
 **getReconciliationStatus:**
+
 - [ ] Returns matched count
 - [ ] Returns unmatched count
 - [ ] Calculates reconciliation percentage
 - [ ] Filters by account correctly
 
 **Success Criteria:**
+
 - [ ] 20+ tests passing
 - [ ] Algorithm accuracy tested
 - [ ] Tenant isolation tested
@@ -659,6 +724,7 @@ Unit tests for matching algorithm and reconciliation service.
 ## Files Summary
 
 ### Create (New Files)
+
 ```
 apps/api/src/domains/banking/
 ├── services/
@@ -679,6 +745,7 @@ apps/api/src/domains/banking/
 ```
 
 ### Modify (Existing Files)
+
 ```
 apps/api/src/domains/banking/
 ├── routes/
@@ -687,6 +754,7 @@ apps/api/src/domains/banking/
 ```
 
 ### Reference (Read for Patterns)
+
 ```
 packages/db/prisma/schema.prisma         (Transaction, BankFeedTransaction, TransactionMatch models)
 apps/api/src/domains/banking/services/account.service.ts  (Service pattern)
@@ -700,19 +768,23 @@ apps/api/src/domains/banking/services/duplication.service.ts (Deduplication)
 ## Testing Strategy
 
 ### Unit Tests (vitest)
+
 - **TransactionService:** 25+ tests (CRUD + tenant isolation)
 - **ReconciliationService:** 20+ tests (matching algorithm)
 - **ImportService:** 15+ tests (orchestration flow)
 
 ### Integration Tests (vitest)
+
 - **Transaction Routes:** 15+ tests (HTTP status codes)
 - **Import Routes:** 10+ tests (file upload)
 - **Reconciliation Routes:** 10+ tests (match/unmatch)
 
 ### E2E Tests (Playwright) - Phase 3
+
 - Defer to Phase 3 (requires frontend)
 
 ### Target Coverage
+
 - **Overall:** 80%+ for new code
 - **Critical paths:** 90%+ (transaction creation, matching)
 
@@ -721,29 +793,34 @@ apps/api/src/domains/banking/services/duplication.service.ts (Deduplication)
 ## Edge Cases & Error Handling
 
 ### Tenant Isolation Violations
+
 - **Account doesn't belong to tenant:** Return 403 Forbidden
 - **Transaction in different tenant:** Return 404 Not Found
 - **All queries filter by entity.tenantId**
 
 ### Data Validation
+
 - **Invalid CUID:** Return 400 Bad Request (Zod validation)
 - **Invalid date format:** Return 400 Bad Request
 - **Amount not integer:** Return 400 Bad Request
 - **Missing required fields:** Return 400 with Zod errors
 
 ### Import Edge Cases
+
 - **Empty CSV file:** Return 400 with error message
 - **Invalid CSV format:** Return 400 with parser error
 - **All duplicates:** Import batch COMPLETED, 0 imported
 - **Partial duplicates:** Import non-duplicates only
 
 ### Matching Edge Cases
+
 - **No matches found:** Return empty array (200 OK)
 - **Already matched:** Return 409 Conflict
 - **Multiple high-confidence matches:** Return all, user chooses
 - **Transaction amount mismatch:** Lower confidence score
 
 ### Soft Delete
+
 - **Deleted transactions:** Excluded from all queries (WHERE deletedAt IS NULL)
 - **Cascade deletes:** NOT used on financial data (preserve audit trail)
 
@@ -752,6 +829,7 @@ apps/api/src/domains/banking/services/duplication.service.ts (Deduplication)
 ## Rollback Plan
 
 ### If Critical Bug Found
+
 1. Revert latest commit: `git revert HEAD`
 2. Deploy previous version
 3. Fix bug in feature branch
@@ -759,10 +837,12 @@ apps/api/src/domains/banking/services/duplication.service.ts (Deduplication)
 5. Re-deploy
 
 ### Database Migrations
+
 - **No schema changes in Phase 2** (all models already exist)
 - If migration needed: Test in staging first, have rollback SQL ready
 
 ### Feature Flags (Future)
+
 - Phase 8: Add feature flags for phased rollout
 - For now: Deploy to staging first, manual testing
 
@@ -771,6 +851,7 @@ apps/api/src/domains/banking/services/duplication.service.ts (Deduplication)
 ## SRP Compliance Checklist
 
 Before merging each service:
+
 - [ ] Can describe service in ONE sentence without "and"
 - [ ] Service has single clear responsibility
 - [ ] File size under 400 lines (split if larger)
@@ -779,6 +860,7 @@ Before merging each service:
 - [ ] Tests are focused and easy to write
 
 **Examples:**
+
 - ✅ TransactionService: "Manage posted transaction records"
 - ✅ ImportService: "Orchestrate CSV import workflow"
 - ✅ ReconciliationService: "Match bank feeds to posted transactions"
@@ -788,6 +870,7 @@ Before merging each service:
 ## Progress Tracking
 
 ### Sprint 1: Transaction Foundation ✅ COMPLETE
+
 - [x] Task 1: TransactionService (3-4h) — Commit: ff37830
 - [x] Task 2: Transaction Schemas (1-2h)
 - [x] Task 3: Transaction Routes (3-4h)
@@ -798,6 +881,7 @@ Before merging each service:
 **Total:** 55 tests passing
 
 ### Sprint 2: CSV & PDF Import ✅ COMPLETE
+
 - [x] Task 7: ImportService with CSV + PDF support (5-6h) — Commit: 4e89ae5
 - [x] Task 8: Enhance Import Routes (CSV + PDF endpoints) (3-4h) — Commit: 376a030
 - [ ] Frontend: CSV/PDF Upload UI (deferred)
@@ -805,6 +889,7 @@ Before merging each service:
 **Total:** 19 tests passing
 
 ### Sprint 3: Reconciliation ✅ COMPLETE
+
 - [x] Task 9: ReconciliationService (5-6h) — Commit: a1e3340
 - [x] Task 10: Reconciliation Routes (2-3h) — Commit: a1e3340
 - [x] Task 11: Reconciliation Tests (4-5h) — 43 tests (25 service + 18 route)
@@ -812,6 +897,7 @@ Before merging each service:
 **Total:** 43 tests passing
 
 ### Grand Total
+
 **Backend:** 34-44 hours
 **Frontend (CSV/PDF upload, reconciliation UI):** 10-15 hours
 **Phase 2 Total:** 44-59 hours
@@ -831,12 +917,14 @@ Before merging each service:
 ## Dependencies
 
 **Requires:**
+
 - ✅ Phase 1 complete (Account API working)
 - ✅ Database schema deployed (Transaction, BankFeedTransaction models exist)
 - ✅ ParserService exists (CSV parsing)
 - ✅ DuplicationService exists (duplicate detection)
 
 **Blocks:**
+
 - Phase 3: Transactions & Bookkeeping (needs Transaction CRUD)
 - Cash Flow Forecasting (needs transaction history)
 

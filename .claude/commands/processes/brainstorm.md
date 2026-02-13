@@ -20,6 +20,7 @@ Explore **WHAT** to build through collaborative dialogue. Never code — just ex
 ### Explore Codebase First
 
 Before asking questions, check what already exists:
+
 - Search for similar features in `apps/` and `docs/`
 - Review related data models in schema
 - Check `docs/brainstorms/` and `docs/plans/` for prior exploration
@@ -27,11 +28,13 @@ Before asking questions, check what already exists:
 ### Ask Questions (2 Rounds)
 
 **Round 1 — Problem & Users** (use AskUserQuestion, batch these):
+
 - What problem are we solving?
 - Who uses this? (which user roles?)
 - What's the desired outcome?
 
 **Round 2 — Constraints & Scope** (based on Round 1 answers):
+
 - Must-have capabilities vs nice-to-have?
 - How does this interact with existing domains?
 - Known constraints? (performance, compliance, multi-currency)

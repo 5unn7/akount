@@ -15,6 +15,7 @@ The Information Architecture (IA) document serves as:
 - **Protection against feature drift** and scope creep
 
 This is a **canonical IA document** that:
+
 - Designers can't "freestyle"
 - Engineers can route against
 - Auditors can understand
@@ -32,6 +33,7 @@ This is a **canonical IA document** that:
 **Read-only by default**
 
 #### Dashboard (Founder)
+
 - Financial Snapshot (KPIs: cash, net worth, income, expenses)
 - Accounts Overview (grouped by entity/currency)
 - Cash Flow Snapshot (inflow vs outflow)
@@ -39,6 +41,7 @@ This is a **canonical IA document** that:
 - Shortcuts (quick actions)
 
 #### Dashboard (Accountant View)
+
 - Financial Integrity Status (verification checks)
 - Reconciliation Summary (status by account)
 - Exceptions (problems requiring attention)
@@ -46,11 +49,13 @@ This is a **canonical IA document** that:
 - Open Tasks (collaboration queue)
 
 #### Net Worth
+
 - Consolidated view
 - By Entity
 - By Currency
 
 #### Cash Overview
+
 - Liquidity view
 - Upcoming obligations
 - Runway (if enabled)
@@ -62,6 +67,7 @@ This is a **canonical IA document** that:
 **Purpose:** What actually moved money (bank truth)
 
 #### Accounts
+
 - Bank Accounts
 - Credit Cards
 - Loans
@@ -69,6 +75,7 @@ This is a **canonical IA document** that:
 - Sync Health
 
 **Tabs:**
+
 - All
 - Active
 - Disconnected
@@ -77,6 +84,7 @@ This is a **canonical IA document** that:
 #### Transactions
 
 **Tabs:**
+
 - All
 - Uncategorized
 - Categorized
@@ -84,6 +92,7 @@ This is a **canonical IA document** that:
 - Exceptions
 
 **Sub-views:**
+
 - Transaction Detail
 - Lineage View
 - Correction Flow
@@ -91,18 +100,21 @@ This is a **canonical IA document** that:
 #### Reconciliation
 
 **Tabs:**
+
 - In Progress
 - Reconciled
 - Exceptions
 - History
 
 **Sub-views:**
+
 - Match Workspace
 - Manual Match
 - FX Differences
 - Transfer Detection
 
 #### Transfers
+
 - Inter-account transfers
 - Inter-currency transfers
 - Transfer reconciliation
@@ -114,6 +126,7 @@ This is a **canonical IA document** that:
 **Purpose:** Real-world economic activity (AR / AP)
 
 #### Clients
+
 - Client List
 - Client Detail
   - Profile
@@ -123,6 +136,7 @@ This is a **canonical IA document** that:
   - Documents
 
 #### Vendors
+
 - Vendor List
 - Vendor Detail
   - Profile
@@ -134,6 +148,7 @@ This is a **canonical IA document** that:
 #### Invoices (Accounts Receivable)
 
 **Tabs:**
+
 - All
 - Draft
 - Sent
@@ -142,6 +157,7 @@ This is a **canonical IA document** that:
 - Credit Notes
 
 **Sub-views:**
+
 - Invoice Editor
 - Invoice Detail
 - Payment Allocation
@@ -150,6 +166,7 @@ This is a **canonical IA document** that:
 #### Bills (Accounts Payable)
 
 **Tabs:**
+
 - All
 - Draft
 - Received
@@ -158,6 +175,7 @@ This is a **canonical IA document** that:
 - Vendor Credits
 
 **Sub-views:**
+
 - Bill Entry
 - Bill Detail
 - Approval Flow
@@ -166,6 +184,7 @@ This is a **canonical IA document** that:
 #### Payments
 
 **Tabs:**
+
 - Incoming
 - Outgoing
 - Unapplied
@@ -180,6 +199,7 @@ This is a **canonical IA document** that:
 #### Journal Entries
 
 **Tabs:**
+
 - All
 - Draft
 - Posted
@@ -187,6 +207,7 @@ This is a **canonical IA document** that:
 - Reversals
 
 **Sub-views:**
+
 - Journal Editor
 - Journal Detail
 - Lineage View
@@ -194,32 +215,38 @@ This is a **canonical IA document** that:
 #### Chart of Accounts
 
 **Tabs:**
+
 - Active
 - Archived
 - System Accounts
 
 **Sub-views:**
+
 - Account Detail
 - Mapping (Tax / Reporting)
 
 #### Assets & Depreciation
 
 **Tabs:**
+
 - Asset Register
 - Depreciation Schedule
 - Disposals
 
 **Sub-views:**
+
 - Asset Detail
 - Capitalization Wizard
 - Disposal Workflow
 
 #### Tax Rates
+
 - Tax Types (GST, VAT, Sales Tax)
 - Jurisdiction Mapping
 - Effective Dates
 
 #### Fiscal Periods
+
 - Period List
 - Lock / Unlock
 - Status (Open / Review / Locked)
@@ -233,12 +260,14 @@ This is a **canonical IA document** that:
 #### Reports
 
 **Tabs:**
+
 - Standard
 - Management
 - Custom
 - Scheduled
 
 **Standard Reports:**
+
 - P&L
 - Balance Sheet
 - Cash Flow
@@ -246,20 +275,24 @@ This is a **canonical IA document** that:
 - AP Aging
 
 **Sub-views:**
+
 - Report Builder
 - Report Lineage
 - Export & Share
 
 #### Budgets
+
 - Budget List
 - Budget Detail
 - Variance Analysis
 
 #### Forecasts
+
 - Cash Forecast
 - Scenario Comparison
 
 #### Goals
+
 - Savings Goals
 - Debt Paydown
 - Milestones
@@ -273,16 +306,19 @@ This is a **canonical IA document** that:
 #### Insight Feed
 
 **Tabs:**
+
 - Attention Required
 - Optimization
 - Observations
 - History
 
 #### Policy & Regulation Alerts
+
 - Jurisdiction-specific updates
 - Impact explanations
 
 #### AI History
+
 - All suggestions
 - Confidence levels
 - Accepted / Ignored
@@ -294,16 +330,19 @@ This is a **canonical IA document** that:
 **Purpose:** Human collaboration
 
 #### Accountant Collaboration
+
 - Active Accountants
 - Invitations
 - Permissions
 
 #### Bookkeeping Services
+
 - Request Help
 - Status
 - History
 
 #### Document Requests
+
 - Requests from Accountant
 - Uploads
 - Completion Status
@@ -315,6 +354,7 @@ This is a **canonical IA document** that:
 **Purpose:** Governance, configuration & trust
 
 #### Entities
+
 - Entity List
 - Entity Detail
   - Legal Info
@@ -323,6 +363,7 @@ This is a **canonical IA document** that:
   - Tax Settings
 
 #### Integrations
+
 - Bank Connections
 - Payment Platforms
 - Accounting Imports
@@ -331,35 +372,41 @@ This is a **canonical IA document** that:
 #### Rules & Automation
 
 **Tabs:**
+
 - Active Rules
 - Draft Rules
 - Simulations
 - History
 
 #### Users & Permissions
+
 - Users
 - Roles
 - Entity Access
 - Time-bound Access
 
 #### Audit Logs
+
 - System Events
 - Financial Events
 - Security Events
 
 **Filters:**
+
 - User
 - Entity
 - Period
 - Action Type
 
 #### Security & Compliance
+
 - Account Security
 - Sessions & Devices
 - Data Controls
 - Compliance Status
 
 #### Filing Readiness
+
 - State Machine Overview
 - Entity × Period Status
 - Blockers
@@ -367,6 +414,7 @@ This is a **canonical IA document** that:
 - Filing Metadata
 
 #### Data Management
+
 - Data Lineage Exports
 - Migration Tools
 - Retention Settings
@@ -406,6 +454,7 @@ The Figma Sitemap page locks the information architecture in design tool, preven
 ### Grid & Frame System
 
 #### Column Layout
+
 - 8 columns total (one per sidebar domain)
 - Each column = one **top-level domain**
 - Fixed width per column (280–320px)
@@ -438,6 +487,7 @@ Example: `Domain / Money Movement`
 **Text Style:** Heading / H3
 
 **Format:**
+
 ```
 🔄 Money Movement
 Purpose: What actually moved money
@@ -448,6 +498,7 @@ Use emoji only on sitemap (not UI).
 ### Figma Page Setup
 
 #### Page Name
+
 ```
 🗺️ Sitemap — Akount App
 ```
@@ -469,11 +520,13 @@ Use emoji only on sitemap (not UI).
 ### Global Controls Frame
 
 #### Frame Name
+
 ```
 Global / Always Available
 ```
 
 Items:
+
 - Entity Switcher
 - Period Selector
 - Currency View
@@ -514,9 +567,11 @@ This is **ERP-grade information architecture without ERP complexity**.
 ### Hard Governance Rules (Non-Negotiable)
 
 #### Rule 1: Domain Ownership
+
 **Sidebar defines domain ownership**
 
 Each domain is responsible for one user task:
+
 - Overview: "Where am I?"
 - Money Movement: "What moved?"
 - Business Operations: "Who is involved?"
@@ -527,39 +582,48 @@ Each domain is responsible for one user task:
 - System: "How is this configured?"
 
 #### Rule 2: Tabs vs Domains
+
 **Tabs define views of the same data**
 
 Tabs **may:**
+
 - Filter (e.g., "Draft" vs "Sent" invoices)
 - Segment by status
 - Change lifecycle state
 
 Tabs **may not:**
+
 - Change permissions
 - Change entity context
 - Introduce new data owners
 - Create new domains
 
 Invalid example:
+
 ```
 Invoices | Reports
 ```
+
 (These are different domains)
 
 #### Rule 3: No Duplication
+
 **A screen belongs to exactly one domain**
 
 If you can't place a screen cleanly, it doesn't belong in Akount.
 
 #### Rule 4: Role Changes Visibility
+
 **Role changes visibility, never hierarchy**
 
 Permission matrix (in `permissions-matrix.md`) controls what each role sees, but the IA structure never changes.
 
 #### Rule 5: Global Controls Stay Global
+
 **Global context controls never appear as tabs**
 
 These always stay in top command bar:
+
 - Entity Switcher
 - Period Selector
 - Currency View
@@ -568,9 +632,11 @@ These always stay in top command bar:
 They are **never** moved into a domain as tabs.
 
 #### Rule 6: Clarity Enforcement
+
 **If permissions are unclear, the feature is incomplete**
 
 Before shipping any new screen:
+
 1. Identify which domain owns it
 2. Define which roles can see it
 3. Define what actions each role can take

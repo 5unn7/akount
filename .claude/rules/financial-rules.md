@@ -2,14 +2,17 @@
 
 ---
 paths:
-  - "apps/api/src/domains/**"
-  - "packages/db/**"
-  - "packages/types/**"
+
+- "apps/api/src/domains/**"
+- "packages/db/**"
+- "packages/types/**"
+
 ---
 
 ## Integer Cents (NEVER Floats)
 
 All monetary amounts MUST be stored as **integer cents**:
+
 - ✅ `amount: 1050` → $10.50
 - ❌ `amount: 10.50` → WRONG
 
@@ -18,6 +21,7 @@ Never use `Float` or `number` for money in Prisma schema or TypeScript.
 ## Multi-Currency Pattern
 
 Every monetary field requires 4 fields:
+
 ```typescript
 {
   amount: Int,              // Original currency in cents
@@ -32,6 +36,7 @@ Every monetary field requires 4 fields:
 ## Double-Entry Bookkeeping
 
 Every journal entry MUST balance:
+
 ```
 SUM(debitAmount) === SUM(creditAmount)
 ```
@@ -41,6 +46,7 @@ Validate before creating `JournalEntry`. No exceptions.
 ## Soft Delete Only
 
 Financial records are NEVER hard deleted:
+
 - Use `deletedAt: DateTime?` field
 - Filter: `WHERE deletedAt IS NULL` in all queries
 - Audit views can include deleted records
@@ -50,6 +56,7 @@ Models with soft delete: Invoice, Bill, Payment, JournalEntry, JournalLine, Acco
 ## Tenant Isolation (Critical)
 
 **Every query MUST filter by `tenantId`:**
+
 ```typescript
 // ✅ CORRECT
 const data = await prisma.entity.findMany({
@@ -63,6 +70,7 @@ const data = await prisma.entity.findMany()
 Tenant-scoped models: Tenant, Entity, Client, Vendor, Invoice, Bill, Category, ImportBatch.
 
 Entity-scoped models require `entity: { tenantId: ctx.tenantId }`:
+
 ```typescript
 const invoices = await prisma.invoice.findMany({
   where: { entity: { tenantId: ctx.tenantId } }
@@ -72,6 +80,7 @@ const invoices = await prisma.invoice.findMany({
 ## Source Document Preservation
 
 Journal entries created from documents (invoices, bills) MUST store:
+
 ```typescript
 {
   sourceType: 'INVOICE',

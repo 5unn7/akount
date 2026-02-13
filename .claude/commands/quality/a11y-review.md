@@ -14,6 +14,7 @@ Review UI components for accessibility compliance.
 ## Quick Scan
 
 **Critical checks (2 minutes):**
+
 - [ ] All images have alt text
 - [ ] Forms have labels
 - [ ] Buttons have accessible names
@@ -27,17 +28,20 @@ Review UI components for accessibility compliance.
 ### 1. Perceivable
 
 **Images & Media:**
+
 - [ ] All `<img>` have descriptive `alt` attributes
 - [ ] Decorative images use `alt=""` (empty)
 - [ ] Icons have `aria-label` or visible text
 
 **Color & Contrast:**
+
 - [ ] Text contrast ratio ≥ 4.5:1 (normal text)
 - [ ] Text contrast ratio ≥ 3:1 (large text 18pt+)
 - [ ] UI components contrast ratio ≥ 3:1
 - [ ] Color not sole means of conveying information
 
 **Text:**
+
 - [ ] Font size ≥ 16px for body text
 - [ ] Text can be resized to 200% without loss of content
 - [ ] Line height ≥ 1.5 for paragraphs
@@ -45,6 +49,7 @@ Review UI components for accessibility compliance.
 ### 2. Operable
 
 **Keyboard:**
+
 - [ ] All interactive elements keyboard accessible
 - [ ] Tab order is logical
 - [ ] Focus indicators visible
@@ -52,6 +57,7 @@ Review UI components for accessibility compliance.
 - [ ] Skip to main content link
 
 **Interactive Elements:**
+
 ```typescript
 // ✅ CORRECT: Keyboard accessible button
 <button onClick={handleClick} aria-label="Close modal">
@@ -65,6 +71,7 @@ Review UI components for accessibility compliance.
 ```
 
 **Focus Management:**
+
 - [ ] Focus visible on all interactive elements
 - [ ] Focus returns to trigger after modal close
 - [ ] Focus moves to new content after navigation
@@ -72,6 +79,7 @@ Review UI components for accessibility compliance.
 ### 3. Understandable
 
 **Forms:**
+
 ```typescript
 // ✅ CORRECT: Label associated with input
 <label htmlFor="email">Email Address</label>
@@ -83,11 +91,13 @@ Review UI components for accessibility compliance.
 ```
 
 **Error Handling:**
+
 - [ ] Error messages descriptive and helpful
 - [ ] Errors announced to screen readers (`aria-live`)
 - [ ] Required fields marked with `required` or `aria-required`
 
 **Navigation:**
+
 - [ ] Consistent navigation across pages
 - [ ] Breadcrumbs for deep navigation
 - [ ] Clear page titles (`<title>` element)
@@ -95,6 +105,7 @@ Review UI components for accessibility compliance.
 ### 4. Robust
 
 **Semantic HTML:**
+
 ```typescript
 // ✅ CORRECT: Semantic elements
 <nav><ul><li><a href="/dashboard">Dashboard</a></li></ul></nav>
@@ -105,6 +116,7 @@ Review UI components for accessibility compliance.
 ```
 
 **ARIA:**
+
 - [ ] ARIA roles used appropriately
 - [ ] `aria-label` / `aria-labelledby` for non-obvious controls
 - [ ] `aria-expanded` for collapsible content
@@ -115,6 +127,7 @@ Review UI components for accessibility compliance.
 ## Component Patterns
 
 ### Buttons
+
 ```typescript
 // Primary action
 <button type="button" className="btn-primary">
@@ -133,6 +146,7 @@ Review UI components for accessibility compliance.
 ```
 
 ### Forms
+
 ```typescript
 <form onSubmit={handleSubmit}>
   <fieldset>
@@ -154,6 +168,7 @@ Review UI components for accessibility compliance.
 ```
 
 ### Modals
+
 ```typescript
 <Dialog open={isOpen} onOpenChange={setIsOpen} aria-labelledby="dialog-title">
   <DialogContent>
@@ -168,6 +183,7 @@ Review UI components for accessibility compliance.
 ```
 
 ### Lists
+
 ```typescript
 // Navigation list
 <nav aria-label="Main navigation">
@@ -192,12 +208,14 @@ Review UI components for accessibility compliance.
 ## Testing Tools
 
 **Manual:**
+
 - Tab through page (keyboard-only navigation)
 - Use screen reader (NVDA on Windows, VoiceOver on Mac)
 - Test with 200% zoom
 - Check color contrast with browser DevTools
 
 **Automated:**
+
 ```bash
 # Run axe-core checks (if installed)
 npm run test:a11y
@@ -210,6 +228,7 @@ npm run test:a11y
 ## Common Issues
 
 **Issue 1: Missing alt text**
+
 ```typescript
 // ❌ WRONG
 <img src="/logo.png" />
@@ -219,6 +238,7 @@ npm run test:a11y
 ```
 
 **Issue 2: Poor contrast**
+
 ```css
 /* ❌ WRONG: Gray on white (2.5:1 ratio) */
 color: #999;
@@ -228,6 +248,7 @@ color: #666;
 ```
 
 **Issue 3: Unlabeled form inputs**
+
 ```typescript
 // ❌ WRONG
 <input type="text" placeholder="Name" />

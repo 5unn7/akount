@@ -490,9 +490,11 @@ export async function POST(request: NextRequest) {
 Verify RBAC implementation matches design-system matrix:
 
 ### 6 Canonical Roles
+
 - OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER, INVESTOR, ADVISOR
 
 ### Route Protection
+
 - [ ] Admin routes check OWNER/ADMIN only
 - [ ] Accounting routes check OWNER/ADMIN/ACCOUNTANT
 - [ ] Audit log routes check OWNER/ADMIN/ACCOUNTANT
@@ -500,11 +502,13 @@ Verify RBAC implementation matches design-system matrix:
 - [ ] INVESTOR cannot access banking domain
 
 ### Audit Logging
+
 - [ ] All financial changes logged
 - [ ] Security events logged
 - [ ] RBAC denials logged
 
 ### Permission Matrix Reference
+
 See: `docs/design-system/05-governance/permissions-matrix.md`
 
 ```typescript
@@ -528,6 +532,7 @@ export async function GET(request: NextRequest) {
 ## Security Review Checklist
 
 ### Authentication & Authorization
+
 - [ ] All protected routes check authentication
 - [ ] Tenant isolation enforced on all queries
 - [ ] RBAC permissions checked for sensitive operations
@@ -535,6 +540,7 @@ export async function GET(request: NextRequest) {
 - [ ] Session management secure (Clerk handles this)
 
 ### Input Validation
+
 - [ ] All user input validated (Zod schemas)
 - [ ] File uploads validated (type, size, content)
 - [ ] Query parameters validated
@@ -542,18 +548,21 @@ export async function GET(request: NextRequest) {
 - [ ] No command injection (avoid exec/spawn with user input)
 
 ### Output Encoding
+
 - [ ] No XSS vulnerabilities (React escapes by default)
 - [ ] Sensitive data not logged
 - [ ] API responses don't expose internal fields
 - [ ] Error messages don't leak implementation details
 
 ### Configuration
+
 - [ ] No hardcoded secrets (use environment variables)
 - [ ] Security headers set (X-Frame-Options, CSP, etc.)
 - [ ] CORS configured properly (no wildcard *)
 - [ ] HTTPS enforced (Strict-Transport-Security)
 
 ### Data Protection
+
 - [ ] Sensitive data encrypted at rest (database level)
 - [ ] Sensitive data encrypted in transit (HTTPS)
 - [ ] PII handled according to GDPR

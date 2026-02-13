@@ -17,6 +17,7 @@ The Prisma schema includes **architectural hooks** - fields and relationships th
 ### 1. Event Sourcing Lite
 
 **What's there:**
+
 ```prisma
 model JournalEntry {
   sourceType String?     // 'INVOICE' | 'PAYMENT' | 'BANK_FEED'
@@ -34,11 +35,13 @@ model DomainEvent {
 **When to activate:** Phase 6-8 (if accounting logic bugs need history replay)
 
 **What it enables:**
+
 - Rebuild journal entries from source documents
 - Replay events to fix historical accounting errors
 - Maintain audit trail of why entries were created
 
 **Example usage:**
+
 ```typescript
 // Can always trace back to source
 const entry = await prisma.journalEntry.findUnique({
@@ -55,6 +58,7 @@ console.log(`Created from ${entry.sourceType} #${entry.sourceId}`);
 ### 2. Transfer Linking (Not a Separate Entity)
 
 **What's there:**
+
 ```prisma
 model JournalEntry {
   linkedEntryId String?           // Points to counterpart
@@ -65,11 +69,13 @@ model JournalEntry {
 **When to activate:** Phase 3 (Transactions)
 
 **What it enables:**
+
 - Transfers as a view, not a primary entity
 - No orphan transfers
 - Single source of truth
 
 **Example usage:**
+
 ```typescript
 // Create linked transfer entries
 const transfer = await createLinkedTransfer(fromAccount, toAccount, amount);
@@ -86,6 +92,7 @@ const transfers = await prisma.journalEntry.findMany({
 ### 3. Flinks Raw Data Preservation
 
 **What's there:**
+
 ```prisma
 model BankFeedTransaction {
   rawData Json?          // Full Flinks webhook payload
@@ -98,12 +105,14 @@ model BankFeedTransaction {
 **When to activate:** Phase 2 (Bank Reconciliation)
 
 **What it enables:**
+
 - Debug Flinks issues without losing data
 - Reprocess transactions if logic changes
 - Track description changes between pending/posted
 - AI training data (merchant hints)
 
 **Example usage:**
+
 ```typescript
 // Preserve everything from Flinks
 await prisma.bankFeedTransaction.create({
@@ -129,6 +138,7 @@ await reprocessWithNewLogic(raw);
 ### 4. Pending Transaction Staging
 
 **What's there:**
+
 ```prisma
 model BankFeedTransaction {
   status String @default("pending")  // 'pending' | 'posted'
@@ -143,11 +153,13 @@ model Transaction {
 **When to activate:** Phase 2 (Bank Reconciliation)
 
 **What it enables:**
+
 - Show pending transactions in UI
 - Never post pending to General Ledger
 - Prevent duplicate postings
 
 **Critical rule:**
+
 ```typescript
 // NEVER post pending to GL
 if (bankFeed.status === 'pending') {
@@ -173,6 +185,7 @@ if (bankFeed.status === 'posted' && !bankFeed.postedToJournalId) {
 ### 5. Multi-Currency Consolidation
 
 **What's there:**
+
 ```prisma
 model GLAccount {
   isCTAAccount Boolean @default(false)  // Cumulative Translation Adjustment
@@ -191,11 +204,13 @@ model ConsolidationElimination {
 **When to activate:** Phase 6 (optional for MVP)
 
 **What it enables:**
+
 - CTA equity accounts for FX translation differences
 - Inter-company elimination entries
 - Cross-entity consolidated reporting
 
 **Example usage:**
+
 ```typescript
 // Seed CTA accounts
 await prisma.gLAccount.create({
@@ -223,6 +238,7 @@ await prisma.consolidationElimination.create({
 ### 6. AI Rule Engine (Human-in-the-Loop)
 
 **What's there:**
+
 ```prisma
 model Rule {
   conditions String      // JSON: { "description": { "contains": "STARBUCKS" } }
@@ -247,11 +263,13 @@ model RuleSuggestion {
 **When to activate:** Phase 7 (AI Advisor)
 
 **What it enables:**
+
 - AI suggests rules, humans approve
 - Deterministic rule execution (no live AI)
 - Auditability and reliability
 
 **Critical implementation:**
+
 ```typescript
 // ❌ NEVER let AI write directly to database
 // ✅ AI suggests → User approves → Deterministic rule executes
@@ -312,6 +330,7 @@ async function executeRules(transaction) {
 ### 7. Accounting Policy Flexibility
 
 **What's there:**
+
 ```prisma
 model AccountingPolicy {
   key String     // 'accounting_basis' | 'fx_translation'
@@ -324,11 +343,13 @@ model AccountingPolicy {
 **When to activate:** Phase 4-5 (Analytics)
 
 **What it enables:**
+
 - Support both cash and accrual basis
 - Different FX translation methods
 - Policy changes over time
 
 **Example usage:**
+
 ```typescript
 // Canadian business: Cash flow (cash) but GST/HST (accrual)
 await prisma.accountingPolicy.createMany({
@@ -369,6 +390,7 @@ if (policy.value === 'CASH') {
 **When:** Phase 3 (Transactions)
 
 **Implementation:**
+
 ```sql
 -- Must be added via raw SQL migration
 CREATE OR REPLACE FUNCTION check_balanced_journal_entry()
@@ -395,6 +417,7 @@ CREATE TRIGGER enforce_balanced_entry
 **When:** Phase 8 (Production)
 
 **Implementation:**
+
 ```sql
 -- Enable RLS
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
@@ -410,6 +433,7 @@ CREATE POLICY tenant_isolation ON invoices
 **When:** Phase 1 (Accounts Overview)
 
 **Implementation:**
+
 ```typescript
 class TenantScopedPrisma {
   constructor(private tenantId: string) {}
@@ -429,31 +453,37 @@ class TenantScopedPrisma {
 ## 📋 Activation Checklist
 
 ### Before Phase 1
+
 - [ ] Schema hooks reviewed
 - [ ] Team understands which fields activate when
 
 ### Phase 2 (Bank Reconciliation)
+
 - [ ] Activate: `rawData`, `statusHistory`, `postedToJournalId`
 - [ ] Implement: Pending transaction flow
 - [ ] Test: Flinks webhook preservation
 
 ### Phase 3 (Transactions)
+
 - [ ] Activate: `linkedEntryId` for transfers
 - [ ] Activate: `sourceDocument` snapshots
 - [ ] Implement: Database trigger for balanced entries
 - [ ] Test: Cannot create unbalanced journal entry
 
 ### Phase 6 (Consolidation)
+
 - [ ] Activate: `isCTAAccount`, `consolidationCode`
 - [ ] Seed: CTA equity accounts
 - [ ] Implement: FX translation logic
 
 ### Phase 7 (AI Advisor)
+
 - [ ] Activate: `RuleSuggestion` model
 - [ ] Implement: Human-in-the-loop rule approval
 - [ ] Test: AI never writes directly to DB
 
 ### Phase 8 (Production)
+
 - [ ] Implement: Row Level Security
 - [ ] Migration: DAL → RLS
 - [ ] Audit: Cross-tenant isolation test
@@ -463,12 +493,14 @@ class TenantScopedPrisma {
 ## 🎯 Benefits of This Approach
 
 ### What We Get
+
 ✅ **No refactoring later** - hooks are already in schema
 ✅ **MVP stays lean** - hooks are optional/nullable
 ✅ **Clear migration path** - documented when to activate each hook
 ✅ **Team alignment** - everyone knows the future architecture
 
 ### What We Avoid
+
 ❌ Breaking schema changes in production
 ❌ Data migrations for new columns
 ❌ "We should have thought of this earlier"

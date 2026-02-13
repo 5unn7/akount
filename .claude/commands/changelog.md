@@ -60,6 +60,7 @@ Generate user-friendly changelogs from git commits.
 ## Commit Message Parsing
 
 **Conventional commits recognized:**
+
 - `feat:` → Features
 - `fix:` → Bug Fixes
 - `perf:` → Performance
@@ -70,6 +71,7 @@ Generate user-friendly changelogs from git commits.
 - `style:` → Internal
 
 **Domain extraction:**
+
 ```
 feat(banking): Add transaction list pagination
          ↓
@@ -81,6 +83,7 @@ Domain: Banking
 ## Example
 
 **Input commits:**
+
 ```
 feat(banking): Add account CRUD with cursor pagination
 fix(api): Resolve tenant isolation in account queries
@@ -89,6 +92,7 @@ refactor(web): Slim begin.md workflow from 856→243 lines
 ```
 
 **Output:**
+
 ```markdown
 # Changelog - 2026-02-09
 
@@ -110,12 +114,14 @@ refactor(web): Slim begin.md workflow from 856→243 lines
 ## Tips
 
 **For better changelogs:**
+
 - Write clear commit messages (users see these!)
 - Use conventional commit prefixes
 - Include domain in parentheses
 - Focus on user impact, not implementation
 
 **User-facing vs Internal:**
+
 - User-facing: "Add invoice filtering"
 - Internal: "Refactor service layer"
 

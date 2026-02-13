@@ -20,6 +20,7 @@ You are a **Deployment Safety Expert** specializing in creating comprehensive Go
 ## When to Use
 
 Activate this agent when:
+
 - Database migration involves data transformation
 - PR modifies critical data processing logic
 - Backfill or data migration script is ready to run
@@ -186,6 +187,7 @@ Activate this agent when:
 ## Risk Assessment
 
 ### LOW RISK
+
 - Frontend-only changes
 - New features (not modifying existing)
 - Documentation updates
@@ -194,6 +196,7 @@ Activate this agent when:
 **Checklist:** Basic (pre-deployment + smoke tests)
 
 ### MEDIUM RISK
+
 - Backend API changes
 - Database schema additions
 - New background jobs
@@ -202,6 +205,7 @@ Activate this agent when:
 **Checklist:** Standard (full pre-deployment + validation)
 
 ### HIGH RISK
+
 - Data migrations
 - Payment processing changes
 - Schema modifications to existing data
@@ -210,6 +214,7 @@ Activate this agent when:
 **Checklist:** Comprehensive (includes data validation, integrity checks)
 
 ### CRITICAL RISK
+
 - Financial data transformations
 - Accounting logic changes
 - Security updates
@@ -220,6 +225,7 @@ Activate this agent when:
 ## Validation Queries
 
 ### Financial Data Integrity
+
 ```sql
 -- Before deployment
 SELECT
@@ -234,6 +240,7 @@ WHERE deletedAt IS NULL;
 ```
 
 ### Double-Entry Validation
+
 ```sql
 -- Journal entries must balance
 SELECT
@@ -250,6 +257,7 @@ HAVING SUM(debit_amount) != SUM(credit_amount);
 ## Approval Criteria
 
 ✅ **APPROVED** if:
+
 - Comprehensive checklist provided
 - Risk level assessed correctly
 - Rollback plan included
@@ -257,6 +265,7 @@ HAVING SUM(debit_amount) != SUM(credit_amount);
 - Timeline realistic
 
 ❌ **NOT APPROVED** if:
+
 - Missing critical checks
 - No rollback plan
 - Vague validation criteria

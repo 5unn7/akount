@@ -30,6 +30,7 @@ Helper text: "Explain what goes here"
 ```
 
 **Spacing:**
+
 - Label to field: 8px
 - Field to error: 6px
 - Error to next field: 16px
@@ -58,6 +59,7 @@ Internal note (optional)
 ```
 
 **Layout:**
+
 - Single column (vertical stack)
 - Consistent label width (left-align)
 - Fields full-width
@@ -173,6 +175,7 @@ Email *
 ```
 
 **Validation timing:**
+
 - On blur (field loses focus): Primary validation
 - On change (user typing): Secondary validation
 - Before submit: Comprehensive validation
@@ -188,6 +191,7 @@ Amount *
 ```
 
 **Good error messages:**
+
 - Specific (not "Invalid")
 - Actionable ("must be..." not just "error")
 - Short (1 line if possible)
@@ -251,6 +255,7 @@ Period          Q4 2025 (Read-only)
 ```
 
 **Navigation:**
+
 - [Next] → Validate and continue
 - [Skip] → Go to next (if optional section)
 - [Cancel] → Exit form
@@ -311,6 +316,7 @@ Your changes are being saved...
 ```
 
 **Auto-save behavior:**
+
 - Trigger: After 1 second of inactivity
 - Show: "Saving..." → "Last saved X min ago"
 - Persist: Save to database
@@ -372,6 +378,7 @@ Are you sure you want to leave?
 ```
 
 **Features:**
+
 - Step indicator (not shown in example)
 - Required fields marked (*)
 - Real-time validation (balance check)
@@ -458,16 +465,19 @@ All forms must:
 ### Responsive Layout
 
 **Desktop (1280px+):**
+
 - Two-column layout
 - Side-by-side fields when appropriate
 - Full keyboard support
 
 **Tablet (768px-1279px):**
+
 - Single column
 - Full-width inputs
 - Touch targets ≥44px
 
 **Mobile (<768px):**
+
 - Card-based layout
 - Single column only
 - Larger touch targets (48px)

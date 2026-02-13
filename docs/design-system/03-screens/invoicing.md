@@ -205,7 +205,7 @@ Again — automatic, visible, auditable.
 
 Payments are **separate objects**.
 
-### One payment can:
+### One payment can
 
 * Pay multiple invoices
 * Partially pay an invoice
@@ -340,17 +340,17 @@ Auditor feels:
 **Future enhancement:** Support for deferred revenue and milestone-based revenue recognition.
 
 **What's planned:**
-- Deferred revenue handling for advance payments
-- Simple recognition schedules (linear or milestone-based)
-- Visibility of deferred amounts in reports
-- Recognition date separated from invoice date
-- Automatic journal entries for recognition events
+* Deferred revenue handling for advance payments
+* Simple recognition schedules (linear or milestone-based)
+* Visibility of deferred amounts in reports
+* Recognition date separated from invoice date
+* Automatic journal entries for recognition events
 
 **Real-world patterns:**
-- Bill annually, deliver monthly (SaaS)
-- Annual retainers
-- Project milestones
-- Subscription services
+* Bill annually, deliver monthly (SaaS)
+* Annual retainers
+* Project milestones
+* Subscription services
 
 **Why it matters:**
 Becomes critical for compliance in many jurisdictions. Understating revenue or overstating it creates audit risk. Currently invoices assume immediate revenue recognition, which doesn't reflect real business patterns.

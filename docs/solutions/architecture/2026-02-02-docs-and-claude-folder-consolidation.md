@@ -45,15 +45,18 @@ The project had accumulated significant documentation bloat and configuration dr
 ### 1. Documentation Consolidation (77 → 53 files)
 
 **Deleted:**
+
 - 15 session archive files (historical, not reference docs)
 - 3 redundant architecture files (summary.md, LunchMoney tracking)
 - 2 analysis/research work artifacts
 
 **Merged:**
+
 - `01-accounts-overview-enhancements.md` → into `01-accounts-overview.md`
 - 3 onboarding setup files → single `onboarding-setup.md`
 
 **Preserved (workflow directories):**
+
 - `docs/brainstorms/` - Created by `/processes:brainstorm`
 - `docs/plans/` - Created by `/processes:plan`
 - `docs/solutions/` - Created by `/processes:compound`
@@ -73,6 +76,7 @@ context_files:
 ```
 
 **Agents updated:**
+
 - architecture-strategist
 - repo-research-analyst
 - kieran-typescript-reviewer
@@ -101,21 +105,25 @@ context_files:
 ## Prevention
 
 ### 1. When Deleting Files
+
 - Search for references before deleting: `grep -r "filename" .claude/ docs/`
 - Update all referencing files
 - Run validation: `bash .claude/hooks/validate-config.sh`
 
 ### 2. When Adding Agents
+
 - Only use context_files that exist in THIS project
 - Verify paths: `ls -la [path]` before adding
 - Never copy from templates without adapting paths
 
 ### 3. When Consolidating Docs
+
 - Preserve workflow directories (brainstorms, plans, solutions)
 - Update docs/README.md index
 - Check CLAUDE.md references
 
 ### 4. Regular Maintenance
+
 - Monthly: Audit agent context_files for validity
 - Weekly: Clean session artifacts during EOD workflow
 - Per-session: Don't let temporary files accumulate

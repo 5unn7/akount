@@ -13,6 +13,7 @@ Akount is an AI-powered financial command center for globally-operating solopren
 This roadmap defines the path from current state to a shippable MVP and beyond. Phases are ordered by **user value** — each phase gives users a new capability they can immediately use.
 
 **Principles:**
+
 - Complete one phase before starting the next
 - Each phase results in working, testable functionality
 - Build vertical slices (API + DB + UI together)
@@ -44,6 +45,7 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 **Completed:** 2026-02-01
 
 **What was built:**
+
 - Clerk authentication (passkeys/WebAuthn)
 - PostgreSQL + Prisma (38 models, 26 enums)
 - Fastify API with middleware chain (Auth → Tenant → Validation)
@@ -63,6 +65,7 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 **Completed:** 2026-02-09 | **Effort:** ~35 hours
 
 **What was delivered:**
+
 - Dashboard with real-time metrics (net worth, cash position, total assets/liabilities)
 - Account list page with cursor pagination + type filtering
 - Account CRUD (create, edit, soft-delete via Sheet panel)
@@ -82,6 +85,7 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 **Goal:** Users can import bank transactions, view transaction history, and reconcile against their records.
 
 **Success Criteria:**
+
 - Users can upload CSV/PDF bank statements
 - System detects duplicate imports
 - Transaction list with filtering (date, account, category)
@@ -114,6 +118,7 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 ### Onboarding Redesign (REMAINING — ~10-12 hours)
 
 Redesigning onboarding to be minimal and progressive:
+
 - 2-step wizard (Welcome + Essential Info) — 60 seconds to dashboard
 - Dashboard hero card with circular progress (tracks 5 completion steps)
 - Sidebar progress indicator (color-coded bar)
@@ -141,6 +146,7 @@ Redesigning onboarding to be minimal and progressive:
 **Goal:** Users can manage their chart of accounts, post transactions with proper double-entry bookkeeping, and maintain a general ledger.
 
 **Success Criteria:**
+
 - Chart of accounts with hierarchy (tree view)
 - Manual transaction posting with double-entry validation
 - Journal entries auto-created from transactions
@@ -151,6 +157,7 @@ Redesigning onboarding to be minimal and progressive:
 **Scope:**
 
 ### Backend
+
 - Chart of Accounts API (CRUD, hierarchy, default COA seeding per entity type)
 - Transaction Posting Service (create + validate double-entry + auto-generate journal entries)
 - Journal Entry API (list, detail, date/account/entity filtering)
@@ -158,6 +165,7 @@ Redesigning onboarding to be minimal and progressive:
 - Split transaction support
 
 ### Frontend
+
 - Chart of Accounts page (tree view, add/edit/delete, account balances, type badges)
 - Transaction entry form (splits, multi-currency, journal entry preview)
 - Journal entries list page (date range, account, entity filters)
@@ -175,6 +183,7 @@ Redesigning onboarding to be minimal and progressive:
 **Goal:** Users can create invoices for clients, track bills from vendors, and record payments with proper allocation.
 
 **Success Criteria:**
+
 - Client and vendor management (CRUD)
 - Invoice creation with line items and tax
 - Invoice sending via email + PDF generation
@@ -186,6 +195,7 @@ Redesigning onboarding to be minimal and progressive:
 **Scope:**
 
 ### Backend
+
 - Client/Vendor APIs (CRUD, tenant-scoped)
 - Invoice API (create, update, send, status tracking, line items, tax calculation)
 - Bill API (create, update, status tracking)
@@ -193,6 +203,7 @@ Redesigning onboarding to be minimal and progressive:
 - Journal entry auto-generation from invoices/bills/payments
 
 ### Frontend
+
 - Client/Vendor list and detail pages
 - Invoice form (line items, tax, preview)
 - Invoice list with status filters (Draft, Sent, Paid, Overdue)
@@ -211,6 +222,7 @@ Redesigning onboarding to be minimal and progressive:
 **Goal:** Users can generate the three core financial statements and export their data.
 
 **Success Criteria:**
+
 - Profit & Loss statement (by entity, by date range, period comparison)
 - Balance Sheet (as of date, entity filtering)
 - Cash Flow statement (operating/investing/financing activities)
@@ -220,6 +232,7 @@ Redesigning onboarding to be minimal and progressive:
 **Scope:**
 
 ### Backend
+
 - P&L calculation service (revenue - expenses by GL account hierarchy)
 - Balance Sheet calculation service (assets = liabilities + equity)
 - Cash Flow calculation service (categorized by activity type)
@@ -228,6 +241,7 @@ Redesigning onboarding to be minimal and progressive:
 - Data export service (full JSON/CSV backup with ZIP packaging)
 
 ### Frontend
+
 - P&L view with drill-down
 - Balance Sheet view
 - Cash Flow view
@@ -247,6 +261,7 @@ Redesigning onboarding to be minimal and progressive:
 **Goal:** Production-ready application — secure, performant, tested, and deployable.
 
 **Success Criteria:**
+
 - Security audit complete (OWASP top 10 addressed)
 - Performance targets met (p95 < 2s page load)
 - 80%+ test coverage across API
@@ -260,6 +275,7 @@ Redesigning onboarding to be minimal and progressive:
 **Scope:**
 
 ### Security
+
 - Complete security audit (auth, tenant isolation, input validation)
 - Rate limiting per user
 - CSRF protection
@@ -267,6 +283,7 @@ Redesigning onboarding to be minimal and progressive:
 - SQL injection / XSS testing
 
 ### Performance
+
 - Database indexes on hot paths
 - Query optimization for dashboard and reports
 - Caching strategy (FX rates, reports, dashboard metrics)
@@ -274,11 +291,13 @@ Redesigning onboarding to be minimal and progressive:
 - Lazy-loading heavy frontend components
 
 ### Quality of Life
+
 - Keyboard shortcuts (command palette, table navigation, quick actions)
 - Help overlay documenting shortcuts
 - Data export accessible from settings
 
 ### Infrastructure
+
 - CI/CD pipeline (GitHub Actions)
 - Production environment setup
 - Database backups (automated daily)
@@ -298,6 +317,7 @@ Redesigning onboarding to be minimal and progressive:
 **Not required for MVP.** These features add depth after users have the core accounting workflow.
 
 **Scope:**
+
 - Budget creation by category with variance tracking
 - Financial goals with progress visualization
 - Cash flow forecasting (7/30/90 day projections, confidence levels, low balance warnings)
@@ -316,6 +336,7 @@ Redesigning onboarding to be minimal and progressive:
 **Not required for MVP.** AI features enhance the experience after core data is flowing.
 
 **Scope:**
+
 - AI transaction categorization with confidence scores
 - User feedback loop (correct/incorrect → learning)
 - Categorization rules engine (create rules from patterns)

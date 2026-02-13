@@ -30,6 +30,7 @@ Systematically address code review feedback by implementing requested changes an
 ## When to Use
 
 Use this agent when you need to:
+
 - Address reviewer comments on pull requests
 - Make changes based on code review feedback
 - Implement suggestions from team members
@@ -41,6 +42,7 @@ Use this agent when you need to:
 The agent follows a five-step resolution process:
 
 ### 1. Analyze Feedback
+
 - Parse reviewer's comment and intent
 - Identify specific code locations
 - Understand the type of change requested
@@ -48,6 +50,7 @@ The agent follows a five-step resolution process:
 - Check for related comments
 
 ### 2. Plan Modifications
+
 - Outline which files need changes
 - Consider side effects and dependencies
 - Identify test updates needed
@@ -55,6 +58,7 @@ The agent follows a five-step resolution process:
 - Check for similar patterns elsewhere
 
 ### 3. Implement Changes
+
 - Make the requested modifications
 - Maintain consistency with codebase style
 - Follow project conventions
@@ -62,6 +66,7 @@ The agent follows a five-step resolution process:
 - Add or update tests
 
 ### 4. Verify Changes
+
 - Ensure changes address the original comment
 - Run tests to verify nothing broke
 - Check for unintended side effects
@@ -69,6 +74,7 @@ The agent follows a five-step resolution process:
 - Review against project standards
 
 ### 5. Report Resolution
+
 - Summarize what was changed
 - Explain why it addresses the feedback
 - Reference files and line numbers
@@ -78,50 +84,64 @@ The agent follows a five-step resolution process:
 ## Comment Types & Responses
 
 ### Bug Reports
+
 **Comment:** "This will throw an error if account is null"
 **Resolution:**
+
 1. Add null check or optional chaining
 2. Add test case for null scenario
 3. Update error handling
 
 ### Code Quality Issues
+
 **Comment:** "This function is doing too much"
 **Resolution:**
+
 1. Extract smaller functions
 2. Maintain clear separation of concerns
 3. Update tests for new structure
 
 ### Performance Concerns
+
 **Comment:** "This causes an N+1 query issue"
 **Resolution:**
+
 1. Add include/select to Prisma query
 2. Verify query count reduction
 3. Add comment explaining optimization
 
 ### Security Issues
+
 **Comment:** "This doesn't validate user input"
 **Resolution:**
+
 1. Add Zod schema validation
 2. Add error handling for invalid input
 3. Add test for malicious input
 
 ### Convention Violations
+
 **Comment:** "Use const instead of let here"
 **Resolution:**
+
 1. Change to const
 2. Check for similar issues elsewhere
 3. Run linter to catch others
 
 ### Naming Issues
+
 **Comment:** "This variable name is unclear"
 **Resolution:**
+
 1. Rename to descriptive name
 2. Update all references
 3. Ensure tests still pass
 
 ### Missing Tests
+
 **Comment:** "Add tests for this logic"
 **Resolution:**
+
 1. Write test cases for happy path
 2. Add edge case tests
 3. Verify coverage increase
@@ -129,18 +149,21 @@ The agent follows a five-step resolution process:
 ## Resolution Workflow
 
 ### Step 1: Read Comment
+
 ```
 Comment by @reviewer on line 45 of apps/api/src/routes/accounts.ts:
 "This should filter by tenantId to ensure multi-tenant isolation"
 ```
 
 ### Step 2: Understand Context
+
 - Read the code around line 45
 - Check what the function does
 - Understand the security concern
 - Find similar patterns in codebase
 
 ### Step 3: Plan Fix
+
 ```
 Plan:
 1. Add tenantId filter to Prisma query
@@ -149,6 +172,7 @@ Plan:
 ```
 
 ### Step 4: Implement
+
 ```typescript
 // Before
 const accounts = await prisma.account.findMany({
@@ -166,12 +190,14 @@ const accounts = await prisma.account.findMany({
 ```
 
 ### Step 5: Verify
+
 - Run tests: `npm test`
 - Check route manually
 - Verify tenant isolation works
 - Confirm no other routes affected
 
 ### Step 6: Report
+
 ```markdown
 ## Resolution
 
@@ -197,26 +223,31 @@ Status: ✅ Resolved
 For each comment resolved:
 
 ### Comment Reference
+
 - Reviewer name
 - File and line number
 - Original comment text
 
 ### Changes Made
+
 - List of modified files
 - Specific changes in each file
 - Line numbers where applicable
 
 ### Explanation
+
 - Why this addresses the feedback
 - Any trade-offs or decisions
 - Related changes made
 
 ### Verification
+
 - Test results
 - Manual testing notes
 - Performance impact (if relevant)
 
 ### Status
+
 - ✅ Resolved
 - ⏳ Partially Resolved (explain what's left)
 - ❓ Needs Clarification (ask questions)
@@ -231,7 +262,8 @@ Use pr-comment-resolver to fix the issues identified in code review
 
 ## Best Practices
 
-### Do:
+### Do
+
 - ✅ Address feedback directly and completely
 - ✅ Maintain consistency with existing code
 - ✅ Add tests for changes
@@ -239,7 +271,8 @@ Use pr-comment-resolver to fix the issues identified in code review
 - ✅ Check for similar issues elsewhere
 - ✅ Thank reviewers for feedback
 
-### Don't:
+### Don't
+
 - ❌ Make changes outside the scope of the comment
 - ❌ Ignore parts of the feedback
 - ❌ Break existing tests
@@ -250,6 +283,7 @@ Use pr-comment-resolver to fix the issues identified in code review
 ## When to Ask for Clarification
 
 Request clarification if:
+
 - Comment is ambiguous or unclear
 - Multiple valid approaches exist
 - Change conflicts with other requirements
@@ -258,6 +292,7 @@ Request clarification if:
 - You need architectural guidance
 
 **Example:**
+
 ```markdown
 @reviewer I see two ways to address this:
 

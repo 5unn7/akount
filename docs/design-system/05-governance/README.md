@@ -13,6 +13,7 @@ Governance documents define the rules, structure, and permissions that guide des
 ## When to Use
 
 Reference these files when:
+
 - Understanding application structure and navigation hierarchy
 - Checking user permissions and role capabilities
 - Organizing design files and components

@@ -21,11 +21,13 @@
 ### 2.1 Create Package Structure
 
 - [ ] Create package directory:
+
   ```bash
   mkdir -p packages/ui/src/{primitives,data-display,feedback,financial,ai,patterns/{navigation,tables,forms}}
   ```
 
 - [ ] Create `packages/ui/package.json`:
+
   ```json
   {
     "name": "@akount/ui",
@@ -68,6 +70,7 @@
   ```
 
 - [ ] Create `packages/ui/tsconfig.json`:
+
   ```json
   {
     "extends": "../../tsconfig.base.json",
@@ -81,6 +84,7 @@
   ```
 
 - [ ] Create index files for each category:
+
   ```bash
   touch packages/ui/src/index.ts
   touch packages/ui/src/primitives/index.ts
@@ -102,6 +106,7 @@
 #### 2.2.1 MoneyAmount Component
 
 - [ ] Create `packages/ui/src/financial/MoneyAmount.tsx`:
+
   ```typescript
   import { type Cents, type Currency, formatCents } from '@akount/types';
   import { cn } from '../utils';
@@ -163,6 +168,7 @@
 #### 2.2.2 MoneyInput Component
 
 - [ ] Create `packages/ui/src/financial/MoneyInput.tsx`:
+
   ```typescript
   'use client';
 
@@ -249,6 +255,7 @@
 #### 2.2.3 EntityBadge Component
 
 - [ ] Create `packages/ui/src/financial/EntityBadge.tsx`:
+
   ```typescript
   import { type Currency, CURRENCY_INFO } from '@akount/types';
   import { cn } from '../utils';
@@ -307,6 +314,7 @@
 #### 2.2.4 Export Financial Components
 
 - [ ] Update `packages/ui/src/financial/index.ts`:
+
   ```typescript
   export * from './MoneyAmount';
   export * from './MoneyInput';
@@ -326,6 +334,7 @@
 #### 2.3.1 Sidebar Component
 
 - [ ] Create `packages/ui/src/patterns/navigation/Sidebar.tsx`:
+
   ```typescript
   'use client';
 
@@ -462,6 +471,7 @@
 #### 2.3.2 TopCommandBar Component
 
 - [ ] Create `packages/ui/src/patterns/navigation/TopCommandBar.tsx`:
+
   ```typescript
   'use client';
 
@@ -564,6 +574,7 @@
 #### 2.3.3 Export Navigation Components
 
 - [ ] Update `packages/ui/src/patterns/navigation/index.ts`:
+
   ```typescript
   export * from './Sidebar';
   export * from './TopCommandBar';
@@ -577,6 +588,7 @@
 ### 2.4 Utility Functions
 
 - [ ] Create `packages/ui/src/utils.ts`:
+
   ```typescript
   import { type ClassValue, clsx } from 'clsx';
   import { twMerge } from 'tailwind-merge';
@@ -587,6 +599,7 @@
   ```
 
 - [ ] Add dependencies to package.json:
+
   ```json
   {
     "dependencies": {
@@ -601,6 +614,7 @@
 ### 2.5 Main Export
 
 - [ ] Create `packages/ui/src/index.ts`:
+
   ```typescript
   // Re-export all components
   export * from './primitives';
@@ -621,6 +635,7 @@
 ### 2.6 Create README
 
 - [ ] Create `packages/ui/README.md`:
+
   ```markdown
   # @akount/ui
 
@@ -662,6 +677,7 @@
   All components follow specifications in:
   - `docs/design-system/01-components/`
   - `docs/design-system/02-patterns/`
+
   ```
 
 ---
@@ -680,6 +696,7 @@ Before marking Phase 2 complete:
 - [ ] Components can be imported in apps/web/
 
 **Test in apps/web:**
+
 ```bash
 pnpm --filter @akount/web dev
 # Import and render a MoneyAmount component
@@ -690,5 +707,6 @@ pnpm --filter @akount/web dev
 ## Handoff
 
 When complete:
+
 - Phases 4 & 5 can use these components
 - Update status in `docs/restructuring/README.md` to ✅ COMPLETE

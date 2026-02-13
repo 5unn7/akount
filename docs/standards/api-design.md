@@ -30,6 +30,7 @@
 ```
 
 **✅ Examples:**
+
 ```
 GET    /api/invoices                # List invoices
 POST   /api/invoices                # Create invoice
@@ -411,6 +412,7 @@ export function errorHandler(
 ### Success Responses
 
 **Single Resource:**
+
 ```json
 {
   "id": "uuid",
@@ -420,6 +422,7 @@ export function errorHandler(
 ```
 
 **List of Resources:**
+
 ```json
 {
   "data": [
@@ -436,6 +439,7 @@ export function errorHandler(
 ```
 
 **Action Response:**
+
 ```json
 {
   "success": true,

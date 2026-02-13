@@ -13,6 +13,7 @@ Compliance documents specify regulatory requirements, security standards, and SO
 ## When to Use
 
 Reference these files when:
+
 - Implementing features that handle sensitive data
 - Designing security and permission controls
 - Documenting audit trails

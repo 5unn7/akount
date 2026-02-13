@@ -34,6 +34,7 @@ You are a **Turborepo Monorepo Expert** specializing in workspace management, pa
 ### Workspace Structure
 
 **Correct Organization:**
+
 ```
 apps/
   web/     - Next.js frontend
@@ -46,6 +47,7 @@ packages/
 ```
 
 **Rules:**
+
 - [ ] Apps consume packages (never the reverse)
 - [ ] Packages can depend on other packages
 - [ ] No circular dependencies
@@ -54,6 +56,7 @@ packages/
 ### Package Dependencies
 
 **Workspace Protocol:**
+
 ```json
 {
   "dependencies": {
@@ -64,12 +67,14 @@ packages/
 ```
 
 **Common Issues:**
+
 - ❌ Hardcoded versions: `"@akount/db": "1.0.0"`
 - ✅ Workspace protocol: `"@akount/db": "workspace:*"`
 
 ### Turborepo Pipeline
 
 **Efficient Pipeline (`turbo.json`):**
+
 ```json
 {
   "pipeline": {
@@ -92,6 +97,7 @@ packages/
 ```
 
 **Validation:**
+
 - [ ] Build tasks declare outputs for caching
 - [ ] Dev tasks marked as persistent
 - [ ] Dependencies correct (`^build` = build dependencies first)
@@ -100,12 +106,14 @@ packages/
 ### Import Paths
 
 **Correct:**
+
 ```typescript
 import { prisma } from '@akount/db'           // ✅ Package import
 import { Invoice } from '@akount/types'       // ✅ Package import
 ```
 
 **Incorrect:**
+
 ```typescript
 import { prisma } from '../../packages/db'    // ❌ Relative path
 import { Invoice } from '../../../types'      // ❌ Relative path
@@ -114,17 +122,20 @@ import { Invoice } from '../../../types'      // ❌ Relative path
 ### Circular Dependencies
 
 **Detection:**
+
 ```bash
 # Check for cycles
 npm run check-circular  # If configured
 ```
 
 **Common Causes:**
+
 - Package A imports from Package B
 - Package B imports from Package A
 - Result: Build fails
 
 **Solution:**
+
 - Extract shared types to separate package
 - Use dependency injection
 - Refactor to unidirectional flow
@@ -132,28 +143,34 @@ npm run check-circular  # If configured
 ## Common Issues
 
 ### 1. Missing Workspace Protocol
+
 ❌ `"@akount/db": "1.0.0"`
 ✅ `"@akount/db": "workspace:*"`
 
 ### 2. Apps Depending on Apps
+
 ❌ `apps/web` importing from `apps/api`
 ✅ Extract shared code to `packages/`
 
 ### 3. Relative Imports Across Packages
+
 ❌ `import from '../../packages/db'`
 ✅ `import from '@akount/db'`
 
 ### 4. Missing Build Dependencies
+
 ❌ `dev` task doesn't depend on `^build`
 ✅ Ensure dependencies built before dev
 
 ### 5. Poor Cache Configuration
+
 ❌ All tasks have `cache: false`
 ✅ Only persistent tasks (dev, test:watch) disable cache
 
 ## Approval Criteria
 
 ✅ **PASS** if:
+
 - Workspace structure correct (apps → packages)
 - All workspace deps use `workspace:*`
 - No circular dependencies
@@ -161,6 +178,7 @@ npm run check-circular  # If configured
 - Import paths use package names
 
 ❌ **BLOCK** if:
+
 - Circular dependencies present
 - Apps depending on apps
 - Relative imports across packages

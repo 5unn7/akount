@@ -15,6 +15,7 @@ Your concise session startup ritual. Context-aware dashboard with industry intel
 ## Purpose
 
 Start coding sessions with focused context:
+
 - **Session Context** - Git status, recent changes (auto-injected via hook)
 - **Tasks** - What's pending from TASKS.md
 - **Blockers** - Issues to watch
@@ -43,6 +44,7 @@ fi
 ```
 
 **Extract and categorize:**
+
 - `[ ]` Pending tasks
 - `[->]` In progress
 - `[x]` Recently completed
@@ -50,6 +52,7 @@ fi
 - Blocked/waiting
 
 **Output:**
+
 - Total pending count
 - Top 3 priority tasks
 - Any blocked items
@@ -74,12 +77,14 @@ git diff --check
 ```
 
 **Look for:**
+
 - Merge conflicts
 - Broken tests mentioned in commits
 - Dependencies issues (package-lock changes)
 - Environment mismatches
 
 **Output:**
+
 - "Blocker: [description]" for each issue found
 - "No blockers detected" if clean
 
@@ -88,12 +93,14 @@ git diff --check
 ### Phase 3: Recent Context from Memory (15 seconds)
 
 Read MEMORY.md from auto memory directory for:
+
 - Current phase of work
 - Recent gotchas discovered
 - Patterns learned
 - Known issues
 
 **Output:**
+
 - Current work phase
 - Recent wins/lessons (1-2 bullet points)
 - Any active known issues from the Known Issues table
@@ -152,12 +159,14 @@ Review the user's recent workflow patterns from MEMORY.md and session history to
    - Git workflows that could help (interactive rebase, bisect, etc.)
 
 **Rules for tips:**
+
 - ONE tip per session (don't overwhelm)
 - Must be actionable and specific to their project, not generic advice
 - Reference their actual code/files when possible
 - Track which tips have been given in memory to avoid repeats
 
 **Output format:**
+
 ```
 ## Pro Tip
 
@@ -188,18 +197,21 @@ Use **WebSearch** to fetch fresh, relevant intelligence. Run 2-3 targeted search
    - `accounting software compliance changes` (only if relevant to current work)
 
 **Selection logic:**
+
 - If building new features: search competitors for inspiration
 - If doing infrastructure work: search tech stack updates
 - If planning phase: search market trends
 - Default: rotate through categories session to session
 
 **Output rules:**
+
 - Max 3-4 bullet points, each 1-2 sentences
 - Include source links
 - Flag anything that directly impacts Akount's roadmap
 - Skip if search returns nothing relevant (don't force it)
 
 **Output format:**
+
 ```
 ## Industry Intel
 
@@ -284,16 +296,19 @@ Consolidate everything into a concise dashboard:
 ## Notes
 
 **Replaced by hierarchical context:**
+
 - Phase 0 (Visual Context): Now auto-loaded via `CLAUDE.md` + `docs/context-map.md`
 - Git status/recent changes: Now auto-injected via SessionStart hook
 
 **Memory system:**
+
 - `MEMORY.md`: Index + high-level work state
 - `memory/codebase-quirks.md`: Path issues, gotchas
 - `memory/api-patterns.md`: Service patterns learned
 - `memory/debugging-log.md`: Past bugs, solutions
 
 **References:**
+
 - Architecture: `CLAUDE.md` (auto-loaded)
 - Deep reference: `docs/context-map.md` (explicit read)
 - Rules: `.claude/rules/*.md` (path-scoped auto-load)

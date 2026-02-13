@@ -14,6 +14,7 @@ Reset Claude's context and realign with project rules when behavior drifts.
 ## Immediate Actions
 
 **If Claude is:**
+
 - Using floats for money → Mention "integer cents"
 - Missing tenantId → Mention "tenant isolation"
 - Creating files in wrong places → Mention "file location rules"
@@ -37,24 +38,28 @@ Reset Claude's context and realign with project rules when behavior drifts.
 When Claude diverges, remind it:
 
 **Financial Rules:**
+
 - [ ] Money is integer cents (1050 = $10.50), never floats
 - [ ] tenantId required in ALL queries
 - [ ] SUM(debits) === SUM(credits) always
 - [ ] Soft delete only (deletedAt), never hard delete
 
 **File Locations:**
+
 - [ ] Plans → `docs/plans/`
 - [ ] Brainstorms → `docs/brainstorms/`
 - [ ] Session reports → `docs/archive/sessions/`
 - [ ] No root-level markdown files (except README, CLAUDE.md, STATUS.md, TASKS.md, ROADMAP.md)
 
 **Design System:**
+
 - [ ] shadcn/ui + shadcn-glass-ui@2.11.2
 - [ ] Tailwind v4 (CSS config, no tailwind.config.ts)
 - [ ] Button radius: 8px
 - [ ] Server Components by default, 'use client' when needed
 
 **API Patterns:**
+
 - [ ] Route → Schema (Zod) → Service → Prisma
 - [ ] TenantContext in every service function
 - [ ] Middleware chain: Auth → Tenant → Validation → Handler
@@ -64,24 +69,28 @@ When Claude diverges, remind it:
 ## Common Drift Patterns
 
 ### Pattern 1: Using Floats for Money
+
 **Wrong:** `amount: 10.50`
 **Correct:** `amount: 1050` (integer cents)
 
 **Reset command:** "Use integer cents for all money amounts. 1050 = $10.50."
 
 ### Pattern 2: Missing tenantId
+
 **Wrong:** `prisma.invoice.findMany()`
 **Correct:** `prisma.invoice.findMany({ where: { entity: { tenantId: ctx.tenantId } } })`
 
 **Reset command:** "Every query MUST filter by tenantId. Tenant isolation is critical."
 
 ### Pattern 3: Wrong File Locations
+
 **Wrong:** Creating `feature-plan.md` in root
 **Correct:** Creating `docs/plans/YYYY-MM-DD-feature-plan.md`
 
 **Reset command:** "Plans go in docs/plans/, brainstorms in docs/brainstorms/. Check file location rules."
 
 ### Pattern 4: Hard Delete
+
 **Wrong:** `prisma.invoice.delete({ where: { id } })`
 **Correct:** `prisma.invoice.update({ where: { id }, data: { deletedAt: new Date() } })`
 
@@ -115,12 +124,14 @@ Read the following to realign:
 ## After Reset
 
 **Verify alignment:**
+
 - [ ] Claude acknowledges the rules
 - [ ] Next response follows invariants
 - [ ] File locations correct
 - [ ] Code patterns match standards
 
 **If still off-track:**
+
 - Try `/processes:begin` for full session context
 - Check if user's custom instructions conflict
 - Consider starting new session
@@ -130,6 +141,7 @@ Read the following to realign:
 ## Prevention
 
 **To avoid drift:**
+
 - Keep sessions under 100 messages
 - Use `/processes:begin` at session start
 - Commit often (don't let work pile up uncommitted)

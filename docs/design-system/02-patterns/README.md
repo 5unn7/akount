@@ -15,6 +15,7 @@ Patterns are reusable UI solutions that combine components and foundations to so
 ## When to Use
 
 Reference these files when:
+
 - Implementing common UI workflows
 - Understanding how navigation works
 - Building data displays

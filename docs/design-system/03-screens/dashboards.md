@@ -80,6 +80,7 @@ Viewing: 🇨🇦 Corp + 🇺🇸 LLC • Jan 2026 • Converted to USD
 ```
 
 Controls (already designed):
+
 - Entity scope
 - Time range
 - Currency mode
@@ -96,12 +97,14 @@ This is the **emotional anchor**.
 | Expenses (period) | Burn             |
 
 **Design Rules:**
+
 - Large numbers
 - Monospace amounts
 - Finance semantic colors
 - Small variance indicator vs previous period
 
 Example:
+
 ```
 Net Worth
 $182,400
@@ -113,11 +116,13 @@ $182,400
 #### 3. Accounts Overview
 
 Grouped by:
+
 - Entity
 - Country
 - Currency
 
 **Account Card Anatomy:**
+
 ```
 RBC Business Chequing
 🇨🇦 Canadian Corp
@@ -127,6 +132,7 @@ Last synced: 2 min ago
 ```
 
 **UX Rules:**
+
 - Always show currency
 - Show sync health (freshness)
 - Transfers link from here
@@ -135,6 +141,7 @@ Last synced: 2 min ago
 #### 4. Cash Flow Snapshot
 
 One compact visualization showing:
+
 - Inflow vs outflow
 - Period-based comparison
 - Minimal labels
@@ -150,6 +157,7 @@ This is where Akount feels alive.
 **Prioritized Cards (Max 3–4):**
 
 Types:
+
 - ⚠ Needs attention
 - 💡 Optimization
 - 📊 Observation
@@ -158,6 +166,7 @@ Example:
 > "Your US LLC burn rate increased 18% this quarter."
 
 Each card:
+
 - Shows entity
 - Shows impact
 - Has 1 clear CTA
@@ -167,6 +176,7 @@ Each card:
 #### 6. Action Shortcuts (Subtle, Not Loud)
 
 Contextual actions placed **after insights**, not at top:
+
 - Add transaction
 - Review uncategorized
 - Reconcile accounts
@@ -261,6 +271,7 @@ Replaces "Net Worth" from founder dashboard.
 | Intercompany balanced        | ✓      |
 
 **Design Rules:**
+
 - No percentages
 - No fluff
 - Green = safe, Amber = needs work
@@ -270,6 +281,7 @@ This tells an accountant if they can trust the data.
 #### 3. Reconciliation & Exceptions
 
 **Reconciliation Summary:**
+
 ```
 Reconciliation Status
 ────────────────────
@@ -281,6 +293,7 @@ Wise EUR   ✓ Reconciled
 Clicking takes directly to **reconciliation mode**, not transactions.
 
 **Exceptions List (High Signal):**
+
 - Duplicate transactions detected
 - Bank fee without category
 - Large uncategorized amount
@@ -301,6 +314,7 @@ Accountants care deeply about *when* things are final.
 | Mar 2025 | Open          | —      |
 
 **Rules:**
+
 - Clear lock indicators
 - Explicit "ready" vs "locked"
 - No accidental locking
@@ -310,6 +324,7 @@ Accountants care deeply about *when* things are final.
 AI appears **only as validation**, never authority.
 
 Examples:
+
 - "AI confidence: High (98%) on categorization"
 - "3 transactions flagged for review by AI"
 
@@ -320,12 +335,14 @@ Examples:
 Accountants need a task queue, not reminders.
 
 **Task Types:**
+
 - Review journal entry
 - Clarify expense
 - Approve reconciliation
 - Prepare report
 
 Each task shows:
+
 - Entity
 - Period
 - Requester (Founder / AI)
@@ -335,6 +352,7 @@ This replaces email threads.
 ### Drill-Down Rules (Very Important)
 
 From this dashboard, click **only** to fix problems:
+
 - Never to explore trends
 - Never to "browse"
 
@@ -360,6 +378,7 @@ Provides **security** through awareness and micro-habits.
 > "Widgets = gentle helpers"
 
 No widget should:
+
 - Block anything
 - Demand action
 - Introduce a workflow
@@ -387,6 +406,7 @@ Optional / Hidden Widgets
 ```
 
 Widgets are:
+
 - reorderable
 - removable
 - collapsible
@@ -431,6 +451,7 @@ Looks normal 👍
 ```
 
 **Rules:**
+
 - One habit only
 - Disappears once done
 - Reappears next day (new habit)
@@ -446,6 +467,7 @@ You've checked your money
 ```
 
 **Rules:**
+
 - No numbers > 14 days
 - No "broken" state
 - Hidden if streak = 0 and user opted out
@@ -462,6 +484,7 @@ You've checked your money
 ```
 
 **Rules:**
+
 - Max 2 goals shown
 - Most recent or nearest deadline
 - Tap → full goals page
@@ -478,6 +501,7 @@ matter more than big ones.
 ```
 
 **Rules:**
+
 - Appears 2–3x per week max
 - Contextual
 - Dismissible forever
@@ -486,6 +510,7 @@ matter more than big ones.
 ### Optional Widgets (Off By Default)
 
 These are **opt-in:**
+
 - 📅 Upcoming Bills
 - 🔁 Subscriptions
 - 🧾 Recent Transactions
@@ -496,6 +521,7 @@ These are **opt-in:**
 Accessible via: "Customize Dashboard"
 
 Controls:
+
 - Toggle widgets on/off
 - Reorder via drag
 - Reset to default
@@ -517,6 +543,7 @@ Accountants **never see** behavior widgets.
 ### Graduation Path (Subtle)
 
 As users mature:
+
 - Widgets shrink
 - Advanced widgets appear (cash flow, categories)
 - Micro-habits fade naturally
@@ -571,6 +598,7 @@ Used in: Founder & Accountant dashboards
 ### Status Badge
 
 Visual indicators:
+
 - ✓ Complete / Reconciled
 - ⚠ Needs attention
 - ⏳ In progress
@@ -630,6 +658,7 @@ Multi-column widgets.
 All dashboards adapt to dark mode:
 
 Visual rules:
+
 - Slightly elevated surfaces (card backgrounds darker)
 - Maintain contrast for numbers
 - Keep semantic colors consistent (green = income, red = expense)

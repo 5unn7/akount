@@ -2,9 +2,11 @@
 
 ---
 paths:
-  - "apps/web/**"
-  - "packages/ui/**"
-  - "packages/design-tokens/**"
+
+- "apps/web/**"
+- "packages/ui/**"
+- "packages/design-tokens/**"
+
 ---
 
 > **Canonical reference:** `brand/inspirations/financial-clarity-final.html`
@@ -67,15 +69,18 @@ Dark backgrounds need lighter semantic colors than light mode:
 ## Component Patterns
 
 **Cards:** Glass background + 1px subtle border + gentle hover lift
+
 ```
 background: var(--glass);
 border: 1px solid rgba(255,255,255,0.06);
 border-radius: 14px;
 transition: border-color 0.2s, transform 0.2s;
 ```
+
 On hover: border brightens, 1px translateY lift, subtle shadow.
 
 **Buttons:** 8px radius. Three tiers:
+
 - Ghost: transparent + border
 - Dim: primary-dim background + subtle primary border
 - Solid: full primary background
@@ -87,6 +92,7 @@ On hover: border brightens, 1px translateY lift, subtle shadow.
 ## Glow Effects
 
 Subtle use of `box-shadow` with color-matched transparency:
+
 - Orange glow: `0 0 16px rgba(245,158,11, 0.08)`
 - Green glow: `0 0 12px rgba(52,211,153, 0.06)`
 - The Pulse orb: `radial-gradient` with breathing animation

@@ -37,6 +37,7 @@ const incomeColor = tokens.semantic.color.finance.income.value;
 ## Token Categories
 
 ### Core Tokens
+
 - **Colors**: orange, violet, slate, green, red, amber, blue
 - **Typography**: font families, sizes, weights, line heights
 - **Spacing**: 4px grid system (1, 2, 3, 4, 6, 8, 12)
@@ -45,6 +46,7 @@ const incomeColor = tokens.semantic.color.finance.income.value;
 - **Motion**: durations and easings
 
 ### Semantic Tokens
+
 - **Background**: primary, secondary, surface, elevated
 - **Text**: primary, secondary, muted, inverse
 - **Border**: default, subtle, strong
@@ -54,6 +56,7 @@ const incomeColor = tokens.semantic.color.finance.income.value;
 - **AI**: primary, background, border
 
 ### Component Tokens
+
 - Button styles (primary, secondary)
 - Table styles (header, row, border)
 - Badge styles (success, warning, error, ai)

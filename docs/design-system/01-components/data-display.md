@@ -32,11 +32,13 @@ Container for related information:
 ```
 
 **Usage:**
+
 - Dashboard KPI cards
 - Summary information
 - Grouped related data
 
 **Variants:**
+
 - Elevated (shadow)
 - Flat (border only)
 - Interactive (hover state, clickable)
@@ -56,12 +58,14 @@ Financial metric display:
 ```
 
 **Components:**
+
 - Label (14px, medium weight)
 - Value (32px, monospace, brand color if positive)
 - Trend (arrow + percentage, colored)
 - Period (12px, muted)
 
 **Colors:**
+
 - Positive: Green (--ak-finance-income)
 - Negative: Red (--ak-finance-expense)
 - Neutral: Slate
@@ -81,6 +85,7 @@ See [`../02-patterns/tables-data.md`](../02-patterns/tables-data.md) for compreh
 - Virtual scrolling for large datasets
 
 **Key principles for tables:**
+
 - Monospace amounts (right-aligned)
 - Color-coded direction (↑ green income, ↓ red expense)
 - Multi-entity awareness (flag + label)
@@ -232,6 +237,7 @@ When no data to display:
 ```
 
 **Components:**
+
 - Icon (large, muted)
 - Heading (14px, medium)
 - Description (12px, muted)
@@ -291,6 +297,7 @@ In-progress indicator:
 ```
 
 **Properties:**
+
 - Width: 500px (default), 700px (large), 350px (small)
 - Backdrop: Dark overlay (opacity 0.5)
 - Keyboard: Escape to close, Tab cycles focus
@@ -363,12 +370,14 @@ Expandable sections:
 ```
 
 **Interaction:**
+
 - Click header to toggle
 - Only one open at a time (optional)
 - Icon: ▼ (open) / ▶ (closed)
 - Smooth animation
 
 **Use case:**
+
 - Multi-step workflows
 - Grouped transaction details
 - Report drill-down

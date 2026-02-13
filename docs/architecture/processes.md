@@ -37,6 +37,7 @@ Controllers/Routes → Services → Repositories → Models
 ```
 
 **Principles:**
+
 - **Separation of Concerns**: Each layer has a single responsibility
 - **Dependency Injection**: Services are injected, not imported
 - **Pure Domain Logic**: Business rules as pure functions
@@ -47,6 +48,7 @@ Controllers/Routes → Services → Repositories → Models
 ## Testing Strategy
 
 ### Coverage Targets
+
 - **Unit tests**: 80%+ on domain logic, utilities
 - **Integration tests**: All critical API endpoints
 - **E2E tests**: 10-15 critical user journeys
@@ -69,6 +71,7 @@ Controllers/Routes → Services → Repositories → Models
 ```
 
 ### Tools
+
 - **Unit/Integration**: Vitest
 - **E2E**: Playwright
 - **Database**: Test containers or transaction rollback
@@ -76,6 +79,7 @@ Controllers/Routes → Services → Repositories → Models
 - **Coverage**: NYC/Istanbul
 
 ### Testing Best Practices
+
 - **Write tests first** (TDD where possible)
 - **Test behavior, not implementation**
 - **One assertion per test** (generally)
@@ -101,6 +105,7 @@ Controllers/Routes → Services → Repositories → Models
 ### Review Checklist
 
 Before approving, verify:
+
 - [ ] Logic correct and efficient
 - [ ] Tests cover new code
 - [ ] No security vulnerabilities
@@ -123,6 +128,7 @@ Closes #123
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `refactor`: Code refactoring
@@ -131,6 +137,7 @@ Closes #123
 - `chore`: Build, dependencies, etc.
 
 **Examples:**
+
 ```
 feat(auth): add passkey authentication
 
@@ -166,6 +173,7 @@ Fixes #78
 7. **Security scan** (npm audit, Snyk)
 
 **Fail if:**
+
 - Linting errors
 - Type errors
 - Test failures
@@ -185,22 +193,26 @@ Fixes #78
 ### Deployment Strategy
 
 **Staging:**
+
 - Auto-deploy on merge to `main`
 - Latest code always available
 - Used for QA and testing
 
 **Production:**
+
 - Manual approval required
 - Deploy during low-traffic hours
 - Run health checks before and after
 - Monitor for 15 minutes post-deploy
 
 **Rollback:**
+
 - One-click rollback to previous version
 - Automatically triggered if health checks fail
 - Database migrations require manual intervention
 
 **Database Migrations:**
+
 - Run automatically on deploy
 - Backup before migration
 - Test in staging first
@@ -213,17 +225,20 @@ Fixes #78
 ### Linting & Formatting
 
 **ESLint:**
+
 - Extends recommended configs
 - TypeScript-specific rules
 - React/Next.js rules
 - Custom rules for project patterns
 
 **Prettier:**
+
 - Consistent code formatting
 - Runs on save (IDE)
 - Enforced in CI
 
 **Configuration:**
+
 ```json
 {
   "semi": false,
@@ -236,6 +251,7 @@ Fixes #78
 ### Type Safety
 
 **TypeScript Configuration:**
+
 - `strict: true`
 - `noUncheckedIndexedAccess: true`
 - `noImplicitReturns: true`
@@ -243,6 +259,7 @@ Fixes #78
 - `noUnusedParameters: true`
 
 **Best Practices:**
+
 - Avoid `any` (use `unknown` if needed)
 - Define interfaces for data structures
 - Use Zod for runtime validation
@@ -255,12 +272,14 @@ Fixes #78
 ### Code Documentation
 
 **When to document:**
+
 - Complex algorithms
 - Non-obvious business logic
 - Public APIs
 - Workarounds for known issues
 
 **When NOT to document:**
+
 - Self-explanatory code
 - Obvious logic
 - Standard patterns
@@ -298,6 +317,7 @@ const user = await getUserById(id)
 ### Optimization Guidelines
 
 **Frontend:**
+
 - Lazy load routes
 - Optimize images (Next.js Image)
 - Minimize bundle size
@@ -305,6 +325,7 @@ const user = await getUserById(id)
 - Paginate large lists
 
 **Backend:**
+
 - Index frequently queried fields
 - Use connection pooling
 - Cache expensive queries
@@ -312,6 +333,7 @@ const user = await getUserById(id)
 - Optimize N+1 queries
 
 **Database:**
+
 - Add indexes on foreign keys
 - Use EXPLAIN ANALYZE for slow queries
 - Avoid SELECT *

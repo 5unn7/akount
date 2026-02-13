@@ -170,8 +170,16 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
       const formData = new FormData();
       formData.append('file', selectedFile);
 
+      console.log('[Import] Uploading with:', {
+        fileName: selectedFile.name,
+        accountId: selectedAccountId,
+        hasColumnMappings: !!columnMappings,
+      });
+
       if (selectedAccountId) {
         formData.append('accountId', selectedAccountId);
+      } else {
+        console.error('[Import] No accountId selected - upload will fail');
       }
 
       if (columnMappings && isCSV) {
@@ -333,31 +341,43 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Account Selection */}
-          {accounts.length > 0 && (
-            <div className="space-y-2">
-              <Label htmlFor="account-select" className="text-xs uppercase tracking-wider text-muted-foreground">
-                Target Account
-              </Label>
-              <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
-                <SelectTrigger
-                  id="account-select"
-                  className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
-                >
-                  <SelectValue placeholder="Select an account" />
-                </SelectTrigger>
-                <SelectContent className="glass-2 rounded-lg border-white/[0.09]">
-                  {accounts.map((account) => (
-                    <SelectItem key={account.id} value={account.id}>
-                      {account.name} ({account.currency}) &mdash; {account.entity.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                Optional. Select the account these transactions belong to.
-              </p>
-            </div>
-          )}
+          <div className="space-y-2">
+            <Label htmlFor="account-select" className="text-xs uppercase tracking-wider text-muted-foreground">
+              Target Account
+            </Label>
+            {accounts.length > 0 ? (
+              <>
+                <Select value={selectedAccountId} onValueChange={setSelectedAccountId}>
+                  <SelectTrigger
+                    id="account-select"
+                    className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
+                  >
+                    <SelectValue placeholder="Select an account" />
+                  </SelectTrigger>
+                  <SelectContent className="glass-2 rounded-lg border-white/[0.09]">
+                    {accounts.map((account) => (
+                      <SelectItem key={account.id} value={account.id}>
+                        {account.name} ({account.currency}) &mdash; {account.entity.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Required. Select the account these transactions belong to.
+                </p>
+              </>
+            ) : (
+              <div className="p-4 bg-[rgba(245,158,11,0.08)] border border-[rgba(245,158,11,0.2)] rounded-lg">
+                <p className="text-sm font-medium text-[#F59E0B] mb-1">No Accounts Found</p>
+                <p className="text-sm text-muted-foreground">
+                  You need to create a bank account before importing transactions.{' '}
+                  <a href="/banking/accounts" className="text-[#F59E0B] hover:text-[#FBBF24] underline">
+                    Create an account
+                  </a>
+                </p>
+              </div>
+            )}
+          </div>
 
           {/* File Upload Zone */}
           <div
@@ -425,8 +445,9 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
                 </Button>
                 <Button
                   size="sm"
-                  className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                  className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={handleProceed}
+                  disabled={!selectedAccountId}
                 >
                   {isCSV ? 'Next: Map Columns' : 'Import'}
                 </Button>

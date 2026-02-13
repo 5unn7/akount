@@ -23,11 +23,13 @@
 **Reference:** `docs/design-system/05-governance/information-architecture.md`
 
 - [ ] Create domains directory structure:
+
   ```bash
   mkdir -p apps/api/src/domains/{overview,banking,business,accounting,planning,ai,services,system}/services
   ```
 
 - [ ] Resulting structure:
+
   ```
   apps/api/src/
   ├── index.ts
@@ -95,6 +97,7 @@
 #### 4.2.1 Overview Domain Routes
 
 - [ ] Create `apps/api/src/domains/overview/routes.ts`:
+
   ```typescript
   import type { FastifyInstance } from 'fastify';
   import { withPermission } from '../../middleware/withPermission';
@@ -132,6 +135,7 @@
 #### 4.2.2 Money Movement Domain Routes
 
 - [ ] Create `apps/api/src/domains/banking/routes.ts`:
+
   ```typescript
   import type { FastifyInstance } from 'fastify';
   import { withPermission } from '../../middleware/withPermission';
@@ -223,6 +227,7 @@
 #### 4.2.3 Accounting Domain Routes
 
 - [ ] Create `apps/api/src/domains/accounting/routes.ts`:
+
   ```typescript
   import type { FastifyInstance } from 'fastify';
   import { withPermission } from '../../middleware/withPermission';
@@ -304,6 +309,7 @@
 #### 4.2.4 System Domain Routes
 
 - [ ] Create `apps/api/src/domains/system/routes.ts`:
+
   ```typescript
   import type { FastifyInstance } from 'fastify';
   import { withPermission } from '../../middleware/withPermission';
@@ -360,6 +366,7 @@
 ### 4.3 Update Main Server Index
 
 - [ ] Update `apps/api/src/index.ts`:
+
   ```typescript
   import Fastify from 'fastify';
   import { authMiddleware } from './middleware/auth';
@@ -419,6 +426,7 @@
 - [ ] **Step 1:** Create domains/ directory structure (done above)
 
 - [ ] **Step 2:** Move existing services to appropriate domains:
+
   | Current Location | New Location | Domain |
   |------------------|--------------|--------|
   | `routes/accounts.ts` | `domains/banking/routes.ts` | Money Movement |
@@ -432,6 +440,7 @@
 - [ ] **Step 4:** Apply RBAC middleware to all routes (per templates above)
 
 - [ ] **Step 5:** Test all endpoints:
+
   ```bash
   # Test each domain endpoint
   curl http://localhost:4000/api/overview/dashboard
@@ -447,11 +456,13 @@
 ### 4.5 Reorganize Schemas by Domain
 
 - [ ] Create domain-specific schema files:
+
   ```bash
   mkdir -p apps/api/src/schemas/{overview,banking,business,accounting,system}
   ```
 
 - [ ] Move/create schemas:
+
   | Schema | Domain |
   |--------|--------|
   | `dashboardMetrics.schema.ts` | overview |
@@ -479,6 +490,7 @@ Before marking Phase 4 complete:
 - [ ] API tests pass
 
 **Test commands:**
+
 ```bash
 pnpm --filter @akount/api test
 pnpm --filter @akount/api dev
@@ -490,5 +502,6 @@ pnpm --filter @akount/api dev
 ## Handoff
 
 When complete:
+
 - Phase 5 can align web routes with API domains
 - Update status in `docs/restructuring/README.md` to ✅ COMPLETE

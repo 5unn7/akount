@@ -10,18 +10,21 @@
 ### Severity Levels
 
 **SEV-1 (Critical)**: Complete service outage, data loss
+
 - **Response**: Immediate, all hands
 - **Communication**: Status page, email to all users
 - **Resolution Target**: Within 1 hour
 - **Examples**: Database down, payment system broken, data breach
 
 **SEV-2 (Major)**: Significant functionality broken, no workaround
+
 - **Response**: Within 30 minutes
 - **Communication**: Status page
 - **Resolution Target**: Within 4 hours
 - **Examples**: Cannot create invoices, bank sync failing, login slow
 
 **SEV-3 (Minor)**: Small issue, workaround available
+
 - **Response**: Within 2 hours
 - **Communication**: Ticket system
 - **Resolution Target**: Within 24 hours
@@ -40,6 +43,7 @@
 ### Communication Templates
 
 **SEV-1 Status Page:**
+
 ```
 🔴 Service Disruption
 We are experiencing a complete service outage. Our team is
@@ -51,6 +55,7 @@ Next update: [timestamp + 15min]
 ```
 
 **Post-Incident:**
+
 ```
 ✅ Incident Resolved
 The issue affecting [functionality] has been resolved.
@@ -69,6 +74,7 @@ Root cause: [brief description]
 ### Critical Alerts (SEV-1)
 
 **Trigger immediate page:**
+
 - API error rate >5% for 5 minutes
 - Database connection failures
 - Payment processing failures
@@ -79,6 +85,7 @@ Root cause: [brief description]
 ### Warning Alerts (SEV-2)
 
 **Notify via Slack + Email:**
+
 - API latency p95 >2s for 10 minutes
 - Disk usage >80%
 - Memory usage >85%
@@ -89,6 +96,7 @@ Root cause: [brief description]
 ### Info Alerts
 
 **Dashboard only:**
+
 - Slow queries >5s
 - High memory usage >70%
 - Bank sync failures (individual accounts)
@@ -98,19 +106,23 @@ Root cause: [brief description]
 ### Alert Routing
 
 **SEV-1:**
+
 - PagerDuty (on-call rotation)
 - Slack #incidents channel
 - Email to engineering team
 
 **SEV-2:**
+
 - Slack #alerts channel
 - Email to on-call engineer
 
 **SEV-3:**
+
 - Email to support queue
 - Dashboard notification
 
 **Info:**
+
 - Dashboard only
 - Weekly digest email
 
@@ -121,21 +133,25 @@ Root cause: [brief description]
 ### Backup Strategy
 
 **Database:**
+
 - Automated daily backups with 30-day retention
 - Point-in-time recovery (PITR) enabled
 - Backups stored in separate region
 - Encrypted at rest
 
 **Attachments:**
+
 - Daily sync to separate region (Cloudflare R2)
 - Versioning enabled (30-day retention)
 
 **Configuration:**
+
 - Version controlled in Git
 - Infrastructure as Code (Terraform/Pulumi)
 - Secrets in separate vault
 
 **Code:**
+
 - Git repository with full history
 - Daily mirror to separate provider
 - Tagged releases
@@ -143,16 +159,19 @@ Root cause: [brief description]
 ### Recovery Targets
 
 **RTO (Recovery Time Objective):** 4 hours
+
 - Maximum acceptable downtime
 - Time to restore service from backup
 
 **RPO (Recovery Point Objective):** 24 hours
+
 - Maximum acceptable data loss
 - Daily backups = 24-hour window
 
 ### Disaster Recovery Plan
 
 **Scenario 1: Database Failure**
+
 1. Restore database from latest backup
 2. Verify data integrity (run validation queries)
 3. Update connection strings
@@ -161,6 +180,7 @@ Root cause: [brief description]
 6. Communicate to users
 
 **Scenario 2: Complete Infrastructure Loss**
+
 1. Provision new infrastructure (Railway or backup provider)
 2. Restore database from backup
 3. Deploy latest application version
@@ -170,6 +190,7 @@ Root cause: [brief description]
 7. Monitor for 24 hours
 
 **Scenario 3: Data Corruption**
+
 1. Identify corruption point-in-time
 2. Restore from backup before corruption
 3. Replay transactions from audit log
@@ -179,11 +200,13 @@ Root cause: [brief description]
 ### Testing Schedule
 
 **Quarterly:**
+
 - Backup restore test (non-production)
 - Verify backup integrity
 - Test recovery procedures
 
 **Annually:**
+
 - Full DR failover drill
 - Complete infrastructure rebuild
 - Team training on DR procedures
@@ -195,6 +218,7 @@ Root cause: [brief description]
 ### Development Security
 
 **Code Security:**
+
 - No secrets in code or Git (use env vars)
 - Input validation on all endpoints (Zod)
 - SQL injection prevention (Prisma parameterized queries)
@@ -203,6 +227,7 @@ Root cause: [brief description]
 - Rate limiting per IP and per user
 
 **Dependencies:**
+
 - Regular updates (Dependabot)
 - Security scanning in CI (npm audit, Snyk)
 - Review security advisories
@@ -211,18 +236,21 @@ Root cause: [brief description]
 ### Infrastructure Security
 
 **Network:**
+
 - TLS 1.2+ only, strong cipher suites
 - HTTPS enforced (redirect HTTP → HTTPS)
 - HSTS headers enabled
 - No public database access (internal VPC only)
 
 **Data:**
+
 - Database encryption at rest (native PostgreSQL)
 - Encrypted backups
 - TLS in transit for all services
 - Secrets in environment variables (Railway/Render)
 
 **Access Control:**
+
 - Principle of least privilege
 - IAM roles and policies
 - Database roles with minimal permissions
@@ -232,6 +260,7 @@ Root cause: [brief description]
 ### Operations Security
 
 **Monitoring:**
+
 - Regular dependency updates (Dependabot)
 - Security scanning in CI (npm audit, Snyk)
 - Quarterly security review
@@ -239,12 +268,14 @@ Root cause: [brief description]
 - Log all security events
 
 **Audit:**
+
 - All sensitive operations logged (AuditLog table)
 - Login attempts logged
 - Failed authentication attempts monitored
 - Admin actions logged with actor ID
 
 **Compliance:**
+
 - GDPR data export capability
 - User data deletion (right to erasure)
 - Data retention policies
@@ -253,6 +284,7 @@ Root cause: [brief description]
 ### Security Incident Response
 
 **If breach detected:**
+
 1. **Contain**: Isolate affected systems
 2. **Assess**: Determine scope and impact
 3. **Notify**: Legal, users (if PII affected), authorities (if required)
@@ -260,6 +292,7 @@ Root cause: [brief description]
 5. **Review**: Post-mortem, improve security
 
 **Notification Timeline:**
+
 - Internal team: Immediate
 - Legal: Within 1 hour
 - Affected users: Within 24 hours (GDPR requirement: 72 hours)
@@ -274,6 +307,7 @@ Root cause: [brief description]
 **Endpoint:** `GET /api/health`
 
 **Checks:**
+
 - API server responsive
 - Database connection
 - Redis connection
@@ -282,6 +316,7 @@ Root cause: [brief description]
 - Memory usage acceptable
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -299,6 +334,7 @@ Root cause: [brief description]
 ### Smoke Tests
 
 **Post-Deployment:**
+
 1. API health check passes
 2. User can log in
 3. Dashboard loads with data
@@ -307,6 +343,7 @@ Root cause: [brief description]
 6. Background jobs processing
 
 **Frequency:**
+
 - After every deployment
 - Every 5 minutes in production
 - Alerts if any check fails
@@ -316,12 +353,14 @@ Root cause: [brief description]
 ## On-Call Rotation
 
 ### Schedule
+
 - 24/7 coverage
 - 1-week rotations
 - Primary and secondary on-call
 - Handoff meeting every Monday
 
 ### Responsibilities
+
 - Respond to SEV-1 alerts within 5 minutes
 - Triage and escalate as needed
 - Update status page
@@ -329,6 +368,7 @@ Root cause: [brief description]
 - Conduct post-mortems
 
 ### Compensation
+
 - On-call stipend per week
 - Additional pay for incident response
 - Comp time for after-hours incidents
@@ -340,6 +380,7 @@ Root cause: [brief description]
 ### Common Issues
 
 **Database Connection Failure:**
+
 1. Check Railway/database status page
 2. Verify connection string in env vars
 3. Check connection pool exhaustion
@@ -347,6 +388,7 @@ Root cause: [brief description]
 5. Scale up database if needed
 
 **High API Latency:**
+
 1. Check database slow queries (Prisma Studio)
 2. Check Redis connection
 3. Review recent deployments
@@ -354,6 +396,7 @@ Root cause: [brief description]
 5. Scale API server if needed
 
 **Failed Background Jobs:**
+
 1. Check BullMQ dashboard
 2. Review job error logs
 3. Check Redis memory usage

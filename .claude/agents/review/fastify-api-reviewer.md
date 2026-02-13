@@ -35,6 +35,7 @@ You are a **Fastify API Expert** specializing in RESTful API design, Zod validat
 ### Route Structure
 
 **RESTful Patterns:**
+
 ```
 GET    /api/invoices           - List all
 POST   /api/invoices           - Create one
@@ -44,6 +45,7 @@ DELETE /api/invoices/:id       - Soft delete one
 ```
 
 **Required on ALL Routes:**
+
 - [ ] Authentication middleware (`authMiddleware`)
 - [ ] Tenant middleware (`tenantMiddleware`) or tenant check
 - [ ] Zod validation schema
@@ -53,6 +55,7 @@ DELETE /api/invoices/:id       - Soft delete one
 ### Zod Validation
 
 **Schema Definition:**
+
 ```typescript
 import { z } from 'zod'
 
@@ -76,6 +79,7 @@ fastify.post('/invoices', {
 ```
 
 **Validation Rules:**
+
 - [ ] All user inputs validated with Zod
 - [ ] UUIDs validated with `z.string().uuid()` or `.cuid()`
 - [ ] Money values are `z.number().int()` (cents)
@@ -86,6 +90,7 @@ fastify.post('/invoices', {
 ### Authentication & Authorization
 
 **Required Pattern:**
+
 ```typescript
 fastify.get('/invoices/:id', {
   onRequest: [authMiddleware], // REQUIRED
@@ -118,6 +123,7 @@ fastify.get('/invoices/:id', {
 ### Error Handling
 
 **Required:**
+
 ```typescript
 try {
   // Route logic
@@ -132,6 +138,7 @@ try {
 ```
 
 **Error Response Format:**
+
 ```typescript
 {
   error: 'Machine-readable code',
@@ -143,12 +150,14 @@ try {
 ### Database Queries
 
 **CRITICAL Checks:**
+
 - [ ] ALL queries include `tenantId` filter (see `docs/standards/multi-tenancy.md`)
 - [ ] Soft delete filter: `deletedAt: null`
 - [ ] Use transactions for multi-table updates
 - [ ] Check ownership before update/delete
 
 **N+1 Query Prevention:**
+
 ```typescript
 // ❌ BAD: N+1 queries
 const invoices = await prisma.invoice.findMany()
@@ -165,11 +174,13 @@ const invoices = await prisma.invoice.findMany({
 ### Response Formatting
 
 **Single Resource:**
+
 ```typescript
 return { invoice }
 ```
 
 **List:**
+
 ```typescript
 return {
   data: invoices,
@@ -185,32 +196,39 @@ return {
 ## Common Issues
 
 ### 1. Missing Authentication
+
 ❌ No `onRequest: [authMiddleware]`
 ✅ Auth middleware on ALL routes
 
 ### 2. Missing Tenant Isolation
+
 ❌ Query without `tenantId`
 ✅ ALL queries filter by `tenantId`
 
 ### 3. Float for Money
+
 ❌ `amount: z.number()` (allows floats)
 ✅ `amount: z.number().int()` (integer cents)
 
 ### 4. Hard Delete
+
 ❌ `prisma.invoice.delete()`
 ✅ `prisma.invoice.update({ data: { deletedAt: new Date() } })`
 
 ### 5. No Error Handling
+
 ❌ No try-catch, unhandled rejections
 ✅ try-catch with structured logging
 
 ### 6. Weak Validation
+
 ❌ `z.string()` (no limits)
 ✅ `z.string().min(1).max(255)`
 
 ## Approval Criteria
 
 ✅ **PASS** if:
+
 - Auth middleware on all routes
 - Zod validation comprehensive
 - Tenant isolation enforced
@@ -219,6 +237,7 @@ return {
 - Follows API design standard
 
 ❌ **BLOCK** if:
+
 - Missing authentication
 - Cross-tenant data access possible
 - Float used for money

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { apiClient } from '@/lib/api/client'
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { ReactQueryProvider } from '@/providers/query-provider';
 import type { Role } from '@akount/types';
 
 interface OnboardingStatus {
@@ -84,14 +85,16 @@ export default async function DashboardLayout({
     }
 
     return (
-        <div className="h-full relative">
-            <div className="hidden h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80] bg-[#0F0F17] text-foreground">
-                <Sidebar role={role} />
+        <ReactQueryProvider>
+            <div className="h-full relative">
+                <div className="hidden h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80] bg-[#0F0F17] text-foreground">
+                    <Sidebar role={role} />
+                </div>
+                <main className="md:pl-72">
+                    <Navbar />
+                    {children}
+                </main>
             </div>
-            <main className="md:pl-72">
-                <Navbar />
-                {children}
-            </main>
-        </div>
+        </ReactQueryProvider>
     );
 }

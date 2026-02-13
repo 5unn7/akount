@@ -9,6 +9,7 @@
 ## Overview
 
 Technical debt improvements for the Prisma schema to ensure:
+
 - Type safety (enums instead of strings)
 - Performance (strategic indexes)
 - Multi-jurisdiction support (global solopreneur use case)
@@ -374,6 +375,7 @@ Convert `String` to `Json @db.JsonB`:
 ## 4. Performance Indexes (45+)
 
 ### Entity-Based Queries
+
 ```prisma
 // All tenant-scoped models need these
 @@index([tenantId])
@@ -381,6 +383,7 @@ Convert `String` to `Json @db.JsonB`:
 ```
 
 ### Temporal Queries (Reports)
+
 ```prisma
 // JournalEntry
 @@index([entityId, date])
@@ -396,6 +399,7 @@ Convert `String` to `Json @db.JsonB`:
 ```
 
 ### AR/AP Aging
+
 ```prisma
 // Invoice
 @@index([entityId, status])
@@ -410,6 +414,7 @@ Convert `String` to `Json @db.JsonB`:
 ```
 
 ### Compliance & Audit
+
 ```prisma
 // AuditLog
 @@index([tenantId, createdAt])
@@ -419,6 +424,7 @@ Convert `String` to `Json @db.JsonB`:
 ```
 
 ### Multi-Currency
+
 ```prisma
 // FxRate
 @@index([fromCurrency, toCurrency, date])
@@ -433,6 +439,7 @@ Convert `String` to `Json @db.JsonB`:
 ## 5. Multi-Jurisdiction Additions
 
 ### Tax Configuration Table
+
 ```prisma
 model TaxJurisdiction {
   id              String   @id @default(cuid())
@@ -470,6 +477,7 @@ model TaxJurisdiction {
 ```
 
 ### Entity Tax IDs
+
 ```prisma
 model EntityTaxId {
   id          String   @id @default(cuid())
@@ -495,6 +503,7 @@ model EntityTaxId {
 Based on "AI financial command center for global solopreneurs":
 
 ### ✅ Already in Schema
+
 - Multi-entity support
 - Multi-currency with FX
 - Double-entry bookkeeping
@@ -502,6 +511,7 @@ Based on "AI financial command center for global solopreneurs":
 - Bank connections
 
 ### ⚠️ Needs Enhancement
+
 - [ ] **TenantRegion** - Add IN (India) - **CRITICAL**
 - [ ] **EntityJurisdiction** - Track where entities are registered
 - [ ] **PaymentMethod** - Add UPI, INTERAC, ACH region-specific methods
@@ -510,6 +520,7 @@ Based on "AI financial command center for global solopreneurs":
 - [ ] **EntityTaxId** - Multiple tax IDs per entity (GST, PAN, EIN)
 
 ### ❌ Not in Schema (Consider Adding)
+
 - [ ] **ComplianceDeadline** - Track filing deadlines by jurisdiction
 - [ ] **TaxFormTemplate** - Required forms per jurisdiction
 - [ ] **AccountantConnection** - Link to external accountants
@@ -520,24 +531,28 @@ Based on "AI financial command center for global solopreneurs":
 ## Implementation Plan
 
 ### Phase A: Safe Changes (Non-Breaking)
+
 1. Add all enum definitions to schema
 2. Add all performance indexes
 3. Run `npx prisma validate`
 4. Run `npx prisma migrate dev --name add-enums-indexes`
 
 ### Phase B: Relation Naming (Breaking)
+
 1. Rename all PascalCase relations to camelCase
 2. Update all TypeScript code
 3. Run migration
 4. Test thoroughly
 
 ### Phase C: Type Conversions (Breaking)
+
 1. Convert String fields to Enum types
 2. Convert String fields to Json types
 3. Validate existing data
 4. Run data migration
 
 ### Phase D: Multi-Jurisdiction (New Features)
+
 1. Add TaxJurisdiction model
 2. Add EntityTaxId model
 3. Update Entity model with jurisdiction

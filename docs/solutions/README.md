@@ -79,19 +79,24 @@ Why it happened
 ```
 
 ### Why It Works
+
 Explanation
 
 ## Prevention
 
 ### How to Detect Early
+
 Warning signs
 
 ### How to Prevent
+
 Patterns to follow
 
 ## Related
+
 - Links to similar issues
 - Documentation references
+
 ```
 
 ---
@@ -224,11 +229,13 @@ title: "N+1 Query Causing Slow Invoice List Load"
 ```
 
 **category:** One of the 9 categories
+
 ```yaml
 category: "performance"
 ```
 
 **tags:** Keywords for searchability
+
 ```yaml
 tags:
   - prisma
@@ -238,11 +245,13 @@ tags:
 ```
 
 **date:** When problem was solved (YYYY-MM-DD)
+
 ```yaml
 date: 2026-01-30
 ```
 
 **resolved:** Boolean (true if fixed)
+
 ```yaml
 resolved: true
 ```
@@ -250,16 +259,19 @@ resolved: true
 ### Optional Fields
 
 **severity:** Impact level
+
 ```yaml
 severity: low | medium | high | critical
 ```
 
 **module:** Affected package/app
+
 ```yaml
 module: "apps/api"
 ```
 
 **related:** Links to related solutions
+
 ```yaml
 related:
   - docs/solutions/performance/caching-strategy.md
@@ -267,11 +279,13 @@ related:
 ```
 
 **github_issue:** Related GitHub issue
+
 ```yaml
 github_issue: 123
 ```
 
 **author:** Who solved it
+
 ```yaml
 author: "@alice"
 ```
@@ -281,6 +295,7 @@ author: "@alice"
 ## Searching Solutions
 
 ### By Keyword
+
 ```bash
 grep -r "N+1 query" docs/solutions/
 grep -r "Clerk authentication" docs/solutions/
@@ -288,6 +303,7 @@ grep -r "migration" docs/solutions/
 ```
 
 ### By Category
+
 ```bash
 ls docs/solutions/database/
 ls docs/solutions/performance/
@@ -295,18 +311,21 @@ find docs/solutions/security -name "*.md"
 ```
 
 ### By Tag
+
 ```bash
 grep -l "tags:.*prisma" docs/solutions/**/*.md
 grep -l "tags:.*auth" docs/solutions/**/*.md
 ```
 
 ### By Severity
+
 ```bash
 grep -l "severity: critical" docs/solutions/**/*.md
 grep -l "severity: high" docs/solutions/**/*.md
 ```
 
 ### By Date Range
+
 ```bash
 find docs/solutions -name "2026-01-*.md"
 find docs/solutions -name "2026-*.md"
@@ -372,6 +391,7 @@ for (const invoice of invoices) {
 ```
 
 **Why:** Sequential queries in loop
+
 - Query 1: Load all invoices (1 query)
 - Queries 2-101: Load client for each invoice (100 queries)
 - **Total: 101 queries**
@@ -408,6 +428,7 @@ const invoices = await prisma.invoice.findMany({
 ```
 
 **Result:**
+
 - Queries: 101 → 1
 - Load time: 2.5s → 180ms
 - **14x faster** ⚡
@@ -430,6 +451,7 @@ ORDER BY invoice.createdAt DESC
 ### How to Detect Early
 
 **1. Enable Prisma Query Logging (Development):**
+
 ```typescript
 // packages/db/index.ts
 const prisma = new PrismaClient({
@@ -440,6 +462,7 @@ const prisma = new PrismaClient({
 ```
 
 **2. Add Test for Query Count:**
+
 ```typescript
 test('loads invoices in single query', async () => {
   const queries = []
@@ -455,6 +478,7 @@ test('loads invoices in single query', async () => {
 ```
 
 **3. Watch for Loops with Prisma Calls:**
+
 ```bash
 # Grep for this anti-pattern
 grep -r "for.*await.*prisma" apps/
@@ -463,12 +487,14 @@ grep -r "for.*await.*prisma" apps/
 ### How to Prevent
 
 **1. Always Use `include` for Relations:**
+
 ```typescript
 // When you need related data, use include
 findMany({ include: { relation: true } })
 ```
 
 **2. Use `select` to Limit Fields:**
+
 ```typescript
 // Only fetch needed fields
 include: {
@@ -479,10 +505,12 @@ include: {
 ```
 
 **3. Review Agent Checks:**
+
 - `performance-oracle` catches N+1 queries
 - Run `/workflows:review` before merging
 
 **4. Code Review Checklist:**
+
 - [ ] No queries in loops
 - [ ] Related data uses `include`
 - [ ] Only needed fields selected
@@ -506,16 +534,19 @@ include: {
 ## Metrics
 
 **Before:**
+
 - Load time: 2.5 seconds
 - Queries: 101
 - Database CPU: 45%
 
 **After:**
+
 - Load time: 180ms
 - Queries: 1
 - Database CPU: 12%
 
 **Improvement:** 14x faster, 99% fewer queries
+
 ```
 
 ---
@@ -596,6 +627,7 @@ superseded_by: docs/solutions/database/new-approach.md
 ### When to Document
 
 ✅ **Do document:**
+
 - Non-obvious solutions
 - Problems that took >30 min to solve
 - Issues likely to recur
@@ -605,6 +637,7 @@ superseded_by: docs/solutions/database/new-approach.md
 - Production incidents
 
 ❌ **Don't document:**
+
 - Trivial typos
 - Documentation updates (unless pattern discovered)
 - Obvious bugs (unless interesting edge case)
@@ -613,6 +646,7 @@ superseded_by: docs/solutions/database/new-approach.md
 ### Writing Quality
 
 **Good Documentation:**
+
 - ✅ Specific and actionable
 - ✅ Includes code examples
 - ✅ Explains "why" not just "what"
@@ -621,6 +655,7 @@ superseded_by: docs/solutions/database/new-approach.md
 - ✅ Easy to search/find
 
 **Bad Documentation:**
+
 - ❌ Vague ("fixed performance issue")
 - ❌ No code examples
 - ❌ Missing context
@@ -662,12 +697,14 @@ find docs/solutions -name "*.md" -mtime -7
 ## Maintenance
 
 ### Monthly Review
+
 - Check for outdated solutions
 - Update deprecated patterns
 - Consolidate similar solutions
 - Add cross-references
 
 ### Quarterly Metrics
+
 - Count solutions by category
 - Track time savings
 - Identify common patterns
@@ -676,6 +713,7 @@ find docs/solutions -name "*.md" -mtime -7
 ---
 
 **Start documenting your solutions:**
+
 ```bash
 /workflows:compound
 ```

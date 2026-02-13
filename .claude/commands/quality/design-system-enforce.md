@@ -24,20 +24,24 @@ Ensures UI code follows Akount design system rules.
 **Location:** `docs/design-system/`
 
 **Colors (Tailwind semantic tokens):**
+
 - ✅ Use: `bg-background`, `text-foreground`, `bg-primary`, `text-primary`
 - ❌ Avoid: `bg-white`, `text-black`, `bg-orange-500`, `text-slate-900`
 
 **Palette:**
+
 - Primary: Orange (50-950 scale)
 - Secondary: Violet (50-950 scale)
 - Neutral: Slate (50-950 scale)
 
 **Typography:**
+
 - Headings: Newsreader (serif)
 - Body: Manrope (sans-serif)
 - Code: JetBrains Mono (monospace)
 
 **Components:**
+
 - Use shadcn/ui components
 - Prefer composition over custom
 - Dark mode support required
@@ -73,6 +77,7 @@ git diff main --name-only | grep -E '\.(tsx|css)$'
 ### Step 2: Check Color Usage
 
 **Pattern to find:**
+
 ```typescript
 // ❌ BAD - Hardcoded colors
 className="bg-white text-black"
@@ -85,6 +90,7 @@ className="bg-primary text-primary-foreground"
 ```
 
 **Search for violations:**
+
 ```bash
 Grep "bg-(white|black|slate-[0-9]|orange-[0-9]|violet-[0-9])" apps/web/ --type=tsx
 ```
@@ -92,6 +98,7 @@ Grep "bg-(white|black|slate-[0-9]|orange-[0-9]|violet-[0-9])" apps/web/ --type=t
 ### Step 3: Check Typography
 
 **Pattern to find:**
+
 ```typescript
 // ❌ BAD - Hardcoded fonts
 style={{ fontFamily: 'Arial' }}
@@ -106,6 +113,7 @@ className="font-mono"     // JetBrains Mono
 ### Step 4: Check Component Usage
 
 **Look for custom components that should use shadcn/ui:**
+
 ```typescript
 // ❌ BAD - Custom button
 <button className="rounded px-4 py-2 bg-blue-500">
@@ -118,6 +126,7 @@ import { Button } from '@/components/ui/button'
 ### Step 5: Check Dark Mode
 
 **Every color must have dark variant:**
+
 ```typescript
 // ❌ BAD - No dark mode
 className="bg-white"
@@ -131,11 +140,13 @@ className="bg-background"  // Uses dark:bg-slate-950 automatically
 ### 1. Hardcoded Colors
 
 **Issue:**
+
 ```tsx
 <div className="bg-white border border-gray-200">
 ```
 
 **Fix:**
+
 ```tsx
 <div className="bg-background border border-border">
 ```
@@ -143,11 +154,13 @@ className="bg-background"  // Uses dark:bg-slate-950 automatically
 ### 2. Inline Styles for Colors
 
 **Issue:**
+
 ```tsx
 <div style={{ backgroundColor: '#fff' }}>
 ```
 
 **Fix:**
+
 ```tsx
 <div className="bg-background">
 ```
@@ -155,11 +168,13 @@ className="bg-background"  // Uses dark:bg-slate-950 automatically
 ### 3. Wrong Font Variables
 
 **Issue:**
+
 ```tsx
 <h1 className="font-sans">
 ```
 
 **Fix:**
+
 ```tsx
 <h1 className="font-heading">
 ```
@@ -167,11 +182,13 @@ className="bg-background"  // Uses dark:bg-slate-950 automatically
 ### 4. Custom Components Instead of shadcn/ui
 
 **Issue:**
+
 ```tsx
 <button onClick={...} className="rounded-md bg-orange-500 px-4 py-2">
 ```
 
 **Fix:**
+
 ```tsx
 import { Button } from '@/components/ui/button'
 <Button onClick={...}>
@@ -180,11 +197,13 @@ import { Button } from '@/components/ui/button'
 ### 5. No Dark Mode Consideration
 
 **Issue:**
+
 ```tsx
 <div className="bg-slate-50 text-slate-900">
 ```
 
 **Fix:**
+
 ```tsx
 <div className="bg-muted text-muted-foreground">
 ```
@@ -260,6 +279,7 @@ m-[25px]  // Off-scale
 ## Output Format
 
 ### Summary
+
 - **Files Checked:** X files
 - **Violations Found:** Y violations
 - **Severity:** [Low / Medium / High]
@@ -267,6 +287,7 @@ m-[25px]  // Off-scale
 ### Violations
 
 For each violation:
+
 ```
 ❌ File: apps/web/components/InvoiceCard.tsx:45
 Pattern: bg-white
@@ -278,6 +299,7 @@ Auto-fix: Available
 ### Auto-Fix Available?
 
 If violations are simple find/replace:
+
 ```bash
 # Suggested fix
 sed -i 's/bg-white/bg-background/g' apps/web/components/InvoiceCard.tsx

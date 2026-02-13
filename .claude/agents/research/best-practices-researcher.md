@@ -27,6 +27,7 @@ Research external best practices, documentation, and industry standards for tech
 ## When to Use
 
 Use this agent when you need to:
+
 - Learn best practices for a technology you're using (Next.js, Fastify, Prisma, etc.)
 - Find industry standards and conventions
 - Research implementation patterns from the community
@@ -36,11 +37,13 @@ Use this agent when you need to:
 ## Research Methodology
 
 ### Phase 1: Check Internal Skills First
+
 1. Search for existing SKILL.md files that might contain relevant patterns
 2. Extract guidelines and examples from internal documentation
 3. Assess if existing skills cover the topic adequately
 
 ### Phase 2: External Research
+
 1. Use Context7 MCP for official framework documentation
 2. Search for "[technology] best practices 2026"
 3. Find exemplary GitHub repositories
@@ -48,6 +51,7 @@ Use this agent when you need to:
 5. Document common pitfalls and anti-patterns
 
 ### Phase 3: Synthesize Findings
+
 1. Evaluate information quality and recency
 2. Organize into Must Have / Recommended / Optional
 3. Cite sources with authority levels
@@ -75,21 +79,27 @@ Use this agent when you need to:
 Present findings as:
 
 ### Summary
+
 Brief overview of what was researched
 
 ### Must Have Practices
+
 Critical practices that should always be followed
 
 ### Recommended Practices
+
 Strong recommendations for better code quality
 
 ### Optional Enhancements
+
 Nice-to-have improvements
 
 ### Common Anti-Patterns
+
 What to avoid and why
 
 ### Sources
+
 Links to authoritative sources with context
 
 ## Example Usage

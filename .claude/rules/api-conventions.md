@@ -2,7 +2,9 @@
 
 ---
 paths:
-  - "apps/api/**"
+
+- "apps/api/**"
+
 ---
 
 ## Route → Schema → Service → Register Pattern
@@ -10,6 +12,7 @@ paths:
 Every API endpoint follows this structure:
 
 1. **Schema** (`domains/<domain>/schemas/<resource>.schema.ts`):
+
 ```typescript
 import { z } from 'zod'
 
@@ -20,6 +23,7 @@ export const CreateResourceSchema = z.object({
 ```
 
 2. **Service** (`domains/<domain>/services/<resource>.service.ts`):
+
 ```typescript
 export async function createResource(
   data: CreateResourceInput,
@@ -32,6 +36,7 @@ export async function createResource(
 ```
 
 3. **Route** (`domains/<domain>/routes/<resource>.ts`):
+
 ```typescript
 fastify.post('/', {
   schema: { body: CreateResourceSchema },
@@ -47,6 +52,7 @@ fastify.post('/', {
 ## Zod Validation Required
 
 All endpoints MUST validate input with Zod schemas:
+
 - Use `.cuid()` for ID params
 - Use `.int()` for monetary amounts
 - Use `.email()` for emails
@@ -55,6 +61,7 @@ All endpoints MUST validate input with Zod schemas:
 ## TenantContext in Every Service
 
 Service functions MUST accept `TenantContext`:
+
 ```typescript
 export interface TenantContext {
   tenantId: string
@@ -68,6 +75,7 @@ Passed from middleware via `request.tenant`.
 ## Error Response Format
 
 Standard error responses:
+
 ```typescript
 return reply.status(400).send({
   error: 'Validation failed',
@@ -76,6 +84,7 @@ return reply.status(400).send({
 ```
 
 Status codes:
+
 - 400: Bad Request (validation)
 - 401: Unauthorized (missing auth)
 - 403: Forbidden (insufficient permissions)
@@ -85,6 +94,7 @@ Status codes:
 ## Middleware Chain
 
 Requests flow through:
+
 1. **Auth** (`middleware/auth.ts`) — Verify Clerk JWT, set `request.userId`
 2. **Tenant** (`middleware/tenant.ts`) — Load tenant, set `request.tenant`
 3. **Validation** (Fastify Zod) — Validate request schema
@@ -95,6 +105,7 @@ Requests flow through:
 **Every file should have ONE clear purpose.** Can you describe it without using "and"?
 
 ### ✅ Good Examples (Current Pattern)
+
 ```typescript
 // account.service.ts - ONE responsibility: Account data operations
 class AccountService {
@@ -113,6 +124,7 @@ class DuplicationService {
 ```
 
 ### ❌ Anti-Patterns to Avoid
+
 ```typescript
 // ❌ BAD: Service doing HTTP + business logic + email
 class AccountService {
@@ -132,6 +144,7 @@ class MixedService {
 ### When to Split Files
 
 Split when **any** of these occur:
+
 - File exceeds **~300-400 lines** with distinct sections
 - Testing requires complex mocking
 - File has multiple reasons to change

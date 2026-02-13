@@ -22,18 +22,21 @@ Validates user-facing content matches Akount brand voice.
 ## Brand Guidelines
 
 **Tone:**
+
 - Professional yet approachable
 - Clear and concise
 - Empowering (not patronizing)
 - Canadian (colour, centre, etc.)
 
 **Voice:**
+
 - Active voice preferred
 - Second person ("you") for user instructions
 - First person plural ("we") for product features
 - Avoid jargon
 
 **Terminology:**
+
 - "Accounting" not "bookkeeping"
 - "Freelancer" not "contractor"
 - "Dashboard" not "homepage"
@@ -54,6 +57,7 @@ Validates user-facing content matches Akount brand voice.
 ```
 
 Agent reviews recent changes to:
+
 - User-facing components
 - Documentation
 - Error messages
@@ -67,6 +71,7 @@ Reports inconsistencies with specific line numbers.
 ### Step 1: Identify User-Facing Content
 
 Find all content users will see:
+
 ```bash
 # Find UI components
 Glob "apps/web/**/*.tsx"
@@ -81,6 +86,7 @@ git diff main --name-only
 ### Step 2: Check Against Guidelines
 
 For each piece of content:
+
 - [ ] Canadian spelling used consistently
 - [ ] Tone is professional + approachable
 - [ ] Clear and scannable
@@ -90,6 +96,7 @@ For each piece of content:
 ### Step 3: Report Issues
 
 **Format:**
+
 ```
 ❌ apps/web/components/InvoiceCard.tsx:45
 Found: "bookkeeping"
@@ -103,6 +110,7 @@ Tone and voice consistent with brand guidelines
 ## Canadian English Reference
 
 **Correct:**
+
 - colour (not color)
 - centre (not center)
 - labour (not labor)
@@ -114,12 +122,14 @@ Tone and voice consistent with brand guidelines
 ## Tone Examples
 
 **✅ Good (Professional + Approachable):**
+
 - "Let's organize your finances"
 - "You're all caught up!"
 - "Choose the account you'd like to reconcile"
 - "We'll help you track every transaction"
 
 **❌ Bad (Too formal or patronizing):**
+
 - "Please proceed to initiate financial reconciliation"
 - "Great job! You're doing amazing!"
 - "Select the appropriate financial instrument"
@@ -141,15 +151,18 @@ Tone and voice consistent with brand guidelines
 ## Edge Cases
 
 **Technical Terms:**
+
 - OK in developer docs
 - Require explanation in user docs
 - Use tooltips in UI
 
 **Acronyms:**
+
 - Spell out first use: "General Ledger (GL)"
 - OK after first use: "GL account"
 
 **Currency:**
+
 - Always show symbol: $10.00 (not 10 dollars)
 - Canadian default: CAD
 - Support multi-currency display
@@ -157,6 +170,7 @@ Tone and voice consistent with brand guidelines
 ## Output Format
 
 ### Summary
+
 - **Files Checked:** X files
 - **Issues Found:** Y issues
 - **Severity:** [Low / Medium / High]
@@ -164,6 +178,7 @@ Tone and voice consistent with brand guidelines
 ### Issues
 
 For each issue:
+
 ```
 ❌ File: path/to/file.tsx:line
 Context: "existing text"

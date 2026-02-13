@@ -9,6 +9,7 @@
 ## Problem Statement
 
 An expert review document was generated covering product strategy, architecture, database design, frontend, DevOps, security, AI, and testing. We need to determine what's:
+
 1. Already implemented (review may be outdated)
 2. Truly critical for MVP
 3. Nice-to-have for later
@@ -19,6 +20,7 @@ An expert review document was generated covering product strategy, architecture,
 ## Current State Summary
 
 **Phase 0 is 100% complete:**
+
 - Authentication (Clerk + Passkeys)
 - Database (PostgreSQL + Prisma, 40+ models, migrations, seed data)
 - API Foundation (Fastify + JWT auth + Zod validation + Tenant middleware)
@@ -97,6 +99,7 @@ An expert review document was generated covering product strategy, architecture,
 ### Add Soft Deletes (Priority: NOW)
 
 Models needing `deletedAt` field:
+
 ```prisma
 // All financial data models:
 Transaction
@@ -135,6 +138,7 @@ model Invoice {
 ### Keep Int for Money (Decision: CONFIRMED)
 
 **Rationale:**
+
 - Simpler math (no Decimal library)
 - No precision errors possible
 - Standard for modern fintech (Stripe, Square)

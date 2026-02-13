@@ -18,16 +18,19 @@ This is a **financial system**, so color must communicate *meaning*, not vibes. 
 | Neutral   | `--ak-text-*`, `--ak-bg-*`    | Slate  | 90% of UI               |
 
 ### Primary (Orange)
+
 - **Token:** `#f97316` / `24 94% 53%`
 - **Use:** Primary actions, important highlights, brand identity
 - **Psychology:** Confidence, trustworthiness, financial stability
 
 ### Secondary (Violet)
+
 - **Token:** `#8b5cf6` / `252 94% 67%`
 - **Use:** AI features, advanced tools, secondary actions
 - **Psychology:** Intelligence, sophistication, innovation
 
 ### Neutral (Slate)
+
 - **Palette:** Slate scale from `#f8fafc` (lightest) to `#0f172a` (darkest)
 - **Use:** Backgrounds, text, borders, 90% of all UI
 - **Psychology:** Professional, stable, trustworthy
@@ -39,6 +42,7 @@ This is a **financial system**, so color must communicate *meaning*, not vibes. 
 **Users should recognize financial state without reading.**
 
 ### Income / Revenue
+
 | Token                    | Light Color | Dark Color | Use              |
 | ------------------------ | ----------- | ---------- | ---------------- |
 | `--ak-finance-income`    | `#10b981`   | `#10b981`  | Positive cash    |
@@ -47,6 +51,7 @@ This is a **financial system**, so color must communicate *meaning*, not vibes. 
 **Psychology:** Green = growth, positive movement, money in
 
 ### Expenses / Outflows
+
 | Token                     | Light Color | Dark Color | Use                |
 | ------------------------- | ----------- | ---------- | ------------------ |
 | `--ak-finance-expense`    | `#ef4444`   | `#ef4444`  | Money going out    |
@@ -55,6 +60,7 @@ This is a **financial system**, so color must communicate *meaning*, not vibes. 
 **Psychology:** Red = alert, outflow, decrease
 
 ### Transfers / Internal Movement
+
 | Token                       | Light Color | Dark Color | Use                        |
 | --------------------------- | ----------- | ---------- | -------------------------- |
 | `--ak-finance-transfer`     | `#3b82f6`   | `#3b82f6`  | Account-to-account moves   |
@@ -63,6 +69,7 @@ This is a **financial system**, so color must communicate *meaning*, not vibes. 
 **Psychology:** Blue = neutral movement, internal flows, information
 
 ### Liabilities / Debt
+
 | Token                        | Light Color | Dark Color | Use                    |
 | ---------------------------- | ----------- | ---------- | ---------------------- |
 | `--ak-finance-liability`     | `#f59e0b`   | `#f59e0b`  | Debt, loans, payables  |
@@ -71,6 +78,7 @@ This is a **financial system**, so color must communicate *meaning*, not vibes. 
 **Psychology:** Amber/orange = caution, attention needed, obligations
 
 ### Equity / Net Worth
+
 | Token                      | Light Color | Dark Color | Use                    |
 | -------------------------- | ----------- | ---------- | ---------------------- |
 | `--ak-finance-equity`      | `#14b8a6`   | `#14b8a6`  | Owner's equity, assets |
@@ -145,6 +153,7 @@ colors: {
 ```
 
 Usage:
+
 ```jsx
 <span className="text-finance-income">$1,234.56</span>
 <div className="bg-ai-bg border-ai-border">...</div>
@@ -174,6 +183,7 @@ Akount blends **glassmorphism** (translucent layers) with **skeuomorphism** (mat
 ```
 
 **Usage:**
+
 - **Cards:** `glass` utility + `backdrop-filter: blur(16px)` + subtle border lift on hover
 - **Modals:** `glass-3` + overlay backdrop
 - **Panels:** `glass` + border-right
@@ -198,6 +208,7 @@ Akount blends **glassmorphism** (translucent layers) with **skeuomorphism** (mat
 ```
 
 **Usage:**
+
 - **Cards:** `--ak-shadow-md` (substantial, feels real)
 - **Buttons (normal):** `--ak-shadow-sm` (slightly raised)
 - **Buttons (pressed):** `--ak-shadow-pressed` (feels depressed)
@@ -278,6 +289,7 @@ Three tiers of glass using white-alpha overlays:
 ## Accessibility
 
 All semantic color combinations meet WCAG AA contrast requirements:
+
 - Income (green) on white: 5.12:1 contrast
 - Expense (red) on white: 4.47:1 contrast
 - All combinations tested for deuteranopia, protanopia, tritanopia

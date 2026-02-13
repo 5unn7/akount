@@ -15,6 +15,7 @@ Workflows describe user journeys and multi-step interactions that guide users th
 ## When to Use
 
 Reference these files when:
+
 - Understanding multi-step user journeys
 - Planning user flows for new features
 - Coordinating across multiple screens

@@ -23,11 +23,13 @@
 **Purpose:** Extract design-system tokens into consumable package
 
 - [ ] Create package directory:
+
   ```bash
   mkdir -p packages/design-tokens/src
   ```
 
 - [ ] Create `packages/design-tokens/package.json`:
+
   ```json
   {
     "name": "@akount/design-tokens",
@@ -51,6 +53,7 @@
   ```
 
 - [ ] Create `packages/design-tokens/tsconfig.json`:
+
   ```json
   {
     "extends": "../../tsconfig.base.json",
@@ -63,17 +66,20 @@
   ```
 
 - [ ] Copy token files from design-system:
+
   ```bash
   cp docs/design-system/00-foundations/tokens/akount.tokens.json packages/design-tokens/src/tokens.json
   cp docs/design-system/00-foundations/tokens/css-variables.css packages/design-tokens/src/css-variables.css
   ```
 
 - [ ] Create `packages/design-tokens/src/index.ts`:
+
   ```typescript
   export { default as tokens } from './tokens.json';
   ```
 
 - [ ] Create `packages/design-tokens/src/tailwind-preset.ts`:
+
   ```typescript
   import type { Config } from 'tailwindcss';
   import tokens from './tokens.json';
@@ -121,6 +127,7 @@
   ```
 
 - [ ] Create `packages/design-tokens/README.md`:
+
   ```markdown
   # @akount/design-tokens
 
@@ -134,6 +141,7 @@
   ```
 
   ### Tailwind Preset
+
   ```typescript
   // tailwind.config.ts
   import { akountPreset } from '@akount/design-tokens/tailwind';
@@ -145,14 +153,17 @@
   ```
 
   ## Token Categories
+
   - Colors (primary, secondary, semantic)
   - Typography (font families, sizes)
   - Spacing (based on 4px grid)
   - Border radius
   - Shadows
+
   ```
 
 **Verification:**
+
 ```bash
 pnpm --filter @akount/design-tokens typecheck
 ```
@@ -164,11 +175,13 @@ pnpm --filter @akount/design-tokens typecheck
 **Purpose:** Type-safe money handling with branded Cents type
 
 - [ ] Create financial types directory:
+
   ```bash
   mkdir -p packages/types/src/financial
   ```
 
 - [ ] Create `packages/types/src/financial/money.ts`:
+
   ```typescript
   /**
    * Branded type for money amounts in cents.
@@ -226,6 +239,7 @@ pnpm --filter @akount/design-tokens typecheck
   ```
 
 - [ ] Create `packages/types/src/financial/currency.ts`:
+
   ```typescript
   /**
    * Supported currencies in Akount.
@@ -258,6 +272,7 @@ pnpm --filter @akount/design-tokens typecheck
   ```
 
 - [ ] Create `packages/types/src/financial/format.ts`:
+
   ```typescript
   import type { Cents } from './money';
   import type { Currency } from './currency';
@@ -308,6 +323,7 @@ pnpm --filter @akount/design-tokens typecheck
   ```
 
 - [ ] Create `packages/types/src/financial/index.ts`:
+
   ```typescript
   export * from './money';
   export * from './currency';
@@ -315,12 +331,14 @@ pnpm --filter @akount/design-tokens typecheck
   ```
 
 - [ ] Update `packages/types/src/index.ts` to export financial types:
+
   ```typescript
   export * from './financial';
   // ... existing exports
   ```
 
 **Verification:**
+
 ```bash
 pnpm --filter @akount/types typecheck
 ```
@@ -332,11 +350,13 @@ pnpm --filter @akount/types typecheck
 **Purpose:** Type-safe roles and permissions from design-system matrix
 
 - [ ] Create RBAC types directory:
+
   ```bash
   mkdir -p packages/types/src/rbac
   ```
 
 - [ ] Create `packages/types/src/rbac/roles.ts`:
+
   ```typescript
   /**
    * The 6 canonical roles from design-system.
@@ -395,6 +415,7 @@ pnpm --filter @akount/types typecheck
   ```
 
 - [ ] Create `packages/types/src/rbac/permissions.ts`:
+
   ```typescript
   import type { Role } from './roles';
 
@@ -516,12 +537,14 @@ pnpm --filter @akount/types typecheck
   ```
 
 - [ ] Create `packages/types/src/rbac/index.ts`:
+
   ```typescript
   export * from './roles';
   export * from './permissions';
   ```
 
 - [ ] Update `packages/types/src/index.ts`:
+
   ```typescript
   export * from './financial';
   export * from './rbac';
@@ -529,6 +552,7 @@ pnpm --filter @akount/types typecheck
   ```
 
 **Verification:**
+
 ```bash
 pnpm --filter @akount/types typecheck
 ```
@@ -538,6 +562,7 @@ pnpm --filter @akount/types typecheck
 ### 1.4 Update Root Configuration
 
 - [ ] Update `apps/web/package.json` to add dependency:
+
   ```json
   {
     "dependencies": {
@@ -548,6 +573,7 @@ pnpm --filter @akount/types typecheck
   ```
 
 - [ ] Update `apps/web/tailwind.config.ts`:
+
   ```typescript
   import type { Config } from 'tailwindcss';
   import { akountPreset } from '@akount/design-tokens/tailwind';
@@ -565,6 +591,7 @@ pnpm --filter @akount/types typecheck
   ```
 
 - [ ] Update `turbo.json` to add build task:
+
   ```json
   {
     "pipeline": {
@@ -577,11 +604,13 @@ pnpm --filter @akount/types typecheck
   ```
 
 - [ ] Run install to link packages:
+
   ```bash
   pnpm install
   ```
 
 **Verification:**
+
 ```bash
 pnpm build
 pnpm typecheck
@@ -608,10 +637,12 @@ Before marking Phase 1 complete:
 When complete, the following can begin in parallel:
 
 **Phase 2 (UI Components):**
+
 - Can use `@akount/design-tokens` for styling
 - Can use `@akount/types` for Cents, Currency types
 
 **Phase 3 (Security):**
+
 - Can use `@akount/types/rbac` for Role, Permission types
 - Permission matrix available for middleware
 

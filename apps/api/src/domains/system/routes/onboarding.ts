@@ -1,6 +1,12 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '@akount/db';
+import { createClerkClient } from '@clerk/backend';
+
+// Initialize Clerk client with secret key
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+});
 
 /**
  * Onboarding Routes
@@ -70,16 +76,48 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
       // Validate request body
       const data = initializeOnboardingSchema.parse(request.body);
 
-      // Get user from database
-      const user = await prisma.user.findUnique({
+      // Get or create user from database (upsert pattern)
+      // New users from Clerk won't exist in our DB yet, so we create them here
+      let user = await prisma.user.findUnique({
         where: { clerkUserId: request.userId as string },
       });
 
       if (!user) {
-        return reply.status(404).send({
-          error: 'UserNotFound',
-          message: 'User not found. Please sign up again.',
+        // User authenticated via Clerk but doesn't exist in our DB yet
+        // Fetch user details from Clerk to get email and name
+        const clerkUser = await clerkClient.users.getUser(request.userId as string);
+
+        if (!clerkUser) {
+          return reply.status(500).send({
+            error: 'ClerkUserNotFound',
+            message: 'Could not fetch user details from Clerk',
+          });
+        }
+
+        // Get primary email from Clerk
+        const primaryEmail = clerkUser.emailAddresses.find((e) => e.id === clerkUser.primaryEmailAddressId);
+        if (!primaryEmail) {
+          return reply.status(400).send({
+            error: 'NoEmail',
+            message: 'User must have an email address to sign up',
+          });
+        }
+
+        // Create user in our database
+        user = await prisma.user.create({
+          data: {
+            clerkUserId: request.userId as string,
+            email: primaryEmail.emailAddress,
+            name: clerkUser.firstName && clerkUser.lastName
+              ? `${clerkUser.firstName} ${clerkUser.lastName}`
+              : clerkUser.firstName || clerkUser.username || data.entityName,
+          },
         });
+
+        request.log.info(
+          { clerkUserId: request.userId, userId: user.id, email: user.email },
+          'Created new user from Clerk authentication'
+        );
       }
 
       // Check if user already has a tenant
@@ -190,7 +228,11 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         });
       }
 
-      request.log.error({ error }, 'Error initializing onboarding');
+      request.log.error({
+        error,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        errorStack: error instanceof Error ? error.stack : undefined,
+      }, 'Error initializing onboarding');
       return reply.status(500).send({
         error: 'InternalError',
         message: 'Failed to initialize onboarding',

@@ -79,12 +79,14 @@ the design-system permissions matrix.
 ## Per-Domain Permission Matrix
 
 ### Overview Domain
+
 | Resource | OWNER | ADMIN | ACCOUNTANT | BOOKKEEPER | INVESTOR | ADVISOR |
 |----------|-------|-------|------------|------------|----------|---------|
 | dashboard | VIEW | VIEW | VIEW | VIEW | VIEW | VIEW |
 | net-worth | VIEW | VIEW | VIEW | HIDDEN | VIEW | VIEW |
 
 ### Banking Domain
+
 | Resource | OWNER | ADMIN | ACCOUNTANT | BOOKKEEPER | INVESTOR | ADVISOR |
 |----------|-------|-------|------------|------------|----------|---------|
 | accounts | ACT | ACT | VIEW | ACT | HIDDEN | VIEW |
@@ -92,6 +94,7 @@ the design-system permissions matrix.
 | reconciliation | APPROVE | APPROVE | APPROVE | VIEW | HIDDEN | VIEW |
 
 ### Business Domain
+
 | Resource | OWNER | ADMIN | ACCOUNTANT | BOOKKEEPER | INVESTOR | ADVISOR |
 |----------|-------|-------|------------|------------|----------|---------|
 | invoices | ACT | ACT | VIEW | ACT | HIDDEN | VIEW |
@@ -100,6 +103,7 @@ the design-system permissions matrix.
 | vendors | ACT | ACT | VIEW | VIEW | HIDDEN | VIEW |
 
 ### Accounting Domain
+
 | Resource | OWNER | ADMIN | ACCOUNTANT | BOOKKEEPER | INVESTOR | ADVISOR |
 |----------|-------|-------|------------|------------|----------|---------|
 | journal-entries | APPROVE | APPROVE | APPROVE | HIDDEN | HIDDEN | VIEW |
@@ -107,6 +111,7 @@ the design-system permissions matrix.
 | fiscal-periods | ADMIN | ADMIN | VIEW | HIDDEN | HIDDEN | VIEW |
 
 ### Planning Domain
+
 | Resource | OWNER | ADMIN | ACCOUNTANT | BOOKKEEPER | INVESTOR | ADVISOR |
 |----------|-------|-------|------------|------------|----------|---------|
 | budgets | ACT | ACT | VIEW | HIDDEN | VIEW | VIEW |
@@ -114,12 +119,14 @@ the design-system permissions matrix.
 | forecasts | VIEW | VIEW | VIEW | HIDDEN | VIEW | VIEW |
 
 ### AI Domain
+
 | Resource | OWNER | ADMIN | ACCOUNTANT | BOOKKEEPER | INVESTOR | ADVISOR |
 |----------|-------|-------|------------|------------|----------|---------|
 | insights | VIEW | VIEW | VIEW | VIEW | VIEW | VIEW |
 | suggestions | ACT | ACT | VIEW | ACT | HIDDEN | VIEW |
 
 ### System Domain
+
 | Resource | OWNER | ADMIN | ACCOUNTANT | BOOKKEEPER | INVESTOR | ADVISOR |
 |----------|-------|-------|------------|------------|----------|---------|
 | users | ADMIN | ADMIN | HIDDEN | HIDDEN | HIDDEN | HIDDEN |

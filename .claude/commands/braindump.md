@@ -33,6 +33,7 @@ Classify what's being asked about: implementation, architecture, feature feasibi
 Pick **2-3 agents** most relevant to the input. Use your understanding of the topic — don't pattern-match on keywords. Max 3 agents per braindump to control cost.
 
 Available agents (see `.claude/rules/workflows.md` for full list):
+
 - `financial-data-validator` — money, double-entry, audit trails
 - `security-sentinel` — OWASP, tenant isolation, input validation
 - `performance-oracle` — N+1 queries, caching, scalability
@@ -54,6 +55,7 @@ Consolidate into this format:
 **What's Good** — strengths and alignment with best practices
 
 **What Needs Attention** — issues tagged by severity:
+
 - P1 Critical — blocks approval (security, data integrity)
 - P2 Important — should address before proceeding
 - P3 Nice-to-Have — optional improvements
@@ -61,6 +63,7 @@ Consolidate into this format:
 **Alternatives** — better approaches, existing patterns to reuse, tradeoffs
 
 **Verdict:**
+
 - **Green Light** — proceed with confidence
 - **Yellow Light** — good idea, address the flagged concerns first
 - **Red Light** — significant concerns, explore alternatives

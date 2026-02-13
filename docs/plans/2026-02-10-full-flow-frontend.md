@@ -40,7 +40,9 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 ## Stream 1: Core Flow (Agent 1)
 
 ### Task 1.1: Wire Onboarding Wizard to API
+
 **Files:**
+
 - `apps/web/src/app/onboarding/components/OnboardingWizard.tsx` (modify)
 - `apps/web/src/app/onboarding/components/steps/EssentialInfoStep.tsx` (modify)
 - `apps/web/src/app/onboarding/components/steps/CompletionStep.tsx` (modify)
@@ -54,7 +56,9 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 **Success:** User completes 2-step wizard, tenant+entity created, redirected to dashboard.
 
 ### Task 1.2: Add Redirect Logic (Auth Guard)
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/layout.tsx` (modify)
 - `apps/web/src/middleware.ts` (modify if exists, or create)
 **What:** On dashboard load, check onboarding status via GET `/api/system/onboarding/status`. If status === 'new', redirect to `/onboarding`. If status === 'in_progress', redirect to `/onboarding` (resume). If status === 'completed', show dashboard normally.
@@ -62,7 +66,9 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 **Success:** Unonboarded users can never reach dashboard; they always see wizard first.
 
 ### Task 1.3: Dashboard Hero Card + Progress Integration
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/overview/page.tsx` (modify)
 - `apps/web/src/components/dashboard/OnboardingHeroCard.tsx` (modify)
 - `apps/web/src/components/dashboard/CircularProgress.tsx` (modify)
@@ -72,7 +78,9 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 **Success:** Dashboard shows progress card with accurate completion state.
 
 ### Task 1.4: Entity Creation Form
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/system/entities/page.tsx` (modify)
 - `apps/web/src/components/entities/EntityFormSheet.tsx` (create)
 - `apps/web/src/lib/api/entities.ts` (extend)
@@ -82,7 +90,9 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 **Success:** User can create entities from dashboard or System > Entities page.
 
 ### Task 1.5: Account Creation Flow
+
 **Files:**
+
 - `apps/web/src/components/accounts/AccountFormSheet.tsx` (modify/verify)
 - `apps/web/src/app/(dashboard)/banking/accounts/page.tsx` (modify)
 **What:** Ensure AccountFormSheet works end-to-end: entity selector dropdown (from fetched entities), account name, type (BANK, CREDIT_CARD, INVESTMENT, LOAN, MORTGAGE, OTHER), currency, institution. POST to `/api/banking/accounts`. After creation, user can immediately upload statements for this account.
@@ -90,7 +100,9 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 **Success:** User can create accounts linked to entities.
 
 ### Task 1.6: Dashboard Real Data Integration
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/overview/page.tsx` (modify)
 - `apps/web/src/components/dashboard/DashboardMetrics.tsx` (modify)
 - `apps/web/src/components/dashboard/EntitiesList.tsx` (modify)
@@ -104,7 +116,9 @@ Stream 3 (Agent 3): DESIGN SYSTEM POLISH
 ## Stream 2: Import & Transactions (Agent 2)
 
 ### Task 2.1: Refine Import Upload Form
+
 **Files:**
+
 - `apps/web/src/components/import/ImportUploadForm.tsx` (modify)
 - `apps/web/src/app/(dashboard)/banking/import/page.tsx` (modify)
 **What:** Update ImportUploadForm to use the new simplified API endpoints:
@@ -115,7 +129,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** User can upload CSV or PDF, see preview of extracted transactions.
 
 ### Task 2.2: Import Preview & Confirmation
+
 **Files:**
+
 - `apps/web/src/components/import/ImportPreviewTable.tsx` (modify)
 - `apps/web/src/components/import/ImportConfirmation.tsx` (create)
 **What:** After upload, show ImportPreviewTable with: transaction count, duplicate count, date range, total amount. Table columns: Date, Description, Amount, Status (new/duplicate). Add "Confirm & Import" button. On confirm, transactions are committed. Show success message with link to "View Transactions" page.
@@ -123,7 +139,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** User can review and confirm imported transactions.
 
 ### Task 2.3: Transaction List with Real Data
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/banking/transactions/page.tsx` (modify)
 - `apps/web/src/components/transactions/TransactionsListClient.tsx` (modify)
 - `apps/web/src/components/transactions/TransactionsTable.tsx` (modify)
@@ -133,7 +151,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** All imported transactions visible in filterable, paginated list.
 
 ### Task 2.4: Import History Page Enhancement
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/banking/imports/page.tsx` (modify)
 - `apps/web/src/components/import/ImportHistoryClient.tsx` (modify)
 **What:** Wire import history to GET `/api/banking/imports`. Show table: File Name, Source Type (CSV/PDF badge), Status (color-coded), Date, Transaction Count, Actions. Click row → drill down to GET `/api/banking/imports/:id` showing all transactions from that batch. Add "Upload New" button linking to import page.
@@ -141,7 +161,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** User can see all past imports and drill into batch details.
 
 ### Task 2.5: Entity Creation API (Backend - if needed)
+
 **Files:**
+
 - `apps/api/src/domains/system/routes/entities.ts` (modify)
 - `apps/api/src/domains/system/services/entity.service.ts` (modify)
 **What:** Check if POST `/api/system/entities` exists. If not, create it:
@@ -157,7 +179,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 ## Stream 3: Design System Polish (Agent 3)
 
 ### Task 3.1: Dashboard Page — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/overview/page.tsx`
 - `apps/web/src/components/dashboard/DashboardMetrics.tsx`
 - `apps/web/src/components/dashboard/EntitiesList.tsx`
@@ -174,7 +198,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** Dashboard looks like the Financial Clarity reference (dark, glassy, amber accents).
 
 ### Task 3.2: Sidebar — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/components/layout/Sidebar.tsx`
 - `apps/web/src/components/layout/SidebarProgressIndicator.tsx`
 **What:** Apply:
@@ -189,7 +215,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** Sidebar matches Financial Clarity aesthetic.
 
 ### Task 3.3: Navbar — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/components/layout/Navbar.tsx`
 **What:** Apply:
 - Background: glass (blur 16px, rgba white 0.025)
@@ -200,7 +228,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** Navbar is transparent glass on dark background.
 
 ### Task 3.4: Import Page — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/components/import/ImportUploadForm.tsx`
 - `apps/web/src/components/import/ImportPreviewTable.tsx`
 - `apps/web/src/components/import/ImportHistoryClient.tsx`
@@ -215,7 +245,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** Import pages use glass morphism and Financial Clarity colors.
 
 ### Task 3.5: Transaction List — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/components/transactions/TransactionsTable.tsx`
 - `apps/web/src/components/transactions/TransactionsFilters.tsx`
 **What:** Apply:
@@ -229,7 +261,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** Transaction list looks polished with Financial Clarity theme.
 
 ### Task 3.6: Onboarding Wizard — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/app/onboarding/components/OnboardingWizard.tsx`
 - `apps/web/src/app/onboarding/components/steps/WelcomeStep.tsx`
 - `apps/web/src/app/onboarding/components/steps/EssentialInfoStep.tsx`
@@ -246,7 +280,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** Onboarding wizard is a beautiful, dark, glassy experience.
 
 ### Task 3.7: Account Pages — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/components/accounts/AccountCard.tsx`
 - `apps/web/src/components/accounts/AccountsList.tsx`
 - `apps/web/src/components/accounts/AccountFormSheet.tsx`
@@ -260,7 +296,9 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 **Success:** Account pages match Financial Clarity.
 
 ### Task 3.8: Entity & System Pages — Financial Clarity
+
 **Files:**
+
 - `apps/web/src/app/(dashboard)/system/entities/page.tsx`
 - Various system page stubs
 **What:** Apply Financial Clarity to entities page (glass cards per entity, add entity button). Light-touch styling on other system pages (they're stubs for now).
@@ -299,6 +337,7 @@ Require account selection BEFORE upload (dropdown of existing accounts from GET 
 ## Agent Instructions
 
 ### Agent 2: Import & Transactions (Stream 2)
+
 ```
 Execute Tasks 2.1–2.5 from docs/plans/2026-02-10-full-flow-frontend.md.
 
@@ -325,6 +364,7 @@ Read these files first:
 ```
 
 ### Agent 3: Design System Polish (Stream 3)
+
 ```
 Execute Tasks 3.1–3.8 from docs/plans/2026-02-10-full-flow-frontend.md.
 

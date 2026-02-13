@@ -35,12 +35,14 @@ When reviewing Prisma schema changes or migrations, you MUST:
 ## Prisma Schema Review Checklist
 
 ### ✓ Required Field Additions
+
 - [ ] Are any `@default()` values provided for new required fields on existing tables?
 - [ ] If no default, is there a backfill strategy documented?
 - [ ] For financial tables (Invoice, Payment, JournalEntry), is the default value financially sound?
 - [ ] Are nullable fields with sensible defaults preferred over required fields?
 
 ### ✓ Enum Changes
+
 - [ ] Are enum values only being **added** (never removed or renamed)?
 - [ ] Is the migration using `ALTER TYPE ... ADD VALUE` (safe) vs `DROP TYPE` (dangerous)?
 - [ ] Are existing enum values still present in the schema?
@@ -48,12 +50,14 @@ When reviewing Prisma schema changes or migrations, you MUST:
 - [ ] Is there a plan for migrating existing data if enum values change meaning?
 
 ### ✓ Field Deletions & Renames
+
 - [ ] Are any fields being deleted from tables with existing data?
 - [ ] If renaming, is the migration using proper two-step process (add new, migrate data, remove old)?
 - [ ] For financial fields (amounts, currency, dates), is there a data preservation strategy?
 - [ ] Are soft deletes preferred over hard deletes for audit trail purposes?
 
 ### ✓ Relation Changes & CASCADE Deletes
+
 - [ ] Are any `onDelete: Cascade` rules being added to financial tables?
 - [ ] **CRITICAL**: Invoice, Payment, JournalEntry, Bill should NEVER have cascade deletes
 - [ ] Are referential integrity constraints properly set (`@relation`)?
@@ -61,12 +65,14 @@ When reviewing Prisma schema changes or migrations, you MUST:
 - [ ] Will changing relations orphan any existing records?
 
 ### ✓ Index & Performance
+
 - [ ] Are indexes added for frequently queried fields (tenant_id, user_id, status)?
 - [ ] For multi-column queries, are compound indexes defined?
 - [ ] Are unique constraints properly set (e.g., `@@unique([tenantId, code])`)?
 - [ ] Will the migration lock tables for extended periods on large datasets?
 
 ### ✓ Data Type Changes
+
 - [ ] Are any field types changing (String → Int, Float → Decimal)?
 - [ ] **CRITICAL**: Financial amounts should use `Decimal` (not Float) for precision
 - [ ] Are DateTime fields using proper timezone handling?
@@ -74,6 +80,7 @@ When reviewing Prisma schema changes or migrations, you MUST:
 - [ ] Are JSON fields being used appropriately (avoid for structured data)?
 
 ### ✓ Multi-Currency & Financial Constraints
+
 - [ ] Are amounts always paired with currency fields?
 - [ ] Is precision appropriate for currencies (2 decimals for most, 0 for JPY)?
 - [ ] Are FX rate fields using appropriate decimal precision?
@@ -84,6 +91,7 @@ When reviewing Prisma schema changes or migrations, you MUST:
 When reviewing `prisma/migrations/*/migration.sql` files:
 
 ### ✓ SQL Safety Checks
+
 - [ ] Does the migration use transactions (`BEGIN`/`COMMIT`)?
 - [ ] Are `ALTER TABLE` operations safe (no table locks on large tables)?
 - [ ] Are `DROP` statements protected with `IF EXISTS`?
@@ -91,12 +99,14 @@ When reviewing `prisma/migrations/*/migration.sql` files:
 - [ ] Are there any `TRUNCATE` or `DELETE FROM` without WHERE (dangerous!)?
 
 ### ✓ PostgreSQL-Specific Concerns
+
 - [ ] Are enum changes using `ALTER TYPE ... ADD VALUE` (cannot be in transaction)?
 - [ ] Are column additions using `ADD COLUMN ... DEFAULT ... NOT NULL` (can lock table)?
 - [ ] For adding NOT NULL constraints, is it done in two steps (add nullable, backfill, add constraint)?
 - [ ] Are `CASCADE` options explicitly stated (not implicit)?
 
 ### ✓ Rollback Strategy
+
 - [ ] Can this migration be rolled back without data loss?
 - [ ] If destructive (DROP, DELETE), is there a backup strategy mentioned?
 - [ ] Are migrations numbered sequentially without gaps?
@@ -107,6 +117,7 @@ When reviewing `prisma/migrations/*/migration.sql` files:
 These are **CRITICAL** rules for the Akount financial application:
 
 ### 🔴 NEVER ALLOWED
+
 - Cascade deletes on: `Invoice`, `Bill`, `Payment`, `JournalEntry`, `JournalLine`
 - Using `Float` or `Double` for monetary amounts (use `Decimal` only)
 - Deleting historical transaction data
@@ -114,6 +125,7 @@ These are **CRITICAL** rules for the Akount financial application:
 - Removing audit log entries
 
 ### 🟡 REQUIRES CAREFUL REVIEW
+
 - Adding required fields to `Invoice`, `Payment`, or `Transaction` tables
 - Changing enum values used in financial documents
 - Modifying foreign key constraints on accounting tables
@@ -121,6 +133,7 @@ These are **CRITICAL** rules for the Akount financial application:
 - Adding indexes to large tables (check if CONCURRENT is needed in raw SQL)
 
 ### 🟢 GENERALLY SAFE
+
 - Adding optional (nullable) fields
 - Adding new enum values (append-only)
 - Creating new tables
@@ -132,6 +145,7 @@ These are **CRITICAL** rules for the Akount financial application:
 Watch out for these risky changes:
 
 1. **The "Add Required Field" Trap**
+
    ```prisma
    // DANGEROUS - will fail if table has data
    createdBy String
@@ -141,6 +155,7 @@ Watch out for these risky changes:
    ```
 
 2. **The "Float for Money" Anti-Pattern**
+
    ```prisma
    // DANGEROUS - loses precision
    amount Float
@@ -150,6 +165,7 @@ Watch out for these risky changes:
    ```
 
 3. **The "Cascade Delete" Disaster**
+
    ```prisma
    // DANGEROUS - deletes all payments when invoice deleted
    invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
@@ -159,6 +175,7 @@ Watch out for these risky changes:
    ```
 
 4. **The "Enum Removal" Breaking Change**
+
    ```prisma
    // DANGEROUS - breaks existing data
    enum Status {

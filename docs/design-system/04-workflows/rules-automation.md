@@ -149,7 +149,7 @@ No silent mass changes.
 
 This is important.
 
-### Rule Priority Order:
+### Rule Priority Order
 
 1. **Explicit user rule**
 2. AI-suggested rule (confirmed)

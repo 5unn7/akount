@@ -18,20 +18,24 @@ After completing all critical Phase 1 fixes, I've implemented additional perform
 **Issue:** Every service method made duplicate tenant lookups, causing N database queries per request.
 
 **Solution:** Created reusable tenant middleware that:
+
 - Fetches tenant membership once per request
 - Attaches `tenantId` and `tenantRole` to request object
 - Eliminates duplicate queries in service methods
 
 **Files Created:**
+
 - `apps/api/src/middleware/tenant.ts`
 
 **Benefits:**
+
 - ✅ 1 tenant query per request (down from N queries)
 - ✅ Cleaner service code (no tenant lookup logic)
 - ✅ Consistent pattern across all routes
 - ✅ Type-safe request extensions
 
 **Performance Impact:**
+
 - **Before:** 3 queries per request (tenant + accounts + FX rates)
 - **After:** 2 queries per request (accounts + FX rates)
 - **Saved:** ~10-30ms per request
@@ -43,26 +47,31 @@ After completing all critical Phase 1 fixes, I've implemented additional perform
 **Issue:** Dashboard service made sequential database queries for each account's currency conversion (N+1 query pattern).
 
 **Solution:** Added `getRateBatch()` method to FxRateService that:
+
 - Fetches all needed FX rates in a single database query
 - Returns a Map for O(1) lookup during aggregation
 - Handles inverse rates automatically
 - Gracefully falls back to manual rates if needed
 
 **Files Modified:**
+
 - `apps/api/src/services/fxRate.service.ts` (added `getRateBatch` method)
 - `apps/api/src/services/dashboard.service.ts` (uses batch method)
 
 **Benefits:**
+
 - ✅ Single FX query for all currencies (down from N queries)
 - ✅ No async calls in aggregation loop
 - ✅ 50x faster dashboard load with 100 accounts
 
 **Performance Impact:**
+
 - **Before:** 1 + N + (N × 2) = ~201 queries for 100 accounts
 - **After:** 1 + N + 2 = 4 queries (1 tenant, 1 accounts, 2 FX rate batches)
 - **Speed:** Dashboard load time reduced from ~2000ms to ~200ms at scale
 
 **Code Example:**
+
 ```typescript
 // Before: N+1 queries
 for (const account of accounts) {
@@ -86,14 +95,17 @@ for (const account of accounts) {
 **Solution:** Simplified response to only include actual calculated values.
 
 **Files Modified:**
+
 - `apps/api/src/services/dashboard.service.ts`
 
 **Benefits:**
+
 - ✅ Honest API (no fake data)
 - ✅ Simpler response structure
 - ✅ Clear what's implemented vs. not
 
 **Before:**
+
 ```typescript
 netWorth: {
     current: netWorth,
@@ -105,6 +117,7 @@ netWorth: {
 ```
 
 **After:**
+
 ```typescript
 netWorth: {
     amount: netWorth,    // ✅ Real value
@@ -119,21 +132,25 @@ netWorth: {
 **Issue:** Services accepted `userId` and performed tenant lookup internally, creating tight coupling.
 
 **Solution:** Refactored services to:
+
 - Accept `tenantId` directly in constructor
 - Remove internal tenant lookup logic
 - Rely on tenant middleware for context
 
 **Files Modified:**
+
 - `apps/api/src/services/account.service.ts`
 - `apps/api/src/services/dashboard.service.ts`
 
 **Benefits:**
+
 - ✅ Simpler service code (no lookup logic)
 - ✅ Single responsibility (services do domain logic only)
 - ✅ Easier to test (mock tenantId, not DB)
 - ✅ Reusable from different contexts (webhooks, jobs, etc.)
 
 **Before:**
+
 ```typescript
 export class AccountService {
     constructor(private userId: string) { }
@@ -149,6 +166,7 @@ export class AccountService {
 ```
 
 **After:**
+
 ```typescript
 export class AccountService {
     constructor(private tenantId: string) { }  // Direct tenantId
@@ -171,15 +189,18 @@ export class AccountService {
 **Solution:** Added `tenantMiddleware` to route configurations and updated service instantiation.
 
 **Files Modified:**
+
 - `apps/api/src/routes/accounts.ts`
 - `apps/api/src/routes/dashboard.ts`
 
 **Benefits:**
+
 - ✅ Consistent middleware chain: `[authMiddleware, tenantMiddleware]`
 - ✅ Services receive `request.tenantId` directly
 - ✅ Improved logging (includes tenantId)
 
 **Code Example:**
+
 ```typescript
 fastify.get('/accounts', {
     onRequest: [authMiddleware, tenantMiddleware],  // ✅ Middleware chain
@@ -199,20 +220,24 @@ fastify.get('/accounts', {
 **Solution:** Changed `getRate()` to throw error for missing rates (fail-fast).
 
 **Files Modified:**
+
 - `apps/api/src/services/fxRate.service.ts`
 
 **Benefits:**
+
 - ✅ Reveals missing FX rates immediately
 - ✅ Forces explicit rate management
 - ✅ Prevents silent valuation errors
 
 **Before:**
+
 ```typescript
 // If no rate found, return 1.0 (DANGEROUS!)
 return 1.0;
 ```
 
 **After:**
+
 ```typescript
 // If no rate found, throw error
 throw new Error(`FX Rate not found for ${base}/${quote}`);
@@ -241,9 +266,11 @@ throw new Error(`FX Rate not found for ${base}/${quote}`);
 ## 📦 Files Modified in Phase 2
 
 ### New Files Created
+
 - ✅ `apps/api/src/middleware/tenant.ts` - Tenant context middleware
 
 ### Files Modified
+
 - ✅ `apps/api/src/services/account.service.ts` - Refactored to use tenantId
 - ✅ `apps/api/src/services/dashboard.service.ts` - Batch FX rates, removed placeholders
 - ✅ `apps/api/src/services/fxRate.service.ts` - Added batch method, improved error handling
@@ -260,24 +287,28 @@ throw new Error(`FX Rate not found for ${base}/${quote}`);
 ## 🎯 Code Quality Improvements
 
 ### Architecture
+
 - ✅ Eliminated duplicate tenant lookups
 - ✅ Clear separation of concerns (middleware → services → database)
 - ✅ Reusable tenant context pattern
 - ✅ Services are pure domain logic
 
 ### Performance
+
 - ✅ Eliminated N+1 query pattern
 - ✅ Batch operations for FX rates
 - ✅ Linear complexity (O(n) instead of O(n × m))
 - ✅ Scales to 1000+ accounts
 
 ### Simplicity
+
 - ✅ Removed fake placeholder data
 - ✅ Simpler service constructors
 - ✅ Less code in services (no tenant lookup)
 - ✅ Clear error messages
 
 ### Type Safety
+
 - ✅ Extended FastifyRequest interface for tenantId
 - ✅ Proper TypeScript types for middleware
 - ✅ Type-safe service constructors
@@ -287,6 +318,7 @@ throw new Error(`FX Rate not found for ${base}/${quote}`);
 ## 🧪 Testing Recommendations
 
 ### 1. Tenant Middleware
+
 ```bash
 # Test tenant isolation
 curl -H "Authorization: Bearer <user1-token>" http://localhost:4000/api/accounts
@@ -295,6 +327,7 @@ curl -H "Authorization: Bearer <user2-token>" http://localhost:4000/api/accounts
 ```
 
 ### 2. Batch FX Rates
+
 ```bash
 # Test dashboard with multi-currency accounts
 # Monitor database queries (should be only 4)
@@ -302,6 +335,7 @@ curl -H "Authorization: Bearer <user2-token>" http://localhost:4000/api/accounts
 ```
 
 ### 3. Error Handling
+
 ```bash
 # Test missing FX rate error
 # Should get 500 error with "FX Rate not found" message
@@ -334,10 +368,12 @@ curl -H "Authorization: Bearer <user2-token>" http://localhost:4000/api/accounts
 ## 📝 Migration Notes
 
 ### Breaking Changes
+
 - **Service constructors:** Now accept `tenantId` instead of `userId`
 - **Dashboard response:** Removed `netWorth.previous`, `change`, `changePercent` fields
 
 ### Migration Path for Other Routes
+
 To apply tenant middleware to other routes:
 
 ```typescript
@@ -361,6 +397,7 @@ const service = new YourService(request.tenantId);  // Use tenantId instead of u
 **Phase 2 Status:** ✅ **COMPLETE**
 
 **Improvements Delivered:**
+
 1. ✅ Tenant middleware (architecture)
 2. ✅ Batch FX rate fetching (performance)
 3. ✅ Removed placeholder data (simplicity)
@@ -369,11 +406,13 @@ const service = new YourService(request.tenantId);  // Use tenantId instead of u
 6. ✅ Improved error handling (reliability)
 
 **Performance Gains:**
+
 - 50x fewer database queries at scale
 - 10x faster dashboard response time
 - Linear complexity (O(n) instead of O(n × m))
 
 **Code Quality:**
+
 - Cleaner separation of concerns
 - Eliminated duplicate logic
 - Simpler service code

@@ -37,6 +37,7 @@ The old 9-phase (0-8) structure was too granular and didn't map to user value. T
 | Post-Launch: Automate | Phase 7 | Post-launch | AI categorization, rules, insights |
 
 **Key changes:**
+
 - Foundation is no longer a numbered phase (it's done, it's infrastructure)
 - "Polish & Launch" moves UP to Phase 6 — ship after core features, not after everything
 - Budgets/Goals and AI Advisor move to "Post-Launch" — not needed for MVP
@@ -57,18 +58,21 @@ The old 9-phase (0-8) structure was too granular and didn't map to user value. T
 ## Tasks
 
 ### Task 1: Write new ROADMAP.md
+
 **File:** `ROADMAP.md`
 **What:** Complete rewrite. New phase structure, updated metrics, no task-level checkboxes. Include: overview, each phase (goal, scope, success criteria, estimated effort, dependencies), MVP vs post-launch distinction, timeline summary, risk mitigation.
 **Depends on:** none
 **Success:** ROADMAP accurately reflects project state, clear MVP scope defined
 
 ### Task 2: Rewrite TASKS.md
+
 **File:** `TASKS.md`
 **What:** Restructure to match new phase numbering. Mark all completed work properly. Add onboarding redesign as tracked work. Update "Tomorrow's Focus" and sprint sections. Clean up PM tasks (retroactively mark done or remove).
 **Depends on:** Task 1 (needs new phase numbers)
 **Success:** All completed work is checked off, active work is tracked, phase numbers match ROADMAP
 
 ### Task 3: Update STATUS.md
+
 **File:** `STATUS.md`
 **What:** Update to reference new phase structure. Refresh metrics (test counts, endpoint counts). Add frontend progress section.
 **Depends on:** Task 1 (needs new phase names)

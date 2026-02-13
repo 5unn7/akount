@@ -25,15 +25,18 @@
 **Target:** `docs/design-system/`
 
 - [x] Delete `docs/design-system/old/` (deprecated files) ✅ DONE 2026-02-04
+
   ```bash
   rm -rf docs/design-system/old/
   ```
 
 - [x] Move contents of `docs/design-system/v1/*` to `docs/design-system/` ✅ DONE 2026-02-04
+
   ```bash
   mv docs/design-system/v1/* docs/design-system/
   rmdir docs/design-system/v1/
   ```
+
   - Also removed empty `00-foundationstokens/` duplicate folder
 
 - [x] Update all references in CLAUDE.md ✅ N/A (no v1 refs found)
@@ -50,6 +53,7 @@
   - Archive files left as-is (historical records)
 
 **Verification:**
+
 ```bash
 # Should return no results
 grep -r "design-system/v1" docs/ .claude/ CLAUDE.md
@@ -62,11 +66,13 @@ grep -r "design-system/v1" docs/ .claude/ CLAUDE.md
 **New folder:** `brand/`
 
 - [x] Create folder structure: ✅ DONE 2026-02-04
+
   ```bash
   mkdir -p brand/logos brand/icons brand/screenshots
   ```
 
 - [x] Create `brand/README.md`: ✅ DONE 2026-02-04
+
   ```markdown
   # Akount Brand Assets
 
@@ -93,6 +99,7 @@ grep -r "design-system/v1" docs/ .claude/ CLAUDE.md
   ```
 
 - [x] Add placeholder files (to be replaced with actual assets): ✅ DONE 2026-02-04
+
   ```bash
   touch brand/logos/.gitkeep
   touch brand/icons/.gitkeep
@@ -100,6 +107,7 @@ grep -r "design-system/v1" docs/ .claude/ CLAUDE.md
   ```
 
 **Verification:**
+
 ```bash
 ls -la brand/
 ```
@@ -126,16 +134,19 @@ Review these files for vision/personality alignment with design-system philosoph
 | `CLAUDE.md` | Long, complex | SIMPLIFY | ⬜ |
 
 **Before deleting, verify data preserved in:**
+
 - `docs/design-system/03-screens/` - Feature screens
 - `docs/design-system/02-patterns/` - UI patterns
 - `docs/design-system/04-workflows/` - User workflows
 
 - [x] Create archive folder: ✅ DONE 2026-02-04
+
   ```bash
   mkdir -p docs/archive/pre-restructure
   ```
 
 - [x] Archive before deleting: ✅ DONE 2026-02-04
+
   ```bash
   mv docs/features/ docs/archive/pre-restructure/features/
   mv docs/architecture/evolution.md docs/archive/pre-restructure/
@@ -159,6 +170,7 @@ Verify alignment with design-system requirements:
   - `tenantId` present on key models (Entity, etc.) ✓
 
 - [x] **RBAC enum status:** ⚠️ PARTIAL - NEEDS MIGRATION
+
   ```prisma
   // CURRENT (schema.prisma:820):
   enum TenantUserRole {
@@ -185,6 +197,7 @@ Verify alignment with design-system requirements:
   - ⚠️ Extra: VIEWER (decide: keep as alias for INVESTOR, or remove)
 
   **Action:** Create migration to add missing roles
+
   ```bash
   pnpm --filter @akount/db prisma migrate dev --name add_rbac_roles
   ```
@@ -206,6 +219,7 @@ Verify alignment with design-system requirements:
 **Current file:** `apps/web/src/proxy.ts`
 
 - [x] **Review current implementation:** ✅ REVIEWED 2026-02-04
+
   ```typescript
   // Current implementation (apps/web/src/proxy.ts)
   import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
@@ -246,6 +260,7 @@ Verify alignment with design-system requirements:
   **Reference:** `docs/design-system/05-governance/permissions-matrix.md`
 
   **High-Priority Routes (System Admin):**
+
   | Route Pattern | Required Role(s) | Permission Level |
   |---------------|------------------|------------------|
   | `/system/audit-log(.*)` | OWNER, ADMIN, ACCOUNTANT | VIEW |
@@ -256,6 +271,7 @@ Verify alignment with design-system requirements:
   | `/system/data-management(.*)` | OWNER, ADMIN | ADMIN |
 
   **Accounting Routes (Restricted):**
+
   | Route Pattern | Required Role(s) | Permission Level |
   |---------------|------------------|------------------|
   | `/accounting/journal(.*)` | ADMIN, ACCOUNTANT | ACT |
@@ -265,6 +281,7 @@ Verify alignment with design-system requirements:
   | `/accounting/tax-rates(.*)` | ADMIN, ACCOUNTANT | ACT |
 
   **Read-Only Routes (Investor/Advisor):**
+
   | Route Pattern | Required Role(s) | Permission Level |
   |---------------|------------------|------------------|
   | `/reports(.*)` | OWNER, ADMIN, ACCOUNTANT, INVESTOR, ADVISOR | VIEW |
@@ -272,6 +289,7 @@ Verify alignment with design-system requirements:
   | `/forecasts(.*)` | OWNER, ADMIN, ACCOUNTANT, INVESTOR | VIEW |
 
   **Bookkeeper-Accessible Routes:**
+
   | Route Pattern | Required Role(s) | Permission Level |
   |---------------|------------------|------------------|
   | `/transactions(.*)` | OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER | ACT |
@@ -307,6 +325,7 @@ Before marking Phase 0 complete:
 ## Handoff to Phase 1
 
 When complete, Phase 1 can begin with:
+
 - Clean design-system folder at `docs/design-system/`
 - Data model requirements documented
 - RBAC route requirements documented

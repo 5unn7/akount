@@ -20,6 +20,7 @@
 ### 1. Broken Access Control
 
 **✅ CORRECT: Always Validate Ownership**
+
 ```typescript
 // Get user's tenant first
 const tenantUser = await prisma.tenantUser.findFirst({
@@ -40,6 +41,7 @@ if (!invoice) {
 ```
 
 **❌ WRONG: No Ownership Check**
+
 ```typescript
 // SECURITY VULNERABILITY
 const invoice = await prisma.invoice.findFirst({
@@ -54,6 +56,7 @@ const invoice = await prisma.invoice.findFirst({
 ### 2. Cryptographic Failures
 
 **Sensitive Data Protection:**
+
 ```typescript
 // Environment variables (NEVER commit)
 const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY
@@ -67,6 +70,7 @@ const DATABASE_URL = process.env.DATABASE_URL
 ```
 
 **✅ CORRECT: Secure Logging**
+
 ```typescript
 // Safe to log
 logger.info({ userId: user.id, action: 'invoice_created' })
@@ -82,6 +86,7 @@ logger.info({ userId: user.id, action: 'invoice_created' })
 ### 3. Injection Attacks
 
 **✅ CORRECT: Use Prisma (Prevents SQL Injection)**
+
 ```typescript
 // Prisma parameterizes all queries
 const invoices = await prisma.invoice.findMany({
@@ -92,6 +97,7 @@ const invoices = await prisma.invoice.findMany({
 ```
 
 **❌ WRONG: Raw SQL with User Input**
+
 ```typescript
 // SECURITY VULNERABILITY: SQL Injection
 const result = await prisma.$queryRaw`
@@ -101,6 +107,7 @@ const result = await prisma.$queryRaw`
 ```
 
 **✅ If Raw SQL Needed: Use Parameterization**
+
 ```typescript
 // Safe - parameterized raw query
 const result = await prisma.$queryRaw`
@@ -114,6 +121,7 @@ const result = await prisma.$queryRaw`
 ### 4. Insecure Design
 
 **Authentication: Use Clerk (Industry Standard)**
+
 ```typescript
 // Clerk handles:
 // - Password hashing (bcrypt)
@@ -150,6 +158,7 @@ export async function authMiddleware(request, reply) {
 ### 5. Security Misconfiguration
 
 **✅ Proper Configuration:**
+
 ```typescript
 // apps/api/src/index.ts
 const fastify = Fastify({
@@ -189,6 +198,7 @@ await fastify.register(helmet, {
 ### 6. Vulnerable and Outdated Components
 
 **Dependency Management:**
+
 ```bash
 # Regular updates
 npm audit
@@ -202,6 +212,7 @@ npm outdated
 ```
 
 **Automated Scanning:**
+
 ```yaml
 # .github/workflows/security.yml
 name: Security Scan
@@ -219,6 +230,7 @@ jobs:
 ### 7. Identification and Authentication Failures
 
 **Session Management (Clerk):**
+
 ```typescript
 // Clerk handles:
 // - Session tokens (JWT)
@@ -251,6 +263,7 @@ export async function authMiddleware(request, reply) {
 ### 8. Software and Data Integrity Failures
 
 **Audit Logging:**
+
 ```typescript
 model AuditLog {
   id String @id @default(cuid())
@@ -295,6 +308,7 @@ await logAudit({
 ### 9. Security Logging and Monitoring Failures
 
 **Critical Events to Log:**
+
 ```typescript
 // Authentication events
 logger.info({ event: 'login_success', userId, ip })
@@ -314,6 +328,7 @@ logger.error({ event: 'xss_attempt', input, ip })
 ```
 
 **Monitoring:**
+
 - Use Sentry for error tracking
 - Use Vercel Analytics for frontend
 - Set up alerts for suspicious patterns
@@ -323,6 +338,7 @@ logger.error({ event: 'xss_attempt', input, ip })
 ### 10. Server-Side Request Forgery (SSRF)
 
 **✅ Validate External URLs:**
+
 ```typescript
 // If accepting URLs from users
 function isValidUrl(url: string): boolean {
@@ -363,6 +379,7 @@ if (!isValidUrl(userProvidedUrl)) {
 ### Always Validate with Zod
 
 **✅ CORRECT:**
+
 ```typescript
 const createInvoiceSchema = z.object({
   invoiceNumber: z.string().min(1).max(50),
@@ -383,6 +400,7 @@ server.post('/invoices', {
 ```
 
 **Common Validation Patterns:**
+
 ```typescript
 // Email
 z.string().email()
@@ -414,6 +432,7 @@ const sanitized = DOMPurify.sanitize(userInput)
 ### Never Log Secrets
 
 **❌ NEVER Log:**
+
 - Passwords
 - API keys
 - Session tokens
@@ -423,6 +442,7 @@ const sanitized = DOMPurify.sanitize(userInput)
 - Any PII (Personal Identifiable Information)
 
 **✅ Safe to Log:**
+
 - User IDs (UUIDs)
 - Resource IDs
 - Action names
@@ -433,6 +453,7 @@ const sanitized = DOMPurify.sanitize(userInput)
 ### Environment Variables
 
 **✅ CORRECT:**
+
 ```bash
 # .env (NEVER commit to git)
 DATABASE_URL="postgresql://..."
@@ -446,6 +467,7 @@ CLERK_PUBLISHABLE_KEY="pk_your_publishable_key"
 ```
 
 **.gitignore:**
+
 ```
 .env
 .env.local
@@ -459,12 +481,14 @@ CLERK_PUBLISHABLE_KEY="pk_your_publishable_key"
 Before deploying code, verify:
 
 **Authentication & Authorization:**
+
 - [ ] All routes require authentication (authMiddleware)
 - [ ] All queries filter by tenantId (tenant isolation)
 - [ ] No hard-coded credentials
 - [ ] Environment variables used for secrets
 
 **Input Validation:**
+
 - [ ] All user input validated with Zod
 - [ ] All UUIDs validated with z.string().uuid()
 - [ ] All amounts validated as positive integers
@@ -472,17 +496,20 @@ Before deploying code, verify:
 - [ ] No raw SQL with user input
 
 **Data Protection:**
+
 - [ ] No sensitive data in logs
 - [ ] HTTPS/TLS in production
 - [ ] Database encrypted at rest
 - [ ] Soft delete used (audit trail)
 
 **Error Handling:**
+
 - [ ] No stack traces exposed to users
 - [ ] Generic error messages (don't leak internals)
 - [ ] Detailed errors logged server-side only
 
 **Dependencies:**
+
 - [ ] npm audit passes
 - [ ] No critical vulnerabilities
 - [ ] Dependencies up to date

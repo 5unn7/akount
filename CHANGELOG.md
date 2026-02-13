@@ -9,6 +9,7 @@
 ## 2026-02-02 - Critical Fixes & Project Cleanup
 
 ### Fixed
+
 - **Build failure** - packages/db/index.ts used Node.js-only APIs (process.exit, process.on) that broke Edge Runtime. Wrapped in runtime check.
 - **Wrong package import** - apps/web/src/app/api/webhooks/clerk/route.ts imported `@repo/db` instead of `@akount/db`
 - **Hardcoded localhost URL** - EntitiesList.tsx had hardcoded `http://localhost:3001`, now uses environment variable with correct port 4000
@@ -16,15 +17,18 @@
 - **Missing .gitignore entries** - Added `*.tsbuildinfo` to .gitignore
 
 ### Removed
+
 - **9 design system work artifacts** at root (DESIGN-SYSTEM-*.md, README-DESIGN-SYSTEM-REVIEW.md)
 - **6 misplaced documentation files** - Moved to proper locations in docs/
 
 ### Changed
+
 - **CLAUDE.md** - Added "File Creation Rules (MANDATORY)" section to prevent future documentation bloat
 - **/compound skill** - Simplified from 472 lines to 127 lines (removed theoretical 7-agent parallel fantasy)
 - **Root directory** - Reduced from 22 markdown files to 7 essential files
 
 ### Documentation
+
 - Updated ROADMAP.md: Phase 0 now 100% complete
 - Moved ONBOARDING_SETUP_GUIDE.md to docs/setup/
 - Moved QUICK_START.md to docs/setup/
@@ -38,17 +42,20 @@
 ## 2026-02-01 - Phase 0 Complete & Code Review
 
 ### Added
+
 - Bank statement import feature (PDF parsing, intelligent account matching)
 - Performance optimizations for dashboard
 - Code review and fixes for critical issues
 - Claude Code configuration (18 agents, 15 skills, 4 hooks)
 
 ### Changed
+
 - STATUS.md: Phase 0 marked 100% complete
 - API foundation fully operational (Fastify + Clerk JWT + Zod)
 - First vertical slice working (entities API → frontend)
 
 ### Fixed
+
 - Multiple code review issues addressed
 - Authentication middleware improvements
 - Tenant isolation enforcement
@@ -58,6 +65,7 @@
 ## 2026-01-27 - Project Tracking System Established
 
 ### Added
+
 - **STATUS.md** - Single source of truth for implementation progress
 - **ROADMAP.md** - 8-phase development plan with time estimates
 - **TASKS.md** - Weekly task breakdown with daily goals
@@ -66,6 +74,7 @@
 - **README.md** - Project overview and quick start
 
 ### Changed
+
 - **planning/akount_foundation_checklist.md**
   - Updated header to clarify this tracks SCHEMA DESIGN, not implementation
   - Updated summary table to show "Schema Designed" vs "Implementation Complete"
@@ -74,11 +83,13 @@
   - Changed "Notes & Next Steps" to point to new tracking files
 
 ### Fixed
+
 - **Inaccurate progress tracking** - Previous checklists showed 29% complete, reality was ~5%
 - **Confusion between design and implementation** - Clarified that checkmarks mean "schema defined" not "feature working"
 - **No single source of truth** - Now STATUS.md is the authoritative implementation status
 
 ### Documentation
+
 - Established discipline: Update STATUS.md, ROADMAP.md, and TASKS.md as implementation progresses
 - Created clear separation: planning/ folder = specs/reference, root files = live tracking
 
@@ -87,6 +98,7 @@
 ## 2026-01-27 - Initial Commit
 
 ### Added (All Files)
+
 - Turborepo monorepo structure (apps/web, apps/api, packages/*)
 - Next.js 16 frontend with basic layout and dashboard
 - Fastify backend with hello-world endpoint
@@ -103,6 +115,7 @@
   - Foundation checklist (aspirational)
 
 ### Status
+
 - Infrastructure: Complete
 - Database Schema: Defined (not migrated)
 - Frontend: Basic shell only
@@ -118,24 +131,31 @@
 ### [Date] - [Title of Change]
 
 #### Added
+
 - New files, features, or capabilities
 
 #### Changed
+
 - Modified files, updated specs, changed plans
 
 #### Fixed
+
 - Bug fixes, corrected inaccuracies
 
 #### Removed
+
 - Deleted files or deprecated features
 
 #### Deprecated
+
 - Features marked for future removal
 
 #### Security
+
 - Security-related changes
 
 #### Documentation
+
 - Documentation updates
 
 ---
@@ -145,6 +165,7 @@
 ### When to Create an Entry
 
 **DO create changelog entry for:**
+
 - ✅ Completing a phase or major milestone
 - ✅ Adding/removing features from roadmap
 - ✅ Changing database schema significantly
@@ -153,6 +174,7 @@
 - ✅ Breaking changes to APIs or data structures
 
 **DON'T create changelog entry for:**
+
 - ❌ Daily task updates in TASKS.md
 - ❌ Minor bug fixes
 - ❌ Typo corrections
@@ -162,6 +184,7 @@
 ### Format
 
 **Good Entry:**
+
 ```markdown
 ## 2026-02-15 - Authentication Complete
 
@@ -180,6 +203,7 @@
 ```
 
 **Bad Entry:**
+
 ```markdown
 ## 2026-02-15 - Stuff
 
@@ -194,7 +218,8 @@
 
 **Track when planning/ folder docs are updated based on implementation discoveries.**
 
-### Example:
+### Example
+
 ```markdown
 ## 2026-03-01 - Accounts Overview Spec Updated
 
@@ -216,7 +241,8 @@
 
 **Track significant changes to ROADMAP.md timeline or priorities.**
 
-### Example:
+### Example
+
 ```markdown
 ## 2026-04-01 - Roadmap Adjustment
 
@@ -238,7 +264,8 @@
 
 **Track when schema changes affect existing data or require migrations.**
 
-### Example:
+### Example
+
 ```markdown
 ## 2026-05-01 - Schema Migration: Added Notification Preferences
 

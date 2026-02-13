@@ -28,6 +28,7 @@ Worse: if you say "build me the invoice list page," Claude doesn't know the colo
 **Yes.** Skills (`.claude/commands/`) and hooks (`.claude/hooks/`) are loaded from the **project root**, always available regardless of which subdirectory Claude is working in. The root `CLAUDE.md` is also **always loaded**. Subdirectory CLAUDE.md files ADD context — they don't replace.
 
 So when Claude works in `apps/api/`:
+
 - Root `CLAUDE.md` (invariants, agents, skills, rules) — always loaded
 - `apps/api/CLAUDE.md` (API-specific patterns) — loaded on-demand when accessing files there
 - All skills, hooks, and agents — still available
@@ -35,6 +36,7 @@ So when Claude works in `apps/api/`:
 ### Would Claude know what db, colors, styles, themes, tech to use for a feature?
 
 **Currently: No** for design/styling, **partially** for tech/db. The plan fixes this by:
+
 - Embedding tech stack + Prisma model overview in root CLAUDE.md (always loaded)
 - Adding design system context in `apps/web/CLAUDE.md` (loaded when doing frontend work)
 - Adding path-scoped rules in `.claude/rules/` for domain-specific knowledge
@@ -92,6 +94,7 @@ Layer 4: HUMAN ONLY (never loaded by Claude)
 ```
 
 **Token budget per layer:**
+
 - Layer 1: ~5,000 tokens/message (fixed cost, high value)
 - Layer 2: ~800 tokens when active (only pays when relevant)
 - Layer 3: ~2,500 tokens when read (rare, deep sessions only)
@@ -106,6 +109,7 @@ Layer 4: HUMAN ONLY (never loaded by Claude)
 **File:** `CLAUDE.md`
 
 **Cut ~130 lines:**
+
 - "Visual Context" table (replaced by embedded context)
 - Session Management / CLI Scripts (discoverable)
 - Guardrails section (moved to `.claude/rules/guardrails.md`)
@@ -114,12 +118,14 @@ Layer 4: HUMAN ONLY (never loaded by Claude)
 - Code example snippets (replaced with `@import` pointers)
 
 **Add ~30 lines of compact embedded context:**
+
 - Section A: Architecture snapshot (~8 lines) — request flow as one paragraph
 - Section B: Domain structure (~10 lines) — 8 domains with actual folder names
 - Section C: Core model hierarchy (~8 lines) — Tenant > Entity > models, NOT all 38
 - Section D: Design system reference (~4 lines) — tech, tokens, component library
 
 **Keep (tightened):**
+
 - Project Overview (5 lines)
 - 5 Key Invariants (5 lines, no code snippets — use pointers)
 - File Locations table (10 lines)
@@ -132,6 +138,7 @@ Layer 4: HUMAN ONLY (never loaded by Claude)
 Path-scoped rules that auto-load only when relevant.
 
 **2a. `.claude/rules/financial-rules.md` (~30 lines)**
+
 ```yaml
 ---
 paths:
@@ -140,6 +147,7 @@ paths:
   - "packages/types/**"
 ---
 ```
+
 - Integer cents (never floats)
 - Multi-currency 4-field pattern
 - Double-entry invariants
@@ -147,18 +155,21 @@ paths:
 - tenantId in every query
 
 **2b. `.claude/rules/api-conventions.md` (~25 lines)**
+
 ```yaml
 ---
 paths:
   - "apps/api/**"
 ---
 ```
+
 - Route file → schema → service → register pattern
 - Zod validation required
 - TenantContext in every service function
 - Error response format
 
 **2c. `.claude/rules/frontend-conventions.md` (~25 lines)**
+
 ```yaml
 ---
 paths:
@@ -166,6 +177,7 @@ paths:
   - "packages/ui/**"
 ---
 ```
+
 - Server vs Client component rules
 - Design system: shadcn-glass-ui, Tailwind v4, design tokens
 - Color/theme system references
@@ -173,12 +185,14 @@ paths:
 
 **2d. `.claude/rules/guardrails.md` (~15 lines)**
 No path scope — always loaded.
+
 - Hook enforcement rules (what hooks block and why)
 - File location rules
 - Commit conventions
 
 **2e. `.claude/rules/workflows.md` (~20 lines)**
 No path scope — always loaded.
+
 - Skill trigger table (compact: "for X, use /skill-name")
 - Agent trigger table (compact: "for X, use agent-name")
 - When to use /processes:begin, /processes:work, /processes:review
@@ -186,6 +200,7 @@ No path scope — always loaded.
 ### 3. Create Hierarchical CLAUDE.md Files (NEW — 3 files)
 
 **3a. `apps/api/CLAUDE.md` (~60 lines)**
+
 - Middleware chain: auth > tenant > validation > service
 - Domain folder structure with ACTUAL names (banking, not banking)
 - Built endpoints vs stubs (from actual route registration)
@@ -194,6 +209,7 @@ No path scope — always loaded.
 - Key files: app.ts, middleware/auth.ts, middleware/tenant.ts
 
 **3b. `apps/web/CLAUDE.md` (~60 lines)**
+
 - Next.js 16 App Router patterns
 - Server Component (page.tsx) vs Client Component ('use client')
 - Design system: shadcn/ui base + shadcn-glass-ui overlay
@@ -204,6 +220,7 @@ No path scope — always loaded.
 - Layout: sidebar navigation, glass cards, dark mode support
 
 **3c. `packages/db/CLAUDE.md` (~50 lines)**
+
 - All 38 Prisma models as compact table (Model | Scope | Key Fields)
 - Schema conventions (cuid, createdAt, updatedAt, deletedAt)
 - Entity-scoped vs tenant-scoped models
@@ -254,6 +271,7 @@ Single consolidated deep-reference. One Read call replaces reading 3 files. **Ta
 ### 7. Add Hooks (2 new hooks)
 
 **7a. SessionStart hook** — Inject dynamic context at session start
+
 ```json
 {
   "matcher": "startup",
@@ -263,9 +281,11 @@ Single consolidated deep-reference. One Read call replaces reading 3 files. **Ta
   }]
 }
 ```
+
 Script outputs: git branch, recent changes, uncommitted files, active TODO count. Returns as `additionalContext`. Replaces Phase 0 of /processes:begin.
 
 **7b. PreCompact hook** — Preserve critical context during auto-compaction
+
 ```json
 {
   "matcher": "compact",
@@ -301,6 +321,7 @@ These files were created specifically for Claude. Their content has been absorbe
 Audit found ~4,200 lines of waste across skills. Three phases:
 
 **10a. Delete (3 files, save ~1,225 lines):**
+
 - **Delete** `.claude/commands/processes/WORKFLOW-VISUAL-GUIDE.md` (388 lines) — pure ASCII art, duplicates README.md
 - **Delete** `.claude/commands/resolve_pr_parallel.md` (637 lines) — describes non-existent functionality
 - **Delete** `.claude/agents/review/pattern-recognition-specialist.md` (~200 lines) — duplicates built-in Task agent pattern detection
@@ -318,6 +339,7 @@ Audit found ~4,200 lines of waste across skills. Three phases:
 | quality/a11y-review.md | 436 | 250 | Example violations |
 
 **10c. Merge (2 files into 1, save ~1,000 lines):**
+
 - **Merge** `plan_review.md` (669 lines) + `deepen-plan.md` (685 lines) → single `processes/review.md` with `--type=plan` and `--type=code` modes
 - Current `processes/review.md` (461 lines) absorbs unique content from both
 - Result: ~600 lines total instead of 1,815 across 3 files
@@ -671,11 +693,13 @@ Switch back from /fast with /fast again (toggles off).
 ```
 
 **Cost impact estimate:**
+
 - ~40% of typical session messages are exploration/search/simple edits
 - Haiku is ~12x cheaper than Opus per token
 - If 40% of messages use Haiku: **~30% reduction in total API cost**
 
 **Add to MEMORY.md as well (2 lines):**
+
 ```markdown
 ## Cost
 Use /fast for searches, simple edits, git ops, test runs. Opus for multi-file features, architecture, financial logic.

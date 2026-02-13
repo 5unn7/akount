@@ -28,6 +28,7 @@ Display a financial value:
 ```
 
 **Format:**
+
 - Sign: Always explicit (+ or –)
 - Font: Monospace (JetBrains Mono)
 - Color: Income (green), Expense (red), Transfer (slate)
@@ -61,12 +62,14 @@ Amount in CAD
 ```
 
 **Features:**
+
 - Accepts negative numbers (for expenses)
 - Enforces currency (don't mix)
 - Shows conversion in real-time
 - FX rate shown with timestamp
 
 **Validation:**
+
 - Numeric only (decimals allowed)
 - Rejects values that will round incorrectly
 
@@ -90,6 +93,7 @@ Search or select:
 ```
 
 **Features:**
+
 - Grouped by account class (Assets, Liabilities, etc.)
 - Show account code + name
 - Search/filter by name or code
@@ -97,6 +101,7 @@ Search or select:
 - "Uncategorized" pseudo-account option
 
 **Behavior:**
+
 - Cannot select parent categories (only leaf accounts)
 - Keyboard navigation: Arrow keys + Enter
 - Recent accounts appear first
@@ -122,6 +127,7 @@ Currency: CAD
 ```
 
 **Properties:**
+
 - Flag emoji (country of registration)
 - Short entity name (≤20 chars)
 - Color optional (each entity can have color)
@@ -147,6 +153,7 @@ Summary card for a bank account:
 ```
 
 **Components:**
+
 - Account name (14px, medium)
 - Currency code (12px, muted)
 - Balance (24px, monospace, green if positive)
@@ -181,6 +188,7 @@ Read-only summary before posting:
 ```
 
 **Sections:**
+
 - Header: Entity, period, date
 - Journal lines: Monospace amounts, DR/CR labels
 - Balance indicator: Green ✓ when balanced
@@ -197,6 +205,7 @@ Complete row for transaction table:
 ```
 
 **Columns (default):**
+
 1. Checkbox (bulk actions)
 2. Date (sortable)
 3. Description (searchable)
@@ -210,12 +219,14 @@ Complete row for transaction table:
 11. Status (badge)
 
 **States:**
+
 - AI Categorized: Violet dot
 - Reconciled: Green checkmark
 - Locked: Gray + lock icon
 - Error: Red highlight
 
 **Interactions:**
+
 - Click to expand details panel
 - Checkbox for bulk operations
 - Category editable inline
@@ -234,12 +245,14 @@ AI Suggests: Cloud Services  [Apply] [Ignore]
 ```
 
 **Components:**
+
 - Current value in dropdown
 - AI suggestion with confidence %
 - [Apply] button
 - [Ignore] button or dismissible (✕)
 
 **Behavior:**
+
 - Shows when AI confidence >75%
 - Click [Apply] → Updates category, removes chip
 - Click [Ignore] → Removes chip, records feedback
@@ -259,6 +272,7 @@ INV-0234  │ 2025-12-15 │ Acme Corp    │ $5,000 CAD │ Partial │ Due: 20
 ```
 
 **Linked data:**
+
 - Show related transaction
 - Payment allocation details
 - Due dates
@@ -285,6 +299,7 @@ Visual display of budget vs. actual:
 ```
 
 **Components:**
+
 - Label (budget period)
 - Budget amount (monospace)
 - Actual spend (monospace)
@@ -292,6 +307,7 @@ Visual display of budget vs. actual:
 - Action: View transactions
 
 **Colors:**
+
 - Green (0-70% spent): On track
 - Amber (70-90% spent): Approaching limit
 - Red (90%+ spent): Over budget
@@ -310,6 +326,7 @@ Asset
 ```
 
 **Properties:**
+
 - Hierarchy: Parent → children with indentation
 - Amount: Monospace, right-aligned
 - Subtotals: Bold, slightly darker background
@@ -331,6 +348,7 @@ Key performance indicator card:
 ```
 
 **Variants:**
+
 - **With sparkline:** Mini chart (7 data points)
 - **With comparison:** vs. last period / vs. budget
 - **With color:** Green (positive), Red (negative), Gray (neutral)
@@ -351,6 +369,7 @@ Q4 2025: (Future)
 ```
 
 **States:**
+
 - ✓ Locked: No changes allowed (gray)
 - 🔄 In Review: Read-only, awaiting approval (amber)
 - ⊗ Open: Editable (green)
@@ -375,6 +394,7 @@ Comment: "Looked correct, applied"
 ```
 
 **Components:**
+
 - Timestamp (with timezone)
 - User name + action
 - Before/after values (if applicable)
@@ -456,6 +476,7 @@ Screens (transactions, reconciliation, dashboards)
 ## Accessibility
 
 All financial components:
+
 - ✓ Display amounts as text (not images)
 - ✓ Use semantic HTML for numbers
 - ✓ Provide context (currency, sign, entity)
@@ -468,6 +489,7 @@ All financial components:
 ## Dark Mode
 
 Financial component-specific notes:
+
 - Monospace amounts: Use light gray text (not pure white)
 - Amount colors: Ensure sufficient contrast for green/red
 - Backgrounds: Elevated cards contrast from page background

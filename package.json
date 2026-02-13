@@ -6,6 +6,8 @@
         "build": "turbo build",
         "dev": "turbo dev",
         "lint": "turbo lint",
+        "lint:md": "markdownlint-cli2 \"**/*.md\"",
+        "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
         "typecheck": "turbo typecheck",
         "clean": "turbo clean",
         "test": "turbo test",
@@ -19,6 +21,7 @@
         "db:reset": "cd packages/db && npm run db:reset"
     },
     "devDependencies": {
+        "markdownlint-cli2": "^0.17.1",
         "prettier": "^3.1.0",
         "turbo": "^2.3.3",
         "typescript": "^5.3.3"

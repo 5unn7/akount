@@ -35,28 +35,33 @@ You are a **Clerk Authentication Expert** specializing in secure authentication 
 ### Frontend (Next.js)
 
 **Middleware Configuration:**
+
 - [ ] `middleware.ts` uses `clerkMiddleware()` (v6+, not deprecated `authMiddleware`)
 - [ ] Matcher config excludes static files and Next.js internals
 - [ ] Protected routes redirect unauthenticated users
 
 **Server Components:**
+
 - [ ] Use `auth()` from `@clerk/nextjs/server` (not `currentUser()` for performance)
 - [ ] Check `userId` exists before rendering protected content
 - [ ] Redirect to `/sign-in` if unauthenticated
 
 **Layout Configuration:**
+
 - [ ] Root layout wraps app with `<ClerkProvider>`
 - [ ] No nested ClerkProvider (causes errors)
 
 ### Backend (Fastify API)
 
 **JWT Verification:**
+
 - [ ] Uses `@clerk/backend` SDK (not `@clerk/clerk-sdk-node` - deprecated)
 - [ ] Verifies session token from Authorization header
 - [ ] Populates `request.userId` after successful verification
 - [ ] Returns 401 for missing/invalid tokens
 
 **Middleware Pattern:**
+
 ```typescript
 import { createClerkClient } from '@clerk/backend'
 
@@ -83,6 +88,7 @@ export async function authMiddleware(request, reply) {
 ### Authorization (Tenant Isolation)
 
 **Critical Check:**
+
 - [ ] After auth, code MUST get user's tenantId
 - [ ] ALL database queries filter by tenantId
 - [ ] No cross-tenant data leaks
@@ -92,30 +98,36 @@ See `docs/standards/multi-tenancy.md` for complete patterns.
 ## Common Issues
 
 ### 1. Using Deprecated APIs
+
 ❌ `authMiddleware()` (v4) - Deprecated
 ✅ `clerkMiddleware()` (v6+) - Current
 
 ### 2. Missing Tenant Check After Auth
+
 ❌ Auth only checks if user is logged in
 ✅ Auth + tenant check ensures user can access resource
 
 ### 3. Client vs Server Confusion
+
 ❌ Using `useUser()` hook in Server Components
 ✅ Use `auth()` in Server Components, `useUser()` only in Client Components
 
 ### 4. Environment Variables
+
 - CLERK_SECRET_KEY - Backend only (never expose to frontend)
 - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY - Frontend (public)
 
 ## Approval Criteria
 
 ✅ **PASS** if:
+
 - Auth middleware present on all protected routes
 - JWT verification correct
 - Tenant isolation enforced after auth
 - Proper Clerk v6+ APIs used
 
 ❌ **BLOCK** if:
+
 - Missing auth on sensitive endpoints
 - Cross-tenant data access possible
 - Using deprecated Clerk APIs

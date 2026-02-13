@@ -44,6 +44,7 @@ What is this code *actually* trying to accomplish? Strip away all the "nice to h
 ### Step 3: Propose Simplifications
 
 For each complexity, suggest simpler alternatives:
+
 - Can this abstraction be removed?
 - Can this configuration be hardcoded?
 - Can this be 3 simple functions instead of 1 complex one?
@@ -52,6 +53,7 @@ For each complexity, suggest simpler alternatives:
 ### Step 4: Rank by Impact
 
 Prioritize simplifications by:
+
 1. Lines of code removed
 2. Concepts eliminated
 3. Cognitive load reduced
@@ -314,6 +316,7 @@ These are features/complexity added for future needs that don't exist yet:
 ### Lines of Code Reduction
 
 Count potential deletions:
+
 - How many lines can be removed?
 - How many files can be deleted?
 - How many dependencies can be removed?
@@ -321,6 +324,7 @@ Count potential deletions:
 ### Concept Elimination
 
 List concepts that can be removed:
+
 - Factories, builders, strategies that aren't needed
 - State machines for simple state
 - Event systems for direct calls

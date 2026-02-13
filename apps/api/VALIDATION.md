@@ -35,9 +35,11 @@ server.post('/users', {
 ## Validation Middleware
 
 ### `validateBody(schema)`
+
 Validates request body against a Zod schema.
 
 **Usage:**
+
 ```typescript
 server.post('/endpoint', {
   preValidation: [validateBody(mySchema)]
@@ -45,6 +47,7 @@ server.post('/endpoint', {
 ```
 
 **Error Response (400):**
+
 ```json
 {
   "error": "Validation Error",
@@ -60,9 +63,11 @@ server.post('/endpoint', {
 ```
 
 ### `validateQuery(schema)`
+
 Validates query parameters.
 
 **Usage:**
+
 ```typescript
 server.get('/endpoint', {
   preValidation: [validateQuery(querySchema)]
@@ -70,9 +75,11 @@ server.get('/endpoint', {
 ```
 
 ### `validateParams(schema)`
+
 Validates URL parameters.
 
 **Usage:**
+
 ```typescript
 const paramsSchema = z.object({
   id: z.string().uuid()
@@ -88,6 +95,7 @@ server.get('/users/:id', {
 Located in `src/schemas/common.ts`:
 
 ### UUID Validation
+
 ```typescript
 import { uuidSchema } from './schemas/common'
 
@@ -97,6 +105,7 @@ const schema = z.object({
 ```
 
 ### Pagination
+
 ```typescript
 import { paginationQuerySchema } from './schemas/common'
 
@@ -105,6 +114,7 @@ import { paginationQuerySchema } from './schemas/common'
 ```
 
 ### Date Range
+
 ```typescript
 import { dateRangeSchema } from './schemas/common'
 
@@ -112,6 +122,7 @@ import { dateRangeSchema } from './schemas/common'
 ```
 
 ### Entity Type
+
 ```typescript
 import { entityTypeSchema } from './schemas/common'
 
@@ -119,6 +130,7 @@ import { entityTypeSchema } from './schemas/common'
 ```
 
 ### Currency Code
+
 ```typescript
 import { currencySchema } from './schemas/common'
 
@@ -129,9 +141,11 @@ import { currencySchema } from './schemas/common'
 ## Test Endpoints
 
 ### POST /validation/test
+
 Test body validation with sample data.
 
 **Valid Request:**
+
 ```bash
 curl -X POST http://localhost:3001/validation/test \
   -H "Content-Type: application/json" \
@@ -143,6 +157,7 @@ curl -X POST http://localhost:3001/validation/test \
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Validation successful!",
@@ -155,6 +170,7 @@ curl -X POST http://localhost:3001/validation/test \
 ```
 
 **Invalid Request (bad email):**
+
 ```bash
 curl -X POST http://localhost:3001/validation/test \
   -H "Content-Type: application/json" \
@@ -165,6 +181,7 @@ curl -X POST http://localhost:3001/validation/test \
 ```
 
 **Error Response:**
+
 ```json
 {
   "error": "Validation Error",
@@ -180,14 +197,17 @@ curl -X POST http://localhost:3001/validation/test \
 ```
 
 ### GET /validation/query
+
 Test query parameter validation.
 
 **Valid Request:**
+
 ```bash
 curl "http://localhost:3001/validation/query?search=test&status=active&page=2&limit=10"
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Query validation successful!",
@@ -201,11 +221,13 @@ curl "http://localhost:3001/validation/query?search=test&status=active&page=2&li
 ```
 
 **Invalid Request:**
+
 ```bash
 curl "http://localhost:3001/validation/query?status=invalid&page=0"
 ```
 
 **Error Response:**
+
 ```json
 {
   "error": "Validation Error",
@@ -246,6 +268,7 @@ All validation errors are automatically caught by the global error handler and r
 ## Best Practices
 
 ### 1. Define schemas in separate files
+
 ```typescript
 // src/schemas/user.ts
 export const createUserSchema = z.object({...})
@@ -254,11 +277,13 @@ export const userQuerySchema = z.object({...})
 ```
 
 ### 2. Export TypeScript types
+
 ```typescript
 export type CreateUser = z.infer<typeof createUserSchema>
 ```
 
 ### 3. Reuse common patterns
+
 ```typescript
 import { paginationQuerySchema } from './common'
 
@@ -269,6 +294,7 @@ const myQuerySchema = z.object({
 ```
 
 ### 4. Use transformations
+
 ```typescript
 const schema = z.object({
   // Coerce string to number
@@ -281,6 +307,7 @@ const schema = z.object({
 ```
 
 ### 5. Optional fields with defaults
+
 ```typescript
 const schema = z.object({
   page: z.number().default(1),
@@ -291,6 +318,7 @@ const schema = z.object({
 ## Zod Tips
 
 ### String Validations
+
 ```typescript
 z.string()
   .min(1)           // Non-empty
@@ -304,6 +332,7 @@ z.string()
 ```
 
 ### Number Validations
+
 ```typescript
 z.number()
   .int()            // Integer only
@@ -313,6 +342,7 @@ z.number()
 ```
 
 ### Array Validations
+
 ```typescript
 z.array(z.string())     // Array of strings
   .min(1)               // At least one item
@@ -321,6 +351,7 @@ z.array(z.string())     // Array of strings
 ```
 
 ### Object Validations
+
 ```typescript
 z.object({
   name: z.string(),
@@ -332,6 +363,7 @@ z.object({
 ```
 
 ### Union Types
+
 ```typescript
 z.union([
   z.string(),

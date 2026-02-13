@@ -9,6 +9,7 @@
 ## Overview
 
 Redesign onboarding to be **zen, minimal, and progressive**:
+
 - **Minimal wizard** (2 steps, 60 seconds) gets users to dashboard fast
 - **Dashboard hero card** with circular progress tracks completion
 - **Sidebar progress indicator** shows percentage and nudges completion
@@ -33,15 +34,19 @@ Redesign onboarding to be **zen, minimal, and progressive**:
 ## Implementation Phases
 
 ### **Phase 1: Database & API Foundation** (2-3 hours)
+
 Core data model and API routes for tracking progress
 
 ### **Phase 2: Minimal Wizard** (3-4 hours)
+
 Simplified 2-step onboarding wizard
 
 ### **Phase 3: Dashboard Integration** (4-5 hours)
+
 Hero card + sidebar progress indicator
 
 ### **Phase 4: Optional Steps & Modals** (Sprint 2)
+
 Business details, bank connection, goals setup
 
 ---
@@ -53,6 +58,7 @@ Business details, bank connection, goals setup
 **File:** `packages/db/prisma/schema.prisma`
 
 **Actions:**
+
 ```prisma
 model OnboardingProgress {
   id        String   @id @default(cuid())
@@ -85,6 +91,7 @@ model OnboardingProgress {
 ```
 
 **Also add to Tenant model:**
+
 ```prisma
 model Tenant {
   // ... existing fields
@@ -93,6 +100,7 @@ model Tenant {
 ```
 
 **Also add to User model:**
+
 ```prisma
 model User {
   // ... existing fields
@@ -102,6 +110,7 @@ model User {
 ```
 
 **Also add to Entity model:**
+
 ```prisma
 model Entity {
   // ... existing fields
@@ -117,6 +126,7 @@ model Entity {
 ```
 
 **Success:**
+
 - Run `npx prisma db push` successfully
 - OnboardingProgress model created
 - User, Entity models extended
@@ -129,6 +139,7 @@ model Entity {
 **File:** `apps/api/src/domains/system/routes/onboarding-progress.ts`
 
 **Create:**
+
 ```typescript
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
@@ -260,6 +271,7 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
 ```
 
 **Success:**
+
 - 4 routes created (GET /progress, POST /update-progress, /skip-step, /dismiss-card)
 - Routes registered in `apps/api/src/domains/system/routes.ts`
 - Can test with curl/Postman
@@ -271,6 +283,7 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
 **File:** `apps/api/src/domains/system/routes/onboarding.ts`
 
 **Modify POST /initialize:**
+
 ```typescript
 // After creating tenant and entity, create OnboardingProgress
 await tx.onboardingProgress.create({
@@ -294,6 +307,7 @@ await tx.user.update({
 ```
 
 **Update initializeOnboardingSchema:**
+
 ```typescript
 const initializeOnboardingSchema = z.object({
   accountType: z.enum(['personal', 'business', 'accountant']),
@@ -308,6 +322,7 @@ const initializeOnboardingSchema = z.object({
 ```
 
 **Success:**
+
 - POST /initialize creates OnboardingProgress with 40% completion
 - User phoneNumber and timezone saved
 - Tests pass
@@ -319,6 +334,7 @@ const initializeOnboardingSchema = z.object({
 **File:** `apps/api/__tests__/system/onboarding-progress.test.ts`
 
 **Test cases:**
+
 - GET /progress returns 0% for new user
 - POST /update-progress increases percentage
 - POST /update-progress with completed=false decreases percentage
@@ -337,6 +353,7 @@ const initializeOnboardingSchema = z.object({
 **File:** `apps/web/src/stores/onboardingStore.ts`
 
 **Add new fields:**
+
 ```typescript
 export interface OnboardingState {
   // ... existing fields
@@ -360,6 +377,7 @@ export interface OnboardingState {
 **File:** `apps/web/src/app/onboarding/components/steps/WelcomeStep.tsx`
 
 **Redesign as glass morphism cards:**
+
 ```typescript
 'use client'
 
@@ -431,6 +449,7 @@ export function WelcomeStep({ onNext }: { onNext: () => void }) {
 **File:** `apps/web/src/app/onboarding/components/steps/EssentialInfoStep.tsx`
 
 **Create new single-page form:**
+
 ```typescript
 'use client'
 
@@ -612,6 +631,7 @@ export function EssentialInfoStep({ onNext, onBack }: {
 ```
 
 **Success:**
+
 - Welcome step shows 3 glass cards
 - Essential info step has all fields on one page
 - Form validates and submits
@@ -623,6 +643,7 @@ export function EssentialInfoStep({ onNext, onBack }: {
 **File:** `apps/web/src/app/onboarding/components/OnboardingWizard.tsx`
 
 **Changes:**
+
 - Remove EntityDetailsStep (merged into EssentialInfoStep)
 - Update steps array to 2 steps
 - Update totalSteps to 2
@@ -663,6 +684,7 @@ return (
 ```
 
 **Success:**
+
 - Wizard has 2 steps only
 - Gradient background applied
 - Progress dots show at top
@@ -676,6 +698,7 @@ return (
 **File:** `apps/web/src/components/dashboard/CircularProgress.tsx`
 
 **Create with recharts:**
+
 ```typescript
 'use client'
 
@@ -860,6 +883,7 @@ export function OnboardingHeroCard() {
 ```
 
 **Success:**
+
 - Card shows circular progress
 - Checklist expands/collapses
 - Dismissible with X button
@@ -923,6 +947,7 @@ export function SidebarProgressIndicator() {
 ```
 
 **Success:**
+
 - Mini progress bar shows below avatar
 - Color-coded (yellow < 80%, green >= 80%)
 - Clickable to open completion modal
@@ -934,6 +959,7 @@ export function SidebarProgressIndicator() {
 **File:** `apps/web/src/app/(dashboard)/overview/page.tsx`
 
 **Add at top of page:**
+
 ```typescript
 import { OnboardingHeroCard } from '@/components/dashboard/OnboardingHeroCard'
 
@@ -956,12 +982,14 @@ export default async function OverviewPage() {
 **File:** Find sidebar component and add indicator
 
 **Search for sidebar:**
+
 ```bash
 Glob "apps/web/src/**/*sidebar*.tsx"
 Glob "apps/web/src/**/layout.tsx"
 ```
 
 **Add after user avatar:**
+
 ```typescript
 import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressIndicator'
 
@@ -973,6 +1001,7 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 ```
 
 **Success:**
+
 - Hero card appears on dashboard
 - Sidebar indicator shows below avatar
 - Both components fetch data independently
@@ -986,6 +1015,7 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 **File:** `apps/web/__tests__/components/OnboardingHeroCard.test.tsx`
 
 **Test cases:**
+
 - Card doesn't render if 100% complete
 - Card shows correct percentage
 - Checklist shows correct step states
@@ -995,6 +1025,7 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 **File:** `apps/web/__tests__/components/SidebarProgressIndicator.test.tsx`
 
 **Test cases:**
+
 - Indicator doesn't render if 100% complete
 - Progress bar width matches percentage
 - Color changes at 80% threshold
@@ -1009,6 +1040,7 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 **File:** `apps/web/src/app/onboarding/complete/page.tsx`
 
 **Create modal page for remaining steps:**
+
 - Business details form
 - Bank connection CTA
 - Goals setup form
@@ -1022,11 +1054,13 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 ### Create
 
 **Backend:**
+
 - [ ] `packages/db/prisma/schema.prisma` - Add OnboardingProgress model
 - [ ] `apps/api/src/domains/system/routes/onboarding-progress.ts` - Progress API routes
 - [ ] `apps/api/__tests__/system/onboarding-progress.test.ts` - API tests
 
 **Frontend:**
+
 - [ ] `apps/web/src/components/dashboard/CircularProgress.tsx` - Donut chart
 - [ ] `apps/web/src/components/dashboard/OnboardingHeroCard.tsx` - Dashboard card
 - [ ] `apps/web/src/components/layout/SidebarProgressIndicator.tsx` - Sidebar indicator
@@ -1037,10 +1071,12 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 ### Modify
 
 **Backend:**
+
 - [ ] `apps/api/src/domains/system/routes/onboarding.ts` - Update POST /initialize
 - [ ] `apps/api/src/domains/system/routes.ts` - Register progress routes
 
 **Frontend:**
+
 - [ ] `apps/web/src/stores/onboardingStore.ts` - Add phone, timezone fields
 - [ ] `apps/web/src/app/onboarding/components/OnboardingWizard.tsx` - 2-step flow
 - [ ] `apps/web/src/app/onboarding/components/steps/WelcomeStep.tsx` - Glass cards
@@ -1062,21 +1098,27 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 ## Edge Cases
 
 ### User abandons wizard mid-flow
+
 - **Solution:** Zustand persists state; show "Continue where you left off" on return
 
 ### User dismisses card repeatedly
+
 - **Solution:** After 3 dismissals (tracked in database), only show sidebar indicator
 
 ### User completes steps out of order
+
 - **Solution:** Track per-step completion, not sequential order
 
 ### Plaid connection fails (Phase 2)
+
 - **Solution:** Fallback to manual bank entry, mark as partial completion
 
 ### User changes account type mid-onboarding
+
 - **Solution:** Allow change, adjust totalSteps dynamically, preserve data
 
 ### Progress API call fails
+
 - **Solution:** Show 0% gracefully, log error, allow user to proceed
 
 ---
@@ -1084,18 +1126,21 @@ import { SidebarProgressIndicator } from '@/components/layout/SidebarProgressInd
 ## Testing Strategy
 
 ### Unit Tests
+
 - OnboardingProgress API routes (GET, POST)
 - CircularProgress component rendering
 - OnboardingHeroCard state management
 - SidebarProgressIndicator calculations
 
 ### Integration Tests
+
 - Complete wizard flow (Welcome → Essential Info → Dashboard)
 - Progress updates after wizard completion
 - Dashboard card dismiss flow
 - Sidebar indicator click navigation
 
 ### E2E Tests (Playwright)
+
 - New user signup → onboarding → dashboard
 - Skip steps → return later via hero card
 - Complete all steps → 100% → card disappears
@@ -1128,23 +1173,27 @@ If issues arise:
 ## Progress
 
 ### Phase 1: Database & API
+
 - [ ] Task 1.1: Create OnboardingProgress model (30m)
 - [ ] Task 1.2: Create progress API routes (45m)
 - [ ] Task 1.3: Update existing onboarding routes (30m)
 - [ ] Task 1.4: Write API tests (45m)
 
 ### Phase 2: Minimal Wizard
+
 - [ ] Task 2.1: Update onboarding store (20m)
 - [ ] Task 2.2: Create minimal wizard components (1.5h)
 - [ ] Task 2.3: Update OnboardingWizard (30m)
 
 ### Phase 3: Dashboard Integration
+
 - [ ] Task 3.1: Create CircularProgress component (45m)
 - [ ] Task 3.2: Create OnboardingHeroCard component (1h)
 - [ ] Task 3.3: Create SidebarProgressIndicator component (45m)
 - [ ] Task 3.4: Integrate into dashboard layout (30m)
 
 ### Phase 4: Testing & Polish
+
 - [ ] Task 4.1: Write frontend tests (1h)
 - [ ] Task 4.2: Add completion modal (Sprint 2 - deferred)
 

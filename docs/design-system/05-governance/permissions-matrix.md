@@ -69,6 +69,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | Cash Overview          | View  | View  | View       | ✗          | View     |
 
 **Rules:**
+
 - Always read-only access
 - Context-aware (role-specific dashboards)
 - No posting actions from overview section
@@ -85,6 +86,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | Transfers      | Act   | Act   | View       | ✗          | ✗        |
 
 **Rules:**
+
 - **Accountants only** can approve reconciliation (critical for audit trail)
 - Bookkeepers can create transactions but cannot move money (transfers)
 - Investors have no access to money movement
@@ -103,6 +105,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | Payments      | Act   | Act   | View       | Act        | ✗        |
 
 **Rules:**
+
 - No deletions after posting (audit trail protection)
 - Accountants review, don't generate volume
 - Bookkeepers handle day-to-day AR/AP
@@ -121,6 +124,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | Fiscal Periods        | View  | Approve | Approve    | ✗          | ✗        |
 
 **Rules:**
+
 - **Bookkeepers never** touch accounting structure (strict separation)
 - Accountants are primary actors here
 - Owner can view but not modify (governance)
@@ -138,6 +142,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | Forecasts  | Act   | Act   | View       | ✗          | View     |
 
 **Rules:**
+
 - Investors see *outputs* (final reports, forecasts) never drafts
 - Accountants validate, don't plan
 - Bookkeepers excluded (forward-looking, not operational)
@@ -154,6 +159,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | AI History    | View  | View  | View       | ✗          | ✗        |
 
 **Rules:**
+
 - AI never performs actions (humans always approve/execute)
 - AI visibility ≠ authority (view-only always)
 - Bookkeepers excluded (strategic intelligence)
@@ -170,6 +176,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | Document Requests        | Act   | Act   | Act        | ✗          | ✗        |
 
 **Rules:**
+
 - Only Owner/Admin can manage accountant relationships
 - External accountants have view-only (no operations)
 - Bookkeeping is internal service, not visible to accountant
@@ -190,6 +197,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 | Data Management       | Admin | Admin     | ✗          | ✗          | ✗        |
 
 **Rules:**
+
 - Only Owner/Admin can configure system
 - Accountants can audit but not configure
 - Bookkeepers excluded from all system access
@@ -202,26 +210,32 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 ### Tab-Level Governance
 
 Tabs **may:**
+
 - Filter (e.g., "Draft" vs "Sent" invoices)
 - Segment by status (e.g., "Reconciled" vs "Pending")
 - Change lifecycle state
 
 Tabs **may not:**
+
 - Change permissions (no role-specific tabs)
 - Change entity context
 - Introduce new data owners
 
 **Example (Invoices):**
+
 ```
 Invoices
 [ All | Draft | Sent | Paid | Overdue ]
 ```
+
 ✔ Valid: These are views of the same data
 
 **Example (Invalid):**
+
 ```
 Invoices | Reports
 ```
+
 ❌ Invalid: Different domains (should be separate sidebar sections)
 
 ### Hard Governance Rules (Non-Negotiable)
@@ -252,31 +266,37 @@ This matrix:
 ## Quick Reference by Role
 
 ### Owner
+
 - **Access:** Nearly everything (view exceptions for sensitive vendor data)
 - **Actions:** Create/update in operations; view accounting; plan budgets
 - **Restrictions:** Can't delete (audit trail); can't force approve (requires accountant)
 
 ### Admin
+
 - **Access:** Everything Owner sees + system configuration
 - **Actions:** Configure integrations, automation, user management
 - **Restrictions:** Can't delete; transactions require accountant approval
 
 ### Accountant
+
 - **Access:** Accounting core + AR/AP + compliance + reports
 - **Actions:** Approve reconciliation, journal entries; manage tax rates
 - **Restrictions:** Can't access integrations or user management; read-only on budgets
 
 ### Bookkeeper
+
 - **Access:** AR/AP + transaction entry + basic overview
 - **Actions:** Create transactions, invoices, bills, payments
 - **Restrictions:** No accounting, no system, no AI, no planning
 
 ### Investor
+
 - **Access:** Reports, dashboards, final forecasts
 - **Actions:** None (view-only)
 - **Restrictions:** No operations, no AR/AP, no AI insights, no system access
 
 ### Advisor
+
 - **Access:** Reports, dashboards, final forecasts
 - **Actions:** None (view-only)
 - **Restrictions:** Same as Investor (external stakeholder)
@@ -304,6 +324,7 @@ When adding new features, follow this checklist:
 **Future enhancement:** Enable founders to share financial data with investors, advisors, and external stakeholders.
 
 **What's planned:**
+
 - Investor/advisor read-only dashboards (view reports, forecasts)
 - Sanitized views (hide bank details, vendor information, tax data)
 - Snapshot-based sharing (static, point-in-time reports)
@@ -312,6 +333,7 @@ When adding new features, follow this checklist:
 - Activity logging (audit trail of who viewed what)
 
 **Stakeholder types to support:**
+
 - Investors (strategic view, financial health only)
 - Advisors (similar to investors, may include forecasts)
 - External auditors (compliance view)
@@ -330,6 +352,7 @@ Founders will ask for this immediately. "Can I share my P&L with my accountant?"
 **Future enhancement:** Adjust permissions based on legal jurisdiction requirements.
 
 **What's planned:**
+
 - Permission templates by jurisdiction (Canada, US, India, EU, etc.)
 - Locale-specific role requirements (e.g., some jurisdictions require licensed accountant sign-off)
 - Compliance-driven access restrictions (e.g., certain tax data requires role-specific access)
@@ -337,6 +360,7 @@ Founders will ask for this immediately. "Can I share my P&L with my accountant?"
 - Data residency awareness (restrict export for certain jurisdictions)
 
 **Regulatory complexity examples:**
+
 - Canada: Who can approve GST/HST returns?
 - US: Who can authorize 1099 reporting?
 - India: Who can authorize GST reconciliation?

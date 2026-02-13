@@ -6,6 +6,7 @@
 ## Next.js 16 App Router
 
 **Directory structure:**
+
 ```
 src/app/
 ├── (dashboard)/      # Authenticated pages
@@ -20,6 +21,7 @@ src/app/
 ```
 
 **Page structure pattern:**
+
 ```
 (dashboard)/<domain>/<resource>/
 ├── page.tsx           # Server Component (data fetch)
@@ -34,18 +36,21 @@ src/app/
 **Default: Server Components** (no `'use client'`)
 
 **Server Components:**
+
 - Data fetching with `async`/`await`
 - SEO metadata exports
 - Initial page render
 - Static content
 
 **Client Components** (`'use client'` directive):
+
 - Event handlers (`onClick`, `onChange`, `onSubmit`)
 - React hooks (`useState`, `useEffect`, `useRef`)
 - Browser APIs (`window`, `localStorage`, `document`)
 - Forms, modals, interactive UI
 
 **Example:**
+
 ```typescript
 // page.tsx (Server Component)
 export default async function AccountsPage() {
@@ -64,12 +69,14 @@ export function AccountsListClient({ accounts }: Props) {
 ## Design System
 
 ### Tech Stack
+
 - **Base:** shadcn/ui (headless, accessible)
 - **Overlay:** shadcn-glass-ui@2.11.2 (glass morphism)
 - **Styling:** Tailwind v4.1.18 (CSS config)
 - **Tokens:** `packages/design-tokens/`
 
 ### Glass UI Components
+
 - `ButtonGlass` (5 variants: default, secondary, destructive, outline, ghost)
 - `InputGlass` (3 variants: default, error, success)
 - `GlassCard` (3 variants: default, bordered, elevated)
@@ -79,11 +86,13 @@ export function AccountsListClient({ accounts }: Props) {
 ### Tailwind v4 CSS Config
 
 Tailwind v4 uses **CSS variables**, NOT `tailwind.config.ts`:
+
 - Theme tokens: `src/app/globals.css`
 - Custom utilities: CSS `@utility` blocks
 - ❌ DO NOT create `tailwind.config.ts`
 
 **Example CSS config:**
+
 ```css
 @theme {
   --radius-lg: 8px;
@@ -94,6 +103,7 @@ Tailwind v4 uses **CSS variables**, NOT `tailwind.config.ts`:
 ### Color System
 
 Use semantic tokens:
+
 - `bg-primary`, `text-primary`
 - `bg-secondary`, `text-secondary`
 - `bg-accent`, `text-accent`
@@ -109,17 +119,20 @@ Typography: `packages/design-tokens/src/typography.ts`
 Spacing: `packages/design-tokens/src/spacing.ts`
 
 ### Button Radius
+
 Standard: **8px** (per Figma design system)
 
 ## Layout
 
 **Shell:** `(dashboard)/layout.tsx`
+
 - Sidebar navigation with domain sections
 - User menu (top right)
 - Glassmorphism cards
 - Dark mode support
 
 **Sidebar domains:**
+
 1. Overview
 2. Banking (accounts)
 3. Invoicing (planned)
@@ -134,6 +147,7 @@ Standard: **8px** (per Figma design system)
 ## API Client
 
 Use `src/lib/api/client.ts` for API calls:
+
 ```typescript
 import { apiClient } from '@/lib/api/client'
 
@@ -149,6 +163,7 @@ Auth tokens automatically included via Clerk's `auth()` helper.
 ## Server Actions
 
 Use for mutations from Client Components:
+
 ```typescript
 // actions/accounts.ts
 'use server'
@@ -167,6 +182,7 @@ import { createAccount } from '@/actions/accounts'
 ## Component Library
 
 Located in `packages/ui/src/components/`:
+
 - `primitives/` — Base components (Button, Input, Card)
 - `composed/` — Composite (DataTable, Form)
 - `layout/` — Layout (Header, Sidebar, Shell)
@@ -174,6 +190,7 @@ Located in `packages/ui/src/components/`:
 - `domain/` — Domain-specific (InvoiceCard, AccountCard)
 
 Import from `@akount/ui`:
+
 ```typescript
 import { Button, Input, Card } from '@akount/ui'
 ```
@@ -181,6 +198,7 @@ import { Button, Input, Card } from '@akount/ui'
 ## Metadata & SEO
 
 Export metadata from pages:
+
 ```typescript
 export const metadata: Metadata = {
   title: 'Accounts | Akount',

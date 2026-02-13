@@ -124,6 +124,27 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
       onNext()
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An error occurred'
+
+      // If user already has a tenant, fetch their existing status and skip to completion
+      if (message.includes('already has an active tenant')) {
+        try {
+          const status = await apiFetch<{ tenantId?: string; status: string }>(
+            '/api/system/onboarding/status'
+          )
+          if (status.tenantId) {
+            // Complete the existing tenant's onboarding
+            useOnboardingStore.setState({
+              tenantId: status.tenantId,
+              entityId: 'existing',
+            })
+            onNext()
+            return
+          }
+        } catch {
+          // Fall through to show the original error
+        }
+      }
+
       setApiError(message)
     } finally {
       setIsLoading(false)

@@ -24,6 +24,7 @@ A code review agent recommended changing workspace dependencies from `"*"` to `"
 ```
 
 Running `npm install` failed:
+
 ```
 npm error code EUNSUPPORTEDPROTOCOL
 npm error Unsupported URL Type "workspace:": workspace:*
@@ -56,6 +57,7 @@ The review agent confused npm workspaces with pnpm workspaces.
 ```
 
 **How npm workspaces resolve `"*"`:**
+
 1. npm sees `@akount/db` with version `*`
 2. Checks root `package.json` for `workspaces` field
 3. Finds `packages/*` includes `packages/db`
@@ -63,6 +65,7 @@ The review agent confused npm workspaces with pnpm workspaces.
 5. No registry lookup needed
 
 **Root package.json must have:**
+
 ```json
 {
   "workspaces": [
@@ -75,6 +78,7 @@ The review agent confused npm workspaces with pnpm workspaces.
 ## Prevention
 
 ### Before Changing Workspace Dependencies
+
 1. Check which package manager the project uses:
    - `package-lock.json` → npm
    - `pnpm-lock.yaml` → pnpm
@@ -92,6 +96,7 @@ cat package.json | grep packageManager
 ```
 
 ### Turborepo Note
+
 Turborepo works with all package managers. The workspace syntax depends on the underlying package manager, not Turborepo itself.
 
 ## Files Changed

@@ -33,12 +33,14 @@
 ### Onboarding Redesign (PLANNED)
 
 Minimal 2-step wizard + dashboard progress tracking.
+
 - Plan: [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
 - Brainstorm: [docs/brainstorms/2026-02-09-onboarding-flow-redesign-brainstorm.md](docs/brainstorms/2026-02-09-onboarding-flow-redesign-brainstorm.md)
 
 ### Design Aesthetic (NEW)
 
 Defined "Financial Clarity" design aesthetic — dark-first, glass morphism, amber orange primary.
+
 - Rule: `.claude/rules/design-aesthetic.md`
 - Tokens updated: `globals.css`, `css-variables.css`, `colors.md`
 - Brand inspirations: `brand/inspirations/`
@@ -46,6 +48,7 @@ Defined "Financial Clarity" design aesthetic — dark-first, glass morphism, amb
 ### Roadmap Restructure (DONE)
 
 Restructured ROADMAP.md by user value phases (See → Track → Post → Bill → Understand → Launch).
+
 - Plan: [docs/plans/2026-02-09-roadmap-restructure.md](docs/plans/2026-02-09-roadmap-restructure.md)
 
 ---

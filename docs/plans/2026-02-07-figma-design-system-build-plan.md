@@ -14,6 +14,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 ---
 
 ## Phase 0: File Preparation & Page Structure
+
 **Goal:** Create the 14-page structure in the existing akount-app file.
 
 | Step | Action | Tool |
@@ -23,6 +24,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 | 0.3 | Screenshot to validate page list | `figma_capture_screenshot` |
 
 **Pages:**
+
 1. Sitemap -- Akount App
 2. Foundations
 3. Components
@@ -41,9 +43,11 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 ---
 
 ## Phase 1: Design Token Variables
+
 **Goal:** Create all tokens as Figma Variables with Light/Dark modes. Every component references these.
 
 ### 1.1 Core Colors Collection (16 variables, 1 mode)
+
 | Token | Value |
 |-------|-------|
 | orange/50, 100, 500, 700 | #FFF7ED, #FFEDD5, #F97316, #C2410C |
@@ -54,6 +58,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 **Tools:** `figma_create_variable_collection` + `figma_batch_create_variables`
 
 ### 1.2 Semantic Colors Collection (31+ variables, Light/Dark modes)
+
 - bg: primary, secondary, surface, elevated
 - text: primary, secondary, muted, inverse
 - border: default, subtle, strong
@@ -65,6 +70,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 - glass: light, medium, strong, border (with Light/Dark mode values)
 
 **Glass Variable Values:**
+
 | Variable | Light | Dark |
 |----------|-------|------|
 | glass/light | rgba(255,255,255,0.7) | rgba(15,23,42,0.4) |
@@ -73,24 +79,29 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 | glass/border | rgba(255,255,255,0.3) | rgba(255,255,255,0.1) |
 
 ### 1.3 Component Colors Collection (13 variables, Light/Dark modes)
+
 - button/primary (bg, text), button/secondary (bg, text)
 - table/header (bg, text), table/row (hover, selected), table/border
 - badge: success/bg, warning/bg, error/bg, ai/bg
 
 ### 1.4 Spacing Collection (11 variables, single mode, FLOAT)
+
 - space/1=4, space/2=8, space/3=12, space/4=16, space/6=24, space/8=32, space/12=48
 - component-padding=16, component-gap=12, layout-section=32, layout-page=48
 
 ### 1.5 Radius Collection (5 variables, single mode, FLOAT)
+
 - sm=6, md=10, lg=14, xl=18, component=14
 
 ### 1.6 Validate with `figma_get_variables`
+
 - 5 collections, ~75-80 total variables
 - Semantic/Component collections have Light + Dark modes
 
 ---
 
 ## Phase 2: Foundations Page (Visual Reference)
+
 **Goal:** Build "2. Foundations" as a living reference showing all tokens visually.
 
 **6 sections in vertical auto-layout (gap 48px):**
@@ -109,6 +120,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 ---
 
 ## Phase 3: Component Library (41 components)
+
 **Goal:** Build all components on "3. Components" page, organized in 6 sections.
 
 ### 3.1 Primitives (6 components)
@@ -187,6 +199,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 ---
 
 ## Phase 4: Sitemap Page
+
 **Goal:** Build the 9-column structural sitemap on "1. Sitemap".
 
 - 8 domain columns + 1 Global column (300px each, 64px gap)
@@ -197,6 +210,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 - **Tools:** `figma_execute` for layout + text creation
 
 ### Column Content Summary
+
 1. **Overview:** Dashboard (Founder/Accountant), Net Worth, Cash Overview
 2. **Money Movement:** Accounts (4 tabs), Transactions (5 tabs, 3 subviews), Reconciliation (4 tabs, 3 subviews), Transfers
 3. **Business Operations:** Clients, Vendors, Invoices AR (6 tabs, 3 subviews), Bills AP (6 tabs, 3 subviews), Payments (4 tabs)
@@ -210,9 +224,11 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 ---
 
 ## Phase 5: Screen Assembly (8 Domain Pages + Global)
+
 **Goal:** Compose components into full screen designs (1440x900 desktop viewport).
 
 ### Screen Template
+
 - Sidebar (240px left) + TopCommandBar (60px top) + Content area (1200x840)
 
 ### Screens per Domain
@@ -230,6 +246,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 | **12. Global** | Entity Switcher, Period Selector, Currency View, Search Overlay, Command Palette, AI Panel |
 
 ### Glass treatment on screens
+
 - Content areas use `bg/primary` with glass-treated cards floating above
 - Sidebar and TopCommandBar use `glass/light` bg
 - Modals/panels use `glass/medium` with dark overlay backdrop
@@ -237,6 +254,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 ---
 
 ## Phase 6: Dark Mode Variants
+
 **Goal:** Create dark mode versions on "13. Dark Mode Variants".
 
 | Step | Action |
@@ -248,6 +266,7 @@ Akount has a fully documented design system (100% docs, 31+ component specs, 8-d
 ---
 
 ## Phase 7: Final Validation & Polish
+
 **Goal:** Naming audit, component descriptions, comprehensive screenshots.
 
 | Step | Action |
@@ -302,6 +321,7 @@ Phase 0 (Pages) --> Phase 1 (Tokens) --> Phase 2 (Foundations)
 ## Verification
 
 After each phase, validate using `figma_capture_screenshot`:
+
 - Phase 0: Page list shows all 14 pages
 - Phase 1: `figma_get_variables` returns correct collection/variable counts
 - Phase 2: Foundations page shows all 6 sections with correct colors/fonts

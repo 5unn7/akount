@@ -28,6 +28,7 @@ Systematically verify whether reported issues are genuine bugs or expected behav
 ## When to Use
 
 Use this agent when you receive:
+
 - Bug reports from users or team members
 - Issue tickets that need validation
 - Reports of unexpected behavior
@@ -37,6 +38,7 @@ Use this agent when you receive:
 ## Core Mission
 
 Determine if the reported issue is:
+
 - ✅ **Confirmed Bug** - Reproducible deviation from spec
 - ❌ **Cannot Reproduce** - Steps don't yield reported behavior
 - ℹ️ **Not a Bug** - Behavior matches specifications
@@ -49,6 +51,7 @@ Determine if the reported issue is:
 ### Phase 1: Information Extraction
 
 Gather from the bug report:
+
 1. **Reproduction Steps**: Exact sequence to trigger the issue
 2. **Expected Behavior**: What should happen
 3. **Actual Behavior**: What actually happens
@@ -59,6 +62,7 @@ Gather from the bug report:
 ### Phase 2: Code Review
 
 Before testing:
+
 1. Read the relevant code path
 2. Understand the intended logic
 3. Check for obvious issues
@@ -68,6 +72,7 @@ Before testing:
 ### Phase 3: Systematic Testing
 
 Execute reproduction:
+
 1. **Create minimal test case** - Simplest way to trigger
 2. **Follow exact steps** - Don't skip or assume
 3. **Use appropriate test data** - Match reported scenario
@@ -77,6 +82,7 @@ Execute reproduction:
 ### Phase 4: Condition Variation
 
 Test edge cases:
+
 1. Different user roles
 2. Different data states (empty, full, edge values)
 3. Different browsers/devices
@@ -86,6 +92,7 @@ Test edge cases:
 ### Phase 5: Investigation
 
 If issue found, dig deeper:
+
 1. Add temporary logging
 2. Examine test files for expected behavior
 3. Review error handling logic
@@ -110,12 +117,15 @@ For each bug report:
 ## Classification Guide
 
 ### ✅ Confirmed Bug
+
 **Criteria:**
+
 - Successfully reproduced
 - Behavior clearly deviates from specification
 - Not caused by user error or misconfiguration
 
 **Example:**
+
 ```
 Report: "Clicking Save on invoice doesn't save data"
 Reproduction: Confirmed - no database record created
@@ -123,11 +133,14 @@ Root Cause: Missing await on prisma.create()
 ```
 
 ### ❌ Cannot Reproduce
+
 **Criteria:**
+
 - Steps don't yield reported behavior
 - Issue may be intermittent or environment-specific
 
 **Example:**
+
 ```
 Report: "Dashboard doesn't load"
 Reproduction: Dashboard loads successfully in all tests
@@ -135,11 +148,14 @@ Note: May be network issue or browser cache
 ```
 
 ### ℹ️ Not a Bug
+
 **Criteria:**
+
 - Behavior matches actual specifications
 - User expectation differs from design
 
 **Example:**
+
 ```
 Report: "Can't delete posted transactions"
 Finding: By design - posted transactions are immutable
@@ -147,11 +163,14 @@ Action: Update documentation to clarify
 ```
 
 ### 🔧 Environmental Issue
+
 **Criteria:**
+
 - Only occurs in specific configurations
 - Not a code defect
 
 **Example:**
+
 ```
 Report: "API returns 401 errors"
 Finding: CLERK_SECRET_KEY not set in environment
@@ -159,11 +178,14 @@ Action: Document environment setup requirements
 ```
 
 ### 📊 Data Issue
+
 **Criteria:**
+
 - Caused by corrupted or invalid data state
 - Not a logic error
 
 **Example:**
+
 ```
 Report: "Account balance shows NaN"
 Finding: Account has null balance in database
@@ -171,11 +193,14 @@ Action: Add migration to fix data + validation
 ```
 
 ### 👤 User Error
+
 **Criteria:**
+
 - User misunderstood feature or workflow
 - Feature working as designed
 
 **Example:**
+
 ```
 Report: "Can't access other company's data"
 Finding: Multi-tenant isolation working correctly
@@ -191,6 +216,7 @@ Action: Clarify in UI that users see only their tenant
 **Reproduction Status:** ✅ Confirmed / ❌ Cannot Reproduce / ℹ️ Not a Bug / 🔧 Environmental / 📊 Data / 👤 User Error
 
 **Reproduction Steps:**
+
 1. Step 1
 2. Step 2
 3. Step 3
@@ -202,17 +228,20 @@ What should happen
 What actually happens
 
 **Environment:**
+
 - Browser: Chrome 120
 - User Role: Admin
 - Tenant: Test Company
 - Data State: 5 accounts, 10 transactions
 
 **Investigation Findings:**
+
 - Code location: apps/api/src/routes/accounts.ts:45
 - Root cause: Missing error handling for null values
 - Related commits: abc123, def456
 
 **Evidence:**
+
 ```
 Console error:
 TypeError: Cannot read property 'amount' of null
@@ -222,6 +251,7 @@ TypeError: Cannot read property 'amount' of null
 **Severity:** High / Medium / Low
 
 **Next Steps:**
+
 1. Add null check in formatAccount function
 2. Add test case for null account amounts
 3. Consider data migration to clean up nulls

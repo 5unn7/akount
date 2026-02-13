@@ -12,6 +12,7 @@ tags: [multi-tenancy, middleware, fastify, architecture, performance]
 ## Problem
 
 Every API route was independently looking up the tenant, causing:
+
 - **N duplicate tenant queries per request** (1 per service call)
 - Inconsistent tenant handling across routes
 - Services needed `userId` instead of `tenantId` (wrong abstraction)
@@ -48,11 +49,13 @@ async function getDashboard(request) {
 ## Root Cause
 
 **Improper layering:**
+
 1. Routes shouldn't do tenant lookups (infrastructure concern)
 2. Services shouldn't need `userId` (domain concern should be `tenantId`)
 3. No centralized tenant resolution
 
 **Architecture smell:**
+
 ```
 User Request → Route → Tenant Lookup → Service(userId) → Tenant Lookup Again
 ```
@@ -178,17 +181,20 @@ async function listAccounts(request: FastifyRequest) {
 ## Benefits
 
 **Performance:**
+
 - **Before:** N tenant queries per request (1 per route/service call)
 - **After:** 1 tenant query per request (in middleware)
 - **Savings:** 80-90% reduction in tenant queries
 
 **Architecture:**
+
 - Clean separation: middleware handles tenant resolution
 - Services are pure domain logic (no infrastructure concerns)
 - Consistent tenant access across all routes
 - Single source of truth for tenant data
 
 **Developer Experience:**
+
 - No more "did I fetch tenant?" mental overhead
 - Services have simpler signatures (`tenantId` not `userId`)
 - Automatic logging context with `tenantId`
@@ -198,11 +204,13 @@ async function listAccounts(request: FastifyRequest) {
 ### When to Use This Pattern
 
 **Use tenant middleware when:**
+
 - Most/all routes need tenant context
 - You're building a multi-tenant SaaS
 - You find repeated tenant lookups in routes
 
 **Don't use when:**
+
 - Single-tenant application
 - Only 1-2 routes need tenant
 - Tenant resolution is complex/varies per route
@@ -246,11 +254,13 @@ server.get('/api/accounts', handler); // Error: tenant required
 ## Related Patterns
 
 **Similar middleware patterns in Akount:**
+
 - `authMiddleware` - Validates Clerk JWT, attaches `request.user`
 - `entityMiddleware` - Resolves entity from query param (optional)
 - `rateLimitMiddleware` - Per-tenant rate limiting
 
 **Composition:**
+
 ```typescript
 // Middleware chain
 server.get('/api/accounts', {
@@ -306,11 +316,13 @@ describe('tenantMiddleware', () => {
 ## Performance Impact
 
 **Before:**
+
 - 5 routes on dashboard page = 5 tenant queries
 - Each service call = 1 tenant query
 - Total: 10+ tenant queries per page load
 
 **After:**
+
 - 1 tenant query per request (middleware)
 - Services use passed `tenantId` (no queries)
 - Total: 1 tenant query per page load

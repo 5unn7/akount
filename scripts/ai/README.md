@@ -36,6 +36,7 @@ Initializes an AI coding session with full context loading.
 ```
 
 **What it does:**
+
 1. Loads visual context (architecture diagrams, glossary, repo map)
 2. Checks previous session state
 3. Shows git status
@@ -53,6 +54,7 @@ Closes an AI coding session with cleanup and documentation checks.
 ```
 
 **What it does:**
+
 1. Shows session summary (files touched, edits made)
 2. Checks git status for uncommitted changes
 3. Identifies context documentation that needs updating
@@ -78,6 +80,7 @@ Analyzes code changes and identifies documentation updates needed.
 ```
 
 **What it checks:**
+
 - Schema changes → Update `docs/domain-glossary.md`
 - Route changes → Update `docs/repo-map.md`
 - Architecture changes → Update `docs/architecture.mmd`
@@ -96,6 +99,7 @@ source "$(dirname "$0")/lib/common.sh"
 ```
 
 **Provides:**
+
 - Color output functions (`print_success`, `print_warning`, `print_error`)
 - Git utilities (`get_current_branch`, `get_uncommitted_count`)
 - Session state management (`create_session_state`, `session_exists`)
@@ -181,6 +185,7 @@ bash scripts/ai/begin.sh api
 ### "Permission denied"
 
 Make scripts executable:
+
 ```bash
 chmod +x scripts/ai/*.sh scripts/ai/lib/*.sh
 ```
@@ -188,15 +193,17 @@ chmod +x scripts/ai/*.sh scripts/ai/lib/*.sh
 ### "jq: command not found"
 
 Install jq for JSON processing:
+
 - macOS: `brew install jq`
 - Ubuntu: `apt install jq`
-- Windows: `choco install jq` or download from https://stedolan.github.io/jq/
+- Windows: `choco install jq` or download from <https://stedolan.github.io/jq/>
 
 Scripts work without jq but with reduced functionality.
 
 ### Session state not persisting
 
 Ensure `.claude/` directory exists and is writable:
+
 ```bash
 mkdir -p .claude
 ```

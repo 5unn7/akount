@@ -41,6 +41,7 @@
 ## Completed Work
 
 ### Foundation (COMPLETE)
+
 - [x] Clerk authentication (passkeys/WebAuthn)
 - [x] PostgreSQL + Prisma (38 models, 26 enums)
 - [x] Fastify API with middleware chain
@@ -52,6 +53,7 @@
 - [x] Performance optimization (50x query reduction)
 
 ### Phase 1: See Your Money (COMPLETE — 62 tests)
+
 - [x] Dashboard with real-time metrics (net worth, cash position, assets/liabilities)
 - [x] Account list page with cursor pagination + type filtering
 - [x] Account CRUD (create, edit, soft-delete via Sheet panel)
@@ -64,6 +66,7 @@
 ### Phase 2 Backend: Track Your Money (COMPLETE — 117 tests)
 
 **Sprint 1: Transaction Management (55 tests, commit ff37830)**
+
 - [x] TransactionService with CRUD operations (277 lines)
 - [x] Zod validation schemas (86 lines)
 - [x] Fastify route handlers (216 lines)
@@ -72,6 +75,7 @@
 - [x] 35 service tests + 20 route tests
 
 **Sprint 2: CSV & PDF Import (19 tests, commits 376a030, 4e89ae5)**
+
 - [x] ImportService orchestrating CSV + PDF workflows (452 lines)
 - [x] ParserService for CSV + PDF parsing (507 lines)
 - [x] DuplicationService with fuzzy matching (230 lines)
@@ -80,6 +84,7 @@
 - [x] GET /api/banking/imports/:id (import details + transactions)
 
 **Sprint 3: Reconciliation (43 tests, commit a1e3340)**
+
 - [x] ReconciliationService with matching algorithm (340 lines)
 - [x] Exact amount + date proximity (±3/7 days) + description similarity
 - [x] Confidence scores (0-1.0), top 5 suggestions
@@ -103,6 +108,7 @@
 - [x] **Bonus:** Route rename money-movement → banking (commit af98f04)
 
 ### Onboarding Redesign (9/10 tasks — commit b4c00a3)
+
 - [x] OnboardingProgress Prisma model + API routes + tests
 - [x] Wizard (Welcome + EssentialInfo + EntityDetails + Completion)
 - [x] CircularProgress, OnboardingHeroCard, SidebarProgressIndicator
@@ -127,17 +133,20 @@
 ## Notes
 
 **Task Naming Convention:**
+
 - FE-X.Y: Frontend task in Phase X
 - BE-X.Y: Backend task in Phase X
 - OB-Y: Onboarding redesign (cross-cutting)
 
 **How to Use This File:**
+
 1. Pick tasks from "Active Work" section
 2. Check boxes as you complete work
 3. Move to "Completed Work" when phase finishes
 4. Keep "Next Up" section populated with upcoming phase
 
 **Weekly Rhythm:**
+
 - Monday: Review active tasks, pick sprint focus
 - Friday: Update progress, plan next week
 - End of Phase: Update ROADMAP.md and STATUS.md

@@ -12,6 +12,7 @@ tags: [fastify, plugins, dead-code, maintenance]
 ## Problem
 
 Found two Fastify plugin files that were never imported or used:
+
 - `apps/api/src/plugins/rateLimit.ts`
 - `apps/api/src/plugins/security.ts`
 
@@ -26,6 +27,7 @@ apps/api/src/
 ```
 
 **Problems:**
+
 1. Confusion about which code is active
 2. Developers might update wrong file
 3. Configurations can drift apart
@@ -34,6 +36,7 @@ apps/api/src/
 ## Root Cause
 
 Evolution of codebase without cleanup:
+
 1. Initially configured inline in `index.ts`
 2. Later, someone created plugin files (better architecture)
 3. Plugin files were never wired up
@@ -60,6 +63,7 @@ server.register(helmet, {
 ```
 
 Deleted unused files:
+
 ```bash
 rm apps/api/src/plugins/rateLimit.ts
 rm apps/api/src/plugins/security.ts
@@ -67,6 +71,7 @@ rmdir apps/api/src/plugins/
 ```
 
 **When to choose Option B (use plugins):**
+
 - Larger API with many plugins
 - Need to test plugins in isolation
 - Configuration is complex (100+ lines)
@@ -87,17 +92,21 @@ await registerRateLimit(server);
 ## Prevention
 
 ### Before Creating Plugin Files
+
 1. Check if functionality already exists inline
 2. If extracting to plugin, remove inline version immediately
 3. Verify plugin is imported in `index.ts`
 
 ### Code Review Checklist
+
 - [ ] Are all files in `plugins/` imported somewhere?
 - [ ] Is there duplicate configuration between plugins and index.ts?
 - [ ] Run: `grep -r "from './plugins" src/` to verify imports
 
 ### IDE Tip
+
 Most IDEs highlight unused imports/exports. Check for:
+
 - Files with 0 references
 - Exported functions never called
 

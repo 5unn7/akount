@@ -19,6 +19,7 @@
 ### 1. Money Precision - Integer Cents Only
 
 **✅ CORRECT:**
+
 ```typescript
 // Prisma schema
 model Invoice {
@@ -47,6 +48,7 @@ console.log(formatMoney(1050))  // "$10.50"
 ```
 
 **❌ WRONG:**
+
 ```typescript
 // NEVER USE FLOAT FOR MONEY
 model Invoice {
@@ -65,6 +67,7 @@ const invoice = await prisma.invoice.create({
 ```
 
 **Why Integer Cents?**
+
 - No rounding errors (0.1 + 0.2 = 0.30000000000000004 in float)
 - Exact arithmetic (1050 cents + 525 cents = 1575 cents, always)
 - Database SUM/AVG operations remain precise
@@ -75,11 +78,13 @@ const invoice = await prisma.invoice.create({
 ### 2. Double-Entry Bookkeeping
 
 **Every journal entry MUST balance:**
+
 ```typescript
 SUM(debitAmount) === SUM(creditAmount)
 ```
 
 **✅ CORRECT:**
+
 ```typescript
 // Create balanced journal entry
 const journalEntry = await prisma.journalEntry.create({
@@ -115,6 +120,7 @@ const journalEntry = await prisma.journalEntry.create({
 ```
 
 **❌ WRONG:**
+
 ```typescript
 // ACCOUNTING ERROR: Unbalanced entry
 const journalEntry = await prisma.journalEntry.create({
@@ -131,6 +137,7 @@ const journalEntry = await prisma.journalEntry.create({
 ```
 
 **Validation Function:**
+
 ```typescript
 function validateJournalEntry(lines: JournalLine[]): boolean {
   const totalDebits = lines.reduce((sum, line) => sum + line.debitAmount, 0)
@@ -150,6 +157,7 @@ validateJournalEntry(lines)
 ```
 
 **Future: Database Constraint (Phase 3)**
+
 ```sql
 -- PostgreSQL trigger to enforce balanced entries
 CREATE OR REPLACE FUNCTION check_journal_entry_balance()
@@ -178,6 +186,7 @@ $$ LANGUAGE plpgsql;
 ### 3. Audit Trail - Never Delete
 
 **✅ CORRECT: Soft Delete**
+
 ```typescript
 // Prisma schema
 model Invoice {
@@ -217,6 +226,7 @@ const allInvoices = await prisma.invoice.findMany({
 ```
 
 **❌ WRONG: Hard Delete**
+
 ```typescript
 // NEVER DO THIS - DESTROYS AUDIT TRAIL
 await prisma.invoice.delete({
@@ -226,6 +236,7 @@ await prisma.invoice.delete({
 ```
 
 **Why Soft Delete?**
+
 - Audit compliance (who deleted what, when)
 - Data recovery if mistake
 - Historical reporting (deleted records still appear in past reports)
@@ -236,6 +247,7 @@ await prisma.invoice.delete({
 ### 4. Source Document Preservation
 
 **Always store original source:**
+
 ```typescript
 model JournalEntry {
   id String @id @default(cuid())
@@ -266,12 +278,14 @@ const journalEntry = await prisma.journalEntry.create({
 ```
 
 **Why Preserve Source?**
+
 - Rebuild GL if accounting logic has bugs
 - Audit trail ("what was the original invoice?")
 - Debugging ("why was this entry posted this way?")
 - Compliance (source document requirement)
 
 **Example: Rebuild GL from Sources**
+
 ```typescript
 async function rebuildGeneralLedger(tenantId: string) {
   // 1. Mark all entries as "needs rebuild"
@@ -307,6 +321,7 @@ async function rebuildGeneralLedger(tenantId: string) {
 ### 5. Currency Handling
 
 **Akount supports multi-currency:**
+
 ```typescript
 model Invoice {
   amount Int           // Amount in invoice currency (cents)
@@ -329,6 +344,7 @@ const invoice = await prisma.invoice.create({
 ```
 
 **Currency Rules:**
+
 1. Store amounts in both original currency AND base currency
 2. Capture exchange rate at transaction time (immutable)
 3. Never recalculate historical FX (use captured rate)

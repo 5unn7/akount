@@ -26,6 +26,7 @@ Capture recently solved problems as structured documentation.
 ## When to Use
 
 Use immediately after:
+
 - Fixing a tricky bug
 - Solving a complex problem
 - Discovering a non-obvious pattern
@@ -38,6 +39,7 @@ Use immediately after:
 ### Step 1: Gather Context
 
 Look at:
+
 - Recent git commits: `git log --oneline -5`
 - Recent changes: `git diff HEAD~1`
 - Error messages encountered
@@ -74,7 +76,9 @@ Why it happened.
 ```
 
 ## Prevention
+
 How to avoid this in the future.
+
 ```
 
 ### Step 4: Commit
@@ -107,12 +111,14 @@ Next time: Reference this doc (2 min vs 30 min investigation)
 ## Best Practices
 
 **Do:**
+
 - Document immediately (context is fresh)
 - Include code examples
 - Add prevention steps
 - Be specific
 
 **Don't:**
+
 - Wait days to document
 - Be vague
 - Skip root cause

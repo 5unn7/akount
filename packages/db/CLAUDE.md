@@ -56,15 +56,18 @@
 ## Schema Conventions
 
 **Every model has:**
+
 - `id` (cuid)
 - `createdAt` (DateTime, default now)
 - `updatedAt` (DateTime, auto)
 
 **Financial models have:**
+
 - `deletedAt` (DateTime?, soft delete)
 - Integer amounts (cents, NOT floats)
 
 **Scoping:**
+
 - Tenant-scoped: `tenantId` field
 - Entity-scoped: `entityId` field (entity must belong to tenant)
 

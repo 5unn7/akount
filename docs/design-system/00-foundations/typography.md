@@ -48,6 +48,7 @@ Typography in Akount is purposeful and role-based. Each font family serves a spe
 ```
 
 This subtle improvement serves two purposes:
+
 1. **Scanability:** Fixed-width aligns digits vertically
 2. **Trust:** Signals precision and technical accuracy
 
@@ -179,6 +180,7 @@ theme: {
 ```
 
 Usage:
+
 ```jsx
 <h1 className="text-h1 font-display">Dashboard</h1>
 <p className="text-body font-sans">Body text here</p>

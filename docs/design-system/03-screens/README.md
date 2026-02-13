@@ -18,6 +18,7 @@ Screens contain feature-specific implementations that show how patterns and comp
 ## When to Use
 
 Reference these files when:
+
 - Implementing feature screens
 - Understanding feature-specific design requirements
 - Reviewing screen layouts and interactions

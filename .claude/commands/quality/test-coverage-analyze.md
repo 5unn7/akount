@@ -21,21 +21,25 @@ Identifies missing tests and edge cases.
 ## What to Check
 
 **Unit Tests:**
+
 - All public functions tested
 - Edge cases covered
 - Error handling tested
 
 **Integration Tests:**
+
 - Multi-tenant isolation verified
 - Database transactions tested
 - API endpoints validated
 
 **Financial Tests:**
+
 - Integer cent arithmetic verified
 - Double-entry bookkeeping validated
 - Currency conversions tested
 
 **Security Tests:**
+
 - Tenant isolation enforced
 - Input validation checked
 - Authentication tested
@@ -100,6 +104,7 @@ For each changed file:
 ### Step 4: Generate Test Recommendations
 
 For each gap, suggest:
+
 - Test case description
 - Expected behavior
 - Priority (High/Medium/Low)
@@ -253,6 +258,7 @@ test('throws error for invalid amount', async () => {
 ## Output Format
 
 ### Summary
+
 - **Files Analyzed:** X files
 - **Functions Without Tests:** Y functions
 - **Edge Cases Missing:** Z cases
@@ -261,6 +267,7 @@ test('throws error for invalid amount', async () => {
 ### Missing Tests
 
 For each gap:
+
 ```
 ❌ File: apps/api/src/services/invoice.service.ts
 Function: calculateInvoiceTotal(invoice: Invoice): number

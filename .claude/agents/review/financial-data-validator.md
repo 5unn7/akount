@@ -40,11 +40,13 @@ When reviewing financial code, you MUST validate:
 ## Akount Schema Context
 
 ### Money Representation
+
 - **All amounts stored as Integer cents** (not Float/Decimal)
 - Example: $100.50 = 10050 cents
 - NO floating-point arithmetic in financial calculations
 
 ### Key Models
+
 ```prisma
 JournalEntry {
   status: DRAFT | POSTED | ARCHIVED
@@ -80,12 +82,14 @@ FiscalCalendar {
 ## Double-Entry Bookkeeping Validation
 
 ### ✓ Balanced Journal Entries
+
 - [ ] For every JournalEntry, does `SUM(debitAmount) = SUM(creditAmount)`?
 - [ ] Are both debit and credit sides populated (no zero entries)?
 - [ ] Are line items using the correct GL accounts for the transaction type?
 - [ ] Is the entry following the accounting equation: Assets = Liabilities + Equity?
 
 ### ✓ Proper GL Account Posting
+
 ```typescript
 // CORRECT: Invoice creates AR debit, Revenue credit
 JournalEntry {
@@ -105,6 +109,7 @@ JournalEntry {
 ```
 
 ### ✓ Source Document Linking
+
 - [ ] Does each JournalEntry have proper `sourceType` and `sourceId`?
 - [ ] Is `sourceDocument` JSON snapshot captured at posting time (for audit)?
 - [ ] Can you trace back from JournalEntry to originating Invoice/Payment/Transfer?
@@ -112,6 +117,7 @@ JournalEntry {
 ## Monetary Arithmetic Validation
 
 ### ✓ Integer Cents Arithmetic
+
 ```typescript
 // CORRECT: Integer cents, no rounding errors
 const subtotal = 10000; // $100.00
@@ -126,6 +132,7 @@ const total = subtotal + tax; // Floating point errors accumulate
 ```
 
 ### ✓ Calculation Checks
+
 - [ ] Are all money calculations using Integer cents?
 - [ ] Are intermediate results kept as integers (no conversions to float)?
 - [ ] Is rounding done correctly (`Math.round()` for standard rounding)?
@@ -133,6 +140,7 @@ const total = subtotal + tax; // Floating point errors accumulate
 - [ ] Are totals recalculated from line items (not stored separately without validation)?
 
 ### ✓ Common Arithmetic Patterns
+
 ```typescript
 // Invoice total calculation
 invoice.subtotal = invoiceLines.reduce((sum, line) => sum + line.amount, 0);
@@ -150,6 +158,7 @@ invoice.paidAmount += payment.amount;
 ## Multi-Currency Validation
 
 ### ✓ Currency Consistency
+
 - [ ] Do all amounts in a transaction use the same currency?
 - [ ] Is `invoice.currency` the same as all `invoiceLine` currencies?
 - [ ] For multi-currency, is FX conversion explicit and documented?
@@ -157,6 +166,7 @@ invoice.paidAmount += payment.amount;
 - [ ] Is the conversion direction correct (from/to currencies)?
 
 ### ✓ FX Rate Application
+
 ```typescript
 // CORRECT: Explicit FX conversion with rate lookup
 const fxRate = await getFxRate(fromCurrency, toCurrency, date);
@@ -169,6 +179,7 @@ const cadPayment = { amount: 13000, currency: "CAD" }; // ❌ Currency mismatch!
 ```
 
 ### ✓ Multi-Currency Reporting
+
 - [ ] Are amounts aggregated only within the same currency?
 - [ ] For cross-currency reports, is conversion to reporting currency explicit?
 - [ ] Is functional currency vs reporting currency distinction maintained?
@@ -177,6 +188,7 @@ const cadPayment = { amount: 13000, currency: "CAD" }; // ❌ Currency mismatch!
 ## Status Transition Validation
 
 ### ✓ Valid State Machines
+
 ```typescript
 // Invoice status transitions
 DRAFT → SENT ✓
@@ -192,6 +204,7 @@ CLOSED → OPEN ❌      // Can't reopen closed fiscal periods
 ```
 
 ### ✓ Status Enforcement
+
 - [ ] Are status transitions validated before updating?
 - [ ] Is there a clear state machine for each entity type?
 - [ ] Are terminal states (PAID, POSTED, CLOSED) protected from changes?
@@ -200,12 +213,14 @@ CLOSED → OPEN ❌      // Can't reopen closed fiscal periods
 ## Fiscal Period & Audit Controls
 
 ### ✓ Fiscal Period Validation
+
 - [ ] Are transactions dated within OPEN fiscal periods only?
 - [ ] Is backdating prevented for LOCKED or CLOSED periods?
 - [ ] Can POSTED journal entries in closed periods be modified? (Should be NO)
 - [ ] Are period-end closing entries properly marked and protected?
 
 ### ✓ Audit Trail Requirements
+
 ```typescript
 // CORRECT: Full audit trail
 journalEntry.createdBy = userId;
@@ -233,6 +248,7 @@ auditLog.create({
 ## Transaction Atomicity Validation
 
 ### ✓ Database Transactions
+
 ```typescript
 // CORRECT: Atomic financial operation
 await prisma.$transaction(async (tx) => {
@@ -262,6 +278,7 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
 ```
 
 ### ✓ Atomicity Checklist
+
 - [ ] Are related financial updates wrapped in a database transaction?
 - [ ] If journal entry creation fails, is the invoice/payment rollback automatic?
 - [ ] Are there any race conditions in payment allocation logic?
@@ -272,6 +289,7 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
 ### 🔴 Critical Issues
 
 1. **Unbalanced Journal Entries**
+
    ```typescript
    // BUG: Debits don't equal credits
    lines: [
@@ -281,6 +299,7 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
    ```
 
 2. **Float Arithmetic on Money**
+
    ```typescript
    // BUG: Precision loss
    const total = 100.50 * 1.05; // ❌ Float!
@@ -289,6 +308,7 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
    ```
 
 3. **Currency Mismatch**
+
    ```typescript
    // BUG: Adding USD and CAD directly
    const total = usdAmount + cadAmount; // ❌
@@ -297,6 +317,7 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
    ```
 
 4. **Missing Transaction Wrapper**
+
    ```typescript
    // BUG: Partial updates on failure
    await createJournalEntry();
@@ -309,6 +330,7 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
    ```
 
 5. **Modifying Posted Entries**
+
    ```typescript
    // BUG: Changing posted journal entry
    if (entry.status === "POSTED") {
@@ -339,11 +361,13 @@ await prisma.invoice.update({ status: "PAID" }); // ...invoice marked paid witho
 When reviewing frontend code that displays financial data:
 
 ### Required Components
+
 - [ ] Financial amounts MUST use `<MoneyAmount>` component
 - [ ] Money inputs MUST use `<MoneyInput>` component
 - [ ] Entity context MUST use `<EntityBadge>` component
 
 ### Forbidden Patterns
+
 - [ ] Raw number display for money (use MoneyAmount)
 - [ ] parseFloat for money calculations (use Cents type)
 - [ ] toFixed(2) for money display (use formatCents)
@@ -363,6 +387,7 @@ import { MoneyAmount } from '@akount/ui/financial';
 ```
 
 ### Component Import Validation
+
 ```typescript
 // CORRECT imports from @akount/ui
 import { MoneyAmount, MoneyInput } from '@akount/ui/financial';

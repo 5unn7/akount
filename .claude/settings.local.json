@@ -90,7 +90,10 @@
       "mcp__figma-console__figma_get_styles",
       "mcp__figma-console__figma_batch_update_variables",
       "Bash(wmic process where \"name=''node.exe''\" get processid,commandline)",
-      "Bash(cmd /c \"where pnpm\")"
+      "Bash(cmd /c \"where pnpm\")",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git check-ignore:*)",
+      "Bash(shellcheck:*)"
     ],
     "deny": [
       "Bash(git reset --hard *)",

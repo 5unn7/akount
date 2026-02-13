@@ -18,6 +18,7 @@ Foundations contain the design primitives that form the base of the entire desig
 ## When to Use
 
 Reference these files when:
+
 - Creating or updating design tokens
 - Establishing consistent color usage across components
 - Setting typography standards

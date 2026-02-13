@@ -245,13 +245,13 @@ This preserves professional responsibility.
 
 ## 👥 7. Role-Based Visibility
 
-### Founder sees:
+### Founder sees
 
 * Progress indicator
 * What’s blocking readiness
 * Who is responsible
 
-### Accountant sees:
+### Accountant sees
 
 * Integrity checklist
 * Approval controls

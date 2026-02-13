@@ -26,6 +26,7 @@
 - [ ] Read current proxy.ts to understand existing implementation
 
 - [ ] Update `apps/web/src/proxy.ts` with RBAC:
+
   ```typescript
   import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
   import { NextResponse } from 'next/server';
@@ -116,6 +117,7 @@
   ```
 
 - [ ] Create forbidden page `apps/web/src/app/forbidden/page.tsx`:
+
   ```typescript
   export default function ForbiddenPage() {
     return (
@@ -138,6 +140,7 @@
   ```
 
 **Verification:**
+
 ```bash
 # Test with different roles in Clerk dashboard
 # Login as BOOKKEEPER, try to access /accounting → should redirect to /forbidden
@@ -150,6 +153,7 @@
 **File:** `apps/api/src/middleware/rbac.ts`
 
 - [ ] Create RBAC middleware:
+
   ```typescript
   import type { FastifyRequest, FastifyReply } from 'fastify';
   import {
@@ -235,6 +239,7 @@
   ```
 
 - [ ] Create permission decorator for routes `apps/api/src/middleware/withPermission.ts`:
+
   ```typescript
   import type { FastifyInstance, RouteOptions } from 'fastify';
   import { requirePermission } from './rbac';
@@ -264,6 +269,7 @@
   ```
 
 **Verification:**
+
 ```bash
 # Add permission check to an existing route
 # Test with API client using different role tokens
@@ -277,6 +283,7 @@
 **Reference:** `docs/design-system/06-compliance/soc2.md`
 
 - [ ] Create audit service:
+
   ```typescript
   import { prisma } from '@akount/db';
   import type { FastifyRequest } from 'fastify';
@@ -417,6 +424,7 @@
   ```
 
 - [ ] Create audit query service `apps/api/src/services/audit-query.service.ts`:
+
   ```typescript
   import { prisma } from '@akount/db';
 
@@ -491,6 +499,7 @@
 **Reference:** `docs/design-system/06-compliance/soc2.md`
 
 - [ ] Create security headers middleware `apps/api/src/middleware/security-headers.ts`:
+
   ```typescript
   import type { FastifyInstance } from 'fastify';
 
@@ -506,6 +515,7 @@
   ```
 
 - [ ] Create rate limiting middleware `apps/api/src/middleware/rate-limit.ts`:
+
   ```typescript
   import type { FastifyInstance } from 'fastify';
   import rateLimit from '@fastify/rate-limit';
@@ -523,6 +533,7 @@
   ```
 
 - [ ] Create input sanitization middleware `apps/api/src/middleware/sanitize.ts`:
+
   ```typescript
   import type { FastifyInstance } from 'fastify';
 
@@ -559,6 +570,7 @@
   ```
 
 - [ ] Add dependencies:
+
   ```bash
   pnpm --filter @akount/api add @fastify/rate-limit
   ```
@@ -579,6 +591,7 @@ Before marking Phase 3 complete:
 - [ ] Input sanitization helper created
 
 **Test RBAC:**
+
 ```bash
 # 1. Set user role to BOOKKEEPER in Clerk
 # 2. Try to access /accounting → should be denied
@@ -587,6 +600,7 @@ Before marking Phase 3 complete:
 ```
 
 **Test Audit Logging:**
+
 ```bash
 # 1. Create a journal entry via API
 # 2. Query audit log for CREATE action
@@ -598,6 +612,7 @@ Before marking Phase 3 complete:
 ## Handoff
 
 When complete:
+
 - Phases 4 & 5 can use RBAC middleware
 - Phases 4 & 5 can use audit service
 - Update status in `docs/restructuring/README.md` to ✅ COMPLETE

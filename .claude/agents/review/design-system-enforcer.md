@@ -33,16 +33,19 @@ Flag any deviations from the design system with specific references.
 ## Akount Design System Overview
 
 ### Brand Colors
+
 - **Primary**: Orange (energy, action, CTA)
 - **Secondary**: Violet (AI, intelligence, premium)
 - **Neutral**: Slate (backgrounds, text, borders)
 
 ### Semantic Finance Colors
+
 - **Income**: `text-finance-income` / `bg-finance-income` (green tones)
 - **Expense**: `text-finance-expense` / `bg-finance-expense` (red tones)
 - **Neutral**: `text-finance-neutral` / `bg-finance-neutral` (slate)
 
 ### Typography
+
 - **Headings**: `font-heading` (Newsreader - elegant serif)
 - **Body**: `font-body` (Manrope - modern sans)
 - **Mono**: `font-mono` (JetBrains Mono - numbers, code)
@@ -50,6 +53,7 @@ Flag any deviations from the design system with specific references.
 ## Validation Checklist
 
 ### Colors
+
 - [ ] No hardcoded colors (no `text-green-500`, use semantic tokens)
 - [ ] Income uses `text-finance-income` (not green-xxx)
 - [ ] Expense uses `text-finance-expense` (not red-xxx)
@@ -58,6 +62,7 @@ Flag any deviations from the design system with specific references.
 - [ ] No inline style colors (`style={{ color: '#xxx' }}`)
 
 ### Typography
+
 - [ ] Headings use `font-heading` (Newsreader)
 - [ ] Body text uses `font-body` (Manrope)
 - [ ] Money/numbers use `font-mono` (JetBrains Mono)
@@ -65,6 +70,7 @@ Flag any deviations from the design system with specific references.
 - [ ] No arbitrary font sizes (use Tailwind scale)
 
 ### Components
+
 - [ ] Financial amounts use `<MoneyAmount>` component
 - [ ] Money inputs use `<MoneyInput>` component
 - [ ] Entity context uses `<EntityBadge>` component
@@ -73,6 +79,7 @@ Flag any deviations from the design system with specific references.
 - [ ] Forms follow design-system/02-patterns/forms-input.md
 
 ### Layout
+
 - [ ] 8-domain navigation structure
 - [ ] TopCommandBar with entity/period/currency controls
 - [ ] Sidebar with role-based filtering
@@ -80,6 +87,7 @@ Flag any deviations from the design system with specific references.
 - [ ] Responsive breakpoints follow design system
 
 ### Tokens
+
 - [ ] Uses CSS variables from @akount/design-tokens
 - [ ] No inline styles for colors/spacing/radius
 - [ ] Tailwind classes use akountPreset extensions
@@ -165,6 +173,7 @@ import { MoneyAmount } from '@akount/ui/financial';
 ## Critical Patterns
 
 Financial display MUST use:
+
 ```tsx
 import { MoneyAmount } from '@akount/ui/financial';
 import { cents } from '@akount/types';
@@ -173,6 +182,7 @@ import { cents } from '@akount/types';
 ```
 
 NOT:
+
 ```tsx
 <span className="text-green-500">${(amount / 100).toFixed(2)}</span>
 ```

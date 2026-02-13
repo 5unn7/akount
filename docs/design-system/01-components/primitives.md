@@ -21,6 +21,7 @@ Primitive components are the foundational building blocks that combine to create
 ### Types
 
 **Primary Button** (Call-to-Action)
+
 - Background: `--ak-orange-500`
 - Text: White
 - Use for: Main actions (Save, Post, Submit, Confirm)
@@ -28,12 +29,14 @@ Primitive components are the foundational building blocks that combine to create
 - Disabled: Gray with opacity
 
 **Secondary Button** (Alternative Action)
+
 - Background: `--ak-violet-100`
 - Text: `--ak-violet-700`
 - Use for: Alternative paths (Cancel, Skip, More options)
 - Hover: `--ak-violet-200`
 
 **Ghost Button** (Low-Priority)
+
 - Background: Transparent
 - Border: 1px `--ak-border-color`
 - Text: `--foreground`
@@ -41,6 +44,7 @@ Primitive components are the foundational building blocks that combine to create
 - Hover: Light background
 
 **Danger Button** (Destructive)
+
 - Background: `hsl(0, 84%, 60%)` (red)
 - Text: White
 - Use for: Delete, Remove, Hard actions
@@ -84,6 +88,7 @@ Icon (optional)
 ```
 
 **States:**
+
 - Empty (placeholder visible)
 - Focused (border color, cursor)
 - Filled (value shown)
@@ -91,6 +96,7 @@ Icon (optional)
 - Disabled (gray, no interaction)
 
 **Types:**
+
 - Text (default)
 - Number (numeric keyboard on mobile)
 - Email (email keyboard)
@@ -117,6 +123,7 @@ Label
 ```
 
 **Features:**
+
 - Keyboard navigation (arrow keys)
 - Search/filter (type to filter)
 - Multi-select variant
@@ -126,6 +133,7 @@ Label
 ### Amount Input
 
 **Special type for financial data:**
+
 - Monospace font (JetBrains Mono)
 - Always shows sign (+/–) and currency code
 - Right-aligned
@@ -212,6 +220,7 @@ AI Suggests: Cloud Services  [Apply] [Ignore]
 ```
 
 **States:**
+
 - Show (suggested)
 - Hide (dismissed)
 - Applied (shows checkmark)
@@ -280,6 +289,7 @@ Hint text below (optional)
 ```
 
 **Spacing:**
+
 - Label to input: 8px
 - Input to helper: 6px
 - Helper to next field: 16px
@@ -318,6 +328,7 @@ Which build → Screens (dashboards, transactions)
 ```
 
 **Example:**
+
 - Primitive: `<AmountInput />`
 - Pattern: `<JournalEntryForm />` (composes AmountInput + Dropdown + etc.)
 - Screen: `<DashboardKPIs />` (displays financial data)
@@ -327,6 +338,7 @@ Which build → Screens (dashboards, transactions)
 ## Accessibility Checklist
 
 Every primitive must:
+
 - ✓ Support keyboard navigation (Tab, arrow keys, Enter)
 - ✓ Have proper ARIA labels and roles
 - ✓ Show visible focus indicator (2px ring)
@@ -340,6 +352,7 @@ Every primitive must:
 ## Dark Mode
 
 All primitives must support dark mode:
+
 - Text colors invert appropriately
 - Borders become lighter
 - Hover states adjusted for visibility

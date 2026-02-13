@@ -273,11 +273,11 @@ That's the finish line.
 **Future enhancement:** One-click traceability from any report number back to source documents.
 
 **What's planned:**
-- Interactive lineage view showing report line → GL account → journal entry → transaction → source document
-- Human-readable explanation layer for how numbers are calculated
-- Drill-through exploration (click to follow the chain)
-- Lineage export for auditors and regulators
-- Visual flow diagram showing transaction paths
+* Interactive lineage view showing report line → GL account → journal entry → transaction → source document
+* Human-readable explanation layer for how numbers are calculated
+* Drill-through exploration (click to follow the chain)
+* Lineage export for auditors and regulators
+* Visual flow diagram showing transaction paths
 
 **Example use case:**
 > Auditor: "How did you get $45,230 in 'Cloud Services'?"

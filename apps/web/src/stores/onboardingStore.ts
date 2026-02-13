@@ -64,14 +64,14 @@ export const useOnboardingStore = create<OnboardingState>()(
       ...initialState,
 
       setAccountType: (type: AccountType) =>
-        set((state) => ({
+        set({
           accountType: type,
           // Adjust total steps based on account type
           // Personal: Welcome → Details → Complete (3 steps)
           // Business: Welcome → Details → COA → Complete (4 steps)
           totalSteps: type === 'business' ? 4 : 3,
-          currentStep: 1, // Move to entity details after selection
-        })),
+          // Don't set currentStep here — onNext() handles advancement
+        }),
 
       setPhoneNumber: (phone: string) => set({ phoneNumber: phone }),
 
@@ -110,7 +110,8 @@ export const useOnboardingStore = create<OnboardingState>()(
     }),
     {
       name: 'onboarding-storage',
-      version: 1,
+      version: 2,
+      migrate: () => initialState,
     }
   )
 )

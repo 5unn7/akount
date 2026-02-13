@@ -39,9 +39,11 @@ CLERK_SECRET_KEY="sk_test_..."
 ### Public Endpoints
 
 #### `GET /`
+
 Health check endpoint with database status.
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -64,9 +66,11 @@ Authorization: Bearer <clerk_session_token>
 ```
 
 #### `GET /auth/test`
+
 Simple endpoint to test authentication.
 
 **Response:**
+
 ```json
 {
   "authenticated": true,
@@ -76,9 +80,11 @@ Simple endpoint to test authentication.
 ```
 
 #### `GET /me`
+
 Get current authenticated user's information.
 
 **Response:**
+
 ```json
 {
   "id": "cm...",
@@ -96,6 +102,7 @@ Get current authenticated user's information.
 ```
 
 **Error Responses:**
+
 - `401 Unauthorized` - Missing or invalid token
 - `404 Not Found` - User exists in Clerk but not in database
 - `500 Internal Server Error` - Server error
@@ -162,6 +169,7 @@ const users = await prisma.user.findMany()
 The API uses Zod for request validation. See [VALIDATION.md](./VALIDATION.md) for detailed documentation.
 
 **Quick Example:**
+
 ```typescript
 import { z } from 'zod'
 import { validateBody } from './middleware/validation'
@@ -177,6 +185,7 @@ server.post('/endpoint', {
 ```
 
 **Test Endpoints:**
+
 - `POST /validation/test` - Test body validation
 - `GET /validation/query` - Test query parameter validation
 

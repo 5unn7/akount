@@ -11,6 +11,7 @@
 ## 1. Data Model & Schema Foundation
 
 ### Entity & Tenancy Layer
+
 - [x] **Tenant Model**: Schema defined with lifecycle states (trial, active, past-due, read-only, closed) ✅ **SCHEMA COMPLETE**
   - [x] Billing integration hooks
   - [x] Region/data-residency field
@@ -33,6 +34,7 @@
   - [ ] **IMPLEMENTATION**: Not started (see STATUS.md)
 
 ### Multi-Currency & FX Layer
+
 - [x] **Currency Handling**: Schema supports multi-currency ✅ **SCHEMA COMPLETE**
   - [x] Amount in source currency
   - [x] Amount in local entity currency (functional currency)
@@ -49,6 +51,7 @@
   - [ ] **IMPLEMENTATION**: Not started (see STATUS.md)
 
 ### Chart of Accounts & Policies
+
 - [x] **Master COA Templates**: Schema supports COA templates ⚠️ **SCHEMA PARTIAL**
   - [ ] Template versioning - *Schema pattern needs refinement*
   - [x] Entity-level COA inheritance and minimal override
@@ -72,6 +75,7 @@
   - [ ] **IMPLEMENTATION**: Not started (see STATUS.md)
 
 ### Intercompany & Consolidation Ready
+
 - [x] **Intercompany Transaction Layer**: Schema supports intercompany ✅ **SCHEMA COMPLETE**
   - [x] Intercompany relationship types (loan, equity contribution, service charge, dividend, etc.)
   - [x] Counterparty entity tracking on transactions
@@ -88,6 +92,7 @@
   - [ ] **IMPLEMENTATION**: Not started (see STATUS.md)
 
 ### Audit & Control Foundation
+
 - [x] **Universal Audit Log**: Schema defined ✅ **SCHEMA COMPLETE**
   - [x] Model type (entity, transaction, account, policy, etc.)
   - [x] Action (create, update, delete)
@@ -116,6 +121,7 @@
 ## 2. Integration & Data Pipeline
 
 ### Import & Feed Architecture
+
 - [x] **Unified Import Layer**: Generic external feed model ✅ **SCHEMA COMPLETE**
   - [x] Source type (bank feed, CSV, API, other accounting system) - via ImportBatch
   - [x] External ID mapping (from source system)
@@ -144,6 +150,7 @@
   - [x] All imports tracked via ImportBatch for audit trail
 
 ### Event-Driven Backbone
+
 - [x] **Domain Events**: Define and emit key domain events (even in monolithic phase) ✅ **SCHEMA COMPLETE**
   - [x] TransactionPosted
   - [x] EntityCreated / EntityUpdated
@@ -168,6 +175,7 @@
   - [ ] Background jobs (reconciliation, consolidation, reporting) - *Phase 2*
 
 ### Bank & External Integrations
+
 - [ ] **Bank Connection Model**: Structure for holding connection metadata
   - Provider (Plaid, Finicity, Flinks for Canada, etc.)
   - Connection status and last sync
@@ -186,6 +194,7 @@
 ## 3. Security, Compliance & Access Control
 
 ### Authentication & Authorization
+
 - [x] **Passkey Authentication (WebAuthn)**: Modern biometric authentication ✅ **SCHEMA COMPLETE**
   - [x] Platform authenticators (Face ID, Touch ID, Windows Hello, Android biometrics)
   - [x] Cross-platform support (Windows, Mac, iOS, Android, Linux)
@@ -224,6 +233,7 @@
   - Client confidentiality controls
 
 ### Data Security
+
 - [ ] **Encryption at Rest**
   - Database encryption (native DB feature or column-level)
   - Key management (KMS, AWS KMS, etc.)
@@ -247,6 +257,7 @@
   - Audit trail of PII access
 
 ### Compliance & Regulatory
+
 - [ ] **Data Residency**: Support region-specific storage
   - [ ] **[Legal Check]**: Verify EU/US Privacy Shield status before delaying this to Phase 4.
   - Region field on tenant and entities
@@ -270,6 +281,7 @@
 ## 4. Observability & Monitoring
 
 ### Structured Logging
+
 - [ ] **Centralized Logging Infrastructure**
   - All logs include: timestamp, log level, service, request ID, tenant ID, entity ID, user ID
   - Structured JSON format (not free-form text)
@@ -283,6 +295,7 @@
   - Error/exception capture with full stack traces
 
 ### Metrics & Dashboards
+
 - [ ] **Application Metrics**
   - Key SLI metrics: API latency (p50, p95, p99), error rates, throughput
   - Business metrics: transactions per hour, consolidations run, active tenants, entities
@@ -299,6 +312,7 @@
   - Alerts on error rate spikes, failed imports, slow queries, quota breaches
 
 ### Monitoring & Health Checks
+
 - [ ] **Health Check Endpoints**
   - Liveness (is the app running?)
   - Readiness (is it ready to accept requests?)
@@ -316,6 +330,7 @@
 ## 5. Workflows, Approvals & Controls
 
 ### Generic Workflow Engine
+
 - [ ] **Workflow Primitives**
   - Request (object, action, context, status)
   - Step (sequential or parallel workflow steps)
@@ -331,6 +346,7 @@
   - Policy change reviews
 
 ### Period Close & Reconciliation
+
 - [ ] **Close Checklist Model**
   - Per-entity close task template
   - Tasks: lock period, reconcile bank accounts, match intercompany, review FX, approve consolidation, etc.
@@ -356,6 +372,7 @@
 ## 6. Productization & Billing
 
 ### Tenant Tier & Limits
+
 - [ ] **Pricing Tier Model**
   - Tier definition (Starter, Pro, Enterprise, Custom)
   - Feature access per tier (multi-entity on/off, consolidation, tax modules, etc.)
@@ -376,6 +393,7 @@
   - Hard-stop thresholds for trial/free accounts
 
 ### Billing Integration
+
 - [ ] **Billing Entity Model**
   - Subscription: tenant → tier → price
   - Billing period (monthly, annual)
@@ -396,6 +414,7 @@
 These are foundational hooks; actual tax logic comes later, but the architecture should support them.
 
 ### Tax & Jurisdiction Hooks
+
 - [ ] **Jurisdiction Master Data**
   - Entity jurisdiction field
   - Tax authority (CRA for Canada, IRS for US, etc.)
@@ -417,6 +436,7 @@ These are foundational hooks; actual tax logic comes later, but the architecture
   - Export formats for accountant software
 
 ### Multi-Currency & FX Consolidation Hooks
+
 - [ ] **Consolidation FX Method**
   - Choose and document: temporal method (asset/liability distinction) vs. current rate method (all items at period-end rate)
   - Unrealized FX gain/loss tracking

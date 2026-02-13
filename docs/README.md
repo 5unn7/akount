@@ -87,6 +87,7 @@ docs/
 ## Critical Standards
 
 ### Money Handling
+
 ```typescript
 // CORRECT: Integer cents
 amount: 1050 // $10.50
@@ -96,6 +97,7 @@ amount: 10.50
 ```
 
 ### Multi-Tenancy
+
 ```typescript
 // ALWAYS include tenantId
 const data = await prisma.entity.findMany({
@@ -104,6 +106,7 @@ const data = await prisma.entity.findMany({
 ```
 
 ### RBAC Roles
+
 - OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER, INVESTOR, ADVISOR
 - See permissions matrix for access levels
 

@@ -23,6 +23,7 @@
 **Reference:** `docs/design-system/05-governance/information-architecture.md`
 
 - [ ] Create route group directories:
+
   ```bash
   cd apps/web/src/app
 
@@ -44,6 +45,7 @@
   ```
 
 - [ ] Resulting structure:
+
   ```
   apps/web/src/app/
   ├── (auth)/
@@ -127,6 +129,7 @@
 ### 5.2 Create Dashboard Layout
 
 - [ ] Create `apps/web/src/app/(dashboard)/layout.tsx`:
+
   ```typescript
   import { auth } from '@clerk/nextjs/server';
   import { redirect } from 'next/navigation';
@@ -211,6 +214,7 @@
 #### 5.3.1 Overview Domain
 
 - [ ] Create `apps/web/src/app/(dashboard)/overview/page.tsx`:
+
   ```typescript
   import { auth } from '@clerk/nextjs/server';
   import { prisma } from '@akount/db';
@@ -317,6 +321,7 @@
 #### 5.3.2 Money Movement Domain
 
 - [ ] Create `apps/web/src/app/(dashboard)/banking/accounts/page.tsx`:
+
   ```typescript
   import { auth } from '@clerk/nextjs/server';
   import { prisma } from '@akount/db';
@@ -405,6 +410,7 @@
 #### 5.3.3 System Domain
 
 - [ ] Create `apps/web/src/app/(dashboard)/system/audit-log/page.tsx`:
+
   ```typescript
   import { auth } from '@clerk/nextjs/server';
   import { prisma } from '@akount/db';
@@ -490,6 +496,7 @@
 - [ ] **Step 1:** Create route group directories (done above)
 
 - [ ] **Step 2:** Move existing pages to new locations:
+
   | Current Location | New Location |
   |------------------|--------------|
   | `app/dashboard/page.tsx` | `app/(dashboard)/overview/page.tsx` |
@@ -501,6 +508,7 @@
 - [ ] **Step 4:** Update all internal links to use new paths
 
 - [ ] **Step 5:** Add redirects for old paths (optional):
+
   ```typescript
   // next.config.js
   module.exports = {
@@ -522,6 +530,7 @@
 For routes that don't have content yet, create placeholder pages:
 
 - [ ] Create `apps/web/src/app/(dashboard)/[...slug]/page.tsx` (catch-all for unimplemented):
+
   ```typescript
   export default function PlaceholderPage({
     params,
@@ -559,6 +568,7 @@ Before marking Phase 5 complete:
 - [ ] Old routes redirected or removed
 
 **Test commands:**
+
 ```bash
 pnpm --filter @akount/web dev
 # Navigate to each domain in browser
@@ -571,5 +581,6 @@ pnpm --filter @akount/web dev
 ## Handoff
 
 When complete:
+
 - Full 8-domain navigation working
 - Update status in `docs/restructuring/README.md` to ✅ COMPLETE

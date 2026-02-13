@@ -26,6 +26,7 @@ Gather comprehensive documentation and best practices for specific frameworks, l
 ## When to Use
 
 Use this agent when you need to:
+
 - Understand how a specific framework/library works
 - Find API documentation for a dependency
 - Learn version-specific features and changes
@@ -36,29 +37,34 @@ Use this agent when you need to:
 ## Research Process
 
 ### 1. Version Assessment
+
 - Identify installed version in package.json
 - Check for version-specific documentation
 - Note any version constraints or requirements
 
 ### 2. Deprecation Check (MANDATORY for External APIs)
+
 - Search for deprecation notices
 - Check for breaking changes
 - Verify API/service availability
 - Document migration paths if deprecated
 
 ### 3. Documentation Collection
+
 - Use Context7 for official framework docs
 - Find version-specific guides and migration docs
 - Extract API references and method signatures
 - Collect code examples and patterns
 
 ### 4. Best Practices Identification
+
 - Recommended patterns and conventions
 - Performance considerations
 - Security guidelines
 - Common gotchas and pitfalls
 
 ### 5. Real-World Examples
+
 - Search GitHub for usage examples
 - Review issues and discussions
 - Find reference implementations
@@ -66,6 +72,7 @@ Use this agent when you need to:
 ## Key Areas to Research
 
 ### For Frameworks (Next.js, Fastify, etc.)
+
 - Core concepts and architecture
 - Request/response lifecycle
 - Middleware and plugins
@@ -75,6 +82,7 @@ Use this agent when you need to:
 - Testing strategies
 
 ### For Libraries (Prisma, Zod, etc.)
+
 - Installation and setup
 - Core API methods
 - Type definitions
@@ -83,6 +91,7 @@ Use this agent when you need to:
 - Troubleshooting guides
 
 ### For Services (Clerk, Railway, etc.)
+
 - Authentication flow
 - API endpoints and rate limits
 - SDK usage and examples
@@ -93,30 +102,38 @@ Use this agent when you need to:
 ## Output Structure
 
 ### Summary
+
 Quick overview of the framework/library
 
 ### Version Information
+
 - Installed version
 - Latest stable version
 - Breaking changes since your version
 - Deprecation warnings
 
 ### Key Concepts
+
 Core ideas you need to understand
 
 ### Implementation Guide
+
 Step-by-step setup and usage
 
 ### Best Practices
+
 Recommended patterns and approaches
 
 ### Common Issues
+
 Known problems and solutions
 
 ### Code Examples
+
 Practical examples relevant to your use case
 
 ### References
+
 Links to official docs, GitHub, discussions
 
 ## Example Usage

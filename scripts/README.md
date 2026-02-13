@@ -5,16 +5,19 @@ Automated scripts for data protection and disaster recovery.
 ## 📋 Available Scripts
 
 ### 1. `setup-git-backup.sh`
+
 **Purpose:** Set up dual Git remotes for code redundancy
 
 **When to run:** Once, at project start
 
 **Usage:**
+
 ```bash
 ./scripts/setup-git-backup.sh
 ```
 
 **What it does:**
+
 - Adds a backup Git remote (GitLab, Bitbucket, Azure DevOps, or custom)
 - Pushes your code to the backup remote
 - Provides commands to push to both remotes simultaneously
@@ -24,19 +27,23 @@ Automated scripts for data protection and disaster recovery.
 ---
 
 ### 2. `backup-config.sh`
+
 **Purpose:** Back up environment files and sensitive configuration
 
 **When to run:**
+
 - After initial setup (when you first create .env)
 - Weekly (automated via cron)
 - Before major changes
 
 **Usage:**
+
 ```bash
 ./scripts/backup-config.sh
 ```
 
 **What it does:**
+
 - Backs up all .env files
 - Backs up configuration files (.claude/settings.local.json, etc.)
 - Encrypts backups with AES-256
@@ -44,6 +51,7 @@ Automated scripts for data protection and disaster recovery.
 - Keeps 30 days of backups
 
 **Recovery:**
+
 ```bash
 # Decrypt and restore
 cd ~/akount-backups/2026-01-29
@@ -54,30 +62,36 @@ tar xzf env-files.tar.gz
 ---
 
 ### 3. `backup-db-local.sh`
+
 **Purpose:** Back up local development database
 
 **When to run:**
+
 - Daily (automated via cron)
 - Before running migrations
 - Before major data changes
 
 **Usage:**
+
 ```bash
 ./scripts/backup-db-local.sh
 ```
 
 **Prerequisites:**
+
 - PostgreSQL client tools installed (`pg_dump`)
 - DATABASE_URL set in `.env`
 - Database is running
 
 **What it does:**
+
 - Dumps database to SQL file
 - Compresses with gzip
 - Stores in `~/akount-db-backups/`
 - Keeps 7 days of backups
 
 **Recovery:**
+
 ```bash
 # Restore to new database
 createdb akount_restored
@@ -87,19 +101,23 @@ gunzip -c ~/akount-db-backups/akount_20260129_*.sql.gz | psql akount_restored
 ---
 
 ### 4. `test-recovery.sh`
+
 **Purpose:** Verify backups can be restored successfully
 
 **When to run:**
+
 - Monthly (scheduled test)
 - After setting up backups for the first time
 - Before deploying to production
 
 **Usage:**
+
 ```bash
 ./scripts/test-recovery.sh
 ```
 
 **What it does:**
+
 - Finds most recent database backup
 - Creates test database
 - Restores backup to test database
@@ -157,6 +175,7 @@ crontab -e
 ## 📦 Backup Storage Locations
 
 ### Local Backups
+
 - **Configuration:** `~/akount-backups/YYYY-MM-DD/`
 - **Database:** `~/akount-db-backups/`
 - **Retention:** 30 days (config), 7 days (db)
@@ -166,6 +185,7 @@ crontab -e
 To upload backups to cloud storage, uncomment and configure in scripts:
 
 **AWS S3:**
+
 ```bash
 # Install AWS CLI
 brew install awscli  # macOS
@@ -180,6 +200,7 @@ aws configure
 ```
 
 **Cloudflare R2:**
+
 ```bash
 # Install rclone
 brew install rclone  # macOS
@@ -302,16 +323,19 @@ fi
 ## 🔒 Security Notes
 
 **Encryption:**
+
 - All config backups are encrypted with AES-256
 - Store backup password in password manager (NOT in Git)
 - Use strong passwords (20+ characters)
 
 **Storage:**
+
 - Local backups: Restricted to your user (`chmod 600`)
 - Cloud backups: Use encrypted buckets
 - Never commit backups to Git
 
 **Access:**
+
 - Limit access to backup directories
 - Use SSH keys for Git remotes (not passwords)
 - Enable 2FA on all cloud accounts

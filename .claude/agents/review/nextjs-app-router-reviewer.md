@@ -36,6 +36,7 @@ When reviewing Next.js App Router code, you MUST validate:
 ## Tech Stack Context
 
 ### Your Akount Stack
+
 ```typescript
 Next.js: 16.1.5 (App Router)
 React: 18+
@@ -46,6 +47,7 @@ Fonts: Newsreader (heading), Manrope (body), JetBrains Mono (mono)
 ```
 
 ### Key Patterns in Use
+
 - Server Components by default
 - ClerkProvider wraps app
 - Middleware for route protection
@@ -57,6 +59,7 @@ Fonts: Newsreader (heading), Manrope (body), JetBrains Mono (mono)
 ### ✓ Server Components (Default)
 
 **What they can do:**
+
 - Async/await data fetching
 - Direct database queries (via Prisma)
 - Access environment variables securely
@@ -64,6 +67,7 @@ Fonts: Newsreader (heading), Manrope (body), JetBrains Mono (mono)
 - Import server-only packages
 
 **What they CANNOT do:**
+
 - Use React hooks (useState, useEffect, useContext)
 - Use browser APIs (window, localStorage, etc.)
 - Event handlers (onClick, onChange)
@@ -84,6 +88,7 @@ export default async function InvoicePage({ params }: { params: { id: string } }
 ### ✓ Client Components ('use client')
 
 **When to use 'use client':**
+
 - Need React hooks (useState, useEffect, useReducer)
 - Need browser APIs (window, localStorage, geolocation)
 - Need event handlers (onClick, onChange, onSubmit)
@@ -91,6 +96,7 @@ export default async function InvoicePage({ params }: { params: { id: string } }
 - Using libraries that require client-side (recharts, zustand stores)
 
 **Best practices:**
+
 - Place 'use client' as LOW in tree as possible
 - Extract interactive parts to separate client components
 - Pass server-fetched data as props to client components
@@ -572,42 +578,49 @@ export default function InvoicesPage() {
 ## Review Checklist
 
 ### ✓ Server/Client Components
+
 - [ ] Is 'use client' used only where necessary (hooks, event handlers, browser APIs)?
 - [ ] Are Server Components async when fetching data?
 - [ ] Are Client Components receiving data as props from Server Components?
 - [ ] No server-only imports in Client Components (Prisma, 'server-only' packages)?
 
 ### ✓ Data Fetching
+
 - [ ] Is data fetched server-side in Server Components?
 - [ ] Are parallel fetches using Promise.all() when possible?
 - [ ] No client-side data fetching waterfalls (useEffect chains)?
 - [ ] Are database queries optimized (select only needed fields)?
 
 ### ✓ Authentication (Clerk)
+
 - [ ] Is middleware protecting authenticated routes?
 - [ ] Is `await auth()` used in Server Components/Route Handlers (Clerk v6+)?
 - [ ] Are public routes properly matched in middleware?
 - [ ] Is userId checked before database queries?
 
 ### ✓ Route Structure
+
 - [ ] Are route groups used for shared layouts?
 - [ ] Are dynamic routes properly typed with params?
 - [ ] Are loading.tsx files provided for slow pages?
 - [ ] Is error.tsx used for error boundaries?
 
 ### ✓ Metadata & SEO
+
 - [ ] Are static pages using export const metadata?
 - [ ] Are dynamic pages using generateMetadata()?
 - [ ] Is title descriptive and includes brand name?
 - [ ] Are Open Graph tags included for social sharing?
 
 ### ✓ Performance
+
 - [ ] Are Suspense boundaries used for granular streaming?
 - [ ] Are components code-split appropriately?
 - [ ] Are images using Next.js Image component?
 - [ ] Are fonts optimized with next/font?
 
 ### ✓ TypeScript
+
 - [ ] Are page props typed correctly ({ params, searchParams })?
 - [ ] Are route handler params typed?
 - [ ] Is Metadata imported from 'next'?
