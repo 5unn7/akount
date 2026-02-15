@@ -7,6 +7,19 @@
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
+/**
+ * Get and validate the API URL
+ * Throws clear error if URL is not configured
+ */
+function getAPIUrl(): string {
+  if (!API_URL) {
+    throw new Error(
+      'NEXT_PUBLIC_API_URL is not configured. Please set it in your .env.local file.'
+    )
+  }
+  return API_URL
+}
+
 export async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -18,22 +31,35 @@ export async function apiFetch<T>(
     throw new Error('Not authenticated — please sign in')
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      ...options.headers,
-    },
-  })
+  try {
+    const apiUrl = getAPIUrl()
+    const response = await fetch(`${apiUrl}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        ...options.headers,
+      },
+    })
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({
-      message: response.statusText,
-    }))
-    throw new Error(error.message || error.error || `API error: ${response.status}`)
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({
+        message: response.statusText,
+      }))
+      throw new Error(error.message || error.error || `API error: ${response.status}`)
+    }
+
+    if (response.status === 204) return undefined as never
+    return response.json()
+  } catch (error) {
+    // Network errors (ECONNREFUSED, DNS failures, etc)
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error(
+        `Cannot connect to API server at ${API_URL}. ` +
+        `Please ensure the API server is running (npm run dev at root).`
+      )
+    }
+    // Re-throw other errors (auth, validation, etc)
+    throw error
   }
-
-  if (response.status === 204) return undefined as never
-  return response.json()
 }

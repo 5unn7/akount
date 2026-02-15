@@ -91,47 +91,113 @@ akount/
 
 ### Prerequisites
 
-- Node.js 20+
-- npm 10+
-- PostgreSQL 15+ (or Railway/Supabase account)
-- Clerk account (for authentication)
+- Node.js 18+
+- npm or pnpm
+- PostgreSQL 14+
+- Clerk account (for authentication) - [Sign up at clerk.com](https://clerk.com)
 
-### Setup
+### Environment Setup
 
 1. **Clone and Install**
 
    ```bash
+   git clone <repo-url>
+   cd akount
    npm install
    ```
 
-2. **Configure Environment**
+2. **Configure Root Environment (.env)**
+
+   Create `.env` in the project root:
 
    ```bash
-   cp .env.example .env
-   # Edit .env with your credentials
+   # Database
+   DATABASE_URL=postgresql://user:password@localhost:5432/akount
+
+   # Clerk Authentication (API)
+   CLERK_SECRET_KEY=sk_test_...
+
+   # Server Configuration
+   PORT=4000
+   HOST=0.0.0.0
+   NODE_ENV=development
+   CORS_ORIGINS=http://localhost:3000
    ```
 
-3. **Set Up Authentication** (see TASKS.md Task 0.1.1)
-   - Create Clerk account at clerk.com
-   - Add API keys to .env
+3. **Configure Web App Environment (apps/web/.env.local)**
 
-4. **Set Up Database** (see TASKS.md Task 0.2.1)
-   - Create PostgreSQL database
-   - Add DATABASE_URL to .env
-   - Run migrations: `cd packages/db && npx prisma migrate dev`
+   Create `apps/web/.env.local`:
 
-5. **Start Development**
+   ```bash
+   # Clerk Authentication (Web)
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
+
+   # API Server URL (required)
+   NEXT_PUBLIC_API_URL=http://localhost:4000
+
+   # Clerk Sign-in URLs
+   NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+   NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/onboarding
+   NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
+   ```
+
+4. **Get Clerk API Keys**
+
+   - Visit [Clerk Dashboard](https://dashboard.clerk.com)
+   - Create a new application
+   - Copy your publishable key → `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - Copy your secret key → `CLERK_SECRET_KEY`
+
+5. **Initialize Database**
+
+   ```bash
+   npm run db:push    # Push schema to database
+   npm run db:seed    # Optional: seed with sample data
+   ```
+
+6. **Start Development Servers**
 
    ```bash
    npm run dev
    ```
 
-   - Web: <http://localhost:3000>
-   - API: <http://localhost:3001>
+   This starts:
+   - ✅ API server on http://localhost:4000
+   - ✅ Web app on http://localhost:3000
+
+   Open http://localhost:3000 in your browser to get started!
+
+### Common Issues
+
+**Environment configuration:**
+- Run `npm run check:env` to validate all required environment variables are set
+- This will check both root `.env` and `apps/web/.env.local` files
+
+**"API server unavailable" error during onboarding:**
+- Ensure both dev servers are running (`npm run dev` at project root)
+- Check `NEXT_PUBLIC_API_URL=http://localhost:4000` is set in `apps/web/.env.local`
+- Verify API server is responding: visit http://localhost:4000/health
+
+**"Not authenticated" error:**
+- Verify Clerk keys in `.env` and `apps/web/.env.local` match your Clerk project
+- Ensure `CLERK_SECRET_KEY` (API) and `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (web) are correct
+- Try clearing browser cookies and signing in again
+
+**Database connection errors:**
+- Check `DATABASE_URL` in `.env` is correct
+- Verify PostgreSQL is running: `psql -U postgres -c "SELECT 1"`
+- Test connection: `npm run db:studio`
+
+**Port already in use:**
+- API (4000): Change `PORT` in `.env`
+- Web (3000): Change port in `apps/web/package.json` dev script
 
 ### First Time Setup Guide
 
-👉 **See TASKS.md for step-by-step setup instructions**
+👉 **See [STATUS.md](STATUS.md) for current implementation status**
+👉 **See [TASKS.md](TASKS.md) for current development tasks**
 
 ---
 

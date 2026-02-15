@@ -3,23 +3,59 @@
 import { useState, useEffect } from 'react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { apiFetch } from '@/lib/api/client-browser'
-import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
+import { User, Globe, Settings2 } from 'lucide-react'
 
 interface EssentialInfoStepProps {
   onNext: () => void
 }
 
-/**
- * Essential Info Step - Single Page Form
- *
- * Collects minimal information needed to create tenant and entity:
- * - Entity name (business/workspace name)
- * - Country (defaults to CA)
- * - Currency (auto-populated from country)
- *
- * Uses glass morphism design for zen, modern feel.
- * Total time to complete: ~60 seconds.
- */
+const COUNTRIES = [
+  { value: 'CA', label: 'Canada', currency: 'CAD' },
+  { value: 'US', label: 'United States', currency: 'USD' },
+  { value: 'GB', label: 'United Kingdom', currency: 'GBP' },
+  { value: 'AU', label: 'Australia', currency: 'AUD' },
+] as const
+
+const TIMEZONES = [
+  { value: 'America/Toronto', label: 'Eastern (Toronto)' },
+  { value: 'America/Vancouver', label: 'Pacific (Vancouver)' },
+  { value: 'America/Chicago', label: 'Central (Chicago)' },
+  { value: 'America/New_York', label: 'Eastern (New York)' },
+  { value: 'America/Los_Angeles', label: 'Pacific (Los Angeles)' },
+  { value: 'America/Denver', label: 'Mountain (Denver)' },
+  { value: 'Europe/London', label: 'London (GMT/BST)' },
+  { value: 'Europe/Paris', label: 'Paris (CET/CEST)' },
+  { value: 'Australia/Sydney', label: 'Sydney (AEST)' },
+] as const
+
+const INDUSTRIES = [
+  { value: '', label: 'Select industry...' },
+  { value: 'technology', label: 'Technology' },
+  { value: 'consulting', label: 'Consulting' },
+  { value: 'retail', label: 'Retail' },
+  { value: 'healthcare', label: 'Healthcare' },
+  { value: 'creative', label: 'Creative & Design' },
+  { value: 'real-estate', label: 'Real Estate' },
+  { value: 'food-beverage', label: 'Food & Beverage' },
+  { value: 'other', label: 'Other' },
+] as const
+
+const FISCAL_MONTHS = [
+  { value: '1', label: 'January' },
+  { value: '2', label: 'February' },
+  { value: '3', label: 'March' },
+  { value: '4', label: 'April' },
+  { value: '5', label: 'May' },
+  { value: '6', label: 'June' },
+  { value: '7', label: 'July' },
+  { value: '8', label: 'August' },
+  { value: '9', label: 'September' },
+  { value: '10', label: 'October' },
+  { value: '11', label: 'November' },
+  { value: '12', label: 'December' },
+] as const
+
 export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
   const {
     accountType,
@@ -28,53 +64,65 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
     timezone,
     country,
     currency,
+    industry,
+    fiscalYearEnd,
     setEntityName,
     setPhoneNumber,
     setTimezone,
     setCountry,
     setCurrency,
+    setIndustry,
+    setFiscalYearEnd,
   } = useOnboardingStore()
 
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
 
-  // Auto-detect timezone on component mount
+  // Auto-detect timezone
   useEffect(() => {
     if (!timezone || timezone === 'America/Toronto') {
       try {
-        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-        if (detectedTimezone) {
-          setTimezone(detectedTimezone)
-        }
-      } catch (error) {
-        console.log('Could not auto-detect timezone:', error)
+        const detected = Intl.DateTimeFormat().resolvedOptions().timeZone
+        if (detected) setTimezone(detected)
+      } catch {
+        // Keep default
       }
     }
   }, [timezone, setTimezone])
 
-  // Auto-update currency when country changes
+  // Health check on mount — fail fast if API is unreachable
+  useEffect(() => {
+    const checkAPIHealth = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+        const response = await fetch(`${apiUrl}/health`, { method: 'GET' })
+        if (!response.ok) {
+          setApiError(
+            'API server is not responding. Please ensure the API server is running (npm run dev at root).'
+          )
+        }
+      } catch (error) {
+        setApiError(
+          'Cannot connect to API server. Please run "npm run dev" at the project root to start all services.'
+        )
+      }
+    }
+
+    checkAPIHealth()
+  }, [])
+
   const handleCountryChange = (newCountry: string) => {
     setCountry(newCountry)
-
-    // Auto-set currency based on country
-    const currencyMap: Record<string, string> = {
-      CA: 'CAD',
-      US: 'USD',
-      GB: 'GBP',
-      AU: 'AUD',
-      EU: 'EUR',
-    }
-    const newCurrency = currencyMap[newCountry] || 'CAD'
-    setCurrency(newCurrency)
+    const match = COUNTRIES.find((c) => c.value === newCountry)
+    if (match) setCurrency(match.currency)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setApiError(null)
 
-    // Validate required fields
     if (!entityName.trim()) {
-      setApiError('Please enter a workspace name')
+      setApiError('Please enter a name for your workspace')
       return
     }
 
@@ -86,18 +134,9 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
     setIsLoading(true)
 
     try {
-      // Determine entity type based on account type
-      const entityTypeMap: Record<string, string> = {
-        personal: 'PERSONAL',
-        business: 'CORPORATION',
-        accountant: 'CORPORATION',
-      }
-      const entityType = entityTypeMap[accountType]
+      const entityType = accountType === 'personal' ? 'PERSONAL' : 'CORPORATION'
+      useOnboardingStore.setState({ entityType: entityType as 'PERSONAL' | 'CORPORATION' })
 
-      // Persist entityType in store for CompletionStep
-      useOnboardingStore.setState({ entityType: entityType as any })
-
-      // Call Fastify API initialization endpoint
       const data = await apiFetch<{ tenantId: string; entityId: string }>(
         '/api/system/onboarding/initialize',
         {
@@ -106,7 +145,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
             accountType,
             entityName: entityName.trim(),
             entityType,
-            phoneNumber: phoneNumber.trim(),
+            ...(phoneNumber.trim() && { phoneNumber: phoneNumber.trim() }),
             timezone,
             country,
             currency,
@@ -114,25 +153,22 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
         }
       )
 
-      // Store tenant/entity IDs
       useOnboardingStore.setState({
         tenantId: data.tenantId,
         entityId: data.entityId,
       })
 
-      // Advance to CompletionStep (which handles the redirect)
       onNext()
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An error occurred'
 
-      // If user already has a tenant, fetch their existing status and skip to completion
+      // If tenant already exists, try to recover
       if (message.includes('already has an active tenant')) {
         try {
           const status = await apiFetch<{ tenantId?: string; status: string }>(
             '/api/system/onboarding/status'
           )
           if (status.tenantId) {
-            // Complete the existing tenant's onboarding
             useOnboardingStore.setState({
               tenantId: status.tenantId,
               entityId: 'existing',
@@ -141,7 +177,7 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
             return
           }
         } catch {
-          // Fall through to show the original error
+          // Fall through
         }
       }
 
@@ -151,105 +187,71 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
     }
   }
 
+  const inputClasses = 'w-full px-4 py-2.5 glass-2 border border-ak-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/40 focus:border-primary/40 disabled:opacity-50 transition-all outline-none'
+  const selectClasses = cn(inputClasses, 'appearance-none bg-[length:16px] bg-[right_12px_center] bg-no-repeat bg-[url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2716%27%20height%3D%2716%27%20fill%3D%27%2371717A%27%20viewBox%3D%270%200%2024%2024%27%3E%3Cpath%20d%3D%27M7%2010l5%205%205-5z%27%2F%3E%3C%2Fsvg%3E")]')
+  const labelClasses = 'block text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5'
+
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="space-y-2 text-center">
+      <div className="text-center space-y-1">
         <h2 className="text-2xl font-heading font-normal text-foreground">
-          Let's set up your workspace
+          Set up your workspace
         </h2>
-        <p className="text-muted-foreground">Just a few quick details to get started</p>
+        <p className="text-sm text-muted-foreground">
+          A few details so Akount can work its best for you.
+        </p>
       </div>
 
-      {/* Glass Card Form */}
-      <Card variant="glass" className="p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Error message */}
-          {apiError && (
-            <div className="rounded-lg bg-[rgba(248,113,113,0.08)] p-4 text-sm text-[#F87171] border border-[rgba(248,113,113,0.2)]">
-              <p className="font-medium">Error</p>
-              <p className="text-[rgba(248,113,113,0.8)]">{apiError}</p>
-            </div>
-          )}
+      {/* Error */}
+      {apiError && (
+        <div className="rounded-lg bg-destructive/[0.08] p-3 text-sm text-ak-red border border-destructive/20">
+          {apiError}
+        </div>
+      )}
 
-          {/* Phone Number */}
-          <div>
-            <label htmlFor="phoneNumber" className="block text-sm font-medium text-foreground mb-2">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="e.g., +1 (555) 123-4567"
-              disabled={isLoading}
-              required
-              className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              For important account notifications
-            </p>
-          </div>
-
-          {/* Timezone */}
-          <div>
-            <label htmlFor="timezone" className="block text-sm font-medium text-foreground mb-2">
-              Time Zone
-            </label>
-            <select
-              id="timezone"
-              value={timezone}
-              onChange={(e) => setTimezone(e.target.value)}
-              disabled={isLoading}
-              className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
-            >
-              <option value="America/Toronto">🇨🇦 Eastern Time (Toronto)</option>
-              <option value="America/Vancouver">🇨🇦 Pacific Time (Vancouver)</option>
-              <option value="America/Chicago">🇺🇸 Central Time (Chicago)</option>
-              <option value="America/New_York">🇺🇸 Eastern Time (New York)</option>
-              <option value="America/Los_Angeles">🇺🇸 Pacific Time (Los Angeles)</option>
-              <option value="America/Denver">🇺🇸 Mountain Time (Denver)</option>
-              <option value="Europe/London">🇬🇧 London (GMT/BST)</option>
-              <option value="Europe/Paris">🇪🇺 Paris (CET/CEST)</option>
-              <option value="Australia/Sydney">🇦🇺 Sydney (AEST/AEDT)</option>
-            </select>
-            <p className="text-xs text-muted-foreground mt-1">
-              Auto-detected based on your location
-            </p>
-          </div>
-
-          {/* Workspace Name */}
-          <div>
-            <label htmlFor="entityName" className="block text-sm font-medium text-foreground mb-2">
-              {accountType === 'personal' ? 'Your Name' : 'Workspace Name'}
-            </label>
-            <input
-              type="text"
-              id="entityName"
-              value={entityName}
-              onChange={(e) => setEntityName(e.target.value)}
-              placeholder={
-                accountType === 'personal'
-                  ? 'e.g., John Smith'
-                  : 'e.g., Sunny\'s Design Studio'
-              }
-              disabled={isLoading}
-              required
-              className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              {accountType === 'personal'
-                ? 'This will be your workspace name'
-                : 'You can change this later in settings'}
-            </p>
-          </div>
-
-          {/* Country and Currency */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Country */}
+      <form id="workspace-form" onSubmit={handleSubmit} className="space-y-5">
+        {/* Section 1 — Identity */}
+        <FormSection icon={User} label="Identity">
+          <div className="space-y-4">
             <div>
-              <label htmlFor="country" className="block text-sm font-medium text-foreground mb-2">
+              <label htmlFor="entityName" className={labelClasses}>
+                {accountType === 'personal' ? 'Your Name' : 'Business Name'}
+              </label>
+              <input
+                type="text"
+                id="entityName"
+                value={entityName}
+                onChange={(e) => setEntityName(e.target.value)}
+                placeholder={accountType === 'personal' ? 'e.g., John Smith' : "e.g., Sunny's Studio"}
+                disabled={isLoading}
+                required
+                className={inputClasses}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phoneNumber" className={labelClasses}>
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="+1 (555) 123-4567"
+                disabled={isLoading}
+                className={inputClasses}
+              />
+            </div>
+          </div>
+        </FormSection>
+
+        {/* Section 2 — Location */}
+        <FormSection icon={Globe} label="Location">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="country" className={labelClasses}>
                 Country
               </label>
               <select
@@ -257,98 +259,115 @@ export function EssentialInfoStep({ onNext }: EssentialInfoStepProps) {
                 value={country}
                 onChange={(e) => handleCountryChange(e.target.value)}
                 disabled={isLoading}
-                className="w-full px-4 py-3 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
+                className={selectClasses}
               >
-                <option value="CA">🇨🇦 Canada</option>
-                <option value="US">🇺🇸 United States</option>
-                <option value="GB">🇬🇧 United Kingdom</option>
-                <option value="AU">🇦🇺 Australia</option>
+                {COUNTRIES.map((c) => (
+                  <option key={c.value} value={c.value}>{c.label}</option>
+                ))}
               </select>
             </div>
 
-            {/* Currency (auto-filled, read-only) */}
             <div>
-              <label htmlFor="currency" className="block text-sm font-medium text-foreground mb-2">
+              <label htmlFor="currency" className={labelClasses}>
                 Currency
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  id="currency"
-                  value={currency}
-                  readOnly
-                  disabled
-                  className="w-full px-4 py-3 bg-[rgba(255,255,255,0.015)] border border-[rgba(255,255,255,0.04)] rounded-lg text-muted-foreground cursor-not-allowed"
-                />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                  Auto
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Based on your country
-              </p>
+              <input
+                type="text"
+                id="currency"
+                value={currency}
+                readOnly
+                disabled
+                className={cn(inputClasses, 'cursor-not-allowed opacity-60')}
+              />
+              <p className="text-[10px] text-muted-foreground mt-1">Auto from country</p>
             </div>
           </div>
 
-          {/* Time estimate */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground glass rounded-lg p-3">
-            <svg
-              className="w-4 h-4 text-muted-foreground"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>This should only take about 60 seconds</span>
-          </div>
-
-          {/* Submit button */}
-          <div className="pt-2">
-            <button
-              type="submit"
+          <div className="mt-4">
+            <label htmlFor="timezone" className={labelClasses}>
+              Timezone
+            </label>
+            <select
+              id="timezone"
+              value={timezone}
+              onChange={(e) => setTimezone(e.target.value)}
               disabled={isLoading}
-              className="w-full px-6 py-3 text-sm font-medium text-black bg-primary rounded-lg hover:bg-[#FBBF24] disabled:opacity-50 disabled:cursor-not-allowed transition-all glow-primary"
+              className={selectClasses}
             >
-              {isLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Creating your workspace...
-                </span>
-              ) : (
-                'Create My Workspace →'
-              )}
-            </button>
+              {TIMEZONES.map((tz) => (
+                <option key={tz.value} value={tz.value}>{tz.label}</option>
+              ))}
+            </select>
+            <p className="text-[10px] text-muted-foreground mt-1">Auto-detected from your browser</p>
           </div>
-        </form>
-      </Card>
+        </FormSection>
 
-      {/* Footer note */}
-      <div className="text-center text-sm text-muted-foreground">
-        <p>
-          You can add more details later • Takes less than 60 seconds
-        </p>
+        {/* Section 3 — Preferences */}
+        <FormSection icon={Settings2} label="Preferences">
+          <div className={accountType === 'business' ? 'grid grid-cols-2 gap-4' : ''}>
+            {accountType === 'business' && (
+              <div>
+                <label htmlFor="industry" className={labelClasses}>
+                  Industry
+                </label>
+                <select
+                  id="industry"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  disabled={isLoading}
+                  className={selectClasses}
+                >
+                  {INDUSTRIES.map((ind) => (
+                    <option key={ind.value} value={ind.value}>{ind.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="fiscalYearEnd" className={labelClasses}>
+                Fiscal Year End
+              </label>
+              <select
+                id="fiscalYearEnd"
+                value={fiscalYearEnd}
+                onChange={(e) => setFiscalYearEnd(e.target.value)}
+                disabled={isLoading}
+                className={selectClasses}
+              >
+                {FISCAL_MONTHS.map((m) => (
+                  <option key={m.value} value={m.value}>{m.label}</option>
+                ))}
+              </select>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Most use December. You can change this later.
+              </p>
+            </div>
+          </div>
+        </FormSection>
+      </form>
+    </div>
+  )
+}
+
+function FormSection({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="glass-2 rounded-xl p-5 space-y-4">
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-primary" />
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          {label}
+        </span>
       </div>
+      {children}
     </div>
   )
 }
