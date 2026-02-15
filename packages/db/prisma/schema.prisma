@@ -272,7 +272,8 @@ model Invoice {
   deletedAt     DateTime? // Soft delete - financial data never hard deleted
   client        Client        @relation(fields: [clientId], references: [id])
   entity        Entity        @relation(fields: [entityId], references: [id])
-  invoiceLines  InvoiceLine[]
+  invoiceLines        InvoiceLine[]
+  paymentAllocations  PaymentAllocation[]
 
   @@index([entityId, status])
   @@index([clientId, status])
@@ -342,7 +343,8 @@ model Bill {
   deletedAt  DateTime? // Soft delete - financial data never hard deleted
   entity     Entity     @relation(fields: [entityId], references: [id])
   vendor     Vendor     @relation(fields: [vendorId], references: [id])
-  billLines  BillLine[]
+  billLines           BillLine[]
+  paymentAllocations  PaymentAllocation[]
 
   @@index([entityId, status])
   @@index([vendorId, status])
@@ -386,14 +388,31 @@ model Payment {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   deletedAt     DateTime? // Soft delete - financial data never hard deleted
-  client        Client?       @relation(fields: [clientId], references: [id])
-  entity        Entity        @relation(fields: [entityId], references: [id])
-  vendor        Vendor?       @relation(fields: [vendorId], references: [id])
+  client        Client?              @relation(fields: [clientId], references: [id])
+  entity        Entity               @relation(fields: [entityId], references: [id])
+  vendor        Vendor?              @relation(fields: [vendorId], references: [id])
+  allocations   PaymentAllocation[]
 
   @@index([entityId, date])
   @@index([clientId])
   @@index([vendorId])
   @@index([entityId, deletedAt])
+}
+
+model PaymentAllocation {
+  id        String   @id @default(cuid())
+  paymentId String
+  invoiceId String?
+  billId    String?
+  amount    Int // Integer cents allocated to this document
+  createdAt DateTime @default(now())
+  payment   Payment  @relation(fields: [paymentId], references: [id])
+  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
+  bill      Bill?    @relation(fields: [billId], references: [id])
+
+  @@index([paymentId])
+  @@index([invoiceId])
+  @@index([billId])
 }
 
 model CreditNote {
@@ -905,6 +924,7 @@ enum JournalEntryStatus {
 
 enum JournalEntrySourceType {
   INVOICE
+  BILL
   PAYMENT
   BANK_FEED
   MANUAL

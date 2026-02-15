@@ -156,6 +156,102 @@ export async function billRoutes(fastify: FastifyInstance) {
     }
   );
 
+  // POST /api/bills/:id/approve - Approve bill (DRAFT → PENDING)
+  fastify.post(
+    '/:id/approve',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateParams({ id: { type: 'string' } })],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const params = request.params as { id: string };
+      const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
+
+      try {
+        const bill = await billService.approveBill(params.id, tenant);
+        return reply.status(200).send(bill);
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.message.includes('not found')) {
+            return reply.status(404).send({ error: 'Bill not found' });
+          }
+          if (error.message.includes('Invalid status')) {
+            return reply.status(400).send({ error: error.message });
+          }
+        }
+        throw error;
+      }
+    }
+  );
+
+  // POST /api/bills/:id/cancel - Cancel bill
+  fastify.post(
+    '/:id/cancel',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN']),
+      preValidation: [validateParams({ id: { type: 'string' } })],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const params = request.params as { id: string };
+      const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
+
+      try {
+        const bill = await billService.cancelBill(params.id, tenant);
+        return reply.status(200).send(bill);
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.message.includes('not found')) {
+            return reply.status(404).send({ error: 'Bill not found' });
+          }
+          if (error.message.includes('Invalid status') || error.message.includes('Cannot cancel')) {
+            return reply.status(400).send({ error: error.message });
+          }
+        }
+        throw error;
+      }
+    }
+  );
+
+  // POST /api/bills/:id/mark-overdue - Mark bill overdue
+  fastify.post(
+    '/:id/mark-overdue',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateParams({ id: { type: 'string' } })],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const params = request.params as { id: string };
+      const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
+
+      try {
+        const bill = await billService.markBillOverdue(params.id, tenant);
+        return reply.status(200).send(bill);
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.message.includes('not found')) {
+            return reply.status(404).send({ error: 'Bill not found' });
+          }
+          if (error.message.includes('Invalid status')) {
+            return reply.status(400).send({ error: error.message });
+          }
+        }
+        throw error;
+      }
+    }
+  );
+
   // DELETE /api/bills/:id - Soft delete bill
   fastify.delete(
     '/:id',

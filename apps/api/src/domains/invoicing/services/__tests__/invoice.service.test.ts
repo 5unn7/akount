@@ -594,4 +594,166 @@ describe('InvoiceService', () => {
       });
     });
   });
+
+  // ─── Status Transition Tests ──────────────────────────────────
+
+  describe('sendInvoice', () => {
+    it('should transition DRAFT → SENT', async () => {
+      const invoice = mockInvoice({ status: 'DRAFT', client: { id: CLIENT_ID, name: 'Acme', email: 'acme@test.com', entityId: ENTITY_ID } });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({ ...invoice, status: 'SENT' } as never);
+
+      const result = await invoiceService.sendInvoice('inv-1', mockTenantContext);
+
+      expect(result.status).toBe('SENT');
+      expect(prisma.invoice.update).toHaveBeenCalledWith(
+        expect.objectContaining({ data: { status: 'SENT' } })
+      );
+    });
+
+    it('should reject PAID → SENT transition', async () => {
+      const invoice = mockInvoice({ status: 'PAID', client: { id: CLIENT_ID, name: 'Acme', email: 'acme@test.com', entityId: ENTITY_ID } });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+
+      await expect(invoiceService.sendInvoice('inv-1', mockTenantContext))
+        .rejects.toThrow('Invalid status transition');
+    });
+
+    it('should reject if client has no email', async () => {
+      const invoice = mockInvoice({ status: 'DRAFT', client: { id: CLIENT_ID, name: 'Acme', email: null, entityId: ENTITY_ID } });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+
+      await expect(invoiceService.sendInvoice('inv-1', mockTenantContext))
+        .rejects.toThrow('Client email required');
+    });
+  });
+
+  describe('cancelInvoice', () => {
+    it('should transition DRAFT → CANCELLED', async () => {
+      const invoice = mockInvoice({ status: 'DRAFT', paidAmount: 0 });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({ ...invoice, status: 'CANCELLED' } as never);
+
+      const result = await invoiceService.cancelInvoice('inv-1', mockTenantContext);
+      expect(result.status).toBe('CANCELLED');
+    });
+
+    it('should reject if payments exist', async () => {
+      const invoice = mockInvoice({ status: 'SENT', paidAmount: 50000 });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+
+      await expect(invoiceService.cancelInvoice('inv-1', mockTenantContext))
+        .rejects.toThrow('Cannot cancel invoice with existing payments');
+    });
+
+    it('should reject PAID → CANCELLED transition', async () => {
+      const invoice = mockInvoice({ status: 'PAID', paidAmount: 0 });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+
+      await expect(invoiceService.cancelInvoice('inv-1', mockTenantContext))
+        .rejects.toThrow('Invalid status transition');
+    });
+  });
+
+  describe('markInvoiceOverdue', () => {
+    it('should transition SENT → OVERDUE', async () => {
+      const invoice = mockInvoice({ status: 'SENT' });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({ ...invoice, status: 'OVERDUE' } as never);
+
+      const result = await invoiceService.markInvoiceOverdue('inv-1', mockTenantContext);
+      expect(result.status).toBe('OVERDUE');
+    });
+
+    it('should reject DRAFT → OVERDUE transition', async () => {
+      const invoice = mockInvoice({ status: 'DRAFT' });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+
+      await expect(invoiceService.markInvoiceOverdue('inv-1', mockTenantContext))
+        .rejects.toThrow('Invalid status transition');
+    });
+  });
+
+  describe('applyPaymentToInvoice', () => {
+    it('should update paidAmount and transition to PARTIALLY_PAID', async () => {
+      const invoice = mockInvoice({ status: 'SENT', paidAmount: 0, total: 99000 });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+        ...invoice, paidAmount: 50000, status: 'PARTIALLY_PAID',
+      } as never);
+
+      const result = await invoiceService.applyPaymentToInvoice('inv-1', 50000, mockTenantContext);
+
+      expect(result.paidAmount).toBe(50000);
+      expect(result.status).toBe('PARTIALLY_PAID');
+      assertIntegerCents(result.paidAmount, 'paidAmount');
+    });
+
+    it('should transition to PAID when fully paid', async () => {
+      const invoice = mockInvoice({ status: 'PARTIALLY_PAID', paidAmount: 50000, total: 99000 });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+        ...invoice, paidAmount: 99000, status: 'PAID',
+      } as never);
+
+      const result = await invoiceService.applyPaymentToInvoice('inv-1', 49000, mockTenantContext);
+
+      expect(result.paidAmount).toBe(99000);
+      expect(result.status).toBe('PAID');
+    });
+
+    it('should reject payment exceeding balance', async () => {
+      const invoice = mockInvoice({ status: 'SENT', paidAmount: 90000, total: 99000 });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+
+      await expect(invoiceService.applyPaymentToInvoice('inv-1', 10000, mockTenantContext))
+        .rejects.toThrow('would exceed invoice balance');
+    });
+
+    it('should reject zero or negative amount', async () => {
+      const invoice = mockInvoice({ status: 'SENT' });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+
+      await expect(invoiceService.applyPaymentToInvoice('inv-1', 0, mockTenantContext))
+        .rejects.toThrow('Payment amount must be positive');
+    });
+  });
+
+  describe('reversePaymentFromInvoice', () => {
+    it('should reduce paidAmount and revert to SENT', async () => {
+      const invoice = mockInvoice({
+        status: 'PARTIALLY_PAID',
+        paidAmount: 50000,
+        total: 99000,
+        dueDate: new Date('2099-01-31'), // future date
+      });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+        ...invoice, paidAmount: 0, status: 'SENT',
+      } as never);
+
+      const result = await invoiceService.reversePaymentFromInvoice('inv-1', 50000, mockTenantContext);
+
+      expect(result.paidAmount).toBe(0);
+      expect(result.status).toBe('SENT');
+    });
+
+    it('should set OVERDUE status if due date has passed', async () => {
+      const invoice = mockInvoice({
+        status: 'PARTIALLY_PAID',
+        paidAmount: 50000,
+        total: 99000,
+        dueDate: new Date('2020-01-01'), // past date
+      });
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+        ...invoice, paidAmount: 0, status: 'OVERDUE',
+      } as never);
+
+      await invoiceService.reversePaymentFromInvoice('inv-1', 50000, mockTenantContext);
+
+      const updateArgs = vi.mocked(prisma.invoice.update).mock.calls[0][0]!;
+      expect(updateArgs.data.status).toBe('OVERDUE');
+    });
+  });
 });

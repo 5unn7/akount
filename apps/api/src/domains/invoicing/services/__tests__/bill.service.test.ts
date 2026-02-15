@@ -594,4 +594,209 @@ describe('BillService', () => {
       });
     });
   });
+
+  // ─── Status Transition Tests ─────────────────────────────────────
+
+  describe('approveBill', () => {
+    it('should transition DRAFT → PENDING', async () => {
+      const bill = mockBill({ status: 'DRAFT' });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        status: 'PENDING',
+      } as never);
+
+      const result = await billService.approveBill('bill-1', mockTenantContext);
+
+      expect(result.status).toBe('PENDING');
+      expect(prisma.bill.update).toHaveBeenCalledWith({
+        where: { id: 'bill-1' },
+        data: { status: 'PENDING' },
+        include: { vendor: true, entity: true, billLines: true },
+      });
+    });
+
+    it('should reject transition from PAID → PENDING', async () => {
+      const bill = mockBill({ status: 'PAID' });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+
+      await expect(
+        billService.approveBill('bill-1', mockTenantContext)
+      ).rejects.toThrow('Invalid status transition');
+    });
+  });
+
+  describe('cancelBill', () => {
+    it('should transition DRAFT → CANCELLED', async () => {
+      const bill = mockBill({ status: 'DRAFT', paidAmount: 0 });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        status: 'CANCELLED',
+      } as never);
+
+      const result = await billService.cancelBill('bill-1', mockTenantContext);
+
+      expect(result.status).toBe('CANCELLED');
+    });
+
+    it('should reject cancellation when payments exist', async () => {
+      const bill = mockBill({ status: 'PENDING', paidAmount: 25000 });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+
+      await expect(
+        billService.cancelBill('bill-1', mockTenantContext)
+      ).rejects.toThrow('Cannot cancel bill with existing payments');
+    });
+
+    it('should reject transition from PAID → CANCELLED', async () => {
+      const bill = mockBill({ status: 'PAID', paidAmount: 99000 });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+
+      await expect(
+        billService.cancelBill('bill-1', mockTenantContext)
+      ).rejects.toThrow('Invalid status transition');
+    });
+  });
+
+  describe('markBillOverdue', () => {
+    it('should transition PENDING → OVERDUE', async () => {
+      const bill = mockBill({ status: 'PENDING' });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        status: 'OVERDUE',
+      } as never);
+
+      const result = await billService.markBillOverdue('bill-1', mockTenantContext);
+
+      expect(result.status).toBe('OVERDUE');
+    });
+
+    it('should reject transition from DRAFT → OVERDUE', async () => {
+      const bill = mockBill({ status: 'DRAFT' });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+
+      await expect(
+        billService.markBillOverdue('bill-1', mockTenantContext)
+      ).rejects.toThrow('Invalid status transition');
+    });
+  });
+
+  describe('applyPaymentToBill', () => {
+    it('should partially pay and update status to PARTIALLY_PAID', async () => {
+      const bill = mockBill({ status: 'PENDING', total: 99000, paidAmount: 0 });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        paidAmount: 50000,
+        status: 'PARTIALLY_PAID',
+      } as never);
+
+      const result = await billService.applyPaymentToBill('bill-1', 50000, mockTenantContext);
+
+      expect(result.status).toBe('PARTIALLY_PAID');
+      assertIntegerCents(result.paidAmount, 'paidAmount');
+      expect(prisma.bill.update).toHaveBeenCalledWith({
+        where: { id: 'bill-1' },
+        data: { paidAmount: 50000, status: 'PARTIALLY_PAID' },
+        include: { vendor: true, entity: true, billLines: true },
+      });
+    });
+
+    it('should fully pay and update status to PAID', async () => {
+      const bill = mockBill({ status: 'PENDING', total: 99000, paidAmount: 0 });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        paidAmount: 99000,
+        status: 'PAID',
+      } as never);
+
+      const result = await billService.applyPaymentToBill('bill-1', 99000, mockTenantContext);
+
+      expect(result.status).toBe('PAID');
+    });
+
+    it('should reject payment exceeding balance', async () => {
+      const bill = mockBill({ status: 'PENDING', total: 99000, paidAmount: 90000 });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+
+      await expect(
+        billService.applyPaymentToBill('bill-1', 50000, mockTenantContext)
+      ).rejects.toThrow('would exceed bill balance');
+    });
+
+    it('should reject zero or negative payment amount', async () => {
+      const bill = mockBill({ status: 'PENDING', total: 99000, paidAmount: 0 });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+
+      await expect(
+        billService.applyPaymentToBill('bill-1', 0, mockTenantContext)
+      ).rejects.toThrow('Payment amount must be positive');
+    });
+  });
+
+  describe('reversePaymentFromBill', () => {
+    it('should revert to PENDING when fully reversed and not yet due', async () => {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 30);
+      const bill = mockBill({
+        status: 'PARTIALLY_PAID',
+        total: 99000,
+        paidAmount: 25000,
+        dueDate: futureDate,
+      });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        paidAmount: 0,
+        status: 'PENDING',
+      } as never);
+
+      const result = await billService.reversePaymentFromBill('bill-1', 25000, mockTenantContext);
+
+      expect(result.status).toBe('PENDING');
+      expect(result.paidAmount).toBe(0);
+    });
+
+    it('should revert to OVERDUE when fully reversed and past due', async () => {
+      const pastDate = new Date('2024-01-01');
+      const bill = mockBill({
+        status: 'PARTIALLY_PAID',
+        total: 99000,
+        paidAmount: 25000,
+        dueDate: pastDate,
+      });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        paidAmount: 0,
+        status: 'OVERDUE',
+      } as never);
+
+      const result = await billService.reversePaymentFromBill('bill-1', 25000, mockTenantContext);
+
+      expect(result.status).toBe('OVERDUE');
+    });
+
+    it('should remain PARTIALLY_PAID when partially reversed', async () => {
+      const bill = mockBill({
+        status: 'PAID',
+        total: 99000,
+        paidAmount: 99000,
+      });
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(bill as never);
+      vi.mocked(prisma.bill.update).mockResolvedValueOnce({
+        ...bill,
+        paidAmount: 50000,
+        status: 'PARTIALLY_PAID',
+      } as never);
+
+      const result = await billService.reversePaymentFromBill('bill-1', 49000, mockTenantContext);
+
+      expect(result.status).toBe('PARTIALLY_PAID');
+      assertIntegerCents(result.paidAmount, 'paidAmount');
+    });
+  });
 });

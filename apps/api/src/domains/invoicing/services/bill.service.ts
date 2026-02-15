@@ -1,4 +1,4 @@
-import { prisma, Prisma } from '@akount/db';
+import { prisma, Prisma, type BillStatus } from '@akount/db';
 import type { TenantContext } from '@/lib/middleware/tenant';
 import type {
   CreateBillInput,
@@ -7,7 +7,7 @@ import type {
 } from '../schemas/bill.schema';
 
 /**
- * Bill service — Business logic for bill CRUD operations (AP side).
+ * Bill service — Business logic for bill CRUD + status transitions (AP side).
  *
  * Mirrors invoice.service.ts but uses Vendor instead of Client.
  *
@@ -16,7 +16,25 @@ import type {
  * - Soft delete: Use deletedAt field, filter deletedAt: null
  * - Integer cents: All monetary amounts are integers
  * - AP aging: Calculate buckets based on dueDate
+ *
+ * Bill lifecycle: DRAFT → PENDING → PARTIALLY_PAID → PAID
+ *                 DRAFT/PENDING → CANCELLED (if no payments)
+ *                 PENDING/PARTIALLY_PAID → OVERDUE
  */
+
+const VALID_TRANSITIONS: Record<string, BillStatus[]> = {
+  DRAFT: ['PENDING', 'CANCELLED'],
+  PENDING: ['PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED'],
+  PARTIALLY_PAID: ['PAID', 'OVERDUE'],
+  OVERDUE: ['PARTIALLY_PAID', 'PAID'],
+};
+
+function assertTransition(current: BillStatus, target: BillStatus): void {
+  const allowed = VALID_TRANSITIONS[current];
+  if (!allowed || !allowed.includes(target)) {
+    throw new Error(`Invalid status transition: ${current} → ${target}`);
+  }
+}
 
 export async function createBill(data: CreateBillInput, ctx: TenantContext) {
   // Verify vendor belongs to tenant's entity
@@ -294,4 +312,114 @@ export async function getBillStats(ctx: TenantContext) {
       },
     },
   };
+}
+
+// ─── Status Transitions ───────────────────────────────────────────
+
+/**
+ * Approve bill: DRAFT → PENDING
+ * Bill is ready to be paid.
+ */
+export async function approveBill(id: string, ctx: TenantContext) {
+  const bill = await getBill(id, ctx);
+  assertTransition(bill.status, 'PENDING');
+
+  return prisma.bill.update({
+    where: { id },
+    data: { status: 'PENDING' },
+    include: { vendor: true, entity: true, billLines: true },
+  });
+}
+
+/**
+ * Cancel bill: DRAFT/PENDING → CANCELLED
+ * Cannot cancel if payments have been allocated.
+ */
+export async function cancelBill(id: string, ctx: TenantContext) {
+  const bill = await getBill(id, ctx);
+  assertTransition(bill.status, 'CANCELLED');
+
+  if (bill.paidAmount > 0) {
+    throw new Error('Cannot cancel bill with existing payments');
+  }
+
+  return prisma.bill.update({
+    where: { id },
+    data: { status: 'CANCELLED' },
+    include: { vendor: true, entity: true, billLines: true },
+  });
+}
+
+/**
+ * Mark bill overdue: PENDING/PARTIALLY_PAID → OVERDUE
+ * Typically triggered when dueDate has passed.
+ */
+export async function markBillOverdue(id: string, ctx: TenantContext) {
+  const bill = await getBill(id, ctx);
+  assertTransition(bill.status, 'OVERDUE');
+
+  return prisma.bill.update({
+    where: { id },
+    data: { status: 'OVERDUE' },
+    include: { vendor: true, entity: true, billLines: true },
+  });
+}
+
+/**
+ * Apply payment to bill — updates paidAmount and status.
+ * Called internally by PaymentService when allocating payments.
+ */
+export async function applyPaymentToBill(
+  id: string,
+  amount: number,
+  ctx: TenantContext
+) {
+  const bill = await getBill(id, ctx);
+
+  if (amount <= 0) {
+    throw new Error('Payment amount must be positive');
+  }
+
+  const newPaidAmount = bill.paidAmount + amount;
+  if (newPaidAmount > bill.total) {
+    throw new Error(
+      `Payment of ${amount} would exceed bill balance. Outstanding: ${bill.total - bill.paidAmount}`
+    );
+  }
+
+  const newStatus: BillStatus =
+    newPaidAmount >= bill.total ? 'PAID' : 'PARTIALLY_PAID';
+
+  return prisma.bill.update({
+    where: { id },
+    data: { paidAmount: newPaidAmount, status: newStatus },
+    include: { vendor: true, entity: true, billLines: true },
+  });
+}
+
+/**
+ * Reverse payment from bill — reduces paidAmount and reverts status.
+ * Called internally by PaymentService when deleting a payment.
+ */
+export async function reversePaymentFromBill(
+  id: string,
+  amount: number,
+  ctx: TenantContext
+) {
+  const bill = await getBill(id, ctx);
+
+  const newPaidAmount = Math.max(0, bill.paidAmount - amount);
+  let newStatus: BillStatus;
+
+  if (newPaidAmount === 0) {
+    newStatus = bill.dueDate < new Date() ? 'OVERDUE' : 'PENDING';
+  } else {
+    newStatus = 'PARTIALLY_PAID';
+  }
+
+  return prisma.bill.update({
+    where: { id },
+    data: { paidAmount: newPaidAmount, status: newStatus },
+    include: { vendor: true, entity: true, billLines: true },
+  });
 }

@@ -1,4 +1,4 @@
-import { prisma, Prisma } from '@akount/db';
+import { prisma, Prisma, type InvoiceStatus } from '@akount/db';
 import type { TenantContext } from '@/lib/middleware/tenant';
 import type {
   CreateInvoiceInput,
@@ -7,14 +7,32 @@ import type {
 } from '../schemas/invoice.schema';
 
 /**
- * Invoice service — Business logic for invoice CRUD operations.
+ * Invoice service — Business logic for invoice CRUD + status transitions.
  *
  * CRITICAL RULES:
  * - Tenant isolation: All queries MUST filter by tenantId via entity relation
  * - Soft delete: Use deletedAt field, filter deletedAt: null
  * - Integer cents: All monetary amounts are integers
  * - AR aging: Calculate buckets based on dueDate
+ *
+ * Invoice lifecycle: DRAFT → SENT → PARTIALLY_PAID → PAID
+ *                    DRAFT/SENT → CANCELLED (if no payments)
+ *                    SENT/PARTIALLY_PAID → OVERDUE
  */
+
+const VALID_TRANSITIONS: Record<string, InvoiceStatus[]> = {
+  DRAFT: ['SENT', 'CANCELLED'],
+  SENT: ['PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED'],
+  PARTIALLY_PAID: ['PAID', 'OVERDUE'],
+  OVERDUE: ['PARTIALLY_PAID', 'PAID'],
+};
+
+function assertTransition(current: InvoiceStatus, target: InvoiceStatus): void {
+  const allowed = VALID_TRANSITIONS[current];
+  if (!allowed || !allowed.includes(target)) {
+    throw new Error(`Invalid status transition: ${current} → ${target}`);
+  }
+}
 
 export async function createInvoice(
   data: CreateInvoiceInput,
@@ -300,4 +318,120 @@ export async function getInvoiceStats(ctx: TenantContext) {
       },
     },
   };
+}
+
+// ─── Status Transitions ───────────────────────────────────────────
+
+/**
+ * Send invoice: DRAFT → SENT
+ * Validates that client has an email address for delivery.
+ */
+export async function sendInvoice(id: string, ctx: TenantContext) {
+  const invoice = await getInvoice(id, ctx);
+  assertTransition(invoice.status, 'SENT');
+
+  if (!invoice.client.email) {
+    throw new Error('Client email required for sending');
+  }
+
+  return prisma.invoice.update({
+    where: { id },
+    data: { status: 'SENT' },
+    include: { client: true, entity: true, invoiceLines: true },
+  });
+}
+
+/**
+ * Cancel invoice: DRAFT/SENT → CANCELLED
+ * Cannot cancel if payments have been allocated.
+ */
+export async function cancelInvoice(id: string, ctx: TenantContext) {
+  const invoice = await getInvoice(id, ctx);
+  assertTransition(invoice.status, 'CANCELLED');
+
+  if (invoice.paidAmount > 0) {
+    throw new Error('Cannot cancel invoice with existing payments');
+  }
+
+  return prisma.invoice.update({
+    where: { id },
+    data: { status: 'CANCELLED' },
+    include: { client: true, entity: true, invoiceLines: true },
+  });
+}
+
+/**
+ * Mark invoice overdue: SENT/PARTIALLY_PAID → OVERDUE
+ * Typically triggered when dueDate has passed.
+ */
+export async function markInvoiceOverdue(id: string, ctx: TenantContext) {
+  const invoice = await getInvoice(id, ctx);
+  assertTransition(invoice.status, 'OVERDUE');
+
+  return prisma.invoice.update({
+    where: { id },
+    data: { status: 'OVERDUE' },
+    include: { client: true, entity: true, invoiceLines: true },
+  });
+}
+
+/**
+ * Apply payment to invoice — updates paidAmount and status.
+ * Called internally by PaymentService when allocating payments.
+ *
+ * @param amount - Payment amount in integer cents to apply
+ */
+export async function applyPaymentToInvoice(
+  id: string,
+  amount: number,
+  ctx: TenantContext
+) {
+  const invoice = await getInvoice(id, ctx);
+
+  if (amount <= 0) {
+    throw new Error('Payment amount must be positive');
+  }
+
+  const newPaidAmount = invoice.paidAmount + amount;
+  if (newPaidAmount > invoice.total) {
+    throw new Error(
+      `Payment of ${amount} would exceed invoice balance. Outstanding: ${invoice.total - invoice.paidAmount}`
+    );
+  }
+
+  const newStatus: InvoiceStatus =
+    newPaidAmount >= invoice.total ? 'PAID' : 'PARTIALLY_PAID';
+
+  return prisma.invoice.update({
+    where: { id },
+    data: { paidAmount: newPaidAmount, status: newStatus },
+    include: { client: true, entity: true, invoiceLines: true },
+  });
+}
+
+/**
+ * Reverse payment from invoice — reduces paidAmount and reverts status.
+ * Called internally by PaymentService when deleting a payment.
+ */
+export async function reversePaymentFromInvoice(
+  id: string,
+  amount: number,
+  ctx: TenantContext
+) {
+  const invoice = await getInvoice(id, ctx);
+
+  const newPaidAmount = Math.max(0, invoice.paidAmount - amount);
+  let newStatus: InvoiceStatus;
+
+  if (newPaidAmount === 0) {
+    newStatus = invoice.dueDate < new Date() ? 'OVERDUE' : 'SENT';
+  } else {
+    newStatus = 'PARTIALLY_PAID';
+  }
+
+  return prisma.invoice.update({
+    where: { id },
+    data: { paidAmount: newPaidAmount, status: newStatus },
+    include: { client: true, entity: true, invoiceLines: true },
+  });
 }
