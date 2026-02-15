@@ -5,6 +5,8 @@ import { validateQuery, validateParams, validateBody } from '../../../middleware
 import { withRolePermission } from '../../../middleware/rbac';
 import { statsRateLimitConfig } from '../../../middleware/rate-limit'; // SECURITY FIX M-5
 import * as invoiceService from '../services/invoice.service';
+import { DocumentPostingService } from '../../accounting/services/document-posting.service';
+import { AccountingError } from '../../accounting/errors';
 import {
   CreateInvoiceSchema,
   UpdateInvoiceSchema,
@@ -246,6 +248,37 @@ export async function invoiceRoutes(fastify: FastifyInstance) {
           if (error.message.includes('Invalid status')) {
             return reply.status(400).send({ error: error.message });
           }
+        }
+        throw error;
+      }
+    }
+  );
+
+  // POST /api/invoices/:id/post - Post invoice to GL
+  fastify.post(
+    '/:id/post',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateParams({ id: { type: 'string' } })],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const params = request.params as { id: string };
+      const postingService = new DocumentPostingService(request.tenantId, request.userId);
+
+      try {
+        const result = await postingService.postInvoice(params.id);
+        return reply.status(201).send(result);
+      } catch (error) {
+        if (error instanceof AccountingError) {
+          return reply.status(error.statusCode).send({
+            error: error.message,
+            code: error.code,
+            details: error.details,
+          });
         }
         throw error;
       }
