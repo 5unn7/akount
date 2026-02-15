@@ -83,7 +83,17 @@ describe('BillService', () => {
           total: 110000,
           status: 'DRAFT',
           notes: null,
-          lines: [],
+          lines: [
+            {
+              description: 'Service',
+              quantity: 1,
+              unitPrice: 100000,
+              taxAmount: 10000,
+              amount: 110000,
+              glAccountId: undefined,
+              categoryId: undefined,
+            },
+          ],
         },
         mockTenantContext
       );
@@ -143,7 +153,15 @@ describe('BillService', () => {
           status: 'DRAFT',
           notes: 'Test bill',
           lines: [
-            { description: 'Service A', quantity: 1, unitPrice: 150000, amount: 150000 },
+            {
+              description: 'Service A',
+              quantity: 1,
+              unitPrice: 150000,
+              taxAmount: 15000,
+              amount: 165000,
+              glAccountId: undefined,
+              categoryId: undefined,
+            },
           ],
         },
         mockTenantContext
@@ -178,7 +196,17 @@ describe('BillService', () => {
           total: 50000,
           status: 'DRAFT',
           notes: null,
-          lines: [],
+          lines: [
+            {
+              description: 'Product',
+              quantity: 1,
+              unitPrice: 50000,
+              taxAmount: 0,
+              amount: 50000,
+              glAccountId: undefined,
+              categoryId: undefined,
+            },
+          ],
         },
         mockTenantContext
       );
@@ -198,8 +226,24 @@ describe('BillService', () => {
       vi.mocked(prisma.bill.create).mockResolvedValueOnce(mockBill() as never);
 
       const lines = [
-        { description: 'Item 1', quantity: 2, unitPrice: 25000, amount: 50000 },
-        { description: 'Item 2', quantity: 1, unitPrice: 10000, amount: 10000 },
+        {
+          description: 'Item 1',
+          quantity: 2,
+          unitPrice: 25000,
+          taxAmount: 5000,
+          amount: 55000,
+          glAccountId: undefined,
+          categoryId: undefined,
+        },
+        {
+          description: 'Item 2',
+          quantity: 1,
+          unitPrice: 10000,
+          taxAmount: 1000,
+          amount: 11000,
+          glAccountId: undefined,
+          categoryId: undefined,
+        },
       ];
 
       await billService.createBill(
