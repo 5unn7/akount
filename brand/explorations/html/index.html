@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akount — Financial Command Center</title>
+    <meta name="description" content="Akount financial dashboard — overview, banking, invoices, AI insights, and more.">
+    <link rel="stylesheet" href="styles/design-system.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/pages.css">
+</head>
+
+<body>
+
+    <div class="shell">
+        <!-- ═══ SIDEBAR ═══ -->
+        <nav class="sidebar">
+            <div class="s-logo">A</div>
+            <div class="s-group">
+                <!-- OVERVIEW -->
+                <div class="s-nav open">
+                    <button class="s-btn on" data-d="overview"><svg width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                        </svg><span class="s-btn-label">Overview</span><svg class="s-chevron" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">Overview</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn on" data-d="overview"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1" />
+                            </svg><span class="s-tip">Dashboard</span></button>
+                        <button class="s-sub-btn" data-d="net-worth"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z" />
+                                <path
+                                    d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" />
+                            </svg><span class="s-tip">Net Worth</span></button>
+                        <button class="s-sub-btn" data-d="cash-flow"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                <circle cx="14" cy="14" r="2" />
+                            </svg><span class="s-tip">Cash Flow</span></button>
+                    </div>
+                </div>
+                <div class="s-div"></div>
+                <!-- BANKING -->
+                <div class="s-nav">
+                    <button class="s-btn" data-d="banking"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path d="M8 3L4 7l4 4" />
+                            <path d="M4 7h16" />
+                            <path d="M16 21l4-4-4-4" />
+                            <path d="M20 17H4" />
+                        </svg><span class="s-btn-label">Banking</span><span class="s-badge">3</span><svg
+                            class="s-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">Banking</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn" data-d="banking"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="8" width="18" height="12" rx="2" />
+                                <path d="M7 8V6a5 5 0 0110 0v2" />
+                            </svg><span class="s-tip">Accounts</span></button>
+                        <button class="s-sub-btn" data-d="transactions"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                <path d="M9 14l2 2 4-4" />
+                            </svg><span class="s-tip">Transactions</span></button>
+                        <button class="s-sub-btn" data-d="reconciliation"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M9 12l2 2 4-4" />
+                                <circle cx="12" cy="12" r="10" />
+                            </svg><span class="s-tip">Reconciliation</span></button>
+                        <button class="s-sub-btn" data-d="imports"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg><span class="s-tip">Imports</span></button>
+                        <button class="s-sub-btn" data-d="transfers"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M8 7l4-4 4 4M12 3v14M16 17l-4 4-4-4" />
+                            </svg><span class="s-tip">Transfers</span></button>
+                    </div>
+                </div>
+                <div class="s-div"></div>
+                <!-- BUSINESS -->
+                <div class="s-nav">
+                    <button class="s-btn" data-d="business"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="7" width="20" height="14" rx="2" />
+                            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+                        </svg><span class="s-btn-label">Business</span><span class="s-badge">1</span><svg
+                            class="s-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">Business</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn" data-d="clients"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                                <path d="M16 3.13a4 4 0 010 7.75" />
+                            </svg><span class="s-tip">Clients</span></button>
+                        <button class="s-sub-btn" data-d="vendors"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path d="M9 22V12h6v10" />
+                            </svg><span class="s-tip">Vendors</span></button>
+                        <button class="s-sub-btn" data-d="invoicing"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                <path d="M14 2v6h6" />
+                                <path d="M8 13h8M8 17h8M8 9h2" />
+                            </svg><span class="s-tip">Invoices</span></button>
+                        <button class="s-sub-btn" data-d="bills"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+                                <rect x="8" y="2" width="8" height="4" rx="1" />
+                                <path d="M9 14h6M9 18h6" />
+                            </svg><span class="s-tip">Bills</span></button>
+                        <button class="s-sub-btn" data-d="payments"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" />
+                                <path d="M1 10h22" />
+                            </svg><span class="s-tip">Payments</span></button>
+                    </div>
+                </div>
+                <div class="s-div"></div>
+                <!-- ACCOUNTING -->
+                <div class="s-nav">
+                    <button class="s-btn" data-d="accounting"><svg width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M4 7V4h16v3M9 20h6M12 4v16" />
+                        </svg><span class="s-btn-label">Accounting</span><svg class="s-chevron" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">Accounting</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn" data-d="journal-entries"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+                            </svg><span class="s-tip">Journal Entries</span></button>
+                        <button class="s-sub-btn" data-d="accounting"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M3 3h18v18H3V3zm0 6h18M3 15h18M9 3v18" />
+                            </svg><span class="s-tip">Chart of Accounts</span></button>
+                        <button class="s-sub-btn" data-d="assets"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="7" width="20" height="14" rx="2" />
+                                <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2M12 11v6M9 14h6" />
+                            </svg><span class="s-tip">Assets</span></button>
+                        <button class="s-sub-btn" data-d="tax-rates"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                            </svg><span class="s-tip">Tax Rates</span></button>
+                        <button class="s-sub-btn" data-d="fiscal-periods"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <path d="M16 2v4M8 2v4M3 10h18" />
+                            </svg><span class="s-tip">Fiscal Periods</span></button>
+                    </div>
+                </div>
+                <div class="s-div"></div>
+                <!-- PLANNING -->
+                <div class="s-nav">
+                    <button class="s-btn" data-d="planning"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 3v18h18" />
+                            <path d="M18 17V9" />
+                            <path d="M13 17V5" />
+                            <path d="M8 17v-3" />
+                        </svg><span class="s-btn-label">Planning</span><svg class="s-chevron" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">Planning</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn" data-d="reports"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg><span class="s-tip">Reports</span></button>
+                        <button class="s-sub-btn" data-d="budgets"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg><span class="s-tip">Budgets</span></button>
+                        <button class="s-sub-btn" data-d="goals"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                            </svg><span class="s-tip">Goals</span></button>
+                        <button class="s-sub-btn" data-d="forecasts"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M23 6l-9.5 9.5-5-5L1 18" />
+                                <path d="M17 6h6v6" />
+                            </svg><span class="s-tip">Forecasts</span></button>
+                    </div>
+                </div>
+                <div class="s-div"></div>
+                <!-- AI ADVISOR -->
+                <div class="s-nav">
+                    <button class="s-btn" data-d="ai"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path
+                                d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z" />
+                            <path d="M9 21h6" />
+                        </svg><span class="s-btn-label">AI Advisor</span><span class="s-ai"></span><svg
+                            class="s-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">AI Advisor</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn" data-d="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                            </svg><span class="s-tip">Insights</span></button>
+                        <button class="s-sub-btn" data-d="policy-alerts"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                <path d="M12 9v4M12 17h.01" />
+                            </svg><span class="s-tip">Policy Alerts</span></button>
+                        <button class="s-sub-btn" data-d="ai-history"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg><span class="s-tip">History</span></button>
+                    </div>
+                </div>
+                <div class="s-div"></div>
+                <!-- SERVICES -->
+                <div class="s-nav">
+                    <button class="s-btn" data-d="services"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 00-3-3.87" />
+                            <path d="M16 3.13a4 4 0 010 7.75" />
+                        </svg><span class="s-btn-label">Services</span><svg class="s-chevron" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">Services</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn" data-d="services"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg><span class="s-tip">Accountant</span></button>
+                        <button class="s-sub-btn" data-d="collaboration"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                            </svg><span class="s-tip">Bookkeeping</span></button>
+                        <button class="s-sub-btn" data-d="documents"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z" />
+                                <path d="M13 2v7h7" />
+                            </svg><span class="s-tip">Documents</span></button>
+                    </div>
+                </div>
+                <div class="s-div"></div>
+                <!-- SYSTEM -->
+                <div class="s-nav">
+                    <button class="s-btn" data-d="system"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.26.46.4.99.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                        </svg><span class="s-btn-label">System</span><svg class="s-chevron" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg><span class="s-tip">System</span></button>
+                    <div class="s-sub">
+                        <button class="s-sub-btn" data-d="system"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                <path d="M9 22V12h6v10" />
+                            </svg><span class="s-tip">Entities</span></button>
+                        <button class="s-sub-btn" data-d="integrations"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+                                <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+                            </svg><span class="s-tip">Integrations</span></button>
+                        <button class="s-sub-btn" data-d="rules"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 20V10" />
+                                <path d="M18 20v-4" />
+                                <path d="M6 20v-6" />
+                                <path d="M12 4v2" />
+                                <path d="M18 10v2" />
+                                <path d="M6 8v2" />
+                                <circle cx="12" cy="8" r="2" />
+                                <circle cx="18" cy="14" r="2" />
+                                <circle cx="6" cy="12" r="2" />
+                            </svg><span class="s-tip">Rules</span></button>
+                        <button class="s-sub-btn" data-d="users"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                                <path d="M16 3.13a4 4 0 010 7.75" />
+                            </svg><span class="s-tip">Users</span></button>
+                        <button class="s-sub-btn" data-d="audit-log"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                <path d="M14 2v6h6" />
+                                <path d="M16 13H8M16 17H8" />
+                            </svg><span class="s-tip">Audit Log</span></button>
+                        <button class="s-sub-btn" data-d="security"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0110 0v4" />
+                            </svg><span class="s-tip">Security</span></button>
+                        <button class="s-sub-btn" data-d="settings"><svg viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3" />
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.26.46.4.99.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                            </svg><span class="s-tip">Settings</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="s-bottom">
+                <div class="s-profile">
+                    <div class="s-avatar">S</div>
+                    <div class="s-profile-info">
+                        <span class="s-profile-name">Sunny Marakana</span>
+                        <span class="s-profile-plan">Pro Plan</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ═══ TOP BAR ═══ -->
+        <header class="topbar">
+            <div class="entity-sel" id="entitySel" onclick="this.classList.toggle('open')">
+                <div class="entity-dot"></div>
+                <span class="entity-name" id="entityName">All Entities</span>
+                <span class="entity-type">Global View</span>
+                <span class="entity-chevron">&#9662;</span>
+                <div class="entity-dd" onclick="event.stopPropagation()">
+                    <div class="entity-dd-hdr">Your Entities</div>
+                    <div class="entity-dd-item active" onclick="selectEntity('All Entities','Global View',this)">
+                        <div class="entity-dd-dot" style="background:var(--t1)"></div>
+                        <div class="entity-dd-info">
+                            <div class="entity-dd-name">All Entities</div>
+                            <div class="entity-dd-meta">Consolidated View &middot; 5 Entities</div>
+                        </div>
+                        <span class="entity-dd-check">&#10003;</span>
+                    </div>
+                    <div class="entity-dd-item" onclick="selectEntity('Marakana Corp','Consulting',this)">
+                        <div class="entity-dd-dot" style="background:var(--pri)"></div>
+                        <div class="entity-dd-info">
+                            <div class="entity-dd-name">Marakana Corp</div>
+                            <div class="entity-dd-meta">Consulting &middot; CAD &middot; 3 accounts</div>
+                        </div>
+                        <span class="entity-dd-check" style="opacity:0">&#10003;</span>
+                    </div>
+                    <div class="entity-dd-item" onclick="selectEntity('MK Digital','SaaS',this)">
+                        <div class="entity-dd-dot" style="background:var(--blue)"></div>
+                        <div class="entity-dd-info">
+                            <div class="entity-dd-name">MK Digital</div>
+                            <div class="entity-dd-meta">SaaS &middot; USD &middot; 2 accounts</div>
+                        </div>
+                        <span class="entity-dd-check" style="opacity:0">&#10003;</span>
+                    </div>
+                    <div class="entity-dd-item" onclick="selectEntity('Marakana EU','Services',this)">
+                        <div class="entity-dd-dot" style="background:var(--purple)"></div>
+                        <div class="entity-dd-info">
+                            <div class="entity-dd-name">Marakana EU</div>
+                            <div class="entity-dd-meta">Services &middot; EUR &middot; 1 account</div>
+                        </div>
+                        <span class="entity-dd-check" style="opacity:0">&#10003;</span>
+                    </div>
+                    <div class="entity-dd-item" onclick="selectEntity('Marakana India','Outsourcing',this)">
+                        <div class="entity-dd-dot" style="background:#f59e0b"></div>
+                        <div class="entity-dd-info">
+                            <div class="entity-dd-name">Marakana India</div>
+                            <div class="entity-dd-meta">Outsourcing &middot; INR &middot; 1 account</div>
+                        </div>
+                        <span class="entity-dd-check" style="opacity:0">&#10003;</span>
+                    </div>
+                    <div class="entity-dd-item" onclick="selectEntity('Personal','Sunny Marakana',this)">
+                        <div class="entity-dd-dot" style="background:#8b5cf6"></div>
+                        <div class="entity-dd-info">
+                            <div class="entity-dd-name">Personal</div>
+                            <div class="entity-dd-meta">Sunny Marakana &middot; Private</div>
+                        </div>
+                        <span class="entity-dd-check" style="opacity:0">&#10003;</span>
+                    </div>
+                    <div style="border-top:1px solid var(--border);margin-top:4px;padding-top:4px">
+                        <div class="entity-dd-item" onclick="showToast('Entity creation coming soon')">
+                            <div class="entity-dd-dot" style="background:var(--t4)"></div>
+                            <div class="entity-dd-info">
+                                <div class="entity-dd-name" style="color:var(--t3)">+ Add Entity</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="breadcrumb" id="breadcrumb">
+                <span class="bc-sep">/</span>
+                <span class="bc-active" id="bcPage">Overview</span>
+            </div>
+            <div class="tb-search">
+                <span class="tb-search-icon">&#128269;</span>
+                <input class="tb-search-input" id="tbSearch" type="text"
+                    placeholder="Search invoices, clients, transactions..." onclick="openCmd()" readonly>
+                <span class="tb-search-kbd">/</span>
+            </div>
+            <div class="tb-right">
+                <div class="font-ctl" title="Font size">
+                    <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+                    <button class="font-btn active" onclick="changeFontSize(0)">A</button>
+                    <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+                </div>
+                <div class="tb-divider"></div>
+                <div class="view-ctl" title="View mode">
+                    <button class="view-btn active" data-view="existing"
+                        onclick="switchViewMode('existing',this)">&#128100; Existing</button>
+                    <button class="view-btn" data-view="new" onclick="switchViewMode('new',this)">&#10024; New
+                        User</button>
+                </div>
+                <div class="tb-divider"></div>
+                <div class="theme-tog" id="themeTog" onclick="toggleTheme()" title="Toggle theme">
+                    <span class="t-icon">&#9790;</span>
+                    <div class="t-track">
+                        <div class="t-thumb"></div>
+                    </div>
+                    <span class="t-icon">&#9728;</span>
+                </div>
+                <div class="tb-divider"></div>
+                <button class="tb-btn" onclick="showToast('Syncing all accounts...')"><svg width="15" height="15"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M23 4v6h-6M1 20v-6h6" />
+                        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
+                    </svg></button>
+                <button class="tb-btn" onclick="showToast('Help center opening...')"><svg width="14" height="14"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
+                    </svg></button>
+                <div class="tb-divider"></div>
+                <button class="tb-btn" onclick="showToast('No new notifications')"><svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+                    </svg><span class="notif-dot"></span></button>
+            </div>
+        </header>
+
+        <!-- ═══ MAIN CONTENT (Router Mount Point) ═══ -->
+        <div class="main" id="app">
+            <!-- Pages are loaded here by router.js -->
+        </div>
+    </div><!-- /shell -->
+
+    <!-- DETAIL PANEL -->
+    <div class="d-overlay" id="dOv"></div>
+    <div class="d-panel" id="dPan"><button class="d-close" id="dClose">&times;</button>
+        <div id="dCon"></div>
+    </div>
+
+    <!-- COMMAND PALETTE -->
+    <div class="cmd-overlay" id="cOv">
+        <div class="cmd-box">
+            <input class="cmd-input" id="cIn" type="text" placeholder="Search, run actions, or ask AI anything...">
+            <div class="cmd-cats">
+                <button class="cmd-cat on" data-cat="all" onclick="filterCmdCat('all',this)">All</button>
+                <button class="cmd-cat" data-cat="search" onclick="filterCmdCat('search',this)">Search</button>
+                <button class="cmd-cat" data-cat="action" onclick="filterCmdCat('action',this)">Actions</button>
+                <button class="cmd-cat" data-cat="nav" onclick="filterCmdCat('nav',this)">Navigate</button>
+                <button class="cmd-cat" data-cat="ai" onclick="filterCmdCat('ai',this)">Ask AI</button>
+            </div>
+            <div class="cmd-results" id="cRes"></div>
+            <div class="cmd-ai-resp" id="cmdAiResp"></div>
+            <div class="cmd-ai-row">
+                <div class="cmd-ai-dot"></div><span class="cmd-ai-hint">Type a question to ask your AI advisor...</span>
+            </div>
+            <div class="cmd-foot"><span><kbd>&#8593;</kbd><kbd>&#8595;</kbd> Navigate</span><span><kbd>&#9166;</kbd>
+                    Open</span><span><kbd>Tab</kbd> Category</span><span><kbd>esc</kbd> Close</span></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"><span class="t-ico">&#10003;</span><span id="tMsg"></span></div>
+
+    <!-- KB BAR -->
+    <div class="kb"><span><kbd>j</kbd><kbd>k</kbd> Nav</span><span><kbd>&#9166;</kbd> Open</span><span><kbd>/</kbd>
+            Search</span><span><kbd>1</kbd>-<kbd>8</kbd> Domain</span><span><kbd>Esc</kbd> Back</span></div>
+
+    <!-- JS Modules -->
+    <script src="js/router.js"></script>
+    <script src="js/details.js"></script>
+    <script src="js/commands.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

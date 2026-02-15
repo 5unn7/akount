@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akount — Expense Category Charts Exploration</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --pri:#F59E0B;--pri-hover:#FBBF24;--pri-dim:rgba(245,158,11,.14);--pri-glow:rgba(245,158,11,.08);
+  --pri-text:#F59E0B;--pri-active:rgba(245,158,11,.18);
+  --green:#34D399;--green-dim:rgba(52,211,153,.12);
+  --red:#F87171;--red-dim:rgba(248,113,113,.12);
+  --blue:#60A5FA;--blue-dim:rgba(96,165,250,.12);
+  --purple:#A78BFA;--purple-dim:rgba(167,139,250,.12);
+  --teal:#2DD4BF;--teal-dim:rgba(45,212,191,.12);
+  --cyan:#22D3EE;
+  --pink:#F472B6;--pink-dim:rgba(244,114,182,.12);
+  --lime:#A3E635;--lime-dim:rgba(163,230,53,.12);
+  --bg-0:#09090F;--bg-1:#0F0F17;--bg-2:#15151F;--bg-3:#1A1A26;--bg-4:#22222E;
+  --glass:rgba(255,255,255,.025);--glass-2:rgba(255,255,255,.04);--glass-3:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.06);--border-2:rgba(255,255,255,.09);--border-3:rgba(255,255,255,.13);
+  --t1:#F0F0F5;--t2:#9494A8;--t3:#5C5C72;--t4:#3A3A4E;
+  --r:14px;--r-sm:8px;--r-xs:5px;
+  --ease:cubic-bezier(.16,1,.3,1);--ease2:cubic-bezier(.4,0,.2,1);
+}
+
+html{font-size:15px;-webkit-font-smoothing:antialiased}
+body{background:var(--bg-0);color:var(--t1);font-family:'Manrope',system-ui,sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+.page{max-width:960px;margin:0 auto;padding:40px 32px 80px;position:relative;z-index:1}
+
+/* Header */
+.page-title{font-family:'Newsreader',serif;font-size:1.6rem;font-weight:400;color:var(--t1);margin-bottom:4px}
+.page-sub{font-size:12px;color:var(--t3);margin-bottom:28px}
+
+/* Chart Type Selector */
+.chart-selector{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.chart-btn{padding:8px 16px;border-radius:var(--r-sm);border:1px solid var(--border);background:transparent;color:var(--t3);font-size:11px;font-family:'Manrope',sans-serif;font-weight:500;cursor:pointer;transition:all .2s var(--ease2);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.chart-btn:hover{background:var(--glass-2);color:var(--t2);border-color:var(--border-2)}
+.chart-btn.on{background:var(--pri-dim);border-color:rgba(245,158,11,.22);color:var(--pri)}
+.chart-btn .cb-dot{width:6px;height:6px;border-radius:50%;background:var(--t4);transition:background .2s}
+.chart-btn.on .cb-dot{background:var(--pri);box-shadow:0 0 6px var(--pri-glow)}
+
+/* Time Tabs */
+.time-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.time-tabs{display:flex;gap:2px;background:var(--glass);border-radius:var(--r-sm);padding:2px}
+.time-tab{padding:5px 14px;border-radius:var(--r-xs);border:none;background:transparent;color:var(--t3);font-size:11px;font-family:'Manrope',sans-serif;font-weight:500;cursor:pointer;transition:all .15s}
+.time-tab:hover{color:var(--t2)}
+.time-tab.on{background:var(--bg-3);color:var(--t1)}
+.time-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3)}
+
+/* Chart Container */
+.chart-container{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:24px;min-height:320px;position:relative;overflow:hidden;transition:border-color .3s}
+.chart-container:hover{border-color:var(--border-2)}
+
+/* Chart Area */
+.chart-area{position:relative;width:100%;display:none;opacity:0;transform:translateY(8px);transition:opacity .4s var(--ease),transform .4s var(--ease)}
+.chart-area.on{display:block;opacity:1;transform:none}
+
+/* Tooltip */
+.tip{position:fixed;background:var(--bg-3);border:1px solid var(--border-2);padding:10px 14px;border-radius:var(--r-sm);font-size:11px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:100;box-shadow:0 8px 28px rgba(0,0,0,.6);backdrop-filter:blur(12px);max-width:240px}
+.tip.show{opacity:1}
+.tip-cat{font-weight:600;color:var(--t1);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.tip-cat .dot{width:8px;height:8px;border-radius:50%}
+.tip-amt{font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--t1);margin-bottom:2px}
+.tip-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3)}
+.tip-trend{font-size:10px;margin-top:4px;font-family:'JetBrains Mono',monospace}
+.tip-trend.up{color:var(--green)}.tip-trend.dn{color:var(--red)}
+.tip-spark{margin-top:6px;height:20px}
+.tip-spark svg{width:100%;height:20px}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--t3);cursor:pointer;transition:color .15s}
+.legend-item:hover{color:var(--t2)}
+.legend-item .l-dot{width:8px;height:8px;border-radius:3px;flex-shrink:0}
+.legend-item .l-amt{font-family:'JetBrains Mono',monospace;color:var(--t2)}
+
+/* ═══ NEBULA RING ═══ */
+.nebula-wrap{display:flex;align-items:center;justify-content:center;min-height:360px;position:relative}
+.nebula-canvas{cursor:crosshair}
+.nebula-center{position:absolute;text-align:center;pointer-events:none}
+.nebula-total{font-family:'JetBrains Mono',monospace;font-size:1.8rem;color:var(--t1);letter-spacing:-.02em}
+.nebula-label{font-family:'Newsreader',serif;font-style:italic;font-size:.85rem;color:var(--t3);margin-top:2px}
+.nebula-pulse{width:6px;height:6px;border-radius:50%;background:var(--pri);margin:8px auto 0;box-shadow:0 0 8px var(--pri-glow);animation:npulse 3s ease-in-out infinite}
+@keyframes npulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.3);box-shadow:0 0 14px var(--pri-glow)}}
+
+/* ═══ SEDIMENT LAYERS ═══ */
+.sediment-wrap{min-height:300px;display:flex;flex-direction:column;gap:16px}
+.sediment-months{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sediment-col{display:flex;flex-direction:column}
+.sediment-col-head{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);text-align:center;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.sediment-stack{display:flex;flex-direction:column-reverse;gap:2px;min-height:280px;justify-content:flex-start}
+.sediment-bar{border-radius:4px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;font-size:10px;cursor:pointer;transition:all .25s var(--ease2);overflow:hidden;position:relative}
+.sediment-bar:hover{transform:scaleX(1.02);z-index:2}
+.sediment-bar .s-name{color:var(--t1);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sediment-bar .s-amt{font-family:'JetBrains Mono',monospace;color:var(--t1);white-space:nowrap;flex-shrink:0;margin-left:8px}
+.sediment-baseline{height:2px;background:linear-gradient(90deg,transparent,var(--pri),transparent);opacity:.3;border-radius:1px}
+
+/* ═══ CONSTELLATION MAP ═══ */
+.constellation-wrap{min-height:360px;position:relative}
+.constellation-canvas{width:100%;cursor:crosshair}
+
+/* ═══ WATERFALL STREAM ═══ */
+.waterfall-wrap{min-height:360px;position:relative}
+.waterfall-canvas{width:100%;cursor:crosshair}
+
+/* ═══ ORBITAL RINGS ═══ */
+.orbital-wrap{display:flex;align-items:center;justify-content:center;min-height:360px;position:relative}
+.orbital-canvas{cursor:crosshair}
+.orbital-legend{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:20px}
+.orbital-leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t3)}
+.orbital-leg-ring{width:12px;height:12px;border-radius:50%;border:2px solid}
+
+/* ═══ SEDIMENT LAYERS (daily overrides) ═══ */
+.sediment-months.daily{grid-template-columns:100px 1fr;gap:0}
+.sediment-months.daily .sediment-col{gap:0}
+.sediment-daily-scroll{display:flex;gap:2px;overflow:hidden}
+.sediment-daily-col{display:flex;flex-direction:column-reverse;gap:1px;min-width:0;flex:1}
+.sediment-daily-col .sediment-bar{border-left-width:0;border-radius:2px;padding:0;min-height:0}
+.sediment-daily-head{font-family:'JetBrains Mono',monospace;font-size:7px;color:var(--t4);text-align:center;margin-bottom:3px;height:14px;display:flex;align-items:flex-end;justify-content:center}
+.sediment-row-labels{display:flex;flex-direction:column-reverse;gap:1px;justify-content:flex-start;padding-right:6px}
+.sediment-row-label{display:flex;align-items:center;gap:4px;font-size:8px;color:var(--t3);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+.sediment-row-label .s-dot{width:4px;height:4px;border-radius:1px;flex-shrink:0}
+
+/* ═══ HEAT MATRIX ═══ */
+.heat-wrap{overflow:hidden}
+.heat-grid{display:grid;gap:2px;align-items:center}
+.heat-header{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t4);text-align:center;padding:0;text-transform:uppercase;letter-spacing:.03em;line-height:1;overflow:hidden}
+.heat-header.day-header{font-size:7px}
+.heat-row-label{font-size:9px;color:var(--t2);font-weight:500;display:flex;align-items:center;padding-right:4px;white-space:nowrap;text-transform:uppercase;letter-spacing:.03em;height:100%}
+.heat-row-label .l-dot{width:5px;height:5px;border-radius:2px;margin-right:4px;flex-shrink:0}
+.heat-cell{border-radius:2px;cursor:pointer;transition:all .15s var(--ease2);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.heat-cell:hover{z-index:2;box-shadow:0 0 8px rgba(0,0,0,.5)}
+.heat-cell .h-pip{border-radius:1.5px;transition:all .15s var(--ease2)}
+.heat-cell:hover .h-pip{border-radius:2px}
+
+/* Description below chart */
+.chart-desc{margin-top:20px;padding:14px 16px;background:linear-gradient(135deg,rgba(245,158,11,.03),rgba(167,139,250,.03));border:1px solid rgba(245,158,11,.08);border-radius:var(--r-sm)}
+.chart-desc-head{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.chart-desc-dot{width:5px;height:5px;border-radius:50%;background:var(--pri);box-shadow:0 0 4px var(--pri)}
+.chart-desc-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--pri);opacity:.8}
+.chart-desc p{font-family:'Newsreader',serif;font-size:.85rem;line-height:1.65;color:var(--t2);font-style:italic}
+.chart-desc p strong{color:var(--t1);font-weight:400}
+
+/* Animations */
+.fi{opacity:0;transform:translateY(10px);animation:fi .5s var(--ease) forwards}
+.fi1{animation-delay:.05s}.fi2{animation-delay:.1s}.fi3{animation-delay:.15s}.fi4{animation-delay:.2s}
+@keyframes fi{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="fi fi1">
+    <h1 class="page-title">Expense Categories</h1>
+    <p class="page-sub">Explore six visualization styles — pick the one that speaks to you</p>
+  </div>
+
+  <div class="chart-selector fi fi2">
+    <button class="chart-btn on" data-chart="nebula"><span class="cb-dot"></span>Nebula Ring</button>
+    <button class="chart-btn" data-chart="sediment"><span class="cb-dot"></span>Sediment Layers</button>
+    <button class="chart-btn" data-chart="constellation"><span class="cb-dot"></span>Constellation</button>
+    <button class="chart-btn" data-chart="waterfall"><span class="cb-dot"></span>Waterfall Stream</button>
+    <button class="chart-btn" data-chart="orbital"><span class="cb-dot"></span>Orbital Rings</button>
+    <button class="chart-btn" data-chart="heat"><span class="cb-dot"></span>Heat Matrix</button>
+  </div>
+
+  <div class="time-row fi fi3">
+    <div class="time-tabs">
+      <button class="time-tab" data-t="day">Day</button>
+      <button class="time-tab on" data-t="month">Month</button>
+      <button class="time-tab" data-t="quarter">Quarter</button>
+      <button class="time-tab" data-t="year">Year</button>
+    </div>
+    <span class="time-label" id="timeLabel">February 2026</span>
+  </div>
+
+  <div class="chart-container fi fi4">
+    <!-- Nebula Ring -->
+    <div class="chart-area on" id="chart-nebula">
+      <div class="nebula-wrap">
+        <canvas id="nebulaCanvas" class="nebula-canvas" width="400" height="400"></canvas>
+        <div class="nebula-center">
+          <div class="nebula-total" id="nebulaTotal">$8,420</div>
+          <div class="nebula-label" id="nebulaLabel">February expenses</div>
+          <div class="nebula-pulse"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sediment Layers -->
+    <div class="chart-area" id="chart-sediment">
+      <div class="sediment-wrap" id="sedimentWrap"></div>
+    </div>
+
+    <!-- Constellation -->
+    <div class="chart-area" id="chart-constellation">
+      <div class="constellation-wrap">
+        <canvas id="constellationCanvas" class="constellation-canvas" width="900" height="400"></canvas>
+      </div>
+    </div>
+
+    <!-- Waterfall Stream -->
+    <div class="chart-area" id="chart-waterfall">
+      <div class="waterfall-wrap">
+        <canvas id="waterfallCanvas" class="waterfall-canvas" width="900" height="400"></canvas>
+      </div>
+    </div>
+
+    <!-- Orbital Rings -->
+    <div class="chart-area" id="chart-orbital">
+      <div class="orbital-wrap">
+        <canvas id="orbitalCanvas" class="orbital-canvas" width="420" height="420"></canvas>
+        <div class="orbital-legend">
+          <div class="orbital-leg-item"><div class="orbital-leg-ring" style="border-color:var(--t1);opacity:.9"></div>This month</div>
+          <div class="orbital-leg-item"><div class="orbital-leg-ring" style="border-color:var(--t2);opacity:.5"></div>Last month</div>
+          <div class="orbital-leg-item"><div class="orbital-leg-ring" style="border-color:var(--t3);opacity:.3;border-style:dashed"></div>3-mo avg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Heat Matrix -->
+    <div class="chart-area" id="chart-heat">
+      <div class="heat-wrap" id="heatWrap"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <!-- Description -->
+  <div class="chart-desc fi fi4" id="chartDesc">
+    <div class="chart-desc-head"><div class="chart-desc-dot"></div><span class="chart-desc-label">About this chart</span></div>
+    <p id="chartDescText"></p>
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div class="tip" id="tip"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+const CATEGORIES = [
+  { name: 'Rent & Office',       color: '#F59E0B', dim: 'rgba(245,158,11,.14)' },
+  { name: 'Professional Svc',    color: '#A78BFA', dim: 'rgba(167,139,250,.14)' },
+  { name: 'Travel',              color: '#60A5FA', dim: 'rgba(96,165,250,.14)' },
+  { name: 'Marketing',           color: '#F472B6', dim: 'rgba(244,114,182,.14)' },
+  { name: 'Cloud & Hosting',     color: '#2DD4BF', dim: 'rgba(45,212,191,.14)' },
+  { name: 'Insurance',           color: '#34D399', dim: 'rgba(52,211,153,.14)' },
+  { name: 'SaaS & Tools',        color: '#22D3EE', dim: 'rgba(34,211,238,.14)' },
+  { name: 'Meals & Entertain.',  color: '#F87171', dim: 'rgba(248,113,113,.14)' },
+  { name: 'Office Supplies',     color: '#A3E635', dim: 'rgba(163,230,53,.14)' },
+  { name: 'Miscellaneous',       color: '#9494A8', dim: 'rgba(148,148,168,.14)' },
+];
+
+// Monthly data for 12 months (cents concept but we show dollars for display)
+const MONTHLY = [
+  // Rent, Prof, Travel, Marketing, Cloud, Insurance, SaaS, Meals, Supplies, Misc
+  [1800, 1600, 980, 520, 620, 540, 310, 280, 180, 90],   // Mar 2025
+  [1800, 1400, 1120, 480, 640, 540, 320, 310, 160, 110],  // Apr
+  [1800, 2200, 860, 680, 580, 540, 330, 240, 200, 80],    // May
+  [1800, 1800, 1400, 720, 700, 540, 340, 360, 140, 120],  // Jun
+  [1800, 1500, 520, 450, 660, 540, 340, 200, 220, 100],   // Jul
+  [1800, 2400, 780, 580, 620, 540, 330, 280, 180, 90],    // Aug
+  [1800, 1900, 1600, 640, 680, 540, 340, 340, 190, 130],  // Sep
+  [1800, 2100, 920, 700, 720, 540, 350, 300, 210, 110],   // Oct
+  [1800, 1700, 1340, 580, 640, 540, 330, 260, 170, 80],   // Nov
+  [1800, 2000, 480, 620, 680, 540, 340, 320, 230, 140],   // Dec
+  [1800, 1800, 1080, 740, 660, 540, 330, 340, 200, 100],  // Jan 2026
+  [1800, 2100, 1420, 780, 680, 540, 340, 360, 250, 150],  // Feb 2026
+];
+const MONTH_NAMES = ['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'];
+
+function getMonthData(idx) { return MONTHLY[idx] || MONTHLY[11]; }
+function getTotal(data) { return data.reduce((a,b) => a + b, 0); }
+function fmt(v) { return '$' + v.toLocaleString(); }
+function pct(v, total) { return ((v / total) * 100).toFixed(1) + '%'; }
+
+// ── DAILY DATA (Feb 2026 = 28 days) ──
+// Generate realistic daily breakdown: rent on 1st, insurance on 1st,
+// SaaS charges scattered, travel clustered, meals on weekdays, etc.
+const DAILY = (function() {
+  const days = [];
+  const feb = getMonthData(11); // monthly totals
+  for (let d = 0; d < 28; d++) days.push(new Array(10).fill(0));
+
+  // Rent: 1st of month
+  days[0][0] = 1800;
+  // Insurance: 1st of month
+  days[0][5] = 540;
+  // SaaS: charges on 1st, 8th, 15th
+  days[0][6] += 120; days[7][6] += 110; days[14][6] += 110;
+
+  // Professional Svc: invoices on 5th, 12th, 20th, 25th
+  const profDays = [4, 11, 19, 24];
+  const profAmts = [600, 520, 480, 500];
+  profDays.forEach((d,i) => days[d][1] = profAmts[i]);
+
+  // Travel: trip cluster days 8-11, and day 22-23
+  [7,8,9,10].forEach(d => days[d][2] = Math.round(1420 * 0.18 + (Math.random()-.5)*40));
+  [21,22].forEach(d => days[d][2] = Math.round(1420 * 0.12 + (Math.random()-.5)*30));
+  // Normalize travel
+  const travelSum = days.reduce((s,d) => s + d[2], 0);
+  if (travelSum > 0) days.forEach(d => d[2] = Math.round(d[2] * 1420 / travelSum));
+
+  // Marketing: weekly — Mon (days 2, 9, 16, 23)
+  [2, 9, 16, 23].forEach(d => days[d][3] = Math.round(780 / 4));
+
+  // Cloud: daily small charges + bigger on 1st
+  days[0][4] += 200;
+  for (let d = 0; d < 28; d++) days[d][4] += Math.round((680 - 200) / 28);
+
+  // Meals: weekdays (Mon-Fri) with variance
+  const weekdays = [];
+  // Feb 2026 starts on Sunday (day 0 = Feb 1 = Sun)
+  for (let d = 0; d < 28; d++) { const dow = (d + 0) % 7; if (dow >= 1 && dow <= 5) weekdays.push(d); }
+  const mealPer = Math.round(360 / weekdays.length);
+  weekdays.forEach(d => days[d][7] = mealPer + Math.round((Math.random()-.5)*8));
+
+  // Office Supplies: 3 purchase days
+  days[3][8] = 90; days[13][8] = 85; days[20][8] = 75;
+
+  // Misc: scattered small amounts
+  [1, 6, 10, 15, 19, 25].forEach(d => days[d][9] = Math.round(150 / 6));
+
+  return days;
+})();
+const DAY_LABELS = Array.from({length:28}, (_,i) => i + 1);
+
+function getDailyData() { return DAILY; }
+
+// Current state
+let currentChart = 'nebula';
+let currentTime = 'month';
+let hoveredCat = -1;
+
+// ═══════════════════════════════════════════════════
+// CHART DESCRIPTIONS
+// ═══════════════════════════════════════════════════
+const DESCRIPTIONS = {
+  nebula: 'A <strong>concentric ring</strong> where each expense category glows as a segment. Hover to expand, center shows total. The breathing pulse signals live data. Best for <strong>quick proportional overview</strong> at a glance.',
+  sediment: '<strong>Geological layers</strong> stacked like a zen sand garden cross-section. Monthly view shows 3-month comparison; <strong>Daily view</strong> reveals 28 columns of per-day spend — instantly see spikes and patterns. Best for <strong>time-series comparison</strong> of category evolution.',
+  constellation: 'Categories float as <strong>glowing nodes</strong> in dark space, sized by spend. Faint connections suggest financial ecosystems. The largest node breathes. Best for <strong>identifying dominant categories</strong> and relative scale.',
+  waterfall: 'Expenses flow downward from a <strong>cash river</strong> into category pools below — visual metaphor for money leaving your accounts. Best for <strong>understanding cash outflow patterns</strong> with an organic feel.',
+  orbital: '<strong>Three concentric rings</strong> — this month (inner, bright), last month (middle, faded), and 3-month average (outer, dashed). Instantly see which categories grew or shrank. Best for <strong>trend comparison</strong> across time periods.',
+  heat: 'A dense <strong>bubble-matrix grid</strong> — rows are categories, columns are time periods. Each cell contains a <strong>pip whose size scales with amount</strong> (dual encoding: size + color = spend). Switch to <strong>Daily</strong> for 28-day granularity in a compact, no-scroll view. Best for <strong>pattern detection and anomaly spotting</strong>.',
+};
+
+// ═══════════════════════════════════════════════════
+// TOOLTIP
+// ═══════════════════════════════════════════════════
+const tip = document.getElementById('tip');
+
+function showTip(x, y, catIdx, amount, total, extra) {
+  const cat = CATEGORIES[catIdx];
+  const trend = amount > (MONTHLY[10]?.[catIdx] || amount) ? 'up' : (amount < (MONTHLY[10]?.[catIdx] || amount) ? 'dn' : 'up');
+  const prevAmt = MONTHLY[10]?.[catIdx] || amount;
+  const diff = amount - prevAmt;
+  const diffPct = prevAmt > 0 ? ((diff / prevAmt) * 100).toFixed(1) : '0.0';
+
+  // Mini sparkline data
+  const sparkData = MONTHLY.map(m => m[catIdx]);
+  const sparkMax = Math.max(...sparkData);
+  const sparkMin = Math.min(...sparkData);
+  const sparkH = 18;
+  const sparkW = 100;
+  const sparkPts = sparkData.map((v, i) => {
+    const sx = (i / (sparkData.length - 1)) * sparkW;
+    const sy = sparkH - ((v - sparkMin) / (sparkMax - sparkMin || 1)) * (sparkH - 2) - 1;
+    return `${sx},${sy}`;
+  }).join(' ');
+
+  tip.innerHTML = `
+    <div class="tip-cat"><div class="dot" style="background:${cat.color}"></div>${cat.name}</div>
+    <div class="tip-amt">${fmt(amount)}</div>
+    <div class="tip-pct">${pct(amount, total)} of total</div>
+    <div class="tip-trend ${trend}">${diff >= 0 ? '+' : ''}${fmt(Math.abs(diff))} (${diff >= 0 ? '+' : ''}${diffPct}%) vs last month</div>
+    ${extra || ''}
+    <div class="tip-spark"><svg viewBox="0 0 ${sparkW} ${sparkH}" preserveAspectRatio="none"><polyline points="${sparkPts}" fill="none" stroke="${cat.color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/></svg></div>
+  `;
+  tip.style.left = Math.min(x + 14, window.innerWidth - 260) + 'px';
+  tip.style.top = Math.max(y - 10, 10) + 'px';
+  tip.classList.add('show');
+}
+
+function hideTip() { tip.classList.remove('show'); }
+
+// ═══════════════════════════════════════════════════
+// LEGEND
+// ═══════════════════════════════════════════════════
+function renderLegend() {
+  const data = getMonthData(11);
+  const total = getTotal(data);
+  const el = document.getElementById('legend');
+  el.innerHTML = CATEGORIES.map((cat, i) => `
+    <div class="legend-item" data-cat="${i}">
+      <div class="l-dot" style="background:${cat.color}"></div>
+      <span>${cat.name}</span>
+      <span class="l-amt">${fmt(data[i])}</span>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// 1. NEBULA RING
+// ═══════════════════════════════════════════════════
+function drawNebula() {
+  const canvas = document.getElementById('nebulaCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const size = Math.min(400, canvas.parentElement.offsetWidth - 40);
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+  ctx.scale(dpr, dpr);
+
+  const cx = size / 2, cy = size / 2;
+  const outerR = size / 2 - 20;
+  const ringW = 28;
+  const innerR = outerR - ringW;
+  const data = getMonthData(11);
+  const total = getTotal(data);
+  const gap = 0.02; // radians gap between segments
+
+  ctx.clearRect(0, 0, size, size);
+
+  let angle = -Math.PI / 2;
+  data.forEach((val, i) => {
+    const sweep = (val / total) * (Math.PI * 2 - gap * data.length);
+    const cat = CATEGORIES[i];
+    const isHovered = hoveredCat === i;
+    const r = isHovered ? outerR + 5 : outerR;
+    const ir = isHovered ? innerR - 3 : innerR;
+
+    // Glow
+    if (isHovered) {
+      ctx.save();
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = cat.color;
+      ctx.beginPath();
+      ctx.arc(cx, cy, (r + ir) / 2, angle, angle + sweep);
+      ctx.lineWidth = ringW + 8;
+      ctx.strokeStyle = cat.color.replace(')', ',.08)').replace('rgb', 'rgba');
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Segment
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, angle, angle + sweep);
+    ctx.arc(cx, cy, ir, angle + sweep, angle, true);
+    ctx.closePath();
+
+    const grad = ctx.createLinearGradient(
+      cx + Math.cos(angle) * outerR,
+      cy + Math.sin(angle) * outerR,
+      cx + Math.cos(angle + sweep) * outerR,
+      cy + Math.sin(angle + sweep) * outerR
+    );
+    const alpha = isHovered ? 1 : 0.75;
+    grad.addColorStop(0, cat.color + (isHovered ? '' : 'cc'));
+    grad.addColorStop(1, cat.color + (isHovered ? '' : 'aa'));
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Store segment info for hit testing
+    if (!canvas._segments) canvas._segments = [];
+    canvas._segments[i] = { startAngle: angle, endAngle: angle + sweep };
+
+    angle += sweep + gap;
+  });
+
+  // Update center text if hovering
+  const totalEl = document.getElementById('nebulaTotal');
+  const labelEl = document.getElementById('nebulaLabel');
+  if (hoveredCat >= 0) {
+    totalEl.textContent = fmt(data[hoveredCat]);
+    labelEl.textContent = CATEGORIES[hoveredCat].name;
+    totalEl.style.color = CATEGORIES[hoveredCat].color;
+  } else {
+    totalEl.textContent = fmt(total);
+    labelEl.textContent = 'February expenses';
+    totalEl.style.color = '';
+  }
+}
+
+// Nebula hit test
+document.getElementById('nebulaCanvas').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const cx = rect.width / 2, cy = rect.height / 2;
+  const dx = x - cx, dy = y - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const outerR = rect.width / 2 - 20;
+  const innerR = outerR - 28;
+
+  if (dist >= innerR && dist <= outerR + 8) {
+    let angle = Math.atan2(dy, dx);
+    if (angle < -Math.PI / 2) angle += Math.PI * 2;
+    const segs = this._segments || [];
+    let found = -1;
+    for (let i = 0; i < segs.length; i++) {
+      let sa = segs[i].startAngle, ea = segs[i].endAngle;
+      // Normalize
+      let a = angle;
+      if (a < sa) a += Math.PI * 2;
+      if (a >= sa && a <= ea) { found = i; break; }
+    }
+    if (found !== hoveredCat) {
+      hoveredCat = found;
+      drawNebula();
+    }
+    if (found >= 0) {
+      const data = getMonthData(11);
+      showTip(e.clientX, e.clientY, found, data[found], getTotal(data));
+    }
+  } else {
+    if (hoveredCat !== -1) { hoveredCat = -1; drawNebula(); }
+    hideTip();
+  }
+});
+document.getElementById('nebulaCanvas').addEventListener('mouseleave', function() {
+  hoveredCat = -1; drawNebula(); hideTip();
+});
+
+// ═══════════════════════════════════════════════════
+// 2. SEDIMENT LAYERS
+// ═══════════════════════════════════════════════════
+function drawSediment() {
+  const wrap = document.getElementById('sedimentWrap');
+
+  if (currentTime === 'day') {
+    drawSedimentDaily(wrap);
+  } else {
+    drawSedimentMonthly(wrap);
+  }
+}
+
+function drawSedimentMonthly(wrap) {
+  const months = [9, 10, 11]; // Dec, Jan, Feb
+  const maxTotal = Math.max(...months.map(m => getTotal(getMonthData(m))));
+
+  wrap.innerHTML = `
+    <div class="sediment-months">
+      ${months.map(mi => {
+        const data = getMonthData(mi);
+        const total = getTotal(data);
+        return `
+          <div class="sediment-col">
+            <div class="sediment-col-head">${MONTH_NAMES[mi]} ${mi >= 10 ? '2026' : '2025'}<br>
+              <span style="font-size:12px;color:var(--t1);font-weight:500">${fmt(total)}</span>
+            </div>
+            <div class="sediment-stack">
+              ${data.map((val, ci) => {
+                const h = Math.max(4, (val / maxTotal) * 260);
+                const cat = CATEGORIES[ci];
+                return `<div class="sediment-bar" data-cat="${ci}" data-val="${val}" data-total="${total}" data-tlabel="${MONTH_NAMES[mi]}"
+                  style="height:${h}px;background:${cat.dim};border-left:3px solid ${cat.color}">
+                  ${h > 18 ? `<span class="s-name">${cat.name}</span><span class="s-amt">${fmt(val)}</span>` : ''}
+                </div>`;
+              }).join('')}
+            </div>
+            <div class="sediment-baseline"></div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+  attachSedimentHover(wrap);
+}
+
+function drawSedimentDaily(wrap) {
+  const daily = getDailyData();
+  // Find max day total for height scaling
+  let maxDayTotal = 0;
+  daily.forEach(d => { const t = getTotal(d); if (t > maxDayTotal) maxDayTotal = t; });
+
+  const stackH = 280;
+
+  wrap.innerHTML = `
+    <div style="display:flex;gap:0;align-items:flex-end">
+      <div class="sediment-row-labels" style="min-height:${stackH}px;flex-shrink:0;width:86px;padding-top:18px">
+        ${CATEGORIES.map((cat, ci) => `
+          <div class="sediment-row-label" style="height:${Math.max(3, (getMonthData(11)[ci] / maxDayTotal) * stackH)}px">
+            <div class="s-dot" style="background:${cat.color}"></div>
+            <span>${cat.name.split(' ')[0]}</span>
+          </div>
+        `).reverse().join('')}
+      </div>
+      <div class="sediment-daily-scroll" style="flex:1">
+        ${daily.map((dayData, di) => {
+          const dayTotal = getTotal(dayData);
+          const isWeekend = (di % 7 === 0 || di % 7 === 6); // Sun=0, Sat=6
+          return `
+            <div class="sediment-daily-col">
+              <div class="sediment-daily-head" style="${isWeekend ? 'color:var(--t4);opacity:.5' : ''}">${di + 1}</div>
+              <div style="display:flex;flex-direction:column-reverse;gap:1px;height:${stackH}px;justify-content:flex-start">
+                ${dayData.map((val, ci) => {
+                  if (val === 0) return '';
+                  const h = Math.max(2, (val / maxDayTotal) * stackH);
+                  const cat = CATEGORIES[ci];
+                  return `<div class="sediment-bar" data-cat="${ci}" data-val="${val}" data-total="${dayTotal}" data-tlabel="Feb ${di + 1}"
+                    style="height:${h}px;background:${cat.dim};flex-shrink:0;${val > 200 ? 'border-left:2px solid ' + cat.color : ''}" title="${cat.name}: ${fmt(val)}">
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+    <div class="sediment-baseline" style="margin-top:4px"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;padding-left:86px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t4)">Feb 1</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t4)">Feb 7</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t4)">Feb 14</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t4)">Feb 21</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--t4)">Feb 28</span>
+    </div>
+  `;
+  attachSedimentHover(wrap);
+}
+
+function attachSedimentHover(wrap) {
+  wrap.querySelectorAll('.sediment-bar').forEach(bar => {
+    bar.addEventListener('mouseenter', function(e) {
+      const ci = +this.dataset.cat;
+      const val = +this.dataset.val;
+      const total = +this.dataset.total;
+      showTip(e.clientX, e.clientY, ci, val, total, `<div style="font-size:9px;color:var(--t3);margin-top:2px">${this.dataset.tlabel}</div>`);
+    });
+    bar.addEventListener('mousemove', function(e) {
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 260) + 'px';
+      tip.style.top = (e.clientY - 10) + 'px';
+    });
+    bar.addEventListener('mouseleave', hideTip);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// 3. CONSTELLATION MAP
+// ═══════════════════════════════════════════════════
+let constellationNodes = [];
+
+function drawConstellation() {
+  const canvas = document.getElementById('constellationCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.parentElement.offsetWidth;
+  const h = 380;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  ctx.scale(dpr, dpr);
+
+  const data = getMonthData(11);
+  const total = getTotal(data);
+  const maxVal = Math.max(...data);
+
+  // Position nodes in an organic layout
+  if (constellationNodes.length === 0) {
+    const positions = [
+      [0.18, 0.30], [0.72, 0.25], [0.45, 0.55], [0.85, 0.60],
+      [0.30, 0.70], [0.60, 0.80], [0.12, 0.55], [0.50, 0.18],
+      [0.82, 0.42], [0.38, 0.88]
+    ];
+    constellationNodes = data.map((val, i) => ({
+      x: positions[i][0] * w,
+      y: positions[i][1] * h,
+      r: 12 + (val / maxVal) * 38,
+      val, catIdx: i
+    }));
+  }
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Draw connections (faint lines between nearby nodes)
+  const connections = [[0,2],[1,8],[2,5],[3,8],[4,6],[5,9],[7,1],[0,6],[2,7],[3,5]];
+  connections.forEach(([a, b]) => {
+    const na = constellationNodes[a], nb = constellationNodes[b];
+    ctx.beginPath();
+    ctx.moveTo(na.x, na.y);
+    ctx.lineTo(nb.x, nb.y);
+    ctx.strokeStyle = 'rgba(255,255,255,.025)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Draw nodes
+  constellationNodes.forEach((node, i) => {
+    const cat = CATEGORIES[node.catIdx];
+    const isHovered = hoveredCat === i;
+    const r = isHovered ? node.r * 1.15 : node.r;
+
+    // Outer glow
+    const glowR = r * 2.5;
+    const glow = ctx.createRadialGradient(node.x, node.y, r * 0.5, node.x, node.y, glowR);
+    glow.addColorStop(0, cat.color.replace(')', ',.08)').replace('#', '').length > 0 ?
+      hexToRgba(cat.color, isHovered ? 0.12 : 0.06) : 'transparent');
+    glow.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, glowR, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+
+    // Node circle
+    const grad = ctx.createRadialGradient(node.x - r * 0.2, node.y - r * 0.2, r * 0.1, node.x, node.y, r);
+    grad.addColorStop(0, hexToRgba(cat.color, isHovered ? 0.5 : 0.35));
+    grad.addColorStop(1, hexToRgba(cat.color, isHovered ? 0.25 : 0.12));
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.strokeStyle = hexToRgba(cat.color, isHovered ? 0.6 : 0.25);
+    ctx.lineWidth = isHovered ? 2 : 1;
+    ctx.stroke();
+
+    // Amount label
+    ctx.font = `500 ${isHovered ? 13 : 11}px 'JetBrains Mono', monospace`;
+    ctx.fillStyle = isHovered ? cat.color : hexToRgba(cat.color, 0.8);
+    ctx.textAlign = 'center';
+    ctx.fillText(fmt(node.val), node.x, node.y + 4);
+
+    // Category name below
+    ctx.font = `500 ${isHovered ? 10 : 9}px 'Manrope', sans-serif`;
+    ctx.fillStyle = isHovered ? 'rgba(240,240,245,.8)' : 'rgba(148,148,168,.6)';
+    ctx.fillText(cat.name.toUpperCase(), node.x, node.y + r + 14);
+  });
+
+  // Breathing animation for largest node
+  const largestIdx = data.indexOf(maxVal);
+  const ln = constellationNodes[largestIdx];
+  if (ln && hoveredCat !== largestIdx) {
+    const pulse = (Math.sin(Date.now() / 1500) + 1) / 2;
+    const pr = ln.r + 4 + pulse * 6;
+    ctx.beginPath();
+    ctx.arc(ln.x, ln.y, pr, 0, Math.PI * 2);
+    ctx.strokeStyle = hexToRgba(CATEGORIES[largestIdx].color, 0.08 + pulse * 0.06);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+}
+
+// Constellation hit test
+document.getElementById('constellationCanvas').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  let found = -1;
+  for (let i = 0; i < constellationNodes.length; i++) {
+    const n = constellationNodes[i];
+    const dx = x - n.x * (rect.width / this.parentElement.offsetWidth);
+    const dy = y - n.y * (rect.height / 380);
+    if (dx * dx + dy * dy <= (n.r + 10) * (n.r + 10)) { found = i; break; }
+  }
+  if (found !== hoveredCat) { hoveredCat = found; drawConstellation(); }
+  if (found >= 0) {
+    const data = getMonthData(11);
+    showTip(e.clientX, e.clientY, found, data[found], getTotal(data));
+  } else { hideTip(); }
+});
+document.getElementById('constellationCanvas').addEventListener('mouseleave', function() {
+  hoveredCat = -1; drawConstellation(); hideTip();
+});
+
+// Constellation breathing animation
+let constellationAnimFrame;
+function animateConstellation() {
+  if (currentChart === 'constellation') drawConstellation();
+  constellationAnimFrame = requestAnimationFrame(animateConstellation);
+}
+
+// ═══════════════════════════════════════════════════
+// 4. WATERFALL STREAM
+// ═══════════════════════════════════════════════════
+function drawWaterfall() {
+  const canvas = document.getElementById('waterfallCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.parentElement.offsetWidth;
+  const h = 400;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  ctx.scale(dpr, dpr);
+
+  const data = getMonthData(11);
+  const total = getTotal(data);
+  const sorted = data.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v);
+  const riverY = 60;
+  const poolY = h - 80;
+  const poolH = 40;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // River band at top
+  const riverH = 30;
+  const riverGrad = ctx.createLinearGradient(0, riverY, 0, riverY + riverH);
+  riverGrad.addColorStop(0, 'rgba(245,158,11,.06)');
+  riverGrad.addColorStop(0.5, 'rgba(245,158,11,.03)');
+  riverGrad.addColorStop(1, 'rgba(245,158,11,.06)');
+
+  // Draw wavy river
+  ctx.beginPath();
+  for (let x = 0; x <= w; x += 2) {
+    const wave = Math.sin(x / 60) * 4 + Math.sin(x / 30) * 2;
+    ctx.lineTo(x, riverY + wave);
+  }
+  for (let x = w; x >= 0; x -= 2) {
+    const wave = Math.sin(x / 60) * 4 + Math.sin(x / 30) * 2;
+    ctx.lineTo(x, riverY + riverH + wave);
+  }
+  ctx.closePath();
+  ctx.fillStyle = riverGrad;
+  ctx.fill();
+
+  // River edges
+  ctx.beginPath();
+  for (let x = 0; x <= w; x += 2) {
+    const wave = Math.sin(x / 60) * 4 + Math.sin(x / 30) * 2;
+    ctx.lineTo(x, riverY + wave);
+  }
+  ctx.strokeStyle = 'rgba(245,158,11,.2)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.beginPath();
+  for (let x = 0; x <= w; x += 2) {
+    const wave = Math.sin(x / 60) * 4 + Math.sin(x / 30) * 2;
+    ctx.lineTo(x, riverY + riverH + wave);
+  }
+  ctx.strokeStyle = 'rgba(245,158,11,.1)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // River label
+  ctx.font = "italic 300 12px 'Newsreader', serif";
+  ctx.fillStyle = 'rgba(245,158,11,.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText('Cash Flow — ' + fmt(total) + ' out', w / 2, riverY - 10);
+
+  // Draw pools and drip lines
+  const padding = 30;
+  const gap = 6;
+  const totalPoolW = w - padding * 2;
+
+  let px = padding;
+  canvas._pools = [];
+  sorted.forEach((item, si) => {
+    const cat = CATEGORIES[item.i];
+    const poolW = Math.max(24, (item.v / total) * totalPoolW - gap);
+    const isHovered = hoveredCat === item.i;
+    const dripX = px + poolW / 2;
+
+    // Drip line (curved)
+    ctx.beginPath();
+    const startY = riverY + riverH + (Math.sin(dripX / 60) * 4 + Math.sin(dripX / 30) * 2);
+    ctx.moveTo(dripX, startY);
+    const cpOffset = (si % 2 === 0 ? -1 : 1) * 15;
+    ctx.bezierCurveTo(dripX + cpOffset, startY + (poolY - startY) * 0.3, dripX - cpOffset, startY + (poolY - startY) * 0.7, dripX, poolY);
+    ctx.strokeStyle = hexToRgba(cat.color, isHovered ? 0.35 : 0.12);
+    ctx.lineWidth = isHovered ? 2 : 1;
+    ctx.stroke();
+
+    // Drip glow at river exit
+    const dripGlow = ctx.createRadialGradient(dripX, startY, 0, dripX, startY, 10);
+    dripGlow.addColorStop(0, hexToRgba(cat.color, isHovered ? 0.2 : 0.08));
+    dripGlow.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(dripX, startY, 10, 0, Math.PI * 2);
+    ctx.fillStyle = dripGlow;
+    ctx.fill();
+
+    // Pool
+    const poolR = 6;
+    ctx.beginPath();
+    ctx.roundRect(px, poolY, poolW, poolH, poolR);
+    ctx.fillStyle = hexToRgba(cat.color, isHovered ? 0.2 : 0.1);
+    ctx.fill();
+    ctx.strokeStyle = hexToRgba(cat.color, isHovered ? 0.4 : 0.15);
+    ctx.lineWidth = isHovered ? 1.5 : 1;
+    ctx.stroke();
+
+    // Pool glow
+    if (isHovered) {
+      ctx.save();
+      ctx.shadowBlur = 16;
+      ctx.shadowColor = hexToRgba(cat.color, 0.3);
+      ctx.beginPath();
+      ctx.roundRect(px, poolY, poolW, poolH, poolR);
+      ctx.strokeStyle = hexToRgba(cat.color, 0.2);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Pool label
+    if (poolW > 50) {
+      ctx.font = "500 9px 'Manrope', sans-serif";
+      ctx.fillStyle = hexToRgba(cat.color, isHovered ? 0.9 : 0.6);
+      ctx.textAlign = 'center';
+      ctx.fillText(cat.name, px + poolW / 2, poolY + poolH / 2 - 4);
+      ctx.font = "500 11px 'JetBrains Mono', monospace";
+      ctx.fillStyle = isHovered ? cat.color : hexToRgba(cat.color, 0.7);
+      ctx.fillText(fmt(item.v), px + poolW / 2, poolY + poolH / 2 + 10);
+    }
+
+    // Store for hit testing
+    canvas._pools.push({ x: px, y: poolY, w: poolW, h: poolH, catIdx: item.i });
+
+    px += poolW + gap;
+  });
+}
+
+// Waterfall hit test
+document.getElementById('waterfallCanvas').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (this.parentElement.offsetWidth / rect.width);
+  const y = (e.clientY - rect.top) * (400 / rect.height);
+  const pools = this._pools || [];
+  let found = -1;
+  for (const p of pools) {
+    if (x >= p.x && x <= p.x + p.w && y >= p.y && y <= p.y + p.h) { found = p.catIdx; break; }
+  }
+  if (found !== hoveredCat) { hoveredCat = found; drawWaterfall(); }
+  if (found >= 0) {
+    const data = getMonthData(11);
+    showTip(e.clientX, e.clientY, found, data[found], getTotal(data));
+  } else { hideTip(); }
+});
+document.getElementById('waterfallCanvas').addEventListener('mouseleave', function() {
+  hoveredCat = -1; drawWaterfall(); hideTip();
+});
+
+// ═══════════════════════════════════════════════════
+// 5. ORBITAL RINGS
+// ═══════════════════════════════════════════════════
+function drawOrbital() {
+  const canvas = document.getElementById('orbitalCanvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const size = Math.min(420, canvas.parentElement.offsetWidth - 20);
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+  ctx.scale(dpr, dpr);
+
+  const cx = size / 2, cy = size / 2 - 10;
+  const gap = 0.015;
+  const months = [
+    { data: getMonthData(11), outerR: size / 2 - 60, ringW: 22, alpha: 1, label: 'Feb' },      // inner = this month
+    { data: getMonthData(10), outerR: size / 2 - 34, ringW: 18, alpha: 0.45, label: 'Jan' },    // middle = last month
+    { data: getAvgData([9,10,11]), outerR: size / 2 - 12, ringW: 14, alpha: 0.2, label: 'Avg' }, // outer = 3-mo avg
+  ];
+
+  ctx.clearRect(0, 0, size, size);
+
+  months.forEach((ring, ri) => {
+    const total = getTotal(ring.data);
+    let angle = -Math.PI / 2;
+    const innerR = ring.outerR - ring.ringW;
+
+    ring.data.forEach((val, i) => {
+      const sweep = (val / total) * (Math.PI * 2 - gap * ring.data.length);
+      const cat = CATEGORIES[i];
+      const isHovered = hoveredCat === i;
+      const a = isHovered ? Math.min(ring.alpha * 1.8, 1) : ring.alpha;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, ring.outerR + (isHovered && ri === 0 ? 4 : 0), angle, angle + sweep);
+      ctx.arc(cx, cy, innerR - (isHovered && ri === 0 ? 2 : 0), angle + sweep, angle, true);
+      ctx.closePath();
+      ctx.fillStyle = hexToRgba(cat.color, a);
+      ctx.fill();
+
+      // Dashed style for outer ring
+      if (ri === 2) {
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = hexToRgba(cat.color, 0.15);
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Store segment for hit test (only innermost ring)
+      if (ri === 0) {
+        if (!canvas._segments) canvas._segments = [];
+        canvas._segments[i] = { startAngle: angle, endAngle: angle + sweep, outerR: ring.outerR, innerR };
+      }
+
+      angle += sweep + gap;
+    });
+  });
+
+  // Center total
+  ctx.font = "400 22px 'JetBrains Mono', monospace";
+  ctx.fillStyle = hoveredCat >= 0 ? CATEGORIES[hoveredCat].color : 'rgba(240,240,245,.9)';
+  ctx.textAlign = 'center';
+  const data = getMonthData(11);
+  const total = getTotal(data);
+  ctx.fillText(hoveredCat >= 0 ? fmt(data[hoveredCat]) : fmt(total), cx, cy + 2);
+
+  ctx.font = "italic 400 12px 'Newsreader', serif";
+  ctx.fillStyle = 'rgba(148,148,168,.7)';
+  ctx.fillText(hoveredCat >= 0 ? CATEGORIES[hoveredCat].name : 'Total expenses', cx, cy + 20);
+}
+
+function getAvgData(indices) {
+  return CATEGORIES.map((_, ci) => {
+    const sum = indices.reduce((a, mi) => a + getMonthData(mi)[ci], 0);
+    return Math.round(sum / indices.length);
+  });
+}
+
+// Orbital hit test
+document.getElementById('orbitalCanvas').addEventListener('mousemove', function(e) {
+  const rect = this.getBoundingClientRect();
+  const size = Math.min(420, this.parentElement.offsetWidth - 20);
+  const x = (e.clientX - rect.left) * (size / rect.width);
+  const y = (e.clientY - rect.top) * (size / rect.height);
+  const cx = size / 2, cy = size / 2 - 10;
+  const dx = x - cx, dy = y - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  const segs = this._segments || [];
+  if (segs.length && dist >= (segs[0]?.innerR - 5) && dist <= (segs[0]?.outerR + 30)) {
+    let angle = Math.atan2(dy, dx);
+    if (angle < -Math.PI / 2) angle += Math.PI * 2;
+    let found = -1;
+    for (let i = 0; i < segs.length; i++) {
+      let a = angle;
+      if (a < segs[i].startAngle) a += Math.PI * 2;
+      if (a >= segs[i].startAngle && a <= segs[i].endAngle) { found = i; break; }
+    }
+    if (found !== hoveredCat) { hoveredCat = found; drawOrbital(); }
+    if (found >= 0) {
+      const data = getMonthData(11);
+      const prevData = getMonthData(10);
+      const avgData = getAvgData([9,10,11]);
+      const extra = `<div style="font-size:9px;color:var(--t3);margin-top:4px;border-top:1px solid var(--border);padding-top:4px">
+        Last month: <span style="color:var(--t1)">${fmt(prevData[found])}</span><br>
+        3-mo avg: <span style="color:var(--t1)">${fmt(avgData[found])}</span>
+      </div>`;
+      showTip(e.clientX, e.clientY, found, data[found], getTotal(data), extra);
+    }
+  } else {
+    if (hoveredCat !== -1) { hoveredCat = -1; drawOrbital(); }
+    hideTip();
+  }
+});
+document.getElementById('orbitalCanvas').addEventListener('mouseleave', function() {
+  hoveredCat = -1; drawOrbital(); hideTip();
+});
+
+// ═══════════════════════════════════════════════════
+// 6. HEAT MATRIX
+// ═══════════════════════════════════════════════════
+function drawHeat() {
+  const wrap = document.getElementById('heatWrap');
+  const isDaily = currentTime === 'day';
+
+  // Build columns: daily (28 days) or monthly (12 months)
+  let colLabels, colData;
+  if (isDaily) {
+    colLabels = DAY_LABELS.map(d => d.toString());
+    colData = DAILY; // array of 28 arrays, each [10 categories]
+  } else {
+    colLabels = MONTH_NAMES;
+    colData = MONTHLY;
+  }
+
+  const cols = colLabels.length;
+  const cellSize = isDaily ? 18 : 22; // px - compact cells
+  const labelW = isDaily ? 86 : 100;  // row label width
+
+  // Find global max for pip scaling
+  let globalMax = 0;
+  colData.forEach(col => col.forEach(v => { if (v > globalMax) globalMax = v; }));
+
+  // Pip size: min 3px, max = cellSize - 4
+  const pipMin = isDaily ? 2 : 3;
+  const pipMax = cellSize - 4;
+
+  wrap.innerHTML = `
+    <div class="heat-grid" style="grid-template-columns:${labelW}px repeat(${cols},${cellSize}px);grid-template-rows:16px repeat(10,${cellSize}px)">
+      <div></div>
+      ${colLabels.map((l,i) => {
+        // For daily, only show every 2nd or weekend-markers
+        const show = isDaily ? (i % 2 === 0 || i === cols - 1) : true;
+        return `<div class="heat-header ${isDaily ? 'day-header' : ''}">${show ? l : ''}</div>`;
+      }).join('')}
+      ${CATEGORIES.map((cat, ci) => `
+        <div class="heat-row-label"><div class="l-dot" style="background:${cat.color}"></div>${isDaily ? cat.name.split(' ')[0] : cat.name}</div>
+        ${colData.map((cdata, mi) => {
+          const val = cdata[ci];
+          const ratio = globalMax > 0 ? val / globalMax : 0;
+          const pipSize = val === 0 ? 0 : Math.round(pipMin + ratio * (pipMax - pipMin));
+          const alpha = val === 0 ? 0 : 0.15 + ratio * 0.6;
+          const bgAlpha = val === 0 ? 0 : 0.03 + ratio * 0.06;
+          const timeLabel = isDaily ? `Feb ${colLabels[mi]}` : `${MONTH_NAMES[mi]} ${mi >= 10 ? '2026' : '2025'}`;
+          return `<div class="heat-cell" data-cat="${ci}" data-col="${mi}" data-val="${val}" data-tlabel="${timeLabel}"
+            style="width:${cellSize}px;height:${cellSize}px;background:${val > 0 ? hexToRgba(cat.color, bgAlpha) : 'transparent'}">
+            ${val > 0 ? `<div class="h-pip" style="width:${pipSize}px;height:${pipSize}px;background:${hexToRgba(cat.color, alpha)};border-radius:${pipSize < 6 ? '50%' : '2px'}"></div>` : ''}
+          </div>`;
+        }).join('')}
+      `).join('')}
+    </div>
+  `;
+
+  // Hover events
+  wrap.querySelectorAll('.heat-cell').forEach(cell => {
+    cell.addEventListener('mouseenter', function(e) {
+      const ci = +this.dataset.cat;
+      const val = +this.dataset.val;
+      const colIdx = +this.dataset.col;
+      const tlabel = this.dataset.tlabel;
+      if (val === 0) {
+        tip.innerHTML = `<div style="color:var(--t3);font-size:10px">${CATEGORIES[ci].name}<br>${tlabel}: <span style="color:var(--t4)">No spend</span></div>`;
+        tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 260) + 'px';
+        tip.style.top = (e.clientY - 10) + 'px';
+        tip.classList.add('show');
+        return;
+      }
+      const colTotal = getTotal(colData[colIdx]);
+      const extra = `<div style="font-size:9px;color:var(--t3);margin-top:2px">${tlabel}</div>`;
+      showTip(e.clientX, e.clientY, ci, val, colTotal, extra);
+    });
+    cell.addEventListener('mousemove', function(e) {
+      tip.style.left = Math.min(e.clientX + 14, window.innerWidth - 260) + 'px';
+      tip.style.top = (e.clientY - 10) + 'px';
+    });
+    cell.addEventListener('mouseleave', hideTip);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// UTILITY
+// ═══════════════════════════════════════════════════
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// ═══════════════════════════════════════════════════
+// CHART SWITCHING
+// ═══════════════════════════════════════════════════
+function switchChart(name) {
+  if (currentChart === name) return;
+  hoveredCat = -1;
+  hideTip();
+
+  // Fade out current
+  const cur = document.getElementById('chart-' + currentChart);
+  if (cur) { cur.style.opacity = '0'; cur.style.transform = 'translateY(6px)'; }
+
+  setTimeout(() => {
+    document.querySelectorAll('.chart-area').forEach(a => { a.classList.remove('on'); a.style.opacity = ''; a.style.transform = ''; });
+    const next = document.getElementById('chart-' + name);
+    if (next) next.classList.add('on');
+    currentChart = name;
+
+    // Cancel constellation animation if switching away
+    if (constellationAnimFrame) cancelAnimationFrame(constellationAnimFrame);
+
+    // Draw the new chart
+    setTimeout(() => {
+      drawCurrentChart();
+      if (name === 'constellation') animateConstellation();
+    }, 50);
+  }, 200);
+
+  // Update buttons
+  document.querySelectorAll('.chart-btn').forEach(b => b.classList.toggle('on', b.dataset.chart === name));
+
+  // Update description
+  document.getElementById('chartDescText').innerHTML = DESCRIPTIONS[name] || '';
+}
+
+function drawCurrentChart() {
+  switch (currentChart) {
+    case 'nebula': drawNebula(); break;
+    case 'sediment': drawSediment(); break;
+    case 'constellation': constellationNodes = []; drawConstellation(); break;
+    case 'waterfall': drawWaterfall(); break;
+    case 'orbital': drawOrbital(); break;
+    case 'heat': drawHeat(); break;
+  }
+  renderLegend();
+}
+
+// ═══════════════════════════════════════════════════
+// TIME SWITCHING
+// ═══════════════════════════════════════════════════
+function switchTime(t) {
+  currentTime = t;
+  document.querySelectorAll('.time-tab').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  const labels = { day: 'Feb 1–28, 2026', month: 'February 2026', quarter: 'Q1 2026', year: 'FY 2025-26' };
+  document.getElementById('timeLabel').textContent = labels[t] || '';
+  drawCurrentChart();
+}
+
+// ═══════════════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('.chart-btn').forEach(b => {
+  b.addEventListener('click', () => switchChart(b.dataset.chart));
+});
+
+document.querySelectorAll('.time-tab').forEach(b => {
+  b.addEventListener('click', () => switchTime(b.dataset.t));
+});
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  drawCurrentChart();
+  document.getElementById('chartDescText').innerHTML = DESCRIPTIONS.nebula;
+});
+
+window.addEventListener('resize', () => {
+  constellationNodes = [];
+  drawCurrentChart();
+});
+</script>
+</body>
+</html>

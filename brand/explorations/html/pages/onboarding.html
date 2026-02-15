@@ -1,0 +1,129 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Get Started</div>
+        <div class="page-sub">Set up your accounts &middot; Connect your bank &middot; Start tracking</div>
+    </div>
+</div>
+
+<!-- Progress Steps -->
+<section class="sec fi fi2">
+    <div class="sec-h">
+        <h2 class="sec-t">Setup Progress</h2><span class="sec-m">2 of 5 complete</span>
+    </div>
+    <div class="recon-bar-w" style="margin-bottom:16px">
+        <div class="recon-bar">
+            <div class="recon-fill" style="width:40%"></div>
+        </div>
+        <div class="recon-pct">40%</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:0">
+        <!-- Step 1: Complete -->
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+            <div
+                style="width:36px;height:36px;border-radius:50%;background:rgba(52,211,153,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="color:var(--green);font-size:16px;font-weight:700">&#10003;</span>
+            </div>
+            <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:var(--t1)">Create Your Account</div>
+                <div style="font-size:11px;color:var(--t3);margin-top:2px">Account created &middot; Email verified</div>
+            </div>
+            <span class="inv-badge paid" style="font-size:10px">Done</span>
+        </div>
+
+        <!-- Step 2: Complete -->
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)">
+            <div
+                style="width:36px;height:36px;border-radius:50%;background:rgba(52,211,153,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="color:var(--green);font-size:16px;font-weight:700">&#10003;</span>
+            </div>
+            <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:var(--t1)">Set Up Your Entity</div>
+                <div style="font-size:11px;color:var(--t3);margin-top:2px">Marakana Corp &middot; Ontario, Canada
+                    &middot; Corporation</div>
+            </div>
+            <span class="inv-badge paid" style="font-size:10px">Done</span>
+        </div>
+
+        <!-- Step 3: Current -->
+        <div
+            style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);background:var(--pri-dim);margin:0 -16px;padding-left:16px;padding-right:16px;border-radius:var(--r-sm)">
+            <div
+                style="width:36px;height:36px;border-radius:50%;background:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 12px rgba(245,158,11,.2)">
+                <span style="color:#fff;font-size:14px;font-weight:700">3</span>
+            </div>
+            <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;color:var(--t1)">Connect Your Bank</div>
+                <div style="font-size:11px;color:var(--t2);margin-top:2px">Link your bank accounts to import
+                    transactions automatically</div>
+                <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                    <button class="btn pri" onclick="showToast('Opening bank connection...')"
+                        style="font-size:11px">&#127974; Connect Bank</button>
+                    <button class="btn" onclick="showToast('Uploading CSV...')" style="font-size:11px">&#128196; Import
+                        CSV</button>
+                </div>
+                <div style="margin-top:10px;font-size:10px;color:var(--t3)">
+                    Supported: RBC, TD, BMO, Scotiabank, CIBC, Wise, Stripe, and 3,000+ more via Plaid
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Upcoming -->
+        <div
+            style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border);opacity:.5">
+            <div
+                style="width:36px;height:36px;border-radius:50%;background:var(--glass-2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="color:var(--t3);font-size:14px;font-weight:600">4</span>
+            </div>
+            <div style="flex:1">
+                <div style="font-size:13px;font-weight:500;color:var(--t2)">Categorize Transactions</div>
+                <div style="font-size:11px;color:var(--t4);margin-top:2px">AI will auto-categorize most transactions.
+                    Review and approve.</div>
+            </div>
+        </div>
+
+        <!-- Step 5: Upcoming -->
+        <div style="display:flex;gap:14px;align-items:flex-start;padding:14px 0;opacity:.5">
+            <div
+                style="width:36px;height:36px;border-radius:50%;background:var(--glass-2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="color:var(--t3);font-size:14px;font-weight:600">5</span>
+            </div>
+            <div style="flex:1">
+                <div style="font-size:13px;font-weight:500;color:var(--t2)">Invite Your Accountant</div>
+                <div style="font-size:11px;color:var(--t4);margin-top:2px">Optional. Share access with your accountant
+                    for bookkeeping and tax filing.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Links -->
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Quick Start Guides</h2>
+    </div>
+    <div class="acct-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening guide...')">
+            <div class="acct-bank" style="color:var(--pri)">Guide</div>
+            <div class="acct-name">Chart of Accounts</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">Set up your GL accounts for your industry</div>
+        </div>
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening guide...')">
+            <div class="acct-bank" style="color:var(--blue)">Guide</div>
+            <div class="acct-name">Multi-Currency Setup</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">Configure currencies if you work internationally
+            </div>
+        </div>
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening guide...')">
+            <div class="acct-bank" style="color:var(--green)">Guide</div>
+            <div class="acct-name">First Invoice</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">Create and send your first professional invoice
+            </div>
+        </div>
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening guide...')">
+            <div class="acct-bank" style="color:var(--purple)">Guide</div>
+            <div class="acct-name">Automation Rules</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:4px">Auto-categorize recurring transactions</div>
+        </div>
+    </div>
+</section>

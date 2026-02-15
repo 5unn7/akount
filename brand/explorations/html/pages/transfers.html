@@ -1,0 +1,88 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Transfers</div>
+        <div class="page-sub">Internal Movements &middot; FX &middot; Multi-currency</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('New transfer dialog')">+ New Transfer</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/banking'">Banking</button>
+    <button class="sec-tab" onclick="window.location.hash='#/transactions'">Transactions</button>
+    <button class="sec-tab" onclick="window.location.hash='#/reconciliation'">Reconciliation</button>
+    <button class="sec-tab" onclick="window.location.hash='#/imports'">Imports</button>
+    <button class="sec-tab on">Transfers</button>
+</div>
+
+<div class="stats stats-3 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Volume (Feb)</div>
+        <div class="st-val">$12,400</div>
+        <div class="st-trend up">+2 txns</div>
+    </div>
+    <div class="st">
+        <div class="st-label">FX Fees Saved</div>
+        <div class="st-val" style="color:var(--green)">$42.50</div>
+        <div class="st-trend up">vs Bank</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Pending</div>
+        <div class="st-val">0</div>
+        <div class="st-trend flat">All cleared</div>
+    </div>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Transfer History</h2>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Rate</th>
+                    <th class="right">Sent</th>
+                    <th class="right">Received</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 7</td>
+                    <td class="txn-acct-cell">Wise EUR</td>
+                    <td class="txn-acct-cell">RBC CAD</td>
+                    <td style="font-size:11px;color:var(--t3)">1.472</td>
+                    <td class="txn-amt out">-&euro;3,200</td>
+                    <td class="txn-amt in">+$4,700</td>
+                    <td><span class="txn-cat-tag matched"
+                            style="background:rgba(52,211,153,.1);color:var(--green)">Cleared</span></td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 2</td>
+                    <td class="txn-acct-cell">Wise USD</td>
+                    <td class="txn-acct-cell">RBC CAD</td>
+                    <td style="font-size:11px;color:var(--t3)">1.345</td>
+                    <td class="txn-amt out">-$2,080</td>
+                    <td class="txn-amt in">+$2,800</td>
+                    <td><span class="txn-cat-tag matched"
+                            style="background:rgba(52,211,153,.1);color:var(--green)">Cleared</span></td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Jan 28</td>
+                    <td class="txn-acct-cell">RBC CAD</td>
+                    <td class="txn-acct-cell">Amex</td>
+                    <td style="font-size:11px;color:var(--t3)">-</td>
+                    <td class="txn-amt out">-$1,500</td>
+                    <td class="txn-amt in">+$1,500</td>
+                    <td><span class="txn-cat-tag matched"
+                            style="background:rgba(52,211,153,.1);color:var(--green)">Cleared</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

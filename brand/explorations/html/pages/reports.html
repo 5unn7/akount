@@ -1,0 +1,182 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Reports</div>
+        <div class="page-sub">Financial statements &middot; Custom reports &middot; Multi-entity consolidation</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Opening report builder...')">&#128295; Custom Report</button>
+        <button class="btn pri" onclick="showToast('Generating standard reports...')">&#128200; Generate
+            Reports</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/planning'">Planning</button>
+    <button class="sec-tab on">Reports</button>
+    <button class="sec-tab" onclick="window.location.hash='#/budgets'">Budgets</button>
+    <button class="sec-tab" onclick="window.location.hash='#/goals'">Goals</button>
+    <button class="sec-tab" onclick="window.location.hash='#/forecasts'">Forecasts</button>
+</div>
+
+<!-- Standard Statements -->
+<section class="sec fi fi2">
+    <div class="sec-h">
+        <h2 class="sec-t">Standard Statements</h2><span class="sec-m">Audit-grade &middot; GAAP / IFRS</span>
+    </div>
+    <div class="acct-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+        <div class="acct" onclick="showToast('Opening P&L...')" style="cursor:pointer">
+            <div class="acct-bank">Income Statement</div>
+            <div class="acct-name">P&L — Feb 2026</div>
+            <div class="acct-bal">$14,200</div>
+            <div class="acct-foot">
+                <span style="color:var(--green)">&#x25B2; Net income</span>
+                <span>&#127464;&#127462; Corp</span>
+            </div>
+        </div>
+        <div class="acct" onclick="showToast('Opening Balance Sheet...')" style="cursor:pointer">
+            <div class="acct-bank">Statement of Position</div>
+            <div class="acct-name">Balance Sheet</div>
+            <div class="acct-bal">$284,500</div>
+            <div class="acct-foot">
+                <span>Total assets</span>
+                <span>Consolidated</span>
+            </div>
+        </div>
+        <div class="acct" onclick="showToast('Opening Cash Flow...')" style="cursor:pointer">
+            <div class="acct-bank">Cash Flow Statement</div>
+            <div class="acct-name">Cash Flow</div>
+            <div class="acct-bal">$8,400</div>
+            <div class="acct-foot">
+                <span style="color:var(--green)">&#x25B2; Positive flow</span>
+                <span>&#127464;&#127462; Corp</span>
+            </div>
+        </div>
+        <div class="acct" onclick="showToast('Opening Trial Balance...')" style="cursor:pointer">
+            <div class="acct-bank">Verification</div>
+            <div class="acct-name">Trial Balance</div>
+            <div class="acct-bal" style="color:var(--green)">&#10003;</div>
+            <div class="acct-foot">
+                <span>Balanced</span>
+                <span>All entities</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Management Reports -->
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Management Reports</h2><span class="sec-m">Decision-making intelligence</span>
+    </div>
+    <div class="acct-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening burn rate analysis...')">
+            <div class="acct-bank">Burn Analysis</div>
+            <div class="acct-name">Burn Rate</div>
+            <div class="acct-bal">$12.8k/mo</div>
+            <div class="acct-foot"><span>23 mo runway</span><span style="color:var(--green)">Healthy</span></div>
+        </div>
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening revenue report...')">
+            <div class="acct-bank">Revenue Breakdown</div>
+            <div class="acct-name">Revenue by Client</div>
+            <div class="acct-bal">$31.4k</div>
+            <div class="acct-foot"><span>Top: XYZ Ltd</span><span>4 clients</span></div>
+        </div>
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening spending report...')">
+            <div class="acct-bank">Expense Breakdown</div>
+            <div class="acct-name">Spending Analysis</div>
+            <div class="acct-bal">$17.2k</div>
+            <div class="acct-foot"><span>Top: Rent</span><span>Feb 2026</span></div>
+        </div>
+        <div class="acct" style="cursor:pointer" onclick="showToast('Opening FX report...')">
+            <div class="acct-bank">Multi-Currency</div>
+            <div class="acct-name">FX Exposure</div>
+            <div class="acct-bal">3 curr.</div>
+            <div class="acct-foot"><span>CAD, USD, EUR</span><span>$420 gain</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- Inline P&L Preview -->
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">P&L Preview — February 2026</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">Monthly</button>
+            <button class="sec-tab">YTD</button>
+            <button class="sec-tab">vs Budget</button>
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th class="right">Actual</th>
+                    <th class="right">Budget</th>
+                    <th class="right">Variance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row" style="font-weight:600;background:var(--glass)">
+                    <td style="padding-left:0">Revenue</td>
+                    <td class="txn-amt in">$31,400</td>
+                    <td class="txn-amt" style="color:var(--t3)">$28,000</td>
+                    <td class="txn-amt in">+$3,400</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="padding-left:20px;font-size:12px;color:var(--t2)">Consulting Revenue</td>
+                    <td class="txn-amt" style="font-size:12px">$23,200</td>
+                    <td class="txn-amt" style="font-size:12px;color:var(--t3)">$20,000</td>
+                    <td class="txn-amt in" style="font-size:12px">+$3,200</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="padding-left:20px;font-size:12px;color:var(--t2)">SaaS Revenue</td>
+                    <td class="txn-amt" style="font-size:12px">$8,200</td>
+                    <td class="txn-amt" style="font-size:12px;color:var(--t3)">$8,000</td>
+                    <td class="txn-amt in" style="font-size:12px">+$200</td>
+                </tr>
+                <tr class="txn-row" style="font-weight:600;background:var(--glass)">
+                    <td style="padding-left:0">Cost of Revenue</td>
+                    <td class="txn-amt out">-$4,200</td>
+                    <td class="txn-amt" style="color:var(--t3)">-$5,000</td>
+                    <td class="txn-amt in">+$800</td>
+                </tr>
+                <tr class="txn-row" style="font-weight:600;background:var(--glass)">
+                    <td style="padding-left:0">Operating Expenses</td>
+                    <td class="txn-amt out">-$13,000</td>
+                    <td class="txn-amt" style="color:var(--t3)">-$12,000</td>
+                    <td class="txn-amt out">-$1,000</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="padding-left:20px;font-size:12px;color:var(--t2)">Rent & Office</td>
+                    <td class="txn-amt" style="font-size:12px">$1,800</td>
+                    <td class="txn-amt" style="font-size:12px;color:var(--t3)">$1,800</td>
+                    <td class="txn-amt" style="font-size:12px;color:var(--t3)">$0</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="padding-left:20px;font-size:12px;color:var(--t2)">SaaS & Tools</td>
+                    <td class="txn-amt" style="font-size:12px">$680</td>
+                    <td class="txn-amt" style="font-size:12px;color:var(--t3)">$600</td>
+                    <td class="txn-amt out" style="font-size:12px">-$80</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="padding-left:20px;font-size:12px;color:var(--t2)">Professional Services</td>
+                    <td class="txn-amt" style="font-size:12px">$450</td>
+                    <td class="txn-amt" style="font-size:12px;color:var(--t3)">$450</td>
+                    <td class="txn-amt" style="font-size:12px;color:var(--t3)">$0</td>
+                </tr>
+                <tr style="font-weight:700;border-top:2px solid var(--border)">
+                    <td style="padding:12px 8px">Net Income</td>
+                    <td class="txn-amt in" style="font-size:14px">$14,200</td>
+                    <td class="txn-amt" style="color:var(--t3)">$11,000</td>
+                    <td class="txn-amt in" style="font-size:14px">+$3,200</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="text-align:center;padding:16px 0">
+        <button class="btn" onclick="showToast('Downloading PDF...')">&#128196; Download PDF</button>
+        <button class="btn" onclick="showToast('Opening in full view...')" style="margin-left:8px">Expand Full Report
+            &#8594;</button>
+    </div>
+</section>

@@ -1,0 +1,105 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Fiscal Periods</div>
+        <div class="page-sub">Open/Close Periods &middot; Year-End Processes</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('Lock period dialog')">&#128274; Lock Period</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/accounting'">Accounting</button>
+    <button class="sec-tab" onclick="window.location.hash='#/assets'">Assets</button>
+    <button class="sec-tab" onclick="window.location.hash='#/journal-entries'">Journal Entries</button>
+    <button class="sec-tab" onclick="window.location.hash='#/tax-rates'">Tax Rates</button>
+    <button class="sec-tab on">Fiscal Periods</button>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Fiscal Years</h2>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Net Income</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td style="font-weight:600">2026</td>
+                    <td>Jan 1, 2026</td>
+                    <td>Dec 31, 2026</td>
+                    <td><span class="inv-badge sent" style="font-size:10px">Open</span></td>
+                    <td>$16,380 (YTD)</td>
+                    <td><button class="btn-xs">Manage</button></td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-weight:600">2025</td>
+                    <td>Jan 1, 2025</td>
+                    <td>Dec 31, 2025</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Closed</span></td>
+                    <td>$84,200</td>
+                    <td><button class="btn-xs">Report</button></td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-weight:600">2024</td>
+                    <td>Jan 1, 2024</td>
+                    <td>Dec 31, 2024</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Closed</span></td>
+                    <td>$62,500</td>
+                    <td><button class="btn-xs">Report</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="sec fi fi4" style="margin-top:20px">
+    <div class="sec-h">
+        <h2 class="sec-t">2026 Periods</h2>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Month</th>
+                    <th>Status</th>
+                    <th>Locked Date</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td>P1</td>
+                    <td>January</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Closed</span></td>
+                    <td>Feb 5, 2026</td>
+                    <td style="font-size:11px;color:var(--t3)">Finalized</td>
+                </tr>
+                <tr class="txn-row">
+                    <td>P2</td>
+                    <td>February</td>
+                    <td><span class="inv-badge sent" style="font-size:10px">Open</span></td>
+                    <td>-</td>
+                    <td style="font-size:11px;color:var(--t3)">Current period</td>
+                </tr>
+                <tr class="txn-row" style="opacity:.5">
+                    <td>P3</td>
+                    <td>March</td>
+                    <td><span class="inv-badge" style="font-size:10px">Future</span></td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,240 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Rules & Automation</div>
+        <div class="page-sub">12 active rules &middot; 847 auto-categorized this month &middot; 94% accuracy</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Opening simulation...')">&#128302; Simulate</button>
+        <button class="btn pri" onclick="showToast('Opening rule builder...')">+ New Rule</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/system'">System</button>
+    <button class="sec-tab" onclick="window.location.hash='#/integrations'">Integrations</button>
+    <button class="sec-tab on">Rules</button>
+    <button class="sec-tab" onclick="window.location.hash='#/users'">Users</button>
+    <button class="sec-tab" onclick="window.location.hash='#/audit-log'">Audit Log</button>
+    <button class="sec-tab" onclick="window.location.hash='#/security'">Security</button>
+    <button class="sec-tab" onclick="window.location.hash='#/settings'">Settings</button>
+</div>
+
+<!-- Stats -->
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Active Rules</div>
+        <div class="st-val">12</div>
+        <div class="st-trend flat">3 AI-suggested</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Auto-Categorized</div>
+        <div class="st-val">847</div>
+        <div class="st-trend up">Feb 2026</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Accuracy</div>
+        <div class="st-val" style="color:var(--green)">94%</div>
+        <div class="st-trend up">+2% vs Jan</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Time Saved</div>
+        <div class="st-val">~6h</div>
+        <div class="st-trend up">this month</div>
+    </div>
+</div>
+
+<!-- Active Rules -->
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Rules</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">Active (12)</button>
+            <button class="sec-tab">Draft (2)</button>
+            <button class="sec-tab">Disabled (1)</button>
+        </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;padding:8px 0">
+        <!-- Rule Card 1 -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s var(--ease2)"
+            onclick="showToast('Opening rule editor...')">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:13px;font-weight:600;color:var(--t1)">SaaS Subscriptions</span>
+                    <span class="inv-badge paid" style="font-size:9px">Active</span>
+                </div>
+                <span style="font-size:10px;color:var(--t3)">142 matches this month</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px">
+                <span
+                    style="background:var(--pri-dim);color:var(--pri);padding:2px 8px;border-radius:12px;font-weight:500">WHEN</span>
+                <span style="color:var(--t2)">Description contains &ldquo;Vercel&rdquo;, &ldquo;Linear&rdquo;,
+                    &ldquo;Figma&rdquo;, &ldquo;Notion&rdquo;, &ldquo;GitHub&rdquo;</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;margin-top:4px">
+                <span
+                    style="background:rgba(52,211,153,.1);color:var(--green);padding:2px 8px;border-radius:12px;font-weight:500">DO</span>
+                <span style="color:var(--t2)">Categorize as &ldquo;SaaS & Software&rdquo; &middot; Tag
+                    &ldquo;recurring&rdquo;</span>
+            </div>
+        </div>
+
+        <!-- Rule Card 2 -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s var(--ease2)"
+            onclick="showToast('Opening rule editor...')">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:13px;font-weight:600;color:var(--t1)">Client Payments</span>
+                    <span class="inv-badge paid" style="font-size:9px">Active</span>
+                </div>
+                <span style="font-size:10px;color:var(--t3)">28 matches this month</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px">
+                <span
+                    style="background:var(--pri-dim);color:var(--pri);padding:2px 8px;border-radius:12px;font-weight:500">WHEN</span>
+                <span style="color:var(--t2)">Amount &gt; $1,000 AND type = &ldquo;credit&rdquo; AND account =
+                    &ldquo;RBC Business&rdquo;</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;margin-top:4px">
+                <span
+                    style="background:rgba(52,211,153,.1);color:var(--green);padding:2px 8px;border-radius:12px;font-weight:500">DO</span>
+                <span style="color:var(--t2)">Categorize as &ldquo;Client Payment&rdquo; &middot; Match to open
+                    invoice</span>
+            </div>
+        </div>
+
+        <!-- Rule Card 3 -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s var(--ease2)"
+            onclick="showToast('Opening rule editor...')">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:13px;font-weight:600;color:var(--t1)">Office Rent</span>
+                    <span class="inv-badge paid" style="font-size:9px">Active</span>
+                </div>
+                <span style="font-size:10px;color:var(--t3)">1 match this month</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px">
+                <span
+                    style="background:var(--pri-dim);color:var(--pri);padding:2px 8px;border-radius:12px;font-weight:500">WHEN</span>
+                <span style="color:var(--t2)">Description contains &ldquo;WEWORK&rdquo;</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;margin-top:4px">
+                <span
+                    style="background:rgba(52,211,153,.1);color:var(--green);padding:2px 8px;border-radius:12px;font-weight:500">DO</span>
+                <span style="color:var(--t2)">Categorize as &ldquo;Rent & Office&rdquo; &middot; Tag &ldquo;recurring,
+                    fixed-cost&rdquo;</span>
+            </div>
+        </div>
+
+        <!-- Rule Card 4 -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s var(--ease2)"
+            onclick="showToast('Opening rule editor...')">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:13px;font-weight:600;color:var(--t1)">Uber & Lyft</span>
+                    <span class="inv-badge paid" style="font-size:9px">Active</span>
+                </div>
+                <span style="font-size:10px;color:var(--t3)">8 matches this month</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px">
+                <span
+                    style="background:var(--pri-dim);color:var(--pri);padding:2px 8px;border-radius:12px;font-weight:500">WHEN</span>
+                <span style="color:var(--t2)">Description contains &ldquo;UBER&rdquo; or &ldquo;LYFT&rdquo;</span>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;margin-top:4px">
+                <span
+                    style="background:rgba(52,211,153,.1);color:var(--green);padding:2px 8px;border-radius:12px;font-weight:500">DO</span>
+                <span style="color:var(--t2)">Categorize as &ldquo;Transportation&rdquo; &middot; Auto-reconcile</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AI Suggested Rules -->
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">&#10022; AI-Suggested Rules</h2><span class="sec-m">Based on your recent transactions</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;padding:8px 0">
+        <!-- Suggestion 1 -->
+        <div
+            style="background:rgba(167,139,250,.04);border:1px dashed rgba(167,139,250,.3);border-radius:var(--r);padding:14px 16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:12px;color:var(--purple)">&#10022;</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--t1)">Coffee Shops</span>
+                    <span
+                        style="font-size:9px;color:var(--purple);background:rgba(167,139,250,.1);padding:2px 6px;border-radius:8px">AI
+                        Suggested</span>
+                </div>
+                <div class="ai-conf">
+                    <div class="ai-conf-bar" style="width:40px">
+                        <div class="ai-conf-fill" style="width:88%"></div>
+                    </div>
+                    <span style="font-size:10px;color:var(--t3)">88%</span>
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--t2);margin-bottom:10px">
+                Detected 14 transactions matching &ldquo;STARBUCKS&rdquo;, &ldquo;TIM HORTONS&rdquo;, &ldquo;SECOND
+                CUP&rdquo; in the last 3 months
+            </div>
+            <div style="display:flex;gap:6px">
+                <button class="btn pri" style="font-size:10px;padding:4px 10px"
+                    onclick="showToast('Rule created!')">Accept Rule</button>
+                <button class="btn" style="font-size:10px;padding:4px 10px"
+                    onclick="showToast('Editing rule...')">Customize</button>
+                <button class="btn" style="font-size:10px;padding:4px 10px;color:var(--t3)"
+                    onclick="showToast('Dismissed')">Dismiss</button>
+            </div>
+        </div>
+
+        <!-- Suggestion 2 -->
+        <div
+            style="background:rgba(167,139,250,.04);border:1px dashed rgba(167,139,250,.3);border-radius:var(--r);padding:14px 16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:12px;color:var(--purple)">&#10022;</span>
+                    <span style="font-size:13px;font-weight:600;color:var(--t1)">Amazon Purchases</span>
+                    <span
+                        style="font-size:9px;color:var(--purple);background:rgba(167,139,250,.1);padding:2px 6px;border-radius:8px">AI
+                        Suggested</span>
+                </div>
+                <div class="ai-conf">
+                    <div class="ai-conf-bar" style="width:40px">
+                        <div class="ai-conf-fill" style="width:76%"></div>
+                    </div>
+                    <span style="font-size:10px;color:var(--t3)">76%</span>
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--t2);margin-bottom:10px">
+                22 transactions matching &ldquo;AMZN&rdquo; or &ldquo;AMAZON&rdquo;. Most categorized as &ldquo;Office
+                Supplies&rdquo; (68%) or &ldquo;Equipment&rdquo; (32%).
+            </div>
+            <div style="display:flex;gap:6px">
+                <button class="btn pri" style="font-size:10px;padding:4px 10px"
+                    onclick="showToast('Rule created!')">Accept Rule</button>
+                <button class="btn" style="font-size:10px;padding:4px 10px"
+                    onclick="showToast('Editing rule...')">Customize</button>
+                <button class="btn" style="font-size:10px;padding:4px 10px;color:var(--t3)"
+                    onclick="showToast('Dismissed')">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Simulation Preview -->
+<div class="sec fi" style="animation-delay:.36s;border-left:3px solid var(--purple);padding-left:16px">
+    <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="font-size:16px">&#128302;</span>
+        <div>
+            <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:4px">Simulation Mode</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.5">
+                Before enabling a rule, preview which transactions it would affect. Simulation shows exact matches with
+                no side effects.
+                <button class="btn" style="font-size:10px;padding:3px 10px;margin-left:6px"
+                    onclick="showToast('Opening simulation...')">Run Simulation</button>
+            </div>
+        </div>
+    </div>
+</div>

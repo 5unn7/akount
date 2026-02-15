@@ -1,0 +1,90 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Financial Goals</div>
+        <div class="page-sub">Targets &middot; Milestones &middot; Progress Tracking</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('New goal dialog')">+ New Goal</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/planning'">Planning</button>
+    <button class="sec-tab" onclick="window.location.hash='#/reports'">Reports</button>
+    <button class="sec-tab" onclick="window.location.hash='#/budgets'">Budgets</button>
+    <button class="sec-tab on">Goals</button>
+    <button class="sec-tab" onclick="window.location.hash='#/forecasts'">Forecasts</button>
+</div>
+
+<div class="stats stats-3 fi fi2">
+    <div class="st">
+        <div class="st-label">Active Goals</div>
+        <div class="st-val">3</div>
+        <div class="st-trend flat">2 on track</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Total Saved</div>
+        <div class="st-val">$48,400</div>
+        <div class="st-trend up">74% of target</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Projected Completion</div>
+        <div class="st-val">Aug 2026</div>
+        <div class="st-trend flat">Based on current rate</div>
+    </div>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Goal Progress</h2>
+    </div>
+    <div class="acct-grid" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">
+        <div class="acct">
+            <div class="acct-bank" style="color:var(--green)">&#127919; Revenue Target</div>
+            <div class="acct-name">Annual Revenue $250k</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span class="acct-bal">$43,400</span>
+                <span style="font-size:11px;color:var(--t3)">17.4%</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden;margin-bottom:6px">
+                <div
+                    style="width:17.4%;height:100%;background:linear-gradient(90deg,var(--pri),var(--green));border-radius:4px">
+                </div>
+            </div>
+            <div class="acct-foot">
+                <span>Ahead by 14%</span>
+                <span style="color:var(--green)">Dec 31, 2026</span>
+            </div>
+        </div>
+        <div class="acct">
+            <div class="acct-bank" style="color:var(--blue)">&#128176; Reserves</div>
+            <div class="acct-name">Emergency Fund</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span class="acct-bal">$47,200</span>
+                <span style="font-size:11px;color:var(--t3)">of $60,000</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden;margin-bottom:6px">
+                <div style="width:78.7%;height:100%;background:var(--blue);border-radius:4px"></div>
+            </div>
+            <div class="acct-foot">
+                <span>78% complete</span>
+                <span style="color:var(--t3)">Target: Jun 2026</span>
+            </div>
+        </div>
+        <div class="acct">
+            <div class="acct-bank" style="color:var(--purple)">&#128200; Margin</div>
+            <div class="acct-name">Profit Margin > 60%</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span class="acct-bal">66%</span>
+                <span style="font-size:11px;color:var(--t3)">Target: 60%</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden;margin-bottom:6px">
+                <div style="width:100%;height:100%;background:var(--green);border-radius:4px"></div>
+            </div>
+            <div class="acct-foot">
+                <span>Exceeding target</span>
+                <span style="color:var(--green)">Maintained</span>
+            </div>
+        </div>
+    </div>
+</section>

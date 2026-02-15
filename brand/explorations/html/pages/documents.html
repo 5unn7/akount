@@ -1,0 +1,78 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Documents</div>
+        <div class="page-sub">Safe Storage &middot; Shared Files &middot; Receipts</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('Upload dialog...')">&#128206; Upload</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/services'">Services</button>
+    <button class="sec-tab" onclick="window.location.hash='#/collaboration'">Bookkeeping</button>
+    <button class="sec-tab on">Documents</button>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">File Repository</h2>
+    </div>
+    <div class="sec-tabs" style="margin-bottom:12px">
+        <button class="sec-tab on">All</button>
+        <button class="sec-tab">Tax</button>
+        <button class="sec-tab">Legal</button>
+        <button class="sec-tab">Receipts</button>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Size</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(248,113,113,.1)">&#128196;</div>
+                            <div class="txn-desc">T2 Corporate Tax Return — 2025</div>
+                        </div>
+                    </td>
+                    <td><span class="inv-badge sent" style="font-size:10px">Tax</span></td>
+                    <td>Jan 15, 2026</td>
+                    <td style="color:var(--t3)">2.4 MB</td>
+                    <td><button class="btn-xs">Download</button></td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#128196;</div>
+                            <div class="txn-desc">Articles of Incorporation</div>
+                        </div>
+                    </td>
+                    <td><span class="inv-badge" style="font-size:10px">Legal</span></td>
+                    <td>Mar 12, 2022</td>
+                    <td style="color:var(--t3)">560 KB</td>
+                    <td><button class="btn-xs">Download</button></td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(96,165,250,.12)">&#128200;</div>
+                            <div class="txn-desc">Q4 2025 Financials</div>
+                        </div>
+                    </td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Report</span></td>
+                    <td>Jan 10, 2026</td>
+                    <td style="color:var(--t3)">1.1 MB</td>
+                    <td><button class="btn-xs">Download</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

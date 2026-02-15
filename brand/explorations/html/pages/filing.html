@@ -1,0 +1,195 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Filing Readiness</div>
+        <div class="page-sub">FY2025 &middot; T2 Corporate Tax &middot; Due Jun 30, 2026</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Running readiness checks...')">&#128260; Re-check</button>
+        <button class="btn pri" onclick="showToast('Submitting for review...')">Submit for Review</button>
+    </div>
+</div>
+
+<!-- State Machine Visualization -->
+<section class="sec fi fi2">
+    <div class="sec-h">
+        <h2 class="sec-t">Filing Pipeline</h2><span class="sec-m">FY2025 T2 Corporate Tax Return</span>
+    </div>
+    <div style="display:flex;gap:4px;align-items:center;padding:16px 0;overflow-x:auto">
+        <!-- RAW -->
+        <div
+            style="flex:1;text-align:center;padding:10px 6px;border-radius:var(--r-sm);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);min-width:80px">
+            <div style="font-size:14px;margin-bottom:2px">&#10003;</div>
+            <div style="font-size:9px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.04em">
+                Raw</div>
+            <div style="font-size:8px;color:var(--t3);margin-top:2px">Complete</div>
+        </div>
+        <div style="color:var(--t4);font-size:12px">&rarr;</div>
+        <!-- IN PROGRESS -->
+        <div
+            style="flex:1;text-align:center;padding:10px 6px;border-radius:var(--r-sm);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);min-width:80px">
+            <div style="font-size:14px;margin-bottom:2px">&#10003;</div>
+            <div style="font-size:9px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.04em">
+                In Progress</div>
+            <div style="font-size:8px;color:var(--t3);margin-top:2px">Complete</div>
+        </div>
+        <div style="color:var(--t4);font-size:12px">&rarr;</div>
+        <!-- REVIEW READY -->
+        <div
+            style="flex:1;text-align:center;padding:10px 6px;border-radius:var(--r-sm);background:var(--pri-dim);border:2px solid var(--pri);min-width:80px;box-shadow:0 0 12px rgba(245,158,11,.15)">
+            <div style="font-size:14px;margin-bottom:2px">&#128260;</div>
+            <div style="font-size:9px;font-weight:700;color:var(--pri);text-transform:uppercase;letter-spacing:.04em">
+                Review Ready</div>
+            <div style="font-size:8px;color:var(--t2);margin-top:2px">Current</div>
+        </div>
+        <div style="color:var(--t4);font-size:12px">&rarr;</div>
+        <!-- APPROVED -->
+        <div
+            style="flex:1;text-align:center;padding:10px 6px;border-radius:var(--r-sm);background:var(--glass);border:1px solid var(--border);min-width:80px;opacity:.5">
+            <div style="font-size:14px;margin-bottom:2px">&#128274;</div>
+            <div style="font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.04em">
+                Approved</div>
+            <div style="font-size:8px;color:var(--t4);margin-top:2px">Pending</div>
+        </div>
+        <div style="color:var(--t4);font-size:12px">&rarr;</div>
+        <!-- FILED -->
+        <div
+            style="flex:1;text-align:center;padding:10px 6px;border-radius:var(--r-sm);background:var(--glass);border:1px solid var(--border);min-width:80px;opacity:.5">
+            <div style="font-size:14px;margin-bottom:2px">&#128228;</div>
+            <div style="font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.04em">
+                Filed</div>
+            <div style="font-size:8px;color:var(--t4);margin-top:2px">Pending</div>
+        </div>
+        <div style="color:var(--t4);font-size:12px">&rarr;</div>
+        <!-- LOCKED -->
+        <div
+            style="flex:1;text-align:center;padding:10px 6px;border-radius:var(--r-sm);background:var(--glass);border:1px solid var(--border);min-width:80px;opacity:.5">
+            <div style="font-size:14px;margin-bottom:2px">&#128274;</div>
+            <div style="font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.04em">
+                Locked</div>
+            <div style="font-size:8px;color:var(--t4);margin-top:2px">Pending</div>
+        </div>
+    </div>
+</section>
+
+<!-- Readiness Checks -->
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Readiness Checks</h2><span class="sec-m">5 of 7 passed</span>
+    </div>
+    <div class="recon-bar-w" style="margin-bottom:14px">
+        <div class="recon-bar">
+            <div class="recon-fill" style="width:71%"></div>
+        </div>
+        <div class="recon-pct">71%</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+        <div
+            style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(52,211,153,.06);border-radius:var(--r-sm);border:1px solid rgba(52,211,153,.15)">
+            <span style="color:var(--green);font-size:14px">&#10003;</span>
+            <div style="flex:1">
+                <div style="font-size:12px;font-weight:500;color:var(--t1)">All transactions categorized</div>
+                <div style="font-size:10px;color:var(--t3)">2,450 of 2,450 transactions have categories</div>
+            </div>
+        </div>
+        <div
+            style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(52,211,153,.06);border-radius:var(--r-sm);border:1px solid rgba(52,211,153,.15)">
+            <span style="color:var(--green);font-size:14px">&#10003;</span>
+            <div style="flex:1">
+                <div style="font-size:12px;font-weight:500;color:var(--t1)">Bank accounts reconciled</div>
+                <div style="font-size:10px;color:var(--t3)">All 3 accounts matched for FY2025</div>
+            </div>
+        </div>
+        <div
+            style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(52,211,153,.06);border-radius:var(--r-sm);border:1px solid rgba(52,211,153,.15)">
+            <span style="color:var(--green);font-size:14px">&#10003;</span>
+            <div style="flex:1">
+                <div style="font-size:12px;font-weight:500;color:var(--t1)">Trial balance balanced</div>
+                <div style="font-size:10px;color:var(--t3)">Debits = Credits across all accounts</div>
+            </div>
+        </div>
+        <div
+            style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(52,211,153,.06);border-radius:var(--r-sm);border:1px solid rgba(52,211,153,.15)">
+            <span style="color:var(--green);font-size:14px">&#10003;</span>
+            <div style="flex:1">
+                <div style="font-size:12px;font-weight:500;color:var(--t1)">HST/GST reconciled</div>
+                <div style="font-size:10px;color:var(--t3)">All quarterly returns filed and matched</div>
+            </div>
+        </div>
+        <div
+            style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(52,211,153,.06);border-radius:var(--r-sm);border:1px solid rgba(52,211,153,.15)">
+            <span style="color:var(--green);font-size:14px">&#10003;</span>
+            <div style="flex:1">
+                <div style="font-size:12px;font-weight:500;color:var(--t1)">Intercompany eliminated</div>
+                <div style="font-size:10px;color:var(--t3)">All cross-entity transactions eliminated</div>
+            </div>
+        </div>
+
+        <!-- Blockers -->
+        <div
+            style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(248,113,113,.06);border-radius:var(--r-sm);border:1px solid rgba(248,113,113,.15)">
+            <span style="color:var(--red);font-size:14px">&#10007;</span>
+            <div style="flex:1">
+                <div style="font-size:12px;font-weight:500;color:var(--t1)">Depreciation schedule pending</div>
+                <div style="font-size:10px;color:var(--red)">2 assets missing Dec 2025 depreciation entries</div>
+            </div>
+            <button class="btn" style="font-size:10px;padding:3px 8px"
+                onclick="showToast('Running depreciation...')">Fix</button>
+        </div>
+        <div
+            style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(248,113,113,.06);border-radius:var(--r-sm);border:1px solid rgba(248,113,113,.15)">
+            <span style="color:var(--red);font-size:14px">&#10007;</span>
+            <div style="flex:1">
+                <div style="font-size:12px;font-weight:500;color:var(--t1)">Year-end adjusting entries</div>
+                <div style="font-size:10px;color:var(--red)">Prepaid insurance needs year-end accrual ($1,200)</div>
+            </div>
+            <button class="btn" style="font-size:10px;padding:3px 8px"
+                onclick="showToast('Creating entry...')">Fix</button>
+        </div>
+    </div>
+</section>
+
+<!-- Periods -->
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">Period Status</h2><span class="sec-m">FY2025</span>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>State</th>
+                    <th>Reviewed By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td style="font-weight:500">Q1 2025 (Jan–Mar)</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Locked</span></td>
+                    <td style="font-size:11px;color:var(--t3)">Rachel Park, CPA</td>
+                    <td class="txn-date-cell">May 15, 2025</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-weight:500">Q2 2025 (Apr–Jun)</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Locked</span></td>
+                    <td style="font-size:11px;color:var(--t3)">Rachel Park, CPA</td>
+                    <td class="txn-date-cell">Aug 12, 2025</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-weight:500">Q3 2025 (Jul–Sep)</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Locked</span></td>
+                    <td style="font-size:11px;color:var(--t3)">Rachel Park, CPA</td>
+                    <td class="txn-date-cell">Nov 8, 2025</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-weight:500">Q4 2025 (Oct–Dec)</td>
+                    <td><span class="inv-badge sent" style="font-size:10px">Review Ready</span></td>
+                    <td style="font-size:11px;color:var(--pri)">Awaiting review</td>
+                    <td class="txn-date-cell">&mdash;</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

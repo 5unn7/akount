@@ -1,0 +1,187 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Assets & Depreciation</div>
+        <div class="page-sub">14 assets &middot; $186,400 total cost &middot; $124,200 NBV</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Running depreciation schedule...')">&#128197; Run Schedule</button>
+        <button class="btn pri" onclick="showToast('Capitalizing new asset...')">+ Capitalize Asset</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/accounting'">Accounting</button>
+    <button class="sec-tab on">Assets</button>
+    <button class="sec-tab" onclick="window.location.hash='#/journal-entries'">Journal Entries</button>
+    <button class="sec-tab" onclick="window.location.hash='#/tax-rates'">Tax Rates</button>
+    <button class="sec-tab" onclick="window.location.hash='#/fiscal-periods'">Fiscal Periods</button>
+</div>
+
+<!-- Summary Cards -->
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Assets</div>
+        <div class="st-val">14</div>
+        <div class="st-trend flat">across 2 entities</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Total Cost</div>
+        <div class="st-val">$186,400</div>
+        <div class="st-trend flat">historical cost</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Accumulated Depr.</div>
+        <div class="st-val" style="color:var(--pri)">$62,200</div>
+        <div class="st-trend dn">33% depreciated</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Net Book Value</div>
+        <div class="st-val" style="color:var(--green)">$124,200</div>
+        <div class="st-trend up">carrying amount</div>
+    </div>
+</div>
+
+<!-- Depreciation This Period -->
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Depreciation — February 2026</h2><span class="sec-m">Monthly charge: $2,180</span>
+    </div>
+    <div class="recon-bar-w">
+        <div class="recon-bar">
+            <div class="recon-fill" style="width:33%"></div>
+        </div>
+        <div class="recon-pct">33%</div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap">
+        <div class="aging-item">
+            <div class="aging-dot" style="background:var(--pri)"></div>Straight-line: 11 assets
+        </div>
+        <div class="aging-item">
+            <div class="aging-dot" style="background:var(--blue)"></div>Declining balance: 2 assets
+        </div>
+        <div class="aging-item">
+            <div class="aging-dot" style="background:var(--purple)"></div>Units of production: 1 asset
+        </div>
+    </div>
+</section>
+
+<!-- Asset Register -->
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">Asset Register</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">All</button>
+            <button class="sec-tab">Active</button>
+            <button class="sec-tab">Fully Deprec.</button>
+            <button class="sec-tab">Disposed</button>
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Entity</th>
+                    <th>Acquired</th>
+                    <th>Method</th>
+                    <th class="right">Cost</th>
+                    <th class="right">Accum. Depr.</th>
+                    <th class="right">NBV</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row" onclick="openDetail('asset-macbook')" style="cursor:pointer">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128187;</div>
+                            <div>
+                                <div class="txn-desc">MacBook Pro 16"</div>
+                                <div style="font-size:9px;color:var(--t4)">Computer Equipment &middot; 3yr SL</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td class="txn-date-cell">Jun 2024</td>
+                    <td style="font-size:10px;color:var(--t3)">Straight-line</td>
+                    <td class="txn-amt">$4,200</td>
+                    <td class="txn-amt" style="color:var(--pri)">$1,400</td>
+                    <td class="txn-amt" style="color:var(--green)">$2,800</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                </tr>
+                <tr class="txn-row" onclick="openDetail('asset-desk')" style="cursor:pointer">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128421;</div>
+                            <div>
+                                <div class="txn-desc">Standing Desk Setup</div>
+                                <div style="font-size:9px;color:var(--t4)">Office Furniture &middot; 7yr SL</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td class="txn-date-cell">Jun 2024</td>
+                    <td style="font-size:10px;color:var(--t3)">Straight-line</td>
+                    <td class="txn-amt">$2,400</td>
+                    <td class="txn-amt" style="color:var(--pri)">$286</td>
+                    <td class="txn-amt" style="color:var(--green)">$2,114</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                </tr>
+                <tr class="txn-row" style="cursor:pointer">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128663;</div>
+                            <div>
+                                <div class="txn-desc">Tesla Model 3 (Business)</div>
+                                <div style="font-size:9px;color:var(--t4)">Vehicle &middot; 5yr DB</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td class="txn-date-cell">Jan 2025</td>
+                    <td style="font-size:10px;color:var(--t3)">Declining bal.</td>
+                    <td class="txn-amt">$52,000</td>
+                    <td class="txn-amt" style="color:var(--pri)">$10,400</td>
+                    <td class="txn-amt" style="color:var(--green)">$41,600</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                </tr>
+                <tr class="txn-row" style="cursor:pointer">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#127981;</div>
+                            <div>
+                                <div class="txn-desc">Server Rack (US DC)</div>
+                                <div style="font-size:9px;color:var(--t4)">IT Equipment &middot; 5yr SL</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127482;&#127480; LLC</td>
+                    <td class="txn-date-cell">Mar 2023</td>
+                    <td style="font-size:10px;color:var(--t3)">Straight-line</td>
+                    <td class="txn-amt">$18,000</td>
+                    <td class="txn-amt" style="color:var(--pri)">$10,800</td>
+                    <td class="txn-amt" style="color:var(--green)">$7,200</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                </tr>
+                <tr class="txn-row" style="cursor:pointer;opacity:.6">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="opacity:.5">&#128424;</div>
+                            <div>
+                                <div class="txn-desc">Canon Printer (Old)</div>
+                                <div style="font-size:9px;color:var(--t4)">Office Equipment &middot; Disposed</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td class="txn-date-cell">Jan 2021</td>
+                    <td style="font-size:10px;color:var(--t3)">Straight-line</td>
+                    <td class="txn-amt" style="color:var(--t3)">$800</td>
+                    <td class="txn-amt" style="color:var(--t3)">$800</td>
+                    <td class="txn-amt" style="color:var(--t3)">$0</td>
+                    <td><span class="inv-badge draft" style="font-size:10px">Disposed</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

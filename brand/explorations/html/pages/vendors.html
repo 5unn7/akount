@@ -1,0 +1,115 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Vendors</div>
+        <div class="page-sub">Supplier Directory &middot; 28 Active &middot; $3,200 Pending AP</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Import vendors...')">Import</button>
+        <button class="btn pri" onclick="showToast('New vendor created')">+ New Vendor</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/invoicing'">Invoices</button>
+    <button class="sec-tab" onclick="window.location.hash='#/bills'">Bills</button>
+    <button class="sec-tab" onclick="window.location.hash='#/clients'">Clients</button>
+    <button class="sec-tab on">Vendors</button>
+    <button class="sec-tab" onclick="window.location.hash='#/payments'">Payments</button>
+</div>
+
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Vendors</div>
+        <div class="st-val">32</div>
+        <div class="st-trend flat">No change</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Active Suppliers</div>
+        <div class="st-val">18</div>
+        <div class="st-trend up">+2 this month</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Pending Bills</div>
+        <div class="st-val">$3,200</div>
+        <div class="st-trend flat">2 bills</div>
+    </div>
+    <div class="st">
+        <div class="st-label">YTD Spend</div>
+        <div class="st-val">$48,500</div>
+        <div class="st-trend up">+8%</div>
+    </div>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Vendor Directory</h2>
+        <div class="sec-actions">
+            <input type="text" placeholder="Search vendors..." class="sec-search">
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="inv-table">
+            <thead>
+                <tr>
+                    <th>Vendor</th>
+                    <th>Category</th>
+                    <th>Entity</th>
+                    <th>Open Bills</th>
+                    <th class="right">Outstanding</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="inv-row" onclick="openDetail('vendor-1')">
+                    <td>
+                        <div style="font-weight:600;color:var(--t1)">AWS</div>
+                        <div style="font-size:11px;color:var(--t3)">Cloud Infrastructure</div>
+                    </td>
+                    <td><span class="badg" style="background:var(--bg-3);color:var(--t2)">Software</span></td>
+                    <td style="font-size:11px;color:var(--t3)">&#127482;&#127480; LLC</td>
+                    <td>1</td>
+                    <td class="inv-amt">$1,200 <span class="cur">USD</span></td>
+                    <td><span class="inv-badge sent">Active</span></td>
+                    <td><button class="btn-xs">View</button></td>
+                </tr>
+                <tr class="inv-row" onclick="openDetail('vendor-2')">
+                    <td>
+                        <div style="font-weight:600;color:var(--t1)">Adobe</div>
+                        <div style="font-size:11px;color:var(--t3)">Creative Cloud</div>
+                    </td>
+                    <td><span class="badg" style="background:var(--bg-3);color:var(--t2)">Software</span></td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td>1</td>
+                    <td class="inv-amt">$2,000 <span class="cur">CAD</span></td>
+                    <td><span class="inv-badge sent">Active</span></td>
+                    <td><button class="btn-xs">View</button></td>
+                </tr>
+                <tr class="inv-row" onclick="openDetail('vendor-3')">
+                    <td>
+                        <div style="font-weight:600;color:var(--t1)">WeWork</div>
+                        <div style="font-size:11px;color:var(--t3)">Office Rent</div>
+                    </td>
+                    <td><span class="badg" style="background:var(--bg-3);color:var(--t2)">Rent</span></td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td>0</td>
+                    <td class="inv-amt">$0 <span class="cur">CAD</span></td>
+                    <td><span class="inv-badge sent">Active</span></td>
+                    <td><button class="btn-xs">View</button></td>
+                </tr>
+                <tr class="inv-row" onclick="openDetail('vendor-4')">
+                    <td>
+                        <div style="font-weight:600;color:var(--t1)">Stripe</div>
+                        <div style="font-size:11px;color:var(--t3)">Payment Processing</div>
+                    </td>
+                    <td><span class="badg" style="background:var(--bg-3);color:var(--t2)">Fees</span></td>
+                    <td style="font-size:11px;color:var(--t3)">Global</td>
+                    <td>0</td>
+                    <td class="inv-amt">$0 <span class="cur">USD</span></td>
+                    <td><span class="inv-badge sent">Auto-Pay</span></td>
+                    <td><button class="btn-xs">View</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
