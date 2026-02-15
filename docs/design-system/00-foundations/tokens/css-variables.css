@@ -1,0 +1,250 @@
+/**
+ * Akount Design System - CSS Variables
+ *
+ * Single source of truth for design tokens.
+ * Consolidates: akount-tokens.css + shadcn-globals.css
+ *
+ * Sections:
+ * 1. Akount Brand Tokens (backgrounds, text, borders, actions)
+ * 2. shadcn/ui Compatibility Layer
+ * 3. Financial Semantic Colors
+ * 4. AI System Tokens
+ * 5. Motion & Animation
+ * 6. Dark Mode Overrides
+ */
+
+/* ==========================================
+   1. AKOUNT BRAND TOKENS (Light Mode)
+   ========================================== */
+:root {
+  /* Background Surfaces */
+  --ak-bg-primary: #f8fafc;
+  --ak-bg-secondary: #f1f5f9;
+  --ak-bg-surface: #ffffff;
+  --ak-bg-elevated: #ffffff;
+
+  /* Text Colors */
+  --ak-text-primary: #0f172a;
+  --ak-text-secondary: #334155;
+  --ak-text-muted: #64748b;
+  --ak-text-inverse: #ffffff;
+
+  /* Borders */
+  --ak-border-default: #cbd5e1;
+  --ak-border-subtle: #f1f5f9;
+  --ak-border-strong: #64748b;
+
+  /* Actions */
+  --ak-action-primary: #f97316;
+  --ak-action-secondary: #8b5cf6;
+  --ak-action-danger: #ef4444;
+
+  /* States */
+  --ak-state-success: #10b981;
+  --ak-state-warning: #f59e0b;
+  --ak-state-error: #ef4444;
+  --ak-state-info: #3b82f6;
+
+  /* Focus Ring */
+  --ak-focus-ring: rgba(249, 115, 22, 0.45);
+
+  /* Radius */
+  --ak-radius-sm: 6px;
+  --ak-radius-md: 10px;
+  --ak-radius-lg: 14px;
+  --ak-radius-xl: 18px;
+
+  /* Elevation / Shadows */
+  --ak-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.10);
+  --ak-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.18);
+  --ak-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* ==========================================
+   2. SHADCN/UI COMPATIBILITY LAYER
+   ========================================== */
+:root {
+  /* Base Surfaces */
+  --background: 210 40% 98%;
+  /* slate-50 */
+  --foreground: 222 47% 11%;
+  /* slate-900 */
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+
+  /* Brand */
+  --primary: 24 94% 53%;
+  /* orange-500 */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 252 94% 67%;
+  /* violet-500 */
+  --secondary-foreground: 222 47% 11%;
+
+  /* Neutral UI */
+  --muted: 210 40% 96%;
+  /* slate-100 */
+  --muted-foreground: 215 16% 47%;
+  /* slate-500-ish */
+
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 47% 11%;
+
+  /* System */
+  --destructive: 0 84% 60%;
+  /* red-500 */
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 214 32% 91%;
+  /* slate-200/300 range */
+  --input: 214 32% 91%;
+  --ring: 24 94% 53%;
+  /* primary ring */
+
+  --radius: 0.875rem;
+  /* ~14px, avoids pill buttons */
+}
+
+/* ==========================================
+   3. FINANCIAL SEMANTIC COLORS
+   ========================================== */
+:root {
+  /* Income/Revenue */
+  --ak-finance-income: #10b981;
+  --finance-income: 160 84% 39%;
+  /* emerald-ish */
+
+  /* Expenses */
+  --ak-finance-expense: #ef4444;
+  --finance-expense: 0 84% 60%;
+  /* red-500 */
+
+  /* Transfers */
+  --ak-finance-transfer: #3b82f6;
+  --finance-transfer: 217 91% 60%;
+  /* blue-500 */
+
+  /* Liabilities */
+  --ak-finance-liability: #f59e0b;
+  --finance-liability: 38 92% 50%;
+  /* amber-500 */
+
+  /* Equity */
+  --ak-finance-equity: #14b8a6;
+  --finance-equity: 173 80% 40%;
+  /* teal-ish */
+}
+
+/* ==========================================
+   4. AI SYSTEM TOKENS
+   ========================================== */
+:root {
+  /* AI Primary */
+  --ak-ai-primary: #8b5cf6;
+  --ai: 252 94% 67%;
+  /* violet-500 */
+
+  /* AI Backgrounds */
+  --ak-ai-bg: rgba(139, 92, 246, 0.10);
+  --ai-bg: 252 94% 67% / 0.10;
+
+  /* AI Borders */
+  --ak-ai-border: rgba(139, 92, 246, 0.35);
+  --ai-border: 252 94% 67% / 0.35;
+}
+
+/* ==========================================
+   5. MOTION & ANIMATION
+   ========================================== */
+:root {
+  /* Duration */
+  --ak-dur-fast: 120ms;
+  --ak-dur-normal: 180ms;
+  --ak-dur-slow: 240ms;
+
+  /* Easing Functions */
+  --ak-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ak-ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
+}
+
+/* ==========================================
+   6. DARK MODE OVERRIDES
+   ========================================== */
+.dark {
+  /* Background Surfaces */
+  --ak-bg-primary: #0f172a;
+  --ak-bg-secondary: #334155;
+  --ak-bg-surface: rgba(15, 23, 42, 0.90);
+  --ak-bg-elevated: rgba(51, 65, 85, 0.40);
+
+  /* Text Colors */
+  --ak-text-primary: #ffffff;
+  --ak-text-secondary: #f1f5f9;
+  --ak-text-muted: #cbd5e1;
+
+  /* Borders */
+  --ak-border-default: rgba(203, 213, 225, 0.18);
+  --ak-border-subtle: rgba(203, 213, 225, 0.10);
+  --ak-border-strong: rgba(203, 213, 225, 0.28);
+
+  /* shadcn/ui Base Surfaces */
+  --background: 222 47% 11%;
+  /* slate-900 */
+  --foreground: 210 40% 98%;
+  /* slate-50 */
+
+  --card: 222 47% 13%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222 47% 13%;
+  --popover-foreground: 210 40% 98%;
+
+  /* Brand stays consistent */
+  --primary: 24 94% 53%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 252 94% 67%;
+  --secondary-foreground: 210 40% 98%;
+
+  /* Neutral UI (darkened) */
+  --muted: 215 28% 17%;
+  /* slate-800-ish */
+  --muted-foreground: 215 20% 65%;
+  /* slate-300-ish */
+
+  --accent: 215 28% 17%;
+  --accent-foreground: 210 40% 98%;
+
+  /* System */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 215 25% 25%;
+  --input: 215 25% 25%;
+  --ring: 24 94% 53%;
+
+  /* AI System (enhanced for dark mode) */
+  --ai: 252 94% 67%;
+  --ai-bg: 252 94% 67% / 0.12;
+  --ai-border: 252 94% 67% / 0.40;
+
+  /* Financial Semantic (brightened for visibility) */
+  --ak-finance-income: #10b981;
+  --finance-income: 160 84% 39%;
+
+  --ak-finance-expense: #ef4444;
+  --finance-expense: 0 84% 60%;
+
+  --ak-finance-transfer: #3b82f6;
+  --finance-transfer: 217 91% 60%;
+
+  --ak-finance-liability: #f59e0b;
+  --finance-liability: 38 92% 50%;
+
+  --ak-finance-equity: #14b8a6;
+  --finance-equity: 173 80% 40%;
+}

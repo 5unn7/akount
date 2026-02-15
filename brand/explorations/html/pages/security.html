@@ -1,0 +1,72 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Security</div>
+        <div class="page-sub">Authentication &middot; Sessions &middot; API Keys</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('Password change dialog...')">Change Password</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/system'">System</button>
+    <button class="sec-tab" onclick="window.location.hash='#/integrations'">Integrations</button>
+    <button class="sec-tab" onclick="window.location.hash='#/rules'">Rules</button>
+    <button class="sec-tab" onclick="window.location.hash='#/users'">Users</button>
+    <button class="sec-tab" onclick="window.location.hash='#/audit-log'">Audit Log</button>
+    <button class="sec-tab on">Security</button>
+    <button class="sec-tab" onclick="window.location.hash='#/settings'">Settings</button>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Authentication</h2>
+    </div>
+    <div class="d-row">
+        <div style="flex:1">
+            <div style="font-weight:600">Two-Factor Authentication (2FA)</div>
+            <div style="font-size:11px;color:var(--t3)">Protect your account with an extra layer of security.</div>
+        </div>
+        <div style="color:var(--green);font-weight:600;font-size:13px">&#128274; Enabled</div>
+    </div>
+    <div class="d-row" style="border:none">
+        <div style="flex:1">
+            <div style="font-weight:600">Session Timeout</div>
+            <div style="font-size:11px;color:var(--t3)">Automatically log out after inactivity.</div>
+        </div>
+        <div style="color:var(--t2);font-size:13px">30 Minutes</div>
+    </div>
+</section>
+
+<section class="sec fi fi4" style="margin-top:20px">
+    <div class="sec-h">
+        <h2 class="sec-t">Active Sessions</h2>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>Location</th>
+                    <th>Last Active</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td><span style="font-weight:600">Windows PC (Chrome)</span><span
+                            style="font-size:10px;color:var(--green);margin-left:6px">Current</span></td>
+                    <td>Toronto, ON</td>
+                    <td>Just now</td>
+                    <td>-</td>
+                </tr>
+                <tr class="txn-row">
+                    <td>iPhone 15 Pro (App)</td>
+                    <td>Toronto, ON</td>
+                    <td>2 hours ago</td>
+                    <td><button class="btn-xs">Revoke</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

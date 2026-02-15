@@ -1,0 +1,8 @@
+[build]
+builder = "Nixpacks"
+buildCommand = "npm run build -- --filter=web"
+
+[deploy]
+startCommand = "npm run start --workspace=web"
+healthcheckPath = "/"
+restartPolicyType = "ON_FAILURE"

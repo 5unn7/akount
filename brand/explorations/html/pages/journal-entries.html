@@ -1,0 +1,105 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Journal Entries</div>
+        <div class="page-sub">General Ledger &middot; Adjustments &middot; Audit Trail</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Importing entries...')">Import</button>
+        <button class="btn pri" onclick="showToast('New journal entry dialog')">+ New Entry</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/accounting'">Accounting</button>
+    <button class="sec-tab" onclick="window.location.hash='#/assets'">Assets</button>
+    <button class="sec-tab on">Journal Entries</button>
+    <button class="sec-tab" onclick="window.location.hash='#/tax-rates'">Tax Rates</button>
+    <button class="sec-tab" onclick="window.location.hash='#/fiscal-periods'">Fiscal Periods</button>
+</div>
+
+<div class="stats stats-3 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Entries (Feb)</div>
+        <div class="st-val">42</div>
+        <div class="st-trend up">+4 vs Jan</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Auto-Generated</div>
+        <div class="st-val">38</div>
+        <div class="st-trend flat">90% of total</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Manual Adjustments</div>
+        <div class="st-val" style="color:var(--t2)">4</div>
+        <div class="st-trend flat">Review needed</div>
+    </div>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Entries Register</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">All</button>
+            <button class="sec-tab">Posted</button>
+            <button class="sec-tab">Draft</button>
+            <button class="sec-tab">Recurring</button>
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Entry #</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th class="right">Debit</th>
+                    <th class="right">Credit</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row" onclick="showToast('View Entry JE-2026-0042')">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0042</td>
+                    <td class="txn-date-cell">Feb 9</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128176;</div>
+                            <div>
+                                <div class="txn-desc">XYZ Ltd payment received</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot; Cr 1200
+                                    AR</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">System</span></td>
+                    <td class="txn-amt in" style="text-align:right">$8,200.00</td>
+                    <td class="txn-amt in" style="text-align:right">$8,200.00</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
+                <tr class="txn-row" onclick="showToast('View Entry JE-2026-0037')">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0037</td>
+                    <td class="txn-date-cell">Feb 1</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(245,158,11,.1)">&#128196;</div>
+                            <div>
+                                <div class="txn-desc">Invoice #1047 Revenue Rec</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1200 AR &middot; Cr 4000
+                                    Rev</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">Manual</span></td>
+                    <td class="txn-amt in" style="text-align:right">$4,746.00</td>
+                    <td class="txn-amt in" style="text-align:right">$4,746.00</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

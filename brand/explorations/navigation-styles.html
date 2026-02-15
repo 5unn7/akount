@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigation Styles - Akount Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Dark mode surfaces - purple-tinted near-blacks */
+      --bg-0: #09090F;
+      --bg-1: #0F0F17;
+      --bg-2: #15151F;
+      --bg-3: #1A1A26;
+      --bg-4: #22222E;
+
+      /* Glass morphism */
+      --glass-1: rgba(255, 255, 255, 0.025);
+      --glass-2: rgba(255, 255, 255, 0.04);
+      --glass-3: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --glass-border-medium: rgba(255, 255, 255, 0.09);
+      --glass-border-strong: rgba(255, 255, 255, 0.13);
+
+      /* Primary - Amber Orange */
+      --primary: #F59E0B;
+      --primary-hover: #FBBF24;
+      --primary-dim: rgba(245, 158, 11, 0.14);
+      --primary-glow: rgba(245, 158, 11, 0.08);
+
+      /* Typography */
+      --font-heading: 'Newsreader', serif;
+      --font-sans: 'Manrope', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Semantic colors */
+      --text-primary: rgba(255, 255, 255, 0.95);
+      --text-secondary: rgba(255, 255, 255, 0.65);
+      --text-muted: rgba(255, 255, 255, 0.4);
+    }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+    }
+
+    .container {
+      padding: 2rem;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .style-card {
+      background: var(--glass-1);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+    }
+
+    .style-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .style-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .style-desc {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .preview {
+      height: 600px;
+      position: relative;
+      background: var(--bg-0);
+    }
+
+    /* Style 1: Classic Sidebar + Top Bar */
+    .style-1 .top-bar {
+      height: 64px;
+      background: var(--glass-1);
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .style-1 .search-box {
+      flex: 1;
+      max-width: 500px;
+      background: var(--glass-2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 0.625rem 1rem;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+    }
+
+    .style-1 .search-box::placeholder {
+      color: var(--text-muted);
+    }
+
+    .style-1 .sidebar {
+      position: absolute;
+      top: 64px;
+      left: 0;
+      bottom: 0;
+      width: 240px;
+      background: var(--bg-1);
+      border-right: 1px solid var(--glass-border);
+      padding: 1.5rem 1rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.625rem 0.875rem;
+      margin-bottom: 0.25rem;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: var(--glass-2);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--primary-dim);
+      color: var(--primary);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      opacity: 0.7;
+    }
+
+    .nav-item.active .nav-icon {
+      opacity: 1;
+    }
+
+    /* Style 2: Floating Glass Sidebar */
+    .style-2 .top-bar {
+      height: 56px;
+      background: var(--glass-1);
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1rem;
+    }
+
+    .style-2 .sidebar {
+      position: absolute;
+      top: 72px;
+      left: 16px;
+      bottom: 16px;
+      width: 220px;
+      background: var(--glass-2);
+      border: 1px solid var(--glass-border-medium);
+      border-radius: 14px;
+      backdrop-filter: blur(16px);
+      padding: 1rem;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .style-2 .nav-item {
+      border-radius: 10px;
+    }
+
+    /* Style 3: Rail Navigation */
+    .style-3 .top-bar {
+      height: 60px;
+      background: var(--glass-1);
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      padding: 0 1.5rem;
+      gap: 1rem;
+      margin-left: 72px;
+    }
+
+    .style-3 .sidebar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 72px;
+      background: var(--bg-2);
+      border-right: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0;
+      gap: 0.5rem;
+    }
+
+    .style-3 .nav-item {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      border-radius: 10px;
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .style-3 .nav-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .logo {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .badge {
+      background: var(--primary-dim);
+      color: var(--primary);
+      padding: 0.125rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.625rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .section-title {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin: 1.5rem 0 0.75rem;
+      padding: 0 0.875rem;
+      font-weight: 600;
+    }
+
+    .user-section {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #FBBF24);
+      border: 2px solid var(--glass-border-medium);
+    }
+
+    .kbd {
+      background: var(--glass-2);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      padding: 0.125rem 0.375rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Navigation Styles</h1>
+    <p class="subtitle">Exploring sidebar and command bar variations — Akount Design System</p>
+
+    <div class="grid">
+      <!-- Style 1: Classic Sidebar + Top Bar -->
+      <div class="style-card">
+        <div class="style-header">
+          <div class="style-title">1. Classic Sidebar + Command Bar</div>
+          <div class="style-desc">Traditional layout with full-width command bar and persistent left sidebar</div>
+        </div>
+        <div class="preview style-1">
+          <div class="top-bar">
+            <div class="logo">Akount</div>
+            <input type="text" class="search-box" placeholder="Search or jump to... (⌘K)">
+            <div class="user-section">
+              <div class="badge">PRO</div>
+              <div class="avatar"></div>
+            </div>
+          </div>
+          <div class="sidebar">
+            <a class="nav-item active">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+              </svg>
+              <span>Overview</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
+              </svg>
+              <span>Banking</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+              </svg>
+              <span>Invoices</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+              </svg>
+              <span>Clients</span>
+            </a>
+
+            <div class="section-title">Accounting</div>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
+              </svg>
+              <span>Journal</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
+              </svg>
+              <span>Reports</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Style 2: Floating Glass Sidebar -->
+      <div class="style-card">
+        <div class="style-header">
+          <div class="style-title">2. Floating Glass Sidebar</div>
+          <div class="style-desc">Modern floating sidebar with glass morphism and elevated appearance</div>
+        </div>
+        <div class="preview style-2">
+          <div class="top-bar">
+            <div class="logo">Akount</div>
+            <input type="text" class="search-box" placeholder="⌘K to search">
+            <div class="user-section">
+              <div class="badge">PRO</div>
+              <div class="avatar"></div>
+            </div>
+          </div>
+          <div class="sidebar">
+            <a class="nav-item active">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+              </svg>
+              <span>Overview</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
+              </svg>
+              <span>Banking</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+              </svg>
+              <span>Invoices</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+              </svg>
+              <span>Clients</span>
+            </a>
+
+            <div class="section-title">Accounting</div>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
+              </svg>
+              <span>Journal</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
+              </svg>
+              <span>Reports</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Style 3: Rail Navigation -->
+      <div class="style-card">
+        <div class="style-header">
+          <div class="style-title">3. Compact Rail Navigation</div>
+          <div class="style-desc">Icon-first rail sidebar for maximum screen space, command bar offset to right</div>
+        </div>
+        <div class="preview style-3">
+          <div class="sidebar">
+            <div class="logo" style="margin-bottom: 1rem;">A</div>
+            <a class="nav-item active">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+              </svg>
+              <span>Home</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
+              </svg>
+              <span>Bank</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+              </svg>
+              <span>Invoice</span>
+            </a>
+            <a class="nav-item">
+              <svg class="nav-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
+              </svg>
+              <span>Journal</span>
+            </a>
+          </div>
+          <div class="top-bar">
+            <input type="text" class="search-box" placeholder="Search transactions, clients, reports... (⌘K)">
+            <div class="user-section">
+              <span style="color: var(--text-secondary); font-size: 0.875rem;">Press <span class="kbd">⌘</span> <span class="kbd">K</span></span>
+              <div class="badge">PRO</div>
+              <div class="avatar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1.5rem; background: var(--glass-1); border: 1px solid var(--glass-border); border-radius: 14px;">
+      <h2 style="font-family: var(--font-heading); font-size: 1.25rem; margin-bottom: 0.75rem;">Design Notes</h2>
+      <ul style="color: var(--text-secondary); font-size: 0.875rem; padding-left: 1.5rem; line-height: 1.8;">
+        <li><strong>Style 1 (Classic):</strong> Traditional layout, familiar UX, persistent navigation. Best for power users who want quick access to all sections.</li>
+        <li><strong>Style 2 (Floating Glass):</strong> Modern aesthetic, visually lighter, floating sidebar creates depth. Command bar feels more prominent.</li>
+        <li><strong>Style 3 (Rail):</strong> Maximum screen real estate, icon-first navigation, command bar gets full width. Best for focus on content.</li>
+        <li><strong>Command Bar:</strong> All styles feature a prominent search/command palette (⌘K pattern). Essential for power users and AI-assisted workflows.</li>
+        <li><strong>Glass Morphism:</strong> Subtle transparency and blur create depth without heavy shadows. Maintains Financial Clarity aesthetic.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

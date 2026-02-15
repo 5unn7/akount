@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: "en-US"
+early_access: false
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+
+  path_instructions:
+    # --- Financial Data (CRITICAL) ---
+    - path: "apps/api/src/domains/**"
+      instructions: |
+        This is a financial application. Enforce these ZERO-TOLERANCE rules:
+
+        1. MONEY PRECISION: All monetary amounts MUST be integer cents (Int, never Float).
+           1050 = $10.50. Flag ANY use of Float/Decimal for money fields.
+
+        2. DOUBLE-ENTRY BOOKKEEPING: Every JournalEntry must balance:
+           SUM(debitAmount) === SUM(creditAmount). Flag unbalanced entries.
+
+        3. TENANT ISOLATION: Every database query MUST filter by tenantId.
+           Entity-scoped models use `entity: { tenantId }`. Flag missing tenant filters.
+
+        4. SOFT DELETE ONLY: Financial records (Invoice, Bill, Payment, JournalEntry,
+           Account, Transaction) must NEVER be hard deleted. Use `deletedAt` field.
+           Flag any prisma.*.delete() on financial models.
+
+        5. SOURCE PRESERVATION: Journal entries from documents must store sourceType,
+           sourceId, and sourceDocument (JSON snapshot).
+
+        API pattern: Route -> Schema (Zod) -> Service -> Prisma.
+        Services accept TenantContext { tenantId, userId, role }.
+        Validation uses custom middleware (validateBody/Query/Params), NOT Fastify schema.
+
+    # --- Prisma Schema ---
+    - path: "packages/db/prisma/**"
+      instructions: |
+        Financial application schema rules:
+        - Money fields MUST be Int (cents), NEVER Float or Decimal
+        - Financial models MUST have `deletedAt DateTime?` for soft delete
+        - All tenant-scoped models need tenantId relation
+        - Audit fields: createdAt, updatedAt, createdBy, updatedBy
+        Flag any Float field that looks like it stores money.
+
+    # --- API Routes ---
+    - path: "apps/api/src/domains/**/routes/**"
+      instructions: |
+        Fastify route conventions:
+        - Auth middleware (authMiddleware) must be in onRequest
+        - Tenant middleware (tenantMiddleware) must follow auth
+        - Role checks via preHandler: withRolePermission([...])
+        - Validation via preValidation: [validateBody(ZodSchema)]
+        - Do NOT use Fastify's built-in `schema` property for validation
+        - Status codes: 201 for creates, 200 for reads/updates, 204 for deletes
+
+    # --- API Services ---
+    - path: "apps/api/src/domains/**/services/**"
+      instructions: |
+        Service conventions:
+        - All service functions accept TenantContext as last param
+        - Every Prisma query must include tenantId filter
+        - Business logic lives here, NOT in routes
+        - Use integer cents for all money calculations
+        - Validate double-entry balance before creating JournalEntry
+
+    # --- Frontend Pages ---
+    - path: "apps/web/src/app/**"
+      instructions: |
+        Next.js 16 App Router conventions:
+        - Default to Server Components (no 'use client' unless needed)
+        - Client Components only for: event handlers, hooks, browser APIs
+        - page.tsx = Server Component for data fetching
+        - Interactive parts in separate client component files
+        - Use Clerk auth() for server-side authentication
+        - API calls via apiClient from @/lib/api/client
+
+    # --- UI Components ---
+    - path: "packages/ui/**"
+      instructions: |
+        Design system: shadcn/ui + shadcn-glass-ui (glass morphism).
+        Tailwind v4 (CSS config, NO tailwind.config.ts).
+        Button radius: 8px standard.
+        Glass components: ButtonGlass, InputGlass, GlassCard, BadgeGlass, etc.
+        Dark-first design with amber orange (#F59E0B) as primary accent.
+
+    # --- Tests ---
+    - path: "**/*.test.ts"
+      instructions: |
+        Test conventions:
+        - Use Vitest as test framework
+        - Financial tests must verify: integer cents, balanced entries, tenant isolation
+        - Test tenant isolation: ensure cross-tenant access returns null/403
+        - Test soft delete: verify deletedAt is set, record still exists
+        - Use descriptive test names that explain the business rule being tested
+
+    # --- Shared Types ---
+    - path: "packages/types/**"
+      instructions: |
+        Shared type definitions for the monorepo.
+        Money amounts must be typed as number (representing integer cents).
+        Never use string for monetary values.
+        Ensure types are properly exported and consumed by both api and web apps.
+
+  tools:
+    eslint:
+      enabled: true
+    gitleaks:
+      enabled: true
+
+chat:
+  auto_reply: true

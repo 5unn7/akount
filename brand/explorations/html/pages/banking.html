@@ -1,0 +1,233 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Banking</div>
+        <div class="page-sub">3 accounts &middot; 2 currencies &middot; Synced 2 min ago</div>
+    </div>
+    <div class="page-actions"><button class="btn" onclick="showToast('Syncing all accounts...')">&#128260; Sync
+            All</button><button class="btn pri" onclick="showToast('Import dialog opened')">&#128229; Import
+            CSV</button></div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab on">Banking</button>
+    <button class="sec-tab" onclick="window.location.hash='#/transactions'">Transactions</button>
+    <button class="sec-tab" onclick="window.location.hash='#/reconciliation'">Reconciliation</button>
+    <button class="sec-tab" onclick="window.location.hash='#/imports'">Imports</button>
+    <button class="sec-tab" onclick="window.location.hash='#/transfers'">Transfers</button>
+</div>
+
+<div class="acct-grid fi fi2">
+    <div class="acct chk" onclick="openDetail('acct-rbc')">
+        <div class="acct-bank">RBC Royal Bank</div>
+        <div class="acct-name">Business Chequing</div>
+        <div class="acct-bal">$29,340<span class="acct-cur">CAD</span></div>
+        <div class="acct-foot"><span>****4521</span><span class="acct-sync"><span class="dot"></span>Synced</span></div>
+    </div>
+    <div class="acct sav" onclick="openDetail('acct-wise')">
+        <div class="acct-bank">Wise</div>
+        <div class="acct-name">USD Balance</div>
+        <div class="acct-bal">$13,160<span class="acct-cur">USD</span></div>
+        <div class="acct-foot"><span>Multi-currency</span><span class="acct-sync"><span class="dot"></span>Synced</span>
+        </div>
+    </div>
+    <div class="acct crd" onclick="openDetail('acct-amex')">
+        <div class="acct-bank">American Express</div>
+        <div class="acct-name">Business Platinum</div>
+        <div class="acct-bal">-$2,840<span class="acct-cur">CAD</span></div>
+        <div class="acct-foot"><span>****1008</span><span class="acct-sync"><span class="dot"></span>Synced</span></div>
+    </div>
+</div>
+
+<div class="recon-sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Reconciliation — February</h2><span class="sec-m">42 of 54 matched</span>
+    </div>
+    <div class="recon-bar-w">
+        <div class="recon-bar">
+            <div class="recon-fill" style="width:78%"></div>
+        </div>
+        <div class="recon-pct">78%</div>
+    </div>
+</div>
+
+<section class="txn-section fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">Transactions</h2>
+        <div class="sec-tabs"><button class="sec-tab on">All</button><button
+                class="sec-tab">Uncategorized</button><button class="sec-tab">Income</button><button
+                class="sec-tab">Expenses</button></div>
+    </div>
+    <div class="txn-filters">
+        <button class="txn-filter on">All Accounts</button>
+        <button class="txn-filter">RBC</button>
+        <button class="txn-filter">Wise</button>
+        <button class="txn-filter">Amex</button>
+        <span class="txn-count">54 transactions</span>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Date <span class="sort">&#9660;</span></th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Account</th>
+                    <th>Reconciled</th>
+                    <th class="right">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row uncat" onclick="openDetail('txn-cat')">
+                    <td class="txn-date-cell">Feb 9</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:var(--pri-dim)">&#128230;</div>
+                            <div class="txn-desc">AMZN MKTP CA*2R4K1</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag uncat">Uncategorized</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot pend"></span>Pending</div>
+                    </td>
+                    <td class="txn-amt out">-$84.99</td>
+                </tr>
+                <tr class="txn-row uncat">
+                    <td class="txn-date-cell">Feb 9</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:var(--pri-dim)">&#127963;</div>
+                            <div class="txn-desc">UBER TRIP 4X92HJ</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag uncat">Uncategorized</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot pend"></span>Pending</div>
+                    </td>
+                    <td class="txn-amt out">-$23.40</td>
+                </tr>
+                <tr class="txn-row uncat">
+                    <td class="txn-date-cell">Feb 8</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:var(--pri-dim)">&#9749;</div>
+                            <div class="txn-desc">STARBUCKS #12445</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag uncat">Uncategorized</span></td>
+                    <td class="txn-acct-cell">Amex ****1008</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot pend"></span>Pending</div>
+                    </td>
+                    <td class="txn-amt out">-$6.80</td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 7</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128179;</div>
+                            <div class="txn-desc">Wise Transfer — EUR to CAD</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">Transfer</span></td>
+                    <td class="txn-acct-cell">Wise</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt in">+$4,700.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 6</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128176;</div>
+                            <div class="txn-desc">XYZ Ltd — Invoice #1046 Payment</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">Client Payment</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt in">+$8,200.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 5</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#127968;</div>
+                            <div class="txn-desc">WeWork — Monthly Office Space</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">Rent</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt out">-$1,800.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 4</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128187;</div>
+                            <div class="txn-desc">Vercel Pro — Hosting Subscription</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">SaaS</span></td>
+                    <td class="txn-acct-cell">Amex ****1008</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt out">-$20.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 4</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128187;</div>
+                            <div class="txn-desc">Linear — Team Plan</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">SaaS</span></td>
+                    <td class="txn-acct-cell">Amex ****1008</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt out">-$48.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 3</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128176;</div>
+                            <div class="txn-desc">DEF Consulting — Retainer Feb</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">Client Payment</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt in">+$3,500.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td class="txn-date-cell">Feb 2</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128179;</div>
+                            <div class="txn-desc">Wise Transfer — USD to CAD</div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">Transfer</span></td>
+                    <td class="txn-acct-cell">Wise</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt in">+$2,800.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

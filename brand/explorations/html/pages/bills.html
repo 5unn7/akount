@@ -1,0 +1,101 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Bills (AP)</div>
+        <div class="page-sub">$3,200 due soon &middot; 2 pending approval</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Scan bill...')">Scan Bill</button>
+        <button class="btn pri" onclick="showToast('New bill created')">+ New Bill</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/invoicing'">Invoices</button>
+    <button class="sec-tab on">Bills</button>
+    <button class="sec-tab" onclick="window.location.hash='#/clients'">Clients</button>
+    <button class="sec-tab" onclick="window.location.hash='#/vendors'">Vendors</button>
+    <button class="sec-tab" onclick="window.location.hash='#/payments'">Payments</button>
+</div>
+
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Due</div>
+        <div class="st-val">$3,200</div>
+        <div class="st-trend flat">2 bills</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Overdue</div>
+        <div class="st-val" style="color:var(--green)">$0</div>
+        <div class="st-trend flat">Great job!</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Pending Approval</div>
+        <div class="st-val">2</div>
+        <div class="st-trend up">Need review</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Avg Days to Pay</div>
+        <div class="st-val">12d</div>
+        <div class="st-trend dn">-2 days</div>
+    </div>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Accounts Payable</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">All</button>
+            <button class="sec-tab">Pending</button>
+            <button class="sec-tab">Approved</button>
+            <button class="sec-tab">Paid</button>
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="inv-table">
+            <thead>
+                <tr>
+                    <th>Ref</th>
+                    <th>Vendor</th>
+                    <th>Entity</th>
+                    <th>Category</th>
+                    <th class="right">Amount</th>
+                    <th>Status</th>
+                    <th>Due Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="inv-row">
+                    <td class="inv-num">BIL-042</td>
+                    <td><span class="inv-client">AWS</span><br><span class="inv-client-sub">Cloud Infra</span></td>
+                    <td style="font-size:11px;color:var(--t3)">&#127482;&#127480; LLC</td>
+                    <td>Software</td>
+                    <td class="inv-amt">$1,200 <span class="cur">USD</span></td>
+                    <td><span class="inv-badge sent">Approved</span></td>
+                    <td class="inv-due">Feb 15</td>
+                    <td><button class="btn-xs">Pay</button></td>
+                </tr>
+                <tr class="inv-row">
+                    <td class="inv-num">BIL-041</td>
+                    <td><span class="inv-client">Adobe</span><br><span class="inv-client-sub">Creative Cloud</span></td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td>Software</td>
+                    <td class="inv-amt">$2,000 <span class="cur">CAD</span></td>
+                    <td><span class="inv-badge pending">Pending</span></td>
+                    <td class="inv-due">Feb 20</td>
+                    <td><button class="btn-xs">Approve</button></td>
+                </tr>
+                <tr class="inv-row" style="opacity:0.6">
+                    <td class="inv-num">BIL-038</td>
+                    <td><span class="inv-client">WeWork</span><br><span class="inv-client-sub">Office Rent</span></td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td>Rent</td>
+                    <td class="inv-amt">$4,500 <span class="cur">CAD</span></td>
+                    <td><span class="inv-badge paid">Paid</span></td>
+                    <td class="inv-due">Feb 1</td>
+                    <td><button class="btn-xs">View</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

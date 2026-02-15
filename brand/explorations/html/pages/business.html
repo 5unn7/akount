@@ -1,0 +1,171 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Business</div>
+        <div class="page-sub">8 invoices &middot; $42,800 outstanding &middot; $12,400 due this week</div>
+    </div>
+    <div class="page-actions"><button class="btn">&#128200; Reports</button><button class="btn solid"
+            onclick="showToast('New invoice created')">+ New Invoice</button></div>
+</div>
+
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Outstanding</div>
+        <div class="st-val">$42,800</div>
+        <div class="st-trend flat">8 invoices</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Collected (Feb)</div>
+        <div class="st-val">$18,600</div>
+        <div class="st-trend up">+24%</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Avg Days to Pay</div>
+        <div class="st-val">14.2 d</div>
+        <div class="st-trend up">-2.1 days</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Overdue</div>
+        <div class="st-val" style="color:var(--red)">$4,200</div>
+        <div class="st-trend dn">1 invoice</div>
+    </div>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Aging</h2><span class="sec-m">$42,800 total</span>
+    </div>
+    <div class="aging-bar">
+        <div class="aging-seg" style="flex:48;background:var(--green)"></div>
+        <div class="aging-seg" style="flex:28;background:var(--pri)"></div>
+        <div class="aging-seg" style="flex:14;background:var(--red)"></div>
+        <div class="aging-seg" style="flex:10;background:#DC2626"></div>
+    </div>
+    <div class="aging-legend">
+        <div class="aging-item">
+            <div class="aging-dot" style="background:var(--green)"></div>Current $20,400
+        </div>
+        <div class="aging-item">
+            <div class="aging-dot" style="background:var(--pri)"></div>1-30d $12,200
+        </div>
+        <div class="aging-item">
+            <div class="aging-dot" style="background:var(--red)"></div>31-60d $6,000
+        </div>
+        <div class="aging-item">
+            <div class="aging-dot" style="background:#DC2626"></div>60+d $4,200
+        </div>
+    </div>
+</section>
+
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">All Invoices</h2>
+        <div class="sec-tabs"><button class="sec-tab on">All</button><button class="sec-tab">Outstanding</button><button
+                class="sec-tab">Paid</button><button class="sec-tab">Draft</button></div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="inv-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Client</th>
+                    <th class="right">Amount</th>
+                    <th>Status</th>
+                    <th>Due</th>
+                    <th>Collection</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="inv-row" onclick="openDetail('inv-1047')">
+                    <td class="inv-num">#1047</td>
+                    <td><span class="inv-client">ABC Corp</span><br><span class="inv-client-sub">Consulting
+                            Services</span></td>
+                    <td class="inv-amt">$4,200 <span class="cur">USD</span></td>
+                    <td><span class="inv-badge overdue">Overdue</span></td>
+                    <td class="inv-due late">Feb 6</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:0;background:var(--red)"></div>
+                            </div><span style="font-size:10px;color:var(--t3)">0%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="inv-row" onclick="openDetail('inv-1046')">
+                    <td class="inv-num">#1046</td>
+                    <td><span class="inv-client">XYZ Ltd</span><br><span class="inv-client-sub">Monthly Retainer</span>
+                    </td>
+                    <td class="inv-amt">$8,200 <span class="cur">CAD</span></td>
+                    <td><span class="inv-badge paid">Paid</span></td>
+                    <td class="inv-due">Feb 6</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green)">100%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="inv-row">
+                    <td class="inv-num">#1045</td>
+                    <td><span class="inv-client">TechStart GmbH</span><br><span class="inv-client-sub">API
+                            Integration</span></td>
+                    <td class="inv-amt">&euro;6,500 <span class="cur">EUR</span></td>
+                    <td><span class="inv-badge sent">Sent</span></td>
+                    <td class="inv-due">Feb 12</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:0;background:var(--pri)"></div>
+                            </div><span style="font-size:10px;color:var(--t3)">0%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="inv-row">
+                    <td class="inv-num">#1044</td>
+                    <td><span class="inv-client">Maple Digital</span><br><span class="inv-client-sub">Design System
+                            Audit</span></td>
+                    <td class="inv-amt">$5,900 <span class="cur">CAD</span></td>
+                    <td><span class="inv-badge pending">Pending</span></td>
+                    <td class="inv-due">Feb 14</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:50%;background:var(--pri)"></div>
+                            </div><span style="font-size:10px;color:var(--t3)">50%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="inv-row">
+                    <td class="inv-num">#1043</td>
+                    <td><span class="inv-client">DEF Consulting</span><br><span class="inv-client-sub">Strategy
+                            Workshop</span></td>
+                    <td class="inv-amt">$3,500 <span class="cur">CAD</span></td>
+                    <td><span class="inv-badge paid">Paid</span></td>
+                    <td class="inv-due">Feb 3</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green)">100%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="inv-row">
+                    <td class="inv-num">#1042</td>
+                    <td><span class="inv-client">NovaSync Inc</span><br><span class="inv-client-sub">Platform
+                            Migration</span></td>
+                    <td class="inv-amt">$12,000 <span class="cur">USD</span></td>
+                    <td><span class="inv-badge draft">Draft</span></td>
+                    <td class="inv-due">&mdash;</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:0"></div>
+                            </div><span style="font-size:10px;color:var(--t4)">&mdash;</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

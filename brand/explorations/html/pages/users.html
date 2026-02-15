@@ -1,0 +1,74 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Users</div>
+        <div class="page-sub">Team Members &middot; Roles &middot; Permissions</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('Invite user dialog...')">+ Invite User</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/system'">System</button>
+    <button class="sec-tab" onclick="window.location.hash='#/integrations'">Integrations</button>
+    <button class="sec-tab" onclick="window.location.hash='#/rules'">Rules</button>
+    <button class="sec-tab on">Users</button>
+    <button class="sec-tab" onclick="window.location.hash='#/audit-log'">Audit Log</button>
+    <button class="sec-tab" onclick="window.location.hash='#/security'">Security</button>
+    <button class="sec-tab" onclick="window.location.hash='#/settings'">Settings</button>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Team Members</h2>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Last Active</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td>
+                        <div style="display:flex;gap:10px;align-items:center">
+                            <div
+                                style="width:28px;height:28px;border-radius:50%;background:var(--pri-dim);color:var(--pri);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">
+                                SM</div>
+                            <div>
+                                <div style="font-weight:600">Sunny M.</div>
+                                <div style="font-size:10px;color:var(--t3)">sunny@marakana.com</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">Admin</span></td>
+                    <td style="font-size:11px;color:var(--t3)">Just now</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                    <td><button class="btn-xs">Edit</button></td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div style="display:flex;gap:10px;align-items:center">
+                            <div
+                                style="width:28px;height:28px;border-radius:50%;background:rgba(52,211,153,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">
+                                RP</div>
+                            <div>
+                                <div style="font-weight:600">Rachel Park</div>
+                                <div style="font-size:10px;color:var(--t3)">rachel@parkassociates.ca</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">Accountant</span></td>
+                    <td style="font-size:11px;color:var(--t3)">2 hours ago</td>
+                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                    <td><button class="btn-xs">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

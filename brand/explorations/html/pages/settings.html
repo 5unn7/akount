@@ -1,0 +1,57 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Settings</div>
+        <div class="page-sub">Localization &middot; Appearance &middot; Notifications</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('Settings saved')">Save Changes</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/system'">System</button>
+    <button class="sec-tab" onclick="window.location.hash='#/integrations'">Integrations</button>
+    <button class="sec-tab" onclick="window.location.hash='#/rules'">Rules</button>
+    <button class="sec-tab" onclick="window.location.hash='#/users'">Users</button>
+    <button class="sec-tab" onclick="window.location.hash='#/audit-log'">Audit Log</button>
+    <button class="sec-tab" onclick="window.location.hash='#/security'">Security</button>
+    <button class="sec-tab on">Settings</button>
+</div>
+
+<div class="two-col">
+    <section class="sec fi fi3">
+        <div class="sec-h">
+            <h2 class="sec-t">Localization</h2>
+        </div>
+        <div class="d-row">
+            <span class="d-row-l">Base Currency</span>
+            <span class="d-row-v">CAD ($)</span>
+        </div>
+        <div class="d-row">
+            <span class="d-row-l">Date Format</span>
+            <span class="d-row-v">YYYY-MM-DD</span>
+        </div>
+        <div class="d-row" style="border:none">
+            <span class="d-row-l">Time Zone</span>
+            <span class="d-row-v">America/Toronto</span>
+        </div>
+    </section>
+
+    <section class="sec fi fi4">
+        <div class="sec-h">
+            <h2 class="sec-t">Notifications</h2>
+        </div>
+        <div class="d-row">
+            <span class="d-row-l">Email Alerts</span>
+            <span class="d-row-v" style="color:var(--green)">On</span>
+        </div>
+        <div class="d-row">
+            <span class="d-row-l">Push Notifications</span>
+            <span class="d-row-v" style="color:var(--green)">On</span>
+        </div>
+        <div class="d-row" style="border:none">
+            <span class="d-row-l">Marketing Updates</span>
+            <span class="d-row-v" style="color:var(--t3)">Off</span>
+        </div>
+    </section>
+</div>

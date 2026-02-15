@@ -1,0 +1,339 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">System</div>
+        <div class="page-sub">Entities &middot; Integrations &middot; Rules &middot; Audit log &middot; Preferences
+        </div>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab on">System</button>
+    <button class="sec-tab" onclick="window.location.hash='#/integrations'">Integrations</button>
+    <button class="sec-tab" onclick="window.location.hash='#/rules'">Rules</button>
+    <button class="sec-tab" onclick="window.location.hash='#/users'">Users</button>
+    <button class="sec-tab" onclick="window.location.hash='#/audit-log'">Audit Log</button>
+    <button class="sec-tab" onclick="window.location.hash='#/security'">Security</button>
+    <button class="sec-tab" onclick="window.location.hash='#/settings'">Settings</button>
+</div>
+
+<div class="two-col">
+    <div>
+        <!-- Entities -->
+        <section class="sec fi fi2">
+            <div class="sec-h">
+                <h2 class="sec-t">Entities</h2><button class="btn" style="font-size:11px;padding:4px 10px"
+                    onclick="showToast('Entity creation coming soon')">+ Add Entity</button>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Type</th>
+                            <th>Currency</th>
+                            <th>Accounts</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="txn-row">
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:var(--pri-dim);color:var(--pri);font-weight:700;font-size:10px">
+                                        M</div>
+                                    <div>
+                                        <div class="txn-desc">Marakana Corp</div>
+                                        <div style="font-size:10px;color:var(--t4);margin-top:1px">Ontario Corp &middot;
+                                            BN 123456789</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:var(--pri-dim);color:var(--pri)">Consulting</span></td>
+                            <td style="font-size:12px;color:var(--t2)">CAD</td>
+                            <td style="font-size:12px;color:var(--t2)">3</td>
+                            <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(96,165,250,.12);color:var(--blue);font-weight:700;font-size:10px">
+                                        MK</div>
+                                    <div>
+                                        <div class="txn-desc">MK Digital</div>
+                                        <div style="font-size:10px;color:var(--t4);margin-top:1px">Delaware LLC &middot;
+                                            EIN 87-1234567</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(96,165,250,.12);color:var(--blue)">SaaS</span></td>
+                            <td style="font-size:12px;color:var(--t2)">USD</td>
+                            <td style="font-size:12px;color:var(--t2)">2</td>
+                            <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(167,139,250,.12);color:var(--purple);font-weight:700;font-size:10px">
+                                        EU</div>
+                                    <div>
+                                        <div class="txn-desc">Marakana EU</div>
+                                        <div style="font-size:10px;color:var(--t4);margin-top:1px">Ireland Ltd &middot;
+                                            VAT IE1234567T</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(167,139,250,.12);color:var(--purple)">Services</span></td>
+                            <td style="font-size:12px;color:var(--t2)">EUR</td>
+                            <td style="font-size:12px;color:var(--t2)">1</td>
+                            <td><span class="inv-badge sent" style="font-size:10px">Setup</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Integrations -->
+        <section class="sec fi fi3">
+            <div class="sec-h">
+                <h2 class="sec-t">Integrations</h2><button class="btn" style="font-size:11px;padding:4px 10px"
+                    onclick="showToast('Integration marketplace coming soon')">+ Connect</button>
+            </div>
+
+            <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+                <div
+                    style="width:36px;height:36px;border-radius:8px;background:rgba(52,211,153,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">
+                    &#127974;</div>
+                <div style="flex:1">
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">RBC Royal Bank</div>
+                    <div style="font-size:11px;color:var(--t3)">Business Chequing ****4521 &middot; Auto-sync every 4h
+                    </div>
+                </div>
+                <div style="text-align:right"><span class="inv-badge paid" style="font-size:10px">Connected</span>
+                    <div style="font-size:10px;color:var(--t4);margin-top:3px">Synced 2 min ago</div>
+                </div>
+            </div>
+            <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+                <div
+                    style="width:36px;height:36px;border-radius:8px;background:rgba(96,165,250,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">
+                    &#128179;</div>
+                <div style="flex:1">
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">Wise</div>
+                    <div style="font-size:11px;color:var(--t3)">Multi-currency &middot; USD + EUR balances &middot;
+                        Auto-sync</div>
+                </div>
+                <div style="text-align:right"><span class="inv-badge paid" style="font-size:10px">Connected</span>
+                    <div style="font-size:10px;color:var(--t4);margin-top:3px">Synced 2 min ago</div>
+                </div>
+            </div>
+            <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+                <div
+                    style="width:36px;height:36px;border-radius:8px;background:rgba(167,139,250,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">
+                    &#128179;</div>
+                <div style="flex:1">
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">American Express</div>
+                    <div style="font-size:11px;color:var(--t3)">Business Platinum ****1008 &middot; Auto-sync</div>
+                </div>
+                <div style="text-align:right"><span class="inv-badge paid" style="font-size:10px">Connected</span>
+                    <div style="font-size:10px;color:var(--t4);margin-top:3px">Synced 2 min ago</div>
+                </div>
+            </div>
+            <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+                <div
+                    style="width:36px;height:36px;border-radius:8px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">
+                    &#128231;</div>
+                <div style="flex:1">
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">Gmail</div>
+                    <div style="font-size:11px;color:var(--t3)">sunny@marakana.com &middot; Invoice delivery &amp;
+                        receipt scanning</div>
+                </div>
+                <div style="text-align:right"><span class="inv-badge paid" style="font-size:10px">Connected</span></div>
+            </div>
+            <div style="padding:12px 0;display:flex;align-items:center;gap:12px">
+                <div
+                    style="width:36px;height:36px;border-radius:8px;background:rgba(248,113,113,.08);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;opacity:.5">
+                    &#128202;</div>
+                <div style="flex:1">
+                    <div style="font-size:13px;font-weight:600;color:var(--t3)">Stripe</div>
+                    <div style="font-size:11px;color:var(--t4)">Payment processing — not connected</div>
+                </div>
+                <div><button class="btn" style="font-size:11px;padding:4px 10px"
+                        onclick="showToast('Stripe connection flow...')">Connect</button></div>
+            </div>
+        </section>
+
+        <!-- Categorization Rules -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Categorization Rules</h2><button class="btn" style="font-size:11px;padding:4px 10px"
+                    onclick="showToast('New rule created')">+ Add Rule</button>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Rule</th>
+                            <th>Match</th>
+                            <th>Category</th>
+                            <th>GL Account</th>
+                            <th>Applied</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="txn-row">
+                            <td style="font-size:12px;color:var(--t1)">WeWork Rent</td>
+                            <td style="font-size:11px;color:var(--t3);font-family:var(--mono)">WEWORK*</td>
+                            <td><span class="txn-cat-tag">Rent</span></td>
+                            <td style="font-size:11px;color:var(--t3)">5000</td>
+                            <td style="font-size:11px;color:var(--t3)">24 txns</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-size:12px;color:var(--t1)">Vercel Hosting</td>
+                            <td style="font-size:11px;color:var(--t3);font-family:var(--mono)">VERCEL*</td>
+                            <td><span class="txn-cat-tag">SaaS</span></td>
+                            <td style="font-size:11px;color:var(--t3)">5100</td>
+                            <td style="font-size:11px;color:var(--t3)">12 txns</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-size:12px;color:var(--t1)">Linear Plan</td>
+                            <td style="font-size:11px;color:var(--t3);font-family:var(--mono)">LINEAR*</td>
+                            <td><span class="txn-cat-tag">SaaS</span></td>
+                            <td style="font-size:11px;color:var(--t3)">5100</td>
+                            <td style="font-size:11px;color:var(--t3)">8 txns</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-size:12px;color:var(--t1)">Uber Business</td>
+                            <td style="font-size:11px;color:var(--t3);font-family:var(--mono)">UBER TRIP*</td>
+                            <td><span class="txn-cat-tag">Travel</span></td>
+                            <td style="font-size:11px;color:var(--t3)">5200</td>
+                            <td style="font-size:11px;color:var(--t3)">18 txns</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-size:12px;color:var(--t1)">Starbucks</td>
+                            <td style="font-size:11px;color:var(--t3);font-family:var(--mono)">STARBUCKS*</td>
+                            <td><span class="txn-cat-tag">Meals</span></td>
+                            <td style="font-size:11px;color:var(--t3)">5400</td>
+                            <td style="font-size:11px;color:var(--t3)">32 txns</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Audit Log -->
+        <section class="sec fi fi5">
+            <div class="sec-h">
+                <h2 class="sec-t">Audit Log</h2><span class="sec-m">Last 7 days</span>
+            </div>
+            <div
+                style="font-size:11px;color:var(--t3);padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+                <div><span style="color:var(--t4);font-family:var(--mono)">Feb 9 18:32</span> &middot; <strong
+                        style="color:var(--t2)">Sunny M.</strong> navigated to Accounting</div><span
+                    style="color:var(--t4)">UI</span>
+            </div>
+            <div
+                style="font-size:11px;color:var(--t3);padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+                <div><span style="color:var(--t4);font-family:var(--mono)">Feb 9 18:30</span> &middot; <strong
+                        style="color:var(--t2)">System</strong> auto-synced 3 bank accounts</div><span
+                    style="color:var(--t4)">Sync</span>
+            </div>
+            <div
+                style="font-size:11px;color:var(--t3);padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+                <div><span style="color:var(--t4);font-family:var(--mono)">Feb 9 14:00</span> &middot; <strong
+                        style="color:var(--t2)">AI</strong> categorized 12 transactions</div><span
+                    style="color:var(--pri)">AI</span>
+            </div>
+            <div
+                style="font-size:11px;color:var(--t3);padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+                <div><span style="color:var(--t4);font-family:var(--mono)">Feb 8 09:15</span> &middot; <strong
+                        style="color:var(--t2)">Sunny M.</strong> created Invoice #1047</div><span
+                    style="color:var(--t4)">Invoice</span>
+            </div>
+            <div
+                style="font-size:11px;color:var(--t3);padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+                <div><span style="color:var(--t4);font-family:var(--mono)">Feb 7 16:42</span> &middot; <strong
+                        style="color:var(--t2)">System</strong> posted JE-2026-0041 (FX transfer)</div><span
+                    style="color:var(--t4)">Journal</span>
+            </div>
+            <div style="font-size:11px;color:var(--t3);padding:8px 0;display:flex;justify-content:space-between">
+                <div><span style="color:var(--t4);font-family:var(--mono)">Feb 6 11:20</span> &middot; <strong
+                        style="color:var(--t2)">Rachel Park</strong> accessed Q4 financials</div><span
+                    style="color:var(--t4)">Access</span>
+            </div>
+        </section>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-col fi fi6">
+        <!-- Preferences -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Preferences</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Display Currency</span><span class="d-row-v">CAD ($)</span></div>
+            <div class="d-row"><span class="d-row-l">Date Format</span><span class="d-row-v">MMM D, YYYY</span></div>
+            <div class="d-row"><span class="d-row-l">Fiscal Year Start</span><span class="d-row-v">January 1</span>
+            </div>
+            <div class="d-row"><span class="d-row-l">Number Format</span><span class="d-row-v">1,234.56</span></div>
+            <div class="d-row"><span class="d-row-l">Tax Jurisdiction</span><span class="d-row-v">Ontario, Canada</span>
+            </div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Default Tax Rate</span><span
+                    class="d-row-v">13% HST</span></div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Notifications</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Invoice overdue</span><span class="d-row-v"
+                    style="color:var(--green)">&#9745; Email + Push</span></div>
+            <div class="d-row"><span class="d-row-l">Payment received</span><span class="d-row-v"
+                    style="color:var(--green)">&#9745; Push only</span></div>
+            <div class="d-row"><span class="d-row-l">Bank sync complete</span><span class="d-row-v"
+                    style="color:var(--t3)">&#9744; Off</span></div>
+            <div class="d-row"><span class="d-row-l">AI insights ready</span><span class="d-row-v"
+                    style="color:var(--green)">&#9745; Email</span></div>
+            <div class="d-row"><span class="d-row-l">Month-end reminder</span><span class="d-row-v"
+                    style="color:var(--green)">&#9745; Email + Push</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Low balance alert</span><span class="d-row-v"
+                    style="color:var(--green)">&#9745; Email + Push</span></div>
+        </div>
+
+        <!-- Security -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Security</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Two-Factor Auth</span><span class="d-row-v"
+                    style="color:var(--green)">&#128274; Enabled</span></div>
+            <div class="d-row"><span class="d-row-l">Last Login</span><span class="d-row-v">Today, 6:32 PM</span></div>
+            <div class="d-row"><span class="d-row-l">Active Sessions</span><span class="d-row-v">2 devices</span></div>
+            <div class="d-row"><span class="d-row-l">API Keys</span><span class="d-row-v" style="color:var(--pri)">1
+                    active</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Data Encryption</span><span class="d-row-v"
+                    style="color:var(--green)">AES-256</span></div>
+        </div>
+
+        <!-- Account -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Account</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Plan</span><span class="d-row-v"
+                    style="color:var(--pri);font-weight:600">Pro — $49/mo</span></div>
+            <div class="d-row"><span class="d-row-l">Billing Cycle</span><span class="d-row-v">Monthly — renews Mar
+                    1</span></div>
+            <div class="d-row"><span class="d-row-l">Users</span><span class="d-row-v">2 of 5</span></div>
+            <div class="d-row"><span class="d-row-l">Storage Used</span><span class="d-row-v">1.2 GB of 10 GB</span>
+            </div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Support</span><span class="d-row-v">Priority
+                    email</span></div>
+        </div>
+    </div>
+</div>

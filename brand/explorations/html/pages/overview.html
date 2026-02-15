@@ -1,0 +1,512 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title" id="greeting">Good evening, Sunny</div>
+        <div class="page-sub">Sunday, February 9, 2026</div>
+    </div>
+</div>
+
+<!-- Hero Global Position -->
+<!-- Hero Global Position -->
+<div id="hero-global" class="fi fi1"
+    style="margin-bottom:24px;background:linear-gradient(135deg,var(--bg-2),var(--bg-1));border:1px solid var(--border);border-radius:var(--r);padding:24px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between">
+    <div>
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.05em;color:var(--t3);margin-bottom:8px">
+            Total Global Liquidity</div>
+        <div
+            style="font-size:42px;font-weight:700;color:var(--t1);font-family:'JetBrains Mono';line-height:1;margin-bottom:12px">
+            $1,424,500 <span style="font-size:16px;color:var(--t3);font-weight:400">CAD eq</span></div>
+        <div style="display:flex;align-items:center;gap:12px">
+            <div
+                style="font-size:13px;color:var(--green);background:var(--green-dim);padding:2px 8px;border-radius:4px;font-weight:600">
+                ▲ 6.8% vs last month</div>
+            <div style="font-size:13px;color:var(--t3)">Net change: +$84,200</div>
+        </div>
+    </div>
+    <!-- Currency Breakdown (Visual) -->
+    <div style="display:flex;gap:24px;text-align:right">
+        <div>
+            <div style="font-size:11px;color:var(--t3)">USD (38%)</div>
+            <div style="font-size:15px;color:var(--t1);font-weight:600">$442k</div>
+        </div>
+        <div>
+            <div style="font-size:11px;color:var(--t3)">GBP (25%)</div>
+            <div style="font-size:15px;color:var(--t1);font-weight:600">£142k</div>
+        </div>
+        <div>
+            <div style="font-size:11px;color:var(--t3)">INR (15%)</div>
+            <div style="font-size:15px;color:var(--t1);font-weight:600">₹45L</div>
+        </div>
+        <div>
+            <div style="font-size:11px;color:var(--t3)">CAD (22%)</div>
+            <div style="font-size:15px;color:var(--t1);font-weight:600">$53k</div>
+        </div>
+    </div>
+</div>
+
+
+
+<div
+    style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+    <h2 class="sec-t fi fi2" style="margin:0">Liquidity Matrix</h2>
+    <div class="fi fi2" style="font-size:12px;color:var(--t3)">
+        Breakdown by Entity
+    </div>
+</div>
+
+<!-- LEAVE OUT Pulse Summary (Removed per request) -->
+
+
+
+<!-- Liquidity Matrix (Compact View) -->
+<div id="liquidity-matrix"
+    style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:16px;margin-bottom:32px">
+
+
+
+    <!-- Personal Group -->
+    <div class="ac-card" data-entity="Personal"
+        style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;transition:all .2s">
+        <div
+            style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:16px">👤</span>
+                <div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">Personal</div>
+                    <div style="font-size:10px;color:var(--t3)">4 Accounts</div>
+                </div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1)">$140k <span
+                    style="font-size:10px;color:var(--t3)">Liquid</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading Checking...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:var(--t2);color:var(--bg-1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold">
+                        TD</div>
+                    <div style="font-size:13px;color:var(--t2)">Checking</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">$8,420</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading Savings...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:var(--t2);color:var(--bg-1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold">
+                        TD</div>
+                    <div style="font-size:13px;color:var(--t2)">High Interest</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">$132k</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading WealthSimple...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:#eab308;color:#000;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold">
+                        WS</div>
+                    <div style="font-size:13px;color:var(--t2)">Investments</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">$2.4M</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- US Ops Group -->
+    <div class="ac-card" data-entity="MK Digital"
+        style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;transition:all .2s">
+        <div
+            style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:16px">🇺🇸</span>
+                <div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">US Ops</div>
+                    <div style="font-size:10px;color:var(--t3)">2 Accounts</div>
+                </div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1)">$442k <span
+                    style="font-size:10px;color:var(--t3)">USD</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+            <!-- Account Row -->
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading Chase...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:#117aca;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:bold">
+                        CH</div>
+                    <div style="font-size:13px;color:var(--t2)">Chase Ops</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">$428.9k</div>
+            </div>
+            <!-- Account Row -->
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading Wise...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:#9fe870;color:#163300;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold">
+                        W</div>
+                    <div style="font-size:13px;color:var(--t2)">Wise USD</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">$13.2k</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UK HQ Group -->
+    <div class="ac-card" data-entity="Marakana EU"
+        style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;transition:all .2s">
+        <div
+            style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:16px">🇬🇧</span>
+                <div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">UK HQ</div>
+                    <div style="font-size:10px;color:var(--t3)">1 Account</div>
+                </div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1)">£142k <span
+                    style="font-size:10px;color:var(--t3)">GBP</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading Barclays...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:#00aeef;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:bold">
+                        BC</div>
+                    <div style="font-size:13px;color:var(--t2)">Barclays Corp</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">£142.5k</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- India Ops Group -->
+    <div class="ac-card" data-entity="Marakana India"
+        style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;transition:all .2s">
+        <div
+            style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:16px">🇮🇳</span>
+                <div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">India Ops</div>
+                    <div style="font-size:10px;color:var(--t3)">1 Account</div>
+                </div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1)">₹45L <span
+                    style="font-size:10px;color:var(--t3)">INR</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading HDFC...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:#004c8f;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:bold">
+                        HDFC</div>
+                    <div style="font-size:13px;color:var(--t2)">HDFC Corp</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">₹45,20k</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canada Group -->
+    <div class="ac-card" data-entity="Marakana Corp"
+        style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;transition:all .2s">
+        <div
+            style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:16px">🇨🇦</span>
+                <div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">Marakana Corp</div>
+                    <div style="font-size:10px;color:var(--t3)">2 Accounts</div>
+                </div>
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--t1)">$26.5k <span
+                    style="font-size:10px;color:var(--t3)">CAD</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading RBC...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:rgba(255,255,255,0.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px">
+                        🏦</div>
+                    <div style="font-size:13px;color:var(--t2)">RBC Biz</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">$29.3k</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0"
+                onclick="showToast('Loading Amex...')">
+                <div style="display:flex;align-items:center;gap:8px">
+                    <div
+                        style="width:24px;height:24px;background:#006fcf;color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:900">
+                        AMEX</div>
+                    <div style="font-size:13px;color:var(--t2)">Platinum</div>
+                </div>
+                <div style="font-size:13px;color:var(--t1);font-family:'JetBrains Mono'">-$2.8k</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Performance Sparklines -->
+<h2 class="sec-t fi fi3" style="margin-bottom:12px">Performance</h2>
+<div class="spark-row fi fi3" style="margin-bottom:32px;gap:16px">
+    <div class="spark-card" style="padding:16px 18px">
+        <div class="spark-label" style="font-size:11px;margin-bottom:8px">Revenue</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val" style="font-size:18px">$24,800</div><span class="st-trend up"
+                style="font-size:11px">+12%</span>
+        </div>
+        <div class="spark-line" style="margin-top:8px"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,20 15,18 30,16 45,19 60,14 75,10 90,12 105,8 120,6" fill="none"
+                    stroke="rgba(52,211,153,.4)" stroke-width="1.5" />
+                <polyline points="0,20 15,18 30,16 45,19 60,14 75,10 90,12 105,8 120,6" fill="url(#gUp)"
+                    stroke="none" />
+                <defs>
+                    <linearGradient id="gUp" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="rgba(52,211,153,.12)" />
+                        <stop offset="1" stop-color="rgba(52,211,153,0)" />
+                    </linearGradient>
+                </defs>
+            </svg></div>
+    </div>
+    <div class="spark-card" style="padding:16px 18px">
+        <div class="spark-label" style="font-size:11px;margin-bottom:8px">Expenses</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val" style="font-size:18px">$8,420</div><span class="st-trend dn"
+                style="font-size:11px">+3%</span>
+        </div>
+        <div class="spark-line" style="margin-top:8px"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,16 15,14 30,15 45,12 60,14 75,10 90,11 105,9 120,8" fill="none"
+                    stroke="rgba(248,113,113,.35)" stroke-width="1.5" />
+                <polyline points="0,16 15,14 30,15 45,12 60,14 75,10 90,11 105,9 120,8" fill="url(#gDn)"
+                    stroke="none" />
+                <defs>
+                    <linearGradient id="gDn" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="rgba(248,113,113,.1)" />
+                        <stop offset="1" stop-color="rgba(248,113,113,0)" />
+                    </linearGradient>
+                </defs>
+            </svg></div>
+    </div>
+    <div class="spark-card" style="padding:16px 18px">
+        <div class="spark-label" style="font-size:11px;margin-bottom:8px">Profit</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val" style="font-size:18px">$16,380</div><span class="st-trend up"
+                style="font-size:11px">+18%</span>
+        </div>
+        <div class="spark-line" style="margin-top:8px"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,22 15,20 30,18 45,20 60,14 75,12 90,10 105,6 120,4" fill="none"
+                    stroke="rgba(245,158,11,.4)" stroke-width="1.5" />
+                <polyline points="0,22 15,20 30,18 45,20 60,14 75,12 90,10 105,6 120,4" fill="url(#gPr)"
+                    stroke="none" />
+                <defs>
+                    <linearGradient id="gPr" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="rgba(245,158,11,.1)" />
+                        <stop offset="1" stop-color="rgba(245,158,11,0)" />
+                    </linearGradient>
+                </defs>
+            </svg></div>
+    </div>
+    <div class="spark-card" style="padding:16px 18px">
+        <div class="spark-label" style="font-size:11px;margin-bottom:8px">Receivables</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val" style="font-size:18px">$42,800</div><span class="st-trend flat"
+                style="font-size:11px">8 inv</span>
+        </div>
+        <div class="spark-line" style="margin-top:8px"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,12 15,10 30,14 45,8 60,12 75,10 90,8 105,10 120,9" fill="none"
+                    stroke="rgba(96,165,250,.35)" stroke-width="1.5" />
+            </svg></div>
+    </div>
+    <div class="spark-card" style="padding:16px 18px">
+        <div class="spark-label" style="font-size:11px;margin-bottom:8px">Runway</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val" style="font-size:18px">5.6 mo</div><span class="st-trend flat"
+                style="font-size:11px">Stable</span>
+        </div>
+        <div class="spark-line" style="margin-top:8px"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,14 15,13 30,12 45,12 60,11 75,11 90,12 105,11 120,10" fill="none"
+                    stroke="rgba(167,139,250,.3)" stroke-width="1.5" />
+            </svg></div>
+    </div>
+</div>
+
+<div class="two-col" style="gap:24px">
+    <!-- LEFT COLUMN: Insights & Analysis -->
+    <div style="display:flex;flex-direction:column;gap:24px">
+        <!-- Cash Flow Forecast -->
+        <section class="sec fi fi4" style="margin:0">
+            <div class="sec-h">
+                <h2 class="sec-t">Cash Flow Analysis</h2><span class="sec-m">Jan 15 — Mar 15</span>
+            </div>
+            <div class="river-w" id="riverW"><canvas id="riverC"></canvas>
+                <div class="river-today"></div>
+                <div class="river-today-l">Today</div>
+                <div class="river-tip" id="rTip">
+                    <div class="tt-v">$47,200</div>
+                    <div class="tt-l">Feb 9</div>
+                </div>
+            </div>
+            <div class="river-ax"><span>Jan 15</span><span>Feb 1</span><span>Feb 15</span><span>Mar 1</span><span>Mar
+                    15</span></div>
+        </section>
+
+        <!-- Expenses Breakdown -->
+        <section class="exp-w fi" style="animation-delay:.24s;margin:0">
+            <div class="exp-hdr">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <h2 class="sec-t">Expense Breakdown</h2>
+                    <div class="sec-tabs" id="expTabs">
+                        <button class="sec-tab on" data-p="day">Day</button>
+                        <button class="sec-tab" data-p="week">Week</button>
+                        <button class="sec-tab" data-p="month">Month</button>
+                    </div>
+                </div>
+                <div><span class="exp-total" id="expTotal">$8,420</span><span class="exp-period" id="expPeriod">Feb
+                        2026</span>
+                </div>
+            </div>
+            <div class="exp-legend" id="expLeg"></div>
+            <div style="position:relative">
+                <div class="exp-bars" id="expBars"></div>
+                <div class="exp-tip" id="expTip"></div>
+            </div>
+            <div class="exp-ax" id="expAx"></div>
+
+            <!-- Top Expenses Summary -->
+            <div
+                style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+                <div>
+                    <div style="font-size:10px;color:var(--t3);margin-bottom:4px">Top Category</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--t1)">Software</div>
+                    <div style="font-size:11px;color:var(--t2)">$2,104 <span
+                            style="font-size:9px;color:var(--t3)">(24%)</span>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:10px;color:var(--t3);margin-bottom:4px">Top Vendor</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--t1)">WeWork</div>
+                    <div style="font-size:11px;color:var(--t2)">$1,800 <span
+                            style="font-size:9px;color:var(--t3)">(Fixed)</span></div>
+                </div>
+                <div>
+                    <div style="font-size:10px;color:var(--t3);margin-bottom:4px">Largest Increase</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--t1)">Travel</div>
+                    <div style="font-size:11px;color:var(--red)">+$420 <span style="font-size:9px;color:var(--t3)">vs
+                            Jan</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- RIGHT COLUMN: Operations & Actions -->
+    <div class="right-col fi fi6" style="gap:24px">
+        <!-- Quick Ops -->
+        <div class="sec" style="margin:0;padding:0">
+            <h2 class="sec-t" style="margin-bottom:12px">Quick Actions</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <button class="btn pri" style="justify-content:center;padding:10px"
+                    onclick="showToast('New Invoice created')">+
+                    Invoice</button>
+                <button class="btn" style="justify-content:center;padding:10px"
+                    onclick="showToast('Upload receipt...')">Scan
+                    Receipt</button>
+                <button class="btn" style="justify-content:center;padding:10px"
+                    onclick="showToast('New Bill created')">+
+                    Bill</button>
+                <button class="btn" style="justify-content:center;padding:10px"
+                    onclick="showToast('Transfer initiated')">Transfer</button>
+            </div>
+        </div>
+
+        <!-- AI Brief -->
+        <div
+            style="background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(167,139,250,.06));border:1px solid rgba(245,158,11,.15);border-radius:var(--r);padding:16px">
+            <div class="ai-hdr" style="margin-bottom:8px">
+                <div class="ai-dot-sm"></div><span class="ai-label">AI Brief</span><span class="ai-time">Feb 9</span>
+            </div>
+            <p class="ai-body" style="font-size:14px;line-height:1.6"><strong>Q1 revenue is 23% above last
+                    year</strong>, driven by 3 new consulting contracts.
+                Cash runway at 5.6 months. <strong>ABC Corp's payment is 3 days late</strong> — a reminder typically
+                resolves in 48h. EUR strength added <strong>$340 CAD</strong> to receivables.</p>
+        </div>
+
+        <!-- Urgent Actions (Moved from Left) -->
+        <section class="sec fi fi5" style="margin:0">
+            <div class="sec-h">
+                <h2 class="sec-t">Action Items</h2><span class="sec-m">3 items</span>
+            </div>
+            <div class="ac sel" data-a="0" onclick="openDetail('inv-1047')">
+                <div class="ac-i urg">&#9889;</div>
+                <div class="ac-b">
+                    <div class="ac-t">Send overdue invoice to ABC Corp</div>
+                    <div class="ac-m"><span>$4,200 USD</span><span class="dot"></span><span>3 days overdue</span></div>
+                </div><button class="btn pri" style="padding:4px 10px;font-size:11px"
+                    onclick="event.stopPropagation();showToast('Reminder sent to ABC Corp')">Send</button>
+            </div>
+            <div class="ac" data-a="1" onclick="navigateTo('banking')">
+                <div class="ac-i att">&#128229;</div>
+                <div class="ac-b">
+                    <div class="ac-t">Categorize 3 bank transactions</div>
+                    <div class="ac-m"><span>RBC Business</span><span class="dot"></span><span>Imported today</span>
+                    </div>
+                </div><button class="btn" style="padding:4px 10px;font-size:11px"
+                    onclick="event.stopPropagation();navigateTo('banking')">Review</button>
+            </div>
+            <div class="ac" data-a="2" onclick="navigateTo('ai')">
+                <div class="ac-i ai">&#10022;</div>
+                <div class="ac-b">
+                    <div class="ac-t">EUR exchange rate shifted +2.1%</div>
+                    <div class="ac-m"><span>Affects 2 invoices</span><span class="dot"></span><span>AI insight</span>
+                    </div>
+                </div><button class="btn" style="padding:4px 10px;font-size:11px"
+                    onclick="event.stopPropagation();navigateTo('ai')">Impact</button>
+            </div>
+        </section>
+
+        <!-- Upcoming -->
+        <div class="sec" style="margin:0">
+            <div class="sec-h">
+                <h2 class="sec-t">Upcoming</h2>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day">14</span><span class="u-mon">Feb</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">Maple Digital payment due</div>
+                    <div class="upcoming-meta">Invoice #1044 &middot; Pending</div>
+                </div>
+                <div class="upcoming-amt" style="color:var(--green)">+$5,900</div>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day">14</span><span class="u-mon">Feb</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">WeWork rent</div>
+                    <div class="upcoming-meta">Auto-pay &middot; RBC</div>
+                </div>
+                <div class="upcoming-amt" style="color:var(--t2)">-$1,800</div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="sec" style="margin:0">
+            <div class="sec-h">
+                <h2 class="sec-t">Quick Stats</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Unpaid invoices</span><span class="d-row-v">8</span></div>
+            <div class="d-row"><span class="d-row-l">Overdue</span><span class="d-row-v"
+                    style="color:var(--red)">1</span></div>
+            <div class="d-row"><span class="d-row-l">Pending bills</span><span class="d-row-v">2</span></div>
+            <div class="d-row"><span class="d-row-l">Unmatched txns</span><span class="d-row-v"
+                    style="color:var(--pri)">12</span></div>
+            <div class="d-row"><span class="d-row-l">Reconciled (Feb)</span><span class="d-row-v">78%</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Avg days to pay</span><span
+                    class="d-row-v">14.2 d</span></div>
+        </div>
+
+    </div>
+</div>

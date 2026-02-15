@@ -1,0 +1,200 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title" id="greeting">Good evening, Sunny</div>
+        <div class="page-sub">Sunday, February 9, 2026</div>
+    </div>
+</div>
+
+<!-- Service Unavailable Banner -->
+<section class="sec fi fi2"
+    style="background:linear-gradient(135deg,rgba(248,113,113,.08),rgba(248,113,113,.03));border:1px solid rgba(248,113,113,.2)">
+    <div style="display:flex;align-items:center;gap:14px">
+        <div style="font-size:28px">&#9888;&#65039;</div>
+        <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--red)">Bank connections temporarily unavailable</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:4px">We're experiencing issues connecting to your bank
+                feeds. Your data from the last sync is shown below. Auto-sync will resume once the service is restored.
+            </div>
+        </div>
+        <button class="btn" onclick="showToast('Checking status...')" style="flex-shrink:0">Check Status</button>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(248,113,113,.12)">
+        <div style="font-size:11px;color:var(--t3)"><span
+                style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px"></span>RBC
+            — Disconnected</div>
+        <div style="font-size:11px;color:var(--t3)"><span
+                style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px"></span>Wise
+            — Disconnected</div>
+        <div style="font-size:11px;color:var(--t3)"><span
+                style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pri);margin-right:6px;animation:pulse 2s infinite"></span>Amex
+            — Reconnecting...</div>
+    </div>
+</section>
+
+<!-- Stale Data Notice on Stats -->
+<div class="spark-row fi fi3">
+    <div class="spark-card" style="opacity:.65">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="spark-label">Revenue</div><span
+                style="font-size:9px;color:var(--pri);background:var(--pri-dim);padding:1px 6px;border-radius:3px">Stale</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val">$24,800</div><span class="st-trend flat">Last sync: 6h ago</span>
+        </div>
+        <div class="spark-line"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,20 15,18 30,16 45,19 60,14 75,10 90,12 105,8 120,6" fill="none"
+                    stroke="rgba(52,211,153,.25)" stroke-width="1.5" stroke-dasharray="4 3" />
+            </svg></div>
+    </div>
+    <div class="spark-card" style="opacity:.65">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="spark-label">Expenses</div><span
+                style="font-size:9px;color:var(--pri);background:var(--pri-dim);padding:1px 6px;border-radius:3px">Stale</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val">$8,420</div><span class="st-trend flat">Last sync: 6h ago</span>
+        </div>
+        <div class="spark-line"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,16 15,14 30,15 45,12 60,14 75,10 90,11 105,9 120,8" fill="none"
+                    stroke="rgba(248,113,113,.2)" stroke-width="1.5" stroke-dasharray="4 3" />
+            </svg></div>
+    </div>
+    <div class="spark-card" style="opacity:.65">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="spark-label">Profit</div><span
+                style="font-size:9px;color:var(--pri);background:var(--pri-dim);padding:1px 6px;border-radius:3px">Stale</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val">$16,380</div><span class="st-trend flat">Last sync: 6h ago</span>
+        </div>
+        <div class="spark-line"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,22 15,20 30,18 45,20 60,14 75,12 90,10 105,6 120,4" fill="none"
+                    stroke="rgba(245,158,11,.25)" stroke-width="1.5" stroke-dasharray="4 3" />
+            </svg></div>
+    </div>
+    <div class="spark-card" style="opacity:.65">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="spark-label">Receivables</div><span
+                style="font-size:9px;color:var(--pri);background:var(--pri-dim);padding:1px 6px;border-radius:3px">Stale</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val">$42,800</div><span class="st-trend flat">8 invoices</span>
+        </div>
+        <div class="spark-line"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,12 15,10 30,14 45,8 60,12 75,10 90,8 105,10 120,9" fill="none"
+                    stroke="rgba(96,165,250,.2)" stroke-width="1.5" stroke-dasharray="4 3" />
+            </svg></div>
+    </div>
+    <div class="spark-card" style="opacity:.65">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="spark-label">Runway</div><span
+                style="font-size:9px;color:var(--pri);background:var(--pri-dim);padding:1px 6px;border-radius:3px">Stale</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+            <div class="spark-val">5.6 mo</div><span class="st-trend flat">Estimate</span>
+        </div>
+        <div class="spark-line"><svg viewBox="0 0 120 24" preserveAspectRatio="none">
+                <polyline points="0,14 15,13 30,12 45,12 60,11 75,11 90,12 105,11 120,10" fill="none"
+                    stroke="rgba(167,139,250,.2)" stroke-width="1.5" stroke-dasharray="4 3" />
+            </svg></div>
+    </div>
+</div>
+
+<div class="two-col">
+    <div>
+        <!-- Degraded Cash Flow -->
+        <section class="sec fi fi4" style="position:relative">
+            <div class="sec-h">
+                <h2 class="sec-t">Cash Flow</h2><span class="sec-m" style="color:var(--red)">&#128683; Data may be
+                    incomplete</span>
+            </div>
+            <div
+                style="height:120px;display:flex;align-items:center;justify-content:center;border:1px dashed rgba(248,113,113,.2);border-radius:var(--r-sm);background:rgba(248,113,113,.02)">
+                <div style="text-align:center">
+                    <div style="font-size:28px;opacity:.3;margin-bottom:8px">&#128200;</div>
+                    <div style="font-size:13px;color:var(--t3)">Cash flow chart paused — waiting for bank sync</div>
+                    <div style="font-size:11px;color:var(--t4);margin-top:4px">Last updated: Feb 9 at 12:32 PM</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actions still work -->
+        <section class="sec fi fi5">
+            <div class="sec-h">
+                <h2 class="sec-t">Actions</h2><span class="sec-m">3 items — &#128683; some may need manual
+                    refresh</span>
+            </div>
+            <div class="ac sel" data-a="0" onclick="openDetail('inv-1047')">
+                <div class="ac-i urg">&#9889;</div>
+                <div class="ac-b">
+                    <div class="ac-t">Send overdue invoice to ABC Corp</div>
+                    <div class="ac-m"><span>$4,200 USD</span><span class="dot"></span><span>3 days overdue</span></div>
+                </div><button class="btn pri"
+                    onclick="event.stopPropagation();showToast('Reminder sent to ABC Corp')">Send</button>
+            </div>
+            <div class="ac" data-a="1">
+                <div class="ac-i" style="opacity:.4">&#128229;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t3)">Categorize bank transactions</div>
+                    <div class="ac-m"><span style="color:var(--red)">Bank sync required</span></div>
+                </div><button class="btn" disabled style="opacity:.4">Unavailable</button>
+            </div>
+            <div class="ac" data-a="2" onclick="navigateTo('ai')">
+                <div class="ac-i ai">&#10022;</div>
+                <div class="ac-b">
+                    <div class="ac-t">EUR exchange rate shifted +2.1%</div>
+                    <div class="ac-m"><span>Affects 2 invoices</span><span class="dot"></span><span>AI insight</span>
+                    </div>
+                </div><button class="btn" onclick="event.stopPropagation();navigateTo('ai')">Impact</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="right-col fi fi6">
+        <!-- AI Brief with warning -->
+        <div class="ai-brief" style="border-color:rgba(248,113,113,.15)">
+            <div class="ai-hdr">
+                <div class="ai-dot-sm" style="background:var(--red)"></div><span class="ai-label">AI Brief —
+                    Limited</span><span class="ai-time">Feb 9</span>
+            </div>
+            <p class="ai-body"><strong>Bank feeds are down</strong>, so today's insights are based on data from 6 hours
+                ago. Your invoice pipeline and receivables data remain current since they don't depend on bank feeds.
+                <strong>ABC Corp's payment is still 3 days late.</strong> I'll update the full brief once sync resumes.
+            </p>
+        </div>
+
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Service Status</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Bank Sync</span><span class="d-row-v"
+                    style="color:var(--red)">&#9679; Outage</span></div>
+            <div class="d-row"><span class="d-row-l">Invoice Engine</span><span class="d-row-v"
+                    style="color:var(--green)">&#9679; Operational</span></div>
+            <div class="d-row"><span class="d-row-l">AI Advisor</span><span class="d-row-v"
+                    style="color:var(--pri)">&#9679; Degraded</span></div>
+            <div class="d-row"><span class="d-row-l">FX Rates</span><span class="d-row-v"
+                    style="color:var(--green)">&#9679; Operational</span></div>
+            <div class="d-row"><span class="d-row-l">Categorization</span><span class="d-row-v"
+                    style="color:var(--red)">&#9679; Paused</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Last Full Sync</span><span class="d-row-v">Feb
+                    9, 12:32 PM</span></div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Still Available</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">&#10003; Send invoices</span><span class="d-row-v"
+                    style="color:var(--green)">Active</span></div>
+            <div class="d-row"><span class="d-row-l">&#10003; View reports</span><span class="d-row-v"
+                    style="color:var(--green)">Active</span></div>
+            <div class="d-row"><span class="d-row-l">&#10003; Manual entries</span><span class="d-row-v"
+                    style="color:var(--green)">Active</span></div>
+            <div class="d-row"><span class="d-row-l">&#10007; Auto-categorize</span><span class="d-row-v"
+                    style="color:var(--red)">Paused</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">&#10007; Bank import</span><span
+                    class="d-row-v" style="color:var(--red)">Paused</span></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">AI History</div>
+        <div class="page-sub">Action Log &middot; Chat History &middot; Automated Tasks</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Exporting log...')">Export CSV</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/ai'">AI Advisor</button>
+    <button class="sec-tab" onclick="window.location.hash='#/policy-alerts'">Policy Alerts</button>
+    <button class="sec-tab on">AI History</button>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Recent Activity</h2>
+    </div>
+    <div class="feed">
+        <div class="feed-item">
+            <div class="feed-icon" style="background:var(--pri)">&#10022;</div>
+            <div class="feed-content">
+                <div class="feed-title">Expense Categorization</div>
+                <div class="feed-desc">Automatically categorized <strong>14 transactions</strong> from Bank of Montreal.
+                </div>
+                <div class="feed-meta">Today, 9:41 AM &middot; Accuracy 99%</div>
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="feed-icon" style="background:var(--green)">&#128200;</div>
+            <div class="feed-content">
+                <div class="feed-title">Cash Flow Forecast Update</div>
+                <div class="feed-desc">Regenerated Q2 forecast based on new invoice from XYZ Ltd.</div>
+                <div class="feed-meta">Yesterday, 4:15 PM</div>
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="feed-icon" style="background:var(--orange)">&#9888;</div>
+            <div class="feed-content">
+                <div class="feed-title">Policy Alert Triggered</div>
+                <div class="feed-desc">Detected duplicate subscription pattern (Notion/Asana).</div>
+                <div class="feed-meta">Feb 9, 2026</div>
+            </div>
+        </div>
+        <div class="feed-item">
+            <div class="feed-icon" style="background:var(--blue)">&#128172;</div>
+            <div class="feed-content">
+                <div class="feed-title">Advisor Chat</div>
+                <div class="feed-desc">User asked: "How much did we spend on software in January?"</div>
+                <div class="feed-meta">Feb 8, 2026 &middot; Answered "$400"</div>
+            </div>
+        </div>
+    </div>
+    <!-- Simple CSS for feed (if not global) -->
+    <style>
+        .feed-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feed-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .feed-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--t1);
+            margin-bottom: 4px;
+        }
+
+        .feed-desc {
+            font-size: 13px;
+            color: var(--t2);
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+
+        .feed-meta {
+            font-size: 11px;
+            color: var(--t3);
+        }
+    </style>
+</section>

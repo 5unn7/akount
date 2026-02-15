@@ -1,0 +1,525 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Planning</div>
+        <div class="page-sub">Budgets &middot; Forecasts &middot; Goals &middot; Scenarios &middot; FY2026</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Exporting forecast...')">&#128200; Export</button>
+        <button class="btn pri" onclick="showToast('New budget created')">+ New Budget</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab on">Planning</button>
+    <button class="sec-tab" onclick="window.location.hash='#/reports'">Reports</button>
+    <button class="sec-tab" onclick="window.location.hash='#/budgets'">Budgets</button>
+    <button class="sec-tab" onclick="window.location.hash='#/goals'">Goals</button>
+    <button class="sec-tab" onclick="window.location.hash='#/forecasts'">Forecasts</button>
+</div>
+
+<!-- Stats -->
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">YTD Revenue</div>
+        <div class="st-val">$43,400</div>
+        <div class="st-trend up">vs $38,200 budget</div>
+    </div>
+    <div class="st">
+        <div class="st-label">YTD Expenses</div>
+        <div class="st-val">$16,840</div>
+        <div class="st-trend up">Under budget</div>
+    </div>
+    <div class="st">
+        <div class="st-label">YTD Profit</div>
+        <div class="st-val">$26,560</div>
+        <div class="st-trend up">+39% margin</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Cash Runway</div>
+        <div class="st-val">5.6 mo</div>
+        <div class="st-trend flat">Target: 4 mo</div>
+    </div>
+</div>
+
+<!-- Budget vs Actual -->
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Budget vs Actual — February 2026</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">Monthly</button>
+            <button class="sec-tab">Quarterly</button>
+            <button class="sec-tab">Annual</button>
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th class="right">Budget</th>
+                    <th class="right">Actual</th>
+                    <th class="right">Variance</th>
+                    <th style="width:140px">Progress</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row" style="background:rgba(96,165,250,.03)">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico"
+                                style="background:rgba(96,165,250,.15);color:var(--blue);font-size:10px;font-weight:700">
+                                R</div>
+                            <div>
+                                <div class="txn-desc" style="font-weight:600">Total Revenue</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right">$22,000</td>
+                    <td class="txn-amt in" style="text-align:right;font-weight:600">$24,800</td>
+                    <td class="txn-amt in" style="text-align:right">+$2,800</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green)">113%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Consulting</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$18,000</td>
+                    <td class="txn-amt in" style="text-align:right">$19,400</td>
+                    <td class="txn-amt in" style="text-align:right">+$1,400</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green)">108%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Design Services</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$4,000</td>
+                    <td class="txn-amt in" style="text-align:right">$5,400</td>
+                    <td class="txn-amt in" style="text-align:right">+$1,400</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green)">135%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row" style="background:rgba(245,158,11,.03)">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico"
+                                style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">E
+                            </div>
+                            <div>
+                                <div class="txn-desc" style="font-weight:600">Total Expenses</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right">$9,200</td>
+                    <td class="txn-amt out" style="text-align:right;font-weight:600">$8,420</td>
+                    <td class="txn-amt in" style="text-align:right">-$780</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:92%;background:var(--pri)"></div>
+                            </div><span style="font-size:10px;color:var(--pri)">92%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Rent &amp; Facilities</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$1,800</td>
+                    <td class="txn-amt out" style="text-align:right">$1,800</td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$0</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--t3)"></div>
+                            </div><span style="font-size:10px;color:var(--t3)">100%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Professional Services</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$1,500</td>
+                    <td class="txn-amt out" style="text-align:right">$1,200</td>
+                    <td class="txn-amt in" style="text-align:right">-$300</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:80%;background:var(--pri)"></div>
+                            </div><span style="font-size:10px;color:var(--pri)">80%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Software &amp; SaaS</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$400</td>
+                    <td class="txn-amt out" style="text-align:right">$340</td>
+                    <td class="txn-amt in" style="text-align:right">-$60</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:85%;background:var(--pri)"></div>
+                            </div><span style="font-size:10px;color:var(--pri)">85%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Travel &amp; Transportation</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$800</td>
+                    <td class="txn-amt out" style="text-align:right">$540</td>
+                    <td class="txn-amt in" style="text-align:right">-$260</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:68%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green)">68%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Marketing</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$600</td>
+                    <td class="txn-amt out" style="text-align:right">$280</td>
+                    <td class="txn-amt in" style="text-align:right">-$320</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:47%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green)">47%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Insurance</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$420</td>
+                    <td class="txn-amt out" style="text-align:right">$420</td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$0</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--t3)"></div>
+                            </div><span style="font-size:10px;color:var(--t3)">100%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Meals &amp; Entertainment</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$300</td>
+                    <td class="txn-amt out" style="text-align:right">$380</td>
+                    <td class="txn-amt out" style="text-align:right">+$80</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--red)"></div>
+                            </div><span style="font-size:10px;color:var(--red)">127%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div style="width:24px"></div>
+                            <div class="txn-desc" style="color:var(--t2)">Other</div>
+                        </div>
+                    </td>
+                    <td class="txn-amt" style="text-align:right;color:var(--t3)">$200</td>
+                    <td class="txn-amt out" style="text-align:right">$160</td>
+                    <td class="txn-amt in" style="text-align:right">-$40</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:80%;background:var(--pri)"></div>
+                            </div><span style="font-size:10px;color:var(--pri)">80%</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top:2px solid var(--border)">
+                    <td style="font-weight:600;color:var(--t1)">Net Profit</td>
+                    <td class="txn-amt" style="text-align:right;font-weight:600;color:var(--t1)">$12,800</td>
+                    <td class="txn-amt in" style="text-align:right;font-weight:700">$16,380</td>
+                    <td class="txn-amt in" style="text-align:right;font-weight:600">+$3,580</td>
+                    <td>
+                        <div class="inv-progress">
+                            <div class="inv-pbar">
+                                <div class="inv-pfill" style="width:100%;background:var(--green)"></div>
+                            </div><span style="font-size:10px;color:var(--green);font-weight:600">128%</span>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</section>
+
+<div class="two-col">
+    <div>
+        <!-- Goals -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Financial Goals — 2026</h2><span class="sec-m">3 active</span>
+            </div>
+
+            <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:var(--t1)">&#127919; Annual Revenue Target
+                        </div>
+                        <div style="font-size:11px;color:var(--t3);margin-top:2px">$43,400 of $250,000</div>
+                    </div>
+                    <span class="st-trend up" style="font-size:11px">17.4%</span>
+                </div>
+                <div class="inv-progress">
+                    <div class="inv-pbar" style="height:8px;border-radius:4px">
+                        <div class="inv-pfill"
+                            style="width:17.4%;background:linear-gradient(90deg,var(--pri),var(--green));border-radius:4px">
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t4);margin-top:4px">
+                    <span>$0</span><span>On track — ahead by 14%</span><span>$250K</span>
+                </div>
+            </div>
+
+            <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:var(--t1)">&#128176; Emergency Fund</div>
+                        <div style="font-size:11px;color:var(--t3);margin-top:2px">$47,200 of $60,000 (6 months
+                            expenses)</div>
+                    </div>
+                    <span class="st-trend up" style="font-size:11px">78.7%</span>
+                </div>
+                <div class="inv-progress">
+                    <div class="inv-pbar" style="height:8px;border-radius:4px">
+                        <div class="inv-pfill"
+                            style="width:78.7%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:4px">
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t4);margin-top:4px">
+                    <span>$0</span><span>$12,800 remaining</span><span>$60K</span>
+                </div>
+            </div>
+
+            <div style="padding:12px 0">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:var(--t1)">&#128200; Profit Margin &gt; 60%
+                        </div>
+                        <div style="font-size:11px;color:var(--t3);margin-top:2px">Current: 66% — 3-month average: 61%
+                        </div>
+                    </div>
+                    <span class="inv-badge paid" style="font-size:10px">On Target</span>
+                </div>
+                <div class="inv-progress">
+                    <div class="inv-pbar" style="height:8px;border-radius:4px">
+                        <div class="inv-pfill" style="width:66%;background:var(--green);border-radius:4px"></div>
+                    </div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t4);margin-top:4px">
+                    <span>0%</span><span style="color:var(--pri)">Target: 60%</span><span>100%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Scenarios -->
+        <section class="sec fi fi5">
+            <div class="sec-h">
+                <h2 class="sec-t">Scenario Analysis</h2><span class="sec-m">3 scenarios</span>
+            </div>
+
+            <div class="ai-card" onclick="this.classList.toggle('expanded')" style="cursor:pointer">
+                <div style="display:flex;align-items:center">
+                    <div style="flex:1">
+                        <div class="ai-type saving" style="font-size:10px;margin-bottom:4px">&#9889; Best Case</div>
+                        <div style="font-size:13px;font-weight:600;color:var(--t1)">Q2 contracts close on time</div>
+                    </div>
+                    <span class="ai-chevron">&#9662;</span>
+                </div>
+                <div class="ai-peek">Revenue: $72K | Runway: 7.2 months | Margin: 68%</div>
+                <div class="ai-expand">
+                    <div class="ai-card-body">If NovaSync ($12,000) and Meridian ($8,500) close by March 8, plus two
+                        pipeline leads convert: <strong>$72,000 revenue by Q2</strong>. Cash runway extends to
+                        <strong>7.2 months</strong>. Profit margin estimated at 68%. Consider hiring a part-time
+                        bookkeeper at this revenue level.
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-card" onclick="this.classList.toggle('expanded')" style="cursor:pointer">
+                <div style="display:flex;align-items:center">
+                    <div style="flex:1">
+                        <div class="ai-type growth" style="font-size:10px;margin-bottom:4px">&#8594; Base Case</div>
+                        <div style="font-size:13px;font-weight:600;color:var(--t1)">Current trajectory maintained</div>
+                    </div>
+                    <span class="ai-chevron">&#9662;</span>
+                </div>
+                <div class="ai-peek">Revenue: $58K | Runway: 5.6 months | Margin: 62%</div>
+                <div class="ai-expand">
+                    <div class="ai-card-body">Assuming current client retention and no new major contracts:
+                        <strong>$58,000 revenue by Q2</strong>. Cash runway holds at <strong>5.6 months</strong>. Profit
+                        margin ~62%. Existing contracts provide stable base. ABC Corp payment resolution within 48h. No
+                        immediate action required.
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-card" onclick="this.classList.toggle('expanded')" style="cursor:pointer">
+                <div style="display:flex;align-items:center">
+                    <div style="flex:1">
+                        <div class="ai-type risk" style="font-size:10px;margin-bottom:4px">&#9888; Stress Case</div>
+                        <div style="font-size:13px;font-weight:600;color:var(--t1)">Q2 delays + client churn</div>
+                    </div>
+                    <span class="ai-chevron">&#9662;</span>
+                </div>
+                <div class="ai-peek">Revenue: $38K | Runway: 3.7 months | Margin: 52%</div>
+                <div class="ai-expand">
+                    <div class="ai-card-body">If NovaSync and Meridian proposals stall and one existing client reduces
+                        scope: Revenue drops to <strong>$38,000</strong>. Runway falls to <strong>3.7 months</strong>
+                        (below 4-month target). Margin compresses to 52%. <strong>Mitigation:</strong> Accelerate
+                        proposal follow-ups, identify 2 quick-win projects, defer non-essential SaaS spend ($340/mo
+                        savings).</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-col fi fi6">
+        <!-- Cash Forecast -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Cash Forecast</h2><span class="sec-m">Next 90 days</span>
+            </div>
+            <div class="d-row"><span class="d-row-l">Today</span><span class="d-row-v"
+                    style="font-weight:600">$47,200</span></div>
+            <div class="d-row"><span class="d-row-l">+ Expected Inflows</span><span class="d-row-v"
+                    style="color:var(--green)">+$38,600</span></div>
+            <div class="d-row"><span class="d-row-l">- Expected Outflows</span><span class="d-row-v"
+                    style="color:var(--red)">-$28,200</span></div>
+            <div class="d-row"><span class="d-row-l">30-Day Forecast</span><span class="d-row-v"
+                    style="font-weight:600">$57,600</span></div>
+            <div class="d-row"><span class="d-row-l">60-Day Forecast</span><span class="d-row-v">$52,400</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">90-Day Forecast</span><span
+                    class="d-row-v">$48,800</span></div>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Key Metrics</h2><span class="sec-m">Feb 2026</span>
+            </div>
+            <div class="d-row"><span class="d-row-l">Gross Margin</span><span class="d-row-v"
+                    style="color:var(--green)">66%</span></div>
+            <div class="d-row"><span class="d-row-l">Operating Margin</span><span class="d-row-v"
+                    style="color:var(--green)">62%</span></div>
+            <div class="d-row"><span class="d-row-l">Burn Rate</span><span class="d-row-v">$8,420/mo</span></div>
+            <div class="d-row"><span class="d-row-l">Revenue per Client</span><span class="d-row-v">$4,960</span></div>
+            <div class="d-row"><span class="d-row-l">Client Retention</span><span class="d-row-v"
+                    style="color:var(--green)">100%</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Working Capital</span><span class="d-row-v"
+                    style="font-weight:600">$36,960</span></div>
+        </div>
+
+        <!-- Revenue Pipeline -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Revenue Pipeline</h2><span class="sec-m">Q2 2026</span>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day" style="background:var(--green);color:#fff">90%</span>
+                </div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">XYZ Ltd — Q2 Retainer</div>
+                    <div class="upcoming-meta">Renewal &middot; Verbal confirm</div>
+                </div>
+                <div class="upcoming-amt" style="color:var(--green)">$24,600</div>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day" style="background:var(--pri);color:#fff">60%</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">NovaSync — Platform Migration</div>
+                    <div class="upcoming-meta">Proposal sent &middot; Decision Mar 8</div>
+                </div>
+                <div class="upcoming-amt" style="color:var(--t2)">$12,000</div>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day" style="background:var(--pri);color:#fff">50%</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">Meridian — Advisory Retainer</div>
+                    <div class="upcoming-meta">Intro call done &middot; Proposal pending</div>
+                </div>
+                <div class="upcoming-amt" style="color:var(--t2)">$8,500</div>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day" style="background:var(--t3);color:#fff">20%</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">Apex Group — System Audit</div>
+                    <div class="upcoming-meta">Cold lead &middot; Follow-up scheduled</div>
+                </div>
+                <div class="upcoming-amt" style="color:var(--t3)">$6,200</div>
+            </div>
+            <div
+                style="padding:10px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;margin-top:4px">
+                <span style="color:var(--t3)">Weighted Pipeline</span>
+                <span style="font-weight:600;color:var(--pri)">$36,430</span>
+            </div>
+        </div>
+    </div>
+</div>

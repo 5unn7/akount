@@ -1,0 +1,689 @@
+import { prisma } from '@akount/db';
+import { parseCSV, parsePDF, parseXLSX } from './parser.service';
+import { findDuplicates } from './duplication.service';
+import { categorizeTransactions } from '../../ai/services/categorization.service';
+import type { ColumnMappings } from '../../../schemas/import';
+import { logger } from '../../../lib/logger';
+
+// Constants for pagination
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 100;
+
+// Account types where positive PDF amounts represent expenses (charges)
+// For these accounts, positive amounts should be negated to represent outflows
+const CREDIT_ACCOUNT_TYPES = ['CREDIT_CARD', 'LOAN', 'MORTGAGE'];
+
+/**
+ * Adjust amount sign based on account type.
+ *
+ * Credit card/loan statements show charges as positive numbers,
+ * but in our system positive = income and negative = expense.
+ * For credit accounts, flip positive amounts to negative (charges)
+ * and negative amounts to positive (payments).
+ */
+function adjustAmountForAccountType(amount: number, accountType: string): number {
+  if (CREDIT_ACCOUNT_TYPES.includes(accountType)) {
+    return -amount; // Flip sign: charges become negative, payments become positive
+  }
+  return amount;
+}
+
+/**
+ * Default categories to seed if tenant has none.
+ * Maps to the KEYWORD_PATTERNS in categorization.service.ts.
+ */
+const DEFAULT_CATEGORIES: Array<{ name: string; type: 'INCOME' | 'EXPENSE' | 'TRANSFER' }> = [
+  { name: 'Meals & Entertainment', type: 'EXPENSE' },
+  { name: 'Transportation', type: 'EXPENSE' },
+  { name: 'Office Supplies', type: 'EXPENSE' },
+  { name: 'Software & Subscriptions', type: 'EXPENSE' },
+  { name: 'Utilities', type: 'EXPENSE' },
+  { name: 'Rent', type: 'EXPENSE' },
+  { name: 'Professional Services', type: 'EXPENSE' },
+  { name: 'Marketing & Advertising', type: 'EXPENSE' },
+  { name: 'Insurance', type: 'EXPENSE' },
+  { name: 'Bank Fees', type: 'EXPENSE' },
+  { name: 'Payroll', type: 'EXPENSE' },
+  { name: 'Taxes', type: 'EXPENSE' },
+  { name: 'Sales Revenue', type: 'INCOME' },
+  { name: 'Interest Income', type: 'INCOME' },
+  { name: 'Investment Income', type: 'INCOME' },
+  { name: 'Transfer', type: 'TRANSFER' },
+];
+
+// Types for import operations
+export interface CreateCSVImportParams {
+  file: Buffer;
+  accountId: string;
+  columnMappings?: ColumnMappings;
+  dateFormat?: string;
+}
+
+export interface CreatePDFImportParams {
+  file: Buffer;
+  accountId: string;
+  dateFormat?: string;
+}
+
+export interface CreateXLSXImportParams {
+  file: Buffer;
+  accountId: string;
+  columnMappings?: ColumnMappings;
+  dateFormat?: string;
+}
+
+export interface ImportBatchWithStats {
+  id: string;
+  tenantId: string;
+  entityId: string | null;
+  sourceType: string;
+  status: string;
+  error: string | null;
+  createdAt: Date;
+  stats: {
+    total: number;
+    imported: number;
+    duplicates: number;
+    skipped: number;
+  };
+}
+
+export interface ImportBatchWithTransactions {
+  id: string;
+  tenantId: string;
+  entityId: string | null;
+  sourceType: string;
+  status: string;
+  error: string | null;
+  createdAt: Date;
+  transactions: Awaited<ReturnType<typeof prisma.transaction.findMany>>;
+  _count: {
+    transactions: number;
+  };
+}
+
+export interface ListImportBatchesParams {
+  entityId?: string;
+  sourceType?: string;
+  status?: string;
+  cursor?: string;
+  limit?: number;
+}
+
+export interface PaginatedImportBatches {
+  batches: ImportBatchWithTransactions[];
+  nextCursor?: string;
+  hasMore: boolean;
+}
+
+/**
+ * ImportService - Orchestrates CSV and PDF import workflow
+ *
+ * Responsibilities:
+ * - Create import batches for CSV and PDF files
+ * - Parse files using ParserService
+ * - Deduplicate using DuplicationService
+ * - Store transactions in database
+ * - Track import status and errors
+ */
+export class ImportService {
+  constructor(private tenantId: string) {}
+
+  /**
+   * Create CSV import batch
+   *
+   * Workflow:
+   * 1. Validate account belongs to tenant
+   * 2. Create ImportBatch (status: PROCESSING)
+   * 3. Parse CSV with column mappings
+   * 4. Detect duplicates
+   * 5. Create Transaction records (excluding duplicates)
+   * 6. Update ImportBatch (status: PROCESSED or FAILED)
+   */
+  async createCSVImport(params: CreateCSVImportParams): Promise<ImportBatchWithStats> {
+    const { file, accountId, columnMappings, dateFormat } = params;
+
+    // 1. Verify account belongs to tenant
+    const account = await prisma.account.findFirst({
+      where: {
+        id: accountId,
+        deletedAt: null,
+        entity: {
+          tenantId: this.tenantId,
+        },
+      },
+      include: {
+        entity: true,
+      },
+    });
+
+    if (!account) {
+      throw new Error('Account not found or access denied');
+    }
+
+    // 2. Create ImportBatch record (status: PROCESSING)
+    const importBatch = await prisma.importBatch.create({
+      data: {
+        tenantId: this.tenantId,
+        entityId: account.entityId,
+        sourceType: 'CSV',
+        status: 'PROCESSING',
+      },
+    });
+
+    try {
+      // 3. Parse CSV file
+      const parseResult = parseCSV(file, columnMappings, dateFormat);
+
+      if (parseResult.transactions.length === 0) {
+        // Update batch with error
+        await prisma.importBatch.update({
+          where: { id: importBatch.id },
+          data: {
+            status: 'FAILED',
+            error: 'CSV file contains no valid transactions',
+          },
+        });
+
+        return {
+          id: importBatch.id,
+          tenantId: this.tenantId,
+          entityId: account.entityId,
+          sourceType: 'CSV',
+          status: 'FAILED',
+          error: 'CSV file contains no valid transactions',
+          createdAt: importBatch.createdAt,
+          stats: {
+            total: 0,
+            imported: 0,
+            duplicates: 0,
+            skipped: 0,
+          },
+        };
+      }
+
+      // 4. Detect duplicates
+      const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+
+      // Map duplicate results to parsed transactions
+      const duplicateMap = new Map(duplicateResults.map((d) => [d.tempId, d]));
+
+      // 5. Filter out duplicates and create Transaction records
+      const transactionsToImport = parseResult.transactions.filter((txn) => {
+        const dupResult = duplicateMap.get(txn.tempId);
+        return !dupResult || !dupResult.isDuplicate;
+      });
+
+      // Create transactions in batch
+      if (transactionsToImport.length > 0) {
+        await prisma.transaction.createMany({
+          data: transactionsToImport.map((txn) => ({
+            accountId: accountId,
+            date: new Date(txn.date),
+            description: txn.description,
+            amount: adjustAmountForAccountType(txn.amount, account.type),
+            currency: account.currency,
+            sourceType: 'BANK_FEED', // CSV import is considered bank feed
+            sourceId: null,
+            isStaged: false, // Not staged - ready to post to GL
+            isSplit: false,
+            importBatchId: importBatch.id,
+          })),
+        });
+
+        // 5b. Auto-categorize imported transactions
+        await this.autoCategorize(importBatch.id);
+      }
+
+      // 6. Update ImportBatch (status: PROCESSED)
+      await prisma.importBatch.update({
+        where: { id: importBatch.id },
+        data: {
+          status: 'PROCESSED',
+        },
+      });
+
+      return {
+        id: importBatch.id,
+        tenantId: this.tenantId,
+        entityId: account.entityId,
+        sourceType: 'CSV',
+        status: 'PROCESSED',
+        error: null,
+        createdAt: importBatch.createdAt,
+        stats: {
+          total: parseResult.transactions.length,
+          imported: transactionsToImport.length,
+          duplicates: parseResult.transactions.length - transactionsToImport.length,
+          skipped: 0,
+        },
+      };
+    } catch (error: unknown) {
+      // Handle parsing or database errors
+      await prisma.importBatch.update({
+        where: { id: importBatch.id },
+        data: {
+          status: 'FAILED',
+          error: error.message || 'Unknown error during CSV import',
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  /**
+   * Create XLSX/XLS import batch
+   *
+   * Converts spreadsheet to rows, then follows the same pipeline as CSV:
+   * 1. Validate account → 2. Create ImportBatch → 3. Parse XLSX
+   * 4. Deduplicate → 5. Create Transactions → 6. Update batch status
+   */
+  async createXLSXImport(params: CreateXLSXImportParams): Promise<ImportBatchWithStats> {
+    const { file, accountId, columnMappings, dateFormat } = params;
+
+    const account = await prisma.account.findFirst({
+      where: {
+        id: accountId,
+        deletedAt: null,
+        entity: { tenantId: this.tenantId },
+      },
+      include: { entity: true },
+    });
+
+    if (!account) {
+      throw new Error('Account not found or access denied');
+    }
+
+    const importBatch = await prisma.importBatch.create({
+      data: {
+        tenantId: this.tenantId,
+        entityId: account.entityId,
+        sourceType: 'CSV', // XLSX parsed as tabular data, same as CSV
+        status: 'PROCESSING',
+      },
+    });
+
+    try {
+      const parseResult = parseXLSX(file, columnMappings, dateFormat);
+
+      if (parseResult.transactions.length === 0) {
+        await prisma.importBatch.update({
+          where: { id: importBatch.id },
+          data: { status: 'FAILED', error: 'XLSX file contains no valid transactions' },
+        });
+
+        return {
+          id: importBatch.id,
+          tenantId: this.tenantId,
+          entityId: account.entityId,
+          sourceType: 'CSV',
+          status: 'FAILED',
+          error: 'XLSX file contains no valid transactions',
+          createdAt: importBatch.createdAt,
+          stats: { total: 0, imported: 0, duplicates: 0, skipped: 0 },
+        };
+      }
+
+      const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+      const duplicateMap = new Map(duplicateResults.map((d) => [d.tempId, d]));
+
+      const transactionsToImport = parseResult.transactions.filter((txn) => {
+        const dupResult = duplicateMap.get(txn.tempId);
+        return !dupResult || !dupResult.isDuplicate;
+      });
+
+      if (transactionsToImport.length > 0) {
+        await prisma.transaction.createMany({
+          data: transactionsToImport.map((txn) => ({
+            accountId,
+            date: new Date(txn.date),
+            description: txn.description,
+            amount: adjustAmountForAccountType(txn.amount, account.type),
+            currency: account.currency,
+            sourceType: 'BANK_FEED',
+            sourceId: null,
+            isStaged: false,
+            isSplit: false,
+            importBatchId: importBatch.id,
+          })),
+        });
+
+        await this.autoCategorize(importBatch.id);
+      }
+
+      await prisma.importBatch.update({
+        where: { id: importBatch.id },
+        data: { status: 'PROCESSED' },
+      });
+
+      return {
+        id: importBatch.id,
+        tenantId: this.tenantId,
+        entityId: account.entityId,
+        sourceType: 'CSV',
+        status: 'PROCESSED',
+        error: null,
+        createdAt: importBatch.createdAt,
+        stats: {
+          total: parseResult.transactions.length,
+          imported: transactionsToImport.length,
+          duplicates: parseResult.transactions.length - transactionsToImport.length,
+          skipped: 0,
+        },
+      };
+    } catch (error: unknown) {
+      await prisma.importBatch.update({
+        where: { id: importBatch.id },
+        data: { status: 'FAILED', error: error.message || 'Unknown error during XLSX import' },
+      });
+
+      throw error;
+    }
+  }
+
+  /**
+   * Create PDF import batch
+   *
+   * Workflow:
+   * 1. Validate account belongs to tenant
+   * 2. Create ImportBatch (status: PROCESSING)
+   * 3. Parse PDF with regex patterns
+   * 4. Detect duplicates
+   * 5. Create Transaction records (excluding duplicates)
+   * 6. Update ImportBatch (status: PROCESSED or FAILED)
+   */
+  async createPDFImport(params: CreatePDFImportParams): Promise<ImportBatchWithStats> {
+    const { file, accountId, dateFormat } = params;
+
+    // 1. Verify account belongs to tenant
+    const account = await prisma.account.findFirst({
+      where: {
+        id: accountId,
+        deletedAt: null,
+        entity: {
+          tenantId: this.tenantId,
+        },
+      },
+      include: {
+        entity: true,
+      },
+    });
+
+    if (!account) {
+      throw new Error('Account not found or access denied');
+    }
+
+    // 2. Create ImportBatch record (status: PROCESSING)
+    const importBatch = await prisma.importBatch.create({
+      data: {
+        tenantId: this.tenantId,
+        entityId: account.entityId,
+        sourceType: 'PDF',
+        status: 'PROCESSING',
+      },
+    });
+
+    try {
+      // 3. Parse PDF file
+      const parseResult = await parsePDF(file, dateFormat);
+
+      if (parseResult.transactions.length === 0) {
+        // Update batch with error
+        await prisma.importBatch.update({
+          where: { id: importBatch.id },
+          data: {
+            status: 'FAILED',
+            error: 'PDF file contains no valid transactions',
+          },
+        });
+
+        return {
+          id: importBatch.id,
+          tenantId: this.tenantId,
+          entityId: account.entityId,
+          sourceType: 'PDF',
+          status: 'FAILED',
+          error: 'PDF file contains no valid transactions',
+          createdAt: importBatch.createdAt,
+          stats: {
+            total: 0,
+            imported: 0,
+            duplicates: 0,
+            skipped: 0,
+          },
+        };
+      }
+
+      // 4. Detect duplicates
+      const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+
+      // Map duplicate results to parsed transactions
+      const duplicateMap = new Map(duplicateResults.map((d) => [d.tempId, d]));
+
+      // 5. Filter out duplicates and create Transaction records
+      const transactionsToImport = parseResult.transactions.filter((txn) => {
+        const dupResult = duplicateMap.get(txn.tempId);
+        return !dupResult || !dupResult.isDuplicate;
+      });
+
+      // Create transactions in batch
+      if (transactionsToImport.length > 0) {
+        await prisma.transaction.createMany({
+          data: transactionsToImport.map((txn) => ({
+            accountId: accountId,
+            date: new Date(txn.date),
+            description: txn.description,
+            amount: adjustAmountForAccountType(txn.amount, account.type),
+            currency: account.currency,
+            sourceType: 'BANK_FEED', // PDF import is considered bank feed
+            sourceId: null,
+            isStaged: false, // Not staged - ready to post to GL
+            isSplit: false,
+            importBatchId: importBatch.id,
+          })),
+        });
+
+        // 5b. Auto-categorize imported transactions
+        await this.autoCategorize(importBatch.id);
+      }
+
+      // 6. Update ImportBatch (status: PROCESSED)
+      await prisma.importBatch.update({
+        where: { id: importBatch.id },
+        data: {
+          status: 'PROCESSED',
+        },
+      });
+
+      return {
+        id: importBatch.id,
+        tenantId: this.tenantId,
+        entityId: account.entityId,
+        sourceType: 'PDF',
+        status: 'PROCESSED',
+        error: null,
+        createdAt: importBatch.createdAt,
+        stats: {
+          total: parseResult.transactions.length,
+          imported: transactionsToImport.length,
+          duplicates: parseResult.transactions.length - transactionsToImport.length,
+          skipped: 0,
+        },
+      };
+    } catch (error: unknown) {
+      // Handle parsing or database errors
+      await prisma.importBatch.update({
+        where: { id: importBatch.id },
+        data: {
+          status: 'FAILED',
+          error: error.message || 'Unknown error during PDF import',
+        },
+      });
+
+      throw error;
+    }
+  }
+
+  /**
+   * Ensure default categories exist for this tenant.
+   * Creates them on first import if the tenant has zero categories.
+   */
+  private async ensureDefaultCategories(): Promise<void> {
+    const count = await prisma.category.count({
+      where: { tenantId: this.tenantId },
+    });
+
+    if (count > 0) return; // Already has categories
+
+    // skipDuplicates prevents race condition when two imports run concurrently
+    await prisma.category.createMany({
+      data: DEFAULT_CATEGORIES.map((cat) => ({
+        tenantId: this.tenantId,
+        name: cat.name,
+        type: cat.type,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
+  /**
+   * Auto-categorize transactions in an import batch using keyword matching
+   *
+   * Runs after transaction creation. Updates categoryId for high-confidence matches.
+   * Non-critical — errors are logged but don't fail the import.
+   */
+  private async autoCategorize(importBatchId: string): Promise<void> {
+    try {
+      // Ensure categories exist before trying to match
+      await this.ensureDefaultCategories();
+
+      const created = await prisma.transaction.findMany({
+        where: { importBatchId, deletedAt: null },
+        select: { id: true, description: true, amount: true },
+      });
+
+      if (created.length === 0) return;
+
+      const suggestions = await categorizeTransactions(
+        created.map((t) => ({ description: t.description, amount: t.amount })),
+        this.tenantId
+      );
+
+      // Batch-update transactions that have a high-confidence category match
+      const updates = created
+        .map((t, idx) => ({ id: t.id, suggestion: suggestions[idx] }))
+        .filter(
+          ({ suggestion }) =>
+            suggestion.categoryId !== null && suggestion.confidence >= 70
+        );
+
+      if (updates.length > 0) {
+        // Single DB transaction instead of N parallel queries
+        await prisma.$transaction(
+          updates.map(({ id, suggestion }) =>
+            prisma.transaction.update({
+              where: { id },
+              data: { categoryId: suggestion.categoryId },
+            })
+          )
+        );
+      }
+    } catch (error) {
+      // Non-critical — log but don't fail the import
+      logger.error({ err: error }, 'Error during auto-categorization');
+    }
+  }
+
+  /**
+   * Get import batch by ID with transactions
+   *
+   * Returns null if batch doesn't belong to tenant
+   */
+  async getImportBatch(id: string): Promise<ImportBatchWithTransactions | null> {
+    const batch = await prisma.importBatch.findFirst({
+      where: {
+        id,
+        tenantId: this.tenantId,
+      },
+      include: {
+        transactions: {
+          where: {
+            deletedAt: null, // Soft delete filter
+          },
+          orderBy: {
+            date: 'desc',
+          },
+        },
+        _count: {
+          select: {
+            transactions: true,
+          },
+        },
+      },
+    });
+
+    return batch;
+  }
+
+  /**
+   * List import batches with pagination
+   *
+   * Filters by tenant and optionally by entity, sourceType, status
+   */
+  async listImportBatches(params: ListImportBatchesParams = {}): Promise<PaginatedImportBatches> {
+    const { entityId, sourceType, status, cursor } = params;
+
+    // Ensure limit is within bounds
+    const limit = Math.min(params.limit || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+
+    // Build where clause with tenant isolation
+    const where = {
+      tenantId: this.tenantId,
+      ...(entityId && { entityId }),
+      ...(sourceType && { sourceType: sourceType as 'CSV' | 'PDF' | 'BANK_FEED' | 'API' }),
+      ...(status && {
+        status: status as 'PENDING' | 'PROCESSING' | 'PROCESSED' | 'FAILED',
+      }),
+    };
+
+    // Fetch one extra to determine if there are more results
+    const batches = await prisma.importBatch.findMany({
+      where,
+      include: {
+        transactions: {
+          where: {
+            deletedAt: null,
+          },
+          orderBy: {
+            date: 'desc',
+          },
+          take: 10, // Limit transactions per batch in list view
+        },
+        _count: {
+          select: {
+            transactions: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' }, // Newest first
+      take: limit + 1,
+      ...(cursor && {
+        cursor: { id: cursor },
+        skip: 1, // Skip the cursor record itself
+      }),
+    });
+
+    // Check if there are more results
+    const hasMore = batches.length > limit;
+
+    // Return only the requested number of results
+    const data = hasMore ? batches.slice(0, limit) : batches;
+
+    return {
+      batches: data,
+      nextCursor: hasMore ? data[data.length - 1].id : undefined,
+      hasMore,
+    };
+  }
+}

@@ -1,0 +1,119 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Business</div>
+        <div class="page-sub">Invoices, clients, and receivables — start by creating your first invoice</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('Invoice creator opening...')">+ Create First Invoice</button>
+    </div>
+</div>
+
+<!-- Empty Stats -->
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Outstanding</div>
+        <div class="st-val" style="opacity:.3">$0</div>
+        <div class="st-trend flat">No invoices yet</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Overdue</div>
+        <div class="st-val" style="opacity:.3">$0</div>
+        <div class="st-trend flat">—</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Paid (30d)</div>
+        <div class="st-val" style="opacity:.3">$0</div>
+        <div class="st-trend flat">—</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Clients</div>
+        <div class="st-val" style="opacity:.3">0</div>
+        <div class="st-trend flat">Add your first</div>
+    </div>
+</div>
+
+<div class="two-col">
+    <div>
+        <!-- Create Invoice CTA -->
+        <section class="sec fi fi3" style="text-align:center;padding:48px 20px">
+            <div style="font-size:52px;margin-bottom:16px;opacity:.2">&#128196;</div>
+            <div style="font-size:17px;font-weight:600;color:var(--t1);margin-bottom:8px">No invoices yet</div>
+            <div style="font-size:13px;color:var(--t3);max-width:440px;margin:0 auto 24px;line-height:1.6">
+                Create professional invoices with your branding, send them via email, and track payments automatically.
+                Get paid faster with online payment links.
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+                <button class="btn pri" onclick="showToast('Invoice creator opening...')">&#128196; Create
+                    Invoice</button>
+                <button class="btn" onclick="showToast('Template gallery...')">&#127912; Browse Templates</button>
+            </div>
+        </section>
+
+        <!-- Invoice Setup Checklist -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Invoice Setup</h2><span class="sec-m">Recommended</span>
+            </div>
+
+            <div class="ac" style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#127912;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Upload your logo</div>
+                    <div class="ac-m"><span>Add your company logo to invoices</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Logo upload...')">Upload</button>
+            </div>
+            <div class="ac" style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128176;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Set payment terms</div>
+                    <div class="ac-m"><span>Net 15, Net 30, or custom terms</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Payment terms...')">Configure</button>
+            </div>
+            <div class="ac" style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128179;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Connect payment processor</div>
+                    <div class="ac-m"><span>Accept Stripe, PayPal, or bank transfer</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Payment processor...')">Connect</button>
+            </div>
+            <div class="ac" style="padding:12px 0">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128101;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Add your first client</div>
+                    <div class="ac-m"><span>Save client details for quicker invoicing</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Add client...')">Add Client</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="right-col fi fi5">
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Invoice Features</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">&#128196; Professional templates</span></div>
+            <div class="d-row"><span class="d-row-l">&#9993; Email delivery</span></div>
+            <div class="d-row"><span class="d-row-l">&#128176; Online payment links</span></div>
+            <div class="d-row"><span class="d-row-l">&#128200; Real-time tracking</span></div>
+            <div class="d-row"><span class="d-row-l">&#128276; Auto-reminders</span></div>
+            <div class="d-row"><span class="d-row-l">&#127757; Multi-currency</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">&#128202; Aging reports</span></div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Quick Start</h2>
+            </div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening guide...')">&#128214; Invoice creation guide</div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening video...')">&#127909; Video: Send your first invoice</div>
+            <div style="padding:8px 0;font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening docs...')">&#128218; Import from QuickBooks</div>
+        </div>
+    </div>
+</div>

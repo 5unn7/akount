@@ -1,0 +1,1034 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id                    String              @id @default(cuid())
+  name                  String
+  region                TenantRegion
+  status                TenantStatus
+  plan                  TenantPlan
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  onboardingStatus      OnboardingStatus    @default(NEW)
+  onboardingStep        String?
+  onboardingData        Json?
+  onboardingCompletedAt DateTime?
+  accountingPolicies    AccountingPolicy[]
+  auditLogs             AuditLog[]
+  events                DomainEvent[]
+  entities              Entity[]
+  importBatches         ImportBatch[]
+  memberships           TenantUser[]
+  categories            Category[]
+  onboardingProgress    OnboardingProgress?
+}
+
+model TenantUser {
+  id        String         @id @default(cuid())
+  tenantId  String
+  userId    String
+  role      TenantUserRole
+  createdAt DateTime       @default(now())
+  tenant    Tenant         @relation(fields: [tenantId], references: [id])
+  user      User           @relation(fields: [userId], references: [id])
+
+  @@unique([tenantId, userId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+model User {
+  id          String       @id @default(cuid())
+  email       String       @unique
+  name        String?
+  phoneNumber String?
+  timezone    String?      @default("America/Toronto")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  clerkUserId String?      @unique
+  auditLogs   AuditLog[]
+  memberships TenantUser[]
+
+  @@index([email])
+  @@index([clerkUserId])
+}
+
+model Entity {
+  id                 String             @id @default(cuid())
+  tenantId           String
+  name               String
+  type               EntityType
+  country            String
+  taxId              String?
+  functionalCurrency String
+  reportingCurrency  String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  fiscalYearStart    Int?
+  industryCode       String?
+  coaTemplateUsed    String?
+  setupCompletedAt   DateTime?
+  // Business details (collected post-onboarding)
+  address            String?
+  city               String?
+  state              String?
+  postalCode         String?
+  industry           String?
+  businessSize       String?
+  accounts           Account[]
+  accountingPolicies AccountingPolicy[]
+  auditLogs          AuditLog[]
+  bankConnections    BankConnection[]
+  bills              Bill[]
+  budgets            Budget[]
+  clients            Client[]
+  creditNotes        CreditNote[]
+  events             DomainEvent[]
+  tenant             Tenant             @relation(fields: [tenantId], references: [id])
+  fiscalCalendars    FiscalCalendar[]
+  glAccounts         GLAccount[]
+  goals              Goal[]
+  importBatches      ImportBatch[]
+  insights           Insight[]
+  invoices           Invoice[]
+  journalEntries     JournalEntry[]
+  payments           Payment[]
+  projects           Project[]
+  rules              Rule[]
+  taxRates           TaxRate[]
+  vendors            Vendor[]
+
+  @@index([tenantId])
+  @@index([tenantId, type])
+}
+
+model GLAccount {
+  id                   String             @id @default(cuid())
+  entityId             String
+  code                 String
+  name                 String
+  type                 GLAccountType
+  normalBalance        NormalBalance
+  description          String?
+  parentAccountId      String?
+  isActive             Boolean            @default(true)
+  isCTAAccount         Boolean            @default(false)
+  isEliminationAccount Boolean            @default(false)
+  consolidationCode    String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  bankAccounts         Account[]
+  billLines            BillLine[]
+  entity               Entity             @relation(fields: [entityId], references: [id])
+  parentAccount        GLAccount?         @relation("AccountHierarchy", fields: [parentAccountId], references: [id])
+  childAccounts        GLAccount[]        @relation("AccountHierarchy")
+  invoiceLines         InvoiceLine[]
+  journalLines         JournalLine[]
+  transactionSplits    TransactionSplit[]
+
+  @@unique([entityId, code])
+  @@index([entityId, type])
+  @@index([entityId, isActive])
+}
+
+model JournalEntry {
+  id             String                  @id @default(cuid())
+  entityId       String
+  entryNumber    String?                 // Sequential per entity (JE-001, JE-002)
+  date           DateTime
+  memo           String
+  sourceType     JournalEntrySourceType?
+  sourceId       String?
+  sourceDocument Json?
+  linkedEntryId  String?
+  status         JournalEntryStatus
+  createdBy      String
+  updatedBy      String?                 // Who last modified (approve, void)
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  deletedAt      DateTime? // Soft delete - financial data never hard deleted
+  entity         Entity                  @relation(fields: [entityId], references: [id])
+  linkedEntry    JournalEntry?           @relation("TransferPair", fields: [linkedEntryId], references: [id])
+  linkedFrom     JournalEntry[]          @relation("TransferPair")
+  journalLines   JournalLine[]
+  transactions   Transaction[]
+
+  @@index([entityId, date])
+  @@index([entityId, status])
+  @@index([entityId, entryNumber])
+  @@index([sourceType, sourceId])
+  @@index([date])
+  @@index([entityId, deletedAt])
+}
+
+model JournalLine {
+  id                 String       @id @default(cuid())
+  journalEntryId     String
+  glAccountId        String
+  debitAmount        Int
+  creditAmount       Int
+  memo               String?
+  currency           String?      // ISO currency code of original amount (null = entity base currency)
+  exchangeRate       Float?       // FX rate at posting time (immutable once set)
+  baseCurrencyDebit  Int?         // debitAmount converted to entity functionalCurrency
+  baseCurrencyCredit Int?         // creditAmount converted to entity functionalCurrency
+  deletedAt          DateTime?    // Soft delete - financial data never hard deleted
+  glAccount          GLAccount    @relation(fields: [glAccountId], references: [id])
+  journalEntry       JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
+
+  @@index([journalEntryId])
+  @@index([glAccountId])
+  @@index([journalEntryId, deletedAt])
+}
+
+model TaxRate {
+  id            String    @id @default(cuid())
+  entityId      String?
+  code          String
+  name          String
+  rate          Float
+  jurisdiction  String
+  isInclusive   Boolean
+  glAccountId   String?
+  isActive      Boolean
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  entity        Entity?   @relation(fields: [entityId], references: [id])
+
+  @@index([entityId, isActive])
+  @@index([jurisdiction])
+}
+
+model FiscalCalendar {
+  id        String         @id @default(cuid())
+  entityId  String
+  year      Int
+  startDate DateTime
+  endDate   DateTime
+  entity    Entity         @relation(fields: [entityId], references: [id])
+  periods   FiscalPeriod[]
+
+  @@unique([entityId, year])
+  @@index([entityId])
+}
+
+model FiscalPeriod {
+  id               String             @id @default(cuid())
+  fiscalCalendarId String
+  periodNumber     Int
+  name             String
+  startDate        DateTime
+  endDate          DateTime
+  status           FiscalPeriodStatus
+  fiscalCalendar   FiscalCalendar     @relation(fields: [fiscalCalendarId], references: [id], onDelete: Cascade)
+
+  @@index([fiscalCalendarId])
+  @@index([status])
+}
+
+model Client {
+  id           String    @id @default(cuid())
+  entityId     String
+  name         String
+  email        String?
+  phone        String?
+  address      String?
+  paymentTerms String?
+  status       String    @default("active")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // Soft delete - user-facing data preserved
+  entity       Entity    @relation(fields: [entityId], references: [id])
+  invoices     Invoice[]
+  payments     Payment[]
+
+  @@index([entityId])
+  @@index([entityId, status])
+  @@index([entityId, deletedAt])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  entityId      String
+  clientId      String
+  invoiceNumber String
+  issueDate     DateTime
+  dueDate       DateTime
+  currency      String
+  subtotal      Int
+  taxAmount     Int
+  total         Int
+  status        InvoiceStatus
+  paidAmount    Int
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime? // Soft delete - financial data never hard deleted
+  client        Client        @relation(fields: [clientId], references: [id])
+  entity        Entity        @relation(fields: [entityId], references: [id])
+  invoiceLines  InvoiceLine[]
+
+  @@index([entityId, status])
+  @@index([clientId, status])
+  @@index([dueDate])
+  @@index([issueDate])
+  @@index([entityId, deletedAt])
+}
+
+model InvoiceLine {
+  id          String     @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Int
+  unitPrice   Int
+  taxRateId   String?
+  taxAmount   Int
+  amount      Int
+  glAccountId String?
+  categoryId  String?
+  deletedAt   DateTime? // Soft delete - financial data never hard deleted
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  glAccount   GLAccount? @relation(fields: [glAccountId], references: [id])
+  invoice     Invoice    @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@index([invoiceId, deletedAt])
+}
+
+model Vendor {
+  id           String    @id @default(cuid())
+  entityId     String
+  name         String
+  email        String?
+  phone        String?
+  address      String?
+  paymentTerms String?
+  status       String    @default("active")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime? // Soft delete - user-facing data preserved
+  bills        Bill[]
+  payments     Payment[]
+  entity       Entity    @relation(fields: [entityId], references: [id])
+
+  @@index([entityId])
+  @@index([entityId, status])
+  @@index([entityId, deletedAt])
+}
+
+model Bill {
+  id         String     @id @default(cuid())
+  entityId   String
+  vendorId   String
+  billNumber String
+  issueDate  DateTime
+  dueDate    DateTime
+  currency   String
+  subtotal   Int
+  taxAmount  Int
+  total      Int
+  status     BillStatus
+  paidAmount Int
+  notes      String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt  DateTime? // Soft delete - financial data never hard deleted
+  entity     Entity     @relation(fields: [entityId], references: [id])
+  vendor     Vendor     @relation(fields: [vendorId], references: [id])
+  billLines  BillLine[]
+
+  @@index([entityId, status])
+  @@index([vendorId, status])
+  @@index([dueDate])
+  @@index([issueDate])
+  @@index([entityId, deletedAt])
+}
+
+model BillLine {
+  id          String     @id @default(cuid())
+  billId      String
+  description String
+  quantity    Int
+  unitPrice   Int
+  taxRateId   String?
+  taxAmount   Int
+  amount      Int
+  glAccountId String?
+  categoryId  String?
+  deletedAt   DateTime? // Soft delete - financial data never hard deleted
+  bill        Bill       @relation(fields: [billId], references: [id], onDelete: Cascade)
+  category    Category?  @relation(fields: [categoryId], references: [id])
+  glAccount   GLAccount? @relation(fields: [glAccountId], references: [id])
+
+  @@index([billId])
+  @@index([billId, deletedAt])
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  entityId      String
+  date          DateTime
+  amount        Int
+  currency      String
+  paymentMethod PaymentMethod
+  reference     String?
+  clientId      String?
+  vendorId      String?
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime? // Soft delete - financial data never hard deleted
+  client        Client?       @relation(fields: [clientId], references: [id])
+  entity        Entity        @relation(fields: [entityId], references: [id])
+  vendor        Vendor?       @relation(fields: [vendorId], references: [id])
+
+  @@index([entityId, date])
+  @@index([clientId])
+  @@index([vendorId])
+  @@index([entityId, deletedAt])
+}
+
+model CreditNote {
+  id               String    @id @default(cuid())
+  entityId         String
+  creditNoteNumber String
+  date             DateTime
+  currency         String
+  amount           Int
+  reason           String
+  linkedInvoiceId  String?
+  linkedBillId     String?
+  status           String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+  entity           Entity    @relation(fields: [entityId], references: [id])
+
+  @@index([entityId, deletedAt])
+}
+
+model Account {
+  id             String                @id @default(cuid())
+  entityId       String
+  name           String
+  type           AccountType
+  institution    String?
+  currency       String
+  country        String
+  currentBalance Int
+  isActive       Boolean               @default(true)
+  glAccountId    String?               // Bank-to-GL mapping for posting
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  deletedAt      DateTime? // Soft delete - financial data never hard deleted
+  entity         Entity                @relation(fields: [entityId], references: [id])
+  feedTxns       BankFeedTransaction[]
+  glAccount      GLAccount?            @relation(fields: [glAccountId], references: [id])
+  transactions   Transaction[]
+
+  @@index([entityId])
+  @@index([entityId, type])
+  @@index([entityId, isActive])
+  @@index([entityId, deletedAt])
+}
+
+model BankConnection {
+  id              String                 @id @default(cuid())
+  entityId        String
+  provider        BankConnectionProvider
+  providerItemId  String?
+  institutionId   String
+  institutionName String
+  status          BankConnectionStatus
+  lastSyncAt      DateTime?
+  errorMessage    String?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  entity          Entity                 @relation(fields: [entityId], references: [id])
+  feedTxns        BankFeedTransaction[]
+
+  @@index([entityId])
+  @@index([entityId, status])
+  @@index([provider, status])
+}
+
+model BankFeedTransaction {
+  id                 String             @id @default(cuid())
+  bankConnectionId   String
+  accountId          String
+  bankTransactionId  String
+  date               DateTime
+  description        String
+  amount             Int
+  currency           String
+  balance            Int?
+  rawData            Json?
+  merchantHints      Json?
+  status             BankFeedStatus     @default(PENDING)
+  statusHistory      Json[]
+  postedToJournalId  String?
+  createdAt          DateTime           @default(now())
+  deletedAt          DateTime? // Soft delete - financial data never hard deleted
+  account            Account            @relation(fields: [accountId], references: [id])
+  bankConnection     BankConnection     @relation(fields: [bankConnectionId], references: [id])
+  transactionMatches TransactionMatch[]
+
+  @@index([accountId, date])
+  @@index([accountId, date, id])
+  @@index([bankConnectionId])
+  @@index([status])
+  @@index([bankTransactionId])
+  @@index([accountId, deletedAt])
+}
+
+model Transaction {
+  id             String                @id @default(cuid())
+  accountId      String
+  date           DateTime
+  description    String
+  amount         Int
+  currency       String
+  categoryId     String?
+  notes          String?
+  sourceType     TransactionSourceType
+  sourceId       String?
+  journalEntryId String?
+  isStaged       Boolean               @default(false)
+  isSplit        Boolean               @default(false)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  deletedAt      DateTime? // Soft delete - financial data never hard deleted
+  importBatchId  String?
+  account        Account               @relation(fields: [accountId], references: [id])
+  category       Category?             @relation(fields: [categoryId], references: [id])
+  importBatch    ImportBatch?          @relation(fields: [importBatchId], references: [id])
+  journalEntry   JournalEntry?         @relation(fields: [journalEntryId], references: [id])
+  matches        TransactionMatch[]
+  splits         TransactionSplit[]
+
+  @@index([accountId, date])
+  @@index([accountId, date, id])
+  @@index([accountId, createdAt])
+  @@index([categoryId])
+  @@index([sourceType, sourceId])
+  @@index([accountId, deletedAt])
+  @@index([importBatchId])
+}
+
+model TransactionSplit {
+  id            String      @id @default(cuid())
+  transactionId String
+  amount        Int
+  categoryId    String?
+  glAccountId   String?     // GL account for posting split to ledger
+  description   String?
+  notes         String?
+  projectId     String?
+  tags          Json?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  category      Category?   @relation(fields: [categoryId], references: [id])
+  glAccount     GLAccount?  @relation(fields: [glAccountId], references: [id])
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([transactionId])
+}
+
+model TransactionMatch {
+  id                    String                 @id @default(cuid())
+  bankFeedTransactionId String
+  transactionId         String?
+  journalEntryId        String?
+  status                TransactionMatchStatus
+  confidence            Float?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  bankFeedTransaction   BankFeedTransaction    @relation(fields: [bankFeedTransactionId], references: [id])
+  transaction           Transaction?           @relation(fields: [transactionId], references: [id])
+
+  @@index([bankFeedTransactionId])
+  @@index([transactionId])
+  @@index([status])
+}
+
+model Category {
+  id                String             @id @default(cuid())
+  tenantId          String
+  tenant            Tenant             @relation(fields: [tenantId], references: [id])
+  name              String
+  type              CategoryType
+  parentCategoryId  String?
+  color             String?
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  deletedAt         DateTime? // Soft delete - user-facing data preserved
+  billLines         BillLine[]
+  budgets           Budget[]
+  parentCategory    Category?          @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
+  childCategories   Category[]         @relation("CategoryHierarchy")
+  goals             Goal[]
+  invoiceLines      InvoiceLine[]
+  snapshots         Snapshot[]
+  transactions      Transaction[]
+  transactionSplits TransactionSplit[]
+
+  @@index([tenantId])
+  @@index([tenantId, type])
+  @@index([tenantId, isActive])
+  @@index([tenantId, deletedAt])
+  @@index([type])
+  @@index([isActive])
+}
+
+model Budget {
+  id          String    @id @default(cuid())
+  entityId    String
+  name        String
+  categoryId  String?
+  glAccountId String?
+  amount      Int
+  period      String
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  category    Category? @relation(fields: [categoryId], references: [id])
+  entity      Entity    @relation(fields: [entityId], references: [id])
+
+  @@index([entityId])
+  @@index([startDate, endDate])
+}
+
+model Goal {
+  id            String    @id @default(cuid())
+  entityId      String
+  name          String
+  type          String
+  targetAmount  Int
+  currentAmount Int
+  targetDate    DateTime
+  accountId     String?
+  categoryId    String?
+  status        String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  category      Category? @relation(fields: [categoryId], references: [id])
+  entity        Entity    @relation(fields: [entityId], references: [id])
+
+  @@index([entityId])
+  @@index([status])
+}
+
+model Insight {
+  id          String    @id @default(cuid())
+  entityId    String
+  triggerId   String
+  title       String
+  description String
+  type        String
+  priority    String
+  impact      Int?
+  confidence  Float?
+  actionable  Boolean
+  status      String
+  deadline    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  entity      Entity    @relation(fields: [entityId], references: [id])
+
+  @@index([entityId])
+  @@index([status])
+  @@index([priority])
+}
+
+model Rule {
+  id             String     @id @default(cuid())
+  entityId       String
+  name           String
+  conditions     Json
+  action         Json
+  isActive       Boolean
+  source         RuleSource
+  aiConfidence   Float?
+  aiModelVersion String?
+  userApprovedAt DateTime?
+  executionCount Int        @default(0)
+  successRate    Float      @default(1.0)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  entity         Entity     @relation(fields: [entityId], references: [id])
+
+  @@index([entityId, isActive])
+  @@index([source])
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  entityId    String
+  name        String
+  code        String
+  description String?
+  status      String
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  entity      Entity    @relation(fields: [entityId], references: [id])
+
+  @@index([entityId])
+  @@index([status])
+}
+
+model Snapshot {
+  id          String    @id @default(cuid())
+  entityId    String
+  date        DateTime
+  glAccountId String?
+  categoryId  String?
+  balance     Int
+  createdAt   DateTime  @default(now())
+  category    Category? @relation(fields: [categoryId], references: [id])
+
+  @@index([entityId, date])
+}
+
+model FXRate {
+  id        String   @id @default(cuid())
+  base      String
+  quote     String
+  date      DateTime
+  source    String
+  rate      Float
+  createdAt DateTime @default(now())
+
+  @@unique([base, quote, date, source])
+  @@index([base, quote, date])
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  tenantId  String
+  entityId  String?
+  userId    String?
+  model     String
+  recordId  String
+  action    AuditAction
+  before    Json?
+  after     Json?
+  createdAt DateTime    @default(now())
+  entity    Entity?     @relation(fields: [entityId], references: [id])
+  tenant    Tenant      @relation(fields: [tenantId], references: [id])
+  user      User?       @relation(fields: [userId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([entityId, createdAt])
+  @@index([userId, createdAt])
+  @@index([model, recordId])
+}
+
+model DomainEvent {
+  id          String    @id @default(cuid())
+  tenantId    String
+  entityId    String?
+  type        String
+  aggregateId String?
+  aggregate   String?
+  payload     Json
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
+  entity      Entity?   @relation(fields: [entityId], references: [id])
+  tenant      Tenant    @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([type])
+  @@index([processedAt])
+}
+
+model ImportBatch {
+  id           String                @id @default(cuid())
+  tenantId     String
+  entityId     String?
+  sourceType   ImportBatchSourceType
+  status       ImportBatchStatus
+  error        String?
+  createdAt    DateTime              @default(now())
+  entity       Entity?               @relation(fields: [entityId], references: [id])
+  tenant       Tenant                @relation(fields: [tenantId], references: [id])
+  transactions Transaction[]
+
+  @@index([tenantId])
+  @@index([entityId])
+  @@index([status])
+}
+
+model AccountingPolicy {
+  id            String    @id @default(cuid())
+  tenantId      String
+  entityId      String?
+  key           String
+  value         Json
+  effectiveFrom DateTime
+  effectiveTo   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  entity        Entity?   @relation(fields: [entityId], references: [id])
+  tenant        Tenant    @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, key])
+  @@index([entityId, key])
+}
+
+model ConsolidationElimination {
+  id             String   @id @default(cuid())
+  fiscalPeriodId String
+  fromEntityId   String
+  toEntityId     String
+  amount         Int
+  description    String
+  journalEntryId String?
+  createdAt      DateTime @default(now())
+
+  @@index([fiscalPeriodId])
+  @@index([fromEntityId])
+  @@index([toEntityId])
+}
+
+model OnboardingProgress {
+  id       String @id @default(cuid())
+  tenantId String @unique
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Step completion tracking
+  completedSteps String[] @default([])
+  skippedSteps   String[] @default([])
+
+  // Individual step flags
+  basicInfoComplete       Boolean @default(false)
+  entitySetupComplete     Boolean @default(false)
+  businessDetailsComplete Boolean @default(false)
+  bankConnectionComplete  Boolean @default(false)
+  goalsSetupComplete      Boolean @default(false)
+
+  // Progress metrics
+  completionPercentage Int @default(0)
+
+  // Nudge management
+  lastNudgedAt             DateTime?
+  dashboardCardDismissedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+}
+
+model RuleSuggestion {
+  id             String               @id @default(cuid())
+  entityId       String
+  triggeredBy    String
+  suggestedRule  Json
+  aiReasoning    String
+  aiConfidence   Float
+  aiModelVersion String
+  status         RuleSuggestionStatus
+  createdAt      DateTime             @default(now())
+  reviewedAt     DateTime?
+  reviewedBy     String?
+
+  @@index([entityId, status])
+  @@index([status])
+}
+
+enum OnboardingStatus {
+  NEW
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TenantRegion {
+  CA
+  US
+  EU
+  UK
+  AU
+}
+
+enum TenantStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CLOSED
+  SUSPENDED
+}
+
+enum TenantPlan {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum TenantUserRole {
+  OWNER
+  ADMIN
+  ACCOUNTANT
+  VIEWER
+}
+
+enum GLAccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  INCOME
+  EXPENSE
+}
+
+enum NormalBalance {
+  DEBIT
+  CREDIT
+}
+
+enum JournalEntryStatus {
+  DRAFT
+  POSTED
+  VOIDED
+  ARCHIVED
+}
+
+enum JournalEntrySourceType {
+  INVOICE
+  PAYMENT
+  BANK_FEED
+  MANUAL
+  TRANSFER
+  ADJUSTMENT
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+  PARTIALLY_PAID
+}
+
+enum BillStatus {
+  DRAFT
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+  PARTIALLY_PAID
+}
+
+enum BankFeedStatus {
+  PENDING
+  POSTED
+  CANCELLED
+}
+
+enum TransactionMatchStatus {
+  MATCHED
+  SUGGESTED
+  UNMATCHED
+}
+
+enum AccountType {
+  BANK
+  CREDIT_CARD
+  LOAN
+  MORTGAGE
+  INVESTMENT
+  OTHER
+}
+
+enum BankConnectionStatus {
+  ACTIVE
+  ERROR
+  DISCONNECTED
+  REAUTH_REQUIRED
+}
+
+enum BankConnectionProvider {
+  FLINKS
+  PLAID
+  MANUAL
+}
+
+enum TransactionSourceType {
+  BANK_FEED
+  MANUAL
+  INVOICE
+  BILL
+  TRANSFER
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum ImportBatchSourceType {
+  CSV
+  PDF
+  BANK_FEED
+  API
+}
+
+enum ImportBatchStatus {
+  PENDING
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+enum RuleSource {
+  USER_MANUAL
+  AI_SUGGESTED
+  SYSTEM_DEFAULT
+}
+
+enum RuleSuggestionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  VIEW
+}
+
+enum PaymentMethod {
+  CARD
+  TRANSFER
+  CASH
+  CHECK
+  WIRE
+  OTHER
+}
+
+enum EntityType {
+  PERSONAL
+  CORPORATION
+  LLC
+  PARTNERSHIP
+  SOLE_PROPRIETORSHIP
+}
+
+enum FiscalPeriodStatus {
+  OPEN
+  LOCKED
+  CLOSED
+}

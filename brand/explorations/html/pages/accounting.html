@@ -1,0 +1,529 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Accounting</div>
+        <div class="page-sub">Chart of accounts &middot; Journal entries &middot; Trial balance &middot; FY2026</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Exporting trial balance...')">&#128200; Trial Balance</button>
+        <button class="btn" onclick="showToast('Generating P&amp;L report...')">&#128196; P&amp;L Report</button>
+        <button class="btn pri" onclick="showToast('New journal entry created')">+ New Entry</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab on">Accounting</button>
+    <button class="sec-tab" onclick="window.location.hash='#/assets'">Assets</button>
+    <button class="sec-tab" onclick="window.location.hash='#/journal-entries'">Journal Entries</button>
+    <button class="sec-tab" onclick="window.location.hash='#/tax-rates'">Tax Rates</button>
+    <button class="sec-tab" onclick="window.location.hash='#/fiscal-periods'">Fiscal Periods</button>
+</div>
+
+<!-- Stats Row -->
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Assets</div>
+        <div class="st-val">$89,640</div>
+        <div class="st-trend up">+8.4%</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Total Liabilities</div>
+        <div class="st-val">$12,840</div>
+        <div class="st-trend up">-5.2%</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Equity</div>
+        <div class="st-val">$76,800</div>
+        <div class="st-trend up">+12.1%</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Journal Entries (Feb)</div>
+        <div class="st-val">42</div>
+        <div class="st-trend flat">12 auto</div>
+    </div>
+</div>
+
+<!-- Two Column Layout -->
+<div class="two-col">
+    <div>
+        <!-- Chart of Accounts -->
+        <section class="sec fi fi3">
+            <div class="sec-h">
+                <h2 class="sec-t">Chart of Accounts</h2>
+                <div class="sec-tabs">
+                    <button class="sec-tab on">All</button>
+                    <button class="sec-tab">Assets</button>
+                    <button class="sec-tab">Liabilities</button>
+                    <button class="sec-tab">Revenue</button>
+                    <button class="sec-tab">Expenses</button>
+                </div>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Account Name</th>
+                            <th>Type</th>
+                            <th class="right">Debit</th>
+                            <th class="right">Credit</th>
+                            <th class="right">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="txn-row" style="background:rgba(245,158,11,.04)">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">1000</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:var(--green);color:#fff;font-size:10px;font-weight:700">A
+                                    </div>
+                                    <div class="txn-desc">Cash &amp; Bank</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(52,211,153,.12);color:var(--green)">Asset</span></td>
+                            <td class="txn-amt in" style="text-align:right">$42,500.00</td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt in" style="text-align:right;font-weight:600">$42,500.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">1200</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(96,165,250,.15);color:var(--blue);font-size:10px;font-weight:700">
+                                        A</div>
+                                    <div class="txn-desc">Accounts Receivable</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(52,211,153,.12);color:var(--green)">Asset</span></td>
+                            <td class="txn-amt in" style="text-align:right">$42,800.00</td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt in" style="text-align:right">$42,800.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">1300</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(167,139,250,.12);color:var(--purple);font-size:10px;font-weight:700">
+                                        A</div>
+                                    <div class="txn-desc">Prepaid Expenses</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(52,211,153,.12);color:var(--green)">Asset</span></td>
+                            <td class="txn-amt in" style="text-align:right">$4,340.00</td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt in" style="text-align:right">$4,340.00</td>
+                        </tr>
+                        <tr class="txn-row" style="background:rgba(248,113,113,.03)">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">2000</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(248,113,113,.12);color:var(--red);font-size:10px;font-weight:700">
+                                        L</div>
+                                    <div class="txn-desc">Accounts Payable</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(248,113,113,.1);color:var(--red)">Liability</span></td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt out" style="text-align:right">$3,200.00</td>
+                            <td class="txn-amt out" style="text-align:right">$3,200.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">2100</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(248,113,113,.12);color:var(--red);font-size:10px;font-weight:700">
+                                        L</div>
+                                    <div class="txn-desc">Credit Card Payable</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(248,113,113,.1);color:var(--red)">Liability</span></td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt out" style="text-align:right">$2,840.00</td>
+                            <td class="txn-amt out" style="text-align:right">$2,840.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">2200</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(248,113,113,.12);color:var(--red);font-size:10px;font-weight:700">
+                                        L</div>
+                                    <div class="txn-desc">HST/GST Collected</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(248,113,113,.1);color:var(--red)">Liability</span></td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt out" style="text-align:right">$6,800.00</td>
+                            <td class="txn-amt out" style="text-align:right">$6,800.00</td>
+                        </tr>
+                        <tr class="txn-row" style="background:rgba(96,165,250,.03)">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">4000</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(96,165,250,.15);color:var(--blue);font-size:10px;font-weight:700">
+                                        R</div>
+                                    <div class="txn-desc">Consulting Revenue</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(96,165,250,.12);color:var(--blue)">Revenue</span></td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt in" style="text-align:right">$19,400.00</td>
+                            <td class="txn-amt in" style="text-align:right;font-weight:600">$19,400.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">4100</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:rgba(96,165,250,.15);color:var(--blue);font-size:10px;font-weight:700">
+                                        R</div>
+                                    <div class="txn-desc">Design Services Revenue</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(96,165,250,.12);color:var(--blue)">Revenue</span></td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt in" style="text-align:right">$5,400.00</td>
+                            <td class="txn-amt in" style="text-align:right">$5,400.00</td>
+                        </tr>
+                        <tr class="txn-row" style="background:rgba(245,158,11,.03)">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5000</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
+                                        E</div>
+                                    <div class="txn-desc">Rent &amp; Facilities</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
+                            <td class="txn-amt" style="text-align:right">$1,800.00</td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt" style="text-align:right">$1,800.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5100</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
+                                        E</div>
+                                    <div class="txn-desc">Software &amp; SaaS</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
+                            <td class="txn-amt" style="text-align:right">$340.00</td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt" style="text-align:right">$340.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5200</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
+                                        E</div>
+                                    <div class="txn-desc">Travel &amp; Transportation</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
+                            <td class="txn-amt" style="text-align:right">$540.00</td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt" style="text-align:right">$540.00</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5300</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico"
+                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
+                                        E</div>
+                                    <div class="txn-desc">Professional Services</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
+                            <td class="txn-amt" style="text-align:right">$1,200.00</td>
+                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
+                            <td class="txn-amt" style="text-align:right">$1,200.00</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr style="border-top:2px solid var(--border)">
+                            <td></td>
+                            <td style="font-weight:600;color:var(--t1)">Totals</td>
+                            <td></td>
+                            <td class="txn-amt" style="text-align:right;font-weight:600;color:var(--t1)">$93,520.00</td>
+                            <td class="txn-amt" style="text-align:right;font-weight:600;color:var(--t1)">$37,640.00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- Journal Entries -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Recent Journal Entries</h2>
+                <span class="sec-m">42 entries in Feb</span>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Entry #</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Source</th>
+                            <th class="right">Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0042</td>
+                            <td class="txn-date-cell">Feb 9</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128176;</div>
+                                    <div>
+                                        <div class="txn-desc">XYZ Ltd payment received</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot;
+                                            Cr 1200 AR</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
+                            <td class="txn-amt in" style="text-align:right">$8,200.00</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0041</td>
+                            <td class="txn-date-cell">Feb 7</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(96,165,250,.12)">&#128179;</div>
+                                    <div>
+                                        <div class="txn-desc">Wise FX transfer EUR→CAD</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot;
+                                            Cr 1000 Cash (EUR) &middot; Gain $34</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
+                            <td class="txn-amt in" style="text-align:right">$4,700.00</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0040</td>
+                            <td class="txn-date-cell">Feb 5</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(248,113,113,.1)">&#127968;</div>
+                                    <div>
+                                        <div class="txn-desc">WeWork monthly rent</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5000 Rent &middot;
+                                            Cr 1000 Cash</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
+                            <td class="txn-amt out" style="text-align:right">$1,800.00</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0039</td>
+                            <td class="txn-date-cell">Feb 4</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#128187;</div>
+                                    <div>
+                                        <div class="txn-desc">SaaS subscriptions — Vercel + Linear</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5100 Software
+                                            &middot; Cr 2100 CC Payable</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag matched">Auto — CC</span></td>
+                            <td class="txn-amt out" style="text-align:right">$68.00</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0038</td>
+                            <td class="txn-date-cell">Feb 3</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128176;</div>
+                                    <div>
+                                        <div class="txn-desc">DEF Consulting — retainer payment</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot;
+                                            Cr 1200 AR</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
+                            <td class="txn-amt in" style="text-align:right">$3,500.00</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0037</td>
+                            <td class="txn-date-cell">Feb 1</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(245,158,11,.1)">&#128196;</div>
+                                    <div>
+                                        <div class="txn-desc">Invoice #1047 — ABC Corp</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1200 AR &middot;
+                                            Cr 4000 Revenue &middot; Cr 2200 HST</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag">Manual</span></td>
+                            <td class="txn-amt in" style="text-align:right">$4,746.00</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0036</td>
+                            <td class="txn-date-cell">Jan 31</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#128197;</div>
+                                    <div>
+                                        <div class="txn-desc">January depreciation — equipment</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5400 Depreciation
+                                            &middot; Cr 1400 Accum. Depr.</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag">Auto — Recurring</span></td>
+                            <td class="txn-amt out" style="text-align:right">$416.67</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">JE-2026-0035</td>
+                            <td class="txn-date-cell">Jan 31</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(245,158,11,.1)">&#128197;</div>
+                                    <div>
+                                        <div class="txn-desc">January prepaid amortization</div>
+                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5500 Insurance
+                                            &middot; Cr 1300 Prepaid</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag">Auto — Recurring</span></td>
+                            <td class="txn-amt out" style="text-align:right">$350.00</td>
+                            <td>
+                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-col fi fi5">
+        <!-- Trial Balance Summary -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Trial Balance</h2><span class="sec-m">Feb 9, 2026</span>
+            </div>
+            <div class="d-row"><span class="d-row-l">Total Debits</span><span class="d-row-v"
+                    style="color:var(--green)">$93,520</span></div>
+            <div class="d-row"><span class="d-row-l">Total Credits</span><span class="d-row-v"
+                    style="color:var(--blue)">$93,520</span></div>
+            <div class="d-row"><span class="d-row-l">Difference</span><span class="d-row-v"
+                    style="color:var(--green);font-weight:600">$0.00 &#10003;</span></div>
+            <div class="d-row"><span class="d-row-l">Net Income (YTD)</span><span class="d-row-v"
+                    style="font-weight:600">$16,380</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Retained Earnings</span><span
+                    class="d-row-v">$60,420</span></div>
+        </div>
+
+        <!-- Fiscal Period -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Fiscal Period</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Fiscal Year</span><span class="d-row-v">Jan 1 — Dec 31, 2026</span>
+            </div>
+            <div class="d-row"><span class="d-row-l">Current Period</span><span class="d-row-v"
+                    style="color:var(--pri)">P2 — February</span></div>
+            <div class="d-row"><span class="d-row-l">Period Status</span><span class="d-row-v"><span
+                        class="inv-badge sent" style="font-size:10px">Open</span></span></div>
+            <div class="d-row"><span class="d-row-l">P1 — January</span><span class="d-row-v"><span
+                        class="inv-badge paid" style="font-size:10px">Closed</span></span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Year-End</span><span class="d-row-v">Dec 31,
+                    2026</span></div>
+        </div>
+
+        <!-- Tax Summary -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Tax Summary</h2><span class="sec-m">Q1 2026</span>
+            </div>
+            <div class="d-row"><span class="d-row-l">HST Collected</span><span class="d-row-v"
+                    style="color:var(--red)">$6,800</span></div>
+            <div class="d-row"><span class="d-row-l">ITC (Input Credits)</span><span class="d-row-v"
+                    style="color:var(--green)">$1,420</span></div>
+            <div class="d-row"><span class="d-row-l">Net HST Owing</span><span class="d-row-v"
+                    style="color:var(--red);font-weight:600">$5,380</span></div>
+            <div class="d-row"><span class="d-row-l">Filing Deadline</span><span class="d-row-v">Apr 30, 2026</span>
+            </div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Last Filed</span><span class="d-row-v">Q4 2025
+                    — Dec 15</span></div>
+        </div>
+
+        <!-- Closing Checklist -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Month-End Checklist</h2><span class="sec-m">February</span>
+            </div>
+            <div class="d-row"><span class="d-row-l">&#9745; Bank reconciliation</span><span class="d-row-v"
+                    style="color:var(--green)">78%</span></div>
+            <div class="d-row"><span class="d-row-l">&#9745; Revenue recognized</span><span class="d-row-v"
+                    style="color:var(--green)">Done</span></div>
+            <div class="d-row"><span class="d-row-l">&#9744; Depreciation posted</span><span class="d-row-v"
+                    style="color:var(--t3)">Pending</span></div>
+            <div class="d-row"><span class="d-row-l">&#9744; Prepaid amortization</span><span class="d-row-v"
+                    style="color:var(--t3)">Pending</span></div>
+            <div class="d-row"><span class="d-row-l">&#9744; FX revaluation</span><span class="d-row-v"
+                    style="color:var(--t3)">Pending</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">&#9744; Review &amp; close period</span><span
+                    class="d-row-v" style="color:var(--t3)">Pending</span></div>
+        </div>
+    </div>
+</div>

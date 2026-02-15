@@ -1,0 +1,28 @@
+{
+  "config": {
+    "default": true,
+    // MD041: First line should be H1
+    // DISABLED: 52+ files use YAML frontmatter (agents, commands, rules, docs)
+    // Frontmatter appears on line 1, not an H1 heading
+    "MD041": false,
+    // MD013: Line length
+    // DISABLED: Documentation files have long tables, URLs, and code examples
+    "MD013": false,
+    // MD033: Inline HTML
+    // DISABLED: Some design-system docs use HTML for tables and details elements
+    "MD033": false,
+    // MD024: Multiple headings with the same content
+    // Allow duplicate headers under different parent sections
+    "MD024": {
+      "siblings_only": true
+    }
+  },
+  "globs": [
+    "**/*.md"
+  ],
+  "ignores": [
+    "node_modules/**",
+    ".claude/test-samples/**",
+    "brand/**"
+  ]
+}

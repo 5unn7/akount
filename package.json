@@ -1,0 +1,38 @@
+{
+    "name": "akount-monorepo",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "lint:md": "markdownlint-cli2 \"**/*.md\"",
+        "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
+        "typecheck": "turbo typecheck",
+        "clean": "turbo clean",
+        "test": "turbo test",
+        "start": "npm run start --workspace=web",
+        "check:env": "node scripts/check-env.mjs",
+        "db:push": "turbo db:push",
+        "db:studio": "turbo db:studio",
+        "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed",
+        "db:generate": "cd packages/db && npm run generate",
+        "db:migrate": "cd packages/db && npm run migrate",
+        "db:seed": "cd packages/db && npm run seed",
+        "db:reset": "cd packages/db && npm run db:reset"
+    },
+    "devDependencies": {
+        "markdownlint-cli2": "^0.20.0",
+        "prettier": "^3.1.0",
+        "turbo": "^2.3.3",
+        "typescript": "^5.3.3"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "packageManager": "npm@10.2.4",
+    "dependencies": {
+        "file-type": "^19.0.0"
+    }
+}

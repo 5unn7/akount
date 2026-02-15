@@ -1,0 +1,147 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Banking</div>
+        <div class="page-sub">Connect your bank accounts to track transactions automatically</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn pri" onclick="showToast('Bank connection flow...')">&#127974; Connect Bank</button>
+    </div>
+</div>
+
+<!-- Empty Accounts Grid -->
+<section class="sec fi fi2" style="text-align:center;padding:48px 20px">
+    <div style="font-size:52px;margin-bottom:16px;opacity:.2">&#127974;</div>
+    <div style="font-size:17px;font-weight:600;color:var(--t1);margin-bottom:8px">No bank accounts connected</div>
+    <div style="font-size:13px;color:var(--t3);max-width:440px;margin:0 auto 24px;line-height:1.6">
+        Connect your bank, credit card, or payment processor to automatically import transactions.<br>
+        We'll categorize them with AI and keep everything reconciled.
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn pri" onclick="showToast('Bank connection flow...')">&#127974; Connect Bank Account</button>
+        <button class="btn" onclick="showToast('CSV import flow...')">&#128229; Import CSV</button>
+    </div>
+</section>
+
+<div class="two-col">
+    <div>
+        <!-- Supported Banks -->
+        <section class="sec fi fi3">
+            <div class="sec-h">
+                <h2 class="sec-t">Supported Institutions</h2><span class="sec-m">200+ banks</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting RBC...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div
+                        style="width:32px;height:32px;border-radius:8px;background:rgba(96,165,250,.1);display:flex;align-items:center;justify-content:center;font-size:14px">
+                        &#127974;</div>
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:var(--t1)">RBC Royal Bank</div>
+                        <div style="font-size:10px;color:var(--t4)">Chequing &middot; Savings &middot; Credit</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting TD...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div
+                        style="width:32px;height:32px;border-radius:8px;background:rgba(52,211,153,.1);display:flex;align-items:center;justify-content:center;font-size:14px">
+                        &#127974;</div>
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:var(--t1)">TD Canada Trust</div>
+                        <div style="font-size:10px;color:var(--t4)">Chequing &middot; Savings &middot; Credit</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting BMO...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div
+                        style="width:32px;height:32px;border-radius:8px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;font-size:14px">
+                        &#127974;</div>
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:var(--t1)">BMO</div>
+                        <div style="font-size:10px;color:var(--t4)">Chequing &middot; Savings</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting Wise...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div
+                        style="width:32px;height:32px;border-radius:8px;background:rgba(96,165,250,.1);display:flex;align-items:center;justify-content:center;font-size:14px">
+                        &#128179;</div>
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:var(--t1)">Wise</div>
+                        <div style="font-size:10px;color:var(--t4)">Multi-currency &middot; Auto FX</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting Amex...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div
+                        style="width:32px;height:32px;border-radius:8px;background:rgba(167,139,250,.1);display:flex;align-items:center;justify-content:center;font-size:14px">
+                        &#128179;</div>
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:var(--t1)">American Express</div>
+                        <div style="font-size:10px;color:var(--t4)">Business &middot; Platinum &middot; Gold</div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting Scotiabank...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div
+                        style="width:32px;height:32px;border-radius:8px;background:rgba(248,113,113,.1);display:flex;align-items:center;justify-content:center;font-size:14px">
+                        &#127974;</div>
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:var(--t1)">Scotiabank</div>
+                        <div style="font-size:10px;color:var(--t4)">Chequing &middot; Savings &middot; Credit</div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;padding-top:12px;font-size:11px;color:var(--t4)">+ 200 more institutions
+                supported</div>
+        </section>
+
+        <!-- Empty Transactions -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Transactions</h2>
+            </div>
+            <div style="text-align:center;padding:32px 0">
+                <div style="font-size:36px;opacity:.15;margin-bottom:10px">&#128196;</div>
+                <div style="font-size:13px;color:var(--t3)">Transactions will appear here after connecting a bank
+                    account</div>
+                <div style="font-size:11px;color:var(--t4);margin-top:4px">AI will auto-categorize them as they come in
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="right-col fi fi5">
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">How It Works</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">1. Connect bank</span><span class="d-row-v"
+                    style="color:var(--t3)">2 min</span></div>
+            <div class="d-row"><span class="d-row-l">2. Auto-import</span><span class="d-row-v"
+                    style="color:var(--t3)">Instant</span></div>
+            <div class="d-row"><span class="d-row-l">3. AI categorizes</span><span class="d-row-v"
+                    style="color:var(--t3)">Automatic</span></div>
+            <div class="d-row"><span class="d-row-l">4. Reconcile</span><span class="d-row-v"
+                    style="color:var(--t3)">1-click</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">5. Reports ready</span><span class="d-row-v"
+                    style="color:var(--t3)">Real-time</span></div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Security</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">&#128274; Bank-grade encryption</span></div>
+            <div class="d-row"><span class="d-row-l">&#128274; Read-only access</span></div>
+            <div class="d-row"><span class="d-row-l">&#128274; SOC 2 compliant</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">&#128274; No stored credentials</span></div>
+        </div>
+    </div>
+</div>
