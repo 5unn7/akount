@@ -383,20 +383,20 @@ describe('ClientService', () => {
       });
     });
 
-    it('should handle undefined fields correctly (allow nullable)', async () => {
+    it('should handle optional fields correctly (allow nullable)', async () => {
       const existing = mockClient({ id: 'client-1' });
       vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(existing as never);
       vi.mocked(prisma.client.update).mockResolvedValueOnce(existing as never);
 
       await clientService.updateClient(
         'client-1',
-        { phone: undefined, address: undefined },
+        { phone: null, address: null },
         mockTenantContext
       );
 
       const updateArgs = vi.mocked(prisma.client.update).mock.calls[0][0]!;
-      expect(updateArgs.data).toHaveProperty('phone', undefined);
-      expect(updateArgs.data).toHaveProperty('address', undefined);
+      expect(updateArgs.data).toHaveProperty('phone', null);
+      expect(updateArgs.data).toHaveProperty('address', null);
     });
 
     it('should include entity in response', async () => {
