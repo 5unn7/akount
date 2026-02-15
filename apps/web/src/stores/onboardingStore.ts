@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export type AccountType = 'personal' | 'business' | 'accountant'
+export type AccountType = 'personal' | 'business'
 export type EntityType = 'PERSONAL' | 'CORPORATION' | 'SOLE_PROPRIETORSHIP' | 'PARTNERSHIP' | 'LLC'
 
 export interface OnboardingState {
@@ -12,6 +12,9 @@ export interface OnboardingState {
   // Account type selection
   accountType: AccountType | null
 
+  // Intent selection (what the user wants to achieve)
+  intents: string[]
+
   // User details
   phoneNumber: string
   timezone: string
@@ -21,7 +24,8 @@ export interface OnboardingState {
   entityType: EntityType | null
   country: string
   currency: string
-  fiscalYearStart: number | null
+  fiscalYearEnd: string
+  industry: string
 
   // API response
   tenantId: string | null
@@ -29,13 +33,15 @@ export interface OnboardingState {
 
   // State transitions
   setAccountType: (type: AccountType) => void
+  toggleIntent: (intent: string) => void
   setPhoneNumber: (phone: string) => void
   setTimezone: (timezone: string) => void
   setEntityName: (name: string) => void
   setEntityType: (type: EntityType) => void
   setCountry: (country: string) => void
   setCurrency: (currency: string) => void
-  setFiscalYearStart: (month: number) => void
+  setFiscalYearEnd: (month: string) => void
+  setIndustry: (industry: string) => void
   nextStep: () => void
   previousStep: () => void
   goToStep: (step: number) => void
@@ -45,15 +51,17 @@ export interface OnboardingState {
 
 const initialState = {
   currentStep: 0,
-  totalSteps: 2, // Will be adjusted based on accountType
-  accountType: null,
+  totalSteps: 4, // Welcome → Intent → Workspace → Ready
+  accountType: 'personal' as AccountType | null,
+  intents: [] as string[],
   phoneNumber: '',
-  timezone: 'America/Toronto', // Default to Eastern Time
+  timezone: 'America/Toronto',
   entityName: '',
   entityType: null,
   country: 'CA',
   currency: 'CAD',
-  fiscalYearStart: 1,
+  fiscalYearEnd: '12', // December
+  industry: '',
   tenantId: null,
   entityId: null,
 }
@@ -63,15 +71,14 @@ export const useOnboardingStore = create<OnboardingState>()(
     (set) => ({
       ...initialState,
 
-      setAccountType: (type: AccountType) =>
-        set({
-          accountType: type,
-          // Adjust total steps based on account type
-          // Personal: Welcome → Details → Complete (3 steps)
-          // Business: Welcome → Details → COA → Complete (4 steps)
-          totalSteps: type === 'business' ? 4 : 3,
-          // Don't set currentStep here — onNext() handles advancement
-        }),
+      setAccountType: (type: AccountType) => set({ accountType: type }),
+
+      toggleIntent: (intent: string) =>
+        set((state) => ({
+          intents: state.intents.includes(intent)
+            ? state.intents.filter((i) => i !== intent)
+            : [...state.intents, intent],
+        })),
 
       setPhoneNumber: (phone: string) => set({ phoneNumber: phone }),
 
@@ -85,8 +92,9 @@ export const useOnboardingStore = create<OnboardingState>()(
 
       setCurrency: (currency: string) => set({ currency }),
 
-      setFiscalYearStart: (month: number) =>
-        set({ fiscalYearStart: Math.max(1, Math.min(12, month)) }),
+      setFiscalYearEnd: (month: string) => set({ fiscalYearEnd: month }),
+
+      setIndustry: (industry: string) => set({ industry }),
 
       nextStep: () =>
         set((state) => ({
@@ -110,7 +118,7 @@ export const useOnboardingStore = create<OnboardingState>()(
     }),
     {
       name: 'onboarding-storage',
-      version: 2,
+      version: 4,
       migrate: () => initialState,
     }
   )

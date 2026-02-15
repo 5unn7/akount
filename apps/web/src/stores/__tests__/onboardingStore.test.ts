@@ -7,14 +7,18 @@ describe('onboardingStore', () => {
   })
 
   describe('initial state', () => {
-    it('starts at step 0 with 2 total steps', () => {
+    it('starts at step 0 with 4 total steps', () => {
       const state = useOnboardingStore.getState()
       expect(state.currentStep).toBe(0)
-      expect(state.totalSteps).toBe(2)
+      expect(state.totalSteps).toBe(4)
     })
 
-    it('has no account type selected', () => {
-      expect(useOnboardingStore.getState().accountType).toBeNull()
+    it('defaults to personal account type', () => {
+      expect(useOnboardingStore.getState().accountType).toBe('personal')
+    })
+
+    it('defaults to empty intents', () => {
+      expect(useOnboardingStore.getState().intents).toEqual([])
     })
 
     it('defaults to Canadian locale', () => {
@@ -23,45 +27,75 @@ describe('onboardingStore', () => {
       expect(state.currency).toBe('CAD')
       expect(state.timezone).toBe('America/Toronto')
     })
+
+    it('defaults fiscal year end to December', () => {
+      expect(useOnboardingStore.getState().fiscalYearEnd).toBe('12')
+    })
+
+    it('defaults industry to empty string', () => {
+      expect(useOnboardingStore.getState().industry).toBe('')
+    })
   })
 
   describe('setAccountType', () => {
-    it('sets personal with 3 total steps', () => {
+    it('sets personal account type', () => {
       useOnboardingStore.getState().setAccountType('personal')
-      const state = useOnboardingStore.getState()
-      expect(state.accountType).toBe('personal')
-      expect(state.totalSteps).toBe(3)
+      expect(useOnboardingStore.getState().accountType).toBe('personal')
     })
 
-    it('sets business with 4 total steps', () => {
+    it('sets business account type', () => {
       useOnboardingStore.getState().setAccountType('business')
-      const state = useOnboardingStore.getState()
-      expect(state.accountType).toBe('business')
-      expect(state.totalSteps).toBe(4)
+      expect(useOnboardingStore.getState().accountType).toBe('business')
+    })
+  })
+
+  describe('intent selection', () => {
+    it('toggles an intent on', () => {
+      useOnboardingStore.getState().toggleIntent('track-spending')
+      expect(useOnboardingStore.getState().intents).toEqual(['track-spending'])
     })
 
-    it('advances to step 1 after selection', () => {
-      useOnboardingStore.getState().setAccountType('personal')
-      expect(useOnboardingStore.getState().currentStep).toBe(1)
+    it('toggles an intent off', () => {
+      useOnboardingStore.getState().toggleIntent('track-spending')
+      useOnboardingStore.getState().toggleIntent('track-spending')
+      expect(useOnboardingStore.getState().intents).toEqual([])
+    })
+
+    it('supports multiple intents', () => {
+      useOnboardingStore.getState().toggleIntent('track-spending')
+      useOnboardingStore.getState().toggleIntent('prepare-taxes')
+      useOnboardingStore.getState().toggleIntent('financial-clarity')
+      expect(useOnboardingStore.getState().intents).toEqual([
+        'track-spending',
+        'prepare-taxes',
+        'financial-clarity',
+      ])
+    })
+
+    it('removes only the toggled intent from multiple', () => {
+      useOnboardingStore.getState().toggleIntent('track-spending')
+      useOnboardingStore.getState().toggleIntent('prepare-taxes')
+      useOnboardingStore.getState().toggleIntent('track-spending')
+      expect(useOnboardingStore.getState().intents).toEqual(['prepare-taxes'])
     })
   })
 
   describe('step navigation', () => {
     it('nextStep increments current step', () => {
-      useOnboardingStore.getState().setAccountType('personal') // totalSteps=3, step=1
       useOnboardingStore.getState().nextStep()
-      expect(useOnboardingStore.getState().currentStep).toBe(2)
+      expect(useOnboardingStore.getState().currentStep).toBe(1)
     })
 
     it('nextStep does not exceed totalSteps - 1', () => {
-      useOnboardingStore.getState().setAccountType('personal') // totalSteps=3
+      useOnboardingStore.getState().nextStep() // step 1
       useOnboardingStore.getState().nextStep() // step 2
-      useOnboardingStore.getState().nextStep() // should stay at 2
-      expect(useOnboardingStore.getState().currentStep).toBe(2)
+      useOnboardingStore.getState().nextStep() // step 3
+      useOnboardingStore.getState().nextStep() // should stay at 3
+      expect(useOnboardingStore.getState().currentStep).toBe(3)
     })
 
     it('previousStep decrements current step', () => {
-      useOnboardingStore.getState().setAccountType('personal') // step=1
+      useOnboardingStore.getState().nextStep() // step 1
       useOnboardingStore.getState().previousStep()
       expect(useOnboardingStore.getState().currentStep).toBe(0)
     })
@@ -72,15 +106,13 @@ describe('onboardingStore', () => {
     })
 
     it('goToStep navigates to specific step within bounds', () => {
-      useOnboardingStore.getState().setAccountType('business') // totalSteps=4
       useOnboardingStore.getState().goToStep(3)
       expect(useOnboardingStore.getState().currentStep).toBe(3)
     })
 
     it('goToStep clamps to valid range', () => {
-      useOnboardingStore.getState().setAccountType('personal') // totalSteps=3
       useOnboardingStore.getState().goToStep(10)
-      expect(useOnboardingStore.getState().currentStep).toBe(2) // max = totalSteps - 1
+      expect(useOnboardingStore.getState().currentStep).toBe(3) // max = totalSteps - 1
 
       useOnboardingStore.getState().goToStep(-5)
       expect(useOnboardingStore.getState().currentStep).toBe(0)
@@ -116,15 +148,17 @@ describe('onboardingStore', () => {
       expect(state.currency).toBe('USD')
     })
 
-    it('clamps fiscal year start to 1-12', () => {
-      useOnboardingStore.getState().setFiscalYearStart(0)
-      expect(useOnboardingStore.getState().fiscalYearStart).toBe(1)
+    it('sets fiscal year end as string month', () => {
+      useOnboardingStore.getState().setFiscalYearEnd('7')
+      expect(useOnboardingStore.getState().fiscalYearEnd).toBe('7')
 
-      useOnboardingStore.getState().setFiscalYearStart(13)
-      expect(useOnboardingStore.getState().fiscalYearStart).toBe(12)
+      useOnboardingStore.getState().setFiscalYearEnd('1')
+      expect(useOnboardingStore.getState().fiscalYearEnd).toBe('1')
+    })
 
-      useOnboardingStore.getState().setFiscalYearStart(7)
-      expect(useOnboardingStore.getState().fiscalYearStart).toBe(7)
+    it('sets industry', () => {
+      useOnboardingStore.getState().setIndustry('technology')
+      expect(useOnboardingStore.getState().industry).toBe('technology')
     })
   })
 
@@ -141,8 +175,11 @@ describe('onboardingStore', () => {
     it('resets all state to initial values', () => {
       // Modify state
       useOnboardingStore.getState().setAccountType('business')
+      useOnboardingStore.getState().toggleIntent('track-spending')
+      useOnboardingStore.getState().toggleIntent('prepare-taxes')
       useOnboardingStore.getState().setEntityName('Test Corp')
       useOnboardingStore.getState().setTenantAndEntity('t-1', 'e-1')
+      useOnboardingStore.getState().setIndustry('consulting')
       useOnboardingStore.getState().nextStep()
 
       // Reset
@@ -150,13 +187,16 @@ describe('onboardingStore', () => {
 
       const state = useOnboardingStore.getState()
       expect(state.currentStep).toBe(0)
-      expect(state.totalSteps).toBe(2)
-      expect(state.accountType).toBeNull()
+      expect(state.totalSteps).toBe(4)
+      expect(state.accountType).toBe('personal')
+      expect(state.intents).toEqual([])
       expect(state.entityName).toBe('')
       expect(state.tenantId).toBeNull()
       expect(state.entityId).toBeNull()
       expect(state.country).toBe('CA')
       expect(state.currency).toBe('CAD')
+      expect(state.industry).toBe('')
+      expect(state.fiscalYearEnd).toBe('12')
     })
   })
 })
