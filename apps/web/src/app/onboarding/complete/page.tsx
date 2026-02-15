@@ -58,8 +58,8 @@ export default function OnboardingCompletePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#09090F] flex items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-[rgba(255,255,255,0.06)] border-t-primary" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-ak-border border-t-primary" />
       </div>
     )
   }
@@ -93,7 +93,7 @@ export default function OnboardingCompletePage() {
   const totalSteps = steps.length
 
   return (
-    <div className="min-h-screen bg-[#09090F] py-12 px-4">
+    <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -113,7 +113,7 @@ export default function OnboardingCompletePage() {
               {progress.completionPercentage}%
             </span>
           </div>
-          <div className="h-2 bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden">
+          <div className="h-2 bg-border rounded-full overflow-hidden">
             <div
               className="h-full bg-primary transition-all duration-500"
               style={{ width: `${progress.completionPercentage}%` }}
@@ -130,13 +130,13 @@ export default function OnboardingCompletePage() {
               className={`p-6 cursor-pointer transition-all ${
                 step.complete
                   ? 'opacity-60'
-                  : 'hover:border-[rgba(245,158,11,0.3)]'
+                  : 'hover:border-primary/30'
               }`}
               onClick={() => !step.complete && setActiveStep(step.id)}
             >
               <div className="flex items-center gap-4">
                 {/* Status icon */}
-                <div className={`flex-shrink-0 ${step.complete ? 'text-[#34D399]' : 'text-[rgba(255,255,255,0.2)]'}`}>
+                <div className={`flex-shrink-0 ${step.complete ? 'text-ak-green' : 'text-muted-foreground/40'}`}>
                   {step.complete ? (
                     <CheckCircle2 className="h-8 w-8" />
                   ) : (
@@ -161,7 +161,7 @@ export default function OnboardingCompletePage() {
                       e.stopPropagation()
                       setActiveStep(step.id)
                     }}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black bg-primary rounded-lg hover:bg-[#FBBF24] transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover transition-colors"
                   >
                     Start
                     <ArrowRight className="h-4 w-4" />
@@ -176,14 +176,14 @@ export default function OnboardingCompletePage() {
         <div className="flex gap-4 justify-center">
           <button
             onClick={handleSkipAll}
-            className="px-6 py-3 text-sm font-medium text-foreground glass border border-[rgba(255,255,255,0.06)] rounded-lg hover:bg-[rgba(255,255,255,0.04)] transition-all"
+            className="px-6 py-3 text-sm font-medium text-foreground glass border border-ak-border rounded-lg hover:bg-ak-bg-3 transition-all"
           >
             Skip for now
           </button>
           {completedCount === totalSteps && (
             <button
               onClick={() => router.push('/overview')}
-              className="px-6 py-3 text-sm font-medium text-black bg-[#34D399] rounded-lg hover:bg-[#6EE7B7] transition-all"
+              className="px-6 py-3 text-sm font-medium text-black bg-ak-green rounded-lg hover:bg-emerald-300 transition-all"
             >
               Go to Dashboard &rarr;
             </button>

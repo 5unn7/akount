@@ -133,7 +133,7 @@ function AccountRow({
     return (
         <>
             <tr
-                className={`group border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors ${
+                className={`group border-b border-ak-border hover:bg-ak-bg-3 transition-colors ${
                     !node.isActive ? 'opacity-50' : ''
                 }`}
             >
@@ -146,7 +146,7 @@ function AccountRow({
                         {hasChildren ? (
                             <button
                                 onClick={() => setExpanded(!expanded)}
-                                className="p-0.5 rounded hover:bg-white/[0.06]"
+                                className="p-0.5 rounded hover:bg-ak-bg-3"
                             >
                                 {expanded ? (
                                     <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
@@ -167,7 +167,7 @@ function AccountRow({
                 {/* Type */}
                 <td className="px-4 py-3">
                     <span
-                        className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                        className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
                             ACCOUNT_TYPE_COLORS[node.type]
                         }`}
                     >
@@ -199,7 +199,7 @@ function AccountRow({
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                             onClick={() => onEdit(node)}
-                            className="p-1.5 rounded-md hover:bg-white/[0.06] text-muted-foreground hover:text-foreground"
+                            className="p-1.5 rounded-md hover:bg-ak-bg-3 text-muted-foreground hover:text-foreground"
                             title="Edit"
                         >
                             <Pencil className="h-3.5 w-3.5" />
@@ -365,8 +365,8 @@ export function ChartOfAccountsClient({
         return (
             <Card className="glass rounded-[14px]">
                 <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="p-4 rounded-full bg-[#F59E0B]/10 mb-4">
-                        <ListTree className="h-8 w-8 text-[#F59E0B]" />
+                    <div className="p-4 rounded-full bg-primary/10 mb-4">
+                        <ListTree className="h-8 w-8 text-primary" />
                     </div>
                     <p className="text-lg font-heading font-normal mb-2">
                         No accounts yet
@@ -376,7 +376,7 @@ export function ChartOfAccountsClient({
                     </p>
                     <div className="flex gap-3">
                         <Button
-                            className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                            className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                             onClick={handleSeedCOA}
                             disabled={isSeeding}
                         >
@@ -389,7 +389,7 @@ export function ChartOfAccountsClient({
                         </Button>
                         <Button
                             variant="outline"
-                            className="rounded-lg border-white/[0.09]"
+                            className="rounded-lg border-ak-border-2"
                             onClick={openAddSheet}
                         >
                             <Plus className="h-4 w-4 mr-2" />
@@ -409,7 +409,7 @@ export function ChartOfAccountsClient({
             {/* Toolbar */}
             <div className="flex items-center gap-3">
                 <Select value={filterType} onValueChange={setFilterType}>
-                    <SelectTrigger className="w-40 rounded-lg border-white/[0.09] bg-white/[0.025]">
+                    <SelectTrigger className="w-40 rounded-lg border-ak-border-2 glass">
                         <SelectValue placeholder="All Types" />
                     </SelectTrigger>
                     <SelectContent>
@@ -426,7 +426,7 @@ export function ChartOfAccountsClient({
 
                 <Button
                     variant="outline"
-                    className="rounded-lg border-white/[0.09]"
+                    className="rounded-lg border-ak-border-2"
                     onClick={handleSeedCOA}
                     disabled={isSeeding}
                 >
@@ -439,7 +439,7 @@ export function ChartOfAccountsClient({
                 </Button>
 
                 <Button
-                    className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                    className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                     onClick={openAddSheet}
                 >
                     <Plus className="h-4 w-4 mr-2" />
@@ -456,7 +456,7 @@ export function ChartOfAccountsClient({
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-white/[0.06] text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <tr className="border-b border-ak-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
                                 <th className="px-4 py-3 font-medium">Code</th>
                                 <th className="px-4 py-3 font-medium">Name</th>
                                 <th className="px-4 py-3 font-medium">Type</th>
@@ -483,7 +483,7 @@ export function ChartOfAccountsClient({
 
             {/* Add/Edit Sheet */}
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                <SheetContent className="sm:max-w-md bg-[#0F0F17] border-white/[0.06]">
+                <SheetContent className="sm:max-w-md bg-card border-ak-border">
                     <SheetHeader>
                         <SheetTitle>
                             {editingAccount ? 'Edit Account' : 'Add Account'}
@@ -506,7 +506,7 @@ export function ChartOfAccountsClient({
                                 onChange={(e) => setFormCode(e.target.value)}
                                 disabled={!!editingAccount}
                                 placeholder="1000"
-                                className="rounded-lg border-white/[0.09] bg-white/[0.025]"
+                                className="rounded-lg border-ak-border-2 glass"
                             />
                         </div>
 
@@ -519,7 +519,7 @@ export function ChartOfAccountsClient({
                                 value={formName}
                                 onChange={(e) => setFormName(e.target.value)}
                                 placeholder="Cash"
-                                className="rounded-lg border-white/[0.09] bg-white/[0.025]"
+                                className="rounded-lg border-ak-border-2 glass"
                             />
                         </div>
 
@@ -533,7 +533,7 @@ export function ChartOfAccountsClient({
                                 onValueChange={(v) => setFormType(v as GLAccountType)}
                                 disabled={!!editingAccount}
                             >
-                                <SelectTrigger className="rounded-lg border-white/[0.09] bg-white/[0.025]">
+                                <SelectTrigger className="rounded-lg border-ak-border-2 glass">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -556,7 +556,7 @@ export function ChartOfAccountsClient({
                                 onValueChange={(v) => setFormNormalBalance(v as NormalBalance)}
                                 disabled={!!editingAccount}
                             >
-                                <SelectTrigger className="rounded-lg border-white/[0.09] bg-white/[0.025]">
+                                <SelectTrigger className="rounded-lg border-ak-border-2 glass">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -573,7 +573,7 @@ export function ChartOfAccountsClient({
                                     Parent Account (optional)
                                 </Label>
                                 <Select value={formParentId} onValueChange={setFormParentId}>
-                                    <SelectTrigger className="rounded-lg border-white/[0.09] bg-white/[0.025]">
+                                    <SelectTrigger className="rounded-lg border-ak-border-2 glass">
                                         <SelectValue placeholder="None (top-level)" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -597,13 +597,13 @@ export function ChartOfAccountsClient({
                                 value={formDescription}
                                 onChange={(e) => setFormDescription(e.target.value)}
                                 placeholder="Account description"
-                                className="rounded-lg border-white/[0.09] bg-white/[0.025]"
+                                className="rounded-lg border-ak-border-2 glass"
                             />
                         </div>
 
                         {/* Submit */}
                         <Button
-                            className="w-full rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium mt-4"
+                            className="w-full rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium mt-4"
                             onClick={handleSubmit}
                             disabled={isSubmitting || !formCode || !formName}
                         >

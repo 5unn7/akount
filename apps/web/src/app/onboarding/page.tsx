@@ -1,12 +1,6 @@
 import { Suspense } from 'react'
 import { OnboardingWizard } from './components/OnboardingWizard'
 
-/**
- * Onboarding Page
- *
- * Server component that renders the onboarding wizard.
- * The wizard is wrapped in a Suspense boundary for better loading states.
- */
 export default function OnboardingPage() {
   return (
     <Suspense fallback={<OnboardingLoadingFallback />}>
@@ -15,24 +9,14 @@ export default function OnboardingPage() {
   )
 }
 
-/**
- * Loading fallback component displayed while wizard initializes
- */
 function OnboardingLoadingFallback() {
   return (
-    <div className="space-y-8 py-12">
-      {/* Header skeleton */}
-      <div className="space-y-4 text-center">
-        <div className="h-10 w-32 mx-auto animate-pulse bg-[rgba(255,255,255,0.06)] rounded" />
-        <div className="h-4 w-64 mx-auto animate-pulse bg-[rgba(255,255,255,0.04)] rounded" />
-      </div>
-
-      {/* Content skeleton */}
-      <div className="space-y-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-12 animate-pulse bg-[rgba(255,255,255,0.04)] rounded" />
-        ))}
-      </div>
+    <div className="flex flex-col items-center justify-center py-24 gap-6">
+      {/* Breathing orb */}
+      <div className="h-10 w-10 rounded-full bg-primary/30 animate-pulse shadow-[0_0_36px_rgba(245,158,11,0.22)]" />
+      <p className="text-sm text-muted-foreground font-heading italic">
+        Preparing your experience...
+      </p>
     </div>
   )
 }

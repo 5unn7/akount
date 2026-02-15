@@ -52,13 +52,13 @@ export function BankConnectionModal({ onClose, onComplete }: BankConnectionModal
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold">Connect Your Bank</h2>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Automatically sync transactions and reconcile accounts
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-ak-bg-3 rounded-lg transition-colors"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
@@ -66,7 +66,7 @@ export function BankConnectionModal({ onClose, onComplete }: BankConnectionModal
           </div>
 
           {error && (
-            <div className="rounded-lg bg-red-50 p-4 text-sm text-red-900 border border-red-200 mb-6">
+            <div className="rounded-lg bg-destructive/[0.08] p-4 text-sm text-ak-red border border-destructive/20 mb-6">
               <p className="font-medium">Error</p>
               <p>{error}</p>
             </div>
@@ -74,39 +74,39 @@ export function BankConnectionModal({ onClose, onComplete }: BankConnectionModal
 
           {/* Coming Soon Message */}
           <div className="text-center py-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 mb-4">
-              <Building2 className="h-8 w-8 text-orange-500" />
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-ak-pri-dim mb-4">
+              <Building2 className="h-8 w-8 text-primary" />
             </div>
             <h3 className="text-xl font-semibold mb-2">Bank Integration Coming Soon</h3>
-            <p className="text-slate-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               We're working on integrating with Plaid to bring you secure, automatic bank connections.
               For now, you can manually import transactions or skip this step.
             </p>
 
             {/* Benefits list */}
-            <div className="bg-slate-50 rounded-lg p-6 mb-6 text-left">
+            <div className="glass border border-ak-border rounded-lg p-6 mb-6 text-left">
               <h4 className="font-semibold mb-3">What you'll get:</h4>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-slate-700">Automatic transaction sync from 10,000+ banks</span>
+                  <CheckCircle className="h-5 w-5 text-ak-green flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/80">Automatic transaction sync from 10,000+ banks</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-slate-700">Real-time balance updates</span>
+                  <CheckCircle className="h-5 w-5 text-ak-green flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/80">Real-time balance updates</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-slate-700">AI-powered categorization</span>
+                  <CheckCircle className="h-5 w-5 text-ak-green flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/80">AI-powered categorization</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-slate-700">Bank-level security (256-bit encryption)</span>
+                  <CheckCircle className="h-5 w-5 text-ak-green flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-foreground/80">Bank-level security (256-bit encryption)</span>
                 </li>
               </ul>
             </div>
 
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-muted-foreground">
               You can manually add accounts and import transactions in the Banking section.
             </p>
           </div>
@@ -116,14 +116,14 @@ export function BankConnectionModal({ onClose, onComplete }: BankConnectionModal
             <button
               onClick={handleSkip}
               disabled={isLoading}
-              className="flex-1 px-6 py-3 text-sm font-medium text-slate-700 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-all"
+              className="flex-1 px-6 py-3 text-sm font-medium text-foreground glass border border-ak-border rounded-lg hover:bg-ak-bg-3 disabled:opacity-50 transition-all"
             >
               Skip for now
             </button>
             <button
               onClick={handleConnect}
               disabled={isLoading}
-              className="flex-1 px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:from-orange-600 hover:to-orange-700 disabled:opacity-50 transition-all shadow-md hover:shadow-lg"
+              className="flex-1 px-6 py-3 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover disabled:opacity-50 transition-all glow-primary"
             >
               {isLoading ? 'Connecting...' : 'Mark as Complete (Demo)'}
             </button>

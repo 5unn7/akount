@@ -1,159 +1,88 @@
 'use client'
 
-import { useOnboardingStore, AccountType } from '@/stores/onboardingStore'
+import { cn } from '@/lib/utils'
+import { useOnboardingStore, type AccountType } from '@/stores/onboardingStore'
+import { GlowCard } from '@/components/ui/glow-card'
+import { User, Building2 } from 'lucide-react'
 
 interface WelcomeStepProps {
   onNext: () => void
 }
 
-/**
- * Welcome Step - Account Type Selection
- *
- * First step of onboarding where users select between:
- * - Personal: Single freelancer or contractor
- * - Business: Company, corporation, or partnership
- * - Accountant: Accountant/bookkeeper managing multiple clients
- */
+const ACCOUNT_TYPES = [
+  {
+    type: 'personal' as AccountType,
+    label: 'Personal',
+    description: 'See where your money goes, track spending, and build clarity',
+    Icon: User,
+  },
+  {
+    type: 'business' as AccountType,
+    label: 'Business',
+    description: 'Manage invoicing, expenses, and cash flow for your business',
+    Icon: Building2,
+  },
+] as const
+
 export function WelcomeStep({ onNext }: WelcomeStepProps) {
-  const setAccountType = useOnboardingStore((state) => state.setAccountType)
+  const accountType = useOnboardingStore((s) => s.accountType)
+  const setAccountType = useOnboardingStore((s) => s.setAccountType)
 
   const handleSelect = (type: AccountType) => {
     setAccountType(type)
-    // Auto-advance to next step after selection
     onNext()
   }
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="space-y-2 text-center">
-        <h1 className="text-3xl font-heading font-normal text-foreground">Welcome to Akount</h1>
-        <p className="text-lg text-muted-foreground">
-          Let's set up your financial command center
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-heading font-normal text-foreground">
+          Welcome to Akount
+        </h1>
+        <p className="text-muted-foreground">
+          Start with your personal finances — you can add a business anytime.
         </p>
       </div>
 
-      {/* Subtitle */}
-      <div className="text-center">
-        <p className="text-sm text-muted-foreground mb-8">
-          Tell us a bit about yourself so we can customize your experience
-        </p>
-      </div>
+      {/* Account type cards */}
+      <div className="grid gap-4 sm:grid-cols-2 max-w-lg mx-auto">
+        {ACCOUNT_TYPES.map(({ type, label, description, Icon }) => {
+          const isSelected = accountType === type
 
-      {/* Account Type Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {/* Personal Card */}
-        <AccountTypeCard
-          title="Personal"
-          description="Freelancer, contractor, or sole proprietor"
-          icon="👤"
-          onClick={() => handleSelect('personal')}
-          features={[
-            'Track income & expenses',
-            'Simple tax reporting',
-            'Basic financial insights',
-          ]}
-        />
-
-        {/* Business Card */}
-        <AccountTypeCard
-          title="Business"
-          description="Company, corporation, or partnership"
-          icon="🏢"
-          onClick={() => handleSelect('business')}
-          features={[
-            'Full bookkeeping suite',
-            'Multi-currency support',
-            'Advanced reporting',
-          ]}
-          highlighted
-        />
-
-        {/* Accountant Card */}
-        <AccountTypeCard
-          title="Accountant"
-          description="Manage multiple client workspaces"
-          icon="📊"
-          onClick={() => handleSelect('accountant')}
-          features={[
-            'Client management',
-            'Batch operations',
-            'Team collaboration',
-          ]}
-          disabled
-        />
+          return (
+            <GlowCard
+              key={type}
+              variant="glass"
+              className={cn(
+                'cursor-pointer p-6 transition-all hover:-translate-y-px',
+                isSelected
+                  ? 'border-primary shadow-[0_0_16px_rgba(245,158,11,0.08)]'
+                  : 'border-ak-border hover:border-ak-border-2',
+              )}
+              onClick={() => handleSelect(type)}
+            >
+              <div className="space-y-3">
+                <div
+                  className={cn(
+                    'h-10 w-10 rounded-lg flex items-center justify-center transition-colors',
+                    isSelected ? 'bg-ak-pri-dim text-primary' : 'bg-[var(--ak-glass-2)] text-muted-foreground',
+                  )}
+                >
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="text-lg font-medium text-foreground">{label}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+              </div>
+            </GlowCard>
+          )
+        })}
       </div>
 
       {/* Footer note */}
-      <div className="text-center text-sm text-muted-foreground">
-        <p>You can change this anytime in settings</p>
-      </div>
+      <p className="text-center text-xs text-muted-foreground">
+        You can always add more accounts later.
+      </p>
     </div>
-  )
-}
-
-interface AccountTypeCardProps {
-  title: string
-  description: string
-  icon: string
-  onClick: () => void
-  features: string[]
-  highlighted?: boolean
-  disabled?: boolean
-}
-
-function AccountTypeCard({
-  title,
-  description,
-  icon,
-  onClick,
-  features,
-  highlighted = false,
-  disabled = false,
-}: AccountTypeCardProps) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`group relative rounded-[14px] border p-6 text-left transition-all ${
-        disabled
-          ? 'opacity-50 cursor-not-allowed bg-[rgba(255,255,255,0.015)] border-[rgba(255,255,255,0.04)]'
-          : highlighted
-            ? 'border-primary bg-[rgba(245,158,11,0.06)] hover:border-[rgba(245,158,11,0.4)] glow-primary'
-            : 'glass border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,255,255,0.13)] hover:bg-[rgba(255,255,255,0.04)]'
-      }`}
-    >
-      {/* Badge */}
-      {highlighted && (
-        <div className="absolute top-3 right-3 bg-primary text-black text-xs font-semibold px-2 py-1 rounded-lg">
-          Recommended
-        </div>
-      )}
-
-      {disabled && (
-        <div className="absolute top-3 right-3 bg-[rgba(255,255,255,0.06)] text-muted-foreground text-xs font-semibold px-2 py-1 rounded-lg">
-          Coming soon
-        </div>
-      )}
-
-      {/* Icon */}
-      <div className="text-4xl mb-4">{icon}</div>
-
-      {/* Title */}
-      <h3 className="text-lg font-medium text-foreground mb-1">{title}</h3>
-
-      {/* Description */}
-      <p className="text-sm text-muted-foreground mb-4">{description}</p>
-
-      {/* Features list */}
-      <ul className="space-y-2">
-        {features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
-            <span className="text-primary font-bold mt-0.5">✓</span>
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-    </button>
   )
 }

@@ -77,7 +77,7 @@ function StatusBadge({ status }: { status: JournalEntryStatus }) {
     const config = STATUS_CONFIG[status];
     return (
         <span
-            className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${config.className}`}
+            className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${config.className}`}
         >
             {config.label}
         </span>
@@ -106,7 +106,7 @@ function EntryDetail({
 
     return (
         <tr>
-            <td colSpan={7} className="px-4 py-4 bg-white/[0.015]">
+            <td colSpan={7} className="px-4 py-4 glass">
                 <div className="space-y-3">
                     {/* Lines table */}
                     <table className="w-full text-sm">
@@ -122,7 +122,7 @@ function EntryDetail({
                             {entry.lines.map((line) => (
                                 <tr
                                     key={line.id}
-                                    className="border-t border-white/[0.04]"
+                                    className="border-t border-ak-border"
                                 >
                                     <td className="py-2 text-sm">
                                         <span className="font-mono text-muted-foreground mr-2">
@@ -146,7 +146,7 @@ function EntryDetail({
                                 </tr>
                             ))}
                             {/* Totals */}
-                            <tr className="border-t border-white/[0.08] font-semibold">
+                            <tr className="border-t border-ak-border-2 font-semibold">
                                 <td className="py-2 text-sm">Totals</td>
                                 <td className="py-2 text-right font-mono text-sm">
                                     {formatAmount(totalDebit)}
@@ -170,7 +170,7 @@ function EntryDetail({
                     </table>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 pt-2 border-t border-white/[0.04]">
+                    <div className="flex items-center gap-2 pt-2 border-t border-ak-border">
                         {entry.status === 'DRAFT' && (
                             <>
                                 <Button
@@ -311,8 +311,8 @@ export function JournalEntriesClient({
         return (
             <Card className="glass rounded-[14px]">
                 <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="p-4 rounded-full bg-[#F59E0B]/10 mb-4">
-                        <BookOpen className="h-8 w-8 text-[#F59E0B]" />
+                    <div className="p-4 rounded-full bg-primary/10 mb-4">
+                        <BookOpen className="h-8 w-8 text-primary" />
                     </div>
                     <p className="text-lg font-heading font-normal mb-2">
                         No journal entries yet
@@ -321,7 +321,7 @@ export function JournalEntriesClient({
                         Create your first manual journal entry or post transactions from the banking module.
                     </p>
                     <Button
-                        className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                        className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                         asChild
                     >
                         <Link href="/accounting/journal-entries/new">
@@ -339,7 +339,7 @@ export function JournalEntriesClient({
             {/* Filters */}
             <div className="flex items-center gap-3">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-36 rounded-lg border-white/[0.09] bg-white/[0.025]">
+                    <SelectTrigger className="w-36 rounded-lg border-ak-border-2 glass">
                         <SelectValue placeholder="All Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -355,20 +355,20 @@ export function JournalEntriesClient({
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     placeholder="Start date"
-                    className="w-40 rounded-lg border-white/[0.09] bg-white/[0.025]"
+                    className="w-40 rounded-lg border-ak-border-2 glass"
                 />
                 <Input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     placeholder="End date"
-                    className="w-40 rounded-lg border-white/[0.09] bg-white/[0.025]"
+                    className="w-40 rounded-lg border-ak-border-2 glass"
                 />
 
                 <div className="flex-1" />
 
                 <Button
-                    className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                    className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                     asChild
                 >
                     <Link href="/accounting/journal-entries/new">
@@ -383,7 +383,7 @@ export function JournalEntriesClient({
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-white/[0.06] text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <tr className="border-b border-ak-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
                                 <th className="px-4 py-3 font-medium w-8" />
                                 <th className="px-4 py-3 font-medium">Date</th>
                                 <th className="px-4 py-3 font-medium">Entry #</th>
@@ -406,7 +406,7 @@ export function JournalEntriesClient({
                                 return (
                                     <React.Fragment key={entry.id}>
                                         <tr
-                                            className={`border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer transition-colors ${
+                                            className={`border-b border-ak-border hover:bg-ak-bg-3 cursor-pointer transition-colors ${
                                                 entry.status === 'VOIDED'
                                                     ? 'opacity-50 line-through decoration-red-400/40'
                                                     : ''
@@ -474,7 +474,7 @@ export function JournalEntriesClient({
                 <div className="flex justify-center">
                     <Button
                         variant="outline"
-                        className="rounded-lg border-white/[0.09] hover:bg-white/[0.04]"
+                        className="rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
                         onClick={loadMore}
                         disabled={isLoadingMore}
                     >

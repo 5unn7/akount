@@ -150,7 +150,7 @@ export function JournalEntryForm({
                                 type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
-                                className="rounded-lg border-white/[0.09] bg-white/[0.025]"
+                                className="rounded-lg border-ak-border-2 glass"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -161,7 +161,7 @@ export function JournalEntryForm({
                                 value={memo}
                                 onChange={(e) => setMemo(e.target.value)}
                                 placeholder="Description of this journal entry"
-                                className="rounded-lg border-white/[0.09] bg-white/[0.025]"
+                                className="rounded-lg border-ak-border-2 glass"
                             />
                         </div>
                     </div>
@@ -178,7 +178,7 @@ export function JournalEntryForm({
                         <Button
                             size="sm"
                             variant="outline"
-                            className="rounded-lg border-white/[0.09] text-xs h-8"
+                            className="rounded-lg border-ak-border-2 text-xs h-8"
                             onClick={addLine}
                         >
                             <Plus className="h-3 w-3 mr-1" />
@@ -190,7 +190,7 @@ export function JournalEntryForm({
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b border-white/[0.06]">
+                                <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b border-ak-border">
                                     <th className="text-left pb-2 font-medium">GL Account</th>
                                     <th className="text-right pb-2 font-medium w-32">Debit</th>
                                     <th className="text-right pb-2 font-medium w-32">Credit</th>
@@ -202,7 +202,7 @@ export function JournalEntryForm({
                                 {lines.map((line) => (
                                     <tr
                                         key={line.id}
-                                        className="border-b border-white/[0.04]"
+                                        className="border-b border-ak-border"
                                     >
                                         <td className="py-2 pr-2">
                                             <Select
@@ -211,7 +211,7 @@ export function JournalEntryForm({
                                                     updateLine(line.id, 'glAccountId', v)
                                                 }
                                             >
-                                                <SelectTrigger className="rounded-lg border-white/[0.09] bg-white/[0.025] text-xs h-9">
+                                                <SelectTrigger className="rounded-lg border-ak-border-2 glass text-xs h-9">
                                                     <SelectValue placeholder="Select account" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -243,7 +243,7 @@ export function JournalEntryForm({
                                                     )
                                                 }
                                                 placeholder="0.00"
-                                                className="rounded-lg border-white/[0.09] bg-white/[0.025] text-right font-mono text-xs h-9 w-28"
+                                                className="rounded-lg border-ak-border-2 glass text-right font-mono text-xs h-9 w-28"
                                             />
                                         </td>
                                         <td className="py-2 px-1">
@@ -260,7 +260,7 @@ export function JournalEntryForm({
                                                     )
                                                 }
                                                 placeholder="0.00"
-                                                className="rounded-lg border-white/[0.09] bg-white/[0.025] text-right font-mono text-xs h-9 w-28"
+                                                className="rounded-lg border-ak-border-2 glass text-right font-mono text-xs h-9 w-28"
                                             />
                                         </td>
                                         <td className="py-2 pl-3">
@@ -274,7 +274,7 @@ export function JournalEntryForm({
                                                     )
                                                 }
                                                 placeholder="Line memo"
-                                                className="rounded-lg border-white/[0.09] bg-white/[0.025] text-xs h-9"
+                                                className="rounded-lg border-ak-border-2 glass text-xs h-9"
                                             />
                                         </td>
                                         <td className="py-2 pl-1">
@@ -290,7 +290,7 @@ export function JournalEntryForm({
                                 ))}
 
                                 {/* Totals row */}
-                                <tr className="border-t border-white/[0.08] font-semibold">
+                                <tr className="border-t border-ak-border-2 font-semibold">
                                     <td className="py-3 text-sm">Totals</td>
                                     <td className="py-3 text-right font-mono text-sm px-1">
                                         {formatAmount(totalDebit)}
@@ -332,7 +332,7 @@ export function JournalEntryForm({
             {/* Submit */}
             <div className="flex items-center gap-3">
                 <Button
-                    className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                    className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                     onClick={handleSubmit}
                     disabled={isSubmitting || !isBalanced}
                 >
@@ -343,7 +343,7 @@ export function JournalEntryForm({
                 </Button>
                 <Button
                     variant="outline"
-                    className="rounded-lg border-white/[0.09]"
+                    className="rounded-lg border-ak-border-2"
                     onClick={() => router.push('/accounting/journal-entries')}
                 >
                     Cancel

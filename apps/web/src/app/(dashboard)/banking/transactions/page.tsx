@@ -1,7 +1,10 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { TransactionsList } from "@/components/transactions/TransactionsList";
-import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
     title: "Transactions | Akount",
@@ -20,51 +23,68 @@ export default async function TransactionsPage({ searchParams }: TransactionsPag
     const params = await searchParams;
 
     return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight font-heading">
-                        Transactions
-                    </h2>
-                    <p className="text-muted-foreground">
-                        View, filter, and manage all your transactions
-                    </p>
-                </div>
+        <div className="flex-1 space-y-5">
+            <div className="fi fi1">
+                <PageHeader
+                    title="Transactions"
+                    subtitle="View, filter, and manage all your transactions"
+                    actions={
+                        <Button
+                            size="sm"
+                            className="h-8 gap-1.5 rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
+                            asChild
+                        >
+                            <Link href="/banking/imports">
+                                <Upload className="h-3.5 w-3.5" />
+                                Import
+                            </Link>
+                        </Button>
+                    }
+                />
             </div>
 
-            <Suspense
-                key={`${params.accountId}-${params.startDate}-${params.endDate}`}
-                fallback={<TransactionsListSkeleton />}
-            >
-                <TransactionsList filters={params} />
-            </Suspense>
+            <div className="fi fi2">
+                <Suspense
+                    key={`${params.accountId}-${params.startDate}-${params.endDate}`}
+                    fallback={<TransactionsListSkeleton />}
+                >
+                    <TransactionsList filters={params} />
+                </Suspense>
+            </div>
         </div>
     );
 }
 
-/**
- * Loading skeleton for transactions list
- */
 function TransactionsListSkeleton() {
     return (
         <div className="space-y-4">
+            {/* Stats skeleton */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="glass rounded-lg px-4 py-3.5">
+                        <div className="h-3 w-16 bg-muted animate-pulse rounded mb-2" />
+                        <div className="h-5 w-24 bg-muted animate-pulse rounded" />
+                    </div>
+                ))}
+            </div>
+
             {/* Filters skeleton */}
-            <Card>
-                <CardContent className="pt-6">
-                    <div className="h-20 bg-muted animate-pulse rounded" />
-                </CardContent>
-            </Card>
+            <div className="glass rounded-[14px] p-4">
+                <div className="h-8 w-full max-w-xs bg-muted animate-pulse rounded-lg" />
+            </div>
 
             {/* Table skeleton */}
-            <div className="rounded-md border">
-                <div className="p-4 space-y-3">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                        <div key={i} className="flex gap-4">
-                            <div className="h-12 w-24 bg-muted animate-pulse rounded" />
-                            <div className="h-12 flex-1 bg-muted animate-pulse rounded" />
-                            <div className="h-12 w-32 bg-muted animate-pulse rounded" />
-                            <div className="h-12 w-24 bg-muted animate-pulse rounded" />
-                            <div className="h-12 w-28 bg-muted animate-pulse rounded" />
+            <div className="glass rounded-[14px] overflow-hidden">
+                <div className="divide-y divide-ak-border">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                        <div key={i} className="flex items-center gap-4 px-4 py-3">
+                            <div className="h-4 w-20 bg-muted animate-pulse rounded" />
+                            <div className="flex-1 space-y-1.5">
+                                <div className="h-4 w-40 bg-muted animate-pulse rounded" />
+                                <div className="h-3 w-24 bg-muted animate-pulse rounded" />
+                            </div>
+                            <div className="h-4 w-20 bg-muted animate-pulse rounded" />
+                            <div className="h-4 w-24 bg-muted animate-pulse rounded" />
                         </div>
                     ))}
                 </div>

@@ -1,36 +1,71 @@
-import type { Metadata } from "next";
-import { Users } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Metadata } from 'next';
+import { StatsGrid } from '@/components/shared/StatsGrid';
+import { ClientsTable } from '@/components/business/ClientsTable';
+import { listClients } from '@/lib/api/clients';
+import { formatCurrency } from '@/lib/utils/currency';
 
 export const metadata: Metadata = {
-    title: "Clients | Akount",
-    description: "Manage your clients and customer relationships",
+    title: 'Clients | Akount',
+    description: 'Manage your clients and customer relationships',
 };
 
-export default function ClientsPage() {
+export default async function ClientsPage() {
+    const clientsResult = await listClients({ limit: 50 });
+    const clients = clientsResult.clients;
+
+    // Calculate stats
+    const activeClients = clients.filter((c) => c.status === 'active').length;
+    const totalBalanceDue = clients.reduce((sum, c) => sum + (c.balanceDue ?? 0), 0);
+    const totalOpenInvoices = clients.reduce((sum, c) => sum + (c.openInvoices ?? 0), 0);
+
+    const stats = [
+        {
+            label: 'Total Clients',
+            value: `${clients.length}`,
+            color: 'primary' as const,
+        },
+        {
+            label: 'Active',
+            value: `${activeClients}`,
+            color: 'green' as const,
+        },
+        {
+            label: 'Outstanding AR',
+            value: formatCurrency(totalBalanceDue, 'CAD'),
+            color: totalBalanceDue > 0 ? ('blue' as const) : ('default' as const),
+        },
+        {
+            label: 'Open Invoices',
+            value: `${totalOpenInvoices}`,
+            color: 'default' as const,
+        },
+    ];
+
     return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Clients</h2>
+        <div className="flex-1 space-y-6">
+            {/* Header */}
+            <div className="fi fi1">
+                <h1 className="text-2xl font-heading font-normal">Clients</h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                    Manage your client database and customer relationships
+                </p>
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Users className="h-5 w-5" />
-                        Coming Soon
-                    </CardTitle>
-                    <CardDescription>
-                        Manage your client database and track customer relationships.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        This feature is under development. It will provide client management,
-                        contact information, payment terms, and relationship history.
+            {/* Stats Grid */}
+            <div className="fi fi2">
+                <StatsGrid stats={stats} columns={4} />
+            </div>
+
+            {/* Clients Table */}
+            <div className="space-y-3 fi fi3">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-heading font-normal">Client Directory</h2>
+                    <p className="text-xs text-muted-foreground">
+                        {clients.length} client{clients.length !== 1 ? 's' : ''}
                     </p>
-                </CardContent>
-            </Card>
+                </div>
+                <ClientsTable clients={clients} />
+            </div>
         </div>
     );
 }

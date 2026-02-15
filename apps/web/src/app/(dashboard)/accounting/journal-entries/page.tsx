@@ -121,7 +121,7 @@ function JournalEntriesSkeleton() {
                 <div className="flex-1" />
                 <div className="h-10 w-32 bg-muted animate-pulse rounded-lg" />
             </div>
-            <div className="rounded-[14px] border border-white/[0.06] overflow-hidden">
+            <div className="rounded-[14px] border border-ak-border overflow-hidden">
                 <div className="p-4 space-y-3">
                     {[1, 2, 3, 4, 5, 6].map((i) => (
                         <div key={i} className="flex gap-4">

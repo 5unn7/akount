@@ -49,16 +49,8 @@ export async function POST(request: NextRequest) {
 
     // Forward accountId and optional fields
     const accountId = formData.get('accountId');
-    console.log('[Upload Proxy] Received formData:', {
-      accountId,
-      hasFile: !!file,
-      fileName: file.name,
-    });
-
     if (accountId) {
       backendFormData.append('accountId', accountId as string);
-    } else {
-      console.warn('[Upload Proxy] No accountId in formData - backend will reject');
     }
 
     const dateFormat = formData.get('dateFormat');

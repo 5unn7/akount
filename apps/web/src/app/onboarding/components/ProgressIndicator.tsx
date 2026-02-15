@@ -20,7 +20,7 @@ export function ProgressIndicator({ currentStep, totalSteps }: ProgressIndicator
   return (
     <div className="space-y-4">
       {/* Progress bar */}
-      <div className="h-2 w-full bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden">
+      <div className="h-2 w-full bg-border rounded-full overflow-hidden">
         <div
           className="h-full bg-primary transition-all duration-300"
           style={{ width: `${progressPercent}%` }}
@@ -35,7 +35,7 @@ export function ProgressIndicator({ currentStep, totalSteps }: ProgressIndicator
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
                 i <= currentStep
                   ? 'bg-primary text-black'
-                  : 'bg-[rgba(255,255,255,0.06)] text-muted-foreground'
+                  : 'bg-border text-muted-foreground'
               }`}
             >
               {i < currentStep ? (

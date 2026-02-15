@@ -67,13 +67,13 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold">Set Financial Goals</h2>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Define your targets to track progress and get insights
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-ak-bg-3 rounded-lg transition-colors"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
@@ -83,7 +83,7 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="rounded-lg bg-red-50 p-4 text-sm text-red-900 border border-red-200">
+              <div className="rounded-lg bg-destructive/[0.08] p-4 text-sm text-ak-red border border-destructive/20">
                 <p className="font-medium">Error</p>
                 <p>{error}</p>
               </div>
@@ -91,7 +91,7 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
 
             {/* Timeframe */}
             <div>
-              <label htmlFor="timeframe" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="timeframe" className="block text-sm font-medium text-foreground mb-2">
                 Timeframe
               </label>
               <select
@@ -99,7 +99,7 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
                 value={formData.timeframe}
                 onChange={(e) => setFormData({ ...formData, timeframe: e.target.value })}
                 disabled={isLoading}
-                className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
               >
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
@@ -109,14 +109,14 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
 
             {/* Revenue Target */}
             <div>
-              <label htmlFor="revenueTarget" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="revenueTarget" className="block text-sm font-medium text-foreground mb-2">
                 <span className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-green-500" />
+                  <TrendingUp className="h-4 w-4 text-ak-green" />
                   Revenue Target
                 </span>
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                   $
                 </span>
                 <input
@@ -129,24 +129,24 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
                   min="0"
                   disabled={isLoading}
                   required
-                  className="w-full pl-8 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                  className="w-full pl-8 pr-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
                 />
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 How much revenue do you want to generate?
               </p>
             </div>
 
             {/* Expense Target */}
             <div>
-              <label htmlFor="expenseTarget" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="expenseTarget" className="block text-sm font-medium text-foreground mb-2">
                 <span className="flex items-center gap-2">
-                  <TrendingDown className="h-4 w-4 text-red-500" />
+                  <TrendingDown className="h-4 w-4 text-ak-red" />
                   Expense Budget
                 </span>
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                   $
                 </span>
                 <input
@@ -159,24 +159,24 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
                   min="0"
                   disabled={isLoading}
                   required
-                  className="w-full pl-8 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                  className="w-full pl-8 pr-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
                 />
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Maximum amount you want to spend
               </p>
             </div>
 
             {/* Savings Target */}
             <div>
-              <label htmlFor="savingsTarget" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="savingsTarget" className="block text-sm font-medium text-foreground mb-2">
                 <span className="flex items-center gap-2">
-                  <Target className="h-4 w-4 text-orange-500" />
+                  <Target className="h-4 w-4 text-primary" />
                   Savings Goal
                 </span>
               </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
                   $
                 </span>
                 <input
@@ -189,20 +189,20 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
                   min="0"
                   disabled={isLoading}
                   required
-                  className="w-full pl-8 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                  className="w-full pl-8 pr-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
                 />
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 How much do you want to save? (Revenue - Expenses)
               </p>
             </div>
 
             {/* Calculated profit */}
             {formData.revenueTarget && formData.expenseTarget && (
-              <div className="rounded-lg bg-slate-50 p-4">
+              <div className="rounded-lg glass border border-ak-border p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-slate-700">Projected Profit:</span>
-                  <span className="text-lg font-bold text-green-600">
+                  <span className="text-sm font-medium text-foreground/80">Projected Profit:</span>
+                  <span className="text-lg font-bold text-ak-green">
                     ${(parseFloat(formData.revenueTarget) - parseFloat(formData.expenseTarget)).toFixed(2)}
                   </span>
                 </div>
@@ -215,14 +215,14 @@ export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
                 type="button"
                 onClick={handleSkip}
                 disabled={isLoading}
-                className="flex-1 px-6 py-3 text-sm font-medium text-slate-700 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-all"
+                className="flex-1 px-6 py-3 text-sm font-medium text-foreground glass border border-ak-border rounded-lg hover:bg-ak-bg-3 disabled:opacity-50 transition-all"
               >
                 Skip for now
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:from-orange-600 hover:to-orange-700 disabled:opacity-50 transition-all shadow-md hover:shadow-lg"
+                className="flex-1 px-6 py-3 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover disabled:opacity-50 transition-all glow-primary"
               >
                 {isLoading ? 'Saving...' : 'Save Goals'}
               </button>

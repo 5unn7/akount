@@ -65,13 +65,13 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold">Business Details</h2>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Help us understand your business better
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-ak-bg-3 rounded-lg transition-colors"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
@@ -81,7 +81,7 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="rounded-lg bg-red-50 p-4 text-sm text-red-900 border border-red-200">
+              <div className="rounded-lg bg-destructive/[0.08] p-4 text-sm text-ak-red border border-destructive/20">
                 <p className="font-medium">Error</p>
                 <p>{error}</p>
               </div>
@@ -89,7 +89,7 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
 
             {/* Tax ID */}
             <div>
-              <label htmlFor="taxId" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="taxId" className="block text-sm font-medium text-foreground mb-2">
                 Tax ID / Business Number (Optional)
               </label>
               <input
@@ -99,16 +99,16 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                 onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
                 placeholder="e.g., 123456789"
                 disabled={isLoading}
-                className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
               />
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Your EIN, GST/HST number, or similar identifier
               </p>
             </div>
 
             {/* Address */}
             <div>
-              <label htmlFor="address" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="address" className="block text-sm font-medium text-foreground mb-2">
                 Street Address
               </label>
               <input
@@ -119,14 +119,14 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                 placeholder="e.g., 123 Main Street"
                 disabled={isLoading}
                 required
-                className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
               />
             </div>
 
             {/* City, State, Postal Code */}
             <div className="grid grid-cols-3 gap-4">
               <div className="col-span-2">
-                <label htmlFor="city" className="block text-sm font-medium text-slate-900 mb-2">
+                <label htmlFor="city" className="block text-sm font-medium text-foreground mb-2">
                   City
                 </label>
                 <input
@@ -137,12 +137,12 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                   placeholder="e.g., Toronto"
                   disabled={isLoading}
                   required
-                  className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                  className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
                 />
               </div>
 
               <div>
-                <label htmlFor="postalCode" className="block text-sm font-medium text-slate-900 mb-2">
+                <label htmlFor="postalCode" className="block text-sm font-medium text-foreground mb-2">
                   Postal Code
                 </label>
                 <input
@@ -153,13 +153,13 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                   placeholder="M5V 3A8"
                   disabled={isLoading}
                   required
-                  className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                  className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="state" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="state" className="block text-sm font-medium text-foreground mb-2">
                 Province / State
               </label>
               <input
@@ -170,13 +170,13 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                 placeholder="e.g., Ontario"
                 disabled={isLoading}
                 required
-                className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
               />
             </div>
 
             {/* Industry */}
             <div>
-              <label htmlFor="industry" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="industry" className="block text-sm font-medium text-foreground mb-2">
                 Industry
               </label>
               <select
@@ -185,7 +185,7 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                 onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                 disabled={isLoading}
                 required
-                className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
               >
                 <option value="">Select an industry</option>
                 <option value="technology">Technology & Software</option>
@@ -203,7 +203,7 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
 
             {/* Business Size */}
             <div>
-              <label htmlFor="businessSize" className="block text-sm font-medium text-slate-900 mb-2">
+              <label htmlFor="businessSize" className="block text-sm font-medium text-foreground mb-2">
                 Business Size
               </label>
               <select
@@ -212,7 +212,7 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                 onChange={(e) => setFormData({ ...formData, businessSize: e.target.value })}
                 disabled={isLoading}
                 required
-                className="w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
               >
                 <option value="">Select business size</option>
                 <option value="SOLO">Just me (Solo)</option>
@@ -228,14 +228,14 @@ export function BusinessDetailsModal({ onClose, onComplete }: BusinessDetailsMod
                 type="button"
                 onClick={handleSkip}
                 disabled={isLoading}
-                className="flex-1 px-6 py-3 text-sm font-medium text-slate-700 bg-white/80 backdrop-blur-sm border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 transition-all"
+                className="flex-1 px-6 py-3 text-sm font-medium text-foreground glass border border-ak-border rounded-lg hover:bg-ak-bg-3 disabled:opacity-50 transition-all"
               >
                 Skip for now
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg hover:from-orange-600 hover:to-orange-700 disabled:opacity-50 transition-all shadow-md hover:shadow-lg"
+                className="flex-1 px-6 py-3 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover disabled:opacity-50 transition-all glow-primary"
               >
                 {isLoading ? 'Saving...' : 'Save Details'}
               </button>

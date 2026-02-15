@@ -3,28 +3,23 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
+import { cn } from '@/lib/utils'
 import { useOnboardingStore } from '@/stores/onboardingStore'
+import { ChevronLeft } from 'lucide-react'
 import { WelcomeStep } from './steps/WelcomeStep'
+import { IntentStep } from './steps/IntentStep'
 import { EssentialInfoStep } from './steps/EssentialInfoStep'
 import { CompletionStep } from './steps/CompletionStep'
 
-/**
- * Simplified Onboarding Wizard - 2 Steps + Completion
- *
- * Flow:
- * 1. Welcome + Account Type Selection (WelcomeStep)
- * 2. Essential Info Form (EssentialInfoStep) - single page, glass morphism
- * 3. Success Animation (CompletionStep) → Auto-redirect to dashboard
- *
- * Target time: 60-90 seconds from start to dashboard
- */
+const STEP_LABELS = ['Identity', 'Workspace', 'Intent', 'Ready'] as const
+
 export function OnboardingWizard() {
   const router = useRouter()
   const { userId, isLoaded } = useAuth()
 
   const {
     currentStep,
-    accountType,
+    totalSteps,
     nextStep,
     previousStep,
   } = useOnboardingStore()
@@ -36,84 +31,91 @@ export function OnboardingWizard() {
     }
   }, [isLoaded, userId, router])
 
-  // Loading state
   if (!isLoaded || !userId) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-[rgba(255,255,255,0.06)] border-t-primary" />
-          <p className="text-sm text-muted-foreground">Loading...</p>
-        </div>
+      <div className="flex flex-col items-center justify-center py-24 gap-6">
+        <div className="h-10 w-10 rounded-full bg-primary/30 animate-pulse shadow-[0_0_36px_rgba(245,158,11,0.22)]" />
+        <p className="text-sm text-muted-foreground font-heading italic">Loading...</p>
       </div>
     )
   }
 
-  const handleNext = () => {
-    nextStep()
-  }
-
-  const handlePrevious = () => {
-    previousStep()
-  }
-
-  // 2 main steps + 1 completion step
-  const steps = [
-    <WelcomeStep key="welcome" onNext={handleNext} />,
-    <EssentialInfoStep key="essential" onNext={handleNext} />,
-    <CompletionStep key="completion" />,
-  ]
-
-  const currentStepComponent = steps[currentStep] || steps[0]
-  const isFirstStep = currentStep === 0
+  const isCompletionStep = currentStep === totalSteps - 1
 
   return (
-    <div className="min-h-screen bg-[#09090F] py-12 px-4">
-      <div className="max-w-5xl mx-auto">
-        {/* Progress dots (only show after account type selected) */}
-        {accountType && currentStep < 2 && (
-          <div className="flex justify-center gap-2 mb-8">
-            {[0, 1].map((step) => (
-              <div
-                key={step}
-                className={`h-2 w-2 rounded-full transition-all ${
-                  step === currentStep
-                    ? 'bg-primary w-8'
-                    : step < currentStep
-                      ? 'bg-[rgba(245,158,11,0.5)]'
-                      : 'bg-[rgba(255,255,255,0.06)]'
-                }`}
-              />
-            ))}
-          </div>
-        )}
+    <div className="space-y-8">
+      {/* Progress indicator — hide on completion step */}
+      {!isCompletionStep && (
+        <div className="fi fi1">
+          <div className="flex items-center gap-1 max-w-md mx-auto">
+            {STEP_LABELS.map((label, i) => {
+              const isCompleted = i < currentStep
+              const isCurrent = i === currentStep
+              const isFuture = i > currentStep
 
+              return (
+                <div key={label} className="flex-1 flex flex-col items-center gap-2">
+                  {/* Segment line */}
+                  <div
+                    className={cn(
+                      'h-[3px] w-full rounded-full transition-all duration-500',
+                      isCompleted && 'bg-primary shadow-[0_0_6px_var(--ak-pri-glow)]',
+                      isCurrent && 'bg-primary/60',
+                      isFuture && 'bg-[var(--ak-glass-2)]',
+                    )}
+                  />
+                  {/* Label */}
+                  <span
+                    className={cn(
+                      'text-[10px] uppercase tracking-wider transition-colors',
+                      isCurrent ? 'text-primary font-medium' : 'text-muted-foreground',
+                    )}
+                  >
+                    {label}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Step container */}
+      <div className="glass rounded-2xl border border-ak-border p-8 fi fi2">
         {/* Step content */}
-        <div className="transition-all duration-300 ease-in-out">
-          {currentStepComponent}
+        <div className="transition-opacity duration-300">
+          {currentStep === 0 && <WelcomeStep onNext={nextStep} />}
+          {currentStep === 1 && <EssentialInfoStep onNext={nextStep} />}
+          {currentStep === 2 && <IntentStep onNext={nextStep} />}
+          {currentStep === 3 && <CompletionStep />}
         </div>
 
-        {/* Back button (only on Essential Info step) */}
-        {accountType && !isFirstStep && currentStep < 2 && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={handlePrevious}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+        {/* Navigation — hide on completion step and steps with built-in navigation */}
+        {!isCompletionStep && currentStep !== 0 && currentStep !== 2 && (
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-ak-border">
+            {/* Back button */}
+            {currentStep > 0 ? (
+              <button
+                onClick={previousStep}
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              Back to account type
-            </button>
+                <ChevronLeft className="h-4 w-4" />
+                Back
+              </button>
+            ) : (
+              <div />
+            )}
+
+            {/* Continue — only shown on WorkspaceStep (form submit) */}
+            {currentStep === 1 && (
+              <button
+                type="submit"
+                form="workspace-form"
+                className="px-6 py-2.5 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover transition-all glow-primary"
+              >
+                Continue
+              </button>
+            )}
           </div>
         )}
       </div>
