@@ -1,9 +1,9 @@
 # Database Context (packages/db)
 
 > **Loaded automatically** when Claude accesses files in `packages/db/`
-> **Last verified:** 2026-02-09
+> **Last verified:** 2026-02-14
 
-## Prisma Models (38 Total)
+## Prisma Models (39 Total)
 
 | Model | Scope | Key Fields | Soft Delete |
 |-------|-------|------------|-------------|
@@ -43,6 +43,8 @@
 | Insight | Entity | id, entityId, title, type, priority, status | No |
 | Rule | Entity | id, entityId, name, conditions, action, source | No |
 | RuleSuggestion | Entity | id, entityId, suggestedRule, aiConfidence, status | No |
+| **Onboarding** | | | |
+| OnboardingProgress | Tenant | id, tenantId, userId, completedSteps, dismissed | No |
 | **Misc** | | | |
 | Project | Entity | id, entityId, name, code, status | No |
 | Snapshot | Entity | id, entityId, date, categoryId/glAccountId, balance | No |

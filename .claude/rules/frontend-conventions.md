@@ -68,24 +68,102 @@ Tailwind v4 uses CSS variables, NOT JavaScript config:
 
 ## Color & Theme System
 
-Use semantic tokens from design system:
+**NEVER hardcode hex values.** Use Tailwind utility classes from `globals.css`. Full mapping in `.claude/rules/design-aesthetic.md`.
 
-- `--primary`, `--secondary`, `--accent`
-- `--background`, `--foreground`
-- `--destructive`, `--muted`, `--border`
+**shadcn tokens:** `bg-primary`, `text-foreground`, `bg-destructive`, `text-muted-foreground`, `bg-accent`, `border-border`
 
-Dark mode: Automatic via CSS variables in `:root` and `.dark`.
+**Akount tokens (defined in globals.css):**
+- Finance: `text-finance-income`, `text-finance-expense`, `text-finance-transfer`
+- Colors: `text-ak-green`, `text-ak-red`, `text-ak-blue`, `text-ak-purple`, `text-ak-teal` (+ `bg-*-dim` variants)
+- Primary: `bg-ak-pri-dim`, `text-ak-pri-text`, `hover:bg-ak-pri-hover`
+- Glass: `glass`, `glass-2`, `glass-3` (utility classes — include bg + border)
+- Borders: `border-ak-border`, `border-ak-border-2`, `border-ak-border-3`
+
+Dark mode: Automatic — tokens switch values between `:root` and `.dark`.
 
 ## Component File Structure
 
 ```
 apps/web/src/app/(dashboard)/<domain>/<resource>/
 ├── page.tsx              # Server Component (data fetch)
-├── loading.tsx           # Loading skeleton
-├── error.tsx             # Error boundary
+├── loading.tsx           # Loading skeleton (REQUIRED)
+├── error.tsx             # Error boundary (REQUIRED)
 ├── <resource>-list.tsx   # Client Component (interactive)
 └── <resource>-form.tsx   # Client Component (form)
 ```
+
+## Loading and Error States (REQUIRED)
+
+Every `page.tsx` MUST have sibling `loading.tsx` and `error.tsx` files. No exceptions for dashboard pages.
+
+**Why:** Without loading.tsx, users see a blank screen during data fetches. Without error.tsx, errors crash the entire layout instead of showing a recoverable message.
+
+**loading.tsx template:**
+
+```typescript
+import { Skeleton } from '@/components/ui/skeleton'
+
+export default function Loading() {
+  return (
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <Skeleton className="h-9 w-48" />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="glass rounded-xl p-6 space-y-3">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-8 w-28" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+**error.tsx template:**
+
+```typescript
+'use client'
+
+import { useEffect } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { AlertCircle, RefreshCw } from 'lucide-react'
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  useEffect(() => { console.error(error) }, [error])
+
+  return (
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertCircle className="h-5 w-5" />
+            Something went wrong
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">{error.message}</p>
+          {error.digest && (
+            <p className="text-xs text-muted-foreground">Error ID: {error.digest}</p>
+          )}
+          <Button onClick={reset} variant="outline" className="gap-2">
+            <RefreshCw className="h-4 w-4" /> Try again
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+```
+
+**Reference implementations:** `banking/accounts/loading.tsx`, `banking/accounts/error.tsx`
 
 ## API Client Pattern
 

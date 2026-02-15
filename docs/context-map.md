@@ -195,9 +195,9 @@ Every monetary transaction stores **4 fields**:
 
 ### Color Palette (Semantic Tokens)
 
-- **Primary:** Brand color (blue)
+- **Primary:** Amber orange (#F59E0B) — CTAs, brand accents
 - **Secondary:** Supporting color (slate)
-- **Accent:** Highlight color (purple)
+- **Accent:** Purple (AI features)
 - **Destructive:** Error/delete (red)
 - **Success:** Positive actions (green)
 - **Warning:** Caution (yellow)

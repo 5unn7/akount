@@ -1,6 +1,6 @@
 # Akount Project - Agent Context
 
-> **Last Updated:** 2026-02-09
+> **Last Updated:** 2026-02-14
 > **Context Architecture:** Hierarchical (root + directory-specific + rules)
 
 ---
@@ -19,7 +19,7 @@
 
 **8 Domains:** Overview (dashboard), Banking (accounts, transactions), Invoicing (invoices, clients), Vendors (bills, payments), Accounting (GL, journal entries), Planning (budgets, forecasts), AI Advisor (insights, rules), Services (integrations), System (settings, users).
 
-**Actual API folder names:** `domains/overview/`, `domains/banking/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`, `domains/accounting/`.
+**Actual API folder names:** `domains/overview/`, `domains/banking/`, `domains/accounting/`, `domains/system/`, `domains/ai/`, `domains/planning/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`.
 
 ---
 
@@ -51,6 +51,8 @@ Tenant (subscription account)
 
 **Glass components available:** ButtonGlass, InputGlass, GlassCard, BadgeGlass, TabsGlass, ModalGlass, SwitchGlass, TooltipGlass, SeparatorGlass. **Button radius:** 8px standard.
 
+**Color rule:** NEVER hardcode hex/rgba. Use semantic tokens (`text-ak-green`, `bg-ak-pri-dim`, `glass`, `border-ak-border`). Full mapping in `.claude/rules/design-aesthetic.md`.
+
 See `apps/web/CLAUDE.md` for full design system context (loaded when working in apps/web/).
 
 ---
@@ -65,12 +67,14 @@ See `apps/web/CLAUDE.md` for full design system context (loaded when working in 
 
 ---
 
-## Financial Standards
+## Financial Standards (Layer 3 — Read On Demand)
 
-@docs/standards/financial-data.md
-@docs/standards/multi-tenancy.md
+Detailed financial standards with code examples and pitfalls (read when working on financial logic):
 
-_(Content auto-imported from standards docs - always fresh)_
+- `docs/standards/financial-data.md` — Integer cents, double-entry, soft delete, source preservation
+- `docs/standards/multi-tenancy.md` — Tenant isolation patterns, middleware, testing
+
+Distilled rules are already in `.claude/rules/financial-rules.md` (loaded when working in API/DB paths).
 
 ---
 
@@ -109,10 +113,8 @@ _(Content auto-imported from standards docs - always fresh)_
 **Layer 3 (Explicit read for deep-dive):**
 
 - `docs/context-map.md` — Full model glossary, enum reference, journal patterns, how-tos
-
-**Layer 4 (Human-only reference):**
-
-- `docs/architecture.mmd` — Mermaid diagrams (for human viewing in VS Code)
+- `docs/standards/financial-data.md` — Detailed financial patterns with code examples
+- `docs/standards/multi-tenancy.md` — Detailed tenant isolation patterns with code examples
 
 ---
 

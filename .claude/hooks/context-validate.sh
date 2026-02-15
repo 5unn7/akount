@@ -215,11 +215,75 @@ validate_schema_patterns() {
 }
 
 # =============================================================================
+# VALIDATION 6: Frontend Page Completeness
+# =============================================================================
+validate_frontend_pages() {
+    local filepath="$1"
+
+    # Only check Next.js page files
+    if [[ ! "$filepath" =~ apps/web/src/app/.*/page\.tsx$ ]]; then
+        return 0
+    fi
+
+    local dirpath=$(dirname "$filepath")
+
+    # Check for loading.tsx
+    if [ ! -f "$dirpath/loading.tsx" ]; then
+        warn "page.tsx without loading.tsx — add loading state (see .claude/rules/frontend-conventions.md)"
+    fi
+
+    # Check for error.tsx
+    if [ ! -f "$dirpath/error.tsx" ]; then
+        warn "page.tsx without error.tsx — add error boundary (see .claude/rules/frontend-conventions.md)"
+    fi
+
+    return 0
+}
+
+# =============================================================================
+# VALIDATION 7: Code Quality Patterns
+# =============================================================================
+validate_code_quality() {
+    local content="$1"
+    local filepath="$2"
+
+    # Only check TypeScript/TSX files
+    if [[ ! "$filepath" =~ \.(ts|tsx)$ ]]; then
+        return 0
+    fi
+
+    # Skip test files
+    if [[ "$filepath" =~ __tests__/ ]] || [[ "$filepath" =~ \.test\. ]] || [[ "$filepath" =~ \.spec\. ]]; then
+        return 0
+    fi
+
+    # Check for console.log in production code
+    if [[ "$filepath" =~ apps/(api|web)/src/ ]]; then
+        # Allow in env.ts (pre-boot logging)
+        if [[ ! "$filepath" =~ lib/env\.ts$ ]]; then
+            if echo "$content" | grep -qE 'console\.(log|error|warn)\('; then
+                warn "console.log in production code — use request.log or server.log (see .claude/rules/api-conventions.md)"
+            fi
+        fi
+    fi
+
+    # Check for : any type annotations
+    if echo "$content" | grep -qE ':\s*any\b' ; then
+        warn ": any type detected — prefer specific types or unknown (see .claude/rules/guardrails.md)"
+    fi
+
+    return 0
+}
+
+# =============================================================================
 # MAIN EXECUTION
 # =============================================================================
 
 # Run file convention validation
 validate_file_conventions "$FILE_PATH"
+
+# Run frontend page completeness check (doesn't need content)
+validate_frontend_pages "$FILE_PATH"
 
 # Run content validations if we have content
 CONTENT_TO_CHECK=""
@@ -234,6 +298,7 @@ if [ -n "$CONTENT_TO_CHECK" ]; then
     validate_security_patterns "$CONTENT_TO_CHECK" "$FILE_PATH"
     validate_api_patterns "$CONTENT_TO_CHECK" "$FILE_PATH"
     validate_schema_patterns "$CONTENT_TO_CHECK" "$FILE_PATH"
+    validate_code_quality "$CONTENT_TO_CHECK" "$FILE_PATH"
 fi
 
 # All validations passed

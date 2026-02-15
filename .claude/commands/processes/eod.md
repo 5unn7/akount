@@ -84,6 +84,39 @@ mv WEEK_*.md docs/archive/sessions/ 2>/dev/null || true
 
 ---
 
+## Phase 2.5: Code Quality Checks (1 minute)
+
+**Check for anti-patterns introduced during session:**
+
+```bash
+# 1. Count ': any' types (should be 0 new occurrences)
+echo "=== Checking for : any types ==="
+grep -r ": any[^w]" apps/api/src apps/web/src | grep -v test | grep -v ".test.ts" | wc -l
+
+# 2. Count console.log in production code (should be 0 outside env.ts)
+echo "=== Checking for console.log in production ==="
+grep -r "console\." apps/api/src/domains apps/api/src/services | grep -v test | wc -l
+
+# 3. Count hardcoded colors (should be 0)
+echo "=== Checking for hardcoded colors ==="
+grep -r "text-\[#\|bg-\[#\|bg-\[rgba" apps/web/src | wc -l
+
+# 4. Check for missing loading.tsx/error.tsx
+echo "=== Checking for missing loading/error files ==="
+find apps/web/src/app -name "page.tsx" -type f | while read page; do
+  dir=$(dirname "$page")
+  [ ! -f "$dir/loading.tsx" ] && echo "Missing loading.tsx: $dir"
+  [ ! -f "$dir/error.tsx" ] && echo "Missing error.tsx: $dir"
+done
+```
+
+**If ANY violations found:**
+- List them clearly
+- Fix before committing
+- Update debugging-log.md if pattern is new
+
+---
+
 ## Phase 3: Update Documentation (2 minutes)
 
 ### STATUS.md
@@ -163,6 +196,36 @@ cat "$HOME/.claude/projects/$(basename $PWD)/memory/MEMORY.md"
 - Current State: Update phase/step progress
 - Recent Work Summary: Add today's accomplishments
 - Known Issues: Add newly discovered issues
+
+---
+
+## Phase 3.5: Validate Status Accuracy (30 seconds)
+
+Quick drift check — catches stale STATUS.md/ROADMAP.md before they mislead future sessions.
+
+### Test count validation
+
+```bash
+# Count actual backend tests
+ACTUAL_TESTS=$(grep -r "it(" apps/api --include="*.test.ts" -c 2>/dev/null | awk -F: '{sum+=$2} END {print sum+0}')
+echo "Actual backend tests: $ACTUAL_TESTS"
+
+# Check what STATUS.md claims (look for test count mention)
+grep -i "test" STATUS.md | head -5
+```
+
+If mismatch > 10%, update STATUS.md with the actual count.
+
+### Phase status validation
+
+```bash
+# Check recent commits for phase-relevant work
+git log --oneline -15
+```
+
+Compare against ROADMAP.md phase status. If commits show phase work but ROADMAP says "Not started", flag and update.
+
+**Output:** "Status files accurate" OR "Updated STATUS.md (test count: X → Y)"
 
 ---
 

@@ -25,10 +25,10 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 
 | Phase | Name | Status | Tests |
 |-------|------|--------|-------|
-| Foundation | Infrastructure | COMPLETE | 235 total |
+| Foundation | Infrastructure | COMPLETE | 362 total |
 | 1 | See Your Money | COMPLETE | 62 |
-| 2 | Track Your Money | 70% (BE done, FE in progress) | 117 |
-| 3 | Post Your Money | Not started | — |
+| 2 | Track Your Money | COMPLETE | 117 |
+| 3 | Post Your Money | IN PROGRESS (BE complete, FE next) | 117 |
 | 4 | Bill & Get Paid | Not started | — |
 | 5 | Understand Your Money | Not started | — |
 | 6 | Launch MVP | Not started | — |
@@ -80,21 +80,13 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 
 ---
 
-## Phase 2: Track Your Money (IN PROGRESS — 70%)
+## Phase 2: Track Your Money (COMPLETE)
 
 **Goal:** Users can import bank transactions, view transaction history, and reconcile against their records.
 
-**Success Criteria:**
+**Completed:** 2026-02-12 | **Effort:** ~70 hours
 
-- Users can upload CSV/PDF bank statements
-- System detects duplicate imports
-- Transaction list with filtering (date, account, category)
-- System suggests matches between bank feeds and posted transactions
-- Users can manually match/unmatch transactions
-- Reconciliation status tracked per account
-- Onboarding gets users to dashboard in 60 seconds
-
-**Scope:**
+**What was delivered:**
 
 ### Backend (COMPLETE — 117 tests)
 
@@ -106,7 +98,7 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 
 **Services:** TransactionService, ImportService, ParserService, DuplicationService, ReconciliationService
 
-### Frontend (REMAINING — ~15-20 hours)
+### Frontend (COMPLETE)
 
 - CSV/PDF upload component with drag-and-drop and validation
 - Column mapping interface for CSV imports
@@ -115,29 +107,23 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 - Reconciliation status display (matched/unmatched counts, filters)
 - Transaction list improvements (bulk actions, category badges)
 
-### Onboarding Redesign (REMAINING — ~10-12 hours)
-
-Redesigning onboarding to be minimal and progressive:
+### Onboarding Redesign (COMPLETE)
 
 - 2-step wizard (Welcome + Essential Info) — 60 seconds to dashboard
 - Dashboard hero card with circular progress (tracks 5 completion steps)
 - Sidebar progress indicator (color-coded bar)
 - OnboardingProgress API routes and database model
-- Contextual prompts for optional steps (bank connection, business details, goals)
-
-**Plan:** [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
+- 55 frontend tests across 7 files
 
 ### Phase 2 Exit Criteria
 
-- [ ] CSV/PDF import works end-to-end in UI
-- [ ] Users can match transactions manually via UI
-- [ ] Auto-match suggestions displayed with confidence scores
-- [ ] Reconciliation status visible on accounts page
-- [ ] Onboarding wizard completes in < 90 seconds
-- [ ] Dashboard hero card shows onboarding progress
-- [ ] All backend tests pass (117+), frontend tests added
-
-**Estimated Remaining Effort:** 25-32 hours
+- [x] CSV/PDF import works end-to-end in UI
+- [x] Users can match transactions manually via UI
+- [x] Auto-match suggestions displayed with confidence scores
+- [x] Reconciliation status visible on accounts page
+- [x] Onboarding wizard completes in < 90 seconds
+- [x] Dashboard hero card shows onboarding progress
+- [x] All backend tests pass (117+), frontend tests added
 
 ---
 
@@ -354,12 +340,12 @@ Redesigning onboarding to be minimal and progressive:
 |-------|---------------|--------|
 | Foundation | ~30 | COMPLETE |
 | 1: See Your Money | ~35 | COMPLETE |
-| 2: Track Your Money | ~70 (45 done) | 70% |
-| 3: Post Your Money | 40-50 | Not started |
+| 2: Track Your Money | ~70 | COMPLETE |
+| 3: Post Your Money | 40-50 | IN PROGRESS (BE complete) |
 | 4: Bill & Get Paid | 40-50 | Not started |
 | 5: Understand Your Money | 45-55 | Not started |
 | 6: Launch MVP | 40-50 | Not started |
-| **MVP Total** | **300-340** | **~30% complete** |
+| **MVP Total** | **300-340** | **~45% complete** |
 | Post-Launch: Plan | 35-45 | Post-launch |
 | Post-Launch: Automate | 30-40 | Post-launch |
 | **Full Product** | **365-425** | |
@@ -372,7 +358,7 @@ These are tracked but not phase-gated — they happen alongside phase work:
 
 | Concern | When | Status |
 |---------|------|--------|
-| Onboarding redesign | Phase 2 | In progress (plan exists) |
+| Onboarding redesign | Phase 2 | COMPLETE |
 | RBAC role expansion (4 → 6 roles) | Phase 4 (needs multi-user) | Schema designed |
 | FX rate historical lookup (nearest-date) | Phase 3 (multi-currency posting) | Not started |
 | Row-Level Security (PostgreSQL) | Phase 6 (production hardening) | Not started |
@@ -401,5 +387,5 @@ These are tracked but not phase-gated — they happen alongside phase work:
 
 ---
 
-**Last Updated:** 2026-02-09
-**Next Review:** 2026-02-16
+**Last Updated:** 2026-02-14
+**Next Review:** 2026-02-21

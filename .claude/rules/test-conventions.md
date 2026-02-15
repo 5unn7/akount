@@ -114,3 +114,22 @@ mockSoftDelete.mockResolvedValue({ ...MOCK_RECORD, deletedAt: new Date() });
 // ❌ WRONG — doesn't prove soft delete happened
 mockSoftDelete.mockResolvedValue(undefined);
 ```
+
+## Test Maintenance (REQUIRED)
+
+When modifying route handlers or service function signatures, **update related tests in the SAME session**. Never commit route/service changes with failing tests.
+
+**Update triggers:**
+
+- Route schema changes (Zod schema modified)
+- Service function signature changes (params added/removed)
+- Response format changes (new fields, status code changes)
+- Error handling changes (new error paths)
+
+**Before committing route/service changes:**
+
+```bash
+cd apps/api && npx vitest run --reporter=verbose
+```
+
+If tests fail, fix them before committing. Broken tests on main = P0 issue.

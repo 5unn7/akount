@@ -1,164 +1,99 @@
 # Web Context (apps/web)
 
 > **Loaded automatically** when Claude accesses files in `apps/web/`
-> **Last verified:** 2026-02-09
+> **Last verified:** 2026-02-14
 
-## Next.js 16 App Router
+**Conventions:** See `.claude/rules/frontend-conventions.md` (Server/Client components, design system, Tailwind v4, SRP).
+**Design aesthetic:** See `.claude/rules/design-aesthetic.md` (Financial Clarity theme, glass morphism, colors).
 
-**Directory structure:**
+---
+
+## App Router Structure
 
 ```
 src/app/
-├── (dashboard)/      # Authenticated pages
-│   ├── layout.tsx    # Shell with sidebar
-│   ├── overview/     # Dashboard home
-│   ├── banking/      # Account management (accounts/)
-│   ├── invoicing/    # Invoice pages (planned)
-│   ├── clients/      # Client pages (planned)
-│   └── ...
-├── (auth)/           # Login, signup
-└── (marketing)/      # Public pages
+├── (dashboard)/      # Authenticated pages (shell with sidebar)
+├── (auth)/           # Login, signup (Clerk)
+├── (marketing)/      # Public pages
+└── onboarding/       # Onboarding wizard
 ```
 
-**Page structure pattern:**
+**Page pattern:** `(dashboard)/<domain>/<resource>/page.tsx` (Server Component) → Client Components for interactivity.
 
-```
-(dashboard)/<domain>/<resource>/
-├── page.tsx           # Server Component (data fetch)
-├── loading.tsx        # Loading skeleton
-├── error.tsx          # Error boundary
-├── <resource>-list-client.tsx   # Client Component
-└── <resource>-form-sheet.tsx    # Client Component (form in Sheet)
-```
+---
 
-## Server vs Client Components
+## Built Pages (38 pages)
 
-**Default: Server Components** (no `'use client'`)
+### Overview (3 pages)
+- `/overview` — Dashboard home
+- `/overview/cash-flow` — Cash flow analysis
+- `/overview/net-worth` — Net worth breakdown
 
-**Server Components:**
+### Banking (7 pages)
+- `/banking/accounts` — Account list
+- `/banking/accounts/[id]` — Account detail with transactions
+- `/banking/transactions` — All transactions
+- `/banking/import` — Import upload form
+- `/banking/imports` — Import history/batches
+- `/banking/reconciliation` — Bank feed matching
+- `/banking/transfers` — Transfer management
 
-- Data fetching with `async`/`await`
-- SEO metadata exports
-- Initial page render
-- Static content
+### Accounting (5 pages)
+- `/accounting/chart-of-accounts` — GL accounts
+- `/accounting/journal-entries` — Journal entry list
+- `/accounting/journal-entries/new` — Create journal entry
+- `/accounting/fiscal-periods` — Period management
+- `/accounting/tax-rates` — Tax rate configuration
+- `/accounting/assets` — Asset tracking
 
-**Client Components** (`'use client'` directive):
+### Business (5 pages)
+- `/business/invoices` — Invoice management
+- `/business/bills` — Bill management
+- `/business/clients` — Client directory
+- `/business/vendors` — Vendor directory
+- `/business/payments` — Payment tracking
 
-- Event handlers (`onClick`, `onChange`, `onSubmit`)
-- React hooks (`useState`, `useEffect`, `useRef`)
-- Browser APIs (`window`, `localStorage`, `document`)
-- Forms, modals, interactive UI
+### Planning (4 pages)
+- `/planning/budgets` — Budget management
+- `/planning/goals` — Financial goals
+- `/planning/forecasts` — Forecasting
+- `/planning/reports` — Financial reports
 
-**Example:**
+### AI Advisor (3 pages)
+- `/ai-advisor/insights` — AI-generated insights
+- `/ai-advisor/history` — Chat history
+- `/ai-advisor/policy-alerts` — Policy alerts
 
-```typescript
-// page.tsx (Server Component)
-export default async function AccountsPage() {
-  const accounts = await getAccounts()
-  return <AccountsListClient accounts={accounts} />
-}
+### Services (3 pages)
+- `/services/accountant` — Accountant portal
+- `/services/bookkeeping` — Bookkeeping services
+- `/services/documents` — Document management
 
-// accounts-list-client.tsx (Client Component)
-'use client'
-export function AccountsListClient({ accounts }: Props) {
-  const [selected, setSelected] = useState<string | null>(null)
-  return <div onClick={() => setSelected(id)}>...</div>
-}
-```
+### System (7 pages)
+- `/system/settings` — Tenant settings
+- `/system/entities` — Entity management
+- `/system/users` — User management
+- `/system/audit-log` — Audit trail
+- `/system/integrations` — Integration setup
+- `/system/rules` — Automation rules
+- `/system/security` — Security settings
 
-## Design System
+---
 
-### Tech Stack
+## Sidebar Navigation
 
-- **Base:** shadcn/ui (headless, accessible)
-- **Overlay:** shadcn-glass-ui@2.11.2 (glass morphism)
-- **Styling:** Tailwind v4.1.18 (CSS config)
-- **Tokens:** `packages/design-tokens/`
+| Section | Pages | Status |
+|---------|-------|--------|
+| Overview | Dashboard, Cash Flow, Net Worth | Built |
+| Banking | Accounts, Transactions, Import, Reconciliation, Transfers | Built |
+| Accounting | Chart of Accounts, Journal Entries, Fiscal Periods, Tax Rates | Built |
+| Business | Invoices, Bills, Clients, Vendors, Payments | Pages exist (stub/planned) |
+| Planning | Budgets, Goals, Forecasts, Reports | Pages exist (stub/planned) |
+| AI Advisor | Insights, History, Policy Alerts | Pages exist (stub/planned) |
+| Services | Accountant, Bookkeeping, Documents | Pages exist (stub/planned) |
+| System | Settings, Entities, Users, Audit Log, Integrations, Rules, Security | Built |
 
-### Glass UI Components
-
-- `ButtonGlass` (5 variants: default, secondary, destructive, outline, ghost)
-- `InputGlass` (3 variants: default, error, success)
-- `GlassCard` (3 variants: default, bordered, elevated)
-- `BadgeGlass` (6 variants: default, secondary, outline, destructive, success, warning)
-- `TabsGlass`, `ModalGlass`, `SwitchGlass`, `TooltipGlass`, `SeparatorGlass`
-
-### Tailwind v4 CSS Config
-
-Tailwind v4 uses **CSS variables**, NOT `tailwind.config.ts`:
-
-- Theme tokens: `src/app/globals.css`
-- Custom utilities: CSS `@utility` blocks
-- ❌ DO NOT create `tailwind.config.ts`
-
-**Example CSS config:**
-
-```css
-@theme {
-  --radius-lg: 8px;
-  --color-primary: 222.2 47.4% 11.2%;
-}
-```
-
-### Color System
-
-Use semantic tokens:
-
-- `bg-primary`, `text-primary`
-- `bg-secondary`, `text-secondary`
-- `bg-accent`, `text-accent`
-- `bg-destructive`, `text-destructive`
-- `bg-muted`, `text-muted`
-
-Dark mode: Automatic via CSS variables (`:root` and `.dark` selectors).
-
-### Design Tokens
-
-Color palette: `packages/design-tokens/src/colors.ts`
-Typography: `packages/design-tokens/src/typography.ts`
-Spacing: `packages/design-tokens/src/spacing.ts`
-
-### Button Radius
-
-Standard: **8px** (per Figma design system)
-
-## Layout
-
-**Shell:** `(dashboard)/layout.tsx`
-
-- Sidebar navigation with domain sections
-- User menu (top right)
-- Glassmorphism cards
-- Dark mode support
-
-**Sidebar domains:**
-
-1. Overview
-2. Banking (accounts)
-3. Invoicing (planned)
-4. Clients (planned)
-5. Vendors (planned)
-6. Accounting (planned)
-7. Planning (planned)
-8. AI Advisor (planned)
-9. Services (planned)
-10. System (settings)
-
-## API Client
-
-Use `src/lib/api/client.ts` for API calls:
-
-```typescript
-import { apiClient } from '@/lib/api/client'
-
-const invoices = await apiClient<Invoice[]>({
-  method: 'GET',
-  path: '/banking/accounts',
-  params: { entityId }
-})
-```
-
-Auth tokens automatically included via Clerk's `auth()` helper.
+---
 
 ## Server Actions
 
@@ -168,36 +103,32 @@ Use for mutations from Client Components:
 // actions/accounts.ts
 'use server'
 export async function createAccount(data: FormData) {
-  // ... validation ...
   await apiClient({ method: 'POST', path: '/banking/accounts', body })
   revalidatePath('/banking/accounts')
 }
-
-// component
-'use client'
-import { createAccount } from '@/actions/accounts'
-<form action={createAccount}>...</form>
 ```
+
+---
 
 ## Component Library
 
 Located in `packages/ui/src/components/`:
 
-- `primitives/` — Base components (Button, Input, Card)
+- `primitives/` — Base (Button, Input, Card)
 - `composed/` — Composite (DataTable, Form)
 - `layout/` — Layout (Header, Sidebar, Shell)
 - `feedback/` — Feedback (Toast, Alert, Modal)
 - `domain/` — Domain-specific (InvoiceCard, AccountCard)
 
-Import from `@akount/ui`:
+Import: `import { Button, Input, Card } from '@akount/ui'`
 
-```typescript
-import { Button, Input, Card } from '@akount/ui'
-```
+App-specific components: `apps/web/src/components/<domain>/`
+
+---
 
 ## Metadata & SEO
 
-Export metadata from pages:
+Export from pages:
 
 ```typescript
 export const metadata: Metadata = {
@@ -206,9 +137,14 @@ export const metadata: Metadata = {
 }
 ```
 
-## Loading & Error States
+---
 
-**Loading:** `loading.tsx` in same folder as `page.tsx`
-**Error:** `error.tsx` with reset button
+## Key Files
 
-Both are Client Components by default.
+| File | Purpose |
+|------|---------|
+| `src/app/(dashboard)/layout.tsx` | Shell with sidebar, user menu |
+| `src/app/globals.css` | Tailwind v4 theme tokens, utilities |
+| `src/lib/api/client.ts` | API client with Clerk auth |
+| `src/components/` | App-specific components by domain |
+| `src/actions/` | Server actions for mutations |

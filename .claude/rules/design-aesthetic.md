@@ -12,6 +12,50 @@ paths:
 > **Canonical reference:** `brand/inspirations/financial-clarity-final.html`
 > Dark-first. Zen. Glass. Glowy. Minimalist. One glance, zero anxiety.
 
+## CRITICAL: Use Semantic Tokens, NEVER Hardcode Colors
+
+**All colors are defined as CSS variables in `globals.css` with Tailwind utility classes. NEVER use arbitrary hex values like `text-[#34D399]` or `bg-[rgba(255,255,255,0.06)]`.**
+
+### Color Token Mapping (USE LEFT COLUMN, NOT RIGHT)
+
+| Tailwind Class | Replaces (NEVER use) | Meaning |
+|----------------|----------------------|---------|
+| `text-primary` / `bg-primary` | `text-[#F59E0B]` / `bg-[#F59E0B]` | Primary amber |
+| `hover:bg-ak-pri-hover` | `hover:bg-[#FBBF24]` | Primary hover |
+| `bg-ak-pri-dim` | `bg-[rgba(245,158,11,0.14)]` | Primary subtle bg |
+| `text-ak-pri-text` | `text-[#FFB02E]` | Primary text on dark |
+| `text-ak-green` / `bg-ak-green` | `text-[#34D399]` / `bg-[#34D399]` | Income/success |
+| `bg-ak-green-dim` | `bg-[rgba(52,211,153,0.18)]` | Green subtle bg |
+| `text-ak-red` / `bg-ak-red` | `text-[#F87171]` / `bg-[#F87171]` | Expense/error |
+| `text-destructive` | `text-[#F87171]` | Destructive (shadcn) |
+| `bg-ak-red-dim` | `bg-[rgba(248,113,113,0.18)]` | Red subtle bg |
+| `text-ak-blue` / `bg-ak-blue` | `text-[#60A5FA]` / `bg-[#60A5FA]` | Transfer/info |
+| `bg-ak-blue-dim` | `bg-[rgba(96,165,250,0.18)]` | Blue subtle bg |
+| `text-ak-purple` / `bg-ak-purple` | `text-[#A78BFA]` / `bg-[#A78BFA]` | AI/purple |
+| `bg-ak-purple-dim` | `bg-[rgba(167,139,250,0.18)]` | Purple subtle bg |
+| `text-ak-teal` / `bg-ak-teal` | `text-[#2DD4BF]` / `bg-[#2DD4BF]` | Teal accent |
+| `text-finance-income` | `text-[#34D399]` | Income (semantic) |
+| `text-finance-expense` | `text-[#F87171]` | Expense (semantic) |
+| `text-finance-transfer` | `text-[#60A5FA]` | Transfer (semantic) |
+
+### Glass & Border Tokens (USE LEFT COLUMN, NOT RIGHT)
+
+| Tailwind Class / Utility | Replaces (NEVER use) | Meaning |
+|---------------------------|----------------------|---------|
+| `glass` (utility class) | `bg-[rgba(255,255,255,0.025)]` + manual border | Glass tier 1 |
+| `glass-2` | `bg-[rgba(255,255,255,0.04)]` + manual border | Glass tier 2 |
+| `glass-3` | `bg-[rgba(255,255,255,0.06)]` + manual border | Glass tier 3 |
+| `border-ak-border` | `border-[rgba(255,255,255,0.06)]` | Default border |
+| `border-ak-border-2` | `border-[rgba(255,255,255,0.09)]` | Medium border |
+| `border-ak-border-3` | `border-[rgba(255,255,255,0.13)]` | Strong border |
+| `bg-ak-bg-3` | `bg-[#1A1A26]` | Hover surface |
+| `bg-ak-bg-4` | `bg-[#22222E]` | Active surface |
+| `text-muted-foreground` | `text-[#71717A]` | Muted text |
+
+**Why this matters:** Tokens auto-switch between light/dark mode. Hardcoded hex values break in the opposite mode. Every `text-[#34D399]` is a light-mode bug waiting to happen.
+
+---
+
 ## Dark Mode Surface Hierarchy
 
 Five levels of depth — near-black with subtle purple undertones:
@@ -68,16 +112,13 @@ Dark backgrounds need lighter semantic colors than light mode:
 
 ## Component Patterns
 
-**Cards:** Glass background + 1px subtle border + gentle hover lift
+**Cards:** Use `glass` utility (includes background + border). Add hover lift.
 
-```
-background: var(--glass);
-border: 1px solid rgba(255,255,255,0.06);
-border-radius: 14px;
-transition: border-color 0.2s, transform 0.2s;
+```html
+<div className="glass rounded-xl transition-all hover:border-ak-border-2 hover:-translate-y-px">
 ```
 
-On hover: border brightens, 1px translateY lift, subtle shadow.
+On hover: border brightens via `hover:border-ak-border-2`, 1px translateY lift.
 
 **Buttons:** 8px radius. Three tiers:
 
@@ -109,9 +150,11 @@ A `::after` pseudo-element renders a `radial-gradient` positioned at CSS vars `-
 
 ## Anti-Patterns (DO NOT)
 
+- **No hardcoded hex colors** — use semantic tokens from the mapping table above. `text-[#F59E0B]` = WRONG, `text-primary` = RIGHT
+- **No hardcoded rgba values** — use glass utilities (`glass`, `glass-2`, `glass-3`) and border tokens (`border-ak-border`)
 - No heavy drop shadows — prefer subtle border + glow
 - No solid white backgrounds in dark mode — always use glass tiers
-- No flat gray borders — use rgba white with low opacity
-- No 500-level semantic colors on dark backgrounds — too muted
+- No flat gray borders — use border token tiers (`border-ak-border`, `-2`, `-3`)
+- No 500-level semantic colors on dark backgrounds — too muted, tokens handle this automatically
 - No dense text walls — progressive disclosure, expand on click
 - No competing accent colors — orange is primary, everything else supports

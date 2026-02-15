@@ -91,6 +91,29 @@ Status codes:
 - 404: Not Found
 - 500: Internal Server Error
 
+## Structured Logging (REQUIRED)
+
+**NEVER use `console.log`, `console.error`, or `console.warn` in production code.** Fastify ships with pino — use it.
+
+**Available loggers:**
+
+- `request.log.info/error()` — in route handlers (request-scoped, includes request ID)
+- `server.log.info/error()` — in services and startup code
+
+```typescript
+// ✅ CORRECT — structured logging with context
+request.log.info({ entityId, transactionId }, 'Transaction created')
+request.log.error({ err, invoiceId }, 'Failed to post invoice')
+
+// ❌ WRONG — console.log in production
+console.log('Transaction created:', transactionId)
+console.error('Error:', error.message)
+```
+
+**Exception:** `apps/api/src/lib/env.ts` may use `console.log` for pre-boot validation (runs before pino is initialized).
+
+**Fastify config:** `Fastify({ logger: true })` in `apps/api/src/index.ts` — pino is already wired up.
+
 ## Middleware Chain
 
 Requests flow through:

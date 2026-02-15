@@ -16,6 +16,7 @@
 | Generate changelog from commits | `/changelog` |
 | Multi-agent feedback | `/braindump` |
 | Reset context when off-track | `/processes:reset` |
+| Weekly health audit (brutal honest) | `/processes:audit` |
 
 ## Review Agents (Use Task tool)
 
