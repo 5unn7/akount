@@ -213,6 +213,18 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         'Onboarding initialized'
       );
 
+      // Update Clerk user metadata with tenantId so middleware can check onboarding status
+      try {
+        await clerkClient.users.updateUserMetadata(request.userId as string, {
+          publicMetadata: {
+            tenantId: result.tenant.id,
+            onboardingCompleted: false, // Will be set to true on /complete
+          },
+        });
+      } catch (clerkError) {
+        request.log.warn({ clerkError }, 'Failed to update Clerk metadata - non-critical');
+      }
+
       return reply.status(201).send({
         success: true,
         tenantId: result.tenant.id,
