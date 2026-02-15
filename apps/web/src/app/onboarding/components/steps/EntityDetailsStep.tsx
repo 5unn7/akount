@@ -23,12 +23,12 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
     entityType,
     country,
     currency,
-    fiscalYearStart,
+    fiscalYearEnd,
     setEntityName,
     setEntityType,
     setCountry,
     setCurrency,
-    setFiscalYearStart,
+    setFiscalYearEnd,
     nextStep,
     tenantId,
   } = useOnboardingStore()
@@ -62,7 +62,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
       }
 
       // Call initialization endpoint
-      const response = await fetch('/api/onboarding/initialize', {
+      const response = await fetch('/api/system/onboarding/initialize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Error message */}
         {apiError && (
-          <div className="rounded-lg bg-[rgba(248,113,113,0.08)] border border-[rgba(248,113,113,0.2)] p-4 text-sm text-[#F87171]">
+          <div className="rounded-lg bg-destructive/[0.08] border border-destructive/20 p-4 text-sm text-ak-red">
             {apiError}
           </div>
         )}
@@ -131,7 +131,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
             onChange={(e) => setEntityName(e.target.value)}
             placeholder="e.g., Sunny's Design Studio"
             disabled={isLoading}
-            className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
+            className="w-full px-4 py-2 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
           />
         </div>
 
@@ -145,7 +145,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
             value={entityType || ''}
             onChange={(e) => setEntityType(e.target.value as any)}
             disabled={isLoading}
-            className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
+            className="w-full px-4 py-2 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
           >
             <option value="">Select a business type</option>
             <option value="PERSONAL">Personal (Sole Proprietor)</option>
@@ -167,7 +167,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
               value={country}
               onChange={(e) => setCountry(e.target.value)}
               disabled={isLoading}
-              className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
+              className="w-full px-4 py-2 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
             >
               <option value="CA">Canada</option>
               <option value="US">United States</option>
@@ -185,7 +185,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
               disabled={isLoading}
-              className="w-full px-4 py-2 glass-2 border border-[rgba(255,255,255,0.06)] rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
+              className="w-full px-4 py-2 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
             >
               <option value="CAD">CAD - Canadian Dollar</option>
               <option value="USD">USD - US Dollar</option>
@@ -198,7 +198,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
 
         {/* Fiscal Year Start */}
         <div>
-          <label htmlFor="fiscalYearStart" className="block text-sm font-medium text-foreground mb-2">
+          <label htmlFor="fiscalYearEnd" className="block text-sm font-medium text-foreground mb-2">
             Fiscal Year Start Month
           </label>
           <div className="flex gap-2 flex-wrap">
@@ -211,12 +211,12 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
                 <button
                   key={month}
                   type="button"
-                  onClick={() => setFiscalYearStart(month)}
+                  onClick={() => setFiscalYearEnd(String(month))}
                   disabled={isLoading}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    fiscalYearStart === month
+                    fiscalYearEnd === String(month)
                       ? 'bg-primary text-black'
-                      : 'glass border border-[rgba(255,255,255,0.06)] text-foreground hover:bg-[rgba(255,255,255,0.04)]'
+                      : 'glass border border-ak-border text-foreground hover:bg-ak-bg-3'
                   } disabled:opacity-50`}
                 >
                   {monthName}
@@ -234,7 +234,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-6 py-2 text-sm font-medium text-black bg-primary rounded-lg hover:bg-[#FBBF24] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full px-6 py-2 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? 'Setting up your workspace...' : 'Continue'}
           </button>
