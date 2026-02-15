@@ -1,7 +1,7 @@
 # Akount - Current Status
 
 **Last Updated:** 2026-02-14
-**Overall Progress:** Phase 2 Complete, Onboarding Complete, Phase 3 Backend Complete
+**Overall Progress:** Phase 2 Complete, Onboarding Complete, Business Domain Complete (Slice 4)
 
 ---
 
@@ -62,6 +62,32 @@ Restructured ROADMAP.md by user value phases (See → Track → Post → Bill �
 
 ## Completed Phases
 
+### Slice 4: Business Domain Pages (COMPLETE — 2026-02-14)
+
+**Goal:** AR/AP management with invoices, bills, clients, vendors.
+
+**Backend (100 tests, commits 6f3a840, ddc2e82, 30e3d89, 02caa75):**
+- Invoices API (GET, POST, PATCH, DELETE, stats, aging)
+- Bills API (GET, POST, PATCH, DELETE, stats, aging)
+- Clients API (GET, POST, PATCH, DELETE, list)
+- Vendors API (GET, POST, PATCH, DELETE, list)
+- InvoiceService, BillService, ClientService, VendorService
+
+**Frontend (21 files, commits e7c57c7, 7e3f9e4, 77d74dd):**
+- Invoicing page with AR/AP metrics, aging bars, invoice/bill tables
+- Clients directory with stats grid, client table
+- Vendors directory with stats grid, vendor table
+- 4 DetailPanel components (Invoice, Bill, Client, Vendor) with Sheet integration
+- StatsGrid, AgingBar shared components
+- Loading/error states for all 3 pages
+- API client functions (invoices.ts, bills.ts, clients.ts, vendors.ts)
+
+**Code Review (commit 77d74dd):**
+- Design System: 98% compliance (zero hardcoded colors, glass utilities)
+- Next.js Patterns: 92% compliance (perfect Server/Client boundaries)
+- TypeScript Safety: 94% compliance (zero `: any` types)
+- P2 Fixes: Removed console.error, fixed hardcoded currency (multi-currency support)
+
 ### Phase 1: See Your Money (COMPLETE — 2026-02-09)
 
 Dashboard, account management, multi-currency, entity filtering. 62 backend tests. Full frontend with loading states, error boundaries, SEO.
@@ -76,13 +102,13 @@ Auth (Clerk), DB (38 models), API (Fastify), design system (Figma + glass UI), m
 
 | Metric | Value |
 |--------|-------|
-| Backend Tests | 362 (all passing) |
+| Backend Tests | 462+ (all passing) |
 | TypeScript Errors | 0 |
-| API Endpoints (functional) | 49 |
-| API Endpoints (stubs) | 11 |
-| Backend Services | 14 |
-| Frontend Pages (functional) | 8+ |
-| Frontend Pages (placeholder) | 37 |
+| API Endpoints (functional) | 65+ |
+| API Endpoints (stubs) | 0 |
+| Backend Services | 18 |
+| Frontend Pages (functional) | 11+ |
+| Frontend Pages (placeholder) | 34 |
 | Prisma Models | 39 |
 | Dashboard Response Time | ~200ms |
 
