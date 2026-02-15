@@ -3,7 +3,9 @@ import { redirect } from 'next/navigation'
 import { apiClient } from '@/lib/api/client'
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { OnboardingOverlay } from "@/components/onboarding/OnboardingOverlay";
 import { ReactQueryProvider } from '@/providers/query-provider';
+import { listEntities, type Entity } from '@/lib/api/entities';
 import type { Role } from '@akount/types';
 
 interface OnboardingStatus {
@@ -47,15 +49,18 @@ export default async function DashboardLayout({
 
     const role = ((sessionClaims?.metadata as Record<string, unknown>)?.role as Role) || undefined;
 
-    const onboarding = await checkOnboardingStatus();
+    const [onboarding, entities] = await Promise.all([
+        checkOnboardingStatus(),
+        listEntities().catch(() => [] as Entity[]),
+    ]);
 
     // API is unreachable — show connection error instead of black screen
     if (onboarding === null) {
         return (
-            <div className="min-h-screen bg-[#09090F] flex items-center justify-center p-8">
+            <div className="min-h-screen bg-background flex items-center justify-center p-8">
                 <div className="max-w-md text-center space-y-6">
-                    <div className="mx-auto w-16 h-16 rounded-full bg-[rgba(245,158,11,0.14)] flex items-center justify-center">
-                        <svg className="w-8 h-8 text-[#F59E0B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="mx-auto w-16 h-16 rounded-full bg-primary/[0.14] flex items-center justify-center">
+                        <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
@@ -64,7 +69,7 @@ export default async function DashboardLayout({
                         <p className="text-sm text-muted-foreground">
                             Could not connect to the API server. Make sure it&apos;s running:
                         </p>
-                        <code className="block text-xs text-[#F59E0B] bg-[rgba(245,158,11,0.08)] px-4 py-2 rounded-lg font-mono mt-3">
+                        <code className="block text-xs text-primary bg-primary/[0.08] px-4 py-2 rounded-lg font-mono mt-3">
                             pnpm --filter api dev
                         </code>
                     </div>
@@ -79,21 +84,25 @@ export default async function DashboardLayout({
         );
     }
 
-    // User hasn't completed onboarding → redirect
-    if (onboarding.status !== 'completed') {
+    // Hard redirect for brand-new users (never started onboarding)
+    if (onboarding.status === 'new') {
         redirect('/onboarding')
     }
+
+    // Soft overlay for in-progress users (started but didn't finish)
+    const showOnboardingOverlay = onboarding.status !== 'completed'
 
     return (
         <ReactQueryProvider>
             <div className="h-full relative">
-                <div className="hidden h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80] bg-[#0F0F17] text-foreground">
-                    <Sidebar role={role} />
-                </div>
-                <main className="md:pl-72">
-                    <Navbar />
-                    {children}
+                <Sidebar role={role} />
+                <main className="md:pl-64">
+                    <Navbar entities={entities} />
+                    <div className="px-4 md:px-6 py-6">
+                        {children}
+                    </div>
                 </main>
+                {showOnboardingOverlay && <OnboardingOverlay />}
             </div>
         </ReactQueryProvider>
     );
