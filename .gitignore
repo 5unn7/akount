@@ -18,3 +18,6 @@ figmatoken
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Review agent output (temporary)
+.reviews/

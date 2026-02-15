@@ -13,148 +13,228 @@ keywords:
 
 # Workflow: Review
 
-Multi-agent code review. Catches issues across type safety, architecture, performance, security, and financial integrity.
+Multi-agent code review with **persistent output**. Findings survive rate limits, context exhaustion, and interruptions.
 
-**Pipeline:** Plan → Work → **Review**
+**Pipeline:** Plan > Work > **Review**
+**Output:** `.reviews/` directory (gitignored)
 **When to use:** After completing implementation, before merge.
 
 ---
 
-## PRE-FLIGHT CHECKLIST (Run First)
+## Phase 0: Resume Check
 
-**Before launching review agents, manually check for common violations:**
+Before starting a fresh review, check for prior results:
 
 ```bash
-# 1. Type safety check
-echo "=== : any violations ==="
-grep -r ": any[^w]" apps/ | grep -v test | grep -v node_modules
-
-# 2. Logging check
-echo "=== console.log in production ==="
-grep -r "console\." apps/api/src/domains apps/api/src/services | grep -v test
-
-# 3. Design token check
-echo "=== Hardcoded colors ==="
-grep -r "text-\[#\|bg-\[#" apps/web/src
-
-# 4. TenantId check
-echo "=== Queries without tenantId ==="
-grep -r "prisma\.\w\+\.find" apps/api/src/domains apps/api/src/services | grep -v tenantId | grep -v test
-
-# 5. Money type check
-echo "=== Float types for money ==="
-grep -r "amount.*Float\|balance.*Float" packages/db/prisma/schema.prisma
+ls .reviews/*.md 2>/dev/null
 ```
 
-**If ANY violations found, STOP and fix before continuing review.**
+If `.reviews/` exists with agent findings:
+- List which agents already have output files
+- Ask user: "Resume from previous review? Found findings from: [agent list]"
+- If resuming: skip to Phase 2, only run agents that DON'T have `.reviews/<agent>.md` files
+- If starting fresh: delete `.reviews/` and proceed normally
 
 ---
 
-## Phase 1: Identify Changes
+## Phase 1: Setup
 
-Determine the review target:
+### Create output directory
 
-- **PR number/URL** — fetch metadata with `gh pr view`
-- **Current branch** — `git diff main...HEAD`
-- **Specific files** — review only those files
+```bash
+mkdir -p .reviews
+```
 
-Get the list of changed files and categorize them (API, frontend, schema, config).
+### Auto pre-flight (no manual commands needed)
+
+Run these checks automatically and save results:
+
+```bash
+# Changed files
+git diff --name-only main...HEAD > .reviews/changed-files.txt 2>/dev/null || git diff --name-only HEAD~5 > .reviews/changed-files.txt
+
+# Quick violation scan
+echo "=== Pre-flight violations ===" > .reviews/PRE-FLIGHT.md
+echo "" >> .reviews/PRE-FLIGHT.md
+
+echo "### :any types" >> .reviews/PRE-FLIGHT.md
+grep -rn ": any[^w]" apps/ --include="*.ts" --include="*.tsx" | grep -v test | grep -v node_modules | head -10 >> .reviews/PRE-FLIGHT.md 2>/dev/null || echo "None found" >> .reviews/PRE-FLIGHT.md
+
+echo "" >> .reviews/PRE-FLIGHT.md
+echo "### console.log in production" >> .reviews/PRE-FLIGHT.md
+grep -rn "console\." apps/api/src/domains apps/api/src/services --include="*.ts" | grep -v test | head -10 >> .reviews/PRE-FLIGHT.md 2>/dev/null || echo "None found" >> .reviews/PRE-FLIGHT.md
+
+echo "" >> .reviews/PRE-FLIGHT.md
+echo "### Hardcoded colors" >> .reviews/PRE-FLIGHT.md
+grep -rn "text-\[#\|bg-\[#" apps/web/src --include="*.tsx" --include="*.ts" | head -10 >> .reviews/PRE-FLIGHT.md 2>/dev/null || echo "None found" >> .reviews/PRE-FLIGHT.md
+
+echo "" >> .reviews/PRE-FLIGHT.md
+echo "### Float types for money" >> .reviews/PRE-FLIGHT.md
+grep -rn "amount.*Float\|balance.*Float" packages/db/prisma/schema.prisma >> .reviews/PRE-FLIGHT.md 2>/dev/null || echo "None found" >> .reviews/PRE-FLIGHT.md
+```
+
+**If pre-flight finds P0 violations (`:any`, floats for money), warn before continuing.**
+
+### Categorize changed files
+
+Read `.reviews/changed-files.txt` and categorize:
+- API files (`apps/api/**`)
+- Frontend files (`apps/web/**`)
+- Schema files (`packages/db/**`)
+- Auth files (paths containing `auth`, `clerk`, `middleware`)
+- Financial files (paths containing `invoice`, `bill`, `payment`, `journal`, `accounting`)
+- Config files (`turbo.json`, `package.json`, `tsconfig.json`)
+
+This determines which conditional agents to run.
 
 ---
 
 ## Phase 2: Run Agents
 
+Launch agents **in parallel** using the Task tool. Each agent MUST write findings to `.reviews/<agent-name>.md`.
+
+**Critical:** Include in every agent prompt:
+> "Write your complete findings to the file `.reviews/<agent-name>.md` using the Write tool. Include: file:line references, issue description, severity (P0/P1/P2), and suggested fix."
+
 ### Core agents (always run)
 
-Pick **3-4** from this list based on the changes. Don't run all of them — pick the most relevant:
+Pick **3-4** most relevant based on changed files:
 
-- `kieran-typescript-reviewer` — type safety, modern patterns
-- `architecture-strategist` — system design, tenant isolation, domain boundaries
-- `security-sentinel` — OWASP, auth, input validation, tenant isolation
-- `performance-oracle` — N+1 queries, complexity, rendering
+| Agent | Output file | Focus |
+|-------|------------|-------|
+| `kieran-typescript-reviewer` | `.reviews/typescript.md` | Type safety, modern patterns |
+| `architecture-strategist` | `.reviews/architecture.md` | System design, domain boundaries |
+| `security-sentinel` | `.reviews/security.md` | OWASP, auth, tenant isolation |
+| `performance-oracle` | `.reviews/performance.md` | N+1 queries, complexity, rendering |
 
 ### Conditional agents (based on changed files)
 
-- API routes changed → `fastify-api-reviewer`
-- Auth code changed → `clerk-auth-reviewer`
-- Schema changed → `prisma-migration-reviewer`
-- Financial logic → `financial-data-validator`
-- App Router files → `nextjs-app-router-reviewer`
-- Package/turbo config → `turborepo-monorepo-reviewer`
+| Condition | Agent | Output file |
+|-----------|-------|------------|
+| `apps/api/**` changed | `fastify-api-reviewer` | `.reviews/fastify.md` |
+| `apps/web/**` changed | `nextjs-app-router-reviewer` | `.reviews/nextjs.md` |
+| `packages/db/**` changed | `prisma-migration-reviewer` | `.reviews/prisma.md` |
+| Auth/clerk files changed | `clerk-auth-reviewer` | `.reviews/clerk.md` |
+| Financial logic changed | `financial-data-validator` | `.reviews/financial.md` |
+| Monorepo config changed | `turborepo-monorepo-reviewer` | `.reviews/turborepo.md` |
 
-Run agents **in parallel** using the Task tool. Provide each agent with the diff and changed file contents.
+### Agent prompt template
 
----
+```
+Review the following code changes for [AGENT FOCUS AREA].
 
-## Phase 2.5: Pattern Compliance Checks
+Changed files: [list from .reviews/changed-files.txt]
 
-Run these lightweight checks directly (no agent needed) on the changed files:
+[Include git diff or file contents]
 
-### Frontend patterns (if any `apps/web/` files changed)
+Write your complete findings to `.reviews/[agent-name].md` using the Write tool.
 
-- [ ] Every new/modified `page.tsx` has sibling `loading.tsx` and `error.tsx`
-- [ ] Loading states use the `Skeleton` component from `@/components/ui/skeleton`
-- [ ] Error boundaries are client components with `reset` button
-- [ ] No hardcoded hex/rgba values — use semantic tokens (see `design-aesthetic.md`)
-
-### API patterns (if any `apps/api/` files changed)
-
-- [ ] No `console.log` in production code (use `request.log` or `server.log`)
-- [ ] No `: any` type annotations outside `catch` blocks
-- [ ] Modified routes have updated tests (check `__tests__/` sibling directory)
-
-### Verification
-
-```bash
-# Quick check: any console.log in changed API files?
-git diff --name-only | grep "apps/api" | xargs grep -l "console.log" 2>/dev/null
-
-# Quick check: any :any in changed files?
-git diff --name-only | grep "\.ts" | xargs grep -l ": any" 2>/dev/null
+Format each finding as:
+## [P0|P1|P2] Finding Title
+**File:** `path/to/file:line`
+**Issue:** What's wrong
+**Impact:** What could go wrong
+**Fix:** Suggested code change
 ```
 
-Flag violations as P2 findings.
+---
+
+## Phase 2.5: Compliance Checks (if UI changes)
+
+Only run if `apps/web/` files are in the changed set:
+
+| Agent | Output file |
+|-------|------------|
+| `design-system-enforcer` | `.reviews/design-system.md` |
+| `code-simplicity-reviewer` | `.reviews/simplicity.md` |
+
+Also check directly (no agent needed):
+- [ ] Every new `page.tsx` has sibling `loading.tsx` and `error.tsx`
+- [ ] No hardcoded hex/rgba values
+- [ ] Modified routes have updated tests
 
 ---
 
-## Phase 3: Synthesize Findings
+## Phase 3: Synthesize
 
-Consolidate all agent reports. Categorize by severity:
+### Check completion
 
-**P1 Critical (blocks merge):**
+```bash
+ls -la .reviews/*.md
+```
 
-- Security vulnerabilities, tenant isolation breaches
-- Financial calculation errors, data corruption risks
-- Breaking changes without migration path
+Compare existing `.reviews/*.md` files against expected agents. Identify:
+- **Completed:** agents that wrote their output files
+- **Missing:** agents that failed (rate limit, timeout, error)
 
-**P2 Important (should fix):**
+If any agents are missing:
+- Warn user: "These agents failed to complete: [list]"
+- Offer to re-run only the failed agents
+- If user declines, proceed with available findings
 
-- Performance bottlenecks, type safety issues
-- Missing error handling, missing tests for critical paths
+### Create synthesis
 
-**P3 Nice-to-Have (optional):**
+Read ALL `.reviews/*.md` files (except PRE-FLIGHT.md and SYNTHESIS.md).
 
-- Code simplification, minor optimizations, consistency
+Write `.reviews/SYNTHESIS.md` with:
+
+```markdown
+# Review Synthesis
+
+**Date:** YYYY-MM-DD
+**Branch:** [branch name]
+**Files reviewed:** [count]
+**Agents completed:** [count]/[total]
+
+## P0 Critical (blocks merge)
+[Security vulnerabilities, tenant isolation breaches, financial errors, data corruption risks]
+
+## P1 Important (should fix)
+[Performance issues, type safety, missing error handling, missing tests]
+
+## P2 Nice-to-Have (optional)
+[Code simplification, minor optimizations, consistency improvements]
+
+## Cross-Agent Patterns
+[Issues flagged by multiple agents — these are highest confidence]
+
+## Agents That Failed
+[List any agents that didn't complete, with suggested re-run command]
+```
 
 ---
 
-## Phase 4: Present Results
+## Phase 4: Present & Cleanup
 
-For each finding, include:
+### Present results
 
-- **Location:** `file:line`
-- **Issue:** what's wrong
-- **Impact:** what could go wrong
-- **Fix:** suggested code change
+Show the synthesis to the user. End with a verdict:
 
-End with a verdict:
+- **P0 findings exist** > BLOCK merge, list required fixes
+- **P1 only** > recommend fixes, safe to merge after
+- **P2 only** > approve, note optional improvements
+- **No findings** > approve
 
-- **P1 findings exist** → BLOCK merge, list required fixes
-- **P2 only** → recommend fixes, safe to merge after
-- **P3 only** → approve, note optional improvements
+### Cleanup
 
-Offer to run `npx vitest run` if tests haven't been verified.
+Ask: "Clean up `.reviews/` directory?"
+
+- **Yes (default):** `rm -rf .reviews/`
+- **No:** Keep for PR description, follow-up session, or documentation
 
 ---
 
-_~130 lines. Identify → Agents → Synthesize → Present._
+## Resuming an Interrupted Review
+
+If a review was interrupted (rate limit, context exhaustion, closed session):
+
+1. Run `/processes:review`
+2. Phase 0 detects existing `.reviews/` files
+3. Only re-runs agents that don't have output files
+4. Synthesizes all results (completed + newly completed)
+
+This means no work is lost. Even if only 2 of 6 agents completed before interruption, those 2 findings are preserved on disk.
+
+---
+
+_~180 lines. Persistent output to `.reviews/`. Resume-capable. Rate-limit resilient._

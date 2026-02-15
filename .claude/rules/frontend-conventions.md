@@ -165,6 +165,34 @@ export default function Error({
 
 **Reference implementations:** `banking/accounts/loading.tsx`, `banking/accounts/error.tsx`
 
+## Minimal UI Changes First (REQUIRED for Visual Work)
+
+When modifying UI — layout, styles, components — follow this progression:
+
+1. **Smallest change first** — Change ONE thing (e.g., a single CSS class, one component prop)
+2. **Verify it works** — Check the dev server or describe the expected visual result
+3. **Then expand** — Only after the first change is confirmed correct, make the next change
+4. **Never batch visual changes** — Don't change layout + colors + typography + spacing in one edit
+
+**Why:** Broad UI changes cause 3-4 revision rounds. Incremental changes are faster to debug and cheaper to undo.
+
+### Anti-Patterns
+
+- Making 5+ visual changes in a single edit
+- Changing component structure AND styling simultaneously
+- Guessing at spacing/sizing values instead of checking existing patterns
+- Rewriting an entire component when only the styles need updating
+
+### Good Pattern
+
+```
+Step 1: Fix the padding -> verify
+Step 2: Update the color token -> verify
+Step 3: Adjust the font size -> verify
+```
+
+Each step is independently verifiable and reversible.
+
 ## API Client Pattern
 
 Use `apps/web/src/lib/api/client.ts` for API calls:

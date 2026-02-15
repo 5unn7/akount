@@ -52,6 +52,7 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 9. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
 10. ✅ **Verify labels/paths** — search before creating new
 11. ✅ **Validate test vs production** — mocks stay in `__tests__/`
+12. ✅ **For UI changes: minimal first** — change ONE visual thing, verify, then expand (see `frontend-conventions.md`)
 
 **For bug fixes:** Follow Investigation Protocol in `product-thinking.md`, or run `/processes:diagnose` for complex bugs.
 
