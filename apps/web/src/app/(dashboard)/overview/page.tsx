@@ -16,6 +16,7 @@ import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
 import { DashboardFilters } from "@/components/dashboard/DashboardFilters";
 import { listEntities } from "@/lib/api/entities";
 import { getDashboardMetrics } from "@/lib/api/dashboard";
+import { getPerformanceMetrics } from "@/lib/api/performance";
 
 export const metadata: Metadata = {
     title: "Overview | Akount",
@@ -34,15 +35,18 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
     // Parallel data fetch
     let entities: Awaited<ReturnType<typeof listEntities>> = [];
     let metrics: Awaited<ReturnType<typeof getDashboardMetrics>> | null = null;
+    let performance: Awaited<ReturnType<typeof getPerformanceMetrics>> | null = null;
 
     try {
-        const [entitiesResult, metricsResult] = await Promise.allSettled([
+        const [entitiesResult, metricsResult, performanceResult] = await Promise.allSettled([
             listEntities(),
             getDashboardMetrics(entityId, currency),
+            getPerformanceMetrics(entityId, currency),
         ]);
 
         if (entitiesResult.status === 'fulfilled') entities = entitiesResult.value;
         if (metricsResult.status === 'fulfilled') metrics = metricsResult.value;
+        if (performanceResult.status === 'fulfilled') performance = performanceResult.value;
     } catch {
         // Continue with defaults
     }
@@ -51,40 +55,56 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
     const totalBalance = metrics?.netWorth.amount ?? 0;
     const baseCurrency = metrics?.netWorth.currency ?? currency;
 
-    // Spark KPI data (derives from real API metrics when available)
+    // Spark KPI data from performance API (real transaction aggregates)
+    const formatTrend = (percentChange: number): { direction: 'up' | 'down' | 'flat'; text: string } => {
+        if (percentChange === 0) return { direction: 'flat', text: 'No change' };
+        const direction = percentChange > 0 ? 'up' : 'down';
+        const sign = percentChange > 0 ? '+' : '';
+        return { direction, text: `${sign}${percentChange.toFixed(1)}% vs last mo` };
+    };
+
+    const formatCurrency = (cents: number) => {
+        if (cents === 0) return '—';
+        const dollars = cents / 100;
+        return `$${dollars.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+    };
+
+    // Convert sparkline cents to dollars (for chart rendering)
+    const convertSparkline = (centsArray: number[]) => centsArray.map(c => c / 100);
+
     const sparkCards = [
         {
             label: 'Revenue',
-            value: metrics ? `$${(metrics.cashPosition.cash / 100).toLocaleString()}` : '—',
-            trend: { direction: 'up' as const, text: '+12.4% vs last mo' },
-            sparkline: [40, 42, 38, 45, 50, 48, 55, 60, 58, 65],
+            value: performance ? formatCurrency(performance.revenue.current) : '—',
+            trend: performance ? formatTrend(performance.revenue.percentChange) : { direction: 'flat' as const, text: 'No data' },
+            sparkline: performance ? convertSparkline(performance.revenue.sparkline) : [],
             color: 'green' as const,
         },
         {
             label: 'Expenses',
-            value: metrics ? `$${(Math.abs(metrics.cashPosition.debt) / 100).toLocaleString()}` : '—',
-            trend: { direction: 'down' as const, text: '-3.2% vs last mo' },
-            sparkline: [30, 32, 28, 35, 33, 30, 28, 25, 27, 24],
+            value: performance ? formatCurrency(performance.expenses.current) : '—',
+            trend: performance ? formatTrend(-performance.expenses.percentChange) : { direction: 'flat' as const, text: 'No data' }, // Invert for expenses (lower is better)
+            sparkline: performance ? convertSparkline(performance.expenses.sparkline) : [],
             color: 'red' as const,
         },
         {
             label: 'Profit',
-            value: metrics ? `$${(metrics.cashPosition.net / 100).toLocaleString()}` : '—',
-            trend: { direction: 'up' as const, text: '+8.1%' },
-            sparkline: [10, 12, 15, 14, 18, 20, 22, 25, 28, 32],
+            value: performance ? formatCurrency(performance.profit.current) : '—',
+            trend: performance ? formatTrend(performance.profit.percentChange) : { direction: 'flat' as const, text: 'No data' },
+            sparkline: performance ? convertSparkline(performance.profit.sparkline) : [],
             color: 'primary' as const,
         },
         {
             label: 'Receivables',
-            value: '—',
-            trend: { direction: 'flat' as const, text: 'No data' },
-            sparkline: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+            value: performance ? formatCurrency(performance.receivables.outstanding) : '—',
+            trend: { direction: 'flat' as const, text: 'Coming soon' },
+            sparkline: [],
             color: 'blue' as const,
         },
         {
             label: 'Accounts',
-            value: metrics ? String(metrics.accounts.active) : '—',
-            trend: { direction: 'flat' as const, text: `${metrics?.accounts.total ?? 0} total` },
+            value: performance ? String(performance.accounts.active) : '—',
+            trend: { direction: 'flat' as const, text: `${performance?.accounts.total ?? 0} total` },
             sparkline: [],
             color: 'purple' as const,
         },
