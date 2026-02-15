@@ -68,14 +68,12 @@ export default clerkMiddleware(async (auth, request) => {
   // Require authentication for all other routes
   const { userId, sessionClaims } = await auth.protect();
 
-  // Check if user has completed onboarding (has tenantId in metadata)
-  const hasTenant = !!(sessionClaims?.metadata as Record<string, unknown>)?.tenantId;
-
-  // Redirect to onboarding if user doesn't have a tenant (except if already on onboarding page)
-  if (!hasTenant && !request.nextUrl.pathname.startsWith('/onboarding')) {
-    console.log(`[Onboarding] Redirecting ${userId} to onboarding (no tenant)`);
-    return NextResponse.redirect(new URL('/onboarding', request.url));
-  }
+  // TODO: Onboarding redirect disabled - needs database check instead of metadata
+  // Existing users don't have tenantId in Clerk metadata yet
+  // const hasTenant = !!(sessionClaims?.metadata as Record<string, unknown>)?.tenantId;
+  // if (!hasTenant && !request.nextUrl.pathname.startsWith('/onboarding')) {
+  //   return NextResponse.redirect(new URL('/onboarding', request.url));
+  // }
 
   // Get user role from session claims (set in Clerk user metadata)
   // Default to INVESTOR (most restrictive) if no role found
