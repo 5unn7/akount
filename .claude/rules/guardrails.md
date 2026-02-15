@@ -41,13 +41,19 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 
 **Before writing ANY code, Claude MUST:**
 
-1. ✅ **Read existing files first** — never edit blindly
-2. ✅ **Search for patterns** — `Grep "similar-feature" apps/`
-3. ✅ **Verify schema** — check Prisma models match intent
-4. ✅ **Check tokens** — design tokens exist before using
-5. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
-6. ✅ **Verify labels/paths** — search before creating new
-7. ✅ **Validate test vs production** — mocks stay in `__tests__/`
+1. ✅ **Classify the change** — Bug fix, feature, refactor, or config? (see `product-thinking.md`)
+2. ✅ **Read existing files first** — never edit blindly
+3. ✅ **Search for patterns** — `Grep "similar-feature" apps/`
+4. ✅ **Search MEMORY for prior learnings** — `Grep "[concept]" memory/`
+5. ✅ **Trace the impact** — what imports/calls this code? What could break?
+6. ✅ **Apply review lens** — will this pass security, financial integrity, type safety?
+7. ✅ **Verify schema** — check Prisma models match intent
+8. ✅ **Check tokens** — design tokens exist before using
+9. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
+10. ✅ **Verify labels/paths** — search before creating new
+11. ✅ **Validate test vs production** — mocks stay in `__tests__/`
+
+**For bug fixes:** Follow Investigation Protocol in `product-thinking.md`, or run `/processes:diagnose` for complex bugs.
 
 ## Explicit Anti-Patterns (NEVER DO)
 
@@ -94,6 +100,10 @@ Use `/processes:reset` when:
 - AI mixes mock data into implementation
 - AI creates pages without loading/error states
 - AI doesn't check existing patterns first
+- AI rewrites code without understanding why it exists
+- AI fixes a symptom without tracing root cause
+- AI ignores cross-domain impact of changes
+- AI doesn't search MEMORY topic files before implementing
 - Session feels "off track" or sloppy
 
 **Trigger phrases:**

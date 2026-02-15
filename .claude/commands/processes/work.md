@@ -8,6 +8,7 @@ description: Execute implementation plans systematically while maintaining quali
 Execute implementation plans step-by-step with quality checks built into each task.
 
 **Pipeline:** Plan → **Work** → Review
+**Prerequisite rule:** `.claude/rules/product-thinking.md` (investigation protocol applies to every task)
 **When to use:** After creating a plan with `/processes:plan`.
 
 ---
@@ -44,26 +45,43 @@ Use TodoWrite to track each task from the plan. Mark tasks `in_progress` one at 
 
 For each task in the plan:
 
-**1. Read** — Read files mentioned in the task and reference files for patterns
+**1. Investigate** — Understand before changing (from `product-thinking.md`):
 
-**2. Implement** — Follow existing patterns. Use Edit for modifications, Write for new files.
+- Read the files you plan to change AND their callers (`Grep "[function]" apps/`)
+- Search MEMORY topic files for prior art on similar work
+- If fixing a bug: trace the code path before proposing changes
+- Ask: WHY does the current code exist this way?
 
-**3. Test** — Run tests after each task, not just at the end:
+**2. Review Lens** — Quick pre-implementation check:
+
+- [ ] Tenant isolation maintained?
+- [ ] Financial integrity preserved (integer cents, double-entry)?
+- [ ] No `: any` types planned?
+- [ ] Follows existing patterns in adjacent files?
+
+If the task has a tagged review agent (from the plan), keep that agent's concerns in mind.
+
+**3. Implement** — Follow existing patterns. Use Edit for modifications, Write for new files.
+
+**4. Test** — Run tests after each task, not just at the end:
 
 ```bash
 npx vitest run [test-file]        # specific tests
 npx vitest run                     # all tests
 ```
 
-**4. Verify** — Check against the task's success criteria. Quick self-review:
+**5. Verify** — Check against the task's success criteria. Quick self-review:
 
-- [ ] No `any` types without justification
-- [ ] No console.log left behind
-- [ ] No commented-out code
-- [ ] Error handling present
-- [ ] New features have tests
+- [ ] No `any` types, no `console.log`, no commented-out code
+- [ ] Error handling present, new features have tests
+- [ ] Design tokens used (not hardcoded hex values)
 
-**5. Commit** — If the task is a complete, working slice:
+**6. Learn** — "Did I learn something non-trivial?"
+
+If yes: note it for end-session capture (Bugs Fixed / Patterns Discovered sections).
+Triggers: took >15 min to diagnose, fix was in unexpected file, discovered domain interaction, same bug type recurred.
+
+**7. Commit** — If the task is a complete, working slice:
 
 ```bash
 git add [specific files]
@@ -110,6 +128,16 @@ Mark completed tasks in the plan file:
 
 If the plan completes a task from TASKS.md, mark it done.
 
+### Capture Session Knowledge
+
+Suggest running `/processes:end-session` to capture:
+
+- What was built/fixed during this work session
+- Any patterns discovered or gotchas encountered
+- Unfinished work context for next instance
+
+This feeds into `/processes:eod` for daily artifact updates.
+
 ### Final Validation
 
 After all tasks complete:
@@ -133,4 +161,4 @@ TodoWrite: [
 
 ---
 
-_~135 lines. Per-task quality loop, plan deviation handling, review handoff._
+_~155 lines. 7-step per-task loop (investigate → review lens → implement → test → verify → learn → commit), plan deviation handling, session capture, review handoff._

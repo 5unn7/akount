@@ -53,6 +53,30 @@ Present **2-3 approaches** (max). For each:
 
 ---
 
+## Phase 2.5: Systems Impact Check
+
+Before selecting an approach, assess cross-domain effects.
+
+### Domain Impact
+
+Consult the Domain Adjacency Map (`.claude/rules/product-thinking.md`):
+
+- Which domains does this feature touch DIRECTLY?
+- Which ADJACENT domains might be affected?
+- Does this create new data flows between domains?
+
+### Review Lens (Lightweight)
+
+For each approach being considered, flag potential concerns:
+
+- **Security:** New auth flows? Exposed data? Tenant boundary changes?
+- **Financial integrity:** Creates/modifies monetary data or journal entries?
+- **Architecture:** Fits Route > Schema > Service > Prisma pattern?
+
+Note concerns in the brainstorm doc — they become requirements for the plan.
+
+---
+
 ## Phase 3: Capture Decisions
 
 Save to `docs/brainstorms/YYYY-MM-DD-<topic>-brainstorm.md`:
@@ -78,6 +102,13 @@ Save to `docs/brainstorms/YYYY-MM-DD-<topic>-brainstorm.md`:
 
 ### Edge Cases
 - [Edge case 1]
+
+## Domain Impact
+- **Primary:** [domains directly affected]
+- **Adjacent:** [domains that may need changes]
+
+## Review Concerns (from Phase 2.5)
+- **[Agent]:** [Concern to address during implementation]
 
 ## Alternatives Considered
 - **[Alt 1]:** [Why not chosen — one line]

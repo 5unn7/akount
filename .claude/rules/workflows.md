@@ -9,10 +9,11 @@
 | Start session with context | `/processes:begin` |
 | Plan feature implementation | `/processes:plan` |
 | Execute implementation plan | `/processes:work` |
+| Investigate bugs & unexpected behavior | `/processes:diagnose` |
 | Code review before merge | `/processes:review` |
-| End session with documentation | `/processes:eod` |
+| Lightweight session capture (per instance) | `/processes:end-session` |
+| End of day (aggregate sessions, update artifacts) | `/processes:eod` |
 | Brainstorm feature requirements | `/processes:brainstorm` |
-| Document solved problems | `/processes:compound` |
 | Generate changelog from commits | `/changelog` |
 | Multi-agent feedback | `/braindump` |
 | Reset context when off-track | `/processes:reset` |

@@ -1,6 +1,6 @@
 # Akount Project - Agent Context
 
-> **Last Updated:** 2026-02-14
+> **Last Updated:** 2026-02-15
 > **Context Architecture:** Hierarchical (root + directory-specific + rules)
 
 ---
@@ -93,6 +93,8 @@ Distilled rules are already in `.claude/rules/financial-rules.md` (loaded when w
 | Component specs | `docs/design-system/01-components/` |
 | Implementation plans | `docs/plans/` |
 | Brainstorms | `docs/brainstorms/` |
+| Session captures | `docs/archive/sessions/` |
+| MEMORY topic files | Auto memory dir (`debugging-log.md`, `codebase-quirks.md`, `api-patterns.md`) |
 
 ---
 
@@ -103,6 +105,7 @@ Distilled rules are already in `.claude/rules/financial-rules.md` (loaded when w
 - This file (CLAUDE.md) — core invariants, tech stack, structure
 - `MEMORY.md` — work state, learned patterns, gotchas
 - `.claude/rules/*.md` — modular rules (path-scoped)
+- `.claude/rules/product-thinking.md` — investigation protocol, domain awareness, review lens
 
 **Layer 2 (Loaded when working in directory):**
 
@@ -142,8 +145,10 @@ Distilled rules are already in `.claude/rules/financial-rules.md` (loaded when w
 - `/processes:begin` — Start session (loads git status, tasks, recommendations)
 - `/processes:plan` — Create implementation plan
 - `/processes:work` — Execute plan systematically
+- `/processes:diagnose` — Investigate bugs (trace > root cause > fix)
 - `/processes:review` — Multi-agent code review
-- `/processes:eod` — End session with documentation
+- `/processes:end-session` — Lightweight session capture (per instance)
+- `/processes:eod` — End of day (aggregates all sessions, updates artifacts)
 
 **Review agents:** `financial-data-validator`, `architecture-strategist`, `security-sentinel`, `prisma-migration-reviewer`, `kieran-typescript-reviewer`, `nextjs-app-router-reviewer`. See `.claude/rules/workflows.md` for full list.
 
@@ -181,6 +186,8 @@ Glob "**/*similar*.ts*"
 | Financial rules | `.claude/rules/financial-rules.md` |
 | API conventions | `.claude/rules/api-conventions.md` |
 | Frontend conventions | `.claude/rules/frontend-conventions.md` |
+| Investigation protocol | `.claude/rules/product-thinking.md` |
+| Debugging learnings | MEMORY.md > `debugging-log.md` topic file |
 
 ---
 

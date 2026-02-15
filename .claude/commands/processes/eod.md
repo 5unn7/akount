@@ -117,85 +117,67 @@ done
 
 ---
 
-## Phase 3: Update Documentation (2 minutes)
+## Phase 3: Aggregate Sessions & Update Artifacts (3 minutes)
 
-### STATUS.md
-
-Update current project status:
-
-```markdown
-# Status (YYYY-MM-DD)
-
-## Current Phase
-[Phase name, e.g., "Context Optimization v2.2 - Phase B"]
-
-## Recent Completions (This Session)
-- [x] [What was completed]
-- [x] [What was completed]
-
-## In Progress
-- [→] [What's ongoing]
-
-## Next Steps
-- [ ] [What's next]
-
-## Blockers
-[None / List blockers]
-
-## Notes
-[Any important context for next session]
-```
-
-### TASKS.md
-
-Update task list:
+### Step 1: Read All Session Captures from Today
 
 ```bash
-# Read current tasks
-cat TASKS.md
-
-# Mark completed items as [x]
-# Move completed to "Recently Completed" section
-# Add new tasks discovered during session
-# Reprioritize if needed
+# Find today's session files
+ls docs/archive/sessions/$(date +%Y-%m-%d)-*.md 2>/dev/null
 ```
 
-**Format:**
+Read each session file. If no session files exist for today, fall back to `git log --since="today"` and ask user for context about what was done.
 
-```markdown
-# Tasks
+Extract from all sessions: work done, bugs fixed, patterns discovered, new systems built, artifact update hints.
 
-## 🔥 Priority
-- [ ] [High priority task]
+### Step 2: Classify What Happened
 
-## 📋 Pending
-- [ ] [Task 1]
-- [ ] [Task 2]
+Categorize each item from the sessions:
+- **Operational:** new endpoints, new pages, completed tasks, new models, config changes
+- **Experiential:** bugs fixed, gotchas discovered, patterns learned, process friction
 
-## 🚧 In Progress
-- [→] [Active task]
+### Step 3: Route Operational Knowledge (auto-update)
 
-## ✅ Recently Completed
-- [x] [Completed task] (2026-02-09)
-```
+| What Happened | Artifact to Update | How |
+|---|---|---|
+| New API endpoint built | `apps/api/CLAUDE.md` | Update endpoint table |
+| New web page built | `apps/web/CLAUDE.md` | Update page list |
+| New Prisma model added | `packages/db/CLAUDE.md`, `docs/context-map.md` | Update model table |
+| Task completed | `TASKS.md` | Check off items, add commit hashes |
+| Phase milestone reached | `STATUS.md`, `ROADMAP.md` | Update progress percentages |
+| New feature not in plan | `ROADMAP.md`, `TASKS.md` | Flag as ad-hoc, note for next planning |
 
-### MEMORY.md
+Read the current content of each artifact before updating. Make the minimum necessary change.
 
-Update if new patterns/gotchas were discovered:
+### Step 4: Route Experiential Knowledge (to MEMORY topic files)
 
-```bash
-# Check if update needed
-cat "$HOME/.claude/projects/$(basename $PWD)/memory/MEMORY.md"
+| What Was Learned | Topic File | Template |
+|---|---|---|
+| Bug fix (non-trivial root cause) | `debugging-log.md` | `### YYYY-MM-DD: [Title]` with Symptom, Root Cause, Fix, Prevention |
+| Codebase gotcha | `codebase-quirks.md` | `### [Quirk Name]` with description + workaround |
+| New API pattern | `api-patterns.md` | `### [Pattern Name]` with description + example |
+| Process friction | `MEMORY.md` Known Issues table | Add row |
 
-# Add to "Recent Work Summary" if significant progress made
-# Add to topic files (codebase-quirks.md, api-patterns.md, debugging-log.md) if new patterns found
-```
+**Key rule:** Auto-update documentation and MEMORY topic files. ASK user before modifying rule files (`.claude/rules/`).
 
-**Update sections:**
+### Step 5: Update STATUS.md and TASKS.md
+
+**STATUS.md** — Update with today's progress:
+- Current Phase section: update task status
+- Metrics: update test counts, endpoint counts if changed
+- Move completed items, update `Last Updated` date
+
+**TASKS.md** — Update task list:
+- Mark completed items as `[x]` with commit hashes
+- Add new tasks discovered during the day
+- Reprioritize if needed
+
+### Step 6: Update MEMORY.md
 
 - Current State: Update phase/step progress
-- Recent Work Summary: Add today's accomplishments
+- Recent Work Summary: Add today's accomplishments (one entry per day, not per session)
 - Known Issues: Add newly discovered issues
+- Topic files: Updated in Step 4 above
 
 ---
 

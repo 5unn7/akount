@@ -183,6 +183,47 @@ npm audit 2>/dev/null | tail -5
 
 ---
 
+## Phase 2.5: Learning Promotion (2 minutes)
+
+Review accumulated experiential knowledge and identify patterns worth promoting to permanent rules.
+
+### Read MEMORY topic files
+
+Read all topic files in the auto memory directory:
+- `debugging-log.md` — recent bugs and fixes
+- `codebase-quirks.md` — gotchas
+- `api-patterns.md` — API patterns learned
+- Any other topic files that exist
+
+### Identify promotion candidates
+
+Look for:
+- **Recurring bugs** (same type appears 2+ times) → should become a guardrail rule
+- **Patterns that worked** (used successfully 3+ times) → should become a convention
+- **Process friction** (same complaint across sessions) → should become a workflow improvement
+- **Outdated learnings** (no longer relevant) → should be archived/removed
+
+### Propose promotions
+
+For each candidate:
+- **What:** the learning
+- **Promote to:** which rule file or workflow skill
+- **Specific change:** what to add/modify
+- **Evidence:** how many times this pattern appeared
+
+**Ask user before applying any rule changes.**
+
+### Clean up MEMORY topic files
+
+After promotions are approved:
+- Remove promoted entries from topic files (they now live in rules)
+- Archive entries older than 30 days that weren't promoted (likely not important)
+- Update MEMORY.md index if topic files were modified
+
+**Output:** Learning Promotion Report — X candidates found, Y promoted, Z archived.
+
+---
+
 ## Phase 3: Security Posture (2 minutes)
 
 Launch `security-sentinel` agent with full codebase scope. Additionally check:

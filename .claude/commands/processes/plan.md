@@ -73,9 +73,43 @@ For each task, specify:
 **Success:** Service creates/reads records filtered by tenantId
 ```
 
+### Tag Review Agents Per Task
+
+For tasks touching sensitive areas, note which review agent is relevant:
+
+- Financial calculations or money fields > `financial-data-validator`
+- Auth, permissions, tenant boundaries > `security-sentinel`
+- Schema changes, new models > `prisma-migration-reviewer`
+- API route patterns > `fastify-api-reviewer`
+- Frontend/App Router > `nextjs-app-router-reviewer`
+
+Add to task format: **Review:** `[agent-name]` (only for relevant tasks, not every task)
+
+**Example:**
+
+```markdown
+### Task 2: Create payment service
+**File:** `apps/api/src/domains/vendors/services/payment.service.ts`
+**What:** Implement payment creation with double-entry journal entries
+**Depends on:** Task 1
+**Risk:** high (financial data + cross-domain)
+**Review:** `financial-data-validator`, `security-sentinel`
+**Success:** Payment creates balanced journal entry, filtered by tenantId
+```
+
 ### Consider Edge Cases
 
 Document how to handle: missing tenant, invalid data, duplicates, database errors, concurrent requests.
+
+### Systems Impact Assessment
+
+Before finalizing the plan:
+
+1. **Domain boundaries:** Does this modify data owned by another domain?
+2. **Shared contracts:** Does this change API response shapes other consumers depend on?
+3. **Migration impact:** Does this require data migration? If so, add a migration task.
+
+Reference the Domain Adjacency Map in `.claude/rules/product-thinking.md`.
 
 ### Identify Reference Files
 
@@ -123,6 +157,15 @@ Save to `docs/plans/YYYY-MM-DD-feature-name.md`:
 
 ## Edge Cases
 - **[Case]:** [How to handle]
+
+## Review Agent Coverage
+| Task | Relevant Agents |
+|------|----------------|
+| Task N | `agent-name` |
+
+## Domain Impact
+- **Primary domains:** [list]
+- **Adjacent domains:** [list]
 
 ## Testing Strategy
 [What to test and how]
