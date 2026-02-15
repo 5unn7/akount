@@ -65,6 +65,7 @@ export function TransactionsListClient({
     const [selectedGLAccountId, setSelectedGLAccountId] = useState('');
     const [isPosting, setIsPosting] = useState(false);
     const [isLoadingGL, setIsLoadingGL] = useState(false);
+    const [postingError, setPostingError] = useState<string | null>(null);
 
     const accountId = searchParams.get('accountId') || undefined;
     const startDate = searchParams.get('startDate') || undefined;
@@ -128,6 +129,7 @@ export function TransactionsListClient({
     function handleOpenPostSheet(transactionId: string) {
         setPostingTransactionId(transactionId);
         setSelectedGLAccountId('');
+        setPostingError(null);
         setPostingSheetOpen(true);
 
         // Load GL accounts if not loaded
@@ -140,6 +142,7 @@ export function TransactionsListClient({
     function handleOpenBulkPostSheet() {
         setPostingTransactionId(null); // null = bulk mode
         setSelectedGLAccountId('');
+        setPostingError(null);
         setPostingSheetOpen(true);
 
         if (glAccounts.length === 0) {
@@ -186,7 +189,7 @@ export function TransactionsListClient({
             );
             setPostingSheetOpen(false);
         } catch (error) {
-            console.error('Failed to post transaction:', error);
+            setPostingError(error instanceof Error ? error.message : 'Failed to post transaction');
         } finally {
             setIsPosting(false);
         }
@@ -219,7 +222,7 @@ export function TransactionsListClient({
             setSelectedIds(new Set());
             setPostingSheetOpen(false);
         } catch (error) {
-            console.error('Failed to bulk post:', error);
+            setPostingError(error instanceof Error ? error.message : 'Failed to bulk post transactions');
         } finally {
             setIsPosting(false);
         }
@@ -390,6 +393,12 @@ export function TransactionsListClient({
                                 ? `Post ${unpostedSelectedCount} Transactions`
                                 : 'Post to GL'}
                         </Button>
+
+                        {postingError && (
+                            <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                                {postingError}
+                            </div>
+                        )}
                     </div>
                 </SheetContent>
             </Sheet>

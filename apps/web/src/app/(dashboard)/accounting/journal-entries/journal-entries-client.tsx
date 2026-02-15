@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
     BookOpen,
@@ -493,5 +493,3 @@ export function JournalEntriesClient({
     );
 }
 
-// Need React import for Fragment
-import React from 'react';

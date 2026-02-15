@@ -249,6 +249,7 @@ export function ChartOfAccountsClient({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSeeding, setIsSeeding] = useState(false);
     const [seedMessage, setSeedMessage] = useState<string | null>(null);
+    const [actionError, setActionError] = useState<string | null>(null);
 
     // Form state
     const [formCode, setFormCode] = useState('');
@@ -317,9 +318,9 @@ export function ChartOfAccountsClient({
                 setAccounts((prev) => [...prev, created]);
             }
             setSheetOpen(false);
+            setActionError(null);
         } catch (error) {
-            // Let the error propagate to error boundary
-            console.error('Failed to save GL account:', error);
+            setActionError(error instanceof Error ? error.message : 'Failed to save GL account');
         } finally {
             setIsSubmitting(false);
         }
@@ -332,7 +333,7 @@ export function ChartOfAccountsClient({
                 prev.map((a) => (a.id === updated.id ? updated : a))
             );
         } catch (error) {
-            console.error('Failed to deactivate:', error);
+            setActionError(error instanceof Error ? error.message : 'Failed to deactivate account');
         }
     }
 
@@ -349,7 +350,7 @@ export function ChartOfAccountsClient({
                 window.location.reload();
             }
         } catch (error) {
-            console.error('Failed to seed COA:', error);
+            setActionError(error instanceof Error ? error.message : 'Failed to seed chart of accounts');
         } finally {
             setIsSeeding(false);
         }
@@ -449,6 +450,18 @@ export function ChartOfAccountsClient({
 
             {seedMessage && (
                 <p className="text-sm text-muted-foreground">{seedMessage}</p>
+            )}
+
+            {actionError && (
+                <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400 flex items-center justify-between">
+                    <span>{actionError}</span>
+                    <button
+                        onClick={() => setActionError(null)}
+                        className="text-red-400/60 hover:text-red-400 text-xs ml-4"
+                    >
+                        Dismiss
+                    </button>
+                </div>
             )}
 
             {/* Table */}

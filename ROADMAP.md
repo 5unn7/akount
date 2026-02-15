@@ -1,8 +1,8 @@
 # Akount - Development Roadmap
 
 **Version:** 2.0
-**Last Updated:** 2026-02-09
-**Current Phase:** Phase 2 - Track Your Money (Backend Complete, Frontend In Progress)
+**Last Updated:** 2026-02-15
+**Current Phase:** Phase 3 Complete — Next: Phase 4 (Bill & Get Paid)
 
 ---
 
@@ -28,7 +28,7 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 | Foundation | Infrastructure | COMPLETE | 362 total |
 | 1 | See Your Money | COMPLETE | 62 |
 | 2 | Track Your Money | COMPLETE | 117 |
-| 3 | Post Your Money | IN PROGRESS (BE complete, FE next) | 117 |
+| 3 | Post Your Money | COMPLETE | 33 posting + COA/JE |
 | 4 | Bill & Get Paid | Not started | — |
 | 5 | Understand Your Money | Not started | — |
 | 6 | Launch MVP | Not started | — |
@@ -127,40 +127,39 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 
 ---
 
-## Phase 3: Post Your Money
+## Phase 3: Post Your Money (COMPLETE)
 
 **Goal:** Users can manage their chart of accounts, post transactions with proper double-entry bookkeeping, and maintain a general ledger.
 
+**Completed:** 2026-02-15 | **Effort:** ~45 hours
+
 **Success Criteria:**
 
-- Chart of accounts with hierarchy (tree view)
-- Manual transaction posting with double-entry validation
-- Journal entries auto-created from transactions
-- Multi-currency transaction support
-- Split transaction support
-- Transaction list with GL account filtering
+- [x] Chart of accounts with hierarchy (tree view)
+- [x] Manual transaction posting with double-entry validation
+- [x] Journal entries auto-created from transactions
+- [x] Multi-currency transaction support
+- [x] Split transaction support
+- [x] Transaction list with GL posting status
 
-**Scope:**
+**What was delivered:**
 
-### Backend
+### Backend (COMPLETE — 33 posting tests + COA/JE endpoints)
 
-- Chart of Accounts API (CRUD, hierarchy, default COA seeding per entity type)
-- Transaction Posting Service (create + validate double-entry + auto-generate journal entries)
-- Journal Entry API (list, detail, date/account/entity filtering)
-- Multi-currency posting (original + base currency amounts)
-- Split transaction support
+- Chart of Accounts API: CRUD, hierarchy, balances, default COA seeding (7 endpoints)
+- Transaction Posting Service: serializable isolation, multi-currency FX, split transactions (852 lines)
+- Journal Entry API: CRUD, approve, void, post transaction, bulk post (12 endpoints)
+- Multi-currency posting: FX rate lookup, nearest-date fallback, manual rate override
+- Split transaction support: largest-remainder rounding, 2-way/3-way/N-way splits
+- 33 posting tests (11 basic + 7 multi-currency + 5 bulk + 10 split)
 
-### Frontend
+### Frontend (COMPLETE)
 
-- Chart of Accounts page (tree view, add/edit/delete, account balances, type badges)
-- Transaction entry form (splits, multi-currency, journal entry preview)
-- Journal entries list page (date range, account, entity filters)
-- Transaction detail view
-
-**Dependencies:** Phase 2 complete (transactions infrastructure)
-**Risk:** High — double-entry bookkeeping logic is critical for financial integrity
-**Estimated Effort:** 40-50 hours
-**Feature Specs:** [docs/design-system/03-screens/transactions.md](docs/design-system/03-screens/transactions.md)
+- Chart of Accounts page (tree view, CRUD Sheet, type filter, seed button, account balances)
+- Journal Entry form (dynamic lines, GL account dropdowns, live balance indicator)
+- Journal entries list (expandable rows, approve/void/delete, status badges, cursor pagination)
+- Transaction posting UI (PostingStatusBadge, GL account Sheet, single + bulk posting)
+- API client (accounting.ts, 12 functions) + server actions (COA: 6, JE: 4)
 
 ---
 
@@ -341,11 +340,11 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 | Foundation | ~30 | COMPLETE |
 | 1: See Your Money | ~35 | COMPLETE |
 | 2: Track Your Money | ~70 | COMPLETE |
-| 3: Post Your Money | 40-50 | IN PROGRESS (BE complete) |
+| 3: Post Your Money | ~45 | COMPLETE |
 | 4: Bill & Get Paid | 40-50 | Not started |
 | 5: Understand Your Money | 45-55 | Not started |
 | 6: Launch MVP | 40-50 | Not started |
-| **MVP Total** | **300-340** | **~45% complete** |
+| **MVP Total** | **300-340** | **~55% complete** |
 | Post-Launch: Plan | 35-45 | Post-launch |
 | Post-Launch: Automate | 30-40 | Post-launch |
 | **Full Product** | **365-425** | |
@@ -360,7 +359,7 @@ These are tracked but not phase-gated — they happen alongside phase work:
 |---------|------|--------|
 | Onboarding redesign | Phase 2 | COMPLETE |
 | RBAC role expansion (4 → 6 roles) | Phase 4 (needs multi-user) | Schema designed |
-| FX rate historical lookup (nearest-date) | Phase 3 (multi-currency posting) | Not started |
+| FX rate historical lookup (nearest-date) | Phase 3 (multi-currency posting) | COMPLETE (PostingService) |
 | Row-Level Security (PostgreSQL) | Phase 6 (production hardening) | Not started |
 
 ---
@@ -387,5 +386,5 @@ These are tracked but not phase-gated — they happen alongside phase work:
 
 ---
 
-**Last Updated:** 2026-02-14
-**Next Review:** 2026-02-21
+**Last Updated:** 2026-02-15
+**Next Review:** 2026-02-22

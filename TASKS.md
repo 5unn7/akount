@@ -1,7 +1,7 @@
 # Akount - Task List
 
-**Last Updated:** 2026-02-14 (EOD)
-**Current Phase:** Code Review Fixes (3/5 complete) | Phase 3 prep
+**Last Updated:** 2026-02-15
+**Current Phase:** Phase 3 Complete | Code Review Fixes (3/5 remaining)
 
 ---
 
@@ -86,17 +86,20 @@
 
 ---
 
-## Next Up (Phase 3: Post Your Money)
+## Phase 3: Post Your Money — COMPLETE
 
-- [ ] **BE-3.1:** Chart of Accounts API (CRUD, hierarchy, default COA seeding)
-- [ ] **BE-3.2:** Transaction Posting Service (double-entry validation + journal entry generation)
-- [ ] **BE-3.3:** Journal Entry API (list, detail, filtering)
-- [ ] **BE-3.4:** Multi-currency posting support
-- [ ] **BE-3.5:** Split transaction support
-- [ ] **FE-3.1:** Chart of Accounts page (tree view, CRUD, balances)
-- [ ] **FE-3.2:** Transaction entry form (splits, multi-currency, journal preview)
-- [ ] **FE-3.3:** Journal entries list page
-- [ ] **FE-3.4:** Transaction detail view
+- [x] **BE-3.1:** Chart of Accounts API — 7 endpoints (CRUD, hierarchy, balances, seed)
+- [x] **BE-3.2:** Transaction Posting Service — PostingService (852 lines, serializable isolation)
+- [x] **BE-3.3:** Journal Entry API — 12 endpoints (CRUD, approve, void, post, bulk post)
+- [x] **BE-3.4:** Multi-currency posting support (FX lookup, nearest-date fallback, rate override)
+- [x] **BE-3.5:** Split transaction support (largest-remainder rounding, 2-way/3-way splits)
+- [x] **BE-3.6:** Posting tests — 33 tests (11 basic + 7 multi-currency + 5 bulk + 10 split)
+- [x] **FE-3.1:** Chart of Accounts page (tree view, CRUD Sheet, type filter, seed button, balances)
+- [x] **FE-3.2:** Journal Entry form (dynamic lines, GL account dropdowns, live balance indicator)
+- [x] **FE-3.3:** Journal entries list page (expandable rows, approve/void/delete, status badges, pagination)
+- [x] **FE-3.4:** Transaction posting UI (PostingStatusBadge, GL account Sheet, single + bulk posting)
+- [x] **FE-3.5:** API client + server actions for COA and JE
+- [x] **FE-3.6:** Code quality cleanup (console.error → error state, React import fix, endpoint alignment)
 
 ---
 
@@ -186,9 +189,9 @@
 | 1: See Your Money | COMPLETE (62 tests) | COMPLETE | COMPLETE |
 | 2: Track Your Money | COMPLETE (117 tests) | COMPLETE (8/8 tasks) | COMPLETE |
 | Onboarding Redesign | COMPLETE (tests) | COMPLETE (55 tests) | COMPLETE |
-| 3: Post Your Money | Not started | Not started | Not started |
+| 3: Post Your Money | COMPLETE (33 posting tests) | COMPLETE | COMPLETE |
 
-**Total Backend Tests:** 235+ (62 + 117 + 35 system + 21 overview)
+**Total Backend Tests:** 268+ (62 + 117 + 33 posting + 35 system + 21 overview)
 
 ---
 

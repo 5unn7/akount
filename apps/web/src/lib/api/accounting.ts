@@ -196,8 +196,8 @@ export async function updateGLAccount(
 
 export async function deactivateGLAccount(id: string): Promise<GLAccount> {
     return apiClient<GLAccount>(
-        `/api/accounting/chart-of-accounts/${id}/deactivate`,
-        { method: 'POST' }
+        `/api/accounting/chart-of-accounts/${id}`,
+        { method: 'DELETE' }
     );
 }
 

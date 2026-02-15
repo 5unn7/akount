@@ -1,7 +1,7 @@
 # Akount - Current Status
 
-**Last Updated:** 2026-02-14 (EOD)
-**Overall Progress:** Phase 2 Complete, Onboarding Complete, Business Domain Complete (Slice 4), Code Review Fixes (3/5 complete)
+**Last Updated:** 2026-02-15
+**Overall Progress:** Phase 3 Complete, Phase 2 Complete, Onboarding Complete, Business Domain Complete (Slice 4)
 
 ---
 
@@ -61,6 +61,31 @@ Restructured ROADMAP.md by user value phases (See → Track → Post → Bill �
 ---
 
 ## Completed Phases
+
+### Phase 3: Post Your Money (COMPLETE — 2026-02-15)
+
+**Goal:** Chart of accounts, double-entry journal entries, transaction posting to GL.
+
+**Backend (COMPLETE — 33 posting tests, 19 COA/JE endpoints):**
+- Chart of Accounts API: CRUD, hierarchy, balances, default COA seeding (7 endpoints)
+- Journal Entry API: CRUD, approve, void, post transaction, bulk post (12 endpoints)
+- PostingService: serializable isolation, multi-currency FX, split transactions, largest-remainder rounding (852 lines)
+- 33 posting tests: 11 basic + 7 multi-currency + 5 bulk + 10 split
+
+**Frontend (COMPLETE — 5 client components, API client, server actions):**
+- Chart of Accounts page: tree view, CRUD Sheet, type filter, seed button, account balances
+- Journal Entry form: dynamic lines, GL account dropdowns, live debit/credit balance indicator
+- Journal Entries list: expandable rows, approve/void/delete actions, status badges, cursor pagination
+- Transaction posting UI: PostingStatusBadge, GL account posting Sheet, single + bulk posting
+- API client (accounting.ts): 12 functions with full type definitions
+- Server actions: COA (6 actions) + JE (4 actions)
+
+**Code Quality Fixes (2026-02-15):**
+- Replaced console.error with user-facing error state in COA client + transactions posting
+- Fixed React import ordering in JE client
+- Fixed deactivate endpoint alignment (POST /deactivate → DELETE /:id)
+
+---
 
 ### Code Review Fixes (IN PROGRESS — 2026-02-14)
 
@@ -127,13 +152,13 @@ Auth (Clerk), DB (38 models), API (Fastify), design system (Figma + glass UI), m
 
 | Metric | Value |
 |--------|-------|
-| Backend Tests | 462+ (all passing) |
+| Backend Tests | 495+ (all passing) |
 | TypeScript Errors | 0 |
-| API Endpoints (functional) | 65+ |
+| API Endpoints (functional) | 84+ |
 | API Endpoints (stubs) | 0 |
-| Backend Services | 18 |
-| Frontend Pages (functional) | 11+ |
-| Frontend Pages (placeholder) | 34 |
+| Backend Services | 19 (+ PostingService) |
+| Frontend Pages (functional) | 14+ |
+| Frontend Pages (placeholder) | 31 |
 | Prisma Models | 39 |
 | Dashboard Response Time | ~200ms |
 

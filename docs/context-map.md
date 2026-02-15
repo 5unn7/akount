@@ -42,7 +42,7 @@
 | **BankFeedStatus** | PENDING, POSTED, CANCELLED | Bank transaction sync status |
 | **TransactionMatchStatus** | MATCHED, SUGGESTED, UNMATCHED | Bank feed to transaction matching |
 | **BankConnectionStatus** | ACTIVE, ERROR, DISCONNECTED, REAUTH_REQUIRED | Bank sync connection health |
-| **BankConnectionProvider** | FLINKS, PLAID, MANUAL | Bank sync provider |
+| **BankConnectionProvider** | FLINKS, MANUAL | Bank sync provider |
 | **TransactionSourceType** | BANK_FEED, MANUAL, INVOICE, BILL, TRANSFER | Origin of transaction |
 | **CategoryType** | INCOME, EXPENSE, TRANSFER | Category classification |
 | **FiscalPeriodStatus** | OPEN, LOCKED, CLOSED | Period close status |
