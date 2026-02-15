@@ -10,10 +10,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Plus } from 'lucide-react';
-import type { AccountType } from '@/lib/api/accounts';
+import { Plus, RotateCw, Upload } from 'lucide-react';
+import { PageHeader } from '@/components/shared/PageHeader';
 import type { Entity } from '@/lib/api/entities';
 import { AccountFormSheet } from './AccountFormSheet';
+import Link from 'next/link';
 
 const ACCOUNT_TYPE_OPTIONS: { value: string; label: string }[] = [
     { value: 'all', label: 'All Types' },
@@ -27,14 +28,17 @@ const ACCOUNT_TYPE_OPTIONS: { value: string; label: string }[] = [
 
 interface AccountsPageHeaderProps {
     entities: Entity[];
+    currencies?: string[];
+    accountCount?: number;
 }
 
-export function AccountsPageHeader({ entities }: AccountsPageHeaderProps) {
+export function AccountsPageHeader({ entities, currencies = [], accountCount = 0 }: AccountsPageHeaderProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [createOpen, setCreateOpen] = useState(false);
 
     const currentType = searchParams.get('type') || 'all';
+    const currentCurrency = searchParams.get('currency') || 'all';
 
     const handleTypeChange = useCallback(
         (value: string) => {
@@ -50,36 +54,91 @@ export function AccountsPageHeader({ entities }: AccountsPageHeaderProps) {
         [router, searchParams]
     );
 
-    return (
-        <div className="flex items-center justify-between space-y-2">
-            <h2 className="text-3xl font-heading font-normal tracking-tight">Accounts</h2>
+    const handleCurrencyChange = useCallback(
+        (value: string) => {
+            const params = new URLSearchParams(searchParams.toString());
+            if (value === 'all') {
+                params.delete('currency');
+            } else {
+                params.set('currency', value);
+            }
+            const qs = params.toString();
+            router.push(qs ? `?${qs}` : '/banking/accounts', { scroll: false });
+        },
+        [router, searchParams]
+    );
 
-            <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                    <label
-                        htmlFor="type-filter"
-                        className="text-xs uppercase tracking-[0.05em] font-medium text-muted-foreground"
-                    >
-                        Type
-                    </label>
-                    <Select value={currentType} onValueChange={handleTypeChange}>
-                        <SelectTrigger id="type-filter" className="w-[150px] glass-2 rounded-lg border-[rgba(255,255,255,0.06)] focus:ring-primary">
+    const subtitle = [
+        `${accountCount} account${accountCount !== 1 ? 's' : ''}`,
+        currencies.length > 0 ? `${currencies.length} currenc${currencies.length !== 1 ? 'ies' : 'y'}` : null,
+    ].filter(Boolean).join(', ');
+
+    return (
+        <div className="space-y-4 fi fi1">
+            <PageHeader
+                title="Accounts"
+                subtitle={subtitle}
+                actions={
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 gap-1.5 rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
+                            asChild
+                        >
+                            <Link href="/banking/imports">
+                                <Upload className="h-3.5 w-3.5" />
+                                Import
+                            </Link>
+                        </Button>
+                        <Button
+                            onClick={() => setCreateOpen(true)}
+                            size="sm"
+                            className="h-8 gap-1.5 rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
+                        >
+                            <Plus className="h-3.5 w-3.5" />
+                            Connect Account
+                        </Button>
+                    </div>
+                }
+            />
+
+            {/* Filter pills */}
+            <div className="flex items-center gap-3">
+                <Select value={currentType} onValueChange={handleTypeChange}>
+                    <SelectTrigger className="w-[140px] glass rounded-lg border-ak-border text-xs h-8">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {ACCOUNT_TYPE_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
+                {currencies.length > 1 && (
+                    <Select value={currentCurrency} onValueChange={handleCurrencyChange}>
+                        <SelectTrigger className="w-[140px] glass rounded-lg border-ak-border text-xs h-8">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="glass-2 rounded-lg border-[rgba(255,255,255,0.09)]">
-                            {ACCOUNT_TYPE_OPTIONS.map((opt) => (
-                                <SelectItem key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </SelectItem>
+                        <SelectContent>
+                            <SelectItem value="all">All Currencies</SelectItem>
+                            {currencies.map((c) => (
+                                <SelectItem key={c} value={c}>{c}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
-                </div>
+                )}
 
-                <Button onClick={() => setCreateOpen(true)} className="rounded-lg bg-primary hover:bg-[#FBBF24] text-black font-medium">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add Account
-                </Button>
+                <button
+                    onClick={() => router.refresh()}
+                    className="h-8 w-8 flex items-center justify-center rounded-lg glass hover:border-ak-border-2 transition-colors text-muted-foreground hover:text-foreground"
+                    aria-label="Refresh"
+                >
+                    <RotateCw className="h-3.5 w-3.5" />
+                </button>
             </div>
 
             <AccountFormSheet

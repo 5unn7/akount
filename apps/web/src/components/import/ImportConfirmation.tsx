@@ -73,11 +73,11 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
       <Card className="glass rounded-[14px]">
         <CardContent className="pt-6">
           <div className="flex items-start gap-4">
-            <div className={`p-3 rounded-full ${isSuccess ? 'bg-[#34D399]/10' : 'bg-[#F87171]/10'}`}>
+            <div className={`p-3 rounded-full ${isSuccess ? 'bg-ak-green/10' : 'bg-ak-red/10'}`}>
               {isSuccess ? (
-                <CheckCircle2 className="h-6 w-6 text-[#34D399]" />
+                <CheckCircle2 className="h-6 w-6 text-ak-green" />
               ) : (
-                <AlertTriangle className="h-6 w-6 text-[#F87171]" />
+                <AlertTriangle className="h-6 w-6 text-ak-red" />
               )}
             </div>
             <div className="flex-1">
@@ -90,7 +90,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
             </div>
             <Badge
               variant="outline"
-              className="text-xs rounded-lg border-white/[0.09]"
+              className="text-xs rounded-lg border-ak-border-2"
             >
               {result.sourceType}
             </Badge>
@@ -114,7 +114,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
             <p className="text-xs uppercase tracking-wider text-muted-foreground">
               Imported
             </p>
-            <p className="text-2xl font-mono font-bold text-[#34D399]">
+            <p className="text-2xl font-mono font-bold text-ak-green">
               {result.processedRows}
             </p>
           </CardContent>
@@ -125,7 +125,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
             <p className="text-xs uppercase tracking-wider text-muted-foreground">
               Duplicates
             </p>
-            <p className="text-2xl font-mono font-bold text-[#F59E0B]">
+            <p className="text-2xl font-mono font-bold text-primary">
               {result.duplicateRows}
             </p>
           </CardContent>
@@ -136,7 +136,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
             <p className="text-xs uppercase tracking-wider text-muted-foreground">
               Errors
             </p>
-            <p className={`text-2xl font-mono font-bold ${hasErrors ? 'text-[#F87171]' : 'text-muted-foreground'}`}>
+            <p className={`text-2xl font-mono font-bold ${hasErrors ? 'text-ak-red' : 'text-muted-foreground'}`}>
               {result.errorRows}
             </p>
           </CardContent>
@@ -182,7 +182,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-white/[0.06]">
+                  <tr className="border-b border-ak-border">
                     <th className="text-left py-3 px-4 text-xs uppercase tracking-wider text-muted-foreground">
                       Date
                     </th>
@@ -201,7 +201,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
                   {previewTransactions.map((txn) => (
                     <tr
                       key={txn.id}
-                      className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"
+                      className="border-b border-ak-border hover:bg-ak-bg-3 transition-colors"
                     >
                       <td className="py-3 px-4 text-sm">{formatDate(txn.date)}</td>
                       <td className="py-3 px-4 text-sm">
@@ -212,7 +212,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
                       <td className="py-3 px-4 text-sm text-right">
                         <span
                           className={`font-mono font-medium ${
-                            txn.amount < 0 ? 'text-[#F87171]' : 'text-[#34D399]'
+                            txn.amount < 0 ? 'text-ak-red' : 'text-ak-green'
                           }`}
                         >
                           {formatAmount(txn.amount, currency)}
@@ -220,11 +220,11 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
                       </td>
                       <td className="py-3 px-4 text-sm">
                         {txn.isDuplicate ? (
-                          <Badge className="text-xs bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20">
+                          <Badge className="text-xs bg-primary/10 text-primary border-primary/20">
                             Duplicate
                           </Badge>
                         ) : (
-                          <Badge className="text-xs bg-[#34D399]/10 text-[#34D399] border-[#34D399]/20">
+                          <Badge className="text-xs bg-ak-green/10 text-ak-green border-ak-green/20">
                             New
                           </Badge>
                         )}
@@ -246,7 +246,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
       {/* Actions */}
       <div className="flex items-center gap-3">
         <Button
-          className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+          className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
           asChild
         >
           <Link href="/banking/transactions">
@@ -256,7 +256,7 @@ export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }
         </Button>
         <Button
           variant="outline"
-          className="rounded-lg border-white/[0.09] hover:bg-white/[0.04]"
+          className="rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
           onClick={onUploadAnother}
         >
           <Upload className="h-4 w-4 mr-2" />

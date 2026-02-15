@@ -24,7 +24,7 @@ export function SidebarProgressIndicator() {
 
   const percentage = progress.completionPercentage
   const isComplete = percentage >= 80
-  const barColor = isComplete ? 'bg-[#34D399]' : 'bg-primary'
+  const barColor = isComplete ? 'bg-ak-green' : 'bg-primary'
 
   return (
     <div
@@ -33,7 +33,7 @@ export function SidebarProgressIndicator() {
       title={`${percentage}% complete - Click to continue setup`}
     >
       {/* Progress bar */}
-      <div className="w-full h-1.5 bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-border rounded-full overflow-hidden">
         <div
           className={`h-full ${barColor} transition-all duration-500`}
           style={{ width: `${percentage}%` }}

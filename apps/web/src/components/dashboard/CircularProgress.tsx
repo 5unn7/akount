@@ -23,7 +23,7 @@ export function CircularProgress({
   const outerRadius = radius
 
   // Amber primary for progress, green for completion
-  const color = value >= 80 ? '#34D399' : '#F59E0B'
+  const color = value >= 80 ? 'var(--ak-green)' : 'var(--primary)'
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
@@ -39,7 +39,7 @@ export function CircularProgress({
           dataKey="value"
         >
           <Cell fill={color} />
-          <Cell fill="rgba(255,255,255,0.06)" />
+          <Cell fill="var(--color-border)" />
         </Pie>
       </PieChart>
 

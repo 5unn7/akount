@@ -12,6 +12,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Plus } from 'lucide-react'
 
 const ENTITY_TYPES: { value: EntityType; label: string }[] = [
@@ -123,38 +130,36 @@ export function EntityFormSheet() {
           </div>
 
           <div>
-            <label htmlFor="entity-type" className="block text-sm font-medium mb-1.5">
+            <label className="block text-sm font-medium mb-1.5">
               Type
             </label>
-            <select
-              id="entity-type"
-              value={type}
-              onChange={e => setType(e.target.value as EntityType)}
-              disabled={isLoading}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-input bg-background focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 transition-all"
-            >
-              {ENTITY_TYPES.map(t => (
-                <option key={t.value} value={t.value}>{t.label}</option>
-              ))}
-            </select>
+            <Select value={type} onValueChange={(v) => setType(v as EntityType)} disabled={isLoading}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ENTITY_TYPES.map(t => (
+                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label htmlFor="entity-country" className="block text-sm font-medium mb-1.5">
+              <label className="block text-sm font-medium mb-1.5">
                 Country
               </label>
-              <select
-                id="entity-country"
-                value={country}
-                onChange={e => handleCountryChange(e.target.value)}
-                disabled={isLoading}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-input bg-background focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 transition-all"
-              >
-                {COUNTRIES.map(c => (
-                  <option key={c.code} value={c.code}>{c.label}</option>
-                ))}
-              </select>
+              <Select value={country} onValueChange={handleCountryChange} disabled={isLoading}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {COUNTRIES.map(c => (
+                    <SelectItem key={c.code} value={c.code}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>

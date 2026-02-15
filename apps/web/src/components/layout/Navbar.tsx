@@ -26,47 +26,6 @@ import {
 } from 'lucide-react';
 import type { Entity } from '@/lib/api/entities';
 
-/* ── Breadcrumb from pathname ── */
-function NavBreadcrumb() {
-    const pathname = usePathname();
-    const segments = pathname.split('/').filter(Boolean);
-
-    if (segments.length === 0) return null;
-
-    const crumbs = segments.map((segment, index) => {
-        const href = '/' + segments.slice(0, index + 1).join('/');
-        const label = segment
-            .split('-')
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
-        return { label, href };
-    });
-
-    return (
-        <nav aria-label="Breadcrumb" className="hidden lg:flex items-center gap-1.5 text-sm">
-            <span className="text-muted-foreground">/</span>
-            {crumbs.map((crumb, index) => {
-                const isLast = index === crumbs.length - 1;
-                return (
-                    <span key={crumb.href} className="flex items-center gap-1.5">
-                        {index > 0 && <span className="text-muted-foreground">/</span>}
-                        {isLast ? (
-                            <span className="text-foreground font-medium">{crumb.label}</span>
-                        ) : (
-                            <Link
-                                href={crumb.href}
-                                className="text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                                {crumb.label}
-                            </Link>
-                        )}
-                    </span>
-                );
-            })}
-        </nav>
-    );
-}
-
 /* ── Entity Selector ── */
 const ENTITY_COLORS = ['hsl(var(--primary))', 'var(--ak-blue)', 'var(--ak-green)', 'var(--ak-purple)', 'var(--ak-teal)'];
 
@@ -205,12 +164,6 @@ export function Navbar({ entities }: NavbarProps) {
                     selectedCode={currentCurrency}
                     onSelect={(code) => updateParam('currency', code)}
                 />
-            </div>
-
-            {/* Breadcrumb — hidden on smaller screens */}
-            <div className="hidden lg:flex items-center ml-4 shrink-0">
-                <NavBreadcrumb />
-                <span className="h-1 w-1 rounded-full bg-muted-foreground/40 mx-3" />
             </div>
 
             {/* Search bar — fills remaining space */}

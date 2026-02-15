@@ -78,11 +78,11 @@ export function TransactionsFilters({
                         >
                             <SelectTrigger
                                 id="account-filter"
-                                className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
+                                className="glass-2 rounded-lg border-ak-border focus:ring-primary"
                             >
                                 <SelectValue placeholder="All accounts" />
                             </SelectTrigger>
-                            <SelectContent className="glass-2 rounded-lg border-white/[0.09]">
+                            <SelectContent className="glass-2 rounded-lg border-ak-border-2">
                                 <SelectItem value="all">All accounts</SelectItem>
                                 {accounts.map((account) => (
                                     <SelectItem key={account.id} value={account.id}>
@@ -102,7 +102,7 @@ export function TransactionsFilters({
                             type="date"
                             value={localStartDate}
                             onChange={(e) => setLocalStartDate(e.target.value)}
-                            className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
+                            className="glass-2 rounded-lg border-ak-border focus:ring-primary"
                         />
                     </div>
 
@@ -115,14 +115,14 @@ export function TransactionsFilters({
                             type="date"
                             value={localEndDate}
                             onChange={(e) => setLocalEndDate(e.target.value)}
-                            className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]"
+                            className="glass-2 rounded-lg border-ak-border focus:ring-primary"
                         />
                     </div>
 
                     <div className="flex items-end gap-2">
                         <Button
                             onClick={handleApplyFilters}
-                            className="flex-1 rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                            className="flex-1 rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                         >
                             Apply
                         </Button>
@@ -132,7 +132,7 @@ export function TransactionsFilters({
                                 size="icon"
                                 onClick={handleClear}
                                 title="Clear filters"
-                                className="rounded-lg border-white/[0.09] hover:bg-white/[0.04]"
+                                className="rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
                             >
                                 <X className="h-4 w-4" />
                             </Button>

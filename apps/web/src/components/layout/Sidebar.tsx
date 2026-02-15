@@ -87,15 +87,21 @@ function DomainGroup({
     isExpanded,
     onToggle,
     collapsed,
+    sidebarExpanded,
 }: {
     domain: NavDomain;
     pathname: string;
     isExpanded: boolean;
     onToggle: () => void;
     collapsed?: boolean;
+    sidebarExpanded?: boolean;
 }) {
+    const [isHovering, setIsHovering] = useState(false);
     const isActive = pathname.startsWith(`/${domain.id}`) ||
         domain.items.some((item) => pathname === item.href);
+
+    // Show submenu if: clicked open OR hovering (when sidebar is expanded)
+    const showSubmenu = isExpanded || (sidebarExpanded && isHovering);
 
     // If collapsed, show just the icon
     if (collapsed) {
@@ -123,62 +129,67 @@ function DomainGroup({
     }
 
     return (
-        <Collapsible open={isExpanded} onOpenChange={onToggle}>
-            <CollapsibleTrigger asChild>
-                <button
-                    aria-label={`${domain.label} navigation`}
-                    aria-expanded={isExpanded}
-                    className={cn(
-                        "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
-                        isActive
-                            ? "text-primary bg-primary/10 font-medium"
-                            : "text-muted-foreground hover:text-foreground hover:bg-ak-bg-3"
-                    )}
-                >
-                    <span className="flex items-center min-w-0 gap-2.5">
-                        <domain.icon className="h-4 w-4 shrink-0" />
-                        <span className="truncate">{domain.label}</span>
-                    </span>
-                    {isExpanded ? (
-                        <ChevronDown className="h-3.5 w-3.5 shrink-0" />
-                    ) : (
-                        <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-                    )}
-                </button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pl-7 space-y-0.5 mt-1">
-                {domain.items.map((item) => {
-                    const isItemActive = pathname === item.href;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                "flex items-center gap-2.5 px-3 py-1.5 rounded-md text-sm transition-colors",
-                                isItemActive
-                                    ? "text-primary font-medium bg-primary/5"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-ak-bg-3"
-                            )}
-                        >
-                            <item.icon className="h-3.5 w-3.5 shrink-0" />
-                            <span className="truncate">{item.label}</span>
-                        </Link>
-                    );
-                })}
-            </CollapsibleContent>
-        </Collapsible>
+        <div
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+        >
+            <Collapsible open={showSubmenu} onOpenChange={onToggle}>
+                <CollapsibleTrigger asChild>
+                    <button
+                        aria-label={`${domain.label} navigation`}
+                        aria-expanded={showSubmenu}
+                        className={cn(
+                            "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
+                            isActive
+                                ? "text-primary bg-primary/10 font-medium"
+                                : "text-muted-foreground hover:text-foreground hover:bg-ak-bg-3"
+                        )}
+                    >
+                        <span className="flex items-center min-w-0 gap-2.5">
+                            <domain.icon className="h-4 w-4 shrink-0" />
+                            <span className="truncate">{domain.label}</span>
+                        </span>
+                        {showSubmenu ? (
+                            <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform duration-250" />
+                        ) : (
+                            <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform duration-250" />
+                        )}
+                    </button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pl-7 space-y-0.5 mt-1">
+                    {domain.items.map((item) => {
+                        const isItemActive = pathname === item.href;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={cn(
+                                    "flex items-center gap-2.5 px-3 py-1.5 rounded-md text-sm transition-colors",
+                                    isItemActive
+                                        ? "text-primary font-medium bg-primary/5"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-ak-bg-3"
+                                )}
+                            >
+                                <item.icon className="h-3.5 w-3.5 shrink-0" />
+                                <span className="truncate">{item.label}</span>
+                            </Link>
+                        );
+                    })}
+                </CollapsibleContent>
+            </Collapsible>
+        </div>
     );
 }
 
 /* ═══════════════════════════════════════════════════════════
-   Desktop Sidebar — Simple, collapsible, with sub-menus
+   Desktop Sidebar — Auto-collapse, hover to expand
    ═══════════════════════════════════════════════════════════ */
 export function Sidebar({ className, role }: SidebarProps) {
     const pathname = usePathname();
     const domains = role ? getNavigationForRole(role) : navigationDomains;
     const activeDomainId = getActiveDomainId(domains, pathname);
 
-    // Track which domains are expanded (auto-expand active domain)
+    // Track which domains are expanded via click (persists)
     const [expandedDomains, setExpandedDomains] = useState<Set<string>>(() => {
         const initial = new Set<string>();
         if (activeDomainId) initial.add(activeDomainId);
@@ -186,8 +197,14 @@ export function Sidebar({ className, role }: SidebarProps) {
         return initial;
     });
 
-    // Track sidebar collapse state
-    const [collapsed, setCollapsed] = useState(false);
+    // Track manual pin state (user clicked toggle to keep expanded)
+    const [isPinned, setIsPinned] = useState(false);
+
+    // Track hover state (auto-expand)
+    const [isHovering, setIsHovering] = useState(false);
+
+    // Sidebar is expanded if: pinned OR hovering
+    const isExpanded = isPinned || isHovering;
 
     const toggleDomain = (domainId: string) => {
         setExpandedDomains((prev) => {
@@ -200,73 +217,89 @@ export function Sidebar({ className, role }: SidebarProps) {
 
     return (
         <div
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            style={{
+                transitionDelay: isExpanded ? '100ms' : '0ms'
+            }}
             className={cn(
-                "hidden md:flex fixed inset-y-0 left-0 z-[80] h-full flex-col transition-all duration-200",
+                "hidden md:flex fixed inset-y-0 left-0 z-[80] h-full flex-col",
                 "bg-card glass-blur border-r border-ak-border",
-                collapsed ? "w-16" : "w-64",
+                "transition-all duration-200 ease-out",
+                isExpanded ? "w-64" : "w-16",
                 className
             )}
         >
-            <div className="flex-1 py-4 flex flex-col">
-                {/* Logo + Collapse button */}
-                <div className="px-3 mb-4 flex items-center justify-between">
-                    {!collapsed && (
+            {/* Logo + Pin button */}
+            <div className={cn(
+                "px-3 py-4 mb-4 flex items-center shrink-0",
+                isExpanded ? "justify-between" : "justify-center"
+            )}>
+                {isExpanded ? (
+                    <>
                         <Link href="/overview" className="text-lg font-heading text-primary font-semibold hover:opacity-80 transition-opacity">
                             Akount
                         </Link>
-                    )}
-                    {collapsed && (
-                        <Link href="/overview" className="text-lg font-heading text-primary font-semibold hover:opacity-80 transition-opacity w-full text-center">
-                            A
-                        </Link>
-                    )}
-                    <button
-                        onClick={() => setCollapsed(!collapsed)}
-                        className={cn(
-                            "shrink-0 h-7 w-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-ak-bg-3 transition-colors",
-                            collapsed && "mx-auto"
-                        )}
-                        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                    >
-                        {collapsed ? (
-                            <ChevronRightIcon className="h-3.5 w-3.5" />
-                        ) : (
-                            <ChevronLeft className="h-3.5 w-3.5" />
-                        )}
-                    </button>
-                </div>
-
-                {/* Navigation */}
-                <ScrollArea className="flex-1 px-3">
-                    <nav className="space-y-0.5" aria-label="Main navigation">
-                        {domains.map((domain, index) => (
-                            <div key={domain.id}>
-                                {index > 0 && !collapsed && (
-                                    <div className="my-2 border-t border-ak-border" />
-                                )}
-                                <DomainGroup
-                                    domain={domain}
-                                    pathname={pathname}
-                                    isExpanded={expandedDomains.has(domain.id)}
-                                    onToggle={() => toggleDomain(domain.id)}
-                                    collapsed={collapsed}
-                                />
-                            </div>
-                        ))}
-                    </nav>
-                </ScrollArea>
-
-                {/* Onboarding progress — hide when collapsed */}
-                {!collapsed && (
-                    <div className="px-3 py-3">
-                        <SidebarProgressIndicator />
-                    </div>
+                        <button
+                            onClick={() => setIsPinned(!isPinned)}
+                            className={cn(
+                                "shrink-0 h-7 w-7 rounded-lg flex items-center justify-center transition-colors",
+                                isPinned
+                                    ? "text-primary bg-primary/10 hover:bg-primary/15"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-ak-bg-3"
+                            )}
+                            aria-label={isPinned ? "Unpin sidebar" : "Pin sidebar expanded"}
+                            title={isPinned ? "Unpin sidebar" : "Pin sidebar expanded"}
+                        >
+                            {isPinned ? (
+                                <ChevronLeft className="h-3.5 w-3.5" />
+                            ) : (
+                                <ChevronRightIcon className="h-3.5 w-3.5" />
+                            )}
+                        </button>
+                    </>
+                ) : (
+                    <Link href="/overview" className="text-lg font-heading text-primary font-semibold hover:opacity-80 transition-opacity">
+                        A
+                    </Link>
                 )}
             </div>
 
+            {/* Scrollable content area */}
+            <ScrollArea className="flex-1 min-h-0 px-3">
+                <nav className="space-y-0.5" aria-label="Main navigation">
+                    {domains.map((domain, index) => (
+                        <div key={domain.id}>
+                            {index > 0 && (
+                                <div className={cn(
+                                    "my-2 border-t border-ak-border transition-all duration-200 mx-auto",
+                                    isExpanded ? "w-[calc(100%-24px)]" : "w-6"
+                                )} />
+                            )}
+                            <DomainGroup
+                                domain={domain}
+                                pathname={pathname}
+                                isExpanded={expandedDomains.has(domain.id)}
+                                onToggle={() => toggleDomain(domain.id)}
+                                collapsed={!isExpanded}
+                                sidebarExpanded={isExpanded}
+                            />
+                        </div>
+                    ))}
+                </nav>
+
+                {/* Onboarding progress — fade in when expanded, scrolls with navigation */}
+                <div className={cn(
+                    "px-3 py-3 transition-all duration-200",
+                    isExpanded ? "opacity-100 max-h-40" : "opacity-0 max-h-0 py-0"
+                )}>
+                    {isExpanded && <SidebarProgressIndicator />}
+                </div>
+            </ScrollArea>
+
             {/* Bottom: profile */}
             <div className="py-3 px-3 border-t border-ak-border">
-                <UserProfileCard collapsed={collapsed} />
+                <UserProfileCard collapsed={!isExpanded} />
             </div>
         </div>
     );

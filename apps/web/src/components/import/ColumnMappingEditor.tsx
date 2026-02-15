@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { ArrowRight } from 'lucide-react';
@@ -36,29 +36,42 @@ interface ColumnMappingEditorProps {
 
 const NONE_VALUE = '__none__';
 
-/** Auto-detect column mappings from header names */
+/** Auto-detect column mappings from header names.
+ *  Uses exact-match-first to avoid false positives
+ *  (e.g., "Shipping and Handling Amount" matching 'amount'). */
 export function detectMappings(columns: string[]): ColumnMappings {
   const lower = columns.map(c => c.toLowerCase().trim());
 
-  const find = (patterns: string[]) =>
-    columns[lower.findIndex(c => patterns.some(p => c.includes(p)))] || '';
+  // Exact match first, then substring
+  const find = (patterns: string[]) => {
+    const exactIdx = lower.findIndex(c => patterns.some(p => c === p));
+    if (exactIdx !== -1) return columns[exactIdx];
+    const subIdx = lower.findIndex(c => patterns.some(p => c.includes(p)));
+    if (subIdx !== -1) return columns[subIdx];
+    return '';
+  };
 
   const dateCol = find(['date', 'posted', 'transaction date', 'trans date', 'value date']);
-  const descCol = find(['description', 'desc', 'memo', 'narrative', 'details', 'payee', 'name']);
-  const amountCol = find(['amount', 'total']);
-  const debitCol = find(['debit', 'withdrawal', 'charge']);
-  const creditCol = find(['credit', 'deposit']);
-  const balanceCol = find(['balance', 'running balance', 'closing balance']);
+  const descCol = find(['description', 'desc', 'memo', 'narrative', 'details', 'payee', 'name', 'subject', 'item title']);
 
-  let amount = amountCol;
-  if (!amount && debitCol && creditCol) {
+  // Check for separate debit/credit columns first
+  const debitCol = find(['debit', 'withdrawal', 'charge', 'money out']);
+  const creditCol = find(['credit', 'deposit', 'money in']);
+
+  let amount = '';
+  if (debitCol && creditCol && debitCol !== creditCol) {
     amount = `${debitCol}|${creditCol}`;
+  } else {
+    // Single amount column — 'gross'/'net' for PayPal, 'amount' for others
+    amount = find(['gross', 'net', 'amount', 'total']);
   }
+
+  const balanceCol = find(['balance', 'running balance', 'closing balance']);
 
   return {
     date: dateCol || columns[0] || '',
     description: descCol || columns[1] || '',
-    amount: amount || columns[2] || '',
+    amount: amount || debitCol || creditCol || columns[2] || '',
     balance: balanceCol || undefined,
   };
 }
@@ -161,13 +174,13 @@ export function ColumnMappingEditor({
   ) => (
     <div className="space-y-2">
       <Label className="text-xs uppercase tracking-wider text-muted-foreground">
-        {label} {required && <span className="text-[#F87171]">*</span>}
+        {label} {required && <span className="text-ak-red">*</span>}
       </Label>
       <Select value={value || NONE_VALUE} onValueChange={onChange}>
-        <SelectTrigger className="glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]">
+        <SelectTrigger className="glass-2 rounded-lg border-ak-border focus:ring-primary">
           <SelectValue placeholder="Select column" />
         </SelectTrigger>
-        <SelectContent className="glass-2 rounded-lg border-white/[0.09]">
+        <SelectContent className="glass-2 rounded-lg border-ak-border-2">
           {!required && (
             <SelectItem value={NONE_VALUE}>
               <span className="text-muted-foreground">None</span>
@@ -232,10 +245,10 @@ export function ColumnMappingEditor({
             <p className="text-xs uppercase tracking-wider text-muted-foreground">
               Mapping Preview
             </p>
-            <div className="overflow-x-auto rounded-lg border border-white/[0.06]">
+            <div className="overflow-x-auto rounded-lg border border-ak-border">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/[0.06] bg-white/[0.02]">
+                  <tr className="border-b border-ak-border bg-ak-bg-3">
                     <th className="py-2 px-3 text-left text-xs uppercase tracking-wider text-muted-foreground">
                       Date
                     </th>
@@ -258,7 +271,7 @@ export function ColumnMappingEditor({
                       ? `D: ${row[debitCol] || '—'} / C: ${row[creditCol] || '—'}`
                       : row[mappings.amount] || '—';
                     return (
-                      <tr key={i} className="border-b border-white/[0.03]">
+                      <tr key={i} className="border-b border-ak-border">
                         <td className="py-2 px-3 font-mono text-xs">
                           {row[mappings.date] || '—'}
                         </td>

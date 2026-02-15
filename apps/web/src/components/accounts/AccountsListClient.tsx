@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Account } from '@/lib/api/accounts';
 import type { Entity } from '@/lib/api/entities';
-import { AccountCard } from './AccountCard';
+import { AccountRow } from './AccountRow';
 import { AccountFormSheet } from './AccountFormSheet';
 
 interface AccountsListClientProps {
@@ -22,19 +22,18 @@ export function AccountsListClient({
     const [sheetOpen, setSheetOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState<Account | undefined>();
 
-    function handleCardClick(account: Account) {
-        // Navigate to account detail page
+    function handleRowClick(account: Account) {
         router.push(`/banking/accounts/${account.id}`);
     }
 
     return (
         <div className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="space-y-2">
                 {accounts.map((account) => (
-                    <AccountCard
+                    <AccountRow
                         key={account.id}
                         account={account}
-                        onClick={() => handleCardClick(account)}
+                        onClick={() => handleRowClick(account)}
                     />
                 ))}
             </div>

@@ -54,7 +54,7 @@ export function OnboardingHeroCard() {
 
   if (isLoading) {
     return (
-      <div className="h-64 glass animate-pulse rounded-2xl" />
+      <div className="h-64 glass animate-pulse rounded-lg" />
     )
   }
 
@@ -96,7 +96,7 @@ export function OnboardingHeroCard() {
   const nextStep = steps.find(s => !s.complete)
 
   return (
-    <Card variant="glass" className="border-[rgba(245,158,11,0.2)] glow-primary">
+    <Card variant="glass" className="border-primary/20 glow-primary">
       <div className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
@@ -112,14 +112,14 @@ export function OnboardingHeroCard() {
           <div className="flex gap-2">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="p-2 hover:bg-[rgba(255,255,255,0.04)] rounded-lg transition-colors"
+              className="p-2 hover:bg-ak-bg-3 rounded-lg transition-colors"
               aria-label={isExpanded ? 'Collapse' : 'Expand'}
             >
               {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
             </button>
             <button
               onClick={handleDismiss}
-              className="p-2 hover:bg-[rgba(255,255,255,0.04)] rounded-lg transition-colors"
+              className="p-2 hover:bg-ak-bg-3 rounded-lg transition-colors"
               aria-label="Dismiss"
             >
               <X className="h-5 w-5" />
@@ -137,8 +137,8 @@ export function OnboardingHeroCard() {
                   <div className={`
                     h-6 w-6 rounded-full flex items-center justify-center text-sm font-medium
                     ${step.complete
-                      ? 'bg-[#34D399] text-white'
-                      : 'bg-[rgba(255,255,255,0.06)] text-muted-foreground'}
+                      ? 'bg-ak-green text-white'
+                      : 'glass text-muted-foreground'}
                   `}>
                     {step.complete ? '\u2713' : '\u25CB'}
                   </div>
@@ -148,7 +148,7 @@ export function OnboardingHeroCard() {
                   {!step.complete && step.action && (
                     <button
                       onClick={step.action}
-                      className="ml-auto text-xs text-primary hover:text-[#FBBF24] font-medium transition-colors"
+                      className="ml-auto text-xs text-primary hover:text-ak-pri-hover font-medium transition-colors"
                     >
                       Start &rarr;
                     </button>
@@ -162,14 +162,14 @@ export function OnboardingHeroCard() {
               {nextStep && nextStep.action && (
                 <button
                   onClick={nextStep.action}
-                  className="flex-1 px-6 py-3 text-sm font-medium text-white bg-primary rounded-lg hover:bg-[#FBBF24] transition-all glow-primary"
+                  className="flex-1 px-6 py-3 text-sm font-medium text-white bg-primary rounded-lg hover:bg-ak-pri-hover transition-all glow-primary"
                 >
                   Continue Setup &rarr;
                 </button>
               )}
               <button
                 onClick={handleDismiss}
-                className="px-6 py-3 text-sm font-medium text-foreground glass rounded-lg hover:bg-[rgba(255,255,255,0.04)] transition-all"
+                className="px-6 py-3 text-sm font-medium text-foreground glass rounded-lg hover:bg-ak-bg-3 transition-all"
               >
                 Skip for now
               </button>

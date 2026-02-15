@@ -1,153 +1,137 @@
 'use client'
 
-import { Card } from '@/components/ui/card'
-import { CircularProgress } from '@/components/ui/circular-progress'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
 import {
   useOnboardingProgress,
   useDismissCard,
   shouldShowOnboardingCard,
 } from '@/lib/api/onboarding'
-import { X, CheckCircle2, Circle } from 'lucide-react'
+import { X } from 'lucide-react'
 
 /**
- * Onboarding Hero Card
+ * Onboarding Unlock Card
  *
- * Large dashboard card showing onboarding progress with next steps.
- * Dismissible for 24 hours. Shared state with SidebarProgressIndicator via React Query.
+ * Compact dashboard card that frames onboarding steps as capabilities
+ * Akount unlocks — not tasks to complete. Zen, warm, non-intrusive.
  *
- * Design: Glass morphism, amber orange primary, circular progress ring
+ * "Akount gets smarter with each step you take."
+ *
+ * Design: Glass + subtle gradient accent, Financial Clarity aesthetic.
+ * Dismissible for 24h. Shared state with SidebarProgressIndicator via React Query.
  */
+
+const CAPABILITIES = [
+  {
+    key: 'basicInfoComplete',
+    unlock: 'Personalized insights',
+    nudge: 'Tell Akount about yourself so it can tailor your experience',
+  },
+  {
+    key: 'entitySetupComplete',
+    unlock: 'Multi-entity tracking',
+    nudge: 'Set up your business entities for organized financials',
+  },
+  {
+    key: 'businessDetailsComplete',
+    unlock: 'Tax readiness',
+    nudge: 'Add business details so Akount can prepare you for tax season',
+  },
+  {
+    key: 'bankConnectionComplete',
+    unlock: 'Live cash flow',
+    nudge: 'Connect your bank for real-time cash position tracking',
+  },
+  {
+    key: 'goalsSetupComplete',
+    unlock: 'Smart forecasting',
+    nudge: 'Set financial goals and Akount will track your progress',
+  },
+] as const
+
 export function OnboardingHeroCard() {
   const { data: progress, isLoading } = useOnboardingProgress()
   const dismissCard = useDismissCard()
 
-  // Don't show if loading, 100% complete, or dismissed recently
   if (isLoading || !shouldShowOnboardingCard(progress)) {
     return null
   }
 
-  const steps = [
-    {
-      id: 'basic_info',
-      label: 'Basic Information',
-      completed: progress?.basicInfoComplete,
-      description: 'Name, phone, timezone',
-    },
-    {
-      id: 'entity_setup',
-      label: 'Entity Setup',
-      completed: progress?.entitySetupComplete,
-      description: 'Business details, country, currency',
-    },
-    {
-      id: 'business_details',
-      label: 'Business Details',
-      completed: progress?.businessDetailsComplete,
-      description: 'Industry, team size, fiscal year',
-    },
-    {
-      id: 'bank_connection',
-      label: 'Bank Connection',
-      completed: progress?.bankConnectionComplete,
-      description: 'Connect your bank account',
-    },
-    {
-      id: 'goals_setup',
-      label: 'Goals Setup',
-      completed: progress?.goalsSetupComplete,
-      description: 'Set your financial goals',
-    },
-  ]
-
-  const nextStep = steps.find((s) => !s.completed)
+  const completed = CAPABILITIES.filter(
+    (c) => progress?.[c.key as keyof typeof progress]
+  ).length
+  const nextCapability = CAPABILITIES.find(
+    (c) => !progress?.[c.key as keyof typeof progress]
+  )
 
   return (
-    <Card variant="glass" className="p-8 relative overflow-hidden">
-      {/* Dismiss button */}
-      <button
-        onClick={() => dismissCard.mutate()}
-        className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
-        aria-label="Dismiss for 24 hours"
-      >
-        <X className="w-5 h-5" />
-      </button>
+    <div className="relative glass rounded-lg overflow-hidden fi fi1">
+      {/* Subtle gradient accent */}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.04] via-transparent to-ak-purple/[0.03] pointer-events-none" />
 
-      <div className="flex flex-col md:flex-row items-start md:items-center gap-8">
-        {/* Progress ring */}
-        <div className="flex-shrink-0">
-          <CircularProgress
-            percentage={progress?.completionPercentage ?? 0}
-            size={140}
-            strokeWidth={10}
-            color="primary"
-          />
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 space-y-4">
-          {/* Header */}
-          <div>
-            <h2 className="text-2xl font-heading font-normal text-foreground">
-              {progress?.completionPercentage === 100
-                ? "You're all set! 🎉"
-                : 'Complete your setup'}
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              {progress?.completionPercentage === 100
-                ? 'Your account is fully configured and ready to go'
-                : `${steps.filter((s) => s.completed).length} of ${steps.length} steps complete`}
-            </p>
-          </div>
-
-          {/* Next step highlight */}
-          {nextStep && (
-            <div className="glass-2 border border-[rgba(245,158,11,0.2)] rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-[rgba(245,158,11,0.14)] flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg className="w-4 h-4 text-[#F59E0B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">Next: {nextStep.label}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{nextStep.description}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Steps checklist (compact) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {steps.map((step) => (
+      <div className="relative px-5 py-4 flex items-center gap-5">
+        {/* Progress dots + count */}
+        <div className="flex flex-col items-center gap-2 shrink-0">
+          <span className="text-xl font-mono text-primary tabular-nums leading-none">
+            {progress?.completionPercentage ?? 0}
+            <span className="text-xs text-muted-foreground">%</span>
+          </span>
+          <div className="flex gap-1">
+            {CAPABILITIES.map((cap, i) => (
               <div
-                key={step.id}
-                className="flex items-center gap-2 text-sm"
-              >
-                {step.completed ? (
-                  <CheckCircle2 className="w-4 h-4 text-[#34D399] flex-shrink-0" />
-                ) : (
-                  <Circle className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                key={cap.key}
+                className={cn(
+                  'h-1.5 w-1.5 rounded-full transition-all duration-500',
+                  i < completed
+                    ? 'bg-primary shadow-[0_0_4px_var(--ak-pri-glow)]'
+                    : 'bg-[var(--ak-glass-3)]'
                 )}
-                <span className={step.completed ? 'text-muted-foreground' : 'text-foreground'}>
-                  {step.label}
-                </span>
-              </div>
+              />
             ))}
           </div>
+        </div>
 
-          {/* CTA button */}
-          {nextStep && (
-            <div className="pt-2">
-              <a
-                href="/onboarding"
-                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-black bg-primary rounded-lg hover:bg-[#FBBF24] transition-all glow-primary"
-              >
-                Continue Setup →
-              </a>
-            </div>
+        {/* Divider */}
+        <div className="w-px h-10 bg-[var(--ak-border)] shrink-0" />
+
+        {/* Message + next unlock */}
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-foreground/90 font-heading italic leading-snug">
+            Akount gets smarter with each step you take.
+          </p>
+          {nextCapability && (
+            <p className="text-xs text-muted-foreground mt-1 truncate">
+              Next:{' '}
+              <span className="text-primary font-medium">
+                {nextCapability.unlock}
+              </span>
+              {' \u2014 '}
+              <span className="text-[var(--ak-t3)]">
+                {nextCapability.nudge}
+              </span>
+            </p>
           )}
         </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 shrink-0">
+          {nextCapability && (
+            <Link
+              href="/overview"
+              className="px-4 py-1.5 text-xs font-medium text-primary bg-ak-pri-dim rounded-lg hover:bg-primary hover:text-black transition-all"
+            >
+              Enable
+            </Link>
+          )}
+          <button
+            onClick={() => dismissCard.mutate()}
+            className="p-1.5 text-[var(--ak-t4)] hover:text-muted-foreground rounded-md transition-colors"
+            aria-label="Dismiss"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
-    </Card>
+    </div>
   )
 }

@@ -65,10 +65,10 @@ export function AccountCard({ account, onClick }: AccountCardProps): React.React
             </CardHeader>
             <CardContent className="space-y-3">
                 <div className="flex items-center gap-2">
-                    <Badge className="text-xs bg-[rgba(255,255,255,0.04)] text-muted-foreground border-[rgba(255,255,255,0.06)]">
+                    <Badge className="text-xs glass text-muted-foreground border-ak-border">
                         {accountTypeLabels[account.type]}
                     </Badge>
-                    <Badge className="text-xs bg-[rgba(255,255,255,0.04)] text-foreground border-[rgba(255,255,255,0.06)] font-mono">
+                    <Badge className="text-xs glass text-foreground border-ak-border font-mono">
                         {account.currency}
                     </Badge>
                 </div>
@@ -77,14 +77,14 @@ export function AccountCard({ account, onClick }: AccountCardProps): React.React
                     <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground mb-1">Current Balance</p>
                     <p
                         className={`text-2xl font-bold font-mono ${
-                            isNegative ? "text-[#F87171]" : ""
+                            isNegative ? "text-destructive" : ""
                         }`}
                     >
                         {formatCurrency(account.currentBalance, account.currency)}
                     </p>
                 </div>
 
-                <div className="pt-2 border-t border-[rgba(255,255,255,0.06)]">
+                <div className="pt-2 border-t border-ak-border">
                     <p className="text-xs text-muted-foreground">
                         {account.entity.name} &bull; {account.entity.type}
                     </p>

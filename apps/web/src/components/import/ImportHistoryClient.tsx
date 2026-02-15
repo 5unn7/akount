@@ -55,31 +55,31 @@ const STATUS_CONFIG: Record<string, {
 }> = {
     PROCESSED: {
         icon: CheckCircle2,
-        style: 'bg-[#34D399]/10 text-[#34D399] border-[#34D399]/20',
+        style: 'bg-ak-green/10 text-ak-green border-ak-green/20',
         label: 'Complete',
     },
     PROCESSING: {
         icon: Loader2,
-        style: 'bg-[#60A5FA]/10 text-[#60A5FA] border-[#60A5FA]/20',
+        style: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
         label: 'Processing',
     },
     PENDING: {
         icon: Clock,
-        style: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
+        style: 'bg-primary/10 text-primary border-primary/20',
         label: 'Pending',
     },
     FAILED: {
         icon: AlertCircle,
-        style: 'bg-[#F87171]/10 text-[#F87171] border-[#F87171]/20',
+        style: 'bg-ak-red/10 text-ak-red border-ak-red/20',
         label: 'Failed',
     },
 };
 
 const SOURCE_BADGE_STYLES: Record<string, string> = {
-    CSV: 'bg-[#60A5FA]/10 text-[#60A5FA] border-[#60A5FA]/20',
-    PDF: 'bg-[#A78BFA]/10 text-[#A78BFA] border-[#A78BFA]/20',
-    BANK_FEED: 'bg-[#34D399]/10 text-[#34D399] border-[#34D399]/20',
-    API: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
+    CSV: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
+    PDF: 'bg-ak-purple/10 text-ak-purple border-ak-purple/20',
+    BANK_FEED: 'bg-ak-green/10 text-ak-green border-ak-green/20',
+    API: 'bg-primary/10 text-primary border-primary/20',
 };
 
 export function ImportHistoryClient({
@@ -151,10 +151,10 @@ export function ImportHistoryClient({
                                 value={statusFilter || 'all'}
                                 onValueChange={(v) => handleFilterChange('status', v)}
                             >
-                                <SelectTrigger className="w-[150px] glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]">
+                                <SelectTrigger className="w-[150px] glass-2 rounded-lg border-ak-border focus:ring-primary">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="glass-2 rounded-lg border-white/[0.09]">
+                                <SelectContent className="glass-2 rounded-lg border-ak-border-2">
                                     <SelectItem value="all">All</SelectItem>
                                     <SelectItem value="PROCESSED">Complete</SelectItem>
                                     <SelectItem value="PROCESSING">Processing</SelectItem>
@@ -171,10 +171,10 @@ export function ImportHistoryClient({
                                 value={sourceTypeFilter || 'all'}
                                 onValueChange={(v) => handleFilterChange('sourceType', v)}
                             >
-                                <SelectTrigger className="w-[150px] glass-2 rounded-lg border-white/[0.06] focus:ring-[#F59E0B]">
+                                <SelectTrigger className="w-[150px] glass-2 rounded-lg border-ak-border focus:ring-primary">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="glass-2 rounded-lg border-white/[0.09]">
+                                <SelectContent className="glass-2 rounded-lg border-ak-border-2">
                                     <SelectItem value="all">All</SelectItem>
                                     <SelectItem value="CSV">CSV</SelectItem>
                                     <SelectItem value="PDF">PDF</SelectItem>
@@ -196,7 +196,7 @@ export function ImportHistoryClient({
                     <CardContent className="p-0">
                         <Table>
                             <TableHeader>
-                                <TableRow className="border-b border-white/[0.06] hover:bg-transparent">
+                                <TableRow className="border-b border-ak-border hover:bg-transparent">
                                     <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">File</TableHead>
                                     <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Source</TableHead>
                                     <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Date</TableHead>
@@ -215,7 +215,7 @@ export function ImportHistoryClient({
                                     return (
                                         <TableRow
                                             key={batch.id}
-                                            className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors cursor-pointer"
+                                            className="border-b border-ak-border hover:bg-ak-bg-3 transition-colors cursor-pointer"
                                             onClick={() => router.push(`/banking/imports/${batch.id}`)}
                                         >
                                             <TableCell>
@@ -248,13 +248,13 @@ export function ImportHistoryClient({
                                             <TableCell className="text-right">
                                                 <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground">
                                                     {batch.processedRows > 0 && (
-                                                        <span className="text-[#34D399]">{batch.processedRows} ok</span>
+                                                        <span className="text-ak-green">{batch.processedRows} ok</span>
                                                     )}
                                                     {batch.duplicateRows > 0 && (
-                                                        <span className="text-[#F59E0B]">{batch.duplicateRows} dup</span>
+                                                        <span className="text-primary">{batch.duplicateRows} dup</span>
                                                     )}
                                                     {batch.errorRows > 0 && (
-                                                        <span className="text-[#F87171]">{batch.errorRows} err</span>
+                                                        <span className="text-ak-red">{batch.errorRows} err</span>
                                                     )}
                                                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
                                                 </div>
@@ -271,7 +271,7 @@ export function ImportHistoryClient({
                             <Button
                                 variant="outline"
                                 size="sm"
-                                className="rounded-lg border-white/[0.09] hover:bg-white/[0.04]"
+                                className="rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
                                 onClick={handleLoadMore}
                                 disabled={isLoadingMore}
                             >
@@ -288,8 +288,8 @@ export function ImportHistoryClient({
             ) : (
                 <Card className="glass rounded-[14px]">
                     <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="p-4 rounded-full bg-[#F59E0B]/10 mb-4">
-                            <FileText className="h-8 w-8 text-[#F59E0B]" />
+                        <div className="p-4 rounded-full bg-primary/10 mb-4">
+                            <FileText className="h-8 w-8 text-primary" />
                         </div>
                         <p className="text-lg font-heading font-normal mb-2">
                             No imports yet
@@ -300,7 +300,7 @@ export function ImportHistoryClient({
                                 : 'Upload a bank statement to get started'}
                         </p>
                         <Button
-                            className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                            className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                             asChild
                         >
                             <Link href="/banking/import">

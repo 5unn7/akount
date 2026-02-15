@@ -22,11 +22,11 @@ interface TransactionsTableProps {
 }
 
 const SOURCE_BADGE_STYLES: Record<string, string> = {
-    MANUAL: 'bg-white/[0.04] text-muted-foreground border-white/[0.06]',
-    CSV: 'bg-[#60A5FA]/10 text-[#60A5FA] border-[#60A5FA]/20',
-    PDF: 'bg-[#A78BFA]/10 text-[#A78BFA] border-[#A78BFA]/20',
-    BANK_FEED: 'bg-[#34D399]/10 text-[#34D399] border-[#34D399]/20',
-    API: 'bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20',
+    MANUAL: 'bg-ak-bg-3 text-muted-foreground border-ak-border',
+    CSV: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
+    PDF: 'bg-secondary/10 text-secondary border-secondary/20',
+    BANK_FEED: 'bg-ak-green/10 text-ak-green border-ak-green/20',
+    API: 'bg-primary/10 text-primary border-primary/20',
 };
 
 function PostingStatusBadge({
@@ -38,7 +38,7 @@ function PostingStatusBadge({
         return (
             <Link
                 href={`/accounting/journal-entries?status=POSTED`}
-                className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/25 transition-colors"
+                className="inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/25 transition-colors"
                 onClick={(e) => e.stopPropagation()}
             >
                 <BookOpen className="h-3 w-3" />
@@ -48,7 +48,7 @@ function PostingStatusBadge({
     }
 
     return (
-        <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20">
+        <span className="inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20">
             Unposted
         </span>
     );
@@ -89,7 +89,7 @@ export function TransactionsTable({
             <CardContent className="p-0">
                 <Table>
                     <TableHeader>
-                        <TableRow className="border-b border-white/[0.06] hover:bg-transparent">
+                        <TableRow className="border-b border-ak-border hover:bg-transparent">
                             {selectable && (
                                 <TableHead className="w-10 pl-4">
                                     <input
@@ -97,29 +97,29 @@ export function TransactionsTable({
                                         checked={allSelected}
                                         ref={(el) => { if (el) el.indeterminate = !!someSelected; }}
                                         onChange={toggleAll}
-                                        className="h-4 w-4 rounded border-white/[0.13] bg-transparent accent-[#F59E0B] cursor-pointer"
+                                        className="h-4 w-4 rounded border-ak-border-3 bg-transparent accent-primary cursor-pointer"
                                     />
                                 </TableHead>
                             )}
-                            <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
                                 Date
                             </TableHead>
-                            <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
                                 Description
                             </TableHead>
-                            <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
                                 Account
                             </TableHead>
-                            <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
                                 Category
                             </TableHead>
-                            <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
                                 Source
                             </TableHead>
-                            <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
                                 GL Status
                             </TableHead>
-                            <TableHead className="text-right text-xs uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">
                                 Amount
                             </TableHead>
                         </TableRow>
@@ -134,8 +134,8 @@ export function TransactionsTable({
                             return (
                                 <TableRow
                                     key={transaction.id}
-                                    className={`border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors ${
-                                        isSelected ? 'bg-[#F59E0B]/[0.04]' : ''
+                                    className={`border-b border-ak-border hover:bg-ak-bg-3/50 transition-colors ${
+                                        isSelected ? 'bg-ak-pri-dim' : ''
                                     }`}
                                 >
                                     {selectable && (
@@ -144,7 +144,7 @@ export function TransactionsTable({
                                                 type="checkbox"
                                                 checked={!!isSelected}
                                                 onChange={() => toggleOne(transaction.id)}
-                                                className="h-4 w-4 rounded border-white/[0.13] bg-transparent accent-[#F59E0B] cursor-pointer"
+                                                className="h-4 w-4 rounded border-ak-border-3 bg-transparent accent-primary cursor-pointer"
                                             />
                                         </TableCell>
                                     )}
@@ -179,7 +179,7 @@ export function TransactionsTable({
                                     </TableCell>
                                     <TableCell>
                                         {transaction.category ? (
-                                            <Badge className="text-xs bg-white/[0.04] text-foreground border-white/[0.06]">
+                                            <Badge className="text-xs bg-ak-bg-3 text-foreground border-ak-border">
                                                 {transaction.category.name}
                                             </Badge>
                                         ) : (
@@ -204,7 +204,7 @@ export function TransactionsTable({
                                                     e.stopPropagation();
                                                     onPostTransaction(transaction.id);
                                                 }}
-                                                className="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20 hover:bg-[#F59E0B]/15 hover:text-[#F59E0B] hover:border-[#F59E0B]/20 transition-colors cursor-pointer"
+                                                className="inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20 hover:bg-primary/15 hover:text-primary hover:border-primary/20 transition-colors cursor-pointer"
                                             >
                                                 Unposted
                                             </button>
@@ -218,12 +218,12 @@ export function TransactionsTable({
                                         <div className="flex items-center justify-end gap-2">
                                             <Icon
                                                 className={`h-4 w-4 ${
-                                                    isIncome ? 'text-[#34D399]' : 'text-[#F87171]'
+                                                    isIncome ? 'text-ak-green' : 'text-ak-red'
                                                 }`}
                                             />
                                             <span
                                                 className={`font-mono font-medium ${
-                                                    isIncome ? 'text-[#34D399]' : 'text-[#F87171]'
+                                                    isIncome ? 'text-ak-green' : 'text-ak-red'
                                                 }`}
                                             >
                                                 {formatAmount(

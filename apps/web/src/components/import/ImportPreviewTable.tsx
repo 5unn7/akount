@@ -9,6 +9,18 @@ import { AlertTriangle, Tag, CheckCircle } from 'lucide-react';
  * Financial Clarity: glass cards, font-mono amounts, dim badges, dark table
  */
 
+interface ColumnMapping {
+  date: string;
+  description: string;
+  amount: string;
+  balance?: string;
+}
+
+interface PreviewData {
+  rows: unknown[];
+  headers: string[];
+}
+
 interface Transaction {
   tempId: string;
   date: string;
@@ -36,8 +48,8 @@ interface ImportPreviewTableProps {
   };
   sourceType: 'CSV' | 'PDF' | 'OFX' | 'XLSX';
   columns?: string[];
-  columnMappings?: any;
-  preview?: any;
+  columnMappings?: ColumnMapping;
+  preview?: PreviewData;
 }
 
 export function ImportPreviewTable({
@@ -92,11 +104,11 @@ export function ImportPreviewTable({
             </div>
             <div className="space-y-1">
               <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground">Auto-Categorized</p>
-              <p className="text-2xl font-bold font-mono text-[#34D399]">{summary.categorized}</p>
+              <p className="text-2xl font-bold font-mono text-ak-green">{summary.categorized}</p>
             </div>
             <div className="space-y-1">
               <p className="text-[11px] uppercase tracking-[0.05em] text-muted-foreground">Need Review</p>
-              <p className="text-2xl font-bold font-mono text-[#60A5FA]">{summary.needsReview}</p>
+              <p className="text-2xl font-bold font-mono text-ak-blue">{summary.needsReview}</p>
             </div>
           </div>
         </CardContent>
@@ -148,7 +160,7 @@ export function ImportPreviewTable({
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[rgba(255,255,255,0.06)]">
+                <tr className="border-b border-ak-border">
                   <th className="text-left py-3 px-4 text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                     Date
                   </th>
@@ -170,8 +182,8 @@ export function ImportPreviewTable({
                 {previewTransactions.map((transaction) => (
                   <tr
                     key={transaction.tempId}
-                    className={`border-b border-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.025)] transition-colors ${
-                      transaction.isDuplicate ? 'bg-[rgba(245,158,11,0.04)]' : ''
+                    className={`border-b border-ak-border hover:bg-ak-bg-3 transition-colors ${
+                      transaction.isDuplicate ? 'bg-ak-pri-dim' : ''
                     }`}
                   >
                     {/* Date */}
@@ -188,7 +200,7 @@ export function ImportPreviewTable({
 
                     {/* Amount */}
                     <td className="py-3 px-4 text-sm text-right">
-                      <span className={`font-mono font-medium ${transaction.amount < 0 ? 'text-[#F87171]' : 'text-[#34D399]'}`}>
+                      <span className={`font-mono font-medium ${transaction.amount < 0 ? 'text-ak-red' : 'text-ak-green'}`}>
                         {formatAmount(transaction.amount)}
                       </span>
                     </td>
@@ -205,7 +217,7 @@ export function ImportPreviewTable({
                             {transaction.suggestedCategory.name}
                           </span>
                           {transaction.suggestedCategory.confidence >= 85 && (
-                            <CheckCircle className="h-3 w-3 text-[#34D399]" />
+                            <CheckCircle className="h-3 w-3 text-ak-green" />
                           )}
                         </div>
                       ) : (

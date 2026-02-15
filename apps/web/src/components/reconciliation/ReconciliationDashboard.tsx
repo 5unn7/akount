@@ -13,7 +13,6 @@ import {
     matchTransactions,
     fetchAccountTransactions,
 } from '@/app/(dashboard)/banking/reconciliation/actions';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -136,47 +135,46 @@ export function ReconciliationDashboard({
     const selectedAccount = accounts.find((a) => a.id === selectedAccountId);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-5">
             {/* Account selector */}
-            <Card>
-                <CardContent className="pt-6">
-                    <div className="flex items-center gap-4">
-                        <label className="text-sm font-medium whitespace-nowrap">
-                            Select Account
-                        </label>
-                        <Select value={selectedAccountId} onValueChange={handleAccountChange}>
-                            <SelectTrigger className="w-[300px]">
-                                <SelectValue placeholder="Choose an account to reconcile" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {accounts.map((account) => (
-                                    <SelectItem key={account.id} value={account.id}>
-                                        {account.name} ({account.currency})
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        {selectedAccountId && (
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleAccountChange(selectedAccountId)}
-                                disabled={isPending}
-                            >
-                                <RefreshCw className={`h-4 w-4 mr-2 ${isPending ? 'animate-spin' : ''}`} />
-                                Refresh
-                            </Button>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
+            <div className="glass rounded-[14px] p-5">
+                <div className="flex items-center gap-4">
+                    <label className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium whitespace-nowrap">
+                        Select Account
+                    </label>
+                    <Select value={selectedAccountId} onValueChange={handleAccountChange}>
+                        <SelectTrigger className="w-[300px] rounded-lg border-ak-border-2 glass">
+                            <SelectValue placeholder="Choose an account to reconcile" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {accounts.map((account) => (
+                                <SelectItem key={account.id} value={account.id}>
+                                    {account.name} ({account.currency})
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {selectedAccountId && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
+                            onClick={() => handleAccountChange(selectedAccountId)}
+                            disabled={isPending}
+                        >
+                            <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${isPending ? 'animate-spin' : ''}`} />
+                            Refresh
+                        </Button>
+                    )}
+                </div>
+            </div>
 
             {error && (
-                <div className="p-4 bg-destructive/10 text-destructive rounded-lg text-sm">
+                <div className="p-4 bg-ak-red-dim text-ak-red rounded-xl text-sm border border-ak-red/20">
                     {error}
                     <button
                         onClick={() => setError(null)}
-                        className="ml-2 underline"
+                        className="ml-2 underline hover:no-underline"
                     >
                         Dismiss
                     </button>
@@ -192,7 +190,7 @@ export function ReconciliationDashboard({
 
             {/* Status cards */}
             {status && !isPending && (
-                <div className="grid gap-4 md:grid-cols-4">
+                <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
                     <StatusCard
                         title="Total Bank Feed"
                         value={status.totalBankFeed}
@@ -225,68 +223,81 @@ export function ReconciliationDashboard({
 
             {/* Transactions table */}
             {transactions.length > 0 && !isPending && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>
+                <div className="glass rounded-[14px] overflow-hidden">
+                    <div className="px-5 py-4 border-b border-ak-border">
+                        <h3 className="text-sm font-heading font-normal">
                             Transactions — {selectedAccount?.name}
-                        </CardTitle>
-                        <CardDescription>
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">
                             Click &quot;Find Match&quot; on unmatched transactions to see suggested matches
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[100px]">Date</TableHead>
-                                    <TableHead>Description</TableHead>
-                                    <TableHead className="text-right w-[120px]">Amount</TableHead>
-                                    <TableHead className="w-[120px]">Status</TableHead>
-                                    <TableHead className="w-[120px] text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {transactions.map((txn) => (
-                                    <TransactionRow
-                                        key={txn.id}
-                                        transaction={txn}
-                                        isExpanded={expandedTxnId === txn.id}
-                                        suggestions={suggestions[txn.id]}
-                                        isLoadingSuggestions={loadingSuggestions === txn.id}
-                                        matchingTxn={matchingTxn}
-                                        onGetSuggestions={() => handleGetSuggestions(txn.id)}
-                                        onMatch={(matchId) => handleMatch(txn.id, matchId)}
-                                    />
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                        </p>
+                    </div>
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="border-b border-ak-border hover:bg-transparent">
+                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground w-[100px]">
+                                    Date
+                                </TableHead>
+                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                    Description
+                                </TableHead>
+                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                    Amount
+                                </TableHead>
+                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                    Status
+                                </TableHead>
+                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                    Actions
+                                </TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {transactions.map((txn) => (
+                                <TransactionRow
+                                    key={txn.id}
+                                    transaction={txn}
+                                    isExpanded={expandedTxnId === txn.id}
+                                    suggestions={suggestions[txn.id]}
+                                    isLoadingSuggestions={loadingSuggestions === txn.id}
+                                    matchingTxn={matchingTxn}
+                                    onGetSuggestions={() => handleGetSuggestions(txn.id)}
+                                    onMatch={(matchId) => handleMatch(txn.id, matchId)}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
             )}
 
-            {/* Empty state */}
+            {/* Empty state — no account selected */}
             {!selectedAccountId && !isPending && (
-                <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                        <LinkIcon className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                        <p className="text-muted-foreground mb-2">Select an account to start reconciling</p>
-                        <p className="text-sm text-muted-foreground">
-                            Choose a bank account above to view its reconciliation status and match transactions
-                        </p>
-                    </CardContent>
-                </Card>
+                <div className="glass rounded-[14px] flex flex-col items-center justify-center py-16 text-center">
+                    <div className="p-4 rounded-full bg-ak-pri-dim mb-4">
+                        <LinkIcon className="h-8 w-8 text-primary" />
+                    </div>
+                    <p className="text-lg font-heading font-normal mb-2">
+                        Select an account to start reconciling
+                    </p>
+                    <p className="text-sm text-muted-foreground max-w-sm">
+                        Choose a bank account above to view its reconciliation status and match transactions
+                    </p>
+                </div>
             )}
 
+            {/* Empty state — no transactions */}
             {selectedAccountId && transactions.length === 0 && !isPending && (
-                <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                        <CheckCircle2 className="h-12 w-12 text-muted-foreground/50 mb-4" />
-                        <p className="text-muted-foreground mb-2">No transactions found</p>
-                        <p className="text-sm text-muted-foreground">
-                            Import bank statements first to start reconciling
-                        </p>
-                    </CardContent>
-                </Card>
+                <div className="glass rounded-[14px] flex flex-col items-center justify-center py-16 text-center">
+                    <div className="p-4 rounded-full bg-ak-green-dim mb-4">
+                        <CheckCircle2 className="h-8 w-8 text-ak-green" />
+                    </div>
+                    <p className="text-lg font-heading font-normal mb-2">
+                        No transactions found
+                    </p>
+                    <p className="text-sm text-muted-foreground max-w-sm">
+                        Import bank statements first to start reconciling
+                    </p>
+                </div>
             )}
         </div>
     );
@@ -305,21 +316,21 @@ function StatusCard({
 }) {
     const valueColor =
         variant === 'success'
-            ? 'text-green-600'
+            ? 'text-ak-green'
             : variant === 'warning'
-              ? 'text-yellow-600'
+              ? 'text-primary'
               : '';
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className={`text-2xl font-bold ${valueColor}`}>{value}</div>
-                <p className="text-xs text-muted-foreground">{description}</p>
-            </CardContent>
-        </Card>
+        <div className="glass rounded-xl px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px">
+            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
+                {title}
+            </p>
+            <p className={`text-lg font-mono font-semibold leading-none ${valueColor}`}>
+                {value}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">{description}</p>
+        </div>
     );
 }
 
@@ -344,11 +355,11 @@ function TransactionRow({
 
     return (
         <>
-            <TableRow className={isExpanded ? 'border-b-0' : ''}>
-                <TableCell className="text-sm">
+            <TableRow className={`border-b border-ak-border hover:bg-ak-bg-3/50 transition-colors ${isExpanded ? 'border-b-0' : ''}`}>
+                <TableCell className="text-sm font-mono text-muted-foreground">
                     {formatDate(transaction.date)}
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium text-sm">
                     {transaction.description}
                 </TableCell>
                 <TableCell className="text-right font-mono text-sm">
@@ -356,15 +367,15 @@ function TransactionRow({
                 </TableCell>
                 <TableCell>
                     {isMatched ? (
-                        <Badge variant="default" className="gap-1">
+                        <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-ak-green-dim text-ak-green border-ak-green/20">
                             <CheckCircle2 className="h-3 w-3" />
                             Matched
-                        </Badge>
+                        </span>
                     ) : (
-                        <Badge variant="outline" className="gap-1 text-yellow-600 border-yellow-300">
+                        <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-ak-pri-dim text-primary border-primary/20">
                             <XCircle className="h-3 w-3" />
                             Unmatched
-                        </Badge>
+                        </span>
                     )}
                 </TableCell>
                 <TableCell className="text-right">
@@ -372,6 +383,7 @@ function TransactionRow({
                         <Button
                             variant="outline"
                             size="sm"
+                            className="rounded-lg border-ak-border-2 hover:bg-ak-bg-3 h-7 text-xs"
                             onClick={onGetSuggestions}
                             disabled={isLoadingSuggestions}
                         >
@@ -389,7 +401,7 @@ function TransactionRow({
             {/* Suggestions panel */}
             {isExpanded && (
                 <TableRow>
-                    <TableCell colSpan={5} className="bg-muted/30 p-4">
+                    <TableCell colSpan={5} className="bg-ak-bg-3/30 p-4">
                         {isLoadingSuggestions ? (
                             <div className="flex items-center justify-center py-4">
                                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -397,7 +409,7 @@ function TransactionRow({
                             </div>
                         ) : suggestions && suggestions.length > 0 ? (
                             <div className="space-y-2">
-                                <p className="text-sm font-medium mb-3">
+                                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">
                                     Suggested Matches ({suggestions.length})
                                 </p>
                                 {suggestions.map((suggestion) => {
@@ -405,7 +417,7 @@ function TransactionRow({
                                     return (
                                         <div
                                             key={suggestion.transactionId}
-                                            className="flex items-center justify-between p-3 bg-background rounded-lg border"
+                                            className="flex items-center justify-between p-3 glass rounded-xl"
                                         >
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2">
@@ -414,7 +426,7 @@ function TransactionRow({
                                                     </span>
                                                     <Badge
                                                         variant="outline"
-                                                        className={`text-xs ${confidence.color}`}
+                                                        className={`text-[10px] ${confidence.color}`}
                                                     >
                                                         {confidence.label} ({formatConfidence(suggestion.confidence)})
                                                     </Badge>
@@ -430,11 +442,11 @@ function TransactionRow({
                                                     <span>{suggestion.transaction.account.name}</span>
                                                 </div>
                                                 {suggestion.reasons.length > 0 && (
-                                                    <div className="flex gap-1 mt-1">
+                                                    <div className="flex gap-1 mt-1.5">
                                                         {suggestion.reasons.map((reason, i) => (
                                                             <span
                                                                 key={i}
-                                                                className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded"
+                                                                className="text-[10px] text-muted-foreground bg-ak-bg-3 border border-ak-border px-1.5 py-0.5 rounded"
                                                             >
                                                                 {reason}
                                                             </span>
@@ -444,9 +456,9 @@ function TransactionRow({
                                             </div>
                                             <Button
                                                 size="sm"
+                                                className="ml-4 rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium h-7 text-xs"
                                                 onClick={() => onMatch(suggestion.transactionId)}
                                                 disabled={matchingTxn === suggestion.transactionId}
-                                                className="ml-4"
                                             >
                                                 {matchingTxn === suggestion.transactionId ? (
                                                     <Loader2 className="h-3 w-3 animate-spin mr-1" />
@@ -460,7 +472,7 @@ function TransactionRow({
                                 })}
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center py-4 text-center">
+                            <div className="flex flex-col items-center py-6 text-center">
                                 <Unlink className="h-8 w-8 text-muted-foreground/50 mb-2" />
                                 <p className="text-sm text-muted-foreground">
                                     No matching transactions found

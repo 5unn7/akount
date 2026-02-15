@@ -243,8 +243,8 @@ export function TransactionsListClient({
                 />
                 <Card className="glass rounded-[14px]">
                     <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="p-4 rounded-full bg-[#F59E0B]/10 mb-4">
-                            <FileText className="h-8 w-8 text-[#F59E0B]" />
+                        <div className="p-4 rounded-full bg-primary/10 mb-4">
+                            <FileText className="h-8 w-8 text-primary" />
                         </div>
                         <p className="text-lg font-heading font-normal mb-2">
                             No transactions yet
@@ -255,7 +255,7 @@ export function TransactionsListClient({
                                 : 'Upload your first bank statement to start tracking transactions.'}
                         </p>
                         <Button
-                            className="rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium"
+                            className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                             asChild
                         >
                             <Link href="/banking/import">
@@ -291,7 +291,7 @@ export function TransactionsListClient({
                 <div className="flex justify-center">
                     <Button
                         variant="outline"
-                        className="rounded-lg border-white/[0.09] hover:bg-white/[0.04]"
+                        className="rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
                         onClick={handleLoadMore}
                         disabled={isLoadingMore}
                     >
@@ -328,7 +328,7 @@ export function TransactionsListClient({
 
             {/* GL Account Posting Sheet */}
             <Sheet open={postingSheetOpen} onOpenChange={setPostingSheetOpen}>
-                <SheetContent className="sm:max-w-md bg-[#0F0F17] border-white/[0.06]">
+                <SheetContent className="sm:max-w-md bg-card border-ak-border">
                     <SheetHeader>
                         <SheetTitle>
                             {isBulkPosting
@@ -356,7 +356,7 @@ export function TransactionsListClient({
                                     value={selectedGLAccountId}
                                     onValueChange={setSelectedGLAccountId}
                                 >
-                                    <SelectTrigger className="rounded-lg border-white/[0.09] bg-white/[0.025]">
+                                    <SelectTrigger className="rounded-lg border-ak-border-2 glass">
                                         <SelectValue placeholder="Select GL account" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -377,7 +377,7 @@ export function TransactionsListClient({
                         </div>
 
                         <Button
-                            className="w-full rounded-lg bg-[#F59E0B] hover:bg-[#FBBF24] text-black font-medium mt-4"
+                            className="w-full rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium mt-4"
                             onClick={isBulkPosting ? handlePostBulk : handlePostSingle}
                             disabled={isPosting || !selectedGLAccountId}
                         >

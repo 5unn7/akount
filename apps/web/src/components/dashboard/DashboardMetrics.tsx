@@ -47,10 +47,10 @@ export async function DashboardMetrics({
                         <CardTitle className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                             Cash Position
                         </CardTitle>
-                        <DollarSign className="h-4 w-4 text-[#34D399]" />
+                        <DollarSign className="h-4 w-4 text-ak-green" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold font-mono text-[#34D399]">
+                        <div className="text-2xl font-bold font-mono text-ak-green">
                             {formatCurrency(metrics.cashPosition.cash, metrics.cashPosition.currency)}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
@@ -65,10 +65,10 @@ export async function DashboardMetrics({
                         <CardTitle className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                             Total Debt
                         </CardTitle>
-                        <CreditCard className="h-4 w-4 text-[#F87171]" />
+                        <CreditCard className="h-4 w-4 text-ak-red" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold font-mono text-[#F87171]">
+                        <div className="text-2xl font-bold font-mono text-ak-red">
                             {formatCurrency(metrics.cashPosition.debt, metrics.cashPosition.currency)}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
@@ -83,7 +83,7 @@ export async function DashboardMetrics({
                         <CardTitle className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
                             Active Accounts
                         </CardTitle>
-                        <Activity className="h-4 w-4 text-[#60A5FA]" />
+                        <Activity className="h-4 w-4 text-ak-blue" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold font-mono">{metrics.accounts.active}</div>
