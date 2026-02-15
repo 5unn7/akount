@@ -23,7 +23,7 @@ export const BillLineSchema = z.object({
   categoryId: z.string().cuid().optional(),
 });
 
-export const CreateBillSchema = z.object({
+const CreateBillBaseSchema = z.object({
   vendorId: z.string().cuid(),
   billNumber: z.string().min(1).max(50),
   issueDate: z.string().datetime(),
@@ -35,7 +35,9 @@ export const CreateBillSchema = z.object({
   status: z.enum(['DRAFT', 'RECEIVED', 'PAID', 'OVERDUE', 'CANCELLED']),
   notes: z.string().max(1000).optional(),
   lines: z.array(BillLineSchema).min(1),
-}).refine(
+});
+
+export const CreateBillSchema = CreateBillBaseSchema.refine(
   (data) => new Date(data.dueDate) >= new Date(data.issueDate),
   {
     message: 'Due date must be on or after issue date', // SECURITY FIX M-3
@@ -43,7 +45,7 @@ export const CreateBillSchema = z.object({
   }
 );
 
-export const UpdateBillSchema = CreateBillSchema.partial();
+export const UpdateBillSchema = CreateBillBaseSchema.partial();
 
 export const ListBillsSchema = z.object({
   status: z.enum(['DRAFT', 'RECEIVED', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),

@@ -1,6 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { apiClient } from '@/lib/api/client'
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { OnboardingOverlay } from "@/components/onboarding/OnboardingOverlay";
@@ -16,22 +15,35 @@ interface OnboardingStatus {
 /**
  * Check onboarding status with a short timeout.
  * Returns the status if reachable, or null if the API is down.
+ *
+ * Uses fetch directly (not apiClient) so we can distinguish
+ * HTTP errors (404 = user needs onboarding) from network errors (API down).
  */
 async function checkOnboardingStatus(): Promise<OnboardingStatus | null> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3000);
 
     try {
-        const result = await apiClient<OnboardingStatus>(
-            '/api/system/onboarding/status',
-            { signal: controller.signal }
-        );
-        return result;
-    } catch (error) {
-        // API responded with an HTTP error (user has no tenant, etc.) → needs onboarding
-        if (error instanceof Error && error.message.startsWith('API error:')) {
-            return { status: 'new' };
+        const { getToken } = await auth();
+        const token = await getToken();
+        if (!token) return { status: 'new' };
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+        const res = await fetch(`${apiUrl}/api/system/onboarding/status`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+        });
+
+        if (res.ok) {
+            return await res.json();
         }
+
+        // API responded with HTTP error (404 user not found, etc.) → needs onboarding
+        return { status: 'new' };
+    } catch {
         // Network error or timeout → API is unreachable
         return null;
     } finally {

@@ -20,7 +20,7 @@ export const InvoiceLineSchema = z.object({
   categoryId: z.string().cuid().optional(),
 });
 
-export const CreateInvoiceSchema = z.object({
+const CreateInvoiceBaseSchema = z.object({
   clientId: z.string().cuid(),
   invoiceNumber: z.string().min(1).max(50),
   issueDate: z.string().datetime(),
@@ -32,7 +32,9 @@ export const CreateInvoiceSchema = z.object({
   status: z.enum(['DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCELLED']),
   notes: z.string().max(1000).optional(),
   lines: z.array(InvoiceLineSchema).min(1),
-}).refine(
+});
+
+export const CreateInvoiceSchema = CreateInvoiceBaseSchema.refine(
   (data) => new Date(data.dueDate) >= new Date(data.issueDate),
   {
     message: 'Due date must be on or after issue date', // SECURITY FIX M-3
@@ -40,7 +42,7 @@ export const CreateInvoiceSchema = z.object({
   }
 );
 
-export const UpdateInvoiceSchema = CreateInvoiceSchema.partial();
+export const UpdateInvoiceSchema = CreateInvoiceBaseSchema.partial();
 
 export const ListInvoicesSchema = z.object({
   status: z.enum(['DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),
