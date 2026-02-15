@@ -13,7 +13,11 @@ export default function Error({
     reset: () => void;
 }) {
     useEffect(() => {
-        console.error(error);
+        // Only log in development - production should use error tracking service
+        if (process.env.NODE_ENV === 'development') {
+            console.error(error);
+        }
+        // TODO: Send to error tracking service (Sentry, etc.)
     }, [error]);
 
     return (
