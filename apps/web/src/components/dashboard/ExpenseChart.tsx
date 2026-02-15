@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PieChart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ExpenseCategory {
@@ -21,28 +22,6 @@ interface ExpenseChartProps {
 
 type Period = 'day' | 'week' | 'month';
 
-const MOCK_COLORS = [
-    'var(--ak-pri)',
-    'var(--ak-blue)',
-    'var(--ak-purple)',
-    'var(--ak-teal)',
-    'var(--ak-green)',
-];
-
-function generateMockData(): ExpenseMonth[] {
-    const months = ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'];
-    return months.map((label) => ({
-        label,
-        categories: [
-            { name: 'Software', amount: 2000 + Math.random() * 3000, color: MOCK_COLORS[0] },
-            { name: 'Services', amount: 1500 + Math.random() * 2500, color: MOCK_COLORS[1] },
-            { name: 'Office', amount: 500 + Math.random() * 1500, color: MOCK_COLORS[2] },
-            { name: 'Travel', amount: 300 + Math.random() * 2000, color: MOCK_COLORS[3] },
-            { name: 'Other', amount: 200 + Math.random() * 800, color: MOCK_COLORS[4] },
-        ],
-    }));
-}
-
 function formatCompact(value: number): string {
     if (value >= 1_000) return `$${(value / 1_000).toFixed(1)}K`;
     return `$${Math.round(value)}`;
@@ -50,20 +29,49 @@ function formatCompact(value: number): string {
 
 export function ExpenseChart({ data, className }: ExpenseChartProps) {
     const [period, setPeriod] = useState<Period>('month');
-    const chartData = data || generateMockData();
+
+    if (!data || data.length === 0) {
+        return (
+            <div className={cn('glass rounded-sm p-5', className)}>
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-heading font-normal">Expense Breakdown</h3>
+                    <div className="flex gap-1 glass-2 rounded-sm p-0.5">
+                        {(['day', 'week', 'month'] as const).map((p) => (
+                            <button
+                                key={p}
+                                onClick={() => setPeriod(p)}
+                                className={cn(
+                                    'px-2.5 py-1 text-[10px] uppercase tracking-wider rounded-sm transition-colors',
+                                    period === p
+                                        ? 'bg-ak-bg-4 text-foreground'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                )}
+                            >
+                                {p}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div className="flex flex-col items-center gap-2 py-10 text-center">
+                    <PieChart className="h-8 w-8 text-muted-foreground/30" />
+                    <p className="text-xs text-muted-foreground">Expense data will appear as you add transactions</p>
+                </div>
+            </div>
+        );
+    }
 
     const maxTotal = Math.max(
-        ...chartData.map((m) => m.categories.reduce((s, c) => s + c.amount, 0))
+        ...data.map((m) => m.categories.reduce((s, c) => s + c.amount, 0))
     );
 
-    const totalExpenses = chartData.reduce(
+    const totalExpenses = data.reduce(
         (sum, m) => sum + m.categories.reduce((s, c) => s + c.amount, 0),
         0
     );
 
     // Aggregate categories for legend
     const categoryTotals = new Map<string, { amount: number; color: string }>();
-    for (const month of chartData) {
+    for (const month of data) {
         for (const cat of month.categories) {
             const existing = categoryTotals.get(cat.name);
             categoryTotals.set(cat.name, {
@@ -105,7 +113,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
 
             {/* Stacked bars */}
             <div className="flex items-end gap-3 h-[120px] mb-3">
-                {chartData.map((month) => {
+                {data.map((month) => {
                     const total = month.categories.reduce((s, c) => s + c.amount, 0);
                     const barHeight = (total / maxTotal) * 100;
 
@@ -159,7 +167,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                 <div>
                     <p className="text-[9px] uppercase tracking-wider text-muted-foreground">Avg Monthly</p>
                     <p className="text-xs font-mono font-medium mt-0.5">
-                        {formatCompact(totalExpenses / (chartData.length || 1))}
+                        {formatCompact(totalExpenses / (data.length || 1))}
                     </p>
                 </div>
                 <div>

@@ -371,6 +371,7 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         });
 
         // Create basic Chart of Accounts (6 core accounts)
+        // Uses createMany + skipDuplicates so this endpoint is idempotent
         const defaultAccounts = [
           { code: '1000', name: 'Bank Account', type: 'ASSET' as const, balance: 'DEBIT' as const },
           {
@@ -395,17 +396,16 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
           { code: '5000', name: 'Expenses', type: 'EXPENSE' as const, balance: 'DEBIT' as const },
         ];
 
-        for (const account of defaultAccounts) {
-          await tx.gLAccount.create({
-            data: {
-              entityId: entity.id,
-              code: account.code,
-              name: account.name,
-              type: account.type,
-              normalBalance: account.balance,
-            },
-          });
-        }
+        await tx.gLAccount.createMany({
+          data: defaultAccounts.map((account) => ({
+            entityId: entity.id,
+            code: account.code,
+            name: account.name,
+            type: account.type,
+            normalBalance: account.balance,
+          })),
+          skipDuplicates: true,
+        });
 
         return { tenant, entity: updatedEntity };
       });

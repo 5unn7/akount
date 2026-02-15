@@ -117,7 +117,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
                 <LiquidityHero
                     totalBalance={totalBalance}
                     baseCurrency={baseCurrency}
-                    trend={metrics ? { direction: 'up', percentage: '+6.8%', netChange: '+$9,240' } : undefined}
+                    trend={undefined}
                 />
                 <div className="hidden md:block shrink-0 pt-2">
                     <DashboardFilters entities={entities} />

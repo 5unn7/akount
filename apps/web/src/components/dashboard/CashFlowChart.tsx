@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
+import { TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DataPoint {
@@ -14,25 +15,6 @@ interface CashFlowChartProps {
     className?: string;
 }
 
-// Generate mock 60-day data if none provided
-function generateMockData(): DataPoint[] {
-    const points: DataPoint[] = [];
-    let value = 140000;
-    const today = new Date();
-
-    for (let i = -30; i <= 30; i++) {
-        const date = new Date(today);
-        date.setDate(date.getDate() + i);
-        value += (Math.random() - 0.48) * 8000;
-        value = Math.max(value, 80000);
-        points.push({
-            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            value: Math.round(value),
-        });
-    }
-    return points;
-}
-
 function formatCompact(value: number): string {
     if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
     if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
@@ -40,24 +22,38 @@ function formatCompact(value: number): string {
 }
 
 export function CashFlowChart({ data, height = 170, className }: CashFlowChartProps) {
-    const chartData = data || generateMockData();
     const svgRef = useRef<SVGSVGElement>(null);
     const [tooltip, setTooltip] = useState<{ x: number; y: number; value: string; date: string } | null>(null);
+
+    if (!data || data.length === 0) {
+        return (
+            <div className={cn('glass rounded-xl p-5', className)}>
+                <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-heading font-normal">Cash Flow Projection</h3>
+                    <span className="text-xs text-muted-foreground font-mono">60-day view</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 py-10 text-center">
+                    <TrendingUp className="h-8 w-8 text-muted-foreground/30" />
+                    <p className="text-xs text-muted-foreground">Cash flow chart will populate with transaction data</p>
+                </div>
+            </div>
+        );
+    }
 
     const width = 600;
     const paddingTop = 10;
     const paddingBottom = 24;
     const paddingX = 0;
 
-    const values = chartData.map((d) => d.value);
+    const values = data.map((d) => d.value);
     const min = Math.min(...values) * 0.95;
     const max = Math.max(...values) * 1.05;
     const range = max - min || 1;
 
-    const todayIndex = Math.floor(chartData.length * 0.5);
+    const todayIndex = Math.floor(data.length * 0.5);
 
-    const points = chartData.map((d, i) => {
-        const x = paddingX + (i / (chartData.length - 1)) * (width - 2 * paddingX);
+    const points = data.map((d, i) => {
+        const x = paddingX + (i / (data.length - 1)) * (width - 2 * paddingX);
         const y = paddingTop + (1 - (d.value - min) / range) * (height - paddingTop - paddingBottom);
         return { x, y, ...d };
     });
@@ -97,8 +93,8 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
     const handleMouseLeave = useCallback(() => setTooltip(null), []);
 
     // X-axis labels (show ~6)
-    const labelStep = Math.floor(chartData.length / 6);
-    const xLabels = chartData.filter((_, i) => i % labelStep === 0 || i === chartData.length - 1);
+    const labelStep = Math.floor(data.length / 6);
+    const xLabels = data.filter((_, i) => i % labelStep === 0 || i === data.length - 1);
 
     return (
         <div className={cn('glass rounded-xl p-5', className)}>
@@ -160,7 +156,7 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
 
                 {/* X-axis labels */}
                 {xLabels.map((d, i) => {
-                    const idx = chartData.indexOf(d);
+                    const idx = data.indexOf(d);
                     const p = points[idx];
                     if (!p) return null;
                     return (
