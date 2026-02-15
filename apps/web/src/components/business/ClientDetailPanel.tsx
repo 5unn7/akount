@@ -17,6 +17,7 @@ interface ClientDetailPanelProps {
     client: Client | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    currency?: string;
 }
 
 const STATUS_BADGE_STYLES: Record<Client['status'], string> = {
@@ -28,6 +29,7 @@ export function ClientDetailPanel({
     client,
     open,
     onOpenChange,
+    currency = 'CAD',
 }: ClientDetailPanelProps) {
     if (!client) return null;
 
@@ -128,7 +130,7 @@ export function ClientDetailPanel({
                                         balanceDue > 0 ? 'text-primary' : 'text-ak-green'
                                     }`}
                                 >
-                                    {formatCurrency(balanceDue, 'CAD')}
+                                    {formatCurrency(balanceDue, currency)}
                                 </p>
                             </div>
                         </div>

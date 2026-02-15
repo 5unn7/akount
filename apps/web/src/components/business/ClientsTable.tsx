@@ -17,6 +17,7 @@ import { ClientDetailPanel } from './ClientDetailPanel';
 
 interface ClientsTableProps {
     clients: Client[];
+    currency?: string;
 }
 
 const STATUS_BADGE_STYLES: Record<Client['status'], string> = {
@@ -24,7 +25,7 @@ const STATUS_BADGE_STYLES: Record<Client['status'], string> = {
     inactive: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
 };
 
-export function ClientsTable({ clients }: ClientsTableProps) {
+export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
     const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [open, setOpen] = useState(false);
 
@@ -134,7 +135,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
                                                     balanceDue > 0 ? 'text-primary' : 'text-ak-green'
                                                 }`}
                                             >
-                                                {formatCurrency(balanceDue, 'CAD')}
+                                                {formatCurrency(balanceDue, currency)}
                                             </span>
                                         </TableCell>
                                     </TableRow>
@@ -145,7 +146,7 @@ export function ClientsTable({ clients }: ClientsTableProps) {
                 </CardContent>
             </Card>
 
-            <ClientDetailPanel client={selectedClient} open={open} onOpenChange={setOpen} />
+            <ClientDetailPanel client={selectedClient} open={open} onOpenChange={setOpen} currency={currency} />
         </>
     );
 }

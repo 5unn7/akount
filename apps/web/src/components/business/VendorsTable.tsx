@@ -17,6 +17,7 @@ import { VendorDetailPanel } from './VendorDetailPanel';
 
 interface VendorsTableProps {
     vendors: Vendor[];
+    currency?: string;
 }
 
 const STATUS_BADGE_STYLES: Record<Vendor['status'], string> = {
@@ -24,7 +25,7 @@ const STATUS_BADGE_STYLES: Record<Vendor['status'], string> = {
     inactive: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
 };
 
-export function VendorsTable({ vendors }: VendorsTableProps) {
+export function VendorsTable({ vendors, currency = 'CAD' }: VendorsTableProps) {
     const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
     const [open, setOpen] = useState(false);
 
@@ -134,7 +135,7 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
                                                     balanceDue > 0 ? 'text-ak-red' : 'text-ak-green'
                                                 }`}
                                             >
-                                                {formatCurrency(balanceDue, 'CAD')}
+                                                {formatCurrency(balanceDue, currency)}
                                             </span>
                                         </TableCell>
                                     </TableRow>
@@ -145,7 +146,7 @@ export function VendorsTable({ vendors }: VendorsTableProps) {
                 </CardContent>
             </Card>
 
-            <VendorDetailPanel vendor={selectedVendor} open={open} onOpenChange={setOpen} />
+            <VendorDetailPanel vendor={selectedVendor} open={open} onOpenChange={setOpen} currency={currency} />
         </>
     );
 }

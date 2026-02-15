@@ -13,6 +13,9 @@ export default async function VendorsPage() {
     const vendorsResult = await listVendors({ limit: 50 });
     const vendors = vendorsResult.vendors;
 
+    // Derive primary currency from first vendor or default to CAD
+    const primaryCurrency = vendors[0]?.entity?.currency || 'CAD';
+
     // Calculate stats
     const activeVendors = vendors.filter((v) => v.status === 'active').length;
     const totalBalanceDue = vendors.reduce((sum, v) => sum + (v.balanceDue ?? 0), 0);
@@ -31,7 +34,7 @@ export default async function VendorsPage() {
         },
         {
             label: 'Outstanding AP',
-            value: formatCurrency(totalBalanceDue, 'CAD'),
+            value: formatCurrency(totalBalanceDue, primaryCurrency),
             color: totalBalanceDue > 0 ? ('red' as const) : ('default' as const),
         },
         {
@@ -64,7 +67,7 @@ export default async function VendorsPage() {
                         {vendors.length} vendor{vendors.length !== 1 ? 's' : ''}
                     </p>
                 </div>
-                <VendorsTable vendors={vendors} />
+                <VendorsTable vendors={vendors} currency={primaryCurrency} />
             </div>
         </div>
     );

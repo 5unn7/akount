@@ -17,6 +17,7 @@ interface VendorDetailPanelProps {
     vendor: Vendor | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    currency?: string;
 }
 
 const STATUS_BADGE_STYLES: Record<Vendor['status'], string> = {
@@ -28,6 +29,7 @@ export function VendorDetailPanel({
     vendor,
     open,
     onOpenChange,
+    currency = 'CAD',
 }: VendorDetailPanelProps) {
     if (!vendor) return null;
 
@@ -128,7 +130,7 @@ export function VendorDetailPanel({
                                         balanceDue > 0 ? 'text-ak-red' : 'text-ak-green'
                                     }`}
                                 >
-                                    {formatCurrency(balanceDue, 'CAD')}
+                                    {formatCurrency(balanceDue, currency)}
                                 </p>
                             </div>
                         </div>

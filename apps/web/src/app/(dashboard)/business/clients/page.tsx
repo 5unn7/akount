@@ -13,6 +13,9 @@ export default async function ClientsPage() {
     const clientsResult = await listClients({ limit: 50 });
     const clients = clientsResult.clients;
 
+    // Derive primary currency from first client or default to CAD
+    const primaryCurrency = clients[0]?.entity?.currency || 'CAD';
+
     // Calculate stats
     const activeClients = clients.filter((c) => c.status === 'active').length;
     const totalBalanceDue = clients.reduce((sum, c) => sum + (c.balanceDue ?? 0), 0);
@@ -31,7 +34,7 @@ export default async function ClientsPage() {
         },
         {
             label: 'Outstanding AR',
-            value: formatCurrency(totalBalanceDue, 'CAD'),
+            value: formatCurrency(totalBalanceDue, primaryCurrency),
             color: totalBalanceDue > 0 ? ('blue' as const) : ('default' as const),
         },
         {
@@ -64,7 +67,7 @@ export default async function ClientsPage() {
                         {clients.length} client{clients.length !== 1 ? 's' : ''}
                     </p>
                 </div>
-                <ClientsTable clients={clients} />
+                <ClientsTable clients={clients} currency={primaryCurrency} />
             </div>
         </div>
     );

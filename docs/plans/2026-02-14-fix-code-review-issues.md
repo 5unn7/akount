@@ -22,7 +22,7 @@ Estimated total time: **4-6 hours** across 5 parallel-friendly tasks.
 - [ ] All 32 pages have page-specific loading.tsx and error.tsx files
 - [ ] Onboarding route decision documented and implemented (delete or fix)
 - [ ] Badge and AIBrief components use semantic tokens (no hardcoded colors)
-- [ ] ImportUploadForm split into focused components (<300 lines each)
+- [x] ImportUploadForm split into focused components (<300 lines each)
 - [ ] Service-level tests exist for client, invoice, bill, vendor services
 - [ ] All tests pass: `npm run test` (API + Web)
 - [ ] Design system compliance: 100% (no hardcoded hex/rgba)
