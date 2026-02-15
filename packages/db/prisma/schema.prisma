@@ -279,6 +279,7 @@ model Invoice {
   @@index([dueDate])
   @@index([issueDate])
   @@index([entityId, deletedAt])
+  @@unique([entityId, invoiceNumber]) // SECURITY FIX M-4: Prevent duplicate invoice numbers per entity
 }
 
 model InvoiceLine {
@@ -348,6 +349,7 @@ model Bill {
   @@index([dueDate])
   @@index([issueDate])
   @@index([entityId, deletedAt])
+  @@unique([entityId, billNumber]) // SECURITY FIX M-4: Prevent duplicate bill numbers per entity
 }
 
 model BillLine {

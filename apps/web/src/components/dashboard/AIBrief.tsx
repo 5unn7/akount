@@ -14,11 +14,7 @@ export function AIBrief({ body, date }: AIBriefProps) {
 
     return (
         <div
-            className="rounded-xl p-5 border border-l-2 border-ak-purple"
-            style={{
-                background: 'linear-gradient(135deg, rgba(245,158,11,0.06), rgba(167,139,250,0.06))',
-                borderColor: 'rgba(245,158,11,0.08)',
-            }}
+            className="rounded-xl p-5 border border-l-2 border-ak-border-2 bg-gradient-to-br from-ak-pri-dim to-ak-purple-dim"
         >
             <div className="flex items-center gap-2 mb-3">
                 <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />

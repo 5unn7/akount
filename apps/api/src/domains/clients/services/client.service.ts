@@ -92,10 +92,12 @@ export async function getClient(id: string, ctx: TenantContext) {
   if (!client) throw new Error('Client not found');
 
   // Aggregate open invoices and balance due
+  // SECURITY FIX H-1: Add tenant isolation to prevent cross-tenant data leakage
   const [openInvoices, balance] = await Promise.all([
     prisma.invoice.count({
       where: {
         clientId: id,
+        entity: { tenantId: ctx.tenantId },
         status: { in: ['SENT', 'OVERDUE'] },
         deletedAt: null,
       },
@@ -103,6 +105,7 @@ export async function getClient(id: string, ctx: TenantContext) {
     prisma.invoice.aggregate({
       where: {
         clientId: id,
+        entity: { tenantId: ctx.tenantId },
         status: { in: ['SENT', 'OVERDUE'] },
         deletedAt: null,
       },

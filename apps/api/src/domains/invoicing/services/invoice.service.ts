@@ -33,6 +33,21 @@ export async function createInvoice(
     throw new Error('Client not found');
   }
 
+  // SECURITY FIX M-2: Validate totals match line items to prevent amount manipulation
+  const calculatedSubtotal = data.lines.reduce((sum, line) => sum + line.amount - line.taxAmount, 0);
+  const calculatedTaxAmount = data.lines.reduce((sum, line) => sum + line.taxAmount, 0);
+  const calculatedTotal = calculatedSubtotal + calculatedTaxAmount;
+
+  if (data.subtotal !== calculatedSubtotal) {
+    throw new Error(`Subtotal mismatch: provided ${data.subtotal}, calculated ${calculatedSubtotal}`);
+  }
+  if (data.taxAmount !== calculatedTaxAmount) {
+    throw new Error(`Tax amount mismatch: provided ${data.taxAmount}, calculated ${calculatedTaxAmount}`);
+  }
+  if (data.total !== calculatedTotal) {
+    throw new Error(`Total mismatch: provided ${data.total}, calculated ${calculatedTotal}`);
+  }
+
   return prisma.invoice.create({
     data: {
       entityId: client.entityId,

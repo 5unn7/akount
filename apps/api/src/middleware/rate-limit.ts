@@ -36,6 +36,16 @@ export const BURST_RATE_LIMIT = {
 };
 
 /**
+ * Stats rate limit for expensive aggregation queries.
+ * Applied to stats endpoints (invoice/bill stats, AR/AP aging).
+ * SECURITY FIX M-5: Prevent DoS via expensive stats queries.
+ */
+export const STATS_RATE_LIMIT = {
+  max: 50,
+  timeWindow: '1 minute',
+};
+
+/**
  * Register global rate limiting middleware.
  *
  * @example
@@ -146,5 +156,26 @@ export function noRateLimitConfig() {
   return {
     max: 1000000, // Effectively unlimited
     timeWindow: '1 minute',
+  };
+}
+
+/**
+ * Stats rate limit for expensive aggregation queries.
+ * Use for endpoints that perform complex database aggregations.
+ *
+ * @example
+ * ```typescript
+ * fastify.get('/stats', {
+ *   config: {
+ *     rateLimit: statsRateLimitConfig(),
+ *   },
+ *   handler: async (request, reply) => { ... }
+ * });
+ * ```
+ */
+export function statsRateLimitConfig() {
+  return {
+    max: STATS_RATE_LIMIT.max,
+    timeWindow: STATS_RATE_LIMIT.timeWindow,
   };
 }

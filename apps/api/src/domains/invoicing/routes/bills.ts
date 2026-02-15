@@ -3,6 +3,7 @@ import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { withRolePermission } from '../../../middleware/rbac';
+import { statsRateLimitConfig } from '../../../middleware/rate-limit'; // SECURITY FIX M-5
 import * as billService from '../services/bill.service';
 import {
   CreateBillSchema,
@@ -82,6 +83,9 @@ export async function billRoutes(fastify: FastifyInstance) {
     '/stats',
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      config: {
+        rateLimit: statsRateLimitConfig(), // SECURITY FIX M-5: Limit expensive stats queries
+      },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {

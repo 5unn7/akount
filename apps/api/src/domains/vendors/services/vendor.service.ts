@@ -94,10 +94,12 @@ export async function getVendor(id: string, ctx: TenantContext) {
   if (!vendor) throw new Error('Vendor not found');
 
   // Aggregate open bills and balance due
+  // SECURITY FIX H-1: Add tenant isolation to prevent cross-tenant data leakage
   const [openBills, balance] = await Promise.all([
     prisma.bill.count({
       where: {
         vendorId: id,
+        entity: { tenantId: ctx.tenantId },
         status: { in: ['RECEIVED', 'OVERDUE'] },
         deletedAt: null,
       },
@@ -105,6 +107,7 @@ export async function getVendor(id: string, ctx: TenantContext) {
     prisma.bill.aggregate({
       where: {
         vendorId: id,
+        entity: { tenantId: ctx.tenantId },
         status: { in: ['RECEIVED', 'OVERDUE'] },
         deletedAt: null,
       },

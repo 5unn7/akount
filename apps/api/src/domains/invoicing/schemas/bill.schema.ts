@@ -17,8 +17,8 @@ export const BillLineSchema = z.object({
   quantity: z.number().int().positive(),
   unitPrice: z.number().int(), // Integer cents
   taxRateId: z.string().cuid().optional(),
-  taxAmount: z.number().int().min(0),
-  amount: z.number().int(), // Integer cents (quantity * unitPrice + taxAmount)
+  taxAmount: z.number().int().min(0).max(100_000_000_000), // SECURITY FIX M-1: Max $1B
+  amount: z.number().int().max(100_000_000_000), // Integer cents, max $1B
   glAccountId: z.string().cuid().optional(),
   categoryId: z.string().cuid().optional(),
 });
@@ -29,13 +29,19 @@ export const CreateBillSchema = z.object({
   issueDate: z.string().datetime(),
   dueDate: z.string().datetime(),
   currency: z.string().length(3), // ISO 4217 (USD, CAD, EUR)
-  subtotal: z.number().int().min(0),
-  taxAmount: z.number().int().min(0),
-  total: z.number().int().min(0),
+  subtotal: z.number().int().min(0).max(100_000_000_000), // SECURITY FIX M-1: Max $1B
+  taxAmount: z.number().int().min(0).max(100_000_000_000),
+  total: z.number().int().min(0).max(100_000_000_000),
   status: z.enum(['DRAFT', 'RECEIVED', 'PAID', 'OVERDUE', 'CANCELLED']),
   notes: z.string().max(1000).optional(),
   lines: z.array(BillLineSchema).min(1),
-});
+}).refine(
+  (data) => new Date(data.dueDate) >= new Date(data.issueDate),
+  {
+    message: 'Due date must be on or after issue date', // SECURITY FIX M-3
+    path: ['dueDate'],
+  }
+);
 
 export const UpdateBillSchema = CreateBillSchema.partial();
 

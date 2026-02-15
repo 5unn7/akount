@@ -1,7 +1,7 @@
 # Akount - Current Status
 
-**Last Updated:** 2026-02-14
-**Overall Progress:** Phase 2 Complete, Onboarding Complete, Business Domain Complete (Slice 4)
+**Last Updated:** 2026-02-14 (EOD)
+**Overall Progress:** Phase 2 Complete, Onboarding Complete, Business Domain Complete (Slice 4), Code Review Fixes (3/5 complete)
 
 ---
 
@@ -61,6 +61,31 @@ Restructured ROADMAP.md by user value phases (See → Track → Post → Bill �
 ---
 
 ## Completed Phases
+
+### Code Review Fixes (IN PROGRESS — 2026-02-14)
+
+**Goal:** Address critical issues from multi-agent code review (design tokens, loading states, security).
+
+**Plan:** [docs/plans/2026-02-14-fix-code-review-issues.md](docs/plans/2026-02-14-fix-code-review-issues.md)
+
+**Completed (3/5 issues):**
+- ✅ **Issue 1 (Partial):** Added 24 loading/error pages for planning and services domains
+- ✅ **Issue 2:** Deleted unreachable onboarding route (overlay-only design)
+- ✅ **Issue 3:** Fixed badge.tsx and AIBrief.tsx to use semantic tokens (0 hardcoded colors)
+- ✅ **Issue 4:** Split ImportUploadForm complexity (415 → 77 lines)
+- ✅ **Security M-2:** Invoice/bill amount validation (prevent manipulation)
+- ✅ **Security M-4:** Unique constraints on invoice/bill numbers
+- ✅ **Security M-5:** Stats endpoint rate limiting
+
+**Remaining (2/5 issues):**
+- ⏳ **Issue 1 (Partial):** 8 accounting + 8 banking pages still need loading/error states
+- ⏳ **Issue 5:** Service-level tests for client, invoice, bill, vendor services (70+ tests needed)
+
+**Modified Files:** 15 files (API services, schemas, routes, middleware, frontend components)
+
+**Code Quality:** 0 `: any` types, 0 `console.log`, 0 hardcoded colors ✓
+
+---
 
 ### Slice 4: Business Domain Pages (COMPLETE — 2026-02-14)
 

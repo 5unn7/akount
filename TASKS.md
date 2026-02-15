@@ -1,11 +1,43 @@
 # Akount - Task List
 
-**Last Updated:** 2026-02-14
-**Current Phase:** Phase 2 - Track Your Money (COMPLETE) | Onboarding (COMPLETE) | Overview Polish (COMPLETE)
+**Last Updated:** 2026-02-14 (EOD)
+**Current Phase:** Code Review Fixes (3/5 complete) | Phase 3 prep
+
+---
+
+## 📅 Tomorrow's Focus (2026-02-15)
+
+**Primary Goal:** Complete code review fixes (Issue 1 + Issue 5)
+
+**Tasks:**
+1. [ ] Add loading/error states to remaining 16 pages (accounting + banking domains)
+2. [ ] Write service-level tests for invoice.service.ts (20+ tests)
+3. [ ] Write service-level tests for bill.service.ts (20+ tests)
+
+**Context:** 3/5 review issues complete. Security fixes committed. Remaining work: 16 page states + 70 service tests.
 
 ---
 
 ## Active Work
+
+### Code Review Fixes — IN PROGRESS (3/5 complete)
+
+**Plan:** [docs/plans/2026-02-14-fix-code-review-issues.md](docs/plans/2026-02-14-fix-code-review-issues.md)
+
+**Completed Today (2026-02-14):**
+- [x] **Issue 1 (Partial):** 24 loading/error pages for planning + services domains
+- [x] **Issue 2:** Deleted onboarding route (overlay-only design)
+- [x] **Issue 3:** Fixed badge.tsx and AIBrief.tsx semantic tokens
+- [x] **Issue 4:** Split ImportUploadForm (415 → 77 lines, 3 step components)
+- [x] **Security M-2:** Invoice/bill amount validation
+- [x] **Security M-4:** Unique constraints on invoice/bill numbers
+- [x] **Security M-5:** Stats rate limiting (50 req/min)
+
+**Remaining:**
+- [ ] **Issue 1 (Partial):** 16 pages need loading/error (6 accounting, 5 banking, 2 business, 3 AI/overview)
+- [ ] **Issue 5:** Service tests for client, invoice, bill, vendor (70+ tests)
+
+---
 
 ### Onboarding Redesign — COMPLETE
 
