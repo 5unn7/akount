@@ -18,7 +18,7 @@ export default function Error({
     }, [error]);
 
     return (
-        <div className="flex-1 flex items-center justify-center p-8">
+        <div className="flex-1 flex items-center justify-center">
             <Card className="w-full max-w-md">
                 <CardHeader>
                     <div className="flex items-center gap-2">

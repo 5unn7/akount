@@ -11,30 +11,30 @@ interface ErrorProps {
 }
 
 /**
- * Error boundary for accounts page
+ * Error boundary for tax rates page
  * Catches and displays errors with retry option
  */
-export default function AccountsError({ error, reset }: ErrorProps) {
+export default function TaxRatesError({ error, reset }: ErrorProps) {
     useEffect(() => {
-        console.error('Accounts page error:', error);
+        console.error('Tax rates page error:', error);
     }, [error]);
 
     return (
         <div className="flex-1 space-y-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Accounts</h2>
+                <h2 className="text-3xl font-bold tracking-tight font-heading">Tax Rates</h2>
             </div>
 
             <Card className="border-destructive">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-destructive">
                         <AlertCircle className="h-5 w-5" />
-                        Failed to load accounts
+                        Failed to load tax rates
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                        {error.message || 'An error occurred while loading your accounts.'}
+                        {error.message || 'An error occurred while loading tax rates.'}
                     </p>
                     {error.digest && (
                         <p className="text-xs text-muted-foreground">

@@ -11,30 +11,26 @@ interface ErrorProps {
 }
 
 /**
- * Error boundary for accounts page
- * Catches and displays errors with retry option
+ * Dashboard-wide error boundary fallback
+ * Cascades to all child routes that don't define their own error.tsx
  */
-export default function AccountsError({ error, reset }: ErrorProps) {
+export default function DashboardError({ error, reset }: ErrorProps) {
     useEffect(() => {
-        console.error('Accounts page error:', error);
+        console.error('Dashboard error:', error);
     }, [error]);
 
     return (
-        <div className="flex-1 space-y-4">
-            <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Accounts</h2>
-            </div>
-
+        <div className="flex-1 space-y-4 p-8 pt-6">
             <Card className="border-destructive">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-destructive">
                         <AlertCircle className="h-5 w-5" />
-                        Failed to load accounts
+                        Something went wrong
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                        {error.message || 'An error occurred while loading your accounts.'}
+                        {error.message || 'An unexpected error occurred. Please try again.'}
                     </p>
                     {error.digest && (
                         <p className="text-xs text-muted-foreground">

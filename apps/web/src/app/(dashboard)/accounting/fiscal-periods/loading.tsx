@@ -2,14 +2,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * Loading state for accounts page
+ * Loading state for fiscal periods page
  * Shown during route transitions
  */
-export default function AccountsLoading() {
+export default function FiscalPeriodsLoading() {
     return (
         <div className="flex-1 space-y-4">
             <div className="flex items-center justify-between">
-                <Skeleton className="h-9 w-36" />
+                <Skeleton className="h-9 w-48" />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

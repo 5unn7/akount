@@ -11,30 +11,43 @@ interface ErrorProps {
 }
 
 /**
- * Error boundary for accounts page
- * Catches and displays errors with retry option
+ * TEMPLATE: Error boundary for dashboard pages
+ *
+ * INSTRUCTIONS:
+ * 1. Copy this file to your page directory as error.tsx
+ * 2. Rename the export function to match your page (e.g., BudgetsError)
+ * 3. Update the page title in the h2 tag (line 28)
+ * 4. Update the error message in CardTitle (line 35)
+ * 5. Update the comment to describe your specific page
+ *
+ * EXAMPLE:
+ * For /planning/budgets/error.tsx:
+ * - Export: BudgetsError
+ * - Title: "Budgets"
+ * - Message: "Failed to load budgets"
+ * - Comment: "Error boundary for budgets page"
  */
-export default function AccountsError({ error, reset }: ErrorProps) {
+export default function PageError({ error, reset }: ErrorProps) {
     useEffect(() => {
-        console.error('Accounts page error:', error);
+        console.error('Page error:', error);
     }, [error]);
 
     return (
         <div className="flex-1 space-y-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">Accounts</h2>
+                <h2 className="text-3xl font-bold tracking-tight font-heading">Page Title</h2>
             </div>
 
             <Card className="border-destructive">
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-destructive">
                         <AlertCircle className="h-5 w-5" />
-                        Failed to load accounts
+                        Failed to load page
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                        {error.message || 'An error occurred while loading your accounts.'}
+                        {error.message || 'An error occurred while loading this page.'}
                     </p>
                     {error.digest && (
                         <p className="text-xs text-muted-foreground">

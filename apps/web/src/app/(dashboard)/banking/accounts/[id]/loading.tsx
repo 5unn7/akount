@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export default function Loading() {
     return (
-        <div className="flex-1 space-y-6 p-8 pt-6">
+        <div className="flex-1 space-y-6">
             {/* Header Skeleton */}
             <Card>
                 <CardHeader className="space-y-3">

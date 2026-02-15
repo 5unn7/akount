@@ -2,10 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * Loading state for accounts page
- * Shown during route transitions
+ * TEMPLATE: Loading state for dashboard pages
+ *
+ * INSTRUCTIONS:
+ * 1. Copy this file to your page directory as loading.tsx
+ * 2. Rename the export function to match your page (e.g., BudgetsLoading)
+ * 3. Customize the skeleton pattern to match your page layout
+ * 4. Update the comment to describe your specific page
+ *
+ * EXAMPLE:
+ * For /planning/budgets/loading.tsx:
+ * - Export: BudgetsLoading
+ * - Comment: "Loading state for budgets page"
  */
-export default function AccountsLoading() {
+export default function PageLoading() {
     return (
         <div className="flex-1 space-y-4">
             <div className="flex items-center justify-between">

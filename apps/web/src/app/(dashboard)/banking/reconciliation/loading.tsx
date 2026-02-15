@@ -2,18 +2,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * Loading state for accounts page
+ * Loading state for reconciliation page
  * Shown during route transitions
  */
-export default function AccountsLoading() {
+export default function ReconciliationLoading() {
     return (
         <div className="flex-1 space-y-4">
             <div className="flex items-center justify-between">
-                <Skeleton className="h-9 w-36" />
+                <Skeleton className="h-9 w-48" />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div className="grid gap-4 md:grid-cols-2">
+                {[1, 2].map((i) => (
                     <Card key={i}>
                         <CardContent className="pt-6">
                             <div className="space-y-3">
