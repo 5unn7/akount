@@ -6,19 +6,22 @@
 /* Dark mode via class strategy */
 @variant dark (&:where(.dark, .dark *));
 
-/* ── Theme tokens ─────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   1. THEME TOKENS — Tailwind v4 utilities
+   Creates: text-<name>, bg-<name>, border-<name>
+   ═══════════════════════════════════════════════════════ */
 @theme inline {
   /* Fonts */
   --font-heading: "Newsreader", serif;
   --font-sans: "Manrope", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  /* Border radius */
+  /* Border radius — 3px / 2px / 1px (never 0) */
   --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 1px);
+  --radius-sm: calc(var(--radius) - 2px);
 
-  /* Colors – shadcn/ui semantic */
+  /* shadcn/ui semantic colors */
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
@@ -38,113 +41,202 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
 
-  /* Financial semantic colors */
-  --color-finance-income: var(--ak-finance-income, #10B981);
-  --color-finance-expense: var(--ak-finance-expense, #EF4444);
-  --color-finance-transfer: var(--ak-finance-transfer, #3B82F6);
-  --color-finance-liability: var(--ak-finance-liability, #F59E0B);
-  --color-finance-equity: var(--ak-finance-equity, #14B8A6);
+  /* Financial semantic — mode-aware via --ak-* vars
+     Usage: text-finance-income, bg-finance-expense, etc. */
+  --color-finance-income: var(--ak-green);
+  --color-finance-expense: var(--ak-red);
+  --color-finance-transfer: var(--ak-blue);
+  --color-finance-liability: hsl(var(--primary));
+  --color-finance-equity: var(--ak-teal);
 
-  /* AI accent colors */
-  --color-ai: var(--ak-ai, #8B5CF6);
-  --color-ai-accent: var(--ak-ai-accent, rgba(139,92,246,0.10));
-  --color-ai-border: var(--ak-ai-border, rgba(139,92,246,0.35));
+  /* AI accent — mode-aware via --ak-* vars
+     Usage: text-ai, bg-ai-accent, border-ai-border */
+  --color-ai: var(--ak-ai);
+  --color-ai-accent: var(--ak-ai-accent);
+  --color-ai-border: var(--ak-ai-border);
 
-  /* Shadows */
-  --shadow-ak-sm: 0 1px 2px rgba(0,0,0,0.10);
-  --shadow-ak-md: 0 6px 18px rgba(0,0,0,0.18);
-  --shadow-ak-lg: 0 16px 40px rgba(0,0,0,0.22);
+  /* Akount — primary alpha variants
+     Usage: bg-ak-pri-dim, text-ak-pri-text, hover:bg-ak-pri-hover */
+  --color-ak-pri-hover: var(--ak-pri-hover);
+  --color-ak-pri-dim: var(--ak-pri-dim);
+  --color-ak-pri-glow: var(--ak-pri-glow);
+  --color-ak-pri-text: var(--ak-pri-text);
+  --color-ak-pri-active: var(--ak-pri-active);
 
-  /* Background gradients */
-  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
-  --background-image-gradient-conic: conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
+  /* Akount — semantic palette
+     Usage: text-ak-green, bg-ak-red-dim, border-ak-blue, etc. */
+  --color-ak-green: var(--ak-green);
+  --color-ak-green-dim: var(--ak-green-dim);
+  --color-ak-red: var(--ak-red);
+  --color-ak-red-dim: var(--ak-red-dim);
+  --color-ak-blue: var(--ak-blue);
+  --color-ak-blue-dim: var(--ak-blue-dim);
+  --color-ak-purple: var(--ak-purple);
+  --color-ak-purple-dim: var(--ak-purple-dim);
+  --color-ak-teal: var(--ak-teal);
+  --color-ak-teal-dim: var(--ak-teal-dim);
+
+  /* Akount — surfaces & text levels
+     Usage: bg-ak-bg-3, text-ak-t3 */
+  --color-ak-bg-3: var(--ak-bg-3);
+  --color-ak-bg-4: var(--ak-bg-4);
+  --color-ak-t3: var(--ak-t3);
+  --color-ak-t4: var(--ak-t4);
+
+  /* Akount — border tiers
+     Usage: border-ak-border, border-ak-border-2 */
+  --color-ak-border: var(--ak-border);
+  --color-ak-border-2: var(--ak-border-2);
+  --color-ak-border-3: var(--ak-border-3);
 }
 
-/* ── CSS variables for light/dark theming ─────────────── */
+/* ═══════════════════════════════════════════════════════
+   2. CSS VARIABLES — Light/Dark Theming
+   ═══════════════════════════════════════════════════════ */
 @layer base {
   :root {
-    /* Light Mode - Akount Brand Colors */
+    /* ── shadcn Light Mode ── */
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
-
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-
     --primary: 38 92% 50%;
-    /* amber-500 #F59E0B */
     --primary-foreground: 0 0% 100%;
-
     --secondary: 258 90% 66%;
     --secondary-foreground: 0 0% 100%;
-
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
-
     --accent: 262 83% 58%;
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 25 95% 53%;
+    --radius: 0.1875rem;
 
-    --radius: 0.5rem;
+    /* ── Akount Light Mode ── */
+
+    /* Primary alpha variants (darker orange for light bg) */
+    --ak-pri-hover: #B45309;
+    --ak-pri-dim: rgba(217, 119, 6, 0.10);
+    --ak-pri-glow: rgba(217, 119, 6, 0.06);
+    --ak-pri-text: #D97706;
+    --ak-pri-active: rgba(217, 119, 6, 0.12);
+
+    /* Semantic colors (500-level for light backgrounds) */
+    --ak-green: #10B981;
+    --ak-green-dim: rgba(16, 185, 129, 0.10);
+    --ak-red: #EF4444;
+    --ak-red-dim: rgba(239, 68, 68, 0.10);
+    --ak-blue: #3B82F6;
+    --ak-blue-dim: rgba(59, 130, 246, 0.10);
+    --ak-purple: #8B5CF6;
+    --ak-purple-dim: rgba(139, 92, 246, 0.10);
+    --ak-teal: #14B8A6;
+    --ak-teal-dim: rgba(20, 184, 166, 0.10);
+
+    /* AI */
+    --ak-ai: #8B5CF6;
+    --ak-ai-accent: rgba(139, 92, 246, 0.08);
+    --ak-ai-border: rgba(139, 92, 246, 0.25);
+
+    /* Surfaces */
+    --ak-bg-3: #D8D8DE;
+    --ak-bg-4: #CBCBD3;
+
+    /* Glass & borders (dark-on-light) */
+    --ak-glass: rgba(0, 0, 0, 0.03);
+    --ak-glass-2: rgba(0, 0, 0, 0.05);
+    --ak-glass-3: rgba(0, 0, 0, 0.07);
+    --ak-border: rgba(0, 0, 0, 0.07);
+    --ak-border-2: rgba(0, 0, 0, 0.10);
+    --ak-border-3: rgba(0, 0, 0, 0.15);
+
+    /* Text levels */
+    --ak-t3: #7A7A8E;
+    --ak-t4: #A0A0AE;
+
+    /* Layout & easing (shared across modes) */
+    --ak-sidebar: 240px;
+    --ak-topbar: 56px;
+    --ak-r: 16px;
+    --ak-r-sm: 10px;
+    --ak-r-xs: 6px;
+    --ak-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --ak-ease2: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
-    /* Dark Mode - Financial Clarity Aesthetic
+    /* ── shadcn Dark Mode — Financial Clarity ──
        Near-black surfaces with purple undertones.
        Ref: brand/inspirations/financial-clarity-final.html */
-    --background: 240 24% 4%;
-    /* #09090F */
-    --foreground: 240 10% 95%;
-    /* #F0F0F5 */
-
-    --card: 240 18% 5%;
-    /* #0F0F17 */
+    --background: 240 24% 4%;          /* #09090F */
+    --foreground: 240 10% 95%;         /* #F0F0F5 */
+    --card: 240 18% 5%;               /* #0F0F17 */
     --card-foreground: 240 10% 95%;
-
-    --popover: 240 16% 7%;
-    /* #15151F */
+    --popover: 240 16% 7%;            /* #15151F */
     --popover-foreground: 240 10% 95%;
-
-    --primary: 38 92% 50%;
-    /* #F59E0B amber-500 */
+    --primary: 38 92% 50%;            /* #F59E0B */
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 263 70% 71%;
-    /* #A78BFA purple-400 */
+    --secondary: 263 70% 71%;         /* #A78BFA purple-400 */
     --secondary-foreground: 240 10% 95%;
-
     --muted: 240 14% 10%;
-    --muted-foreground: 240 8% 55%;
-    /* #5C5C72 */
-
+    --muted-foreground: 240 8% 55%;   /* #5C5C72 */
     --accent: 240 14% 10%;
     --accent-foreground: 240 10% 95%;
-
-    --destructive: 0 91% 71%;
-    /* #F87171 red-400 */
+    --destructive: 0 91% 71%;         /* #F87171 red-400 */
     --destructive-foreground: 0 0% 100%;
-
     --border: 240 14% 10%;
     --input: 240 14% 12%;
     --ring: 38 92% 50%;
-  }
-}
 
-@layer base {
+    /* ── Akount Dark Mode ── */
+
+    /* Primary alpha variants (brighter for dark bg) */
+    --ak-pri-hover: #FBBF24;
+    --ak-pri-dim: rgba(245, 158, 11, 0.18);
+    --ak-pri-glow: rgba(245, 158, 11, 0.12);
+    --ak-pri-text: #FFB02E;
+    --ak-pri-active: rgba(245, 158, 11, 0.25);
+
+    /* Semantic colors (400-level for dark backgrounds) */
+    --ak-green: #34D399;
+    --ak-green-dim: rgba(52, 211, 153, 0.18);
+    --ak-red: #F87171;
+    --ak-red-dim: rgba(248, 113, 113, 0.18);
+    --ak-blue: #60A5FA;
+    --ak-blue-dim: rgba(96, 165, 250, 0.18);
+    --ak-purple: #A78BFA;
+    --ak-purple-dim: rgba(167, 139, 250, 0.18);
+    --ak-teal: #2DD4BF;
+    --ak-teal-dim: rgba(45, 212, 191, 0.18);
+
+    /* AI */
+    --ak-ai: #A78BFA;
+    --ak-ai-accent: rgba(139, 92, 246, 0.10);
+    --ak-ai-border: rgba(139, 92, 246, 0.35);
+
+    /* Surfaces */
+    --ak-bg-3: #1A1A26;
+    --ak-bg-4: #22222E;
+
+    /* Glass & borders (light-on-dark) */
+    --ak-glass: rgba(255, 255, 255, 0.035);
+    --ak-glass-2: rgba(255, 255, 255, 0.06);
+    --ak-glass-3: rgba(255, 255, 255, 0.09);
+    --ak-border: rgba(255, 255, 255, 0.09);
+    --ak-border-2: rgba(255, 255, 255, 0.14);
+    --ak-border-3: rgba(255, 255, 255, 0.20);
+
+    /* Text levels */
+    --ak-t3: #71717A;
+    --ak-t4: #52525B;
+  }
+
   * {
     @apply border-border;
   }
@@ -153,40 +245,44 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════
+   3. UTILITIES — Glass, Glow, Tracking
+   ═══════════════════════════════════════════════════════ */
+
+/* Glass tiers — auto-adapt to light/dark via --ak-* vars */
 @utility glass {
-  background: rgba(255, 255, 255, 0.025);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--ak-glass);
+  border: 1px solid var(--ak-border);
   transform: translateZ(0);
 }
 
 @utility glass-2 {
-  background: rgba(255, 255, 255, 0.04);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--ak-glass-2);
+  border: 1px solid var(--ak-border-2);
   transform: translateZ(0);
 }
 
 @utility glass-3 {
-  background: rgba(255, 255, 255, 0.06);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: var(--ak-glass-3);
+  border: 1px solid var(--ak-border-3);
   transform: translateZ(0);
 }
 
+/* Blur reserved for shell elements only (sidebar, topbar, overlays).
+   Cards do NOT need blur on #09090F background — perf win. */
+@utility glass-blur {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* Mouse-tracking radial glow for cards.
+   Set --glow-x / --glow-y via JS and --glow-color (default: primary amber).
+   Usage: <GlowCard> component or glow-track utility + onMouseMove handler. */
 @utility glow-track {
   position: relative;
   overflow: hidden;
 }
 
-/*
- * Mouse-tracking radial glow for cards.
- * Set --glow-x / --glow-y via JS (0-100%) and --glow-color (default: primary amber).
- * Usage: add `glow-track` utility + attach the useGlowTrack hook or onMouseMove handler.
- */
 .glow-track::after {
   content: "";
   position: absolute;
@@ -199,7 +295,7 @@
     transparent 50%
   );
   opacity: 0;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.4s var(--ak-ease);
   pointer-events: none;
   z-index: 0;
 }
@@ -208,12 +304,12 @@
   opacity: 1;
 }
 
-/* Ensure card content sits above the glow layer */
 .glow-track > * {
   position: relative;
   z-index: 1;
 }
 
+/* Static glow box-shadows */
 @utility glow-primary {
   box-shadow: 0 0 16px rgba(245, 158, 11, 0.08);
 }
@@ -224,4 +320,80 @@
 
 @utility glow-danger {
   box-shadow: 0 0 12px rgba(248, 113, 113, 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════
+   4. ANIMATIONS
+   ═══════════════════════════════════════════════════════ */
+
+/* Fade-in with upward slide — used for staggered page entry */
+@keyframes fi {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fi {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fi 0.45s var(--ak-ease) forwards;
+}
+.fi1 { animation-delay: 0.06s; }
+.fi2 { animation-delay: 0.12s; }
+.fi3 { animation-delay: 0.20s; }
+.fi4 { animation-delay: 0.28s; }
+.fi5 { animation-delay: 0.36s; }
+.fi6 { animation-delay: 0.44s; }
+
+/* Dropdown appear */
+@keyframes dd-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Pulse breathing (orb / hero elements) */
+@keyframes pb {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 36px rgba(245, 158, 11, 0.22), 0 0 72px rgba(245, 158, 11, 0.08);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 52px rgba(245, 158, 11, 0.3), 0 0 100px rgba(245, 158, 11, 0.12);
+  }
+}
+
+/* Pulse ring (notification indicators) */
+@keyframes pr {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.07);
+    opacity: 0.9;
+  }
+}
+
+/* Checkmark draw (onboarding completion) */
+@keyframes check-draw {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Scale-in with fade (onboarding success orb) */
+@keyframes scale-in {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }

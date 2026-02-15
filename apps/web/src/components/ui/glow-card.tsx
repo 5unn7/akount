@@ -30,13 +30,27 @@ interface GlowCardProps
  */
 const GlowCard = React.forwardRef<HTMLDivElement, GlowCardProps>(
   ({ className, glowColor, onMouseMove, style, variant, children, ...props }, ref) => {
+    const frameRef = React.useRef<number>(0)
+
+    React.useEffect(() => {
+      return () => cancelAnimationFrame(frameRef.current)
+    }, [])
+
     const handleMouseMove = React.useCallback(
       (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect()
-        const x = ((e.clientX - rect.left) / rect.width) * 100
-        const y = ((e.clientY - rect.top) / rect.height) * 100
-        e.currentTarget.style.setProperty('--glow-x', `${x}%`)
-        e.currentTarget.style.setProperty('--glow-y', `${y}%`)
+        const target = e.currentTarget
+        const clientX = e.clientX
+        const clientY = e.clientY
+
+        cancelAnimationFrame(frameRef.current)
+        frameRef.current = requestAnimationFrame(() => {
+          const rect = target.getBoundingClientRect()
+          const x = ((clientX - rect.left) / rect.width) * 100
+          const y = ((clientY - rect.top) / rect.height) * 100
+          target.style.setProperty('--glow-x', `${x}%`)
+          target.style.setProperty('--glow-y', `${y}%`)
+        })
+
         onMouseMove?.(e)
       },
       [onMouseMove],

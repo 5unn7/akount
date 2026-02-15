@@ -64,10 +64,10 @@ export function CircularProgress({
 
   // Color mapping (Tailwind classes)
   const colorClasses = {
-    primary: 'stroke-[#F59E0B]', // Amber orange
-    success: 'stroke-[#34D399]', // Emerald 400
-    warning: 'stroke-[#FBBF24]', // Amber 400
-    error: 'stroke-[#F87171]', // Red 400
+    primary: 'stroke-primary', // Amber orange
+    success: 'stroke-ak-green', // Emerald 400
+    warning: 'stroke-ak-pri-hover', // Amber 400
+    error: 'stroke-ak-red', // Red 400
   }
 
   return (
@@ -78,7 +78,7 @@ export function CircularProgress({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          className="stroke-[rgba(255,255,255,0.06)]"
+          className="stroke-border"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -98,7 +98,7 @@ export function CircularProgress({
           strokeDashoffset={offset}
           strokeLinecap="round"
           style={{
-            filter: color === 'primary' ? 'drop-shadow(0 0 8px rgba(245,158,11,0.3))' : undefined,
+            filter: color === 'primary' ? 'drop-shadow(0 0 8px var(--ak-pri-glow))' : undefined,
           }}
         />
       </svg>
