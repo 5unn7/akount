@@ -1,7 +1,7 @@
 # Akount - Task List
 
-**Last Updated:** 2026-02-12
-**Current Phase:** Phase 2 - Track Your Money (COMPLETE) | Onboarding (COMPLETE)
+**Last Updated:** 2026-02-14
+**Current Phase:** Phase 2 - Track Your Money (COMPLETE) | Onboarding (COMPLETE) | Overview Polish (COMPLETE)
 
 ---
 
@@ -21,6 +21,36 @@
 - [x] **OB-8:** OnboardingHeroCard on dashboard (commit b4c00a3)
 - [x] **OB-9:** SidebarProgressIndicator (commit b4c00a3)
 - [x] **OB-10:** Frontend tests for onboarding components — 55 tests across 7 files
+
+### Overview Page Comprehensive Refresh — COMPLETE
+
+**Brainstorm:** [docs/brainstorms/2026-02-14-overview-page-comprehensive-refresh-brainstorm.md](docs/brainstorms/2026-02-14-overview-page-comprehensive-refresh-brainstorm.md)
+**Plan:** [docs/plans/2026-02-14-overview-page-comprehensive-refresh.md](docs/plans/2026-02-14-overview-page-comprehensive-refresh.md)
+
+**Phase 1: Frontend Layout Polish (commit babf908)**
+- [x] **UI-1:** Add navbar vertical padding (py-3, min-h-14) + TypeScript fix (Set → Array.from)
+- [x] **UI-2:** Bump Liquidity Hero balance font (text-3xl → text-4xl)
+- [x] **UI-3:** Fix sparkline alignment (flex-1 container + w-20 wrapper)
+- [x] **UI-4:** Add color-coded glow effects to spark cards (green/red/amber/blue/purple)
+- [x] **UI-5:** Increase spacing between zones (space-y-6 → space-y-8)
+- [x] **UI-6:** Add purple border-left accent to AI Brief card
+
+**Phase 2: Backend API (commit 87f41e3)**
+- [x] **BE-PERF-1:** Performance metrics Zod schema (query + response)
+- [x] **BE-PERF-2:** PerformanceService with transaction aggregates (revenue, expenses, profit, sparklines)
+- [x] **BE-PERF-3:** GET /api/overview/performance route handler
+
+**Phase 3: Frontend Integration (commits 6d61e44, cf78c9e)**
+- [x] **FE-PERF-1:** Performance API client function (getPerformanceMetrics)
+- [x] **FE-PERF-2:** Wire performance API to overview page (Promise.allSettled)
+- [x] **FE-PERF-3:** Replace hardcoded demo data with real transaction aggregates
+- [x] **FE-PERF-4:** Add SparkCardsSkeleton component
+- [x] **FE-PERF-5:** Empty state handling ("—" for zero values)
+- [x] **FE-PERF-6:** Error boundary (try/catch with graceful fallback)
+
+**Result:** Visual hierarchy established, real financial data powering spark KPIs, responsive design verified.
+
+**Deferred:** Performance service tests (15+ tests) — to be added in separate session.
 
 ---
 
