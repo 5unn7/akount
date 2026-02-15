@@ -353,11 +353,12 @@ export async function parsePDF(
         rows: [], // PDF doesn't have column preview like CSV
       },
     };
-  } catch (error: any) {
-    if (error.message?.includes('No transactions found') || error.message?.includes('no readable text')) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '';
+    if (message?.includes('No transactions found') || message?.includes('no readable text')) {
       throw error;
     }
-    throw new Error(`PDF parsing error: ${error.message || 'Unknown error'}`);
+    throw new Error(`PDF parsing error: ${message || 'Unknown error'}`);
   }
 }
 

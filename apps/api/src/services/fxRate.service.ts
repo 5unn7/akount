@@ -1,4 +1,5 @@
 import { prisma } from '@akount/db';
+import { logger } from '../lib/logger';
 
 export class FxRateService {
     /**
@@ -63,7 +64,7 @@ export class FxRateService {
 
         const pair = `${base}_${quote}`;
         if (manualRates[pair]) {
-            console.warn(`Using fallback rate for ${base}/${quote}: ${manualRates[pair]}`);
+            logger.warn({ base, quote, rate: manualRates[pair] }, 'Using fallback FX rate');
             return manualRates[pair];
         }
 
@@ -145,11 +146,11 @@ export class FxRateService {
                 };
 
                 if (manualRates[directKey]) {
-                    console.warn(`Using fallback rate for ${directKey}: ${manualRates[directKey]}`);
+                    logger.warn({ pair: directKey, rate: manualRates[directKey] }, 'Using fallback FX rate (batch)');
                     rateMap.set(directKey, manualRates[directKey]);
                 } else {
                     // Use 1.0 as last resort for batch operations (don't throw)
-                    console.warn(`FX Rate not found for ${directKey}, using 1.0`);
+                    logger.warn({ pair: directKey }, 'FX Rate not found, using 1.0');
                     rateMap.set(directKey, 1.0);
                 }
             }

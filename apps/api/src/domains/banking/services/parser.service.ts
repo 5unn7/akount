@@ -1,4 +1,5 @@
 import Papa, { ParseResult as PapaParseResult } from 'papaparse';
+import * as XLSX from 'xlsx';
 import type { ParsedTransaction, ExternalAccountData, ColumnMappings } from '../../../schemas/import';
 import { randomUUID } from 'crypto';
 
@@ -122,54 +123,128 @@ export function parseCSV(
 }
 
 /**
- * Auto-detect CSV column mappings based on common header names
+ * Parse XLSX/XLS file by converting the first sheet to CSV rows,
+ * then using the same column detection and parsing logic as CSV.
+ */
+export function parseXLSX(
+  fileBuffer: Buffer,
+  columnMappings?: ColumnMappings,
+  dateFormat?: string
+): ParseResult {
+  const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
+  const sheetName = workbook.SheetNames[0];
+
+  if (!sheetName) {
+    throw new Error('XLSX file contains no sheets');
+  }
+
+  const sheet = workbook.Sheets[sheetName];
+  // Convert sheet to array of objects (same format as Papa Parse header mode)
+  const rows = XLSX.utils.sheet_to_json<Record<string, string>>(sheet, {
+    raw: false, // Return formatted strings (not raw numbers)
+    defval: '',
+  });
+
+  if (rows.length === 0) {
+    throw new Error('XLSX file contains no data rows');
+  }
+
+  const columns = Object.keys(rows[0]);
+
+  // Reuse CSV column detection + parsing
+  const mappings = columnMappings || detectColumnMappings(columns);
+  const externalAccountData = extractExternalIdentifiers(rows, columns);
+
+  const transactions = rows.map((row) => {
+    const date = parseDate(String(row[mappings.date] || ''), dateFormat);
+    const description = sanitizeCSVInjection(String(row[mappings.description] || ''));
+    const amount = parseAmount(row as Record<string, string>, mappings.amount);
+    const balance = mappings.balance ? parseAmountValue(String(row[mappings.balance] || '')) : undefined;
+
+    return {
+      tempId: `temp_${randomUUID()}`,
+      date: date.toISOString().split('T')[0],
+      description,
+      amount,
+      balance,
+      isDuplicate: false,
+      duplicateConfidence: undefined,
+    };
+  });
+
+  const preview = {
+    rows: rows.slice(0, 5).map((row) => {
+      const sanitizedRow: Record<string, string> = {};
+      for (const [key, value] of Object.entries(row)) {
+        sanitizedRow[key] = sanitizeCSVInjection(String(value));
+      }
+      return sanitizedRow;
+    }),
+  };
+
+  return {
+    transactions,
+    columns,
+    suggestedMappings: mappings,
+    externalAccountData,
+    preview,
+  };
+}
+
+/**
+ * Auto-detect CSV column mappings based on common header names.
+ * Uses exact-match-first strategy to avoid false positives
+ * (e.g., "Shipping and Handling Amount" matching 'amount').
  */
 function detectColumnMappings(columns: string[]): ColumnMappings {
   const normalizedColumns = columns.map((c) => c.toLowerCase().trim());
 
+  // Helper: find column by exact match first, then substring
+  function findColumn(keywords: string[]): string | undefined {
+    // Phase 1: exact match (most reliable)
+    const exactIdx = normalizedColumns.findIndex((c) => keywords.some((k) => c === k));
+    if (exactIdx !== -1) return columns[exactIdx];
+
+    // Phase 2: substring match (broader, but may have false positives)
+    const subIdx = normalizedColumns.findIndex((c) => keywords.some((k) => c.includes(k)));
+    if (subIdx !== -1) return columns[subIdx];
+
+    return undefined;
+  }
+
   // Detect date column
   const dateKeywords = ['date', 'transaction date', 'posting date', 'trans date', 'value date'];
-  const dateColumn =
-    columns.find((_, i) => dateKeywords.some((keyword) => normalizedColumns[i].includes(keyword))) ||
-    columns[0]; // Default to first column if no match
+  const dateColumn = findColumn(dateKeywords) || columns[0];
 
   // Detect description column
-  const descKeywords = ['description', 'merchant', 'details', 'memo', 'payee', 'transaction'];
-  const descColumn =
-    columns.find((_, i) => descKeywords.some((keyword) => normalizedColumns[i].includes(keyword))) ||
-    columns[1]; // Default to second column
+  // Note: 'transaction' removed — matches "Transaction ID" via substring
+  const descKeywords = [
+    'description', 'merchant', 'details', 'memo', 'payee', 'name', 'subject',
+    'item title', 'narrative',
+  ];
+  const descColumn = findColumn(descKeywords) || columns[1];
 
-  // Detect amount columns (can be single or debit/credit pair)
-  const debitKeywords = ['debit', 'withdrawal', 'payments', 'amount'];
-  const creditKeywords = ['credit', 'deposit', 'deposits', 'amount'];
+  // Detect amount columns
+  // Step 1: Check for separate debit/credit columns (specific keywords only)
+  const debitKeywords = ['debit', 'withdrawal', 'payments', 'money out', 'debit amount'];
+  const creditKeywords = ['credit', 'deposit', 'deposits', 'money in', 'credit amount'];
 
-  const debitColumn = columns.find((_, i) =>
-    debitKeywords.some((keyword) => normalizedColumns[i].includes(keyword))
-  );
-
-  const creditColumn = columns.find((_, i) =>
-    creditKeywords.some((keyword) => normalizedColumns[i].includes(keyword))
-  );
+  const debitColumn = findColumn(debitKeywords);
+  const creditColumn = findColumn(creditKeywords);
 
   let amountMapping: string;
-  if (debitColumn && creditColumn) {
+  if (debitColumn && creditColumn && debitColumn !== creditColumn) {
     // Two-column format (debit and credit separate)
     amountMapping = `${debitColumn}|${creditColumn}`;
-  } else if (debitColumn) {
-    amountMapping = debitColumn;
-  } else if (creditColumn) {
-    amountMapping = creditColumn;
   } else {
-    // Fallback: find column with "amount" keyword
-    amountMapping =
-      columns.find((_, i) => normalizedColumns[i].includes('amount')) || columns[2]; // Default to third column
+    // Step 2: Single amount column — 'gross'/'net' for PayPal, 'amount' for others
+    const amountKeywords = ['gross', 'net', 'amount', 'total', 'sum'];
+    amountMapping = findColumn(amountKeywords) || debitColumn || creditColumn || columns[2];
   }
 
   // Detect balance column (optional)
-  const balanceKeywords = ['balance', 'running balance', 'account balance'];
-  const balanceColumn = columns.find((_, i) =>
-    balanceKeywords.some((keyword) => normalizedColumns[i].includes(keyword))
-  );
+  const balanceKeywords = ['balance', 'running balance', 'account balance', 'closing balance'];
+  const balanceColumn = findColumn(balanceKeywords);
 
   return {
     date: dateColumn,
@@ -412,7 +487,7 @@ export async function parsePDF(fileBuffer: Buffer, dateFormat?: string): Promise
         rows: [], // PDF doesn't have column preview like CSV
       },
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (
       error.message?.includes('No transactions found') ||
       error.message?.includes('no readable text')
@@ -424,12 +499,102 @@ export async function parsePDF(fileBuffer: Buffer, dateFormat?: string): Promise
 }
 
 /**
+ * Detect statement period (start/end years and start month) from PDF text
+ *
+ * Handles formats like:
+ * - "August 5 to September 4, 2025"
+ * - "November 17, 2025 to December 17, 2025"
+ * - "June 18, 2025 - July 17, 2025"
+ */
+function detectStatementPeriod(text: string): {
+  startYear: number;
+  endYear: number;
+  startMonth?: number;
+} {
+  const monthNames =
+    'January|February|March|April|May|June|July|August|September|October|November|December';
+
+  const MONTH_TO_IDX: Record<string, number> = {
+    january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+    july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+  };
+
+  // Try to match "Month DD, YYYY to Month DD, YYYY" pattern
+  const periodRegex = new RegExp(
+    `(${monthNames})\\s+\\d{1,2},?\\s+(\\d{4})\\s+(?:to|through|-)\\s+(${monthNames})\\s+\\d{1,2},?\\s+(\\d{4})`,
+    'i'
+  );
+  const periodMatch = text.match(periodRegex);
+
+  if (periodMatch) {
+    const startMonth = MONTH_TO_IDX[periodMatch[1].toLowerCase()];
+    return {
+      startYear: parseInt(periodMatch[2], 10),
+      endYear: parseInt(periodMatch[4], 10),
+      startMonth,
+    };
+  }
+
+  // Try "Month DD to Month DD, YYYY" (single year at end)
+  const singleYearRegex = new RegExp(
+    `(${monthNames})\\s+\\d{1,2}\\s+(?:to|through|-)\\s+(?:${monthNames})\\s+\\d{1,2},?\\s+(\\d{4})`,
+    'i'
+  );
+  const singleYearMatch = text.match(singleYearRegex);
+  if (singleYearMatch) {
+    const startMonth = MONTH_TO_IDX[singleYearMatch[1].toLowerCase()];
+    const year = parseInt(singleYearMatch[2], 10);
+    return { startYear: year, endYear: year, startMonth };
+  }
+
+  // Try abbreviated months: "JUN 28 TO JUL 28, 2025" or "STATEMENT FROM JUN 28 TO JUL 28, 2025"
+  const SHORT_MONTH_TO_IDX: Record<string, number> = {
+    jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+    jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
+  };
+  const abbrevPeriodRegex =
+    /([A-Za-z]{3})\s+\d{1,2},?\s+(\d{4})\s+(?:TO|to|through|-)\s+([A-Za-z]{3})\s+\d{1,2},?\s+(\d{4})/;
+  const abbrevMatch = text.match(abbrevPeriodRegex);
+  if (abbrevMatch) {
+    const sm = SHORT_MONTH_TO_IDX[abbrevMatch[1].toLowerCase()];
+    if (sm !== undefined) {
+      return {
+        startYear: parseInt(abbrevMatch[2], 10),
+        endYear: parseInt(abbrevMatch[4], 10),
+        startMonth: sm,
+      };
+    }
+  }
+
+  // Try "MON DD TO MON DD, YYYY" (abbreviated months, single year at end)
+  const abbrevSingleYearRegex =
+    /([A-Za-z]{3})\s+\d{1,2}\s+(?:TO|to|through|-)\s+([A-Za-z]{3})\s+\d{1,2},?\s+(\d{4})/;
+  const abbrevSingleMatch = text.match(abbrevSingleYearRegex);
+  if (abbrevSingleMatch) {
+    const sm = SHORT_MONTH_TO_IDX[abbrevSingleMatch[1].toLowerCase()];
+    if (sm !== undefined) {
+      const yr = parseInt(abbrevSingleMatch[3], 10);
+      return { startYear: yr, endYear: yr, startMonth: sm };
+    }
+  }
+
+  // Fallback: find any year near a month name
+  const yearMatch = text.match(
+    new RegExp(`(?:${monthNames})\\s+\\d{1,2}.*?(\\d{4})`, 'i')
+  );
+  const year = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
+
+  return { startYear: year, endYear: year };
+}
+
+/**
  * Extract transactions from PDF text using regex patterns
  *
  * Supports multiple bank statement formats:
- * - CIBC: "Aug 08  Aug 11  DESCRIPTION  1,234.56"
+ * - CIBC credit card: "Jan 04  Jan 04  DESCRIPTION  1,234.56"
+ * - RBC credit card: "JUN 30  JUN 30  DESCRIPTION  $29.00"
+ * - RBC chequing: "19 Nov  Description  1,299.12  28,716.28"
  * - Generic: "MM/DD/YYYY DESCRIPTION $1,234.56"
- * - Pipe-separated: "Date | Description | Amount | Balance"
  */
 function parseTransactionsFromPDFText(
   text: string,
@@ -441,80 +606,204 @@ function parseTransactionsFromPDFText(
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
-  // Detect statement year from text (e.g., "August 5 to September 4, 2025")
-  const yearMatch = text.match(/(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}.*?(\d{4})/i);
-  const statementYear = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
+  // Detect statement period for year assignment
+  const { startYear, endYear, startMonth } = detectStatementPeriod(text);
 
   const MONTHS: Record<string, number> = {
     jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
     jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
   };
 
-  // Skip lines that are headers, totals, or summary rows
+  // Determine correct year for a given month
+  function getYearForMonth(monthIdx: number): number {
+    if (startYear === endYear) return startYear;
+    // Statement spans year boundary (e.g., Nov 2025 to Jan 2026)
+    // Months >= startMonth use startYear, earlier months use endYear
+    if (startMonth !== undefined) {
+      return monthIdx >= startMonth ? startYear : endYear;
+    }
+    return endYear;
+  }
+
+  // Skip lines that are headers, totals, or non-transaction rows
   const skipPatterns = [
-    /^total\s/i, /^previous\s/i, /^payments\s/i, /^purchases\s/i,
-    /^interest\s/i, /^fees\s/i, /^cash\s+advances/i, /^other\s+credits/i,
+    /^total\s/i, /^previous\s+balance/i, /^payments\s+-/i,
+    /^purchases\s+\$/i, /^interest\s+charged/i, /^fees\s+charged/i,
+    /^cash\s+advances/i, /^other\s+credits/i,
     /^total\s+credits/i, /^total\s+charges/i, /^total\s+balance/i,
     /^amount\s+due/i, /^minimum\s+payment/i, /^available\s/i,
-    /^summary\s/i, /^annual$/i, /^trans\s+post/i, /^date\s+date/i,
+    /^summary\s/i, /^annual\s+interest/i, /^trans\.?\s+post/i, /^date\s+date/i,
+    /^subtotal\b/i,
+    /^foreign\s+currency/i,
+    /^\d{10,}$/, // Reference/card numbers (long digit strings)
+    /^balance\s+forward/i,
+    /^opening\s+balance/i, /^closing\s+balance/i,
+    /^credit\s+limit/i, /^credit\s+available/i,
+    /^new\s+balance/i, /^previous\s+statement/i,
+    /^page\s+\d/i,
   ];
 
-  // Pattern A: CIBC format — "Mon DD  Mon DD  Description  Amount"
-  // e.g. "Aug 08  Aug 11  PAYMENT THANK YOU  5,390.44"
-  const cibcPattern = /^([A-Z][a-z]{2})\s+(\d{2})\s+([A-Z][a-z]{2})\s+(\d{2})\s+(.+?)\s{2,}([\d,]+\.\d{2})\s*$/;
+  // Amount regex: optional negative, optional $, digits with commas, decimal
+  // Negative lookahead prevents partial matches like "25.99%" or "1,234.567"
+  const amtRegex = /(-?\$?[\d,]+\.\d{2})(?!\d|[A-Za-z%])/;
 
-  // Pattern B: Generic — "MM/DD/YYYY Description Amount"
+  // Date prefix patterns — match dates at start of line
+  // Pattern A: Two-date credit card — "Mon DD  Mon DD  ..."
+  const datePrefixA = /^([A-Za-z]{3})\s+(\d{1,2})\s+([A-Za-z]{3})\s+(\d{1,2})\s+/;
+  // Pattern A2: Single-date credit card — "Mon DD  ..."
+  const datePrefixA2 = /^([A-Za-z]{3})\s+(\d{1,2})\s+/;
+
+  // Pattern C: Chequing — "DD Mon  Description  Amount  [Balance]"
+  const amtReStr = '(-?\\$?[\\d,]+\\.\\d{2})(?!\\d|[A-Za-z%])';
+  const patternC = new RegExp(
+    `^(\\d{1,2})\\s+([A-Za-z]{3})\\s+(.+?)\\s{2,}${amtReStr}(?:\\s+${amtReStr})?`
+  );
+
+  // Pattern D: Sub-item (dateless) — "Description  Amount  [Balance]"
+  // For RBC chequing sub-items that use the previous transaction's date
+  const patternD = new RegExp(
+    `^([A-Za-z].+?)\\s{2,}${amtReStr}(?:\\s+${amtReStr})?`
+  );
+
+  // Track the last chequing date for sub-items (dateless lines)
+  let lastChequingDate: string | null = null;
+
+  // Track whether we found any "DD Mon" (chequing-style) transactions
+  let isChequingFormat = false;
+
+  // Extract opening balance for chequing statements (used for sign detection)
+  const openingBalanceMatch = text.match(/opening\s+balance.*?[\s$]([\d,]+\.\d{2})/i);
+  const openingBalance = openingBalanceMatch ? parseAmountValue(openingBalanceMatch[1]) : null;
+
+  // Pattern B: Generic numeric date — "MM/DD/YYYY Description Amount"
   const genericDatePattern = /(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})/;
-  const amountPattern = /([+-]?\$?\s*\d{1,3}(?:,\d{3})*\.\d{2})/;
+  const genericAmountPattern = /([+-]?\$?\s*\d{1,3}(?:,\d{3})*\.\d{2})/;
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
     // Skip summary/header lines
     if (skipPatterns.some((p) => p.test(line))) continue;
 
-    // --- Try Pattern A: CIBC "Mon DD  Mon DD  Description  Amount" ---
-    const cibcMatch = line.match(cibcPattern);
-    if (cibcMatch) {
+    // --- Try Pattern A: Credit card "Mon DD  Mon DD  Description  Amount" ---
+    // Uses "find first amount" approach to handle multicolumn PDFs
+    const matchA = line.match(datePrefixA);
+    if (matchA) {
       try {
-        const [, transMonth, transDay, , , description, amountStr] = cibcMatch;
+        const [fullPrefix, transMonth, transDay] = matchA;
         const monthIdx = MONTHS[transMonth.toLowerCase()];
         if (monthIdx === undefined) continue;
 
-        const date = new Date(statementYear, monthIdx, parseInt(transDay, 10));
-        const amount = parseAmountValue(amountStr);
+        // Find FIRST amount after the date prefix
+        const rest = line.substring(fullPrefix.length);
+        const firstAmount = rest.match(amtRegex);
+        if (firstAmount && firstAmount.index !== undefined) {
+          const description = rest.substring(0, firstAmount.index).trim();
+          const amountStr = firstAmount[1];
 
-        transactions.push({
-          tempId: `temp_${randomUUID()}`,
-          date: date.toISOString().split('T')[0],
-          description: description.replace(/\s+/g, ' ').trim(),
-          amount,
-          balance: undefined,
-          isDuplicate: false,
-          duplicateConfidence: undefined,
-        });
-        continue;
+          if (description.length > 0) {
+            const year = getYearForMonth(monthIdx);
+            const date = new Date(year, monthIdx, parseInt(transDay, 10));
+            const amount = parseAmountValue(amountStr);
+
+            transactions.push({
+              tempId: `temp_${randomUUID()}`,
+              date: date.toISOString().split('T')[0],
+              description: description.replace(/\s+/g, ' ').trim(),
+              amount,
+              balance: undefined,
+              isDuplicate: false,
+              duplicateConfidence: undefined,
+            });
+            continue;
+          }
+        }
       } catch {
         // Fall through to next pattern
       }
     }
 
-    // --- Try Pattern A2: CIBC single-date — "Mon DD  Description  Amount" ---
-    const cibcSinglePattern = /^([A-Z][a-z]{2})\s+(\d{2})\s+(.+?)\s{2,}([\d,]+\.\d{2})\s*$/;
-    const cibcSingle = line.match(cibcSinglePattern);
-    if (cibcSingle) {
+    // --- Try Pattern A2: Credit card single-date — "Mon DD  Description  Amount" ---
+    const matchA2 = line.match(datePrefixA2);
+    if (matchA2) {
       try {
-        const [, transMonth, transDay, description, amountStr] = cibcSingle;
+        const [fullPrefix, transMonth, transDay] = matchA2;
         const monthIdx = MONTHS[transMonth.toLowerCase()];
         if (monthIdx === undefined) continue;
 
-        const date = new Date(statementYear, monthIdx, parseInt(transDay, 10));
+        // Find FIRST amount after the date prefix
+        const rest = line.substring(fullPrefix.length);
+        const firstAmount = rest.match(amtRegex);
+        if (firstAmount && firstAmount.index !== undefined) {
+          const description = rest.substring(0, firstAmount.index).trim();
+          const amountStr = firstAmount[1];
+
+          if (description.length > 0) {
+            const year = getYearForMonth(monthIdx);
+            const date = new Date(year, monthIdx, parseInt(transDay, 10));
+            const amount = parseAmountValue(amountStr);
+
+            transactions.push({
+              tempId: `temp_${randomUUID()}`,
+              date: date.toISOString().split('T')[0],
+              description: description.replace(/\s+/g, ' ').trim(),
+              amount,
+              balance: undefined,
+              isDuplicate: false,
+              duplicateConfidence: undefined,
+            });
+            continue;
+          }
+        }
+      } catch {
+        // Fall through
+      }
+    }
+
+    // --- Try Pattern C: Chequing "DD Mon  Description  Amount  [Balance]" ---
+    const matchC = line.match(patternC);
+    if (matchC) {
+      try {
+        const [, dayStr, monthStr, description, amountStr, balanceStr] = matchC;
+        const monthIdx = MONTHS[monthStr.toLowerCase()];
+        if (monthIdx === undefined) continue;
+
+        const year = getYearForMonth(monthIdx);
+        const date = new Date(year, monthIdx, parseInt(dayStr, 10));
         const amount = parseAmountValue(amountStr);
+        const balance = balanceStr ? parseAmountValue(balanceStr) : undefined;
+
+        // Collect continuation lines (wrapped text without dates/amounts)
+        let fullDescription = description.replace(/\s+/g, ' ').trim();
+        while (i + 1 < lines.length) {
+          const nextLine = lines[i + 1].trim();
+          // Stop if next line is a new transaction, skip pattern, or has amounts at end
+          if (
+            nextLine.match(/^\d{1,2}\s+[A-Za-z]{3}\s/) || // DD Mon
+            nextLine.match(/^[A-Za-z]{3}\s+\d{1,2}\s/) || // Mon DD
+            nextLine.match(genericDatePattern) ||
+            skipPatterns.some((p) => p.test(nextLine)) ||
+            nextLine.length === 0 ||
+            /^\d{10,}$/.test(nextLine) || // Reference numbers
+            /[\d,]+\.\d{2}\s*$/.test(nextLine) // Ends with an amount
+          ) {
+            break;
+          }
+          // It's a continuation line — append to description
+          fullDescription += ' ' + nextLine.replace(/\s+/g, ' ').trim();
+          i++;
+        }
+
+        const dateStr = date.toISOString().split('T')[0];
+        lastChequingDate = dateStr; // Track for sub-items
+        isChequingFormat = true;
 
         transactions.push({
           tempId: `temp_${randomUUID()}`,
-          date: date.toISOString().split('T')[0],
-          description: description.replace(/\s+/g, ' ').trim(),
+          date: dateStr,
+          description: fullDescription,
           amount,
-          balance: undefined,
+          balance,
           isDuplicate: false,
           duplicateConfidence: undefined,
         });
@@ -524,9 +813,57 @@ function parseTransactionsFromPDFText(
       }
     }
 
+    // --- Date-only header line: "DD Mon  Description" (no amount) ---
+    // Updates lastChequingDate for subsequent sub-items (Pattern D)
+    // e.g., "24 Nov  Direct Deposits (PDS) service total"
+    {
+      const dateOnlyMatch = line.match(/^(\d{1,2})\s+([A-Za-z]{3})\s/);
+      if (dateOnlyMatch) {
+        const monthIdx = MONTHS[dateOnlyMatch[2].toLowerCase()];
+        if (monthIdx !== undefined) {
+          const year = getYearForMonth(monthIdx);
+          const date = new Date(year, monthIdx, parseInt(dateOnlyMatch[1], 10));
+          lastChequingDate = date.toISOString().split('T')[0];
+          isChequingFormat = true;
+          // Don't continue — this line has no transaction, just updates the date
+        }
+      }
+    }
+
+    // --- Try Pattern D: Sub-item (dateless line with amount) ---
+    // RBC chequing has sub-items like "PAD CCRA  CANADA  879.05  27,837.23"
+    // These use the previous dated transaction's date
+    if (lastChequingDate) {
+      const matchD = line.match(patternD);
+      if (matchD) {
+        const [, description, amountStr, balanceStr] = matchD;
+        // Validate it looks like a real description (not a header/summary)
+        const descTrimmed = description.replace(/\s+/g, ' ').trim();
+        if (descTrimmed.length > 2 && descTrimmed.length < 120) {
+          try {
+            const amount = parseAmountValue(amountStr);
+            const balance = balanceStr ? parseAmountValue(balanceStr) : undefined;
+
+            transactions.push({
+              tempId: `temp_${randomUUID()}`,
+              date: lastChequingDate,
+              description: descTrimmed,
+              amount,
+              balance,
+              isDuplicate: false,
+              duplicateConfidence: undefined,
+            });
+            continue;
+          } catch {
+            // Fall through
+          }
+        }
+      }
+    }
+
     // --- Try Pattern B: Generic numeric date format ---
     const dateMatch = line.match(genericDatePattern);
-    const amountMatches = line.match(new RegExp(amountPattern, 'g'));
+    const amountMatches = line.match(new RegExp(genericAmountPattern, 'g'));
 
     if (dateMatch && amountMatches && amountMatches.length > 0) {
       try {
@@ -560,6 +897,105 @@ function parseTransactionsFromPDFText(
       } catch {
         continue;
       }
+    }
+  }
+
+  // --- Post-processing: Determine sign for chequing transactions using running balance ---
+  // Credit card amounts are handled by adjustAmountForAccountType() in import.service.ts,
+  // but chequing/bank statements need inline sign detection because the PDF doesn't
+  // distinguish debit vs credit columns in flattened text.
+  //
+  // Algorithm: Group consecutive transactions until we find one with a balance.
+  // Then use the known running balance and the target balance to determine which
+  // sign combination (+/-) for each transaction produces the correct result.
+  // For small groups (<=8), try all 2^n combinations. For larger groups, fall back
+  // to checking all-debit vs all-credit.
+  if (isChequingFormat && openingBalance !== null && transactions.length > 0) {
+    let runningBalance = openingBalance;
+    let groupStart = 0;
+
+    while (groupStart < transactions.length) {
+      // Find end of group: walk forward until we find a transaction with a balance
+      let groupEnd = groupStart;
+      while (groupEnd < transactions.length && transactions[groupEnd].balance === undefined) {
+        groupEnd++;
+      }
+
+      if (groupEnd >= transactions.length) {
+        // No balance available — default all remaining to debit
+        for (let j = groupStart; j < transactions.length; j++) {
+          transactions[j].amount = -Math.abs(transactions[j].amount);
+        }
+        break;
+      }
+
+      const groupSize = groupEnd - groupStart + 1;
+      const endBalance = transactions[groupEnd].balance!;
+      const netChange = endBalance - runningBalance;
+
+      // Collect absolute amounts for the group
+      const amounts: number[] = [];
+      for (let j = groupStart; j <= groupEnd; j++) {
+        amounts.push(Math.abs(transactions[j].amount));
+      }
+
+      if (groupSize === 1) {
+        // Simple case: single transaction with balance
+        const diffDebit = Math.abs(runningBalance - amounts[0] - endBalance);
+        const diffCredit = Math.abs(runningBalance + amounts[0] - endBalance);
+        if (diffDebit <= diffCredit) {
+          transactions[groupStart].amount = -amounts[0]; // debit
+        }
+        // else: stays positive (credit)
+      } else if (groupSize <= 8) {
+        // Brute force: try all 2^n sign combinations to find the one matching netChange
+        // Each bit: 0 = credit (+), 1 = debit (-)
+        const n = groupSize;
+        let bestMask = 0;
+        let bestDiff = Infinity;
+
+        for (let mask = 0; mask < (1 << n); mask++) {
+          let sum = 0;
+          for (let bit = 0; bit < n; bit++) {
+            sum += (mask & (1 << bit)) ? -amounts[bit] : amounts[bit];
+          }
+          const diff = Math.abs(sum - netChange);
+          if (diff < bestDiff) {
+            bestDiff = diff;
+            bestMask = mask;
+          }
+        }
+
+        // Apply best match (tolerance: 2 cents for rounding)
+        if (bestDiff <= 2) {
+          for (let bit = 0; bit < n; bit++) {
+            const idx = groupStart + bit;
+            if (bestMask & (1 << bit)) {
+              transactions[idx].amount = -amounts[bit]; // debit
+            }
+            // else: stays positive (credit)
+          }
+        } else {
+          // No combination matches — default all to debit
+          for (let j = groupStart; j <= groupEnd; j++) {
+            transactions[j].amount = -Math.abs(transactions[j].amount);
+          }
+        }
+      } else {
+        // Group too large for brute force — check all-debit vs all-credit
+        const totalAmount = amounts.reduce((s, a) => s + a, 0);
+        const diffDebit = Math.abs(runningBalance - totalAmount - endBalance);
+        const diffCredit = Math.abs(runningBalance + totalAmount - endBalance);
+        const isDebit = diffDebit <= diffCredit;
+        for (let j = groupStart; j <= groupEnd; j++) {
+          if (isDebit) {
+            transactions[j].amount = -Math.abs(transactions[j].amount);
+          }
+        }
+      }
+
+      runningBalance = endBalance;
+      groupStart = groupEnd + 1;
     }
   }
 

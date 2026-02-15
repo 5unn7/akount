@@ -26,6 +26,21 @@ const GL_ACCOUNT_SELECT = {
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
 
+type GLAccountTreeNode = {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  normalBalance: string;
+  parentAccountId: string | null;
+  isActive: boolean;
+  _count: {
+    childAccounts: number;
+    journalLines: number;
+  };
+  children: GLAccountTreeNode[];
+};
+
 export class GLAccountService {
   constructor(
     private tenantId: string,
@@ -339,7 +354,7 @@ export class GLAccountService {
       }
     }
 
-    function buildTree(account: typeof accounts[0]): any {
+    function buildTree(account: typeof accounts[0]): GLAccountTreeNode {
       return {
         ...account,
         children: (childMap.get(account.id) || []).map(buildTree),

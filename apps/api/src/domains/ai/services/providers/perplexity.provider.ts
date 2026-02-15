@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import type { AIProvider, AIMessage, AIChatOptions, AIChatResponse } from '../types';
+import { logger } from '../../../../lib/logger';
 
 export class PerplexityProvider implements AIProvider {
   readonly name = 'perplexity';
@@ -45,9 +46,10 @@ export class PerplexityProvider implements AIProvider {
             }
           : undefined,
       };
-    } catch (error: any) {
-      console.error('Perplexity API Error:', error);
-      throw new Error(`Perplexity API Error: ${error.message}`);
+    } catch (error: unknown) {
+      logger.error({ err: error }, 'Perplexity API Error');
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Perplexity API Error: ${message}`);
     }
   }
 }

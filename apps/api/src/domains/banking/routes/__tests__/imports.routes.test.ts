@@ -21,21 +21,24 @@ vi.mock('../../../../middleware/tenant', () => ({
 // Mock ImportService
 const mockCreateCSVImport = vi.fn();
 const mockCreatePDFImport = vi.fn();
+const mockCreateXLSXImport = vi.fn();
 const mockGetImportBatch = vi.fn();
 const mockListImportBatches = vi.fn();
 
 vi.mock('../../services/import.service', () => ({
-  ImportService: vi.fn().mockImplementation(() => ({
-    createCSVImport: mockCreateCSVImport,
-    createPDFImport: mockCreatePDFImport,
-    getImportBatch: mockGetImportBatch,
-    listImportBatches: mockListImportBatches,
-  })),
+  ImportService: vi.fn().mockImplementation(function (this: Record<string, unknown>) {
+    this.createCSVImport = mockCreateCSVImport;
+    this.createPDFImport = mockCreatePDFImport;
+    this.createXLSXImport = mockCreateXLSXImport;
+    this.getImportBatch = mockGetImportBatch;
+    this.listImportBatches = mockListImportBatches;
+  }),
 }));
 
 const TENANT_ID = 'tenant-abc-123';
 const ACCOUNT_ID = 'acc-xyz-789';
-const IMPORT_BATCH_ID = 'batch-123';
+const IMPORT_BATCH_ID = 'cm0batch12345678901234';
+const CURSOR_ID = 'cm0cursor1234567890123';
 
 function mockImportBatchResult() {
   return {
@@ -106,18 +109,18 @@ describe('Import Routes', () => {
       mockCreateCSVImport.mockResolvedValueOnce(mockImportBatchResult());
 
       // Create multipart form data manually
-      const boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW';
+      // IMPORTANT: accountId must come BEFORE file (Fastify multipart streams fields in order)
       const csvContent = 'date,description,amount\n2024-01-15,Coffee,5.50';
       const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
         `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
         `Content-Disposition: form-data; name="file"; filename="statement.csv"`,
         `Content-Type: text/csv`,
         ``,
         csvContent,
-        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
-        `Content-Disposition: form-data; name="accountId"`,
-        ``,
-        ACCOUNT_ID,
         `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
       ].join('\r\n');
 
@@ -143,13 +146,22 @@ describe('Import Routes', () => {
     });
 
     it('should return 400 when no file uploaded', async () => {
+      // Send multipart with only a text field, no file
+      const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
+      ].join('\r\n');
+
       const response = await app.inject({
         method: 'POST',
         url: '/imports/csv',
         headers: {
-          'content-type': 'application/json',
+          'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
         },
-        payload: {},
+        payload,
       });
 
       expect(response.statusCode).toBe(400);
@@ -184,14 +196,14 @@ describe('Import Routes', () => {
     it('should return 400 for invalid file extension', async () => {
       const payload = [
         `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
         `Content-Disposition: form-data; name="file"; filename="statement.txt"`,
         `Content-Type: text/plain`,
         ``,
         `fake content`,
-        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
-        `Content-Disposition: form-data; name="accountId"`,
-        ``,
-        ACCOUNT_ID,
         `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
       ].join('\r\n');
 
@@ -214,14 +226,14 @@ describe('Import Routes', () => {
 
       const payload = [
         `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        `invalid-account`,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
         `Content-Disposition: form-data; name="file"; filename="statement.csv"`,
         `Content-Type: text/csv`,
         ``,
         `date,description,amount`,
-        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
-        `Content-Disposition: form-data; name="accountId"`,
-        ``,
-        `invalid-account`,
         `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
       ].join('\r\n');
 
@@ -249,14 +261,14 @@ describe('Import Routes', () => {
 
       const payload = [
         `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
         `Content-Disposition: form-data; name="file"; filename="statement.pdf"`,
         `Content-Type: application/pdf`,
         ``,
         `fake PDF content`,
-        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
-        `Content-Disposition: form-data; name="accountId"`,
-        ``,
-        ACCOUNT_ID,
         `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
       ].join('\r\n');
 
@@ -280,13 +292,22 @@ describe('Import Routes', () => {
     });
 
     it('should return 400 when no file uploaded', async () => {
+      // Send multipart with only a text field, no file
+      const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
+      ].join('\r\n');
+
       const response = await app.inject({
         method: 'POST',
         url: '/imports/pdf',
         headers: {
-          'content-type': 'application/json',
+          'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
         },
-        payload: {},
+        payload,
       });
 
       expect(response.statusCode).toBe(400);
@@ -297,14 +318,14 @@ describe('Import Routes', () => {
     it('should return 400 for invalid file extension', async () => {
       const payload = [
         `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
         `Content-Disposition: form-data; name="file"; filename="statement.csv"`,
         `Content-Type: text/csv`,
         ``,
         `fake content`,
-        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
-        `Content-Disposition: form-data; name="accountId"`,
-        ``,
-        ACCOUNT_ID,
         `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
       ].join('\r\n');
 
@@ -328,20 +349,166 @@ describe('Import Routes', () => {
 
       const payload = [
         `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        `invalid-account`,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
         `Content-Disposition: form-data; name="file"; filename="statement.pdf"`,
         `Content-Type: application/pdf`,
         ``,
         `fake PDF`,
-        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
-        `Content-Disposition: form-data; name="accountId"`,
-        ``,
-        `invalid-account`,
         `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
       ].join('\r\n');
 
       const response = await app.inject({
         method: 'POST',
         url: '/imports/pdf',
+        headers: {
+          'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        },
+        payload,
+      });
+
+      expect(response.statusCode).toBe(403);
+      const body = response.json();
+      expect(body.message).toContain('Account not found');
+    });
+  });
+
+  describe('POST /xlsx', () => {
+    it('should return 201 on successful XLSX upload', async () => {
+      mockCreateXLSXImport.mockResolvedValueOnce({
+        ...mockImportBatchResult(),
+        sourceType: 'CSV', // XLSX stored as CSV sourceType
+      });
+
+      const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="file"; filename="statement.xlsx"`,
+        `Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`,
+        ``,
+        `fake XLSX content`,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
+      ].join('\r\n');
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/imports/xlsx',
+        headers: {
+          'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        },
+        payload,
+      });
+
+      expect(response.statusCode).toBe(201);
+      const body = response.json();
+      expect(body.id).toBe(IMPORT_BATCH_ID);
+      expect(mockCreateXLSXImport).toHaveBeenCalledWith(
+        expect.objectContaining({
+          accountId: ACCOUNT_ID,
+        })
+      );
+    });
+
+    it('should return 400 when no file uploaded', async () => {
+      const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
+      ].join('\r\n');
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/imports/xlsx',
+        headers: {
+          'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        },
+        payload,
+      });
+
+      expect(response.statusCode).toBe(400);
+      const body = response.json();
+      expect(body.message).toContain('No file uploaded');
+    });
+
+    it('should return 400 when accountId missing', async () => {
+      const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="file"; filename="statement.xlsx"`,
+        `Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`,
+        ``,
+        `fake xlsx`,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
+      ].join('\r\n');
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/imports/xlsx',
+        headers: {
+          'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        },
+        payload,
+      });
+
+      expect(response.statusCode).toBe(400);
+      const body = response.json();
+      expect(body.message).toContain('accountId is required');
+    });
+
+    it('should return 400 for invalid file extension', async () => {
+      const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        ACCOUNT_ID,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="file"; filename="statement.csv"`,
+        `Content-Type: text/csv`,
+        ``,
+        `fake content`,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
+      ].join('\r\n');
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/imports/xlsx',
+        headers: {
+          'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        },
+        payload,
+      });
+
+      expect(response.statusCode).toBe(400);
+      const body = response.json();
+      expect(body.message).toContain('Invalid file type');
+      expect(body.message).toContain('Excel');
+    });
+
+    it('should return 403 when account not found', async () => {
+      mockCreateXLSXImport.mockRejectedValueOnce(new Error('Account not found or access denied'));
+
+      const payload = [
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="accountId"`,
+        ``,
+        `invalid-account`,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW`,
+        `Content-Disposition: form-data; name="file"; filename="statement.xlsx"`,
+        `Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`,
+        ``,
+        `fake xlsx`,
+        `------WebKitFormBoundary7MA4YWxkTrZu0gW--`,
+      ].join('\r\n');
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/imports/xlsx',
         headers: {
           'content-type': `multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW`,
         },
@@ -423,12 +590,12 @@ describe('Import Routes', () => {
 
       const response = await app.inject({
         method: 'GET',
-        url: '/imports?cursor=batch-cursor&limit=25',
+        url: `/imports?cursor=${CURSOR_ID}&limit=25`,
       });
 
       expect(response.statusCode).toBe(200);
       expect(mockListImportBatches).toHaveBeenCalledWith({
-        cursor: 'batch-cursor',
+        cursor: CURSOR_ID,
         limit: 25,
       });
     });

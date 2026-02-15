@@ -59,9 +59,10 @@ export async function aiRoutes(fastify: FastifyInstance) {
       try {
         const response = await aiService.chat(messages, options);
         return response;
-      } catch (error: any) {
+      } catch (error: unknown) {
         request.log.error({ error }, 'AI chat error');
-        return reply.status(500).send({ error: error.message });
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return reply.status(500).send({ error: message });
       }
     }
   );
@@ -84,9 +85,10 @@ export async function aiRoutes(fastify: FastifyInstance) {
       try {
         const suggestion = await categorizeTransaction(description, amount, tenantId);
         return suggestion;
-      } catch (error: any) {
+      } catch (error: unknown) {
         request.log.error({ error }, 'Categorization error');
-        return reply.status(500).send({ error: error.message });
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return reply.status(500).send({ error: message });
       }
     }
   );

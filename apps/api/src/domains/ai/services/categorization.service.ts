@@ -1,5 +1,6 @@
 import { prisma } from '@akount/db';
 import { aiService } from './ai.service';
+import { logger } from '../../../lib/logger';
 
 /**
  * Categorization Service
@@ -240,7 +241,7 @@ export async function categorizeTransaction(
         };
       }
     } catch (error) {
-      console.error('AI Categorization failed:', error);
+      logger.error({ err: error }, 'AI Categorization failed');
       // Fall through to no suggestion
     }
   }
@@ -359,7 +360,5 @@ export async function learnFromCorrection(
   tenantId: string
 ): Promise<void> {
   // Placeholder - will be implemented in Phase 7
-  console.log(
-    `[Learning] Correction logged: "${description}" -> ${categoryId} (tenant: ${tenantId})`
-  );
+  logger.info({ description, categoryId, tenantId }, 'Learning correction logged');
 }

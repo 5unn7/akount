@@ -159,6 +159,113 @@ export async function importsRoutes(fastify: FastifyInstance) {
   );
 
   /**
+   * POST /xlsx
+   *
+   * Upload XLSX/XLS file and create import batch immediately.
+   * Parses spreadsheet → deduplicates → creates ImportBatch + Transactions.
+   */
+  fastify.post(
+    '/xlsx',
+    {
+      onRequest: [authMiddleware, tenantMiddleware],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const data = await request.file();
+
+        if (!data) {
+          return reply.status(400).send({
+            error: 'Bad Request',
+            message: 'No file uploaded',
+          });
+        }
+
+        const fields = data.fields as MultipartFields;
+        const accountId = fields.accountId?.value;
+        const dateFormat = fields.dateFormat?.value as
+          | 'MM/DD/YYYY'
+          | 'DD/MM/YYYY'
+          | 'YYYY-MM-DD'
+          | undefined;
+
+        let columnMappings;
+        if (fields.columnMappings?.value) {
+          try {
+            columnMappings = JSON.parse(fields.columnMappings.value);
+          } catch (error) {
+            return reply.status(400).send({
+              error: 'Bad Request',
+              message: 'Invalid columnMappings JSON',
+            });
+          }
+        }
+
+        if (!accountId) {
+          return reply.status(400).send({
+            error: 'Bad Request',
+            message: 'accountId is required',
+          });
+        }
+
+        const fileName = data.filename.toLowerCase();
+        if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+          return reply.status(400).send({
+            error: 'Bad Request',
+            message: 'Invalid file type. Expected Excel file (.xlsx or .xls extension)',
+          });
+        }
+
+        const fileBuffer = await data.toBuffer();
+        const maxSize = 10 * 1024 * 1024;
+        if (fileBuffer.length > maxSize) {
+          return reply.status(413).send({
+            error: 'Payload Too Large',
+            message: `File size exceeds 10MB limit. Your file is ${(fileBuffer.length / 1024 / 1024).toFixed(2)}MB`,
+          });
+        }
+
+        const importService = new ImportService(request.tenantId as string);
+        const result = await importService.createXLSXImport({
+          file: fileBuffer,
+          accountId,
+          columnMappings,
+          dateFormat,
+        });
+
+        return reply.status(201).send(result);
+      } catch (error: unknown) {
+        request.log.error({ error }, 'Error uploading XLSX file');
+
+        if (error instanceof Error) {
+          if (error.message.includes('Account not found')) {
+            return reply.status(403).send({
+              error: 'Forbidden',
+              message: error.message,
+            });
+          }
+
+          if (error.message.includes('XLSX')) {
+            return reply.status(400).send({
+              error: 'Bad Request',
+              message: error.message,
+            });
+          }
+
+          return reply.status(500).send({
+            error: 'Internal Server Error',
+            message: error.message,
+          });
+        }
+
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'An error occurred while processing the XLSX file',
+        });
+      }
+    }
+  );
+
+  /**
    * POST /pdf
    *
    * Upload PDF file and create import batch immediately.
@@ -297,7 +404,7 @@ export async function importsRoutes(fastify: FastifyInstance) {
         const query = request.query as Record<string, unknown>;
         const validated = ListImportsQuerySchema.safeParse({
           ...query,
-          limit: query.limit ? Number(query.limit) : undefined,
+          ...(query.limit != null ? { limit: Number(query.limit) } : {}),
         });
 
         if (!validated.success) {

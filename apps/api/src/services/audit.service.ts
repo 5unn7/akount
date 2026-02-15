@@ -1,5 +1,6 @@
 import { prisma, AuditAction } from '@akount/db';
 import type { FastifyRequest } from 'fastify';
+import { logger } from '../lib/logger';
 
 /**
  * Audit event parameters.
@@ -64,15 +65,13 @@ export class AuditService {
     } catch (error) {
       // Don't fail the request if audit logging fails
       // But log the error for investigation
-      console.error('[Audit] Failed to log event:', {
-        error,
-        params: {
-          tenantId: params.tenantId,
-          model: params.model,
-          recordId: params.recordId,
-          action: params.action,
-        },
-      });
+      logger.error({
+        err: error,
+        tenantId: params.tenantId,
+        model: params.model,
+        recordId: params.recordId,
+        action: params.action,
+      }, 'Failed to log audit event');
     }
   }
 

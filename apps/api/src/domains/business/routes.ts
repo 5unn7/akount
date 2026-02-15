@@ -1,149 +1,25 @@
-import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { authMiddleware } from '../../middleware/auth';
-import { tenantMiddleware } from '../../middleware/tenant';
-import { withPermission } from '../../middleware/withPermission';
+import type { FastifyInstance } from 'fastify';
+import { invoiceRoutes } from '../invoicing/routes/invoices';
+import { billRoutes } from '../invoicing/routes/bills';
+import { clientRoutes } from '../clients/routes/clients';
+import { vendorRoutes } from '../vendors/routes/vendors';
 
 /**
  * Business Domain Routes
  *
- * Handles clients, invoices, bills, and payments.
- * All routes require authentication and are tenant-scoped.
+ * Handles invoices, bills, clients, and vendors.
+ * All routes require authentication and are tenant-scoped (handled by sub-routes).
+ *
+ * Routes available:
+ * - /api/business/invoices (AR)
+ * - /api/business/bills (AP)
+ * - /api/business/clients
+ * - /api/business/vendors
  */
 export async function businessRoutes(fastify: FastifyInstance) {
-  // Apply auth and tenant middleware to all routes in this domain
-  fastify.addHook('onRequest', authMiddleware);
-  fastify.addHook('preHandler', tenantMiddleware);
-
-  // ============================================================================
-  // CLIENTS
-  // ============================================================================
-
-  fastify.get(
-    '/clients',
-    {
-      ...withPermission('business', 'clients', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Clients listing will be implemented in Phase 4',
-      });
-    }
-  );
-
-  fastify.get(
-    '/clients/:id',
-    {
-      ...withPermission('business', 'clients', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Client details will be implemented in Phase 4',
-      });
-    }
-  );
-
-  fastify.post(
-    '/clients',
-    {
-      ...withPermission('business', 'clients', 'ACT'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Client creation will be implemented in Phase 4',
-      });
-    }
-  );
-
-  // ============================================================================
-  // INVOICES
-  // ============================================================================
-
-  fastify.get(
-    '/invoices',
-    {
-      ...withPermission('business', 'invoices', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Invoices listing will be implemented in Phase 4',
-      });
-    }
-  );
-
-  fastify.get(
-    '/invoices/:id',
-    {
-      ...withPermission('business', 'invoices', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Invoice details will be implemented in Phase 4',
-      });
-    }
-  );
-
-  fastify.post(
-    '/invoices',
-    {
-      ...withPermission('business', 'invoices', 'ACT'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Invoice creation will be implemented in Phase 4',
-      });
-    }
-  );
-
-  // ============================================================================
-  // BILLS
-  // ============================================================================
-
-  fastify.get(
-    '/bills',
-    {
-      ...withPermission('business', 'bills', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Bills listing will be implemented in Phase 4',
-      });
-    }
-  );
-
-  // ============================================================================
-  // PAYMENTS
-  // ============================================================================
-
-  fastify.get(
-    '/payments',
-    {
-      ...withPermission('business', 'payments', 'VIEW'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Payments listing will be implemented in Phase 4',
-      });
-    }
-  );
-
-  fastify.post(
-    '/payments',
-    {
-      ...withPermission('business', 'payments', 'ACT'),
-    },
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'Payment recording will be implemented in Phase 4',
-      });
-    }
-  );
+  // Register sub-routes (each handles its own auth/tenant middleware)
+  await fastify.register(invoiceRoutes, { prefix: '/invoices' });
+  await fastify.register(billRoutes, { prefix: '/bills' });
+  await fastify.register(clientRoutes, { prefix: '/clients' });
+  await fastify.register(vendorRoutes, { prefix: '/vendors' });
 }

@@ -1,4 +1,5 @@
 import { prisma, AuditAction } from '@akount/db';
+import { logger } from './logger';
 
 /**
  * Audit Logging Service
@@ -33,6 +34,6 @@ export async function createAuditLog(params: AuditLogParams): Promise<void> {
     });
   } catch (error) {
     // Don't fail the operation if audit logging fails, but log the error
-    console.error('Failed to create audit log:', error);
+    logger.error({ err: error }, 'Failed to create audit log');
   }
 }
