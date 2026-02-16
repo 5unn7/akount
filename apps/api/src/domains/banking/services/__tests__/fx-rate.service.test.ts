@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { FxRateService } from '../fxRate.service';
+import { FxRateService } from '../fx-rate.service';
 
 // Mock the Prisma client
 vi.mock('@akount/db', () => ({

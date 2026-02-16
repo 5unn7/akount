@@ -18,11 +18,11 @@ interface SparkCardsProps {
 }
 
 const sparkColorMap = {
-    green: { stroke: 'var(--ak-green)', fill: 'rgba(52,211,153,0.12)' },
-    red: { stroke: 'var(--ak-red)', fill: 'rgba(248,113,113,0.12)' },
-    blue: { stroke: 'var(--ak-blue)', fill: 'rgba(96,165,250,0.12)' },
-    purple: { stroke: 'var(--ak-purple)', fill: 'rgba(167,139,250,0.12)' },
-    primary: { stroke: 'var(--ak-pri)', fill: 'rgba(245,158,11,0.12)' },
+    green: { stroke: 'var(--ak-green)', fill: 'var(--ak-green-fill)' },
+    red: { stroke: 'var(--ak-red)', fill: 'var(--ak-red-fill)' },
+    blue: { stroke: 'var(--ak-blue)', fill: 'var(--ak-blue-fill)' },
+    purple: { stroke: 'var(--ak-purple)', fill: 'var(--ak-purple-fill)' },
+    primary: { stroke: 'var(--ak-pri)', fill: 'var(--ak-pri-fill)' },
 } as const;
 
 const trendColorMap = {
@@ -34,11 +34,11 @@ const trendColorMap = {
 const TrendIcon = { up: ArrowUp, down: ArrowDown, flat: Minus } as const;
 
 const glowMap = {
-    green: 'hover:shadow-[0_0_12px_rgba(52,211,153,0.08)]',
-    red: 'hover:shadow-[0_0_12px_rgba(248,113,113,0.08)]',
-    blue: 'hover:shadow-[0_0_12px_rgba(96,165,250,0.08)]',
-    purple: 'hover:shadow-[0_0_12px_rgba(167,139,250,0.08)]',
-    primary: 'hover:shadow-[0_0_12px_rgba(245,158,11,0.08)]',
+    green: 'hover:glow-success',
+    red: 'hover:glow-danger',
+    blue: 'hover:glow-blue',
+    purple: 'hover:glow-purple',
+    primary: 'hover:glow-primary',
 } as const;
 
 function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: SparkCardData['color'] }) {

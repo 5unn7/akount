@@ -41,30 +41,6 @@ export interface AuditLogEntry {
  * Audit Query Service
  *
  * Provides filtered access to audit logs for compliance and investigation.
- *
- * @example
- * ```typescript
- * // Get recent changes for an entity
- * const { logs, total } = await auditQueryService.query({
- *   tenantId: tenant.id,
- *   entityId: entity.id,
- *   limit: 50,
- * });
- *
- * // Get all actions by a specific user
- * const { logs } = await auditQueryService.query({
- *   tenantId: tenant.id,
- *   userId: user.id,
- *   startDate: new Date('2024-01-01'),
- * });
- *
- * // Get changes to a specific record
- * const { logs } = await auditQueryService.query({
- *   tenantId: tenant.id,
- *   model: 'JournalEntry',
- *   recordId: journalEntry.id,
- * });
- * ```
  */
 export class AuditQueryService {
   /**

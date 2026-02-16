@@ -5,12 +5,12 @@ import { randomUUID } from 'crypto';
 
 // Using PDF.js (Mozilla's PDF parser - more reliable)
 // Use dynamic import to handle ESM/CJS compatibility
-let pdfjsLib: any = null;
+let pdfjsLib: typeof import('pdfjs-dist') | null = null;
 
-async function getPdfJs() {
+async function getPdfJs(): Promise<typeof import('pdfjs-dist')> {
   if (!pdfjsLib) {
-    // @ts-ignore
-    pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    // Dynamic import of legacy build for Node.js CJS compatibility
+    pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs' as string) as typeof import('pdfjs-dist');
   }
   return pdfjsLib;
 }

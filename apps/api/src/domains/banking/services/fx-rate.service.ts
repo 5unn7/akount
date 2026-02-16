@@ -1,5 +1,5 @@
 import { prisma } from '@akount/db';
-import { logger } from '../lib/logger';
+import { logger } from '../../../lib/logger';
 
 export class FxRateService {
     /**

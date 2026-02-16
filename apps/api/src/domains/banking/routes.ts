@@ -5,7 +5,6 @@ import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../middleware/validation';
 import { withPermission } from '../../middleware/withPermission';
-import { importRoutes } from './routes/import';
 import { importsRoutes } from './routes/imports';
 import { transactionRoutes } from './routes/transactions';
 import { reconciliationRoutes } from './routes/reconciliation';
@@ -69,8 +68,7 @@ export async function bankingRoutes(fastify: FastifyInstance) {
   fastify.addHook('preHandler', tenantMiddleware);
 
   // Register sub-routes
-  await fastify.register(importRoutes, { prefix: '/import' }); // Legacy route (will be deprecated)
-  await fastify.register(importsRoutes, { prefix: '/imports' }); // New simplified import routes
+  await fastify.register(importsRoutes, { prefix: '/imports' });
   await fastify.register(transactionRoutes, { prefix: '/transactions' });
   await fastify.register(reconciliationRoutes, { prefix: '/reconciliation' });
   await fastify.register(categoryRoutes, { prefix: '/categories' });

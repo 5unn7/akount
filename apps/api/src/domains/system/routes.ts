@@ -5,7 +5,7 @@ import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
 import { validateBody } from '../../middleware/validation';
 import { withPermission, adminOnly } from '../../middleware/withPermission';
-import { auditQueryService } from '../../services/audit-query.service';
+import { auditQueryService } from './services/audit-query.service';
 import { EntityService } from './services/entity.service';
 import { onboardingRoutes } from './routes/onboarding';
 import { onboardingProgressRoutes } from './routes/onboarding-progress';

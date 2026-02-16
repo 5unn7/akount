@@ -102,7 +102,7 @@ export function CompletionStep() {
     return (
       <div className="space-y-6 text-center py-8" style={{ animation: 'scale-in 0.4s ease-out' }}>
         {/* Success orb */}
-        <div className="h-16 w-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center shadow-[0_0_36px_rgba(245,158,11,0.22)]">
+        <div className="h-16 w-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center glow-primary-strong">
           <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path
               d="M5 13l4 4L19 7"

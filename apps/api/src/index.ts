@@ -8,8 +8,8 @@ import { env } from './lib/env';
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
 // Validation middleware available for routes (removed debug endpoints for security)
-import { HealthService } from './services/health.service';
-import { UserService, UserNotFoundError } from './services/user.service';
+import { HealthService } from './domains/system/services/health.service';
+import { UserService, UserNotFoundError } from './domains/system/services/user.service';
 
 // Domain routes (Phase 4 restructure)
 import { overviewRoutes } from './domains/overview';

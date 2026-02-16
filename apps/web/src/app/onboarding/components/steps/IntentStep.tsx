@@ -18,7 +18,7 @@ const INTENTS = [
     dimBg: 'bg-ak-green-dim',
     textColor: 'text-ak-green',
     borderColor: 'border-ak-green/30',
-    glow: 'shadow-[0_0_12px_rgba(52,211,153,0.06)]',
+    glow: 'glow-success',
   },
   {
     id: 'manage-business',
@@ -29,7 +29,7 @@ const INTENTS = [
     dimBg: 'bg-ak-blue-dim',
     textColor: 'text-ak-blue',
     borderColor: 'border-ak-blue/30',
-    glow: 'shadow-[0_0_12px_rgba(96,165,250,0.06)]',
+    glow: 'glow-blue',
   },
   {
     id: 'prepare-taxes',
@@ -40,7 +40,7 @@ const INTENTS = [
     dimBg: 'bg-ak-purple-dim',
     textColor: 'text-ak-purple',
     borderColor: 'border-ak-purple/30',
-    glow: 'shadow-[0_0_12px_rgba(167,139,250,0.06)]',
+    glow: 'glow-purple',
   },
   {
     id: 'financial-clarity',
@@ -51,7 +51,7 @@ const INTENTS = [
     dimBg: 'bg-ak-pri-dim',
     textColor: 'text-primary',
     borderColor: 'border-primary/30',
-    glow: 'shadow-[0_0_12px_rgba(245,158,11,0.06)]',
+    glow: 'glow-primary',
   },
 ] as const
 

@@ -1,5 +1,5 @@
 import { prisma } from '@akount/db';
-import { FxRateService } from '../../../services/fxRate.service';
+import { FxRateService } from '../../banking/services/fx-rate.service';
 
 export class DashboardService {
   private fxService: FxRateService;

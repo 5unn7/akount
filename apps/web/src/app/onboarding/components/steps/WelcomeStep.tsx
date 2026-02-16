@@ -57,7 +57,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
               className={cn(
                 'cursor-pointer p-6 transition-all hover:-translate-y-px',
                 isSelected
-                  ? 'border-primary shadow-[0_0_16px_rgba(245,158,11,0.08)]'
+                  ? 'border-primary glow-primary'
                   : 'border-ak-border hover:border-ak-border-2',
               )}
               onClick={() => handleSelect(type)}
