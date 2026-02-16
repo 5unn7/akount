@@ -28,6 +28,9 @@ export default async function InvoicingPage() {
 
     const primaryCurrency = invoicesResult.invoices[0]?.currency || billsResult.bills[0]?.currency || 'CAD';
 
+    // Net position = AR - AP (positive = owed to you)
+    const netPosition = invoiceStats.outstandingAR - billStats.outstandingAP;
+
     // Stats for grid
     const stats = [
         {
@@ -41,14 +44,14 @@ export default async function InvoicingPage() {
             color: 'red' as const,
         },
         {
-            label: 'Collected This Month',
-            value: formatCurrency(invoiceStats.collectedThisMonth, primaryCurrency),
-            color: 'blue' as const,
+            label: 'Net Position',
+            value: formatCurrency(Math.abs(netPosition), primaryCurrency),
+            color: netPosition >= 0 ? ('green' as const) : ('red' as const),
         },
         {
-            label: 'Paid This Month',
-            value: formatCurrency(billStats.paidThisMonth, primaryCurrency),
-            color: 'primary' as const,
+            label: 'Overdue',
+            value: formatCurrency(invoiceStats.overdue + billStats.overdue, primaryCurrency),
+            color: (invoiceStats.overdue + billStats.overdue) > 0 ? ('red' as const) : ('green' as const),
         },
     ];
 

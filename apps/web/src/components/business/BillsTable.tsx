@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { type Bill } from '@/lib/api/bills';
 import {
     Table,
@@ -13,7 +13,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils/currency';
-import { BillDetailPanel } from './BillDetailPanel';
 
 interface BillsTableProps {
     bills: Bill[];
@@ -38,12 +37,10 @@ function formatDate(dateString: string): string {
 }
 
 export function BillsTable({ bills }: BillsTableProps) {
-    const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
-    const [open, setOpen] = useState(false);
+    const router = useRouter();
 
     const handleRowClick = (bill: Bill) => {
-        setSelectedBill(bill);
-        setOpen(true);
+        router.push(`/business/invoices/bills/${bill.id}`);
     };
 
     if (bills.length === 0) {
@@ -151,8 +148,6 @@ export function BillsTable({ bills }: BillsTableProps) {
                     </Table>
                 </CardContent>
             </Card>
-
-            <BillDetailPanel bill={selectedBill} open={open} onOpenChange={setOpen} />
         </>
     );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { type Invoice } from '@/lib/api/invoices';
 import {
     Table,
@@ -13,7 +13,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils/currency';
-import { InvoiceDetailPanel } from './InvoiceDetailPanel';
 
 interface InvoiceTableProps {
     invoices: Invoice[];
@@ -38,12 +37,10 @@ function formatDate(dateString: string): string {
 }
 
 export function InvoiceTable({ invoices }: InvoiceTableProps) {
-    const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-    const [open, setOpen] = useState(false);
+    const router = useRouter();
 
     const handleRowClick = (invoice: Invoice) => {
-        setSelectedInvoice(invoice);
-        setOpen(true);
+        router.push(`/business/invoices/${invoice.id}`);
     };
 
     if (invoices.length === 0) {
@@ -151,12 +148,6 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                     </Table>
                 </CardContent>
             </Card>
-
-            <InvoiceDetailPanel
-                invoice={selectedInvoice}
-                open={open}
-                onOpenChange={setOpen}
-            />
         </>
     );
 }
