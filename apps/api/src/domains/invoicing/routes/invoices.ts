@@ -174,16 +174,50 @@ export async function invoiceRoutes(fastify: FastifyInstance) {
       const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
 
       try {
-        const invoice = await invoiceService.sendInvoice(params.id, tenant);
+        const invoice = await invoiceService.sendInvoice(params.id, tenant, request.log);
         return reply.status(200).send(invoice);
       } catch (error) {
         if (error instanceof Error) {
           if (error.message.includes('not found')) {
             return reply.status(404).send({ error: 'Invoice not found' });
           }
-          if (error.message.includes('Invalid status') || error.message.includes('Client email')) {
+          if (error.message.includes('Invalid status') || error.message.includes('Client email') || error.message.includes('Failed to send')) {
             return reply.status(400).send({ error: error.message });
           }
+        }
+        throw error;
+      }
+    }
+  );
+
+  // GET /api/invoices/:id/pdf - Download invoice PDF
+  fastify.get(
+    '/:id/pdf',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateParams({ id: { type: 'string' } })],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const params = request.params as { id: string };
+      const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
+
+      try {
+        const pdfBuffer = await invoiceService.getInvoicePdf(params.id, tenant);
+
+        // Get invoice number for filename
+        const invoice = await invoiceService.getInvoice(params.id, tenant);
+
+        return reply
+          .header('Content-Type', 'application/pdf')
+          .header('Content-Disposition', `attachment; filename="${invoice.invoiceNumber}.pdf"`)
+          .send(pdfBuffer);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('not found')) {
+          return reply.status(404).send({ error: 'Invoice not found' });
         }
         throw error;
       }

@@ -5,6 +5,8 @@ import type {
   UpdateInvoiceInput,
   ListInvoicesInput,
 } from '../schemas/invoice.schema';
+import { generateInvoicePdf } from './pdf.service';
+import { sendEmail } from '../../../lib/email';
 
 /**
  * Invoice service — Business logic for invoice CRUD + status transitions.
@@ -324,9 +326,19 @@ export async function getInvoiceStats(ctx: TenantContext) {
 
 /**
  * Send invoice: DRAFT → SENT
- * Validates that client has an email address for delivery.
+ *
+ * 1. Validates DRAFT status and client email
+ * 2. Generates PDF attachment
+ * 3. Sends email to client via Resend
+ * 4. Transitions status to SENT
+ *
+ * @param logger - Pino logger instance for structured logging
  */
-export async function sendInvoice(id: string, ctx: TenantContext) {
+export async function sendInvoice(
+  id: string,
+  ctx: TenantContext,
+  logger?: { info: (obj: Record<string, unknown>, msg?: string) => void; error: (obj: Record<string, unknown>, msg?: string) => void; warn: (obj: Record<string, unknown>, msg?: string) => void }
+) {
   const invoice = await getInvoice(id, ctx);
   assertTransition(invoice.status, 'SENT');
 
@@ -334,11 +346,105 @@ export async function sendInvoice(id: string, ctx: TenantContext) {
     throw new Error('Client email required for sending');
   }
 
+  // Generate PDF
+  const pdfBuffer = await generateInvoicePdf(invoice);
+
+  // Send email with PDF attachment
+  if (logger) {
+    const emailResult = await sendEmail(
+      {
+        to: invoice.client.email,
+        subject: `Invoice ${invoice.invoiceNumber} from ${invoice.entity.name}`,
+        html: buildInvoiceEmailHtml(invoice),
+        text: `Please find attached invoice ${invoice.invoiceNumber} for ${formatCentsSimple(invoice.total, invoice.currency)}. Due: ${new Date(invoice.dueDate).toLocaleDateString('en-CA')}.`,
+        attachments: [
+          {
+            filename: `${invoice.invoiceNumber}.pdf`,
+            content: pdfBuffer,
+            contentType: 'application/pdf',
+          },
+        ],
+      },
+      logger
+    );
+
+    if (!emailResult.success) {
+      throw new Error(`Failed to send invoice email: ${emailResult.error}`);
+    }
+  }
+
   return prisma.invoice.update({
     where: { id },
     data: { status: 'SENT' },
     include: { client: true, entity: true, invoiceLines: true },
   });
+}
+
+/**
+ * Generate invoice PDF buffer for download.
+ */
+export async function getInvoicePdf(id: string, ctx: TenantContext): Promise<Buffer> {
+  const invoice = await getInvoice(id, ctx);
+  return generateInvoicePdf(invoice);
+}
+
+// ─── Email Template Helpers ────────────────────────────────────────
+
+function formatCentsSimple(cents: number, currency: string): string {
+  const symbols: Record<string, string> = { CAD: 'CA$', USD: '$', EUR: '€', GBP: '£' };
+  const sym = symbols[currency] ?? currency;
+  return `${sym}${(cents / 100).toFixed(2)}`;
+}
+
+function buildInvoiceEmailHtml(invoice: {
+  invoiceNumber: string;
+  total: number;
+  currency: string;
+  dueDate: Date | string;
+  entity: { name: string };
+  client: { name: string };
+}): string {
+  const dueDate = new Date(invoice.dueDate).toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #374151;">
+  <div style="border-bottom: 3px solid #F59E0B; padding-bottom: 16px; margin-bottom: 24px;">
+    <h1 style="margin: 0; font-size: 20px; color: #0f0f17;">${invoice.entity.name}</h1>
+  </div>
+
+  <p>Hi ${invoice.client.name},</p>
+
+  <p>Please find attached invoice <strong>${invoice.invoiceNumber}</strong> for <strong>${formatCentsSimple(invoice.total, invoice.currency)}</strong>.</p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 24px 0;">
+    <tr>
+      <td style="padding: 8px 12px; background: #f9fafb; border: 1px solid #e5e7eb; font-size: 13px; color: #6b7280;">Invoice Number</td>
+      <td style="padding: 8px 12px; border: 1px solid #e5e7eb; font-weight: 600;">${invoice.invoiceNumber}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 12px; background: #f9fafb; border: 1px solid #e5e7eb; font-size: 13px; color: #6b7280;">Amount Due</td>
+      <td style="padding: 8px 12px; border: 1px solid #e5e7eb; font-weight: 600; color: #F59E0B;">${formatCentsSimple(invoice.total, invoice.currency)}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 12px; background: #f9fafb; border: 1px solid #e5e7eb; font-size: 13px; color: #6b7280;">Due Date</td>
+      <td style="padding: 8px 12px; border: 1px solid #e5e7eb; font-weight: 600;">${dueDate}</td>
+    </tr>
+  </table>
+
+  <p>The PDF invoice is attached to this email for your records.</p>
+
+  <p style="color: #9ca3af; font-size: 12px; margin-top: 32px; border-top: 1px solid #e5e7eb; padding-top: 12px;">
+    Sent via Akount — ${invoice.entity.name}
+  </p>
+</body>
+</html>`.trim();
 }
 
 /**
