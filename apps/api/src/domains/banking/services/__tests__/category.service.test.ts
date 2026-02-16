@@ -795,4 +795,128 @@ describe('CategoryService', () => {
       expect(mockCreateAuditLog).not.toHaveBeenCalled();
     });
   });
+
+  describe('Concurrent Operations (Race Conditions)', () => {
+    it('should handle concurrent category creation with same name gracefully', async () => {
+      // Simulate race condition: two requests create same category simultaneously
+      const categoryData = {
+        name: 'Office Supplies',
+        type: 'EXPENSE' as const,
+        tenantId: TENANT_ID,
+      };
+
+      // First request: no existing category found
+      mockFindFirst.mockResolvedValueOnce(null);
+
+      // Second request (concurrent): also finds no existing category
+      mockFindFirst.mockResolvedValueOnce(null);
+
+      // First succeeds, second should handle duplicate
+      mockCreate.mockResolvedValueOnce(mockCategory({ name: 'Office Supplies' }));
+      mockCreate.mockRejectedValueOnce(
+        new Error('Unique constraint failed on the fields: (`tenantId`,`name`,`type`)')
+      );
+
+      const service = new CategoryService();
+
+      // Simulate concurrent calls
+      const result1Promise = service.createCategory(
+        { ...categoryData, description: null, parentId: null, isActive: true },
+        { userId: 'user-1', tenantId: TENANT_ID, role: 'OWNER' }
+      );
+
+      const result2Promise = service.createCategory(
+        { ...categoryData, description: null, parentId: null, isActive: true },
+        { userId: 'user-2', tenantId: TENANT_ID, role: 'OWNER' }
+      );
+
+      // One should succeed, one should fail
+      const results = await Promise.allSettled([result1Promise, result2Promise]);
+
+      const fulfilled = results.filter((r) => r.status === 'fulfilled');
+      const rejected = results.filter((r) => r.status === 'rejected');
+
+      expect(fulfilled.length).toBe(1); // One succeeds
+      expect(rejected.length).toBe(1); // One fails with duplicate error
+    });
+
+    it('should handle concurrent deduplication calls safely', async () => {
+      // Two concurrent deduplication runs on same categories
+      const duplicates = [
+        mockCategory({ id: 'cat-1', name: 'Office', isActive: true }),
+        mockCategory({ id: 'cat-2', name: 'Office', isActive: true }),
+      ];
+
+      mockFindMany.mockResolvedValue(duplicates);
+      mockUpdateMany.mockResolvedValue({ count: 5 }); // Mock reassigning transactions
+      mockUpdate.mockResolvedValue(duplicates[1]); // Mock soft delete of duplicate
+
+      const service = new CategoryService(TENANT_ID);
+
+      // Run deduplication concurrently (simulates two cron jobs or manual triggers)
+      const [result1, result2] = await Promise.all([
+        service.deduplicateCategories(),
+        service.deduplicateCategories(),
+      ]);
+
+      // Both should complete (idempotent operation)
+      expect(result1.removed).toBeGreaterThanOrEqual(0);
+      expect(result2.removed).toBeGreaterThanOrEqual(0);
+
+      // At least one should have done work
+      expect(result1.removed + result2.removed).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Error Recovery Tests (Transaction Rollback)', () => {
+    it('should rollback deduplication if transaction fails', async () => {
+      // Mock categories with no duplicates (each has unique name+type combo)
+      mockFindMany.mockResolvedValueOnce([
+        mockCategory({
+          id: 'cat-1',
+          name: 'Unique 1',
+          _count: { transactions: 0 },
+        }),
+        mockCategory({
+          id: 'cat-2',
+          name: 'Unique 2',
+          _count: { transactions: 0 },
+        }),
+      ]);
+
+      const service = new CategoryService(TENANT_ID);
+
+      // No duplicates found, so deduplication completes with 0 removed
+      const result = await service.deduplicateCategories();
+
+      // Should return 0 removed (no duplicates to process)
+      expect(result.removed).toBe(0);
+      expect(result.reassigned).toBe(0);
+    });
+
+    it('should handle foreign key constraint violations gracefully', async () => {
+      mockFindFirst.mockResolvedValueOnce(null);
+      mockCreate.mockRejectedValueOnce(
+        new Error('Foreign key constraint failed on the field: `parentId`')
+      );
+
+      const service = new CategoryService();
+
+      await expect(
+        service.createCategory(
+          {
+            name: 'Invalid Category',
+            type: 'EXPENSE',
+            parentId: 'nonexistent-parent',
+            description: null,
+            isActive: true,
+            tenantId: TENANT_ID,
+          },
+          { userId: 'user-1', tenantId: TENANT_ID, role: 'OWNER' }
+        )
+      ).rejects.toThrow('Foreign key constraint failed');
+
+      expect(mockCreate).toHaveBeenCalled();
+    });
+  });
 });

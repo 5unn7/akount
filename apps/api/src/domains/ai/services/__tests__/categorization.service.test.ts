@@ -379,4 +379,58 @@ describe('CategorizationService', () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe('Bulk Operation Stress Tests', () => {
+    it('should handle batch categorization of 100+ transactions efficiently', async () => {
+      // Generate 150 transactions (realistic bulk import scenario)
+      const transactions = Array.from({ length: 150 }, (_, i) => ({
+        id: `txn-${i}`,
+        description: i % 3 === 0 ? 'STARBUCKS COFFEE' : i % 3 === 1 ? 'AMAZON.COM' : 'UBER RIDE',
+        amount: -1000 * (i + 1),
+      }));
+
+      // Mock categories (should be fetched once, not per transaction)
+      mockFindMany.mockResolvedValueOnce([
+        mockCategory({ id: 'cat-meals', name: 'Meals & Entertainment' }),
+        mockCategory({ id: 'cat-software', name: 'Software & Subscriptions' }),
+        mockCategory({ id: 'cat-transport', name: 'Transportation' }),
+      ]);
+
+      const results = await categorizeTransactions(transactions as never, TENANT_ID);
+
+      expect(results).toHaveLength(150);
+
+      // Verify categories were fetched only once (efficiency check)
+      expect(mockFindMany).toHaveBeenCalledTimes(1);
+
+      // Verify categorization worked for bulk
+      const categorized = results.filter((r) => r.categoryId !== null);
+      expect(categorized.length).toBeGreaterThanOrEqual(100); // Most should be categorized
+    });
+
+    it('should maintain performance with 500 transactions', async () => {
+      // Stress test: 500 transactions (large CSV import)
+      const transactions = Array.from({ length: 500 }, (_, i) => ({
+        id: `txn-${i}`,
+        description: 'AWS Services', // All same category for simplicity
+        amount: -10000,
+      }));
+
+      mockFindMany.mockResolvedValueOnce([
+        mockCategory({ id: 'cat-software', name: 'Software & Subscriptions' }),
+      ]);
+
+      const startTime = Date.now();
+      const results = await categorizeTransactions(transactions as never, TENANT_ID);
+      const duration = Date.now() - startTime;
+
+      expect(results).toHaveLength(500);
+
+      // Should complete in reasonable time (< 1 second for 500 items)
+      expect(duration).toBeLessThan(1000);
+
+      // Single category fetch (N+1 query prevention)
+      expect(mockFindMany).toHaveBeenCalledTimes(1);
+    });
+  });
 });
