@@ -1,6 +1,7 @@
 import { prisma } from '@akount/db';
 import { parseCSV, parsePDF, parseXLSX } from './parser.service';
 import { findDuplicates, findInternalDuplicates } from './duplication.service';
+import { CategoryService } from './category.service';
 import { categorizeTransactions } from '../../ai/services/categorization.service';
 import type { ColumnMappings } from '../../../schemas/import';
 import { logger } from '../../../lib/logger';
@@ -27,29 +28,6 @@ function adjustAmountForAccountType(amount: number, accountType: string): number
   }
   return amount;
 }
-
-/**
- * Default categories to seed if tenant has none.
- * Maps to the KEYWORD_PATTERNS in categorization.service.ts.
- */
-const DEFAULT_CATEGORIES: Array<{ name: string; type: 'INCOME' | 'EXPENSE' | 'TRANSFER' }> = [
-  { name: 'Meals & Entertainment', type: 'EXPENSE' },
-  { name: 'Transportation', type: 'EXPENSE' },
-  { name: 'Office Supplies', type: 'EXPENSE' },
-  { name: 'Software & Subscriptions', type: 'EXPENSE' },
-  { name: 'Utilities', type: 'EXPENSE' },
-  { name: 'Rent', type: 'EXPENSE' },
-  { name: 'Professional Services', type: 'EXPENSE' },
-  { name: 'Marketing & Advertising', type: 'EXPENSE' },
-  { name: 'Insurance', type: 'EXPENSE' },
-  { name: 'Bank Fees', type: 'EXPENSE' },
-  { name: 'Payroll', type: 'EXPENSE' },
-  { name: 'Taxes', type: 'EXPENSE' },
-  { name: 'Sales Revenue', type: 'INCOME' },
-  { name: 'Interest Income', type: 'INCOME' },
-  { name: 'Investment Income', type: 'INCOME' },
-  { name: 'Transfer', type: 'TRANSFER' },
-];
 
 // Types for import operations
 export interface CreateCSVImportParams {
@@ -562,24 +540,11 @@ export class ImportService {
 
   /**
    * Ensure default categories exist for this tenant.
-   * Creates them on first import if the tenant has zero categories.
+   * Delegates to CategoryService.seedDefaults() — single source of truth.
    */
   private async ensureDefaultCategories(): Promise<void> {
-    const count = await prisma.category.count({
-      where: { tenantId: this.tenantId },
-    });
-
-    if (count > 0) return; // Already has categories
-
-    // skipDuplicates prevents race condition when two imports run concurrently
-    await prisma.category.createMany({
-      data: DEFAULT_CATEGORIES.map((cat) => ({
-        tenantId: this.tenantId,
-        name: cat.name,
-        type: cat.type,
-      })),
-      skipDuplicates: true,
-    });
+    const service = new CategoryService(this.tenantId, 'system');
+    await service.seedDefaults();
   }
 
   /**

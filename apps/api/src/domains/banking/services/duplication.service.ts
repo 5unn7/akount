@@ -199,6 +199,82 @@ function normalizeDescription(description: string): string {
 }
 
 /**
+ * Deduplicate existing transactions for an account.
+ *
+ * Finds groups of transactions with identical (date, amount, description),
+ * keeps the oldest in each group, and soft-deletes the rest.
+ *
+ * Returns count of duplicates removed.
+ */
+export async function deduplicateExistingTransactions(
+  accountId: string
+): Promise<{ removed: number; groups: number }> {
+  // Get all active transactions for this account
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      accountId,
+      deletedAt: null,
+    },
+    select: {
+      id: true,
+      date: true,
+      description: true,
+      amount: true,
+      createdAt: true,
+      journalEntryId: true,
+      categoryId: true,
+    },
+    orderBy: { createdAt: 'asc' }, // oldest first
+  });
+
+  // Group by (date + amount + normalized description)
+  const groups = new Map<string, typeof transactions>();
+  for (const txn of transactions) {
+    const dateStr = txn.date.toISOString().slice(0, 10); // YYYY-MM-DD
+    const key = `${dateStr}::${txn.amount}::${normalizeDescription(txn.description)}`;
+    const group = groups.get(key) ?? [];
+    group.push(txn);
+    groups.set(key, group);
+  }
+
+  let removed = 0;
+  let groupCount = 0;
+
+  for (const [, group] of groups) {
+    if (group.length <= 1) continue;
+    groupCount++;
+
+    // Keep the one that has a journal entry posted, or has a category, or is oldest
+    group.sort((a, b) => {
+      // Prefer posted transactions
+      if (a.journalEntryId && !b.journalEntryId) return -1;
+      if (!a.journalEntryId && b.journalEntryId) return 1;
+      // Prefer categorized
+      if (a.categoryId && !b.categoryId) return -1;
+      if (!a.categoryId && b.categoryId) return 1;
+      // Oldest first
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
+
+    const losers = group.slice(1);
+
+    // Soft-delete duplicates
+    await prisma.transaction.updateMany({
+      where: {
+        id: { in: losers.map((l) => l.id) },
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    removed += losers.length;
+  }
+
+  return { removed, groups: groupCount };
+}
+
+/**
  * Find duplicates within the imported batch (before comparing to database)
  *
  * This catches duplicates in the CSV file itself

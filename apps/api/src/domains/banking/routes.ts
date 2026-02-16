@@ -9,6 +9,7 @@ import { importRoutes } from './routes/import';
 import { importsRoutes } from './routes/imports';
 import { transactionRoutes } from './routes/transactions';
 import { reconciliationRoutes } from './routes/reconciliation';
+import { categoryRoutes } from './routes/categories';
 
 // Validation schemas
 const accountsQuerySchema = z.object({
@@ -72,6 +73,7 @@ export async function bankingRoutes(fastify: FastifyInstance) {
   await fastify.register(importsRoutes, { prefix: '/imports' }); // New simplified import routes
   await fastify.register(transactionRoutes, { prefix: '/transactions' });
   await fastify.register(reconciliationRoutes, { prefix: '/reconciliation' });
+  await fastify.register(categoryRoutes, { prefix: '/categories' });
 
   // ============================================================================
   // ACCOUNTS

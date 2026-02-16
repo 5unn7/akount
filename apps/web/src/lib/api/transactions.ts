@@ -132,3 +132,12 @@ export async function bulkDeleteTransactions(
         body: JSON.stringify({ transactionIds }),
     });
 }
+
+export async function deduplicateTransactions(
+    accountId: string
+): Promise<{ removed: number; groups: number }> {
+    return apiClient<{ removed: number; groups: number }>('/api/banking/transactions/dedup', {
+        method: 'POST',
+        body: JSON.stringify({ accountId }),
+    });
+}

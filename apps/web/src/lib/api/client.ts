@@ -21,13 +21,19 @@ export async function apiClient<T>(
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     const url = `${apiUrl}${endpoint}`;
 
+    const headers: Record<string, string> = {
+        'Authorization': `Bearer ${token}`,
+        ...options.headers as Record<string, string>,
+    };
+
+    // Only set Content-Type for requests with a body
+    if (options.body) {
+        headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+    }
+
     const response = await fetch(url, {
         ...options,
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            ...options.headers,
-        },
+        headers,
     });
 
     if (!response.ok) {

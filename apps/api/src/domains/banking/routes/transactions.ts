@@ -3,7 +3,9 @@ import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { withRolePermission } from '../../../middleware/rbac';
+import { prisma } from '@akount/db';
 import { TransactionService } from '../services/transaction.service';
+import { deduplicateExistingTransactions } from '../services/duplication.service';
 import {
   CreateTransactionSchema,
   UpdateTransactionSchema,
@@ -253,6 +255,40 @@ export async function transactionRoutes(fastify: FastifyInstance) {
         // Re-throw other errors for global error handler
         throw error;
       }
+    }
+  );
+
+  // POST /api/banking/transactions/dedup — Deduplicate transactions for an account
+  fastify.post(
+    '/dedup',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN']),
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const { accountId } = request.body as { accountId: string };
+      if (!accountId) {
+        return reply.status(400).send({ error: 'accountId is required' });
+      }
+
+      // Verify account belongs to tenant
+      const account = await prisma.account.findFirst({
+        where: {
+          id: accountId,
+          deletedAt: null,
+          entity: { tenantId: request.tenantId },
+        },
+      });
+      if (!account) {
+        return reply.status(404).send({ error: 'Account not found' });
+      }
+
+      const result = await deduplicateExistingTransactions(accountId);
+
+      return reply.status(200).send(result);
     }
   );
 }

@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { Transaction } from '@/lib/api/transactions';
 import type { Account } from '@/lib/api/accounts';
 import type { GLAccount } from '@/lib/api/accounting';
+import type { Category } from '@/lib/api/categories';
 import { TransactionsTable } from './TransactionsTable';
 import { TransactionsFilters } from './TransactionsFilters';
 import { BulkActionBar } from './BulkActionBar';
@@ -34,6 +35,9 @@ import {
     postTransactionAction,
     postBulkTransactionsAction,
     fetchExpenseAccounts,
+    fetchCategoriesAction,
+    assignCategoryAction,
+    createCategoryAction,
 } from '@/app/(dashboard)/banking/transactions/actions';
 
 interface TransactionsListClientProps {
@@ -58,6 +62,10 @@ export function TransactionsListClient({
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+    // Categories state
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+
     // Posting state
     const [postingSheetOpen, setPostingSheetOpen] = useState(false);
     const [postingTransactionId, setPostingTransactionId] = useState<string | null>(null);
@@ -66,6 +74,18 @@ export function TransactionsListClient({
     const [isPosting, setIsPosting] = useState(false);
     const [isLoadingGL, setIsLoadingGL] = useState(false);
     const [postingError, setPostingError] = useState<string | null>(null);
+
+    // Load categories on mount
+    useEffect(() => {
+        if (!categoriesLoaded) {
+            fetchCategoriesAction().then((cats) => {
+                setCategories(cats);
+                setCategoriesLoaded(true);
+            }).catch(() => {
+                setCategoriesLoaded(true);
+            });
+        }
+    }, [categoriesLoaded]);
 
     const accountId = searchParams.get('accountId') || undefined;
     const startDate = searchParams.get('startDate') || undefined;
@@ -123,6 +143,27 @@ export function TransactionsListClient({
         await bulkDeleteAction(ids);
         setTransactions((prev) => prev.filter((t) => !selectedIds.has(t.id)));
         setSelectedIds(new Set());
+    }
+
+    async function handleCategoryChange(transactionId: string, categoryId: string | null) {
+        await assignCategoryAction(transactionId, categoryId);
+        const cat = categoryId ? categories.find((c) => c.id === categoryId) : null;
+        setTransactions((prev) =>
+            prev.map((t) =>
+                t.id === transactionId
+                    ? {
+                          ...t,
+                          categoryId: categoryId ?? undefined,
+                          category: cat ? { id: cat.id, name: cat.name } : undefined,
+                      }
+                    : t
+            )
+        );
+    }
+
+    async function handleCreateCategory(name: string, type: 'INCOME' | 'EXPENSE' | 'TRANSFER') {
+        const newCat = await createCategoryAction(name, type);
+        setCategories((prev) => [...prev, newCat]);
     }
 
     // Open posting sheet for a single transaction
@@ -288,6 +329,9 @@ export function TransactionsListClient({
                 selectedIds={selectedIds}
                 onSelectionChange={setSelectedIds}
                 onPostTransaction={handleOpenPostSheet}
+                categories={categoriesLoaded ? categories : undefined}
+                onCategoryChange={handleCategoryChange}
+                onCreateCategory={handleCreateCategory}
             />
 
             {hasMore && (

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { type Transaction, formatAmount, formatDate } from '@/lib/api/transactions.types';
+import type { Category } from '@/lib/api/categories';
 import {
     Table,
     TableBody,
@@ -13,12 +14,16 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowUpRight, ArrowDownRight, BookOpen } from 'lucide-react';
+import { CategorySelector } from './CategorySelector';
 
 interface TransactionsTableProps {
     transactions: Transaction[];
     selectedIds?: Set<string>;
     onSelectionChange?: (selectedIds: Set<string>) => void;
     onPostTransaction?: (transactionId: string) => void;
+    categories?: Category[];
+    onCategoryChange?: (transactionId: string, categoryId: string | null) => void;
+    onCreateCategory?: (name: string, type: 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
 }
 
 const SOURCE_BADGE_STYLES: Record<string, string> = {
@@ -59,6 +64,9 @@ export function TransactionsTable({
     selectedIds,
     onSelectionChange,
     onPostTransaction,
+    categories,
+    onCategoryChange,
+    onCreateCategory,
 }: TransactionsTableProps) {
     const selectable = !!onSelectionChange;
     const allSelected = selectable && transactions.length > 0 && transactions.every(t => selectedIds?.has(t.id));
@@ -178,7 +186,16 @@ export function TransactionsTable({
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        {transaction.category ? (
+                                        {categories && onCategoryChange ? (
+                                            <CategorySelector
+                                                currentCategory={transaction.category}
+                                                categories={categories}
+                                                onSelect={(categoryId) =>
+                                                    onCategoryChange(transaction.id, categoryId)
+                                                }
+                                                onCreateNew={onCreateCategory}
+                                            />
+                                        ) : transaction.category ? (
                                             <Badge className="text-xs bg-ak-bg-3 text-foreground border-ak-border">
                                                 {transaction.category.name}
                                             </Badge>

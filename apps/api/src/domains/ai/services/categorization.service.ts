@@ -170,6 +170,7 @@ export async function categorizeTransaction(
     const category = await prisma.category.findFirst({
       where: {
         tenantId,
+        deletedAt: null,
         name: {
           contains: bestMatch.categoryName,
           mode: 'insensitive',
@@ -218,6 +219,7 @@ export async function categorizeTransaction(
       const category = await prisma.category.findFirst({
         where: {
           tenantId,
+          deletedAt: null,
           name: {
             contains: suggestedName,
             mode: 'insensitive',
@@ -264,9 +266,9 @@ export async function categorizeTransactions(
   transactions: Array<{ description: string; amount: number }>,
   tenantId: string
 ): Promise<CategorySuggestion[]> {
-  // Get all categories for this tenant once (avoid N+1 query)
+  // Get all active categories for this tenant once (avoid N+1 query)
   const categories = await prisma.category.findMany({
-    where: { tenantId },
+    where: { tenantId, deletedAt: null },
     select: {
       id: true,
       name: true,

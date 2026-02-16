@@ -4,6 +4,7 @@ import {
     listTransactions,
     bulkCategorizeTransactions,
     bulkDeleteTransactions,
+    updateTransaction,
     type ListTransactionsParams,
     type ListTransactionsResponse,
 } from '@/lib/api/transactions';
@@ -14,6 +15,11 @@ import {
     type JournalEntry,
     type GLAccount,
 } from '@/lib/api/accounting';
+import {
+    listCategories,
+    createCategory,
+    type Category,
+} from '@/lib/api/categories';
 
 export async function fetchMoreTransactions(
     params?: ListTransactionsParams
@@ -55,3 +61,23 @@ export async function fetchExpenseAccounts(
 ): Promise<GLAccount[]> {
     return listGLAccounts({ entityId, isActive: true });
 }
+
+export async function fetchCategoriesAction(): Promise<Category[]> {
+    const result = await listCategories({ isActive: true, includeChildren: true });
+    return result.categories;
+}
+
+export async function assignCategoryAction(
+    transactionId: string,
+    categoryId: string | null
+): Promise<void> {
+    await updateTransaction(transactionId, { categoryId });
+}
+
+export async function createCategoryAction(
+    name: string,
+    type: 'INCOME' | 'EXPENSE' | 'TRANSFER'
+): Promise<Category> {
+    return createCategory({ name, type });
+}
+
