@@ -159,6 +159,12 @@ export async function systemRoutes(fastify: FastifyInstance) {
             ]),
             country: z.string().min(2).max(3),
             currency: z.string().min(3).max(3),
+            fiscalYearStart: z.number().int().min(1).max(12).optional(),
+            taxId: z.string().max(50).optional(),
+            address: z.string().max(500).optional(),
+            city: z.string().max(100).optional(),
+            state: z.string().max(100).optional(),
+            postalCode: z.string().max(20).optional(),
           });
 
           const parsed = CreateEntitySchema.safeParse(request.body);
@@ -176,6 +182,12 @@ export async function systemRoutes(fastify: FastifyInstance) {
             type: parsed.data.type,
             country: parsed.data.country,
             functionalCurrency: parsed.data.currency,
+            fiscalYearStart: parsed.data.fiscalYearStart,
+            taxId: parsed.data.taxId,
+            address: parsed.data.address,
+            city: parsed.data.city,
+            state: parsed.data.state,
+            postalCode: parsed.data.postalCode,
           });
 
           return reply.status(201).send({

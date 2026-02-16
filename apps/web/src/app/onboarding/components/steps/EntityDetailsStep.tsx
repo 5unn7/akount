@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
+import { CountrySelect } from '@/components/ui/country-select'
+import { getCurrencyForCountry, getAllCurrencies } from '@/lib/data/countries'
 
 interface EntityDetailsStepProps {
   onNext: () => void
@@ -13,8 +15,8 @@ interface EntityDetailsStepProps {
  * Second step where users enter business details:
  * - Entity name
  * - Entity type (sole proprietor, corporation, etc.)
- * - Country
- * - Currency
+ * - Country (searchable, global list)
+ * - Currency (auto-set from country, overrideable)
  * - Fiscal year start month
  */
 export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
@@ -36,6 +38,13 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
 
+  const allCurrencies = getAllCurrencies()
+
+  const handleCountryChange = (newCountry: string) => {
+    setCountry(newCountry)
+    setCurrency(getCurrencyForCountry(newCountry))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setApiError(null)
@@ -55,7 +64,9 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
 
     try {
       // Get auth token from Clerk
-      const token = await (window as any).Clerk?.session?.getToken()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Clerk injects onto window at runtime
+      const clerkWindow = window as unknown as { Clerk?: { session?: { getToken: () => Promise<string> } } }
+      const token = await clerkWindow.Clerk?.session?.getToken()
 
       if (!token) {
         throw new Error('Not authenticated')
@@ -143,7 +154,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
           <select
             id="entityType"
             value={entityType || ''}
-            onChange={(e) => setEntityType(e.target.value as any)}
+            onChange={(e) => setEntityType(e.target.value as 'PERSONAL' | 'SOLE_PROPRIETORSHIP' | 'PARTNERSHIP' | 'CORPORATION' | 'LLC')}
             disabled={isLoading}
             className="w-full px-4 py-2 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
           >
@@ -159,21 +170,14 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
         {/* Country and Currency */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="country" className="block text-sm font-medium text-foreground mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Country
             </label>
-            <select
-              id="country"
+            <CountrySelect
               value={country}
-              onChange={(e) => setCountry(e.target.value)}
+              onChange={handleCountryChange}
               disabled={isLoading}
-              className="w-full px-4 py-2 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
-            >
-              <option value="CA">Canada</option>
-              <option value="US">United States</option>
-              <option value="GB">United Kingdom</option>
-              <option value="AU">Australia</option>
-            </select>
+            />
           </div>
 
           <div>
@@ -187,11 +191,11 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
               disabled={isLoading}
               className="w-full px-4 py-2 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground"
             >
-              <option value="CAD">CAD - Canadian Dollar</option>
-              <option value="USD">USD - US Dollar</option>
-              <option value="GBP">GBP - British Pound</option>
-              <option value="AUD">AUD - Australian Dollar</option>
-              <option value="EUR">EUR - Euro</option>
+              {allCurrencies.map(c => (
+                <option key={c.code} value={c.code}>
+                  {c.code} — {c.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -225,7 +229,7 @@ export function EntityDetailsStep({ onNext }: EntityDetailsStepProps) {
             })}
           </div>
           <p className="text-xs text-muted-foreground mt-2">
-            Most Canadian businesses use January. You can change this later.
+            Most businesses use January. You can change this later.
           </p>
         </div>
 

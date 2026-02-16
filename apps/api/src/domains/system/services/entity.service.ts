@@ -64,6 +64,11 @@ export class EntityService {
       functionalCurrency: string;
       reportingCurrency?: string;
       fiscalYearStart?: number;
+      taxId?: string;
+      address?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
     }
   ) {
     return prisma.entity.create({
@@ -75,6 +80,11 @@ export class EntityService {
         functionalCurrency: data.functionalCurrency,
         reportingCurrency: data.reportingCurrency || data.functionalCurrency,
         fiscalYearStart: data.fiscalYearStart || 1,
+        ...(data.taxId && { taxId: data.taxId }),
+        ...(data.address && { address: data.address }),
+        ...(data.city && { city: data.city }),
+        ...(data.state && { state: data.state }),
+        ...(data.postalCode && { postalCode: data.postalCode }),
       },
     });
   }
