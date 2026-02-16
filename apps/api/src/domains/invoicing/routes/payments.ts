@@ -4,15 +4,19 @@ import { tenantMiddleware } from '../../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { withRolePermission } from '../../../middleware/rbac';
 import * as paymentService from '../services/payment.service';
+import { DocumentPostingService } from '../../accounting/services/document-posting.service';
+import { AccountingError } from '../../accounting/errors';
 import {
   CreatePaymentSchema,
   UpdatePaymentSchema,
   ListPaymentsSchema,
   AllocatePaymentSchema,
+  PostPaymentAllocationSchema,
   type CreatePaymentInput,
   type UpdatePaymentInput,
   type ListPaymentsInput,
   type AllocatePaymentInput,
+  type PostPaymentAllocationInput,
 } from '../schemas/payment.schema';
 
 /**
@@ -198,6 +202,41 @@ export async function paymentRoutes(fastify: FastifyInstance) {
       } catch (error) {
         if (error instanceof Error && error.message.includes('not found')) {
           return reply.status(404).send({ error: error.message });
+        }
+        throw error;
+      }
+    }
+  );
+
+  // POST /api/payments/:id/allocations/:allocationId/post - Post allocation to GL
+  fastify.post(
+    '/:id/allocations/:allocationId/post',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [
+        validateParams({ id: { type: 'string' }, allocationId: { type: 'string' } }),
+        validateBody(PostPaymentAllocationSchema),
+      ],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const params = request.params as { id: string; allocationId: string };
+      const body = request.body as PostPaymentAllocationInput;
+      const postingService = new DocumentPostingService(request.tenantId, request.userId);
+
+      try {
+        const result = await postingService.postPaymentAllocation(params.allocationId, body.bankGLAccountId);
+        return reply.status(201).send(result);
+      } catch (error) {
+        if (error instanceof AccountingError) {
+          return reply.status(error.statusCode).send({
+            error: error.message,
+            code: error.code,
+            details: error.details,
+          });
         }
         throw error;
       }

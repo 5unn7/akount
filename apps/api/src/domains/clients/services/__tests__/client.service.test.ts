@@ -316,6 +316,7 @@ describe('ClientService', () => {
           clientId: 'client-1',
           status: { in: ['SENT', 'OVERDUE'] },
           deletedAt: null,
+          entity: { tenantId: 'tenant-test-123' },
         },
       });
 
@@ -324,6 +325,7 @@ describe('ClientService', () => {
           clientId: 'client-1',
           status: { in: ['SENT', 'OVERDUE'] },
           deletedAt: null,
+          entity: { tenantId: 'tenant-test-123' },
         },
         _sum: { total: true, paidAmount: true },
       });

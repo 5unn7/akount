@@ -34,13 +34,22 @@ vi.mock('../../../../middleware/validation', () => ({
   validateBody: vi.fn(() => async () => {}),
 }));
 
-// Mock invoice service
-const mockCreateInvoice = vi.fn();
-const mockListInvoices = vi.fn();
-const mockGetInvoice = vi.fn();
-const mockUpdateInvoice = vi.fn();
-const mockDeleteInvoice = vi.fn();
-const mockGetInvoiceStats = vi.fn();
+// Mock invoice service — use vi.hoisted so declarations are available to hoisted vi.mock
+const {
+  mockCreateInvoice,
+  mockListInvoices,
+  mockGetInvoice,
+  mockUpdateInvoice,
+  mockDeleteInvoice,
+  mockGetInvoiceStats,
+} = vi.hoisted(() => ({
+  mockCreateInvoice: vi.fn(),
+  mockListInvoices: vi.fn(),
+  mockGetInvoice: vi.fn(),
+  mockUpdateInvoice: vi.fn(),
+  mockDeleteInvoice: vi.fn(),
+  mockGetInvoiceStats: vi.fn(),
+}));
 
 vi.mock('../../services/invoice.service', () => ({
   createInvoice: mockCreateInvoice,

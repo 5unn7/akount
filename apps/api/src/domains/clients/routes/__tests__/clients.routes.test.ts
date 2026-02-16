@@ -34,12 +34,20 @@ vi.mock('../../../../middleware/validation', () => ({
   validateBody: vi.fn(() => async () => {}),
 }));
 
-// Mock client service
-const mockCreateClient = vi.fn();
-const mockListClients = vi.fn();
-const mockGetClient = vi.fn();
-const mockUpdateClient = vi.fn();
-const mockDeleteClient = vi.fn();
+// Mock client service — use vi.hoisted so declarations are available to hoisted vi.mock
+const {
+  mockCreateClient,
+  mockListClients,
+  mockGetClient,
+  mockUpdateClient,
+  mockDeleteClient,
+} = vi.hoisted(() => ({
+  mockCreateClient: vi.fn(),
+  mockListClients: vi.fn(),
+  mockGetClient: vi.fn(),
+  mockUpdateClient: vi.fn(),
+  mockDeleteClient: vi.fn(),
+}));
 
 vi.mock('../../services/client.service', () => ({
   createClient: mockCreateClient,

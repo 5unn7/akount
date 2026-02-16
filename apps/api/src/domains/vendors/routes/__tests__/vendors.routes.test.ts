@@ -34,12 +34,20 @@ vi.mock('../../../../middleware/validation', () => ({
   validateBody: vi.fn(() => async () => {}),
 }));
 
-// Mock vendor service
-const mockCreateVendor = vi.fn();
-const mockListVendors = vi.fn();
-const mockGetVendor = vi.fn();
-const mockUpdateVendor = vi.fn();
-const mockDeleteVendor = vi.fn();
+// Mock vendor service — use vi.hoisted so declarations are available to hoisted vi.mock
+const {
+  mockCreateVendor,
+  mockListVendors,
+  mockGetVendor,
+  mockUpdateVendor,
+  mockDeleteVendor,
+} = vi.hoisted(() => ({
+  mockCreateVendor: vi.fn(),
+  mockListVendors: vi.fn(),
+  mockGetVendor: vi.fn(),
+  mockUpdateVendor: vi.fn(),
+  mockDeleteVendor: vi.fn(),
+}));
 
 vi.mock('../../services/vendor.service', () => ({
   createVendor: mockCreateVendor,

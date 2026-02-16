@@ -34,13 +34,22 @@ vi.mock('../../../../middleware/validation', () => ({
   validateBody: vi.fn(() => async () => {}),
 }));
 
-// Mock bill service
-const mockCreateBill = vi.fn();
-const mockListBills = vi.fn();
-const mockGetBill = vi.fn();
-const mockUpdateBill = vi.fn();
-const mockDeleteBill = vi.fn();
-const mockGetBillStats = vi.fn();
+// Mock bill service — use vi.hoisted so declarations are available to hoisted vi.mock
+const {
+  mockCreateBill,
+  mockListBills,
+  mockGetBill,
+  mockUpdateBill,
+  mockDeleteBill,
+  mockGetBillStats,
+} = vi.hoisted(() => ({
+  mockCreateBill: vi.fn(),
+  mockListBills: vi.fn(),
+  mockGetBill: vi.fn(),
+  mockUpdateBill: vi.fn(),
+  mockDeleteBill: vi.fn(),
+  mockGetBillStats: vi.fn(),
+}));
 
 vi.mock('../../services/bill.service', () => ({
   createBill: mockCreateBill,

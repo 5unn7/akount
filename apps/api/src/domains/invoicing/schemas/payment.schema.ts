@@ -48,7 +48,12 @@ export const AllocatePaymentSchema = z.object({
   { message: 'Allocation must target either an invoice or a bill, not both', path: ['invoiceId'] }
 );
 
+export const PostPaymentAllocationSchema = z.object({
+  bankGLAccountId: z.string().cuid(),
+});
+
 export type CreatePaymentInput = z.infer<typeof CreatePaymentSchema>;
 export type UpdatePaymentInput = z.infer<typeof UpdatePaymentSchema>;
 export type ListPaymentsInput = z.infer<typeof ListPaymentsSchema>;
 export type AllocatePaymentInput = z.infer<typeof AllocatePaymentSchema>;
+export type PostPaymentAllocationInput = z.infer<typeof PostPaymentAllocationSchema>;
