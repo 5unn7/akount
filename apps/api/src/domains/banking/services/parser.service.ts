@@ -671,8 +671,12 @@ function parseTransactionsFromPDFText(
   // Track whether we found any "DD Mon" (chequing-style) transactions
   let isChequingFormat = false;
 
-  // Extract opening balance for chequing statements (used for sign detection)
-  const openingBalanceMatch = text.match(/opening\s+balance.*?[\s$]([\d,]+\.\d{2})/i);
+  // Extract opening balance from statement text (used for sign detection)
+  // Matches: "Opening Balance", "Previous Balance", "Balance Forward",
+  // "Beginning Balance", "Balance Brought Forward", "Previous Statement Balance"
+  const openingBalanceMatch = text.match(
+    /(?:opening|previous|beginning|balance\s+(?:forward|brought\s+forward)|previous\s+statement)\s+balance.*?[\s$]([\d,]+\.\d{2})/i
+  );
   const openingBalance = openingBalanceMatch ? parseAmountValue(openingBalanceMatch[1]) : null;
 
   // Pattern B: Generic numeric date — "MM/DD/YYYY Description Amount"
@@ -685,8 +689,8 @@ function parseTransactionsFromPDFText(
     // Skip summary/header lines
     if (skipPatterns.some((p) => p.test(line))) continue;
 
-    // --- Try Pattern A: Credit card "Mon DD  Mon DD  Description  Amount" ---
-    // Uses "find first amount" approach to handle multicolumn PDFs
+    // --- Try Pattern A: Credit card "Mon DD  Mon DD  Description  Amount [Balance]" ---
+    // Finds ALL amounts after the date prefix: first = transaction, last = balance (if multiple)
     const matchA = line.match(datePrefixA);
     if (matchA) {
       try {
@@ -694,24 +698,28 @@ function parseTransactionsFromPDFText(
         const monthIdx = MONTHS[transMonth.toLowerCase()];
         if (monthIdx === undefined) continue;
 
-        // Find FIRST amount after the date prefix
         const rest = line.substring(fullPrefix.length);
-        const firstAmount = rest.match(amtRegex);
-        if (firstAmount && firstAmount.index !== undefined) {
-          const description = rest.substring(0, firstAmount.index).trim();
-          const amountStr = firstAmount[1];
+        const allAmounts = [...rest.matchAll(new RegExp(amtRegex.source, 'g'))];
+        if (allAmounts.length > 0 && allAmounts[0].index !== undefined) {
+          const description = rest.substring(0, allAmounts[0].index).trim();
+          const amountStr = allAmounts[0][1];
+          // If multiple amounts on line, last one is likely the running balance
+          const balanceStr = allAmounts.length > 1
+            ? allAmounts[allAmounts.length - 1][1]
+            : undefined;
 
           if (description.length > 0) {
             const year = getYearForMonth(monthIdx);
             const date = new Date(year, monthIdx, parseInt(transDay, 10));
             const amount = parseAmountValue(amountStr);
+            const balance = balanceStr ? parseAmountValue(balanceStr) : undefined;
 
             transactions.push({
               tempId: `temp_${randomUUID()}`,
               date: date.toISOString().split('T')[0],
               description: description.replace(/\s+/g, ' ').trim(),
               amount,
-              balance: undefined,
+              balance,
               isDuplicate: false,
               duplicateConfidence: undefined,
             });
@@ -723,7 +731,7 @@ function parseTransactionsFromPDFText(
       }
     }
 
-    // --- Try Pattern A2: Credit card single-date — "Mon DD  Description  Amount" ---
+    // --- Try Pattern A2: Single-date — "Mon DD  Description  Amount [Balance]" ---
     const matchA2 = line.match(datePrefixA2);
     if (matchA2) {
       try {
@@ -731,24 +739,27 @@ function parseTransactionsFromPDFText(
         const monthIdx = MONTHS[transMonth.toLowerCase()];
         if (monthIdx === undefined) continue;
 
-        // Find FIRST amount after the date prefix
         const rest = line.substring(fullPrefix.length);
-        const firstAmount = rest.match(amtRegex);
-        if (firstAmount && firstAmount.index !== undefined) {
-          const description = rest.substring(0, firstAmount.index).trim();
-          const amountStr = firstAmount[1];
+        const allAmounts = [...rest.matchAll(new RegExp(amtRegex.source, 'g'))];
+        if (allAmounts.length > 0 && allAmounts[0].index !== undefined) {
+          const description = rest.substring(0, allAmounts[0].index).trim();
+          const amountStr = allAmounts[0][1];
+          const balanceStr = allAmounts.length > 1
+            ? allAmounts[allAmounts.length - 1][1]
+            : undefined;
 
           if (description.length > 0) {
             const year = getYearForMonth(monthIdx);
             const date = new Date(year, monthIdx, parseInt(transDay, 10));
             const amount = parseAmountValue(amountStr);
+            const balance = balanceStr ? parseAmountValue(balanceStr) : undefined;
 
             transactions.push({
               tempId: `temp_${randomUUID()}`,
               date: date.toISOString().split('T')[0],
               description: description.replace(/\s+/g, ' ').trim(),
               amount,
-              balance: undefined,
+              balance,
               isDuplicate: false,
               duplicateConfidence: undefined,
             });
@@ -900,102 +911,122 @@ function parseTransactionsFromPDFText(
     }
   }
 
-  // --- Post-processing: Determine sign for chequing transactions using running balance ---
-  // Credit card amounts are handled by adjustAmountForAccountType() in import.service.ts,
-  // but chequing/bank statements need inline sign detection because the PDF doesn't
-  // distinguish debit vs credit columns in flattened text.
+  // --- Post-processing: Determine debit/credit sign using running balance ---
+  //
+  // Works for ANY statement format (chequing, credit card, etc.) as long as
+  // at least some transactions have a balance value. Credit card amounts are
+  // also handled by adjustAmountForAccountType() in import.service.ts, but
+  // this algorithm is more precise since it uses actual balance data.
   //
   // Algorithm: Group consecutive transactions until we find one with a balance.
   // Then use the known running balance and the target balance to determine which
   // sign combination (+/-) for each transaction produces the correct result.
   // For small groups (<=8), try all 2^n combinations. For larger groups, fall back
   // to checking all-debit vs all-credit.
-  if (isChequingFormat && openingBalance !== null && transactions.length > 0) {
+  const hasBalanceData = transactions.some((t) => t.balance !== undefined);
+
+  if (hasBalanceData && transactions.length > 0) {
+    // Determine starting balance:
+    // 1. Prefer explicit opening balance from statement text
+    // 2. Otherwise, start from the first transaction that has a balance
     let runningBalance = openingBalance;
     let groupStart = 0;
 
-    while (groupStart < transactions.length) {
-      // Find end of group: walk forward until we find a transaction with a balance
-      let groupEnd = groupStart;
-      while (groupEnd < transactions.length && transactions[groupEnd].balance === undefined) {
-        groupEnd++;
+    if (runningBalance === null) {
+      // No explicit opening balance — find first transaction with balance
+      // and use its balance as starting point (skip sign detection for it)
+      const firstBalancedIdx = transactions.findIndex((t) => t.balance !== undefined);
+      if (firstBalancedIdx >= 0) {
+        // Leave transactions before and including this one with their parsed sign
+        runningBalance = transactions[firstBalancedIdx].balance!;
+        groupStart = firstBalancedIdx + 1;
       }
+    }
 
-      if (groupEnd >= transactions.length) {
-        // No balance available — default all remaining to debit
-        for (let j = groupStart; j < transactions.length; j++) {
-          transactions[j].amount = -Math.abs(transactions[j].amount);
+    if (runningBalance !== null) {
+      while (groupStart < transactions.length) {
+        // Find end of group: walk forward until we find a transaction with a balance
+        let groupEnd = groupStart;
+        while (groupEnd < transactions.length && transactions[groupEnd].balance === undefined) {
+          groupEnd++;
         }
-        break;
-      }
 
-      const groupSize = groupEnd - groupStart + 1;
-      const endBalance = transactions[groupEnd].balance!;
-      const netChange = endBalance - runningBalance;
-
-      // Collect absolute amounts for the group
-      const amounts: number[] = [];
-      for (let j = groupStart; j <= groupEnd; j++) {
-        amounts.push(Math.abs(transactions[j].amount));
-      }
-
-      if (groupSize === 1) {
-        // Simple case: single transaction with balance
-        const diffDebit = Math.abs(runningBalance - amounts[0] - endBalance);
-        const diffCredit = Math.abs(runningBalance + amounts[0] - endBalance);
-        if (diffDebit <= diffCredit) {
-          transactions[groupStart].amount = -amounts[0]; // debit
-        }
-        // else: stays positive (credit)
-      } else if (groupSize <= 8) {
-        // Brute force: try all 2^n sign combinations to find the one matching netChange
-        // Each bit: 0 = credit (+), 1 = debit (-)
-        const n = groupSize;
-        let bestMask = 0;
-        let bestDiff = Infinity;
-
-        for (let mask = 0; mask < (1 << n); mask++) {
-          let sum = 0;
-          for (let bit = 0; bit < n; bit++) {
-            sum += (mask & (1 << bit)) ? -amounts[bit] : amounts[bit];
+        if (groupEnd >= transactions.length) {
+          // No balance available — default all remaining to debit (expenses more common)
+          for (let j = groupStart; j < transactions.length; j++) {
+            transactions[j].amount = -Math.abs(transactions[j].amount);
           }
-          const diff = Math.abs(sum - netChange);
-          if (diff < bestDiff) {
-            bestDiff = diff;
-            bestMask = mask;
-          }
+          break;
         }
 
-        // Apply best match (tolerance: 2 cents for rounding)
-        if (bestDiff <= 2) {
-          for (let bit = 0; bit < n; bit++) {
-            const idx = groupStart + bit;
-            if (bestMask & (1 << bit)) {
-              transactions[idx].amount = -amounts[bit]; // debit
+        const groupSize = groupEnd - groupStart + 1;
+        const endBalance = transactions[groupEnd].balance!;
+        const netChange = endBalance - runningBalance;
+
+        // Collect absolute amounts for the group
+        const amounts: number[] = [];
+        for (let j = groupStart; j <= groupEnd; j++) {
+          amounts.push(Math.abs(transactions[j].amount));
+        }
+
+        if (groupSize === 1) {
+          // Simple case: single transaction with balance
+          const diffDebit = Math.abs(runningBalance - amounts[0] - endBalance);
+          const diffCredit = Math.abs(runningBalance + amounts[0] - endBalance);
+          if (diffDebit <= diffCredit) {
+            transactions[groupStart].amount = -amounts[0]; // debit (withdrawal)
+          }
+          // else: stays positive (deposit)
+        } else if (groupSize <= 8) {
+          // Brute force: try all 2^n sign combinations to find the one matching netChange
+          // Each bit: 0 = credit (+), 1 = debit (-)
+          const n = groupSize;
+          let bestMask = 0;
+          let bestDiff = Infinity;
+
+          for (let mask = 0; mask < (1 << n); mask++) {
+            let sum = 0;
+            for (let bit = 0; bit < n; bit++) {
+              sum += (mask & (1 << bit)) ? -amounts[bit] : amounts[bit];
             }
-            // else: stays positive (credit)
+            const diff = Math.abs(sum - netChange);
+            if (diff < bestDiff) {
+              bestDiff = diff;
+              bestMask = mask;
+            }
+          }
+
+          // Apply best match (tolerance: 2 cents for rounding)
+          if (bestDiff <= 2) {
+            for (let bit = 0; bit < n; bit++) {
+              const idx = groupStart + bit;
+              if (bestMask & (1 << bit)) {
+                transactions[idx].amount = -amounts[bit]; // debit
+              }
+              // else: stays positive (credit)
+            }
+          } else {
+            // No combination matches — default all to debit
+            for (let j = groupStart; j <= groupEnd; j++) {
+              transactions[j].amount = -Math.abs(transactions[j].amount);
+            }
           }
         } else {
-          // No combination matches — default all to debit
+          // Group too large for brute force — check all-debit vs all-credit
+          const totalAmount = amounts.reduce((s, a) => s + a, 0);
+          const diffDebit = Math.abs(runningBalance - totalAmount - endBalance);
+          const diffCredit = Math.abs(runningBalance + totalAmount - endBalance);
+          const isDebit = diffDebit <= diffCredit;
           for (let j = groupStart; j <= groupEnd; j++) {
-            transactions[j].amount = -Math.abs(transactions[j].amount);
+            if (isDebit) {
+              transactions[j].amount = -Math.abs(transactions[j].amount);
+            }
           }
         }
-      } else {
-        // Group too large for brute force — check all-debit vs all-credit
-        const totalAmount = amounts.reduce((s, a) => s + a, 0);
-        const diffDebit = Math.abs(runningBalance - totalAmount - endBalance);
-        const diffCredit = Math.abs(runningBalance + totalAmount - endBalance);
-        const isDebit = diffDebit <= diffCredit;
-        for (let j = groupStart; j <= groupEnd; j++) {
-          if (isDebit) {
-            transactions[j].amount = -Math.abs(transactions[j].amount);
-          }
-        }
-      }
 
-      runningBalance = endBalance;
-      groupStart = groupEnd + 1;
+        runningBalance = endBalance;
+        groupStart = groupEnd + 1;
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import { prisma } from '@akount/db';
 import { parseCSV, parsePDF, parseXLSX } from './parser.service';
-import { findDuplicates } from './duplication.service';
+import { findDuplicates, findInternalDuplicates } from './duplication.service';
 import { categorizeTransactions } from '../../ai/services/categorization.service';
 import type { ColumnMappings } from '../../../schemas/import';
 import { logger } from '../../../lib/logger';
@@ -202,17 +202,28 @@ export class ImportService {
         };
       }
 
-      // 4. Detect duplicates
-      const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+      // 4a. Remove internal duplicates (within the same file)
+      const internalDups = findInternalDuplicates(parseResult.transactions);
+      const internalDupIds = new Set<string>();
+      for (const dupes of internalDups.values()) {
+        for (const id of dupes) internalDupIds.add(id);
+      }
+      const deduped = parseResult.transactions.filter(
+        (txn) => !internalDupIds.has(txn.tempId)
+      );
 
-      // Map duplicate results to parsed transactions
+      // 4b. Detect duplicates against existing DB transactions
+      const duplicateResults = await findDuplicates(deduped, accountId);
       const duplicateMap = new Map(duplicateResults.map((d) => [d.tempId, d]));
 
       // 5. Filter out duplicates and create Transaction records
-      const transactionsToImport = parseResult.transactions.filter((txn) => {
+      const transactionsToImport = deduped.filter((txn) => {
         const dupResult = duplicateMap.get(txn.tempId);
         return !dupResult || !dupResult.isDuplicate;
       });
+
+      const totalDuplicates =
+        internalDupIds.size + (deduped.length - transactionsToImport.length);
 
       // Create transactions in batch
       if (transactionsToImport.length > 0) {
@@ -254,7 +265,7 @@ export class ImportService {
         stats: {
           total: parseResult.transactions.length,
           imported: transactionsToImport.length,
-          duplicates: parseResult.transactions.length - transactionsToImport.length,
+          duplicates: totalDuplicates,
           skipped: 0,
         },
       };
@@ -325,13 +336,26 @@ export class ImportService {
         };
       }
 
-      const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+      // Remove internal duplicates (within the same file)
+      const internalDups = findInternalDuplicates(parseResult.transactions);
+      const internalDupIds = new Set<string>();
+      for (const dupes of internalDups.values()) {
+        for (const id of dupes) internalDupIds.add(id);
+      }
+      const deduped = parseResult.transactions.filter(
+        (txn) => !internalDupIds.has(txn.tempId)
+      );
+
+      const duplicateResults = await findDuplicates(deduped, accountId);
       const duplicateMap = new Map(duplicateResults.map((d) => [d.tempId, d]));
 
-      const transactionsToImport = parseResult.transactions.filter((txn) => {
+      const transactionsToImport = deduped.filter((txn) => {
         const dupResult = duplicateMap.get(txn.tempId);
         return !dupResult || !dupResult.isDuplicate;
       });
+
+      const totalDuplicates =
+        internalDupIds.size + (deduped.length - transactionsToImport.length);
 
       if (transactionsToImport.length > 0) {
         await prisma.transaction.createMany({
@@ -368,7 +392,7 @@ export class ImportService {
         stats: {
           total: parseResult.transactions.length,
           imported: transactionsToImport.length,
-          duplicates: parseResult.transactions.length - transactionsToImport.length,
+          duplicates: totalDuplicates,
           skipped: 0,
         },
       };
@@ -455,17 +479,28 @@ export class ImportService {
         };
       }
 
-      // 4. Detect duplicates
-      const duplicateResults = await findDuplicates(parseResult.transactions, accountId);
+      // 4a. Remove internal duplicates (within the same file)
+      const internalDups = findInternalDuplicates(parseResult.transactions);
+      const internalDupIds = new Set<string>();
+      for (const dupes of internalDups.values()) {
+        for (const id of dupes) internalDupIds.add(id);
+      }
+      const deduped = parseResult.transactions.filter(
+        (txn) => !internalDupIds.has(txn.tempId)
+      );
 
-      // Map duplicate results to parsed transactions
+      // 4b. Detect duplicates against existing DB transactions
+      const duplicateResults = await findDuplicates(deduped, accountId);
       const duplicateMap = new Map(duplicateResults.map((d) => [d.tempId, d]));
 
       // 5. Filter out duplicates and create Transaction records
-      const transactionsToImport = parseResult.transactions.filter((txn) => {
+      const transactionsToImport = deduped.filter((txn) => {
         const dupResult = duplicateMap.get(txn.tempId);
         return !dupResult || !dupResult.isDuplicate;
       });
+
+      const totalDuplicates =
+        internalDupIds.size + (deduped.length - transactionsToImport.length);
 
       // Create transactions in batch
       if (transactionsToImport.length > 0) {
@@ -507,7 +542,7 @@ export class ImportService {
         stats: {
           total: parseResult.transactions.length,
           imported: transactionsToImport.length,
-          duplicates: parseResult.transactions.length - transactionsToImport.length,
+          duplicates: totalDuplicates,
           skipped: 0,
         },
       };

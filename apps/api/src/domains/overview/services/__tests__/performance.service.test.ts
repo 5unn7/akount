@@ -292,11 +292,12 @@ describe('PerformanceService', () => {
       expect(result.revenue.percentChange).toBe(-40);
     });
 
-    it('should exclude transactions without categories', async () => {
+    it('should classify uncategorized transactions by amount sign', async () => {
       const currentTransactions = [
         mockTransaction({ amount: 50000, categoryType: 'INCOME', date: daysAgo(10) }),
-        mockTransaction({ amount: 20000, categoryType: null, date: daysAgo(8) }), // No category
+        mockTransaction({ amount: 20000, categoryType: null, date: daysAgo(8) }), // No category, positive = revenue
         mockTransaction({ amount: -10000, categoryType: 'EXPENSE', date: daysAgo(5) }),
+        mockTransaction({ amount: -5000, categoryType: null, date: daysAgo(3) }), // No category, negative = expense
       ];
 
       mockFindMany
@@ -305,12 +306,12 @@ describe('PerformanceService', () => {
 
       const result = await service.getPerformanceMetrics(ENTITY_ID, 'CAD', '30d');
 
-      // Revenue should only include INCOME (50000)
-      expect(result.revenue.current).toBe(50000);
-      // Expenses should only include EXPENSE (10000, absolute)
-      expect(result.expenses.current).toBe(10000);
-      // Uncategorized transaction (20000) should be excluded
-      expect(result.profit.current).toBe(40000); // 50000 - 10000
+      // Revenue = INCOME (50000) + uncategorized positive (20000) = 70000
+      expect(result.revenue.current).toBe(70000);
+      // Expenses = EXPENSE (10000) + uncategorized negative (5000) = 15000
+      expect(result.expenses.current).toBe(15000);
+      // Profit = 70000 - 15000 = 55000
+      expect(result.profit.current).toBe(55000);
     });
 
     it('should calculate account counts correctly', async () => {

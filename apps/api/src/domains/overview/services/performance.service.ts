@@ -87,27 +87,33 @@ export class PerformanceService {
       },
     });
 
-    // Calculate revenue (INCOME category)
+    // Classify transactions as revenue or expense:
+    // 1. If categorized: use category type (INCOME / EXPENSE)
+    // 2. If uncategorized: use amount sign (positive = revenue, negative = expense)
+    // This ensures imported transactions are visible even before manual categorization.
+    const isRevenue = (t: { amount: number; category: { type: string } | null }) =>
+      t.category?.type === 'INCOME' || (!t.category && t.amount > 0);
+
+    const isExpense = (t: { amount: number; category: { type: string } | null }) =>
+      t.category?.type === 'EXPENSE' || (!t.category && t.amount < 0);
+
+    // Calculate revenue
     const currentRevenue = currentTransactions
-      .filter((t) => t.category?.type === 'INCOME')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .filter(isRevenue)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
     const previousRevenue = previousTransactions
-      .filter((t) => t.category?.type === 'INCOME')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .filter(isRevenue)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-    // Calculate expenses (EXPENSE category) — absolute value
-    const currentExpenses = Math.abs(
-      currentTransactions
-        .filter((t) => t.category?.type === 'EXPENSE')
-        .reduce((sum, t) => sum + t.amount, 0)
-    );
+    // Calculate expenses — absolute value
+    const currentExpenses = currentTransactions
+      .filter(isExpense)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-    const previousExpenses = Math.abs(
-      previousTransactions
-        .filter((t) => t.category?.type === 'EXPENSE')
-        .reduce((sum, t) => sum + t.amount, 0)
-    );
+    const previousExpenses = previousTransactions
+      .filter(isExpense)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
     // Calculate profit
     const currentProfit = currentRevenue - currentExpenses;
@@ -118,14 +124,14 @@ export class PerformanceService {
     const daysPerPoint = Math.floor(days / sparklinePoints);
 
     const revenueSparkline = this.generateSparkline(
-      currentTransactions.filter((t) => t.category?.type === 'INCOME'),
+      currentTransactions.filter(isRevenue),
       days,
       sparklinePoints,
       daysPerPoint
-    );
+    ).map((v) => Math.abs(v));
 
     const expensesSparkline = this.generateSparkline(
-      currentTransactions.filter((t) => t.category?.type === 'EXPENSE'),
+      currentTransactions.filter(isExpense),
       days,
       sparklinePoints,
       daysPerPoint

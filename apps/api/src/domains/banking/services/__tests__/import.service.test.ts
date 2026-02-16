@@ -27,11 +27,12 @@ vi.mock('../parser.service', () => ({
 
 vi.mock('../duplication.service', () => ({
   findDuplicates: vi.fn(),
+  findInternalDuplicates: vi.fn(),
 }));
 
 import { prisma } from '@akount/db';
 import { parseCSV, parsePDF } from '../parser.service';
-import { findDuplicates } from '../duplication.service';
+import { findDuplicates, findInternalDuplicates } from '../duplication.service';
 
 const TENANT_ID = 'tenant-abc-123';
 const ACCOUNT_ID = 'acc-xyz-789';
@@ -94,6 +95,8 @@ describe('ImportService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     service = new ImportService(TENANT_ID);
+    // Default: no internal duplicates
+    vi.mocked(findInternalDuplicates).mockReturnValue(new Map());
   });
 
   describe('createCSVImport', () => {

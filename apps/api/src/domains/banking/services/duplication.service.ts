@@ -51,10 +51,11 @@ export async function findDuplicates(
   minDate.setDate(minDate.getDate() - 3);
   maxDate.setDate(maxDate.getDate() + 3);
 
-  // Query existing transactions in date range
+  // Query existing transactions in date range (respect soft deletes)
   const existingTransactions = await prisma.transaction.findMany({
     where: {
       accountId,
+      deletedAt: null,
       date: {
         gte: minDate,
         lte: maxDate,
@@ -132,8 +133,10 @@ function findBestMatch(
       reasons.push('±3 days');
     }
 
-    // Amount exact match (40 points)
-    if (transaction.amount === existing.amount) {
+    // Amount exact match (40 points) — compare absolute values because
+    // the sign may differ between raw parsed amounts and stored amounts
+    // (e.g., credit card charges: parser gives +2599, DB stores -2599)
+    if (Math.abs(transaction.amount) === Math.abs(existing.amount)) {
       score += 40;
       reasons.push('Exact amount');
     } else {
