@@ -1,30 +1,54 @@
 # Akount - Task List
 
 **Last Updated:** 2026-02-15
-**Current Phase:** Phase 3 Complete | Code Review Fixes (3/5 remaining)
+**Current Phase:** Phase 4 IN PROGRESS (~80%) | Code Review Fixes (3/5 remaining)
 
 ---
 
-## 📅 Tomorrow's Focus (2026-02-15)
+## 📅 Tomorrow's Focus (2026-02-16)
 
-**Primary Goal:** Complete code review fixes (Issue 1 + Issue 5)
+**Primary Goal:** Commit uncommitted work, verify Phase 4 completeness
 
 **Tasks:**
-1. [ ] Add loading/error states to remaining 16 pages (accounting + banking domains)
-2. [ ] Write service-level tests for invoice.service.ts (20+ tests)
-3. [ ] Write service-level tests for bill.service.ts (20+ tests)
+1. [ ] Commit entity context system (cookie + provider + entity switching)
+2. [ ] Commit Turbopack import syntax fixes (11 business components)
+3. [ ] Verify Phase 4 end-to-end: invoice → payment → GL posting flow
+4. [ ] Add loading/error states to remaining pages (carried from review fixes)
 
-**Context:** 3/5 review issues complete. Security fixes committed. Remaining work: 16 page states + 70 service tests.
+**Context:** Massive 2026-02-15 session — 18 commits, Phase 4 Sprint 1-6 built, category engine, entity system, 9 bug fixes. Uncommitted: entity context + import syntax fixes + tenant middleware fix.
 
 ---
 
 ## Active Work
 
-### Code Review Fixes — IN PROGRESS (3/5 complete)
+### Phase 4: Bill & Get Paid — IN PROGRESS (~80%)
 
-**Plan:** [docs/plans/2026-02-14-fix-code-review-issues.md](docs/plans/2026-02-14-fix-code-review-issues.md)
+**Backend (6 sprints built — 2026-02-15):**
+- [x] **Sprint 1:** PaymentAllocation schema + invoice/bill status transitions (3df1867)
+- [x] **Sprint 2:** DocumentPostingService for GL posting (9d7cf4d)
+- [x] **Sprint 3:** Payment service with allocation + deallocation (904d448)
+- [x] **Sprint 5:** Invoice PDF generation + email sending (5ba12de)
+- [ ] **Remaining:** Verify E2E flow, edge case tests, AR/AP aging reports
 
-**Completed Today (2026-02-14):**
+**Frontend (2 sprints built — 2026-02-15):**
+- [x] **Sprint 4:** Invoice, bill & payment forms + API clients (2e858b3)
+- [x] **Sprint 6:** Detail pages, payment list, AR/AP enhancement (dbb2889)
+- [ ] **Remaining:** Verify forms work with real API, polish detail pages
+
+### Category Engine — COMPLETE (2026-02-15)
+- [x] Category CRUD API + Zod schemas + 21 route tests (1de961e)
+- [x] Auto-categorization with soft-delete filtering
+- [x] Dedup (categories + transactions)
+- [x] Single source of truth for default category seeding
+
+### Uncommitted Work (needs commit)
+- [ ] Entity context system (cookie + provider + hook + EntityAccountCards)
+- [ ] Turbopack import fixes (`import type` in 11 business components + 3 TS fixes)
+- [ ] Tenant isolation middleware fix (2-hop nesting)
+
+### Code Review Fixes — IN PROGRESS (3/5 complete, from 2026-02-14)
+
+**Completed:**
 - [x] **Issue 1 (Partial):** 24 loading/error pages for planning + services domains
 - [x] **Issue 2:** Deleted onboarding route (overlay-only design)
 - [x] **Issue 3:** Fixed badge.tsx and AIBrief.tsx semantic tokens

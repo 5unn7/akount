@@ -1,62 +1,50 @@
 # Akount - Current Status
 
 **Last Updated:** 2026-02-15
-**Overall Progress:** Phase 3 Complete, Phase 2 Complete, Onboarding Complete, Business Domain Complete (Slice 4)
+**Overall Progress:** Phase 4 IN PROGRESS (~80%), Phases 1-3 Complete, Onboarding Complete
 
 ---
 
-## Current Phase: Phase 2 - Track Your Money
+## Current Phase: Phase 4 - Bill & Get Paid (IN PROGRESS)
 
-**Goal:** Import bank transactions, view history, reconcile against posted records.
+**Goal:** Invoice creation, bill tracking, payment allocation with GL posting.
 
-### Backend (COMPLETE — 117 tests)
+### Backend (6 sprints — 2026-02-15)
 
-| Sprint | Scope | Tests |
-|--------|-------|-------|
-| Transaction CRUD | GET/POST/PATCH/DELETE, filtering, pagination | 55 |
-| CSV/PDF Import | Parsing, column mapping, deduplication | 19 |
-| Reconciliation | Matching algorithm, match/unmatch, status | 43 |
+| Sprint | Scope | Commit |
+|--------|-------|--------|
+| 1 | PaymentAllocation schema + invoice/bill status transitions | 3df1867 |
+| 2 | DocumentPostingService for GL posting | 9d7cf4d |
+| 3 | Payment service with allocation + deallocation | 904d448 |
+| 5 | Invoice PDF generation + email sending | 5ba12de |
 
-**Services built:** TransactionService, ImportService, ParserService, DuplicationService, ReconciliationService
+### Frontend (2 sprints — 2026-02-15)
 
-### Frontend (COMPLETE)
+| Sprint | Scope | Commit |
+|--------|-------|--------|
+| 4 | Invoice, bill & payment forms + API clients | 2e858b3 |
+| 6 | Detail pages, payment list, AR/AP enhancement | dbb2889 |
 
-| Task | Status |
-|------|--------|
-| Reconciliation UI (match/unmatch) | Built (commit 2256742) |
-| Import history page | Built (commit 2256742) |
-| CSV upload component | Built (commit 95eb7e4) |
-| Column mapping interface | Built (commit 95eb7e4) |
-| Transaction matching improvements | Built (commit 95eb7e4) |
-| Transaction list bulk actions | Built (commit 95eb7e4) |
+### Category Engine (NEW — 2026-02-15, commit 1de961e)
 
-### Bug Fixes (2026-02-12)
+- Category CRUD API (21 route tests), auto-categorization, dedup
+- Single source of truth for default category seeding
 
-- Fixed PDF import end-to-end: wrong API endpoint, FormData field ordering, pdf-parse ESM/CJS crash
-- Replaced `pdf-parse` with `pdfjs-dist` (Mozilla PDF.js) for reliable PDF text extraction
-- Added CIBC bank statement format support (Mon DD date pattern)
-- Cleaned up debug logging from ImportUploadForm and parser.service
+### Bug Fixes (2026-02-15)
 
-### Onboarding Redesign (PLANNED)
+- Zod `.partial()` on refined schemas — extracted base schemas (f31172a)
+- Onboarding flow — missing page, error classification, mock data removal (0d6f810)
+- PDF import dedup — abs() amount comparison, format-agnostic balance detection (bc16dde)
+- apiClient Content-Type — only set JSON header when body exists (1de961e)
+- Turbopack imports — `import { type X }` → `import type { X }` in 11 components
+- Tenant isolation middleware — 2-hop nesting support (account.entity.tenantId)
 
-Minimal 2-step wizard + dashboard progress tracking.
+### Infrastructure (2026-02-15)
 
-- Plan: [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
-- Brainstorm: [docs/brainstorms/2026-02-09-onboarding-flow-redesign-brainstorm.md](docs/brainstorms/2026-02-09-onboarding-flow-redesign-brainstorm.md)
-
-### Design Aesthetic (NEW)
-
-Defined "Financial Clarity" design aesthetic — dark-first, glass morphism, amber orange primary.
-
-- Rule: `.claude/rules/design-aesthetic.md`
-- Tokens updated: `globals.css`, `css-variables.css`, `colors.md`
-- Brand inspirations: `brand/inspirations/`
-
-### Roadmap Restructure (DONE)
-
-Restructured ROADMAP.md by user value phases (See → Track → Post → Bill → Understand → Launch).
-
-- Plan: [docs/plans/2026-02-09-roadmap-restructure.md](docs/plans/2026-02-09-roadmap-restructure.md)
+- Product thinking rule + `/processes:diagnose` + `/processes:end-session` (e35c8ea)
+- PostToolUse type-check hook + SessionStart port-cleanup hook (d3d2356)
+- Entity creation with 195 countries + CountrySelect component (d5ac6d6)
+- Cookie + Context entity switching pattern (uncommitted)
 
 ---
 
@@ -152,15 +140,14 @@ Auth (Clerk), DB (38 models), API (Fastify), design system (Figma + glass UI), m
 
 | Metric | Value |
 |--------|-------|
-| Backend Tests | 495+ (all passing) |
+| Backend Tests | 720 (all passing) |
 | TypeScript Errors | 0 |
-| API Endpoints (functional) | 84+ |
-| API Endpoints (stubs) | 0 |
-| Backend Services | 19 (+ PostingService) |
-| Frontend Pages (functional) | 14+ |
-| Frontend Pages (placeholder) | 31 |
+| API Endpoints (functional) | 100+ |
+| Backend Services | 24+ |
+| Frontend Pages (functional) | 20+ |
+| Frontend Pages (placeholder) | 25 |
 | Prisma Models | 39 |
-| Dashboard Response Time | ~200ms |
+| Code Quality | 0 `: any` prod, 0 console.log, 0 hardcoded colors |
 
 ---
 
