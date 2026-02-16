@@ -50,5 +50,5 @@ export async function getPerformanceMetrics(
   const queryString = params.toString();
   const path = `/api/overview/performance${queryString ? `?${queryString}` : ''}`;
 
-  return apiClient<PerformanceMetrics>({ method: 'GET', path });
+  return apiClient<PerformanceMetrics>(path);
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { type Payment } from '@/lib/api/payments';
+import type { Payment } from '@/lib/api/payments';
 import {
     Table,
     TableBody,

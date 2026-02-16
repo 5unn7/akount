@@ -1,6 +1,6 @@
 'use client';
 
-import { type Invoice } from '@/lib/api/invoices';
+import type { Invoice } from '@/lib/api/invoices';
 import {
     Sheet,
     SheetContent,

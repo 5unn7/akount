@@ -14,7 +14,7 @@ export default async function ClientsPage() {
     const clients = clientsResult.clients;
 
     // Derive primary currency from first client or default to CAD
-    const primaryCurrency = clients[0]?.entity?.currency || 'CAD';
+    const primaryCurrency = 'CAD';
 
     // Calculate stats
     const activeClients = clients.filter((c) => c.status === 'active').length;

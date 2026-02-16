@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { type Invoice } from '@/lib/api/invoices';
+import type { Invoice } from '@/lib/api/invoices';
 import { Send, BookOpen, Download, XCircle, Loader2 } from 'lucide-react';
 
 interface InvoiceActionsProps {

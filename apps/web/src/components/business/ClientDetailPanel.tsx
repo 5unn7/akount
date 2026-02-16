@@ -1,6 +1,6 @@
 'use client';
 
-import { type Client } from '@/lib/api/clients';
+import type { Client } from '@/lib/api/clients';
 import {
     Sheet,
     SheetContent,

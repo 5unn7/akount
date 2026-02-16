@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { type Bill } from '@/lib/api/bills';
+import type { Bill } from '@/lib/api/bills';
 import { CheckCircle, BookOpen, XCircle, Loader2 } from 'lucide-react';
 
 interface BillActionsProps {

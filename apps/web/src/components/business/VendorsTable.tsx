@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { type Vendor } from '@/lib/api/vendors';
+import type { Vendor } from '@/lib/api/vendors';
 import {
     Table,
     TableBody,

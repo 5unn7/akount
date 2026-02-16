@@ -1,6 +1,6 @@
 'use client';
 
-import { type Vendor } from '@/lib/api/vendors';
+import type { Vendor } from '@/lib/api/vendors';
 import {
     Sheet,
     SheetContent,

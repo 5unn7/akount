@@ -1,6 +1,6 @@
 'use client';
 
-import { type Bill } from '@/lib/api/bills';
+import type { Bill } from '@/lib/api/bills';
 import {
     Sheet,
     SheetContent,

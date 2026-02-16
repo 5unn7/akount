@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { type Bill } from '@/lib/api/bills';
+import type { Bill } from '@/lib/api/bills';
 import {
     Table,
     TableBody,

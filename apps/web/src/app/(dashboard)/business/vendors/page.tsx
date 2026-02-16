@@ -14,7 +14,7 @@ export default async function VendorsPage() {
     const vendors = vendorsResult.vendors;
 
     // Derive primary currency from first vendor or default to CAD
-    const primaryCurrency = vendors[0]?.entity?.currency || 'CAD';
+    const primaryCurrency = 'CAD';
 
     // Calculate stats
     const activeVendors = vendors.filter((v) => v.status === 'active').length;
