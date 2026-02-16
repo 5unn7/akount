@@ -34,7 +34,7 @@ export interface Invoice {
   subtotal: number; // Integer cents
   taxAmount: number; // Integer cents
   total: number; // Integer cents
-  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   paidAmount: number; // Integer cents
   notes?: string | null;
   deletedAt?: string | null;
@@ -65,7 +65,7 @@ export interface InvoiceStats {
 }
 
 export interface ListInvoicesParams {
-  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   clientId?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -87,7 +87,7 @@ export interface CreateInvoiceInput {
   subtotal: number;
   taxAmount: number;
   total: number;
-  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   notes?: string;
   lines: Array<{
     description: string;
@@ -109,7 +109,7 @@ export interface UpdateInvoiceInput {
   subtotal?: number;
   taxAmount?: number;
   total?: number;
-  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   notes?: string;
 }
 
@@ -173,6 +173,42 @@ export async function updateInvoice(
   return apiClient<Invoice>(`/api/business/invoices/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Send invoice (DRAFT → SENT)
+ */
+export async function sendInvoice(id: string): Promise<Invoice> {
+  return apiClient<Invoice>(`/api/business/invoices/${id}/send`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Cancel invoice (DRAFT/SENT → CANCELLED)
+ */
+export async function cancelInvoice(id: string): Promise<Invoice> {
+  return apiClient<Invoice>(`/api/business/invoices/${id}/cancel`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Mark invoice overdue (SENT/PARTIALLY_PAID → OVERDUE)
+ */
+export async function markInvoiceOverdue(id: string): Promise<Invoice> {
+  return apiClient<Invoice>(`/api/business/invoices/${id}/mark-overdue`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Post invoice to general ledger (creates journal entry)
+ */
+export async function postInvoice(id: string): Promise<{ journalEntryId: string; type: string }> {
+  return apiClient<{ journalEntryId: string; type: string }>(`/api/business/invoices/${id}/post`, {
+    method: 'POST',
   });
 }
 

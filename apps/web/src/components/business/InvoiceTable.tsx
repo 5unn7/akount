@@ -25,6 +25,7 @@ const STATUS_BADGE_STYLES: Record<Invoice['status'], string> = {
     PAID: 'bg-ak-green/10 text-ak-green border-ak-green/20',
     OVERDUE: 'bg-ak-red/10 text-ak-red border-ak-red/20',
     CANCELLED: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
+    PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
 };
 
 function formatDate(dateString: string): string {

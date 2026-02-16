@@ -3,8 +3,11 @@ import { StatsGrid } from '@/components/shared/StatsGrid';
 import { AgingBar } from '@/components/shared/AgingBar';
 import { InvoiceTable } from '@/components/business/InvoiceTable';
 import { BillsTable } from '@/components/business/BillsTable';
+import { InvoicingActions } from '@/components/business/InvoicingActions';
 import { getInvoiceStats, listInvoices } from '@/lib/api/invoices';
 import { getBillStats, listBills } from '@/lib/api/bills';
+import { listClients } from '@/lib/api/clients';
+import { listVendors } from '@/lib/api/vendors';
 import { formatCurrency } from '@/lib/utils/currency';
 
 export const metadata: Metadata = {
@@ -14,11 +17,13 @@ export const metadata: Metadata = {
 
 export default async function InvoicingPage() {
     // Fetch all data in parallel
-    const [invoiceStats, billStats, invoicesResult, billsResult] = await Promise.all([
+    const [invoiceStats, billStats, invoicesResult, billsResult, clientsResult, vendorsResult] = await Promise.all([
         getInvoiceStats(),
         getBillStats(),
         listInvoices({ limit: 20 }),
         listBills({ limit: 20 }),
+        listClients({ limit: 100 }),
+        listVendors({ limit: 100 }),
     ]);
 
     const primaryCurrency = invoicesResult.invoices[0]?.currency || billsResult.bills[0]?.currency || 'CAD';
@@ -106,11 +111,17 @@ export default async function InvoicingPage() {
     return (
         <div className="flex-1 space-y-6">
             {/* Header */}
-            <div className="fi fi1">
-                <h1 className="text-2xl font-heading font-normal">Invoicing</h1>
-                <p className="text-sm text-muted-foreground mt-1">
-                    Track accounts receivable and payable with aging analysis
-                </p>
+            <div className="fi fi1 flex items-start justify-between">
+                <div>
+                    <h1 className="text-2xl font-heading font-normal">Invoicing</h1>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        Track accounts receivable and payable with aging analysis
+                    </p>
+                </div>
+                <InvoicingActions
+                    clients={clientsResult.clients.map(c => ({ id: c.id, name: c.name }))}
+                    vendors={vendorsResult.vendors.map(v => ({ id: v.id, name: v.name }))}
+                />
             </div>
 
             {/* Stats Grid */}

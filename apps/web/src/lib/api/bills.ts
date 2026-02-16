@@ -34,7 +34,7 @@ export interface Bill {
   subtotal: number; // Integer cents
   taxAmount: number; // Integer cents
   total: number; // Integer cents
-  status: 'DRAFT' | 'RECEIVED' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status: 'DRAFT' | 'PENDING' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   paidAmount: number; // Integer cents
   notes?: string | null;
   deletedAt?: string | null;
@@ -65,7 +65,7 @@ export interface BillStats {
 }
 
 export interface ListBillsParams {
-  status?: 'DRAFT' | 'RECEIVED' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status?: 'DRAFT' | 'PENDING' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   vendorId?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -87,7 +87,7 @@ export interface CreateBillInput {
   subtotal: number;
   taxAmount: number;
   total: number;
-  status: 'DRAFT' | 'RECEIVED' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status: 'DRAFT' | 'PENDING' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   notes?: string;
   lines: Array<{
     description: string;
@@ -109,7 +109,7 @@ export interface UpdateBillInput {
   subtotal?: number;
   taxAmount?: number;
   total?: number;
-  status?: 'DRAFT' | 'RECEIVED' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+  status?: 'DRAFT' | 'PENDING' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   notes?: string;
 }
 
@@ -170,6 +170,42 @@ export async function updateBill(id: string, data: UpdateBillInput): Promise<Bil
   return apiClient<Bill>(`/api/business/bills/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Approve bill (DRAFT → PENDING)
+ */
+export async function approveBill(id: string): Promise<Bill> {
+  return apiClient<Bill>(`/api/business/bills/${id}/approve`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Cancel bill (DRAFT/PENDING → CANCELLED)
+ */
+export async function cancelBill(id: string): Promise<Bill> {
+  return apiClient<Bill>(`/api/business/bills/${id}/cancel`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Mark bill overdue (PENDING/PARTIALLY_PAID → OVERDUE)
+ */
+export async function markBillOverdue(id: string): Promise<Bill> {
+  return apiClient<Bill>(`/api/business/bills/${id}/mark-overdue`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Post bill to general ledger (creates journal entry)
+ */
+export async function postBill(id: string): Promise<{ journalEntryId: string; type: string }> {
+  return apiClient<{ journalEntryId: string; type: string }>(`/api/business/bills/${id}/post`, {
+    method: 'POST',
   });
 }
 

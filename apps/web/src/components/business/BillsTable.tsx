@@ -21,10 +21,11 @@ interface BillsTableProps {
 
 const STATUS_BADGE_STYLES: Record<Bill['status'], string> = {
     DRAFT: 'bg-ak-bg-3 text-muted-foreground border-ak-border',
-    RECEIVED: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
+    PENDING: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
     PAID: 'bg-ak-green/10 text-ak-green border-ak-green/20',
     OVERDUE: 'bg-ak-red/10 text-ak-red border-ak-red/20',
     CANCELLED: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
+    PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
 };
 
 function formatDate(dateString: string): string {
