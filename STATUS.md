@@ -1,6 +1,6 @@
 # Akount - Current Status
 
-**Last Updated:** 2026-02-15
+**Last Updated:** 2026-02-16
 **Overall Progress:** Phase 4 IN PROGRESS (~80%), Phases 1-3 Complete, Onboarding Complete
 
 ---
@@ -140,7 +140,7 @@ Auth (Clerk), DB (38 models), API (Fastify), design system (Figma + glass UI), m
 
 | Metric | Value |
 |--------|-------|
-| Backend Tests | 720 (all passing) |
+| Backend Tests | 747 passing (757 total, 10 pre-existing env failures) |
 | TypeScript Errors | 0 |
 | API Endpoints (functional) | 100+ |
 | Backend Services | 24+ |

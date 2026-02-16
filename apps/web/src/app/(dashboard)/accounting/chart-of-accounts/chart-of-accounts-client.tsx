@@ -2,11 +2,7 @@
 
 import { useState } from 'react';
 import {
-    ChevronRight,
-    ChevronDown,
     Plus,
-    Pencil,
-    Power,
     Sprout,
     ListTree,
     Loader2,
@@ -19,13 +15,9 @@ import type {
     CreateGLAccountInput,
     UpdateGLAccountInput,
 } from '@/lib/api/accounting';
-import { formatAmount } from '@/lib/api/accounting';
 import type { Entity } from '@/lib/api/entities';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     Select,
     SelectContent,
@@ -34,201 +26,23 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetDescription,
-} from '@/components/ui/sheet';
-import {
     createGLAccountAction,
     updateGLAccountAction,
     deactivateGLAccountAction,
     seedDefaultCOAAction,
 } from './actions';
+import { AccountRow, buildTree } from './account-row';
+import { GLAccountSheet } from './gl-account-sheet';
 
 // ============================================================================
 // Types
 // ============================================================================
-
-interface AccountNode extends GLAccount {
-    children: AccountNode[];
-    balance?: number; // from balances lookup
-}
 
 interface ChartOfAccountsClientProps {
     accounts: GLAccount[];
     balances: GLAccountBalance[];
     entities: Entity[];
     selectedEntityId: string;
-}
-
-// ============================================================================
-// Helpers
-// ============================================================================
-
-const ACCOUNT_TYPE_LABELS: Record<GLAccountType, string> = {
-    ASSET: 'Asset',
-    LIABILITY: 'Liability',
-    EQUITY: 'Equity',
-    REVENUE: 'Revenue',
-    EXPENSE: 'Expense',
-};
-
-const ACCOUNT_TYPE_COLORS: Record<GLAccountType, string> = {
-    ASSET: 'bg-blue-500/15 text-blue-400 border-blue-500/20',
-    LIABILITY: 'bg-red-500/15 text-red-400 border-red-500/20',
-    EQUITY: 'bg-purple-500/15 text-purple-400 border-purple-500/20',
-    REVENUE: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-    EXPENSE: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-};
-
-function buildTree(
-    accounts: GLAccount[],
-    balances: GLAccountBalance[]
-): AccountNode[] {
-    const balanceMap = new Map(balances.map((b) => [b.accountId, b.balance]));
-    const nodeMap = new Map<string, AccountNode>();
-    const roots: AccountNode[] = [];
-
-    // Create nodes
-    for (const account of accounts) {
-        nodeMap.set(account.id, {
-            ...account,
-            children: [],
-            balance: balanceMap.get(account.id) ?? 0,
-        });
-    }
-
-    // Build hierarchy
-    for (const node of Array.from(nodeMap.values())) {
-        if (node.parentAccountId && nodeMap.has(node.parentAccountId)) {
-            nodeMap.get(node.parentAccountId)!.children.push(node);
-        } else {
-            roots.push(node);
-        }
-    }
-
-    return roots;
-}
-
-// ============================================================================
-// Account Row (recursive tree)
-// ============================================================================
-
-function AccountRow({
-    node,
-    depth,
-    onEdit,
-    onDeactivate,
-}: {
-    node: AccountNode;
-    depth: number;
-    onEdit: (account: GLAccount) => void;
-    onDeactivate: (id: string) => void;
-}) {
-    const [expanded, setExpanded] = useState(depth < 1);
-    const hasChildren = node.children.length > 0;
-
-    return (
-        <>
-            <tr
-                className={`group border-b border-ak-border hover:bg-ak-bg-3 transition-colors ${
-                    !node.isActive ? 'opacity-50' : ''
-                }`}
-            >
-                {/* Code + expand */}
-                <td className="px-4 py-3 font-mono text-sm">
-                    <div
-                        className="flex items-center gap-1"
-                        style={{ paddingLeft: `${depth * 20}px` }}
-                    >
-                        {hasChildren ? (
-                            <button
-                                onClick={() => setExpanded(!expanded)}
-                                className="p-0.5 rounded hover:bg-ak-bg-3"
-                            >
-                                {expanded ? (
-                                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                                ) : (
-                                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                                )}
-                            </button>
-                        ) : (
-                            <span className="w-[18px]" />
-                        )}
-                        {node.code}
-                    </div>
-                </td>
-
-                {/* Name */}
-                <td className="px-4 py-3 text-sm">{node.name}</td>
-
-                {/* Type */}
-                <td className="px-4 py-3">
-                    <span
-                        className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-                            ACCOUNT_TYPE_COLORS[node.type]
-                        }`}
-                    >
-                        {ACCOUNT_TYPE_LABELS[node.type]}
-                    </span>
-                </td>
-
-                {/* Normal Balance */}
-                <td className="px-4 py-3 text-xs text-muted-foreground uppercase tracking-wider">
-                    {node.normalBalance}
-                </td>
-
-                {/* Balance */}
-                <td className="px-4 py-3 text-right font-mono text-sm">
-                    {formatAmount(node.balance ?? 0)}
-                </td>
-
-                {/* Status */}
-                <td className="px-4 py-3">
-                    {node.isActive ? (
-                        <Badge variant="success" className="text-[10px]">Active</Badge>
-                    ) : (
-                        <Badge variant="secondary" className="text-[10px]">Inactive</Badge>
-                    )}
-                </td>
-
-                {/* Actions */}
-                <td className="px-4 py-3">
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                            onClick={() => onEdit(node)}
-                            className="p-1.5 rounded-md hover:bg-ak-bg-3 text-muted-foreground hover:text-foreground"
-                            title="Edit"
-                        >
-                            <Pencil className="h-3.5 w-3.5" />
-                        </button>
-                        {node.isActive && (
-                            <button
-                                onClick={() => onDeactivate(node.id)}
-                                className="p-1.5 rounded-md hover:bg-red-500/10 text-muted-foreground hover:text-red-400"
-                                title="Deactivate"
-                            >
-                                <Power className="h-3.5 w-3.5" />
-                            </button>
-                        )}
-                    </div>
-                </td>
-            </tr>
-
-            {expanded &&
-                node.children.map((child) => (
-                    <AccountRow
-                        key={child.id}
-                        node={child}
-                        depth={depth + 1}
-                        onEdit={onEdit}
-                        onDeactivate={onDeactivate}
-                    />
-                ))}
-        </>
-    );
 }
 
 // ============================================================================
@@ -260,7 +74,6 @@ export function ChartOfAccountsClient({
     const [formParentId, setFormParentId] = useState<string>('');
 
     const entityId = selectedEntityId;
-    const entity = entities.find((e) => e.id === entityId);
 
     // Filter accounts
     const filtered =
@@ -495,139 +308,26 @@ export function ChartOfAccountsClient({
             </Card>
 
             {/* Add/Edit Sheet */}
-            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                <SheetContent className="sm:max-w-md bg-card border-ak-border">
-                    <SheetHeader>
-                        <SheetTitle>
-                            {editingAccount ? 'Edit Account' : 'Add Account'}
-                        </SheetTitle>
-                        <SheetDescription>
-                            {editingAccount
-                                ? `Editing ${editingAccount.code} — ${editingAccount.name}`
-                                : 'Create a new GL account in the chart of accounts.'}
-                        </SheetDescription>
-                    </SheetHeader>
-
-                    <div className="mt-6 space-y-4">
-                        {/* Code (readonly on edit) */}
-                        <div className="space-y-1.5">
-                            <Label className="text-xs uppercase tracking-wider text-muted-foreground">
-                                Account Code
-                            </Label>
-                            <Input
-                                value={formCode}
-                                onChange={(e) => setFormCode(e.target.value)}
-                                disabled={!!editingAccount}
-                                placeholder="1000"
-                                className="rounded-lg border-ak-border-2 glass"
-                            />
-                        </div>
-
-                        {/* Name */}
-                        <div className="space-y-1.5">
-                            <Label className="text-xs uppercase tracking-wider text-muted-foreground">
-                                Account Name
-                            </Label>
-                            <Input
-                                value={formName}
-                                onChange={(e) => setFormName(e.target.value)}
-                                placeholder="Cash"
-                                className="rounded-lg border-ak-border-2 glass"
-                            />
-                        </div>
-
-                        {/* Type (disabled on edit) */}
-                        <div className="space-y-1.5">
-                            <Label className="text-xs uppercase tracking-wider text-muted-foreground">
-                                Account Type
-                            </Label>
-                            <Select
-                                value={formType}
-                                onValueChange={(v) => setFormType(v as GLAccountType)}
-                                disabled={!!editingAccount}
-                            >
-                                <SelectTrigger className="rounded-lg border-ak-border-2 glass">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="ASSET">Asset</SelectItem>
-                                    <SelectItem value="LIABILITY">Liability</SelectItem>
-                                    <SelectItem value="EQUITY">Equity</SelectItem>
-                                    <SelectItem value="REVENUE">Revenue</SelectItem>
-                                    <SelectItem value="EXPENSE">Expense</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {/* Normal Balance (disabled on edit) */}
-                        <div className="space-y-1.5">
-                            <Label className="text-xs uppercase tracking-wider text-muted-foreground">
-                                Normal Balance
-                            </Label>
-                            <Select
-                                value={formNormalBalance}
-                                onValueChange={(v) => setFormNormalBalance(v as NormalBalance)}
-                                disabled={!!editingAccount}
-                            >
-                                <SelectTrigger className="rounded-lg border-ak-border-2 glass">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="DEBIT">Debit</SelectItem>
-                                    <SelectItem value="CREDIT">Credit</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {/* Parent Account */}
-                        {!editingAccount && (
-                            <div className="space-y-1.5">
-                                <Label className="text-xs uppercase tracking-wider text-muted-foreground">
-                                    Parent Account (optional)
-                                </Label>
-                                <Select value={formParentId} onValueChange={setFormParentId}>
-                                    <SelectTrigger className="rounded-lg border-ak-border-2 glass">
-                                        <SelectValue placeholder="None (top-level)" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="">None (top-level)</SelectItem>
-                                        {parentCandidates.map((a) => (
-                                            <SelectItem key={a.id} value={a.id}>
-                                                {a.code} — {a.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        )}
-
-                        {/* Description */}
-                        <div className="space-y-1.5">
-                            <Label className="text-xs uppercase tracking-wider text-muted-foreground">
-                                Description (optional)
-                            </Label>
-                            <Input
-                                value={formDescription}
-                                onChange={(e) => setFormDescription(e.target.value)}
-                                placeholder="Account description"
-                                className="rounded-lg border-ak-border-2 glass"
-                            />
-                        </div>
-
-                        {/* Submit */}
-                        <Button
-                            className="w-full rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium mt-4"
-                            onClick={handleSubmit}
-                            disabled={isSubmitting || !formCode || !formName}
-                        >
-                            {isSubmitting ? (
-                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                            ) : null}
-                            {editingAccount ? 'Save Changes' : 'Create Account'}
-                        </Button>
-                    </div>
-                </SheetContent>
-            </Sheet>
+            <GLAccountSheet
+                open={sheetOpen}
+                onOpenChange={setSheetOpen}
+                editingAccount={editingAccount}
+                parentCandidates={parentCandidates}
+                formCode={formCode}
+                setFormCode={setFormCode}
+                formName={formName}
+                setFormName={setFormName}
+                formType={formType}
+                setFormType={setFormType}
+                formNormalBalance={formNormalBalance}
+                setFormNormalBalance={setFormNormalBalance}
+                formDescription={formDescription}
+                setFormDescription={setFormDescription}
+                formParentId={formParentId}
+                setFormParentId={setFormParentId}
+                isSubmitting={isSubmitting}
+                onSubmit={handleSubmit}
+            />
         </div>
     );
 }
