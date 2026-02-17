@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
 import { useOnboardingStore } from '@/stores/onboardingStore'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, Check, Loader2 } from 'lucide-react'
 import { WelcomeStep } from './steps/WelcomeStep'
 import { IntentStep } from './steps/IntentStep'
 import { EssentialInfoStep } from './steps/EssentialInfoStep'
@@ -13,16 +13,37 @@ import { CompletionStep } from './steps/CompletionStep'
 
 const STEP_LABELS = ['Identity', 'Workspace', 'Intent', 'Ready'] as const
 
-export function OnboardingWizard() {
+interface OnboardingWizardProps {
+  initialState: {
+    currentStep: number
+    stepData: Record<string, unknown>
+    version: number
+    isNew: boolean
+  }
+}
+
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error'
+
+export function OnboardingWizard({ initialState }: OnboardingWizardProps) {
   const router = useRouter()
   const { userId, isLoaded } = useAuth()
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle')
+  const saveTimeoutRef = useRef<NodeJS.Timeout>()
+  const lastSavedVersionRef = useRef(initialState.version)
 
-  const {
-    currentStep,
-    totalSteps,
-    nextStep,
-    previousStep,
-  } = useOnboardingStore()
+  const store = useOnboardingStore()
+  const { currentStep, totalSteps, nextStep, previousStep, hydrate, version } = store
+
+  // Hydrate store from server state on mount
+  useEffect(() => {
+    if (initialState && !initialState.isNew) {
+      hydrate({
+        currentStep: initialState.currentStep,
+        version: initialState.version,
+        ...(initialState.stepData as Record<string, unknown>),
+      })
+    }
+  }, [hydrate, initialState])
 
   // Redirect if user is not authenticated
   useEffect(() => {
@@ -30,6 +51,61 @@ export function OnboardingWizard() {
       router.push('/sign-in')
     }
   }, [isLoaded, userId, router])
+
+  // Auto-save with 500ms debounce
+  useEffect(() => {
+    if (!isLoaded || !userId || version === lastSavedVersionRef.current) {
+      return
+    }
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+
+    setSaveStatus('saving')
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        const response = await fetch('/api/system/onboarding/save-step', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            step: currentStep,
+            data: {
+              accountType: store.accountType,
+              phoneNumber: store.phoneNumber,
+              timezone: store.timezone,
+              entityName: store.entityName,
+              entityType: store.entityType,
+              country: store.country,
+              currency: store.currency,
+              fiscalYearEnd: store.fiscalYearEnd,
+              industry: store.industry,
+            },
+            version,
+          }),
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          lastSavedVersionRef.current = result.version
+          store.setVersion(result.version)
+          setSaveStatus('saved')
+          setTimeout(() => setSaveStatus('idle'), 2000)
+        } else {
+          setSaveStatus('error')
+        }
+      } catch {
+        setSaveStatus('error')
+      }
+    }, 500)
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current)
+      }
+    }
+  }, [isLoaded, userId, currentStep, store, version])
 
   if (!isLoaded || !userId) {
     return (
@@ -81,7 +157,28 @@ export function OnboardingWizard() {
       )}
 
       {/* Step container */}
-      <div className="glass rounded-2xl border border-ak-border p-8 fi fi2">
+      <div className="glass rounded-2xl border border-ak-border p-8 fi fi2 relative">
+        {/* Auto-save indicator */}
+        {!isCompletionStep && saveStatus !== 'idle' && (
+          <div className="absolute top-4 right-4 flex items-center gap-2 text-xs">
+            {saveStatus === 'saving' && (
+              <>
+                <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+                <span className="text-muted-foreground">Saving...</span>
+              </>
+            )}
+            {saveStatus === 'saved' && (
+              <>
+                <Check className="h-3 w-3 text-ak-green" />
+                <span className="text-ak-green">Saved</span>
+              </>
+            )}
+            {saveStatus === 'error' && (
+              <span className="text-destructive">Save failed</span>
+            )}
+          </div>
+        )}
+
         {/* Step content */}
         <div className="transition-opacity duration-300">
           {currentStep === 0 && <WelcomeStep onNext={nextStep} />}

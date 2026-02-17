@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
 export type AccountType = 'personal' | 'business'
 export type EntityType = 'PERSONAL' | 'CORPORATION' | 'SOLE_PROPRIETORSHIP' | 'PARTNERSHIP' | 'LLC'
@@ -8,6 +7,9 @@ export interface OnboardingState {
   // Current step tracking
   currentStep: number
   totalSteps: number
+
+  // Version for optimistic locking (from DB)
+  version: number
 
   // Account type selection
   accountType: AccountType | null
@@ -46,12 +48,15 @@ export interface OnboardingState {
   previousStep: () => void
   goToStep: (step: number) => void
   setTenantAndEntity: (tenantId: string, entityId: string) => void
+  setVersion: (version: number) => void
+  hydrate: (data: Partial<OnboardingState>) => void
   reset: () => void
 }
 
 const initialState = {
   currentStep: 0,
   totalSteps: 4, // Welcome → Intent → Workspace → Ready
+  version: 0,
   accountType: 'personal' as AccountType | null,
   intents: [] as string[],
   phoneNumber: '',
@@ -66,60 +71,60 @@ const initialState = {
   entityId: null,
 }
 
-export const useOnboardingStore = create<OnboardingState>()(
-  persist(
-    (set) => ({
-      ...initialState,
+/**
+ * Onboarding Store (DB-backed, no localStorage)
+ * State is hydrated from server on mount and auto-saved to database
+ */
+export const useOnboardingStore = create<OnboardingState>()((set) => ({
+  ...initialState,
 
-      setAccountType: (type: AccountType) => set({ accountType: type }),
+  setAccountType: (type: AccountType) => set({ accountType: type }),
 
-      toggleIntent: (intent: string) =>
-        set((state) => ({
-          intents: state.intents.includes(intent)
-            ? state.intents.filter((i) => i !== intent)
-            : [...state.intents, intent],
-        })),
+  toggleIntent: (intent: string) =>
+    set((state) => ({
+      intents: state.intents.includes(intent)
+        ? state.intents.filter((i) => i !== intent)
+        : [...state.intents, intent],
+    })),
 
-      setPhoneNumber: (phone: string) => set({ phoneNumber: phone }),
+  setPhoneNumber: (phone: string) => set({ phoneNumber: phone }),
 
-      setTimezone: (timezone: string) => set({ timezone }),
+  setTimezone: (timezone: string) => set({ timezone }),
 
-      setEntityName: (name: string) => set({ entityName: name }),
+  setEntityName: (name: string) => set({ entityName: name }),
 
-      setEntityType: (type: EntityType) => set({ entityType: type }),
+  setEntityType: (type: EntityType) => set({ entityType: type }),
 
-      setCountry: (country: string) => set({ country }),
+  setCountry: (country: string) => set({ country }),
 
-      setCurrency: (currency: string) => set({ currency }),
+  setCurrency: (currency: string) => set({ currency }),
 
-      setFiscalYearEnd: (month: string) => set({ fiscalYearEnd: month }),
+  setFiscalYearEnd: (month: string) => set({ fiscalYearEnd: month }),
 
-      setIndustry: (industry: string) => set({ industry }),
+  setIndustry: (industry: string) => set({ industry }),
 
-      nextStep: () =>
-        set((state) => ({
-          currentStep: Math.min(state.currentStep + 1, state.totalSteps - 1),
-        })),
+  nextStep: () =>
+    set((state) => ({
+      currentStep: Math.min(state.currentStep + 1, state.totalSteps - 1),
+    })),
 
-      previousStep: () =>
-        set((state) => ({
-          currentStep: Math.max(state.currentStep - 1, 0),
-        })),
+  previousStep: () =>
+    set((state) => ({
+      currentStep: Math.max(state.currentStep - 1, 0),
+    })),
 
-      goToStep: (step: number) =>
-        set((state) => ({
-          currentStep: Math.max(0, Math.min(step, state.totalSteps - 1)),
-        })),
+  goToStep: (step: number) =>
+    set((state) => ({
+      currentStep: Math.max(0, Math.min(step, state.totalSteps - 1)),
+    })),
 
-      setTenantAndEntity: (tenantId: string, entityId: string) =>
-        set({ tenantId, entityId }),
+  setTenantAndEntity: (tenantId: string, entityId: string) =>
+    set({ tenantId, entityId }),
 
-      reset: () => set(initialState),
-    }),
-    {
-      name: 'onboarding-storage',
-      version: 4,
-      migrate: () => initialState,
-    }
-  )
-)
+  setVersion: (version: number) => set({ version }),
+
+  hydrate: (data: Partial<OnboardingState>) =>
+    set((state) => ({ ...state, ...data })),
+
+  reset: () => set(initialState),
+}))
