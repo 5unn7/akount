@@ -264,12 +264,11 @@ export class DocumentPostingService {
         },
       });
 
-      // 11. Invalidate report cache (defensive - non-critical)
+      // 11. Invalidate report cache (defensive - non-critical, swallow errors)
       try {
         reportCache.invalidate(this.tenantId, /^report:/);
-      } catch (err) {
-        // Log but don't fail the transaction
-        console.error('Report cache invalidation failed:', err);
+      } catch {
+        // Intentionally swallowed — cache miss is harmless
       }
 
       return {
@@ -510,12 +509,11 @@ export class DocumentPostingService {
         },
       });
 
-      // 11. Invalidate report cache (defensive - non-critical)
+      // 11. Invalidate report cache (defensive - non-critical, swallow errors)
       try {
         reportCache.invalidate(this.tenantId, /^report:/);
-      } catch (err) {
-        // Log but don't fail the transaction
-        console.error('Report cache invalidation failed:', err);
+      } catch {
+        // Intentionally swallowed — cache miss is harmless
       }
 
       return {
@@ -772,12 +770,11 @@ export class DocumentPostingService {
         },
       });
 
-      // 12. Invalidate report cache (defensive - non-critical)
+      // 12. Invalidate report cache (defensive - non-critical, swallow errors)
       try {
         reportCache.invalidate(this.tenantId, /^report:/);
-      } catch (err) {
-        // Log but don't fail the transaction
-        console.error('Report cache invalidation failed:', err);
+      } catch {
+        // Intentionally swallowed — cache miss is harmless
       }
 
       return {

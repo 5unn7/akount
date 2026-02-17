@@ -1,10 +1,10 @@
 'use client';
 
 import { useCallback, useRef } from 'react';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
 
-interface SparkCardData {
+interface StatCardData {
     label: string;
     value: string;
     trend?: {
@@ -15,10 +15,17 @@ interface SparkCardData {
     color?: 'green' | 'red' | 'blue' | 'purple' | 'primary';
 }
 
-interface SparkCardsProps {
-    cards: SparkCardData[];
-    className?: string;
+interface DashboardLeftRailProps {
+    stats: StatCardData[];
 }
+
+const colorMap = {
+    green: 'text-ak-green',
+    red: 'text-ak-red',
+    blue: 'text-ak-blue',
+    purple: 'text-ak-purple',
+    primary: 'text-primary',
+} as const;
 
 const sparkColorMap = {
     green: { stroke: 'var(--ak-green)', fill: 'var(--ak-green-fill)' },
@@ -34,8 +41,6 @@ const trendColorMap = {
     flat: 'text-muted-foreground',
 } as const;
 
-const TrendIcon = { up: ArrowUp, down: ArrowDown, flat: Minus } as const;
-
 const glowColorMap = {
     green: 'var(--ak-green-fill)',
     red: 'var(--ak-red-fill)',
@@ -44,11 +49,13 @@ const glowColorMap = {
     primary: 'var(--ak-pri-fill)',
 } as const;
 
-function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: SparkCardData['color'] }) {
+const TrendIcon = { up: TrendingUp, down: TrendingDown, flat: Minus } as const;
+
+function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: StatCardData['color'] }) {
     if (data.length < 2) return null;
 
-    const width = 80;
-    const height = 24;
+    const width = 56;
+    const height = 20;
     const padding = 1;
 
     const min = Math.min(...data);
@@ -70,15 +77,15 @@ function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: Sp
             width={width}
             height={height}
             viewBox={`0 0 ${width} ${height}`}
-            className="shrink-0"
+            className="shrink-0 opacity-70"
         >
             <defs>
-                <linearGradient id={`spark-grad-${color}`} x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id={`rail-spark-grad-${color}`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={colors.fill} />
                     <stop offset="100%" stopColor="transparent" />
                 </linearGradient>
             </defs>
-            <path d={fillPath} fill={`url(#spark-grad-${color})`} />
+            <path d={fillPath} fill={`url(#rail-spark-grad-${color})`} />
             <polyline
                 points={polyline}
                 fill="none"
@@ -92,9 +99,11 @@ function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: Sp
     );
 }
 
-function SparkCard({ card, index }: { card: SparkCardData; index: number }) {
+function StatCard({ stat, index }: { stat: StatCardData; index: number }) {
     const frameRef = useRef<number>(0);
-    const glowColor = glowColorMap[card.color ?? 'primary'];
+    const Icon = stat.trend ? TrendIcon[stat.trend.direction] : null;
+    const trendColor = stat.trend ? trendColorMap[stat.trend.direction] : '';
+    const glowColor = glowColorMap[stat.color ?? 'primary'];
 
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
@@ -114,40 +123,31 @@ function SparkCard({ card, index }: { card: SparkCardData; index: number }) {
     return (
         <div
             className={cn(
-                'glass rounded-lg px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px glow-track fi',
+                'glass rounded-lg px-3 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px cursor-pointer glow-track fi',
                 `fi${Math.min(index + 1, 6)}`
             )}
             style={{ '--glow-color': glowColor } as React.CSSProperties}
             onMouseMove={handleMouseMove}
         >
-            <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0 flex-1">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
-                        {card.label}
-                    </p>
-                    <p className="text-lg font-mono font-semibold leading-none">
-                        {card.value}
-                    </p>
-                </div>
-                {card.sparkline && card.sparkline.length > 1 && (
-                    <div className="shrink-0 w-20">
-                        <MiniSparkline data={card.sparkline} color={card.color} />
-                    </div>
+            <div className="flex items-start justify-between mb-2">
+                <p className="text-[9px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    {stat.label}
+                </p>
+                {stat.sparkline && stat.sparkline.length > 1 && (
+                    <MiniSparkline data={stat.sparkline} color={stat.color} />
                 )}
             </div>
-            {card.trend && (
-                <div
-                    className={cn(
-                        'flex items-center gap-1 mt-1.5',
-                        trendColorMap[card.trend.direction]
-                    )}
-                >
-                    {(() => {
-                        const Icon = TrendIcon[card.trend.direction];
-                        return <Icon className="h-3 w-3" />;
-                    })()}
+            <p className={cn(
+                'text-2xl font-mono font-semibold leading-none mb-2',
+                stat.color ? colorMap[stat.color] : 'text-foreground'
+            )}>
+                {stat.value}
+            </p>
+            {stat.trend && Icon && (
+                <div className={cn('flex items-center gap-1', trendColor)}>
+                    <Icon className="h-3 w-3" />
                     <span className="text-[10px] font-medium">
-                        {card.trend.text}
+                        {stat.trend.text}
                     </span>
                 </div>
             )}
@@ -155,17 +155,17 @@ function SparkCard({ card, index }: { card: SparkCardData; index: number }) {
     );
 }
 
-export function SparkCards({ cards, className }: SparkCardsProps) {
+export function DashboardLeftRail({ stats }: DashboardLeftRailProps) {
     return (
-        <div
-            className={cn(
-                'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3',
-                className
-            )}
-        >
-            {cards.map((card, i) => (
-                <SparkCard key={card.label} card={card} index={i} />
-            ))}
-        </div>
+        <aside className="hidden lg:block w-60 shrink-0">
+            <div className="sticky top-6 space-y-2 max-h-[calc(100vh-3rem)] overflow-y-auto scrollbar-thin">
+                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium px-3 mb-3">
+                    Quick Stats
+                </h3>
+                {stats.map((stat, index) => (
+                    <StatCard key={stat.label} stat={stat} index={index} />
+                ))}
+            </div>
+        </aside>
     );
 }

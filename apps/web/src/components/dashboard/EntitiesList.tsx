@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Building2, User, ArrowRight, Plus } from 'lucide-react';
+import { Building2, User, ArrowRight, Plus, MapPin, Wallet } from 'lucide-react';
 import { GlowCard } from '@/components/ui/glow-card';
 import type { Entity } from '@/lib/api/entities';
 import { EntityFormSheet } from './EntityFormSheet';
@@ -64,17 +64,34 @@ export function EntitiesList({ entities }: EntitiesListProps): React.ReactElemen
                                     {TYPE_LABELS[entity.type] || entity.type}
                                 </p>
                             </div>
-                            <span className="text-xs font-mono text-muted-foreground shrink-0">
-                                {entity.currency}
-                            </span>
                         </div>
 
-                        <div className="mt-3 pt-3 border-t border-ak-border">
+                        {/* Entity metadata grid */}
+                        <div className="grid grid-cols-2 gap-2 mt-3">
+                            <div className="flex items-center gap-1.5">
+                                <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
+                                <span className="text-[10px] text-muted-foreground truncate">
+                                    {entity.country || 'Not set'}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <Wallet className="h-3 w-3 text-muted-foreground shrink-0" />
+                                <span className="text-[10px] font-mono text-muted-foreground">
+                                    {entity.currency}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Account count placeholder */}
+                        <div className="mt-3 pt-3 border-t border-ak-border flex items-center justify-between">
+                            <span className="text-[10px] text-muted-foreground">
+                                Accounts: <span className="text-foreground font-medium">—</span>
+                            </span>
                             <Link
                                 href={`/banking/accounts?entityId=${entity.id}`}
                                 className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
                             >
-                                View accounts
+                                View
                                 <ArrowRight className="h-3 w-3" />
                             </Link>
                         </div>

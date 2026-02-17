@@ -22,25 +22,7 @@ export async function DashboardMetrics({
         const metrics = await getDashboardMetrics(entityId, currency);
 
         return (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {/* Net Worth Card */}
-                <GlowCard variant="glass">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
-                            Net Worth
-                        </CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold font-mono">
-                            {formatCurrency(metrics.netWorth.amount, metrics.netWorth.currency)}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            All accounts combined
-                        </p>
-                    </CardContent>
-                </GlowCard>
-
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {/* Cash Position Card */}
                 <GlowCard variant="glass">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -77,18 +59,20 @@ export async function DashboardMetrics({
                     </CardContent>
                 </GlowCard>
 
-                {/* Active Accounts Card */}
+                {/* Working Capital Card */}
                 <GlowCard variant="glass">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-[11px] font-medium uppercase tracking-[0.05em] text-muted-foreground">
-                            Active Accounts
+                            Working Capital
                         </CardTitle>
                         <Activity className="h-4 w-4 text-ak-blue" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold font-mono">{metrics.accounts.active}</div>
+                        <div className="text-2xl font-bold font-mono text-ak-blue">
+                            {formatCurrency(metrics.cashPosition.cash - metrics.cashPosition.debt, metrics.cashPosition.currency)}
+                        </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            {metrics.accounts.total} total accounts
+                            Cash minus debt
                         </p>
                     </CardContent>
                 </GlowCard>
@@ -96,7 +80,7 @@ export async function DashboardMetrics({
         );
     } catch (error) {
         return (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <GlowCard variant="glass">
                     <CardContent className="pt-6">
                         <p className="text-sm text-destructive">

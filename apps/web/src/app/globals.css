@@ -139,6 +139,13 @@
     --ak-teal: #14B8A6;
     --ak-teal-dim: rgba(20, 184, 166, 0.10);
 
+    /* Chart/SVG fill variants (for light backgrounds) */
+    --ak-green-fill: rgba(16, 185, 129, 0.15);
+    --ak-red-fill: rgba(239, 68, 68, 0.15);
+    --ak-blue-fill: rgba(59, 130, 246, 0.15);
+    --ak-purple-fill: rgba(139, 92, 246, 0.15);
+    --ak-pri-fill: rgba(217, 119, 6, 0.15);
+
     /* AI */
     --ak-ai: #8B5CF6;
     --ak-ai-accent: rgba(139, 92, 246, 0.08);

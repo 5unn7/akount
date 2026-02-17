@@ -14,7 +14,7 @@ export function AIBrief({ body, date }: AIBriefProps) {
 
     return (
         <div
-            className="rounded-xl p-5 border border-l-2 border-ak-border-2 bg-gradient-to-br from-ak-pri-dim to-ak-purple-dim"
+            className="glass rounded-xl p-5 border-l-2 border-l-primary"
         >
             <div className="flex items-center gap-2 mb-3">
                 <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />

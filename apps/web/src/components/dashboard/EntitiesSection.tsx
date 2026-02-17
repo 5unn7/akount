@@ -30,7 +30,7 @@ export function EntitiesSection({ entities }: EntitiesSectionProps) {
             <CollapsibleTrigger className="w-full group">
                 <div className="flex items-center justify-between">
                     <SectionHeader
-                        title="Liquidity Matrix"
+                        title="Entities"
                         meta={`${entities.length} entit${entities.length === 1 ? 'y' : 'ies'}`}
                     />
                     <ChevronDown
