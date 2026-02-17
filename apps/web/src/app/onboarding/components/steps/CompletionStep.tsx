@@ -2,14 +2,15 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@clerk/nextjs'
+import { useAuth, useUser } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { apiFetch } from '@/lib/api/client-browser'
+import { COUNTRIES } from '@/lib/data/countries'
 import Link from 'next/link'
 
 const SETUP_ITEMS = [
-  'Creating your workspace',
+  'Creating your account',
   'Setting up chart of accounts',
   'Configuring fiscal calendar',
   'Personalizing your dashboard',
@@ -18,43 +19,114 @@ const SETUP_ITEMS = [
 export function CompletionStep() {
   const router = useRouter()
   const { userId } = useAuth()
-  const { tenantId, entityId, reset, goToStep } = useOnboardingStore()
+  const { user } = useUser()
+  const store = useOnboardingStore()
+  const { reset, goToStep } = store
 
   const [completedItems, setCompletedItems] = useState(0)
   const [isDone, setIsDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const runSetup = useCallback(async () => {
-    if (!tenantId || !entityId || !userId) {
+    if (!userId) {
       goToStep(0)
       return
     }
 
     try {
-      // Convert fiscalYearEnd (string month) → fiscalYearStart (next month as int)
-      const fyEnd = parseInt(useOnboardingStore.getState().fiscalYearEnd)
-      const fiscalYearStart = (fyEnd % 12) + 1
+      const state = useOnboardingStore.getState()
 
-      // Call the complete endpoint
+      // Derive personal entity name from Clerk user or fallback
+      const personalEntityName =
+        user?.fullName || user?.firstName || 'Personal'
+
+      // Detect timezone from browser
+      let detectedTimezone = 'America/Toronto'
+      try {
+        detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      } catch {
+        // Keep default
+      }
+
+      // Step 1: Initialize — create tenant + personal entity
+      let tenantId = state.tenantId
+      let entityId = state.entityId
+
+      if (!tenantId) {
+        // Build business entity payload if user opted in
+        const businessPayload =
+          state.wantsBusinessEntity &&
+          state.businessName &&
+          state.businessEntityType &&
+          state.businessCountry
+            ? {
+                businessEntity: {
+                  name: state.businessName,
+                  entityType: state.businessEntityType,
+                  country: state.businessCountry,
+                  currency:
+                    COUNTRIES.find((c) => c.code === state.businessCountry)
+                      ?.currency || 'USD',
+                  ...(state.businessIndustry && {
+                    industry: state.businessIndustry,
+                  }),
+                },
+              }
+            : {}
+
+        const initResult = await apiFetch<{
+          tenantId: string
+          entityId: string
+          businessEntityId?: string
+        }>('/api/system/onboarding/initialize', {
+          method: 'POST',
+          body: JSON.stringify({
+            accountType: state.accountType || 'personal',
+            entityName: personalEntityName,
+            entityType: 'PERSONAL',
+            timezone: detectedTimezone,
+            country: state.country || 'CA',
+            currency: state.currency || 'CAD',
+            // Personal-first fields
+            intents: state.intents.length > 0 ? state.intents : undefined,
+            employmentStatus: state.employmentStatus || undefined,
+            streetAddress: state.streetAddress || undefined,
+            city: state.city || undefined,
+            province: state.province || undefined,
+            postalCode: state.postalCode || undefined,
+            ...businessPayload,
+          }),
+        })
+
+        tenantId = initResult.tenantId
+        entityId = initResult.entityId
+        useOnboardingStore.setState({ tenantId, entityId })
+      }
+
+      // Animate first two items
+      await new Promise((r) => setTimeout(r, 500))
+      setCompletedItems(1)
+
+      // Step 2: Complete — finalize tenant, create COA + fiscal calendar
       await apiFetch('/api/system/onboarding/complete', {
         method: 'POST',
         body: JSON.stringify({
           tenantId,
-          entityName: useOnboardingStore.getState().entityName,
-          entityType: useOnboardingStore.getState().entityType,
-          country: useOnboardingStore.getState().country,
-          currency: useOnboardingStore.getState().currency,
-          fiscalYearStart,
+          entityName: personalEntityName,
+          entityType: 'PERSONAL',
+          country: state.country || 'CA',
+          currency: state.currency || 'CAD',
+          fiscalYearStart: 1, // January default for personal
         }),
       })
 
-      // Animate checklist items progressively
-      for (let i = 0; i < SETUP_ITEMS.length; i++) {
-        await new Promise((r) => setTimeout(r, 600))
+      // Animate remaining checklist items
+      for (let i = 1; i < SETUP_ITEMS.length; i++) {
+        await new Promise((r) => setTimeout(r, 500))
         setCompletedItems(i + 1)
       }
 
-      // Show success state
+      // Show success
       await new Promise((r) => setTimeout(r, 400))
       setIsDone(true)
 
@@ -63,9 +135,37 @@ export function CompletionStep() {
       setTimeout(() => router.replace('/overview'), 2000)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An error occurred'
+
+      // If tenant already exists, try to recover gracefully
+      if (
+        message.includes('already has an active tenant') ||
+        message.includes('AlreadyOnboarded')
+      ) {
+        try {
+          const status = await apiFetch<{
+            tenantId?: string
+            status: string
+          }>('/api/system/onboarding/status')
+          if (status.tenantId) {
+            // Tenant exists — try to complete
+            useOnboardingStore.setState({
+              tenantId: status.tenantId,
+              entityId: 'existing',
+            })
+            setCompletedItems(SETUP_ITEMS.length)
+            setIsDone(true)
+            reset()
+            setTimeout(() => router.replace('/overview'), 2000)
+            return
+          }
+        } catch {
+          // Fall through to error
+        }
+      }
+
       setError(message)
     }
-  }, [tenantId, entityId, userId, router, reset, goToStep])
+  }, [userId, user, router, reset, goToStep])
 
   useEffect(() => {
     runSetup()
@@ -100,10 +200,19 @@ export function CompletionStep() {
 
   if (isDone) {
     return (
-      <div className="space-y-6 text-center py-8" style={{ animation: 'scale-in 0.4s ease-out' }}>
+      <div
+        className="space-y-6 text-center py-8"
+        style={{ animation: 'scale-in 0.4s ease-out' }}
+      >
         {/* Success orb */}
         <div className="h-16 w-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center glow-primary-strong">
-          <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg
+            className="h-8 w-8 text-primary"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
             <path
               d="M5 13l4 4L19 7"
               strokeLinecap="round"
@@ -167,7 +276,13 @@ export function CompletionStep() {
               {/* Status indicator */}
               <div className="shrink-0">
                 {isComplete ? (
-                  <svg className="h-5 w-5 text-ak-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <svg
+                    className="h-5 w-5 text-ak-green"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
                     <path
                       d="M5 13l4 4L19 7"
                       strokeLinecap="round"
@@ -194,7 +309,9 @@ export function CompletionStep() {
                 )}
               >
                 {item}
-                {isCurrent && <span className="text-muted-foreground">...</span>}
+                {isCurrent && (
+                  <span className="text-muted-foreground">...</span>
+                )}
               </span>
             </div>
           )

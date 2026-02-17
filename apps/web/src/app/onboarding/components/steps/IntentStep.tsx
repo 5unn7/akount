@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import { useOnboardingStore } from '@/stores/onboardingStore'
-import { Eye, Briefcase, Receipt, Sparkles, Check } from 'lucide-react'
+import { Eye, PiggyBank, Receipt, CreditCard, Compass, Check } from 'lucide-react'
 
 interface IntentStepProps {
   onNext: () => void
@@ -11,43 +11,49 @@ interface IntentStepProps {
 const INTENTS = [
   {
     id: 'track-spending',
-    label: 'Track spending',
-    description: 'See where every dollar goes',
+    label: 'Track where my money goes',
+    description: 'Spending insights, categorization',
     Icon: Eye,
-    color: 'ak-green',
     dimBg: 'bg-ak-green-dim',
     textColor: 'text-ak-green',
     borderColor: 'border-ak-green/30',
     glow: 'glow-success',
   },
   {
-    id: 'manage-business',
-    label: 'Manage a business',
-    description: 'Invoicing, expenses, cash flow',
-    Icon: Briefcase,
-    color: 'ak-blue',
+    id: 'saving',
+    label: 'Get better at saving',
+    description: 'Savings goals, budgets',
+    Icon: PiggyBank,
     dimBg: 'bg-ak-blue-dim',
     textColor: 'text-ak-blue',
     borderColor: 'border-ak-blue/30',
     glow: 'glow-blue',
   },
   {
-    id: 'prepare-taxes',
-    label: 'Prepare for taxes',
-    description: 'Stay organized for tax season',
+    id: 'tax-ready',
+    label: 'Stay tax-ready with less stress',
+    description: 'Tax prep, deductions, quarterly estimates',
     Icon: Receipt,
-    color: 'ak-purple',
     dimBg: 'bg-ak-purple-dim',
     textColor: 'text-ak-purple',
     borderColor: 'border-ak-purple/30',
     glow: 'glow-purple',
   },
   {
-    id: 'financial-clarity',
-    label: 'Get financial clarity',
-    description: 'Your full picture at a glance',
-    Icon: Sparkles,
-    color: 'primary',
+    id: 'debt',
+    label: 'Keep an eye on debt/loans',
+    description: 'Debt payoff, interest tracking',
+    Icon: CreditCard,
+    dimBg: 'bg-ak-red-dim',
+    textColor: 'text-ak-red',
+    borderColor: 'border-ak-red/30',
+    glow: 'glow-danger',
+  },
+  {
+    id: 'exploring',
+    label: 'Just exploring',
+    description: 'No specific goal yet',
+    Icon: Compass,
     dimBg: 'bg-ak-pri-dim',
     textColor: 'text-primary',
     borderColor: 'border-primary/30',
@@ -64,10 +70,10 @@ export function IntentStep({ onNext }: IntentStepProps) {
       {/* Header */}
       <div className="text-center space-y-1">
         <h2 className="text-2xl font-heading font-normal text-foreground">
-          What brings you to Akount?
+          Let's personalize your experience
         </h2>
         <p className="text-sm text-muted-foreground">
-          Select all that apply — we'll tailor your experience.
+          Select all that apply — we'll tailor Akount to your goals.
         </p>
       </div>
 
