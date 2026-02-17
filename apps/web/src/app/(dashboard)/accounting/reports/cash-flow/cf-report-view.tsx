@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, type CashFlowReport } from '@/lib/api/reports';
+import { formatCurrency, formatReportDate, downloadReport, type CashFlowReport } from '@/lib/api/reports';
 
 interface CFReportViewProps {
     initialData: CashFlowReport | null;
@@ -133,10 +133,24 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
                                     {formatReportDate(initialData.startDate)} to {formatReportDate(initialData.endDate)}
                                 </p>
                             </div>
-                            <Button variant="outline" className="gap-2">
-                                <Download className="h-4 w-4" />
-                                Export PDF
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('cash-flow', initialParams, 'pdf')}
+                                >
+                                    <Download className="h-4 w-4" />
+                                    PDF
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('cash-flow', initialParams, 'csv')}
+                                >
+                                    <Download className="h-4 w-4" />
+                                    CSV
+                                </Button>
+                            </div>
                         </div>
                     </div>
 

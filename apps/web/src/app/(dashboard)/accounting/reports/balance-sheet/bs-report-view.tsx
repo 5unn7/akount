@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports';
+import { formatCurrency, formatReportDate, downloadReport, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports';
 
 interface BSReportViewProps {
     initialData: BalanceSheetReport | null;
@@ -140,10 +140,24 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                                     As of {formatReportDate(initialData.asOfDate)}
                                 </p>
                             </div>
-                            <Button variant="outline" className="gap-2">
-                                <Download className="h-4 w-4" />
-                                Export PDF
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('balance-sheet', initialParams, 'pdf')}
+                                >
+                                    <Download className="h-4 w-4" />
+                                    PDF
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('balance-sheet', initialParams, 'csv')}
+                                >
+                                    <Download className="h-4 w-4" />
+                                    CSV
+                                </Button>
+                            </div>
                         </div>
                     </div>
 

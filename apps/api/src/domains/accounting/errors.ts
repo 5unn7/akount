@@ -21,7 +21,10 @@ export type AccountingErrorCode =
   | 'SEPARATION_OF_DUTIES'
   | 'BANK_ACCOUNT_NOT_MAPPED'
   | 'MULTI_CURRENCY_CONSOLIDATION_NOT_SUPPORTED'
-  | 'AMOUNT_OVERFLOW';
+  | 'AMOUNT_OVERFLOW'
+  | 'PDF_TOO_LARGE'
+  | 'PDF_TIMEOUT'
+  | 'EXPORT_FAILED';
 
 export class AccountingError extends Error {
   constructor(

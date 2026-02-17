@@ -3,7 +3,11 @@ import { withPermission } from '../../../middleware/withPermission';
 import { validateQuery } from '../../../middleware/validation';
 import { statsRateLimitConfig } from '../../../middleware/rate-limit';
 import { ReportService } from '../services/report.service';
+import { reportExportService } from '../services/report-export.service';
 import { AccountingError } from '../errors';
+import { generateProfitLossPdf } from '../templates/profit-loss-pdf';
+import { generateBalanceSheetPdf } from '../templates/balance-sheet-pdf';
+import { generateCashFlowPdf } from '../templates/cash-flow-pdf';
 import {
   ProfitLossQuerySchema,
   BalanceSheetQuerySchema,
@@ -56,11 +60,31 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as ProfitLossQuery;
+      const query = request.query as ProfitLossQuery & { format?: string };
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
         const report = await service.generateProfitLoss(query);
+        const format = query.format || 'json';
+
+        if (format === 'pdf') {
+          const pdfBuffer = await generateProfitLossPdf(report);
+          const filename = sanitizeFilename(`profit-loss-${query.startDate}-${query.endDate}`);
+          return reply
+            .header('Content-Type', 'application/pdf')
+            .header('Content-Disposition', `attachment; filename="${filename}.pdf"`)
+            .send(pdfBuffer);
+        }
+
+        if (format === 'csv') {
+          const csv = reportExportService.profitLossToCsv(report);
+          const filename = sanitizeFilename(`profit-loss-${query.startDate}-${query.endDate}`);
+          return reply
+            .header('Content-Type', 'text/csv')
+            .header('Content-Disposition', `attachment; filename="${filename}.csv"`)
+            .send(csv);
+        }
+
         return reply.send(report);
       } catch (error) {
         return handleAccountingError(error, reply);
@@ -94,11 +118,31 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as BalanceSheetQuery;
+      const query = request.query as BalanceSheetQuery & { format?: string };
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
         const report = await service.generateBalanceSheet(query);
+        const format = query.format || 'json';
+
+        if (format === 'pdf') {
+          const pdfBuffer = await generateBalanceSheetPdf(report);
+          const filename = sanitizeFilename(`balance-sheet-${query.asOfDate}`);
+          return reply
+            .header('Content-Type', 'application/pdf')
+            .header('Content-Disposition', `attachment; filename="${filename}.pdf"`)
+            .send(pdfBuffer);
+        }
+
+        if (format === 'csv') {
+          const csv = reportExportService.balanceSheetToCsv(report);
+          const filename = sanitizeFilename(`balance-sheet-${query.asOfDate}`);
+          return reply
+            .header('Content-Type', 'text/csv')
+            .header('Content-Disposition', `attachment; filename="${filename}.csv"`)
+            .send(csv);
+        }
+
         return reply.send(report);
       } catch (error) {
         return handleAccountingError(error, reply);
@@ -132,11 +176,31 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as CashFlowQuery;
+      const query = request.query as CashFlowQuery & { format?: string };
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
         const report = await service.generateCashFlow(query);
+        const format = query.format || 'json';
+
+        if (format === 'pdf') {
+          const pdfBuffer = await generateCashFlowPdf(report);
+          const filename = sanitizeFilename(`cash-flow-${query.startDate}-${query.endDate}`);
+          return reply
+            .header('Content-Type', 'application/pdf')
+            .header('Content-Disposition', `attachment; filename="${filename}.pdf"`)
+            .send(pdfBuffer);
+        }
+
+        if (format === 'csv') {
+          const csv = reportExportService.cashFlowToCsv(report);
+          const filename = sanitizeFilename(`cash-flow-${query.startDate}-${query.endDate}`);
+          return reply
+            .header('Content-Type', 'text/csv')
+            .header('Content-Disposition', `attachment; filename="${filename}.csv"`)
+            .send(csv);
+        }
+
         return reply.send(report);
       } catch (error) {
         return handleAccountingError(error, reply);
@@ -169,11 +233,22 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as TrialBalanceQuery;
+      const query = request.query as TrialBalanceQuery & { format?: string };
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
         const report = await service.generateTrialBalance(query);
+        const format = query.format || 'json';
+
+        if (format === 'csv') {
+          const csv = reportExportService.trialBalanceToCsv(report);
+          const filename = sanitizeFilename(`trial-balance-${query.asOfDate}`);
+          return reply
+            .header('Content-Type', 'text/csv')
+            .header('Content-Disposition', `attachment; filename="${filename}.csv"`)
+            .send(csv);
+        }
+
         return reply.send(report);
       } catch (error) {
         return handleAccountingError(error, reply);
@@ -210,11 +285,27 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as GLLedgerQuery;
+      const query = request.query as GLLedgerQuery & { format?: string };
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
         const report = await service.generateGLLedger(query);
+        const format = query.format || 'json';
+
+        if (format === 'csv') {
+          const csv = reportExportService.glLedgerToCsv(
+            report.entries,
+            report.accountCode,
+            report.accountName,
+            report.currency
+          );
+          const filename = sanitizeFilename(`gl-ledger-${report.accountCode}-${query.startDate}-${query.endDate}`);
+          return reply
+            .header('Content-Type', 'text/csv')
+            .header('Content-Disposition', `attachment; filename="${filename}.csv"`)
+            .send(csv);
+        }
+
         return reply.send(report);
       } catch (error) {
         return handleAccountingError(error, reply);
@@ -297,6 +388,15 @@ export async function reportRoutes(fastify: FastifyInstance) {
       }
     }
   );
+}
+
+/**
+ * Sanitize filename to prevent path traversal and special characters.
+ */
+function sanitizeFilename(name: string): string {
+  return name
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .substring(0, 100);
 }
 
 /**

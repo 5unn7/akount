@@ -11,6 +11,7 @@ import {
     formatCurrency,
     formatReportDate,
     getGLLedgerReport,
+    downloadReport,
     type GLLedgerReport,
     type GLLedgerEntry,
 } from '@/lib/api/reports';
@@ -164,7 +165,11 @@ export function GLReportView({ initialData, initialParams, error }: GLReportView
                                     {initialData.entityName} &middot; {formatReportDate(initialData.startDate)} to {formatReportDate(initialData.endDate)}
                                 </p>
                             </div>
-                            <Button variant="outline" className="gap-2">
+                            <Button
+                                variant="outline"
+                                className="gap-2"
+                                onClick={() => downloadReport('general-ledger', initialParams, 'csv')}
+                            >
                                 <Download className="h-4 w-4" />
                                 Export CSV
                             </Button>

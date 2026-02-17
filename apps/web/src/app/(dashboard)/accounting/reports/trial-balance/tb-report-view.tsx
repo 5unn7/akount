@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, type TrialBalanceReport, type TrialBalanceAccount } from '@/lib/api/reports';
+import { formatCurrency, formatReportDate, downloadReport, type TrialBalanceReport, type TrialBalanceAccount } from '@/lib/api/reports';
 
 interface TBReportViewProps {
     initialData: TrialBalanceReport | null;
@@ -124,9 +124,13 @@ export function TBReportView({ initialData, initialParams, error }: TBReportView
                                         Balanced
                                     </span>
                                 )}
-                                <Button variant="outline" className="gap-2">
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('trial-balance', initialParams, 'csv')}
+                                >
                                     <Download className="h-4 w-4" />
-                                    Export PDF
+                                    Export CSV
                                 </Button>
                             </div>
                         </div>

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, type ProfitLossReport, type ReportLineItem } from '@/lib/api/reports';
+import { formatCurrency, formatReportDate, downloadReport, type ProfitLossReport, type ReportLineItem } from '@/lib/api/reports';
 
 interface PLReportViewProps {
     initialData: ProfitLossReport | null;
@@ -137,10 +137,24 @@ export function PLReportView({ initialData, initialParams, error }: PLReportView
                                     {formatReportDate(initialData.startDate)} to {formatReportDate(initialData.endDate)}
                                 </p>
                             </div>
-                            <Button variant="outline" className="gap-2">
-                                <Download className="h-4 w-4" />
-                                Export PDF
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('profit-loss', initialParams, 'pdf')}
+                                >
+                                    <Download className="h-4 w-4" />
+                                    PDF
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('profit-loss', initialParams, 'csv')}
+                                >
+                                    <Download className="h-4 w-4" />
+                                    CSV
+                                </Button>
+                            </div>
                         </div>
                     </div>
 

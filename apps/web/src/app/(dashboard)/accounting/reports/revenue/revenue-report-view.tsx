@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatPercentage, formatReportDate, type RevenueReport } from '@/lib/api/reports';
+import { formatCurrency, formatPercentage, formatReportDate, downloadReport, type RevenueReport } from '@/lib/api/reports';
 
 interface RevenueReportViewProps {
     initialData: RevenueReport | null;
@@ -119,7 +119,11 @@ export function RevenueReportView({ initialData, initialParams, error }: Revenue
                                         {formatCurrency(initialData.totalRevenue, initialData.currency)}
                                     </p>
                                 </div>
-                                <Button variant="outline" className="gap-2">
+                                <Button
+                                    variant="outline"
+                                    className="gap-2"
+                                    onClick={() => downloadReport('revenue', initialParams, 'csv')}
+                                >
                                     <Download className="h-4 w-4" />
                                     Export CSV
                                 </Button>
