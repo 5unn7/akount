@@ -163,32 +163,13 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
                             <div className="flex justify-between items-center py-1.5">
                                 <span className="text-sm font-medium">Net Income</span>
                                 <span className="font-mono text-sm">
-                                    {formatCurrency(initialData.operating.netIncome, initialData.currency)}
+                                    {formatCurrency(initialData.netIncome, initialData.currency)}
                                 </span>
                             </div>
 
-                            {initialData.operating.adjustments.length > 0 && (
+                            {initialData.operating.items.length > 0 && (
                                 <div className="mt-3 pt-3 border-t border-ak-border">
-                                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
-                                        Adjustments
-                                    </p>
-                                    {initialData.operating.adjustments.map((item, idx) => (
-                                        <div key={idx} className="flex justify-between items-center py-1 pl-4">
-                                            <span className="text-sm">{item.name}</span>
-                                            <span className="font-mono text-sm">
-                                                {formatCurrency(item.amount, initialData.currency)}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {initialData.operating.workingCapitalChanges.length > 0 && (
-                                <div className="mt-3 pt-3 border-t border-ak-border">
-                                    <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">
-                                        Changes in Working Capital
-                                    </p>
-                                    {initialData.operating.workingCapitalChanges.map((item, idx) => (
+                                    {initialData.operating.items.map((item, idx) => (
                                         <div key={idx} className="flex justify-between items-center py-1 pl-4">
                                             <span className="text-sm">{item.name}</span>
                                             <span className="font-mono text-sm">
@@ -214,10 +195,10 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
                             <h4 className="font-medium font-heading">Investing Activities</h4>
                         </div>
                         <div className="p-6 space-y-1">
-                            {initialData.investing.activities.length === 0 ? (
+                            {initialData.investing.items.length === 0 ? (
                                 <p className="text-sm text-muted-foreground py-2">No investing activities in this period</p>
                             ) : (
-                                initialData.investing.activities.map((item, idx) => (
+                                initialData.investing.items.map((item, idx) => (
                                     <div key={idx} className="flex justify-between items-center py-1.5">
                                         <span className="text-sm">{item.name}</span>
                                         <span className="font-mono text-sm">
@@ -242,10 +223,10 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
                             <h4 className="font-medium font-heading">Financing Activities</h4>
                         </div>
                         <div className="p-6 space-y-1">
-                            {initialData.financing.activities.length === 0 ? (
+                            {initialData.financing.items.length === 0 ? (
                                 <p className="text-sm text-muted-foreground py-2">No financing activities in this period</p>
                             ) : (
-                                initialData.financing.activities.map((item, idx) => (
+                                initialData.financing.items.map((item, idx) => (
                                     <div key={idx} className="flex justify-between items-center py-1.5">
                                         <span className="text-sm">{item.name}</span>
                                         <span className="font-mono text-sm">

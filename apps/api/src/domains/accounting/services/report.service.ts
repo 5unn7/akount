@@ -882,13 +882,18 @@ export class ReportService {
       // Change in balance during period
       const change = row.normalBalance === 'DEBIT' ? debit - credit : credit - debit;
 
+      // Apply indirect cash flow method sign convention:
+      // - Asset increases (positive change) SUBTRACT from cash (negate)
+      // - Liability/Equity increases (positive change) ADD to cash (keep as is)
+      const cashFlowImpact = row.type === 'ASSET' ? -change : change;
+
       const item: ReportLineItem = {
         accountId: row.glAccountId,
         code: row.code,
         name: row.name,
         type: row.type,
         normalBalance: row.normalBalance as 'DEBIT' | 'CREDIT',
-        balance: change,
+        balance: cashFlowImpact, // Store the cash flow impact, not raw balance change
         depth: 0,
         isSubtotal: false,
       };

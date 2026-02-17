@@ -106,18 +106,17 @@ export interface CashFlowReport {
     currency: string;
     startDate: string;
     endDate: string;
+    netIncome: number; // cents (from P&L, top-level field)
     operating: {
-        netIncome: number; // cents
-        adjustments: Array<{ name: string; amount: number }>;
-        workingCapitalChanges: Array<{ name: string; amount: number }>;
+        items: ReportLineItem[];
         total: number; // cents
     };
     investing: {
-        activities: Array<{ name: string; amount: number }>;
+        items: ReportLineItem[];
         total: number; // cents
     };
     financing: {
-        activities: Array<{ name: string; amount: number }>;
+        items: ReportLineItem[];
         total: number; // cents
     };
     netCashChange: number; // cents

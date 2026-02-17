@@ -570,11 +570,15 @@ describe('ReportService', () => {
       // Closing cash: $900.00
       expect(result.closingCash).toBe(90000);
 
-      // Net cash change should reconcile: $900 - $500 = $400
-      // Operating cash flow = net income ($400) + AR increase ($200) = $600
-      // But we only track the change from the query, which shows +$200 AR
-      // The actual reconciliation depends on the full cash flow calculation
+      // Operating cash flow calculation (Indirect Method):
+      // Net income: $400
+      // Less: AR increase of $200 (cash not received yet)
+      // = Operating cash flow: $200
+      // Net cash change: $900 - $500 = $400
+      // This means investing/financing contributed $200
       expect(result.operating.items).toHaveLength(1);
+      expect(result.operating.items[0].balance).toBe(-20000); // AR increase subtracts from cash
+      expect(result.operating.total).toBe(20000); // $400 net income - $200 AR increase
     });
 
     it('should calculate zero net cash change when opening equals closing', async () => {
@@ -604,6 +608,75 @@ describe('ReportService', () => {
       expect(result.openingCash).toBe(100000);
       expect(result.closingCash).toBe(100000);
       expect(result.netIncome).toBe(0);
+    });
+
+    it('should apply correct sign convention per indirect method (P1-6 fix)', async () => {
+      mockPrisma.entity.findUnique.mockResolvedValue(mockEntity);
+      mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
+
+      // Mock P&L (net income = $0 for simplicity)
+      mockTenantScopedQuery.mockResolvedValueOnce([]);
+
+      // Mock cash queries
+      mockTenantScopedQuery.mockResolvedValueOnce([
+        { totalDebit: BigInt(100000), totalCredit: BigInt(0) },
+      ]);
+      mockTenantScopedQuery.mockResolvedValueOnce([
+        { totalDebit: BigInt(100000), totalCredit: BigInt(0) },
+      ]);
+
+      // Mock account changes with both asset and liability movements
+      mockTenantScopedQuery.mockResolvedValueOnce([
+        {
+          glAccountId: 'gl_ar_001',
+          code: '1200',
+          name: 'Accounts Receivable',
+          type: 'ASSET',
+          normalBalance: 'DEBIT',
+          totalDebit: BigInt(30000), // +$300 AR increase
+          totalCredit: BigInt(0),
+        },
+        {
+          glAccountId: 'gl_ap_001',
+          code: '2100',
+          name: 'Accounts Payable',
+          type: 'LIABILITY',
+          normalBalance: 'CREDIT',
+          totalDebit: BigInt(0),
+          totalCredit: BigInt(20000), // +$200 AP increase
+        },
+        {
+          glAccountId: 'gl_equity_001',
+          code: '3000',
+          name: 'Equity',
+          type: 'EQUITY',
+          normalBalance: 'CREDIT',
+          totalDebit: BigInt(0),
+          totalCredit: BigInt(10000), // +$100 equity increase
+        },
+      ]);
+
+      const result = await service.generateCashFlow({
+        entityId: ENTITY_ID,
+        startDate,
+        endDate,
+      });
+
+      // Verify sign conventions per indirect method:
+      // - Asset increase (+$300 AR) should SUBTRACT from cash → balance = -$300
+      // - Liability increase (+$200 AP) should ADD to cash → balance = +$200
+      // - Equity increase (+$100) should ADD to cash → balance = +$100
+      expect(result.operating.items).toHaveLength(2); // AR and AP (both operating)
+
+      const arItem = result.operating.items.find((i) => i.code === '1200');
+      const apItem = result.operating.items.find((i) => i.code === '2100');
+
+      expect(arItem?.balance).toBe(-30000); // Asset increase = subtract
+      expect(apItem?.balance).toBe(20000);  // Liability increase = add
+
+      expect(result.financing.items).toHaveLength(1); // Equity
+      const equityItem = result.financing.items[0];
+      expect(equityItem.balance).toBe(10000); // Equity increase = add
     });
   });
 });
