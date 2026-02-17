@@ -203,6 +203,34 @@ check_journal_balance() {
 }
 
 # =============================================================================
+# RULE 6: Block $queryRawUnsafe usage (Security P1-1)
+# =============================================================================
+check_query_raw_unsafe() {
+    local content="$1"
+    local filepath="$2"
+
+    # Only check TypeScript files in api/src
+    if [[ ! "$filepath" =~ apps/api/src.*\.ts$ ]]; then
+        return 0
+    fi
+
+    # Skip test files
+    if [[ "$filepath" =~ (\.test\.|\.spec\.|__tests__|__mocks__|\.mock\.) ]]; then
+        return 0
+    fi
+
+    # Check for $queryRawUnsafe usage
+    if echo "$content" | grep -q '\$queryRawUnsafe'; then
+        block_with_message \
+            "\$queryRawUnsafe is banned for security (SQL injection risk)" \
+            "Use \$queryRaw with tagged template literals, or better: tenantScopedQuery()" \
+            "apps/api/src/lib/tenant-scoped-query.ts"
+    fi
+
+    return 0
+}
+
+# =============================================================================
 # MAIN EXECUTION
 # =============================================================================
 
@@ -213,6 +241,7 @@ if [ -n "$NEW_CONTENT" ]; then
     check_tenant_isolation "$NEW_CONTENT" "$FILE_PATH"
     check_hard_delete "$NEW_CONTENT" "$FILE_PATH"
     check_journal_balance "$NEW_CONTENT" "$FILE_PATH"
+    check_query_raw_unsafe "$NEW_CONTENT" "$FILE_PATH"
 fi
 
 # Always check file location

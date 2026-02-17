@@ -1,210 +1,127 @@
 # Akount - Task List
 
 **Last Updated:** 2026-02-16
-**Current Phase:** Phase 4 COMPLETE | Code Review Fixes COMPLETE (5/5)
+**Current Phase:** Phase 5 COMPLETE | Phase 6 Next
 
 ---
 
-## 📅 Today's Focus (2026-02-16)
+## Tomorrow's Focus (2026-02-17)
 
-**Primary Goal:** Complete Phase 4 — verify E2E, add missing loading/error states, write service tests
+**Primary Goal:** Commit uncommitted work (dashboard + onboarding redesign), begin Phase 6 planning
 
 **Tasks:**
-1. [x] Commit entity context system (cookie + provider + entity switching) — 40704cb
-2. [x] Commit Turbopack import syntax fixes (11 business components) — 396df97
-3. [x] Verify Phase 4 end-to-end: invoice → payment → GL posting flow — COMPLETE (added missing payment allocation GL posting route)
-4. [x] Add loading/error states to 16 remaining pages — ALREADY COMPLETE (all 40 pages have loading.tsx + error.tsx)
-5. [x] Service tests for client, invoice, bill, vendor — ALREADY COMPLETE (~144 tests across 5 service test files)
-6. [x] Verify Phase 4 forms work with real API — COMPLETE (InvoiceForm, BillForm, PaymentForm verified wired to apiFetch)
-7. [x] Fix 6 pre-existing test failures (vi.hoisted pattern for route tests + tenant isolation assertions) — 720/720 green
+1. [ ] Review and commit dashboard redesign (NetWorthHero, RecentTransactions, 7-stat left rail)
+2. [ ] Review and commit onboarding personal-first redesign (3 new steps, conditional flow)
+3. [ ] Clean up .reviews/ directory (keep or archive)
+4. [ ] Plan Phase 6 (Launch MVP) — security audit, performance, CI/CD
 
-**Context:** Entity context + Turbopack fixes committed. Remaining work is verification, testing, and loading states.
+**Context:** All core features (Phases 1-5) are complete. Uncommitted changes are dashboard UX + onboarding UX redesigns. Phase 6 is the final MVP phase.
 
 ---
 
 ## Active Work
 
+### Uncommitted Changes (needs review + commit)
+
+**Dashboard Redesign (14 modified + 4 new files):**
+- [ ] NetWorthHero component (replaces LiquidityHero)
+- [ ] RecentTransactions component
+- [ ] DashboardLeftRail with 7 stats (scrollable)
+- [ ] Enhanced EntitiesList (country, currency display)
+- [ ] Overview page layout update
+
+**Onboarding Personal-First Redesign (6 modified + 3 new files):**
+- [ ] EmploymentStep (7 employment options, auto-advance)
+- [ ] BusinessSetupStep (conditional Yes/No + business form)
+- [ ] AddressStep (IP country detection, auto-currency)
+- [ ] OnboardingWizard (5-6 step conditional flow)
+- [ ] onboardingStore (new types, dynamic getTotalSteps)
+- [ ] CompletionStep (calls /initialize + /complete)
+- [ ] WelcomeStep + IntentStep copy updates
+- [ ] Backend onboarding route (accepts intents, employmentStatus, address)
+
+**Other uncommitted:**
+- [ ] console.error → swallowed catch in document-posting.service.ts (3 instances)
+- [ ] dialog.tsx UI component
+
+---
+
+### Phase 5: Understand Your Money — COMPLETE
+
+**Sprint 0: Infrastructure**
+- [x] tenantScopedQuery wrapper for secure raw SQL (117c040)
+- [x] Composite indexes for report performance (76bdd3a)
+- [x] RBAC accounting:reports permission key (ae9b18c)
+- [x] Block $queryRawUnsafe hook (d8d5456)
+
+**Sprint 1: Core Reports (Backend)**
+- [x] P&L report service + tests (dedec5e)
+- [x] Balance Sheet report service + tests (17d832f)
+- [x] Cash Flow Statement report service + tests (1077076)
+- [x] Report service foundation with helpers (c775dc2)
+- [x] Zod schemas for reports (c0e8efc)
+- [x] Report routes with rate limiting (21ccb5b)
+- [x] Comprehensive report service tests + fixes (2d82d25)
+
+**Sprint 2: Supporting Reports + Cache**
+- [x] Trial Balance + GL Ledger reports (54f345f)
+- [x] Spending + Revenue management reports (e4eac68)
+- [x] In-memory report cache with bounded growth (0344955)
+- [x] Supporting report routes (c9c1034)
+
+**Sprint 3-4: Frontend Report Pages**
+- [x] Reports Home, P&L, Balance Sheet pages (bf572a2)
+- [x] Cash Flow, Trial Balance, GL Ledger, Spending, Revenue pages (e429674)
+
+**Sprint 5: Export**
+- [x] PDF + CSV export with download buttons (4962165)
+
+**Sprint 6: Charts + Data Backup**
+- [x] Data backup service (streaming ZIP, 12 tables, cursor-paginated)
+- [x] P&L trend bar chart, BS composition chart, Spending donut chart
+- [x] Settings data export card (26d7a8b)
+
 ### Phase 4: Bill & Get Paid — COMPLETE
 
-**Backend (6 sprints built — 2026-02-15):**
-- [x] **Sprint 1:** PaymentAllocation schema + invoice/bill status transitions (3df1867)
-- [x] **Sprint 2:** DocumentPostingService for GL posting (9d7cf4d)
-- [x] **Sprint 3:** Payment service with allocation + deallocation (904d448)
-- [x] **Sprint 5:** Invoice PDF generation + email sending (5ba12de)
-- [x] **Remaining:** E2E flow verified, payment allocation GL posting route added
+- [x] Sprint 1-6 backend + frontend (2026-02-15)
+- [x] Payment allocation GL posting route (8bd9d2e)
+- [x] E2E verified: invoice → payment → GL posting
+- [x] Category Engine (CRUD, auto-categorization, dedup)
+- [x] All forms wired to API clients
 
-**Frontend (2 sprints built — 2026-02-15):**
-- [x] **Sprint 4:** Invoice, bill & payment forms + API clients (2e858b3)
-- [x] **Sprint 6:** Detail pages, payment list, AR/AP enhancement (dbb2889)
-- [x] **Remaining:** Forms verified wired to API clients, detail pages complete
+### Code Audit — COMPLETE (2026-02-16)
 
-### Category Engine — COMPLETE (2026-02-15)
-- [x] Category CRUD API + Zod schemas + 21 route tests (1de961e)
-- [x] Auto-categorization with soft-delete filtering
-- [x] Dedup (categories + transactions)
-- [x] Single source of truth for default category seeding
+- [x] P0: Deleted 4,308 lines of dead code (0925fb8)
+- [x] P1: Type safety fixes (0925fb8)
+- [x] P2: Backend module split — parser.service.ts → 3 modules (fb900d5)
+- [x] P2: Frontend splits — 3 oversized components (fb900d5)
+- [x] P3: Archived 21 completed plans (fb900d5)
 
-### Uncommitted Work (needs commit)
-- [x] Entity context system (cookie + provider + hook + EntityAccountCards) — 40704cb
-- [x] Turbopack import fixes (`import type` in 11 business components + 3 TS fixes) — 396df97
-- [x] Tenant isolation middleware fix (2-hop nesting) — 40704cb
+### Test Coverage — COMPLETE (2026-02-16)
 
-### Code Review Fixes — COMPLETE (5/5, from 2026-02-14)
-
-**Completed:**
-- [x] **Issue 1 (Partial):** 24 loading/error pages for planning + services domains
-- [x] **Issue 2:** Deleted onboarding route (overlay-only design)
-- [x] **Issue 3:** Fixed badge.tsx and AIBrief.tsx semantic tokens
-- [x] **Issue 4:** Split ImportUploadForm (415 → 77 lines, 3 step components)
-- [x] **Security M-2:** Invoice/bill amount validation
-- [x] **Security M-4:** Unique constraints on invoice/bill numbers
-- [x] **Security M-5:** Stats rate limiting (50 req/min)
-
-**Remaining (verified complete):**
-- [x] **Issue 1:** All 40 dashboard pages have loading.tsx + error.tsx
-- [x] **Issue 5:** Service tests exist — invoice (47), bill (47), payment, client (25), vendor (25) = ~144 tests
+- [x] Sprint 1: EntityService, CategoryService, CategorizationService (89 tests, already existed)
+- [x] Sprint 2: DuplicationService (30), UserService (13) — c2b4b3b, ba6b2d7
+- [x] Sprint 3: ParserShared (42), AIService (17), AuditQueryService (27), HealthService (10) — 4219894, 1b42fab, 4714e52, 15b6181
+- [x] Sprint 4: Enhancement tests (6) — 515885c
+- [x] Service coverage: 100% (27/27 services)
 
 ---
 
-### Onboarding Redesign — COMPLETE
+## Completed Work (Prior Phases)
 
-**Plan:** [docs/plans/2026-02-09-onboarding-flow-redesign.md](docs/plans/2026-02-09-onboarding-flow-redesign.md)
+### Phase 3: Post Your Money (COMPLETE — 2026-02-15)
+- [x] COA API (7 endpoints), Journal Entry API (12 endpoints), PostingService
+- [x] Frontend: tree view, JE form, posting UI, API client + server actions
 
-- [x] **OB-1:** OnboardingProgress Prisma model + migration (commit b4c00a3)
-- [x] **OB-2:** Progress API routes — GET progress, POST update, POST skip, POST dismiss (commit b4c00a3)
-- [x] **OB-3:** Update POST /initialize to create OnboardingProgress (commit b4c00a3)
-- [x] **OB-4:** API tests for progress routes — 176 lines (commit b4c00a3)
-- [x] **OB-5:** Update onboarding store — phone, timezone fields (commit b4c00a3)
-- [x] **OB-6:** Minimal wizard — Welcome + EssentialInfo + EntityDetails + Completion steps (commits b4c00a3, b0cbdf4, af98f04)
-- [x] **OB-7:** CircularProgress component (commit b4c00a3)
-- [x] **OB-8:** OnboardingHeroCard on dashboard (commit b4c00a3)
-- [x] **OB-9:** SidebarProgressIndicator (commit b4c00a3)
-- [x] **OB-10:** Frontend tests for onboarding components — 55 tests across 7 files
+### Phase 2: Track Your Money (COMPLETE — 2026-02-12)
+- [x] Transaction CRUD, CSV/PDF import, reconciliation (117 tests)
+- [x] Frontend: upload, column mapping, reconciliation, import history
 
-### Overview Page Comprehensive Refresh — COMPLETE
+### Phase 1: See Your Money (COMPLETE — 2026-02-09)
+- [x] Dashboard, account management, multi-currency (62 tests)
 
-**Brainstorm:** [docs/brainstorms/2026-02-14-overview-page-comprehensive-refresh-brainstorm.md](docs/brainstorms/2026-02-14-overview-page-comprehensive-refresh-brainstorm.md)
-**Plan:** [docs/plans/2026-02-14-overview-page-comprehensive-refresh.md](docs/plans/2026-02-14-overview-page-comprehensive-refresh.md)
-
-**Phase 1: Frontend Layout Polish (commit babf908)**
-- [x] **UI-1:** Add navbar vertical padding (py-3, min-h-14) + TypeScript fix (Set → Array.from)
-- [x] **UI-2:** Bump Liquidity Hero balance font (text-3xl → text-4xl)
-- [x] **UI-3:** Fix sparkline alignment (flex-1 container + w-20 wrapper)
-- [x] **UI-4:** Add color-coded glow effects to spark cards (green/red/amber/blue/purple)
-- [x] **UI-5:** Increase spacing between zones (space-y-6 → space-y-8)
-- [x] **UI-6:** Add purple border-left accent to AI Brief card
-
-**Phase 2: Backend API (commit 87f41e3)**
-- [x] **BE-PERF-1:** Performance metrics Zod schema (query + response)
-- [x] **BE-PERF-2:** PerformanceService with transaction aggregates (revenue, expenses, profit, sparklines)
-- [x] **BE-PERF-3:** GET /api/overview/performance route handler
-
-**Phase 3: Frontend Integration (commits 6d61e44, cf78c9e)**
-- [x] **FE-PERF-1:** Performance API client function (getPerformanceMetrics)
-- [x] **FE-PERF-2:** Wire performance API to overview page (Promise.allSettled)
-- [x] **FE-PERF-3:** Replace hardcoded demo data with real transaction aggregates
-- [x] **FE-PERF-4:** Add SparkCardsSkeleton component
-- [x] **FE-PERF-5:** Empty state handling ("—" for zero values)
-- [x] **FE-PERF-6:** Error boundary (try/catch with graceful fallback)
-
-**Result:** Visual hierarchy established, real financial data powering spark KPIs, responsive design verified.
-
-**Deferred:** Performance service tests (15+ tests) — to be added in separate session.
-
----
-
-## Phase 3: Post Your Money — COMPLETE
-
-- [x] **BE-3.1:** Chart of Accounts API — 7 endpoints (CRUD, hierarchy, balances, seed)
-- [x] **BE-3.2:** Transaction Posting Service — PostingService (852 lines, serializable isolation)
-- [x] **BE-3.3:** Journal Entry API — 12 endpoints (CRUD, approve, void, post, bulk post)
-- [x] **BE-3.4:** Multi-currency posting support (FX lookup, nearest-date fallback, rate override)
-- [x] **BE-3.5:** Split transaction support (largest-remainder rounding, 2-way/3-way splits)
-- [x] **BE-3.6:** Posting tests — 33 tests (11 basic + 7 multi-currency + 5 bulk + 10 split)
-- [x] **FE-3.1:** Chart of Accounts page (tree view, CRUD Sheet, type filter, seed button, balances)
-- [x] **FE-3.2:** Journal Entry form (dynamic lines, GL account dropdowns, live balance indicator)
-- [x] **FE-3.3:** Journal entries list page (expandable rows, approve/void/delete, status badges, pagination)
-- [x] **FE-3.4:** Transaction posting UI (PostingStatusBadge, GL account Sheet, single + bulk posting)
-- [x] **FE-3.5:** API client + server actions for COA and JE
-- [x] **FE-3.6:** Code quality cleanup (console.error → error state, React import fix, endpoint alignment)
-
----
-
-## Completed Work
-
-### Foundation (COMPLETE)
-
-- [x] Clerk authentication (passkeys/WebAuthn)
-- [x] PostgreSQL + Prisma (38 models, 26 enums)
-- [x] Fastify API with middleware chain
-- [x] Design system in Figma (76 variables, 41+ components)
-- [x] shadcn/ui + shadcn-glass-ui integration, Tailwind v4
-- [x] Turborepo monorepo
-- [x] AI categorization foundation
-- [x] Bank statement import foundation (PDF parsing)
-- [x] Performance optimization (50x query reduction)
-
-### Phase 1: See Your Money (COMPLETE — 62 tests)
-
-- [x] Dashboard with real-time metrics (net worth, cash position, assets/liabilities)
-- [x] Account list page with cursor pagination + type filtering
-- [x] Account CRUD (create, edit, soft-delete via Sheet panel)
-- [x] Account detail page with transaction history + running balance
-- [x] Entity filter dropdown + currency toggle (CAD/USD)
-- [x] FX rate service with caching
-- [x] 62 backend tests (services + routes)
-- [x] Loading states, error boundaries, SEO metadata
-
-### Phase 2 Backend: Track Your Money (COMPLETE — 117 tests)
-
-**Sprint 1: Transaction Management (55 tests, commit ff37830)**
-
-- [x] TransactionService with CRUD operations (277 lines)
-- [x] Zod validation schemas (86 lines)
-- [x] Fastify route handlers (216 lines)
-- [x] GET/POST/PATCH/DELETE /api/banking/transactions
-- [x] Filtering by accountId, date range, category, pagination
-- [x] 35 service tests + 20 route tests
-
-**Sprint 2: CSV & PDF Import (19 tests, commits 376a030, 4e89ae5)**
-
-- [x] ImportService orchestrating CSV + PDF workflows (452 lines)
-- [x] ParserService for CSV + PDF parsing (507 lines)
-- [x] DuplicationService with fuzzy matching (230 lines)
-- [x] POST /api/banking/imports/csv and /pdf endpoints
-- [x] GET /api/banking/imports (list batches, pagination)
-- [x] GET /api/banking/imports/:id (import details + transactions)
-
-**Sprint 3: Reconciliation (43 tests, commit a1e3340)**
-
-- [x] ReconciliationService with matching algorithm (340 lines)
-- [x] Exact amount + date proximity (±3/7 days) + description similarity
-- [x] Confidence scores (0-1.0), top 5 suggestions
-- [x] GET /api/banking/reconciliation/:id/suggestions
-- [x] POST /api/banking/reconciliation/matches
-- [x] DELETE /api/banking/reconciliation/matches/:id
-- [x] GET /api/banking/reconciliation/status/:accountId
-- [x] 25 service tests + 18 route tests
-
-### Phase 2 Frontend: Banking UI (COMPLETE — commits 95eb7e4, b0cbdf4, af98f04)
-
-- [x] **FE-2.1:** CSV Upload Component — ImportUploadForm with drag-and-drop, validation (commit 95eb7e4)
-- [x] **FE-2.2:** Column Mapping Interface — ColumnMappingEditor, 291 lines (commit 95eb7e4)
-- [x] **FE-2.3:** Transaction Matching UI — ReconciliationDashboard (commit 2256742)
-- [x] **FE-2.4:** Reconciliation Status Display (commit 2256742)
-- [x] **FE-2.5:** Import History Page — ImportHistoryClient (commit 2256742)
-- [x] **FE-2.3b:** Transaction Matching Improvements — BulkActionBar, bulk selection (commit 95eb7e4)
-- [x] **FE-2.5b:** Import History Enhancements — ImportConfirmation, drill-down (commits b0cbdf4, af98f04)
-- [x] **FE-2.6:** Transaction List Improvements — bulk actions, filters, BulkActionBar (commit 95eb7e4)
-- [x] **Bonus:** Full sign-up → onboarding → dashboard flow repaired (commit af98f04)
-- [x] **Bonus:** Route rename money-movement → banking (commit af98f04)
-
-### Onboarding Redesign (9/10 tasks — commit b4c00a3)
-
-- [x] OnboardingProgress Prisma model + API routes + tests
-- [x] Wizard (Welcome + EssentialInfo + EntityDetails + Completion)
-- [x] CircularProgress, OnboardingHeroCard, SidebarProgressIndicator
-- [x] Complete onboarding flow with progressive completion modals
+### Foundation (COMPLETE — 2026-02-01)
+- [x] Auth, DB, API, design system, monorepo
 
 ---
 
@@ -214,35 +131,25 @@
 |-------|---------|----------|--------|
 | Foundation | COMPLETE | COMPLETE | COMPLETE |
 | 1: See Your Money | COMPLETE (62 tests) | COMPLETE | COMPLETE |
-| 2: Track Your Money | COMPLETE (117 tests) | COMPLETE (8/8 tasks) | COMPLETE |
-| Onboarding Redesign | COMPLETE (tests) | COMPLETE (55 tests) | COMPLETE |
+| 2: Track Your Money | COMPLETE (117 tests) | COMPLETE | COMPLETE |
+| Onboarding Redesign | COMPLETE | COMPLETE (55 tests) | COMPLETE |
 | 3: Post Your Money | COMPLETE (33 posting tests) | COMPLETE | COMPLETE |
+| 4: Bill & Get Paid | COMPLETE (21 category + sprints) | COMPLETE | COMPLETE |
+| 5: Understand Your Money | COMPLETE (18 report + 249 service) | COMPLETE (7 pages) | COMPLETE |
 
-**Total Backend Tests:** 720 (verified 2026-02-16, all passing)
+**Total Backend Tests:** 1009 (verified 2026-02-16, all passing)
 
 ---
 
 ## Notes
 
 **Task Naming Convention:**
-
 - FE-X.Y: Frontend task in Phase X
 - BE-X.Y: Backend task in Phase X
 - OB-Y: Onboarding redesign (cross-cutting)
 
-**How to Use This File:**
-
-1. Pick tasks from "Active Work" section
-2. Check boxes as you complete work
-3. Move to "Completed Work" when phase finishes
-4. Keep "Next Up" section populated with upcoming phase
-
-**Weekly Rhythm:**
-
-- Monday: Review active tasks, pick sprint focus
-- Friday: Update progress, plan next week
-- End of Phase: Update ROADMAP.md and STATUS.md
+**Next Phase:** Phase 6 (Launch MVP) — security, performance, CI/CD, monitoring
 
 ---
 
-**Next Update:** 2026-02-16
+**Next Update:** 2026-02-17

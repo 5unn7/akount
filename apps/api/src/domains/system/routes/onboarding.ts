@@ -24,6 +24,21 @@ const initializeOnboardingSchema = z.object({
   timezone: z.string().default('America/Toronto'),
   country: z.string().length(2).toUpperCase(),
   currency: z.string().length(3).toUpperCase(),
+  // New personal-first fields (optional for backward compat)
+  intents: z.array(z.string()).optional(),
+  employmentStatus: z.string().optional(),
+  streetAddress: z.string().optional(),
+  city: z.string().optional(),
+  province: z.string().optional(),
+  postalCode: z.string().optional(),
+  // Optional business entity (created alongside personal entity)
+  businessEntity: z.object({
+    name: z.string().min(1).max(255),
+    entityType: z.enum(['CORPORATION', 'SOLE_PROPRIETORSHIP', 'PARTNERSHIP', 'LLC']),
+    country: z.string().length(2).toUpperCase(),
+    currency: z.string().length(3).toUpperCase(),
+    industry: z.string().optional(),
+  }).optional(),
 });
 
 const completeOnboardingSchema = z.object({
@@ -40,6 +55,7 @@ type InitializeResponse = {
   success: boolean;
   tenantId: string;
   entityId: string;
+  businessEntityId?: string;
   message: string;
 };
 
@@ -169,6 +185,8 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
             onboardingData: {
               accountType: data.accountType,
               startedAt: new Date().toISOString(),
+              ...(data.intents && { intents: data.intents }),
+              ...(data.employmentStatus && { employmentStatus: data.employmentStatus }),
             },
           },
         });
@@ -182,7 +200,7 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
           },
         });
 
-        // Create entity
+        // Create entity (with optional address from personal-first flow)
         const entity = await tx.entity.create({
           data: {
             tenantId: tenant.id,
@@ -191,8 +209,30 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
             country: data.country,
             functionalCurrency: data.currency,
             reportingCurrency: data.currency,
+            ...(data.streetAddress && { address: data.streetAddress }),
+            ...(data.city && { city: data.city }),
+            ...(data.province && { state: data.province }),
+            ...(data.postalCode && { postalCode: data.postalCode }),
           },
         });
+
+        // Optionally create a business entity (same tenant, separate entity)
+        let businessEntity = null;
+        if (data.businessEntity) {
+          const bizCountry = data.businessEntity.country;
+          const bizCurrency = data.businessEntity.currency;
+          businessEntity = await tx.entity.create({
+            data: {
+              tenantId: tenant.id,
+              name: data.businessEntity.name,
+              type: data.businessEntity.entityType,
+              country: bizCountry,
+              functionalCurrency: bizCurrency,
+              reportingCurrency: bizCurrency,
+              ...(data.businessEntity.industry && { industry: data.businessEntity.industry }),
+            },
+          });
+        }
 
         // Create onboarding progress (40% complete: basic_info + entity_setup)
         await tx.onboardingProgress.create({
@@ -205,11 +245,11 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
           },
         });
 
-        return { tenant, entity };
+        return { tenant, entity, businessEntity };
       });
 
       request.log.info(
-        { tenantId: result.tenant.id, entityId: result.entity.id, userId: user.id },
+        { tenantId: result.tenant.id, entityId: result.entity.id, businessEntityId: result.businessEntity?.id, userId: user.id },
         'Onboarding initialized'
       );
 
@@ -229,6 +269,7 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         success: true,
         tenantId: result.tenant.id,
         entityId: result.entity.id,
+        ...(result.businessEntity && { businessEntityId: result.businessEntity.id }),
         message: 'Onboarding initialized successfully',
       });
     } catch (error) {

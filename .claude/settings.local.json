@@ -93,7 +93,9 @@
       "Bash(cmd /c \"where pnpm\")",
       "WebFetch(domain:api.github.com)",
       "Bash(git check-ignore:*)",
-      "Bash(shellcheck:*)"
+      "Bash(shellcheck:*)",
+      "Bash(CLAUDE_TOOL_INPUT='{\"\"file_path\"\":\"\"apps/api/src/test-unsafe.ts\"\",\"\"content\"\":\"\"import { prisma } from \\\\\"\"@akount/db\\\\\"\";\\\\n\\\\nconst badQuery = async \\(userId: string\\) => {\\\\n  return prisma.$queryRawUnsafe\\(`SELECT * FROM users WHERE id = \\\\\"\"${userId}\\\\\"\"`\\);\\\\n};\"\"}' bash ../../.claude/hooks/hard-rules.sh)",
+      "Bash(npx prisma db execute:*)"
     ],
     "deny": [
       "Bash(git reset --hard *)",

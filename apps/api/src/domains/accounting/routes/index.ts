@@ -4,6 +4,7 @@ import { tenantMiddleware } from '../../../middleware/tenant';
 import { withPermission } from '../../../middleware/withPermission';
 import { glAccountRoutes } from './gl-account';
 import { journalEntryRoutes } from './journal-entry';
+import { reportRoutes } from './report';
 
 /**
  * Accounting Domain Routes
@@ -19,6 +20,7 @@ export async function accountingRoutes(fastify: FastifyInstance) {
   // Sub-route registration
   await fastify.register(glAccountRoutes, { prefix: '/chart-of-accounts' });
   await fastify.register(journalEntryRoutes, { prefix: '/journal-entries' });
+  await fastify.register(reportRoutes, { prefix: '/reports' });
 
   fastify.get(
     '/fiscal-periods',

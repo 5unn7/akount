@@ -1,3 +1,6 @@
+'use client';
+
+import { useCallback, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
 
@@ -33,12 +36,12 @@ const trendColorMap = {
 
 const TrendIcon = { up: ArrowUp, down: ArrowDown, flat: Minus } as const;
 
-const glowMap = {
-    green: 'hover:glow-success',
-    red: 'hover:glow-danger',
-    blue: 'hover:glow-blue',
-    purple: 'hover:glow-purple',
-    primary: 'hover:glow-primary',
+const glowColorMap = {
+    green: 'var(--ak-green-fill)',
+    red: 'var(--ak-red-fill)',
+    blue: 'var(--ak-blue-fill)',
+    purple: 'var(--ak-purple-fill)',
+    primary: 'var(--ak-pri-fill)',
 } as const;
 
 function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: SparkCardData['color'] }) {
@@ -83,8 +86,72 @@ function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: Sp
                 strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="sparkline-path"
             />
         </svg>
+    );
+}
+
+function SparkCard({ card, index }: { card: SparkCardData; index: number }) {
+    const frameRef = useRef<number>(0);
+    const glowColor = glowColorMap[card.color ?? 'primary'];
+
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        const target = e.currentTarget;
+        const clientX = e.clientX;
+        const clientY = e.clientY;
+
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = requestAnimationFrame(() => {
+            const rect = target.getBoundingClientRect();
+            const x = ((clientX - rect.left) / rect.width) * 100;
+            const y = ((clientY - rect.top) / rect.height) * 100;
+            target.style.setProperty('--glow-x', `${x}%`);
+            target.style.setProperty('--glow-y', `${y}%`);
+        });
+    }, []);
+
+    return (
+        <div
+            className={cn(
+                'glass rounded-lg px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px glow-track fi',
+                `fi${Math.min(index + 1, 6)}`
+            )}
+            style={{ '--glow-color': glowColor } as React.CSSProperties}
+            onMouseMove={handleMouseMove}
+        >
+            <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
+                        {card.label}
+                    </p>
+                    <p className="text-lg font-mono font-semibold leading-none">
+                        {card.value}
+                    </p>
+                </div>
+                {card.sparkline && card.sparkline.length > 1 && (
+                    <div className="shrink-0 w-20">
+                        <MiniSparkline data={card.sparkline} color={card.color} />
+                    </div>
+                )}
+            </div>
+            {card.trend && (
+                <div
+                    className={cn(
+                        'flex items-center gap-1 mt-1.5',
+                        trendColorMap[card.trend.direction]
+                    )}
+                >
+                    {(() => {
+                        const Icon = TrendIcon[card.trend.direction];
+                        return <Icon className="h-3 w-3" />;
+                    })()}
+                    <span className="text-[10px] font-medium">
+                        {card.trend.text}
+                    </span>
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -97,46 +164,7 @@ export function SparkCards({ cards, className }: SparkCardsProps) {
             )}
         >
             {cards.map((card, i) => (
-                <div
-                    key={card.label}
-                    className={cn(
-                        'glass rounded-lg px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px fi',
-                        `fi${Math.min(i + 1, 6)}`,
-                        glowMap[card.color ?? 'primary']
-                    )}
-                >
-                    <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
-                                {card.label}
-                            </p>
-                            <p className="text-lg font-mono font-semibold leading-none">
-                                {card.value}
-                            </p>
-                        </div>
-                        {card.sparkline && card.sparkline.length > 1 && (
-                            <div className="shrink-0 w-20">
-                                <MiniSparkline data={card.sparkline} color={card.color} />
-                            </div>
-                        )}
-                    </div>
-                    {card.trend && (
-                        <div
-                            className={cn(
-                                'flex items-center gap-1 mt-1.5',
-                                trendColorMap[card.trend.direction]
-                            )}
-                        >
-                            {(() => {
-                                const Icon = TrendIcon[card.trend.direction];
-                                return <Icon className="h-3 w-3" />;
-                            })()}
-                            <span className="text-[10px] font-medium">
-                                {card.trend.text}
-                            </span>
-                        </div>
-                    )}
-                </div>
+                <SparkCard key={card.label} card={card} index={i} />
             ))}
         </div>
     );

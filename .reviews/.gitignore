@@ -1,0 +1,5 @@
+# Temporary review workspace (agents write here during review)
+# Final synthesis is moved to docs/reviews/
+*
+!.gitignore
+!README.md

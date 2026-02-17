@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Settings } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DataExportCard } from "./data-export-card";
 
 export const metadata: Metadata = {
     title: "Settings | Akount",
@@ -14,20 +15,21 @@ export default function SettingsPage() {
                 <h2 className="text-3xl font-bold tracking-tight font-heading">Settings</h2>
             </div>
 
+            <DataExportCard />
+
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <Settings className="h-5 w-5" />
-                        Coming Soon
+                        More Settings Coming Soon
                     </CardTitle>
                     <CardDescription>
-                        Configure account preferences and system defaults.
+                        Account preferences, notification settings, default currencies, and display options.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-muted-foreground">
-                        This feature is under development. It will provide account settings,
-                        notification preferences, default currencies, and display options.
+                        Additional configuration options are under development.
                     </p>
                 </CardContent>
             </Card>

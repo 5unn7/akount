@@ -2,6 +2,13 @@
 
 import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useSyncStatus } from '@/hooks/use-sync-status';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { MobileSidebar } from "./Sidebar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -125,6 +132,7 @@ interface NavbarProps {
 export function Navbar({ entities }: NavbarProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { isSyncing, sync, getTimeSinceSync } = useSyncStatus();
 
     const currentEntityId = searchParams.get('entityId') || entities[0]?.id || null;
     const selectedEntity = entities.find(e => e.id === currentEntityId) || entities[0];
@@ -184,9 +192,25 @@ export function Navbar({ entities }: NavbarProps) {
 
             {/* Right: Actions — Sync, Notification, Theme, Help */}
             <div className="flex items-center gap-1 shrink-0">
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Sync">
-                    <RefreshCw className="h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                    <Tooltip delayDuration={0}>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                onClick={sync}
+                                disabled={isSyncing}
+                                aria-label="Sync data"
+                            >
+                                <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-xs">
+                            <p>{isSyncing ? 'Syncing...' : `Synced ${getTimeSinceSync()}`}</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
                 <Button variant="ghost" size="icon" className="relative h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Notifications">
                     <Bell className="h-4 w-4" />
                     <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary" />

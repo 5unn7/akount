@@ -20,7 +20,7 @@ interface ExpenseChartProps {
     className?: string;
 }
 
-type Period = 'day' | 'week' | 'month';
+type Period = 'day' | 'week' | 'month' | 'quarter' | 'year';
 
 function formatCompact(value: number): string {
     if (value >= 1_000) return `$${(value / 1_000).toFixed(1)}K`;
@@ -36,7 +36,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-heading font-normal">Expense Breakdown</h3>
                     <div className="flex gap-1 glass-2 rounded-sm p-0.5">
-                        {(['day', 'week', 'month'] as const).map((p) => (
+                        {(['day', 'week', 'month', 'quarter', 'year'] as const).map((p) => (
                             <button
                                 key={p}
                                 onClick={() => setPeriod(p)}
@@ -47,7 +47,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                                         : 'text-muted-foreground hover:text-foreground'
                                 )}
                             >
-                                {p}
+                                {p === 'quarter' ? 'qtr' : p}
                             </button>
                         ))}
                     </div>
@@ -94,7 +94,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                     </p>
                 </div>
                 <div className="flex gap-1 glass-2 rounded-sm p-0.5">
-                    {(['day', 'week', 'month'] as const).map((p) => (
+                    {(['day', 'week', 'month', 'quarter', 'year'] as const).map((p) => (
                         <button
                             key={p}
                             onClick={() => setPeriod(p)}
@@ -105,7 +105,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                                     : 'text-muted-foreground hover:text-foreground'
                             )}
                         >
-                            {p}
+                            {p === 'quarter' ? 'qtr' : p}
                         </button>
                     ))}
                 </div>

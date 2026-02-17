@@ -12,14 +12,14 @@ interface WelcomeStepProps {
 const ACCOUNT_TYPES = [
   {
     type: 'personal' as AccountType,
-    label: 'Personal',
-    description: 'See where your money goes, track spending, and build clarity',
+    label: 'Just me',
+    description: 'Personal finances only',
     Icon: User,
   },
   {
     type: 'business' as AccountType,
-    label: 'Business',
-    description: 'Manage invoicing, expenses, and cash flow for your business',
+    label: 'Me + my business',
+    description: 'Personal and business together',
     Icon: Building2,
   },
 ] as const
@@ -41,7 +41,9 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
           Welcome to Akount
         </h1>
         <p className="text-muted-foreground">
-          Start with your personal finances — you can add a business anytime.
+          We'll help you understand and organize your money.
+          <br />
+          Who are we helping today?
         </p>
       </div>
 
@@ -81,7 +83,7 @@ export function WelcomeStep({ onNext }: WelcomeStepProps) {
 
       {/* Footer note */}
       <p className="text-center text-xs text-muted-foreground">
-        You can always add more accounts later.
+        You can always add a business later.
       </p>
     </div>
   )

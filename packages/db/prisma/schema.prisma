@@ -140,7 +140,7 @@ model GLAccount {
 model JournalEntry {
   id             String                  @id @default(cuid())
   entityId       String
-  entryNumber    String?                 // Sequential per entity (JE-001, JE-002)
+  entryNumber    String? // Sequential per entity (JE-001, JE-002)
   date           DateTime
   memo           String
   sourceType     JournalEntrySourceType?
@@ -149,7 +149,7 @@ model JournalEntry {
   linkedEntryId  String?
   status         JournalEntryStatus
   createdBy      String
-  updatedBy      String?                 // Who last modified (approve, void)
+  updatedBy      String? // Who last modified (approve, void)
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
   deletedAt      DateTime? // Soft delete - financial data never hard deleted
@@ -165,6 +165,7 @@ model JournalEntry {
   @@index([sourceType, sourceId])
   @@index([date])
   @@index([entityId, deletedAt])
+  @@index([entityId, status, deletedAt, date]) // Composite index for report queries (Phase 5)
 }
 
 model JournalLine {
@@ -174,17 +175,18 @@ model JournalLine {
   debitAmount        Int
   creditAmount       Int
   memo               String?
-  currency           String?      // ISO currency code of original amount (null = entity base currency)
-  exchangeRate       Float?       // FX rate at posting time (immutable once set)
-  baseCurrencyDebit  Int?         // debitAmount converted to entity functionalCurrency
-  baseCurrencyCredit Int?         // creditAmount converted to entity functionalCurrency
-  deletedAt          DateTime?    // Soft delete - financial data never hard deleted
+  currency           String? // ISO currency code of original amount (null = entity base currency)
+  exchangeRate       Float? // FX rate at posting time (immutable once set)
+  baseCurrencyDebit  Int? // debitAmount converted to entity functionalCurrency
+  baseCurrencyCredit Int? // creditAmount converted to entity functionalCurrency
+  deletedAt          DateTime? // Soft delete - financial data never hard deleted
   glAccount          GLAccount    @relation(fields: [glAccountId], references: [id])
   journalEntry       JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
 
   @@index([journalEntryId])
   @@index([glAccountId])
   @@index([journalEntryId, deletedAt])
+  @@index([glAccountId, deletedAt]) // Composite index for report aggregations (Phase 5)
 }
 
 model TaxRate {
@@ -254,33 +256,33 @@ model Client {
 }
 
 model Invoice {
-  id            String        @id @default(cuid())
-  entityId      String
-  clientId      String
-  invoiceNumber String
-  issueDate     DateTime
-  dueDate       DateTime
-  currency      String
-  subtotal      Int
-  taxAmount     Int
-  total         Int
-  status        InvoiceStatus
-  paidAmount    Int
-  notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  deletedAt     DateTime? // Soft delete - financial data never hard deleted
-  client        Client        @relation(fields: [clientId], references: [id])
-  entity        Entity        @relation(fields: [entityId], references: [id])
-  invoiceLines        InvoiceLine[]
-  paymentAllocations  PaymentAllocation[]
+  id                 String              @id @default(cuid())
+  entityId           String
+  clientId           String
+  invoiceNumber      String
+  issueDate          DateTime
+  dueDate            DateTime
+  currency           String
+  subtotal           Int
+  taxAmount          Int
+  total              Int
+  status             InvoiceStatus
+  paidAmount         Int
+  notes              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  deletedAt          DateTime? // Soft delete - financial data never hard deleted
+  client             Client              @relation(fields: [clientId], references: [id])
+  entity             Entity              @relation(fields: [entityId], references: [id])
+  invoiceLines       InvoiceLine[]
+  paymentAllocations PaymentAllocation[]
 
+  @@unique([entityId, invoiceNumber]) // SECURITY FIX M-4: Prevent duplicate invoice numbers per entity
   @@index([entityId, status])
   @@index([clientId, status])
   @@index([dueDate])
   @@index([issueDate])
   @@index([entityId, deletedAt])
-  @@unique([entityId, invoiceNumber]) // SECURITY FIX M-4: Prevent duplicate invoice numbers per entity
 }
 
 model InvoiceLine {
@@ -325,33 +327,33 @@ model Vendor {
 }
 
 model Bill {
-  id         String     @id @default(cuid())
-  entityId   String
-  vendorId   String
-  billNumber String
-  issueDate  DateTime
-  dueDate    DateTime
-  currency   String
-  subtotal   Int
-  taxAmount  Int
-  total      Int
-  status     BillStatus
-  paidAmount Int
-  notes      String?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt  DateTime? // Soft delete - financial data never hard deleted
-  entity     Entity     @relation(fields: [entityId], references: [id])
-  vendor     Vendor     @relation(fields: [vendorId], references: [id])
-  billLines           BillLine[]
-  paymentAllocations  PaymentAllocation[]
+  id                 String              @id @default(cuid())
+  entityId           String
+  vendorId           String
+  billNumber         String
+  issueDate          DateTime
+  dueDate            DateTime
+  currency           String
+  subtotal           Int
+  taxAmount          Int
+  total              Int
+  status             BillStatus
+  paidAmount         Int
+  notes              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  deletedAt          DateTime? // Soft delete - financial data never hard deleted
+  entity             Entity              @relation(fields: [entityId], references: [id])
+  vendor             Vendor              @relation(fields: [vendorId], references: [id])
+  billLines          BillLine[]
+  paymentAllocations PaymentAllocation[]
 
+  @@unique([entityId, billNumber]) // SECURITY FIX M-4: Prevent duplicate bill numbers per entity
   @@index([entityId, status])
   @@index([vendorId, status])
   @@index([dueDate])
   @@index([issueDate])
   @@index([entityId, deletedAt])
-  @@unique([entityId, billNumber]) // SECURITY FIX M-4: Prevent duplicate bill numbers per entity
 }
 
 model BillLine {
@@ -375,7 +377,7 @@ model BillLine {
 }
 
 model Payment {
-  id            String        @id @default(cuid())
+  id            String              @id @default(cuid())
   entityId      String
   date          DateTime
   amount        Int
@@ -385,12 +387,12 @@ model Payment {
   clientId      String?
   vendorId      String?
   notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
   deletedAt     DateTime? // Soft delete - financial data never hard deleted
-  client        Client?              @relation(fields: [clientId], references: [id])
-  entity        Entity               @relation(fields: [entityId], references: [id])
-  vendor        Vendor?              @relation(fields: [vendorId], references: [id])
+  client        Client?             @relation(fields: [clientId], references: [id])
+  entity        Entity              @relation(fields: [entityId], references: [id])
+  vendor        Vendor?             @relation(fields: [vendorId], references: [id])
   allocations   PaymentAllocation[]
 
   @@index([entityId, date])
@@ -444,7 +446,7 @@ model Account {
   country        String
   currentBalance Int
   isActive       Boolean               @default(true)
-  glAccountId    String?               // Bank-to-GL mapping for posting
+  glAccountId    String? // Bank-to-GL mapping for posting
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
   deletedAt      DateTime? // Soft delete - financial data never hard deleted
@@ -547,7 +549,7 @@ model TransactionSplit {
   transactionId String
   amount        Int
   categoryId    String?
-  glAccountId   String?     // GL account for posting split to ledger
+  glAccountId   String? // GL account for posting split to ledger
   description   String?
   notes         String?
   projectId     String?

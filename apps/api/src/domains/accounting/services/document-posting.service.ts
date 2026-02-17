@@ -1,6 +1,8 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
+import { FxRateService } from '../../banking/services/fx-rate.service';
+import { reportCache } from './report-cache';
 
 /**
  * Document Posting Service
@@ -112,13 +114,30 @@ export class DocumentPostingService {
         tx, entityId, WELL_KNOWN_CODES.SERVICE_REVENUE
       );
 
-      // 5. Build journal lines
+      // 5. Build journal lines (with multi-currency support)
       const lines: Array<{
         glAccountId: string;
         debitAmount: number;
         creditAmount: number;
         memo: string | null;
+        currency: string;
+        exchangeRate?: number;
+        baseCurrencyDebit?: number;
+        baseCurrencyCredit?: number;
       }> = [];
+
+      // Determine if FX conversion is needed
+      const needsFxConversion = invoice.currency !== invoice.entity.functionalCurrency;
+      let fxRate = 1.0;
+
+      if (needsFxConversion) {
+        const fxService = new FxRateService();
+        fxRate = await fxService.getRate(
+          invoice.currency,
+          invoice.entity.functionalCurrency,
+          invoice.issueDate
+        );
+      }
 
       // DR Accounts Receivable for the total
       lines.push({
@@ -126,6 +145,12 @@ export class DocumentPostingService {
         debitAmount: invoice.total,
         creditAmount: 0,
         memo: `AR: Invoice ${invoice.invoiceNumber} — ${invoice.client.name}`,
+        currency: invoice.currency,
+        ...(needsFxConversion && {
+          exchangeRate: fxRate,
+          baseCurrencyDebit: Math.round(invoice.total * fxRate),
+          baseCurrencyCredit: 0,
+        }),
       });
 
       // CR Revenue per line (net of tax)
@@ -137,6 +162,12 @@ export class DocumentPostingService {
             debitAmount: 0,
             creditAmount: netAmount,
             memo: line.description,
+            currency: invoice.currency,
+            ...(needsFxConversion && {
+              exchangeRate: fxRate,
+              baseCurrencyDebit: 0,
+              baseCurrencyCredit: Math.round(netAmount * fxRate),
+            }),
           });
         }
       }
@@ -149,6 +180,12 @@ export class DocumentPostingService {
           debitAmount: 0,
           creditAmount: totalTax,
           memo: `Tax: Invoice ${invoice.invoiceNumber}`,
+          currency: invoice.currency,
+          ...(needsFxConversion && {
+            exchangeRate: fxRate,
+            baseCurrencyDebit: 0,
+            baseCurrencyCredit: Math.round(totalTax * fxRate),
+          }),
         });
       }
 
@@ -226,6 +263,13 @@ export class DocumentPostingService {
           amount: invoice.total,
         },
       });
+
+      // 11. Invalidate report cache (defensive - non-critical, swallow errors)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch {
+        // Intentionally swallowed — cache miss is harmless
+      }
 
       return {
         journalEntryId: journalEntry.id,
@@ -315,13 +359,30 @@ export class DocumentPostingService {
         tx, entityId, WELL_KNOWN_CODES.OTHER_EXPENSES
       );
 
-      // 5. Build journal lines
+      // 5. Build journal lines (with multi-currency support)
       const lines: Array<{
         glAccountId: string;
         debitAmount: number;
         creditAmount: number;
         memo: string | null;
+        currency: string;
+        exchangeRate?: number;
+        baseCurrencyDebit?: number;
+        baseCurrencyCredit?: number;
       }> = [];
+
+      // Determine if FX conversion is needed
+      const needsFxConversion = bill.currency !== bill.entity.functionalCurrency;
+      let fxRate = 1.0;
+
+      if (needsFxConversion) {
+        const fxService = new FxRateService();
+        fxRate = await fxService.getRate(
+          bill.currency,
+          bill.entity.functionalCurrency,
+          bill.issueDate
+        );
+      }
 
       // DR Expense per line (net of tax)
       for (const line of bill.billLines) {
@@ -332,6 +393,12 @@ export class DocumentPostingService {
             debitAmount: netAmount,
             creditAmount: 0,
             memo: line.description,
+            currency: bill.currency,
+            ...(needsFxConversion && {
+              exchangeRate: fxRate,
+              baseCurrencyDebit: Math.round(netAmount * fxRate),
+              baseCurrencyCredit: 0,
+            }),
           });
         }
       }
@@ -344,6 +411,12 @@ export class DocumentPostingService {
           debitAmount: totalTax,
           creditAmount: 0,
           memo: `Tax: Bill ${bill.billNumber}`,
+          currency: bill.currency,
+          ...(needsFxConversion && {
+            exchangeRate: fxRate,
+            baseCurrencyDebit: Math.round(totalTax * fxRate),
+            baseCurrencyCredit: 0,
+          }),
         });
       }
 
@@ -353,6 +426,12 @@ export class DocumentPostingService {
         debitAmount: 0,
         creditAmount: bill.total,
         memo: `AP: Bill ${bill.billNumber} — ${bill.vendor.name}`,
+        currency: bill.currency,
+        ...(needsFxConversion && {
+          exchangeRate: fxRate,
+          baseCurrencyDebit: 0,
+          baseCurrencyCredit: Math.round(bill.total * fxRate),
+        }),
       });
 
       // 6. Verify balance
@@ -429,6 +508,13 @@ export class DocumentPostingService {
           amount: bill.total,
         },
       });
+
+      // 11. Invalidate report cache (defensive - non-critical, swallow errors)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch {
+        // Intentionally swallowed — cache miss is harmless
+      }
 
       return {
         journalEntryId: journalEntry.id,
@@ -545,13 +631,26 @@ export class DocumentPostingService {
         : WELL_KNOWN_CODES.ACCOUNTS_PAYABLE;
       const counterAccount = await this.resolveGLAccountByCode(tx, entityId, counterCode);
 
-      // 7. Build journal lines
+      // 7. Build journal lines (with multi-currency support)
       const docRef = isARPayment
         ? `Invoice ${allocation.invoice!.invoiceNumber}`
         : `Bill ${allocation.bill!.billNumber}`;
       const counterpartyName = isARPayment
         ? allocation.payment.client?.name ?? 'Customer'
         : allocation.payment.vendor?.name ?? 'Vendor';
+
+      // Determine if FX conversion is needed
+      const needsFxConversion = allocation.payment.currency !== allocation.payment.entity.functionalCurrency;
+      let fxRate = 1.0;
+
+      if (needsFxConversion) {
+        const fxService = new FxRateService();
+        fxRate = await fxService.getRate(
+          allocation.payment.currency,
+          allocation.payment.entity.functionalCurrency,
+          allocation.payment.date
+        );
+      }
 
       const lines = isARPayment
         ? [
@@ -561,12 +660,24 @@ export class DocumentPostingService {
               debitAmount: allocation.amount,
               creditAmount: 0,
               memo: `Payment received: ${docRef} — ${counterpartyName}`,
+              currency: allocation.payment.currency,
+              ...(needsFxConversion && {
+                exchangeRate: fxRate,
+                baseCurrencyDebit: Math.round(allocation.amount * fxRate),
+                baseCurrencyCredit: 0,
+              }),
             },
             {
               glAccountId: counterAccount.id,
               debitAmount: 0,
               creditAmount: allocation.amount,
               memo: `AR reduction: ${docRef}`,
+              currency: allocation.payment.currency,
+              ...(needsFxConversion && {
+                exchangeRate: fxRate,
+                baseCurrencyDebit: 0,
+                baseCurrencyCredit: Math.round(allocation.amount * fxRate),
+              }),
             },
           ]
         : [
@@ -576,12 +687,24 @@ export class DocumentPostingService {
               debitAmount: allocation.amount,
               creditAmount: 0,
               memo: `AP reduction: ${docRef}`,
+              currency: allocation.payment.currency,
+              ...(needsFxConversion && {
+                exchangeRate: fxRate,
+                baseCurrencyDebit: Math.round(allocation.amount * fxRate),
+                baseCurrencyCredit: 0,
+              }),
             },
             {
               glAccountId: bankGLAccountId,
               debitAmount: 0,
               creditAmount: allocation.amount,
               memo: `Payment sent: ${docRef} — ${counterpartyName}`,
+              currency: allocation.payment.currency,
+              ...(needsFxConversion && {
+                exchangeRate: fxRate,
+                baseCurrencyDebit: 0,
+                baseCurrencyCredit: Math.round(allocation.amount * fxRate),
+              }),
             },
           ];
 
@@ -646,6 +769,13 @@ export class DocumentPostingService {
           type: isARPayment ? 'AR' : 'AP',
         },
       });
+
+      // 12. Invalidate report cache (defensive - non-critical, swallow errors)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch {
+        // Intentionally swallowed — cache miss is harmless
+      }
 
       return {
         journalEntryId: journalEntry.id,

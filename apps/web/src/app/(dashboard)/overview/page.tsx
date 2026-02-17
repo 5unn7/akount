@@ -1,22 +1,19 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
-import { EntitiesList } from "@/components/dashboard/EntitiesList";
-import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
+import { EntitiesSection } from "@/components/dashboard/EntitiesSection";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
-import { LiquidityHero } from "@/components/dashboard/LiquidityHero";
+import { NetWorthHero } from "@/components/dashboard/NetWorthHero";
 import { SparkCards } from "@/components/dashboard/SparkCards";
-import { QuickActions } from "@/components/dashboard/QuickActions";
-import { ActionItems } from "@/components/dashboard/ActionItems";
-import { AIBrief } from "@/components/dashboard/AIBrief";
-import { UpcomingPayments } from "@/components/dashboard/UpcomingPayments";
-import { QuickStats } from "@/components/dashboard/QuickStats";
-import { TwoColumnLayout } from "@/components/shared/TwoColumnLayout";
+import { DashboardLeftRail } from "@/components/dashboard/DashboardLeftRail";
+import { DashboardRightRail } from "@/components/dashboard/DashboardRightRail";
+import { RecentTransactions } from "@/components/dashboard/RecentTransactions";
 import { SectionHeader } from "@/components/shared/SectionHeader";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
-import { DashboardFilters } from "@/components/dashboard/DashboardFilters";
 import { listEntities } from "@/lib/api/entities";
 import { getDashboardMetrics } from "@/lib/api/dashboard";
 import { getPerformanceMetrics } from "@/lib/api/performance";
+import { listTransactions } from "@/lib/api/transactions";
+import { Building2 } from "lucide-react";
 
 export const metadata: Metadata = {
     title: "Overview | Akount",
@@ -36,23 +33,26 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
     let entities: Awaited<ReturnType<typeof listEntities>> = [];
     let metrics: Awaited<ReturnType<typeof getDashboardMetrics>> | null = null;
     let performance: Awaited<ReturnType<typeof getPerformanceMetrics>> | null = null;
+    let recentTransactions: Awaited<ReturnType<typeof listTransactions>> = { transactions: [], hasMore: false };
 
     try {
-        const [entitiesResult, metricsResult, performanceResult] = await Promise.allSettled([
+        const [entitiesResult, metricsResult, performanceResult, transactionsResult] = await Promise.allSettled([
             listEntities(),
             getDashboardMetrics(entityId, currency),
             getPerformanceMetrics(entityId, currency),
+            listTransactions({ limit: 10 }), // Fetch 10 most recent transactions
         ]);
 
         if (entitiesResult.status === 'fulfilled') entities = entitiesResult.value;
         if (metricsResult.status === 'fulfilled') metrics = metricsResult.value;
         if (performanceResult.status === 'fulfilled') performance = performanceResult.value;
+        if (transactionsResult.status === 'fulfilled') recentTransactions = transactionsResult.value;
     } catch {
         // Continue with defaults
     }
 
-    // Derive liquidity data from API metrics
-    const totalBalance = metrics?.netWorth.amount ?? 0;
+    // Derive net worth data from API metrics
+    const netWorthAmount = metrics?.netWorth.amount ?? 0;
     const baseCurrency = metrics?.netWorth.currency ?? currency;
 
     // Spark KPI data from performance API (real transaction aggregates)
@@ -110,74 +110,145 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
         },
     ];
 
+    // Calculate derived metrics for left rail
+    const cash = metrics?.cashPosition.cash ?? 0;
+    const debt = metrics?.cashPosition.debt ?? 0;
+    const workingCapital = cash - debt;
+
+    // Monthly burn rate from expenses (convert to monthly if needed)
+    const monthlyBurn = performance?.expenses.current ?? 0;
+
+    // Runway in months (cash / monthly burn)
+    const runwayMonths = monthlyBurn > 0 ? Math.floor((cash / monthlyBurn) * 100) / 100 : 0;
+    const runwayValue = runwayMonths > 0 ? `${runwayMonths.toFixed(1)}mo` : '—';
+
+    // Cash burn uses expenses data inverted (higher burn = worse)
+    const cashBurnTrend = performance ? formatTrend(-performance.expenses.percentChange) : undefined;
+
+    // Prepare left rail stats from performance + metrics data (10 stats total)
+    const leftRailStats = [
+        {
+            label: 'Revenue',
+            value: performance ? formatCurrency(performance.revenue.current) : '—',
+            trend: performance ? formatTrend(performance.revenue.percentChange) : undefined,
+            sparkline: performance ? convertSparkline(performance.revenue.sparkline) : [],
+            color: 'green' as const,
+        },
+        {
+            label: 'Expenses',
+            value: performance ? formatCurrency(performance.expenses.current) : '—',
+            trend: performance ? formatTrend(-performance.expenses.percentChange) : undefined,
+            sparkline: performance ? convertSparkline(performance.expenses.sparkline) : [],
+            color: 'red' as const,
+        },
+        {
+            label: 'Profit',
+            value: performance ? formatCurrency(performance.profit.current) : '—',
+            trend: performance ? formatTrend(performance.profit.percentChange) : undefined,
+            sparkline: performance ? convertSparkline(performance.profit.sparkline) : [],
+            color: 'primary' as const,
+        },
+        {
+            label: 'Accounts Receivable',
+            value: performance ? formatCurrency(performance.receivables.outstanding) : '—',
+            trend: performance?.receivables.sparkline.length > 0 ? { direction: 'flat' as const, text: `${formatCurrency(performance.receivables.overdue)} overdue` } : undefined,
+            sparkline: performance ? convertSparkline(performance.receivables.sparkline) : [],
+            color: 'blue' as const,
+        },
+        {
+            label: 'Accounts Payable',
+            value: '—',
+            trend: { direction: 'flat' as const, text: 'Coming soon' },
+            sparkline: [],
+            color: 'purple' as const,
+        },
+        {
+            label: 'Runway',
+            value: runwayValue,
+            trend: runwayMonths > 0 ? {
+                direction: runwayMonths >= 6 ? ('up' as const) : runwayMonths >= 3 ? ('flat' as const) : ('down' as const),
+                text: runwayMonths >= 6 ? 'Healthy' : runwayMonths >= 3 ? 'Monitor' : 'Critical'
+            } : undefined,
+            sparkline: [],
+            color: runwayMonths >= 6 ? ('green' as const) : runwayMonths >= 3 ? ('primary' as const) : ('red' as const),
+        },
+        {
+            label: 'Cash Burn',
+            value: performance ? formatCurrency(performance.expenses.current) : '—',
+            trend: cashBurnTrend,
+            sparkline: performance ? convertSparkline(performance.expenses.sparkline) : [],
+            color: 'red' as const,
+        },
+    ];
+
     return (
-        <div className="flex-1 space-y-8">
-            {/* Row 1: Greeting + Filters */}
-            <div className="fi fi1 flex items-start justify-between gap-4">
-                <LiquidityHero
-                    totalBalance={totalBalance}
-                    baseCurrency={baseCurrency}
-                    trend={undefined}
-                />
-                <div className="hidden md:block shrink-0 pt-2">
-                    <DashboardFilters entities={entities} />
+        <div className="flex gap-6">
+            {/* Left Rail - Quick Stats */}
+            <DashboardLeftRail stats={leftRailStats} />
+
+            {/* Main Content */}
+            <div className="flex-1 min-w-0 space-y-6">
+                {/* Net Worth Hero */}
+                <div className="fi fi1">
+                    <NetWorthHero
+                        netWorth={netWorthAmount}
+                        baseCurrency={baseCurrency}
+                        cash={cash}
+                        debt={debt}
+                        trend={undefined}
+                    />
+                </div>
+
+                {/* Onboarding hero — conditional */}
+                <OnboardingHeroCard />
+
+                {/* Performance Sparklines (show on mobile/tablet when left rail is hidden) */}
+                <div className="fi fi2 space-y-3 lg:hidden">
+                    <SectionHeader title="Performance" />
+                    <SparkCards cards={sparkCards} />
+                </div>
+
+                {/* Entity Matrix */}
+                <div className="fi fi3">
+                    {entities.length === 0 ? (
+                        <EmptyState
+                            icon={Building2}
+                            title="Set up your first entity"
+                            description="Create a business entity to track finances, manage accounts, and separate operations across countries and currencies."
+                            action={{
+                                label: "Create Entity",
+                                href: "/settings/entities",
+                                variant: "default"
+                            }}
+                            secondaryAction={{
+                                label: "Learn more",
+                                href: "/docs/entities"
+                            }}
+                            variant="compact"
+                        />
+                    ) : (
+                        <EntitiesSection entities={entities} />
+                    )}
+                </div>
+
+                {/* Charts */}
+                <div className="fi fi4">
+                    <DashboardCharts />
+                </div>
+
+                {/* Recent Transactions */}
+                <div className="fi fi5">
+                    <RecentTransactions transactions={recentTransactions.transactions} />
+                </div>
+
+                {/* Mobile: Show right rail widgets below main content */}
+                <div className="xl:hidden fi fi6">
+                    <DashboardRightRail className="block w-full" />
                 </div>
             </div>
 
-            {/* Onboarding hero — conditional */}
-            <OnboardingHeroCard />
-
-            {/* Entity Matrix */}
-            <div className="fi fi2 space-y-3">
-                <SectionHeader
-                    title="Liquidity Matrix"
-                    meta={`${entities.length} entit${entities.length === 1 ? 'y' : 'ies'}`}
-                />
-                <EntitiesList entities={entities} />
-            </div>
-
-            {/* Spark KPIs */}
-            <div className="fi fi3 space-y-3">
-                <SectionHeader title="Performance" />
-                <SparkCards cards={sparkCards} />
-            </div>
-
-            {/* Two Column: Charts + Right Sidebar */}
-            <div className="fi fi4">
-                <TwoColumnLayout>
-                    {/* Left — Charts */}
-                    <>
-                        <DashboardCharts />
-
-                        {/* Dashboard metrics cards — real data */}
-                        <Suspense fallback={<DashboardMetricsSkeleton />}>
-                            <DashboardMetrics entityId={entityId} currency={currency} />
-                        </Suspense>
-                    </>
-
-                    {/* Right — Sidebar widgets */}
-                    <>
-                        <QuickActions />
-                        <AIBrief />
-                        <ActionItems />
-                        <UpcomingPayments />
-                        <QuickStats />
-                    </>
-                </TwoColumnLayout>
-            </div>
-        </div>
-    );
-}
-
-function DashboardMetricsSkeleton() {
-    return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="glass rounded-lg px-4 py-3.5">
-                    <div className="h-3 w-20 bg-muted animate-pulse rounded mb-2" />
-                    <div className="h-5 w-28 bg-muted animate-pulse rounded" />
-                </div>
-            ))}
+            {/* Right Rail - AI Brief & Actions */}
+            <DashboardRightRail />
         </div>
     );
 }

@@ -94,6 +94,7 @@ Distilled rules are already in `.claude/rules/financial-rules.md` (loaded when w
 | Implementation plans | `docs/plans/` |
 | Brainstorms | `docs/brainstorms/` |
 | Session captures | `docs/archive/sessions/` |
+| Code reviews | `docs/reviews/<feature-name>/` (SUMMARY.md + agents/) |
 | MEMORY topic files | Auto memory dir (`debugging-log.md`, `codebase-quirks.md`, `api-patterns.md`) |
 
 ---
@@ -130,7 +131,10 @@ Distilled rules are already in `.claude/rules/financial-rules.md` (loaded when w
 - Brainstorms: `docs/brainstorms/`
 - Implementation plans: `docs/plans/`
 - Session reports: `docs/archive/sessions/`
+- Code reviews: `docs/reviews/<feature-name>/`
 - Design system: `docs/design-system/` ONLY
+
+**Note:** `.reviews/` is a temporary workspace for review agents (gitignored). Final reviews go to `docs/reviews/`.
 
 **Hooks enforce these rules.** Violations will block commits.
 

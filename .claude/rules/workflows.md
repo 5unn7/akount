@@ -10,7 +10,7 @@
 | Plan feature implementation | `/processes:plan` |
 | Execute implementation plan | `/processes:work` |
 | Investigate bugs & unexpected behavior | `/processes:diagnose` |
-| Code review before merge | `/processes:review` |
+| Code review before merge | `/processes:review` (outputs to `docs/reviews/{feature}/`) |
 | Lightweight session capture (per instance) | `/processes:end-session` |
 | End of day (aggregate sessions, update artifacts) | `/processes:eod` |
 | Brainstorm feature requirements | `/processes:brainstorm` |
