@@ -187,6 +187,12 @@ export const navigationDomains: NavDomain[] = [
         href: '/accounting/chart-of-accounts',
       },
       {
+        label: 'Reports',
+        icon: BarChart3,
+        href: '/accounting/reports',
+        roles: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'INVESTOR', 'ADVISOR'],
+      },
+      {
         label: 'Assets',
         icon: Package,
         href: '/accounting/assets',
@@ -213,11 +219,6 @@ export const navigationDomains: NavDomain[] = [
     icon: BarChart3,
     roles: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'INVESTOR', 'ADVISOR'],
     items: [
-      {
-        label: 'Reports',
-        icon: BarChart3,
-        href: '/planning/reports',
-      },
       {
         label: 'Budgets',
         icon: PiggyBank,
