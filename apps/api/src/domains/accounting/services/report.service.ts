@@ -669,8 +669,227 @@ export class ReportService {
     return report;
   }
 
-  // Implemented in Task 5
-  // async generateCashFlow(params: CashFlowQuery): Promise<CashFlowReport>
+  /**
+   * Generate Cash Flow Statement (Statement of Cash Flows)
+   * Shows cash movement from Operating, Investing, and Financing activities
+   *
+   * MVP Implementation: Simplified account-based changes
+   * Future: Full indirect method with non-cash adjustments
+   *
+   * @param params Query parameters (entityId optional for multi-entity mode)
+   * @returns Cash flow statement with reconciliation
+   */
+  async generateCashFlow(params: {
+    entityId?: string;
+    startDate: Date;
+    endDate: Date;
+  }): Promise<CashFlowReport> {
+    // 1. Determine entity scope
+    let entityIds: string[];
+    let entityName: string;
+    let currency: string;
+
+    if (params.entityId) {
+      await this.validateEntityOwnership(params.entityId);
+      entityIds = [params.entityId];
+      const entity = await prisma.entity.findUniqueOrThrow({
+        where: { id: params.entityId },
+      });
+      entityName = entity.name;
+      currency = entity.functionalCurrency;
+    } else {
+      // Multi-entity consolidation
+      entityIds = await this.getEntityIds();
+      currency = await this.validateMultiEntityCurrency(entityIds);
+      entityName = 'All Entities';
+    }
+
+    // 2. Calculate net income from P&L
+    const profitLoss = await this.generateProfitLoss({
+      entityId: params.entityId,
+      startDate: params.startDate,
+      endDate: params.endDate,
+    });
+    const netIncome = profitLoss.netIncome;
+
+    // 3. Get cash account balances at start and end of period
+    // Assume cash accounts start with code 1000-1099
+    const [openingCashResult, closingCashResult] = await Promise.all([
+      tenantScopedQuery<AggregateRow>(
+        this.tenantId,
+        (tenantId) => Prisma.sql`
+          SELECT
+            COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
+            COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+          FROM "GLAccount" gl
+          INNER JOIN "Entity" e ON e.id = gl."entityId"
+          LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
+          LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
+          WHERE e."tenantId" = ${tenantId}
+            AND gl."entityId" IN (${Prisma.join(entityIds)})
+            AND gl."code" >= '1000'
+            AND gl."code" < '1100'
+            AND (
+              jl.id IS NULL
+              OR (
+                je."status" = 'POSTED'
+                AND je."date" < ${params.startDate}
+                AND je."deletedAt" IS NULL
+                AND jl."deletedAt" IS NULL
+              )
+            )
+        `
+      ),
+      tenantScopedQuery<AggregateRow>(
+        this.tenantId,
+        (tenantId) => Prisma.sql`
+          SELECT
+            COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
+            COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+          FROM "GLAccount" gl
+          INNER JOIN "Entity" e ON e.id = gl."entityId"
+          LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
+          LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
+          WHERE e."tenantId" = ${tenantId}
+            AND gl."entityId" IN (${Prisma.join(entityIds)})
+            AND gl."code" >= '1000'
+            AND gl."code" < '1100'
+            AND (
+              jl.id IS NULL
+              OR (
+                je."status" = 'POSTED'
+                AND je."date" <= ${params.endDate}
+                AND je."deletedAt" IS NULL
+                AND jl."deletedAt" IS NULL
+              )
+            )
+        `
+      ),
+    ]);
+
+    const openingCash =
+      openingCashResult.length > 0
+        ? this.convertBigInt(openingCashResult[0].totalDebit) -
+          this.convertBigInt(openingCashResult[0].totalCredit)
+        : 0;
+
+    const closingCash =
+      closingCashResult.length > 0
+        ? this.convertBigInt(closingCashResult[0].totalDebit) -
+          this.convertBigInt(closingCashResult[0].totalCredit)
+        : 0;
+
+    // 4. Calculate changes in operating, investing, and financing accounts
+    // For MVP: Simplified approach using account code ranges
+    // Operating: 1100-1999 (current assets) and 2000-2499 (current liabilities)
+    // Investing: 1500-1999 (fixed assets)
+    // Financing: 2500-2999 (long-term debt) and 3000-3999 (equity)
+
+    const accountChanges = await tenantScopedQuery<AggregateRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          gl."id" as "glAccountId",
+          gl."code",
+          gl."name",
+          gl."type",
+          gl."normalBalance",
+          COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
+          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+        FROM "GLAccount" gl
+        INNER JOIN "Entity" e ON e.id = gl."entityId"
+        LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
+        LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
+        WHERE e."tenantId" = ${tenantId}
+          AND gl."entityId" IN (${Prisma.join(entityIds)})
+          AND gl."code" >= '1100'
+          AND gl."code" < '4000'
+          AND (
+            jl.id IS NULL
+            OR (
+              je."status" = 'POSTED'
+              AND je."date" >= ${params.startDate}
+              AND je."date" <= ${params.endDate}
+              AND je."deletedAt" IS NULL
+              AND jl."deletedAt" IS NULL
+            )
+          )
+        GROUP BY gl.id, gl.code, gl.name, gl.type, gl."normalBalance"
+        ORDER BY gl.code ASC
+      `
+    );
+
+    const operatingItems: ReportLineItem[] = [];
+    const investingItems: ReportLineItem[] = [];
+    const financingItems: ReportLineItem[] = [];
+
+    for (const row of accountChanges) {
+      const debit = this.convertBigInt(row.totalDebit);
+      const credit = this.convertBigInt(row.totalCredit);
+
+      // Change in balance during period
+      const change = row.normalBalance === 'DEBIT' ? debit - credit : credit - debit;
+
+      const item: ReportLineItem = {
+        accountId: row.glAccountId,
+        code: row.code,
+        name: row.name,
+        type: row.type,
+        normalBalance: row.normalBalance as 'DEBIT' | 'CREDIT',
+        balance: change,
+        depth: 0,
+        isSubtotal: false,
+      };
+
+      // Categorize by account code range
+      const codeNum = parseInt(row.code, 10);
+
+      if ((codeNum >= 1100 && codeNum < 1500) || (codeNum >= 2000 && codeNum < 2500)) {
+        // Current assets/liabilities = Operating
+        operatingItems.push(item);
+      } else if (codeNum >= 1500 && codeNum < 2000) {
+        // Fixed assets = Investing
+        investingItems.push(item);
+      } else if (codeNum >= 2500 && codeNum < 4000) {
+        // Long-term debt/equity = Financing
+        financingItems.push(item);
+      }
+    }
+
+    // 5. Calculate totals
+    const operatingCashFlow =
+      netIncome + operatingItems.reduce((sum, item) => sum + item.balance, 0);
+    const investingCashFlow = investingItems.reduce((sum, item) => sum + item.balance, 0);
+    const financingCashFlow = financingItems.reduce((sum, item) => sum + item.balance, 0);
+    const netCashChange = operatingCashFlow + investingCashFlow + financingCashFlow;
+
+    // 6. Build report
+    const report: CashFlowReport = {
+      entityId: params.entityId,
+      entityName,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      currency,
+      netIncome,
+      operating: {
+        items: operatingItems,
+        total: operatingCashFlow,
+      },
+      investing: {
+        items: investingItems,
+        total: investingCashFlow,
+      },
+      financing: {
+        items: financingItems,
+        total: financingCashFlow,
+      },
+      netCashChange,
+      openingCash,
+      closingCash,
+    };
+
+    return report;
+  }
 
   // Implemented in Task 8
   // async generateTrialBalance(params: TrialBalanceQuery): Promise<TrialBalanceReport>
