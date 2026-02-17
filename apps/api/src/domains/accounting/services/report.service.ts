@@ -632,7 +632,9 @@ export class ReportService {
     const totalAssets = assetItems.reduce((sum, item) => sum + item.balance, 0);
     const totalLiabilities = liabilityItems.reduce((sum, item) => sum + item.balance, 0);
     const totalEquity = equityItems.reduce((sum, item) => sum + item.balance, 0);
-    const totalLiabilitiesAndEquity = totalLiabilities + totalEquity + totalRetainedEarnings;
+    // Note: totalEquity already includes prior years retained earnings (account 3100)
+    // We only add current year net income separately
+    const totalLiabilitiesAndEquity = totalLiabilities + totalEquity + currentYearNetIncome;
 
     // Allow 1 cent rounding difference
     const isBalanced = Math.abs(totalAssets - totalLiabilitiesAndEquity) <= 1;
