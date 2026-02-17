@@ -375,6 +375,7 @@ describe('DocumentPostingService', () => {
         payment: {
           entityId: ENTITY_ID,
           date: new Date('2026-02-01'),
+          currency: 'CAD',
           paymentMethod: 'BANK_TRANSFER',
           reference: 'TXN-123',
           entity: { id: ENTITY_ID, tenantId: TENANT_ID, functionalCurrency: 'CAD' },
@@ -418,6 +419,7 @@ describe('DocumentPostingService', () => {
         payment: {
           entityId: ENTITY_ID,
           date: new Date('2026-02-05'),
+          currency: 'CAD',
           paymentMethod: 'CHECK',
           reference: 'CHK-456',
           entity: { id: ENTITY_ID, tenantId: TENANT_ID, functionalCurrency: 'CAD' },
