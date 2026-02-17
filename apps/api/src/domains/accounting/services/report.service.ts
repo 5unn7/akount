@@ -1065,9 +1065,156 @@ export class ReportService {
     };
   }
 
-  // Implemented in Task 9
-  // async generateSpendingByCategory(params: SpendingQuery): Promise<SpendingReport>
+  /**
+   * Generate Spending by Category Report
+   * Groups expenses by GL account (avoids Transaction categoryId JOIN complexity)
+   *
+   * @param params Query parameters (entityId optional for multi-entity mode)
+   * @returns Spending totals by GL account
+   */
+  async generateSpendingByCategory(params: {
+    entityId?: string;
+    startDate: Date;
+    endDate: Date;
+  }): Promise<SpendingReport> {
+    // 1. Determine entity scope
+    let entityIds: string[];
+    let entityName: string;
 
-  // Implemented in Task 9
-  // async generateRevenueByClient(params: RevenueQuery): Promise<RevenueReport>
+    if (params.entityId) {
+      await this.validateEntityOwnership(params.entityId);
+      entityIds = [params.entityId];
+      const entity = await prisma.entity.findUniqueOrThrow({
+        where: { id: params.entityId },
+      });
+      entityName = entity.name;
+    } else {
+      // Multi-entity consolidation
+      entityIds = await this.getEntityIds();
+      entityName = 'All Entities';
+    }
+
+    // 2. Query expenses grouped by GL account
+    const results = await tenantScopedQuery<SpendingRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          gl."id" as "glAccountId",
+          gl."code",
+          gl."name" as "category",
+          COALESCE(SUM(jl."debitAmount"), 0) as "totalSpend"
+        FROM "JournalLine" jl
+        JOIN "JournalEntry" je ON jl."journalEntryId" = je.id
+        JOIN "GLAccount" gl ON jl."glAccountId" = gl.id
+        INNER JOIN "Entity" e ON e.id = je."entityId"
+        WHERE e."tenantId" = ${tenantId}
+          AND je."entityId" IN (${Prisma.join(entityIds)})
+          AND gl."type" = 'EXPENSE'
+          AND je."status" = 'POSTED'
+          AND je."deletedAt" IS NULL
+          AND jl."deletedAt" IS NULL
+          AND je.date >= ${params.startDate}
+          AND je.date <= ${params.endDate}
+        GROUP BY gl."id", gl."code", gl."name"
+        ORDER BY "totalSpend" DESC
+      `
+    );
+
+    // 3. Calculate totals
+    const totalSpend = results.reduce((sum, r) => sum + this.convertBigInt(r.totalSpend), 0);
+
+    // 4. Build report
+    const categories = results.map((r) => ({
+      category: r.category,
+      amount: this.convertBigInt(r.totalSpend),
+      percentage: totalSpend > 0 ? (this.convertBigInt(r.totalSpend) / totalSpend) * 100 : 0,
+    }));
+
+    return {
+      entityId: params.entityId,
+      entityName,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      categories,
+      totalSpend,
+    };
+  }
+
+  /**
+   * Generate Revenue by Client Report
+   * Uses sourceDocument JSON to avoid cross-domain JOIN
+   *
+   * @param params Query parameters (entityId optional for multi-entity mode)
+   * @returns Revenue totals by client
+   */
+  async generateRevenueByClient(params: {
+    entityId?: string;
+    startDate: Date;
+    endDate: Date;
+  }): Promise<RevenueReport> {
+    // 1. Determine entity scope
+    let entityIds: string[];
+    let entityName: string;
+
+    if (params.entityId) {
+      await this.validateEntityOwnership(params.entityId);
+      entityIds = [params.entityId];
+      const entity = await prisma.entity.findUniqueOrThrow({
+        where: { id: params.entityId },
+      });
+      entityName = entity.name;
+    } else {
+      // Multi-entity consolidation
+      entityIds = await this.getEntityIds();
+      entityName = 'All Entities';
+    }
+
+    // 2. Query revenue using sourceDocument JSON snapshots
+    const results = await tenantScopedQuery<RevenueRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          je."sourceDocument"->>'clientId' as "clientId",
+          je."sourceDocument"->>'clientName' as "clientName",
+          COUNT(DISTINCT je.id) as "invoiceCount",
+          COALESCE(SUM(jl."creditAmount"), 0) as "totalRevenue"
+        FROM "JournalEntry" je
+        JOIN "JournalLine" jl ON jl."journalEntryId" = je.id
+        JOIN "GLAccount" gl ON jl."glAccountId" = gl.id
+        INNER JOIN "Entity" e ON e.id = je."entityId"
+        WHERE e."tenantId" = ${tenantId}
+          AND je."entityId" IN (${Prisma.join(entityIds)})
+          AND je."sourceType" = 'INVOICE'
+          AND gl."type" = 'REVENUE'
+          AND je."status" = 'POSTED'
+          AND je."deletedAt" IS NULL
+          AND jl."deletedAt" IS NULL
+          AND je.date >= ${params.startDate}
+          AND je.date <= ${params.endDate}
+        GROUP BY je."sourceDocument"->>'clientId', je."sourceDocument"->>'clientName'
+        ORDER BY "totalRevenue" DESC
+      `
+    );
+
+    // 3. Calculate totals
+    const totalRevenue = results.reduce((sum, r) => sum + this.convertBigInt(r.totalRevenue), 0);
+
+    // 4. Build report
+    const clients = results.map((r) => ({
+      clientId: r.clientId,
+      clientName: r.clientName || 'Unknown',
+      invoiceCount: Number(r.invoiceCount),
+      amount: this.convertBigInt(r.totalRevenue),
+      percentage: totalRevenue > 0 ? (this.convertBigInt(r.totalRevenue) / totalRevenue) * 100 : 0,
+    }));
+
+    return {
+      entityId: params.entityId,
+      entityName,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      clients,
+      totalRevenue,
+    };
+  }
 }
