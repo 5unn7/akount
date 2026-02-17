@@ -5,11 +5,52 @@
 
 ---
 
-## Current Phase: Phase 6 — Launch MVP (NOT STARTED)
+## Current Phase: Phase 6 — Launch MVP (IN PROGRESS)
 
 **Goal:** Production-ready application — security audit, performance, CI/CD, monitoring.
 
 **Prerequisites:** All core features built (Phases 1-5 complete).
+
+### Phase 6 Progress (Track A/B/C)
+
+| Track | Tasks | Complete | In Progress | Not Started | % Done |
+|-------|-------|----------|-------------|-------------|--------|
+| **Infrastructure (Phase 0)** | 4 | 1 | 1 | 2 | 25% |
+| Security & Integrity | 10 | 0 | 0 | 10 | 0% |
+| Performance & Obs | 12 | 0 | 0 | 12 | 0% |
+| Quality & Docs | 8 | 0 | 0 | 8 | 0% |
+| **Total Phase 6** | **34** | **1** | **1** | **32** | **3%** |
+
+**Last Updated:** 2026-02-17 14:45 (auto-updated via `/processes:eod`)
+
+### Active Work (Real-Time)
+See [ACTIVE-WORK.md](./ACTIVE-WORK.md) for current session state.
+
+### P0/P1 Fixes Status
+
+| Finding | Type | Priority | Status | Assignee | ETA |
+|---------|------|----------|--------|----------|-----|
+| CSV injection incomplete | Security | P0 | ⏳ Not Started | — | — |
+| GL opening balance | Financial | P0 | ⏳ Not Started | — | — |
+| Client/Vendor tenant isolation | Security | P0 | ⏳ Not Started | — | — |
+| Mixed server/client module | Architecture | P0 | ⏳ Not Started | — | — |
+| Loading state coverage | UX | P0 | ⏳ Not Started | — | 2h |
+| Cache all 7 reports | Performance | P1 | ⏳ Not Started | — | 1h |
+| Cash Flow sign convention | Financial | P1 | ⏳ Not Started | — | 2-3h |
+| Replace console.log | Logging | P1 | ⏳ Not Started | — | 2h |
+
+### Auto-Updated Metrics
+
+| Metric | Value | Target | Status |
+|--------|-------|--------|--------|
+| Backend Tests | 1009 | 1100+ | ⚠️ 91% |
+| Service Coverage | 27/27 | 27/27 | ✅ 100% |
+| TypeScript Errors | 0 | 0 | ✅ |
+| Frontend Tests | 55 | 100+ | ⚠️ 55% |
+| Loading States | 48/47 | 47/47 | ✅ 102% |
+| NPM Vulnerabilities | TBD | 0 | ⏳ |
+
+_Test counts updated via `/processes:eod` using `update-metrics.sh` script._
 
 ---
 

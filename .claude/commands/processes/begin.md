@@ -28,7 +28,69 @@ Start coding sessions with focused context:
 
 ---
 
-## Workflow
+## 3-Tier System (Session-Aware)
+
+This workflow adapts based on session recency:
+
+**Tier 1: Full Standup** - First session of day (>2 hours since last session)
+- Complete dashboard with all phases
+- Full git status, tasks, blockers, memory, industry intel
+- 7 Key Invariants display
+- Comprehensive recommendations
+
+**Tier 2: Quick Claim** - Subsequent sessions (<2 hours since last session)
+- Lightweight context (branch, recent commit)
+- Available tasks with `[dependency: none]`
+- Active work visibility (other agents from ACTIVE-WORK.md)
+- Quick task claiming flow
+
+**Tier 3: No Process** - Direct instruction without `/processes:begin`
+- Handled via Direct Instruction protocol (see plan-enforcement.md)
+- Ad-hoc work, no ACTIVE-WORK.md updates
+- Still follows guardrails
+
+---
+
+## Phase 0: Session Detection (10 seconds)
+
+**Determine which tier to use:**
+
+```bash
+# Check ACTIVE-WORK.md for last session timestamp
+if [ -f "ACTIVE-WORK.md" ]; then
+  LAST_SESSION=$(grep -oP '\d{4}-\d{2}-\d{2} \d{2}:\d{2}' ACTIVE-WORK.md | tail -1)
+
+  if [ -n "$LAST_SESSION" ]; then
+    # Calculate time diff (simplified - assume same day)
+    CURRENT_TIME=$(date +%s)
+    LAST_TIME=$(date -d "$LAST_SESSION" +%s 2>/dev/null || echo "0")
+    TIME_DIFF=$(( ($CURRENT_TIME - $LAST_TIME) / 60 ))
+
+    if [ $TIME_DIFF -lt 120 ]; then
+      TIER="Quick"
+    else
+      TIER="Full"
+    fi
+  else
+    TIER="Full"
+  fi
+else
+  TIER="Full"
+fi
+
+echo "Session Tier: $TIER"
+```
+
+**If Tier = "Quick":**
+- Skip to Tier 2 workflow (Phase 11)
+- Output lightweight quick claim dashboard
+
+**If Tier = "Full":**
+- Proceed with full workflow (Phase 1-10)
+
+---
+
+## Workflow (Tier 1: Full Standup)
 
 ### Phase 1: Load Task List (20 seconds)
 
@@ -222,7 +284,7 @@ Use **WebSearch** to fetch fresh, relevant intelligence. Run 2-3 targeted search
 
 ---
 
-### Phase 7: Session Dashboard Output
+### Phase 7: Session Dashboard Output (Tier 1: Full Standup)
 
 Consolidate everything into a concise dashboard:
 
@@ -237,6 +299,18 @@ Consolidate everything into a concise dashboard:
 - Branch: [branch]
 - Uncommitted files: [count]
 - Recent commits: [last 3]
+
+---
+
+## 7 Key Invariants
+
+1. **Tenant Isolation** — every query filters by tenantId
+2. **Integer Cents** — no floats for money
+3. **Double-Entry** — SUM(debits) === SUM(credits)
+4. **Soft Delete** — financial records use deletedAt
+5. **Source Preservation** — journal entries store sourceDocument
+6. **Page Loading States** — every page.tsx has loading.tsx + error.tsx
+7. **Server/Client Separation** — no mixed server/client modules
 
 ---
 
@@ -287,8 +361,62 @@ Consolidate everything into a concise dashboard:
 - `/processes:plan` - Plan next feature
 - `/processes:work` - Execute implementation
 - `/processes:review` - Code review before merge
+- `/processes:claim [task-id]` - Claim task from TASKS.md
 
 **Ready to start!**
+```
+
+---
+
+## Phase 11: Quick Claim Dashboard (Tier 2: Lightweight)
+
+**When to use:** Subsequent session within 2 hours of last session.
+
+**Workflow:**
+
+1. Read ACTIVE-WORK.md to get current state
+2. Extract available tasks from TASKS.md (filter for `[dependency: none]`)
+3. Show other active work (other agents)
+4. Output lightweight dashboard
+
+**Output format:**
+
+```markdown
+# Quick Claim (Lightweight)
+
+**Current Branch:** [branch from git]
+**Last Session:** [time ago] ([agent-id] on [task-id])
+
+---
+
+## Available Tasks (dependency: none)
+
+**Security & Integrity (Track A):**
+- [ ] **SEC-6.1c:** GL opening balance calculation (1-2 hr, P0)
+- [ ] **SEC-6.1d:** Split reports.ts server/client (30 min, P0)
+
+**Performance (Track B):**
+- [ ] **PERF-6.2a:** Wire up pino in Fastify (30 min, P1)
+
+**Quality (Track C):**
+- [ ] **QUAL-6.1a:** Create loading/error templates (15 min, P0)
+
+---
+
+## Active Work (Other Agents)
+
+| Agent ID | Task | Started | Status |
+|----------|------|---------|--------|
+| agent-ab5c159 | SEC-6.1b (CSV injection) | 45 min ago | in_progress |
+| agent-cd7e284 | PERF-6.1a (Cache reports) | 15 min ago | in_progress |
+
+---
+
+**Pick a task or type your own goal.**
+
+Commands:
+- `/processes:claim SEC-6.1c` - Claim specific task
+- `/processes:begin` - Full dashboard (if needed)
 ```
 
 ---

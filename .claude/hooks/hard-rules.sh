@@ -3,11 +3,14 @@
 # Enforces mandatory implementation standards as "block if" rules
 #
 # This hook blocks operations that violate critical Akount standards:
-# 1. Float money values in code
-# 2. Missing tenantId in Prisma queries
+# 1. Float money values in code (Invariant #2)
+# 2. Missing tenantId in Prisma queries (Invariant #1, warning)
 # 3. Files in wrong locations
-# 4. Hard delete of financial records
-# 5. Too many files modified without approved plan
+# 4. Hard delete of financial records (Invariant #4)
+# 5. Unbalanced journal entries (Invariant #3, warning)
+# 6. SQL injection via $queryRawUnsafe
+# 7. Page.tsx without loading.tsx/error.tsx (Invariant #6)
+# 8. Mixed server/client imports (Invariant #7)
 #
 # Exit codes:
 # 0 = Rule compliant
@@ -231,6 +234,85 @@ check_query_raw_unsafe() {
 }
 
 # =============================================================================
+# RULE 7: Block page.tsx without loading.tsx/error.tsx (Invariant #6)
+# =============================================================================
+check_page_loading_error() {
+    local filepath="$1"
+
+    # Only check page.tsx files in dashboard directory
+    if [[ ! "$filepath" =~ apps/web/src/app/\(dashboard\)/.*page\.tsx$ ]]; then
+        return 0
+    fi
+
+    # Get directory of the page.tsx
+    local page_dir=$(dirname "$filepath")
+
+    # Check for loading.tsx
+    if [ ! -f "$page_dir/loading.tsx" ]; then
+        block_with_message \
+            "page.tsx created without sibling loading.tsx (Invariant #6)" \
+            "Every page.tsx MUST have loading.tsx for proper UX during data fetches" \
+            ".claude/rules/frontend-conventions.md (Loading and Error States)"
+    fi
+
+    # Check for error.tsx
+    if [ ! -f "$page_dir/error.tsx" ]; then
+        block_with_message \
+            "page.tsx created without sibling error.tsx (Invariant #6)" \
+            "Every page.tsx MUST have error.tsx to handle errors gracefully" \
+            ".claude/rules/frontend-conventions.md (Loading and Error States)"
+    fi
+
+    return 0
+}
+
+# =============================================================================
+# RULE 8: Block mixed server/client imports (Invariant #7)
+# =============================================================================
+check_server_client_mixing() {
+    local content="$1"
+    local filepath="$2"
+
+    # Only check TypeScript/TSX files in Next.js app
+    if [[ ! "$filepath" =~ apps/web/.*\.(ts|tsx)$ ]]; then
+        return 0
+    fi
+
+    # Skip test files
+    if [[ "$filepath" =~ (\.test\.|\.spec\.|__tests__|__mocks__|\.mock\.) ]]; then
+        return 0
+    fi
+
+    # Check if file has 'use client' directive
+    local has_use_client=0
+    if echo "$content" | grep -q "^['\"]use client['\"]"; then
+        has_use_client=1
+    fi
+
+    # If 'use client' is present, check for server-only imports
+    if [ $has_use_client -eq 1 ]; then
+        # Server-only patterns: prisma client, node fs/path, server utilities
+        if echo "$content" | grep -qE "(from ['\"]@prisma/client['\"]|from ['\"]@akount/db['\"]|from ['\"]fs['\"]|from ['\"]path['\"]|from ['\"]node:|from ['\"].*server)"; then
+            block_with_message \
+                "File with 'use client' imports server-only modules (Invariant #7)" \
+                "Cannot mix 'use client' with prisma, fs, path, node:*, or server utilities" \
+                ".claude/rules/frontend-conventions.md (Server vs Client Components)"
+        fi
+    fi
+
+    # If no 'use client', warn if React hooks are used (should be client component)
+    if [ $has_use_client -eq 0 ]; then
+        if echo "$content" | grep -qE "(useState|useEffect|useRef|useCallback|useMemo|useContext|useReducer|useLayoutEffect)\s*\("; then
+            warn_with_message \
+                "React hooks detected without 'use client' directive" \
+                "Files using hooks (useState, useEffect, etc.) should have 'use client' at the top"
+        fi
+    fi
+
+    return 0
+}
+
+# =============================================================================
 # MAIN EXECUTION
 # =============================================================================
 
@@ -242,10 +324,12 @@ if [ -n "$NEW_CONTENT" ]; then
     check_hard_delete "$NEW_CONTENT" "$FILE_PATH"
     check_journal_balance "$NEW_CONTENT" "$FILE_PATH"
     check_query_raw_unsafe "$NEW_CONTENT" "$FILE_PATH"
+    check_server_client_mixing "$NEW_CONTENT" "$FILE_PATH"
 fi
 
-# Always check file location
+# Always check file location and page loading/error states
 check_file_location "$FILE_PATH"
+check_page_loading_error "$FILE_PATH"
 
 # All checks passed
 exit 0

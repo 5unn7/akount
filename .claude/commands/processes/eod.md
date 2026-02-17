@@ -117,6 +117,43 @@ done
 
 ---
 
+## Phase 2.75: Auto-Update Metrics (1 minute)
+
+**Run metrics script to extract current values:**
+
+```bash
+# Run update-metrics.sh script
+./.claude/scripts/update-metrics.sh
+
+# Output format:
+# BACKEND_TESTS=1009
+# FRONTEND_TESTS=55
+# TSC_ERRORS=0
+# NPM_VULNS=14
+# NPM_HIGH=5
+# LOADING_COVERAGE=48/47
+```
+
+**Parse output and update STATUS.md Auto-Updated Metrics table:**
+
+| Metric | Value | Target | Status |
+|--------|-------|--------|--------|
+| Backend Tests | `$BACKEND_TESTS` | 1100+ | Auto-calc % |
+| Service Coverage | 27/27 | 27/27 | ✅ 100% |
+| TypeScript Errors | `$TSC_ERRORS` | 0 | Auto-calc status |
+| Frontend Tests | `$FRONTEND_TESTS` | 100+ | Auto-calc % |
+| Loading States | `$LOADING_COVERAGE` | 47/47 | Auto-calc status |
+| NPM Vulnerabilities | `$NPM_VULNS` (`$NPM_HIGH` high) | 0 | Auto-calc status |
+
+**Status logic:**
+- ✅ if value meets target
+- ⚠️ if value is 80-99% of target
+- ❌ if value is <80% of target
+
+**Error handling:** If script fails, skip metrics update and note "Metrics update skipped (script failed)" in EOD summary.
+
+---
+
 ## Phase 3: Aggregate Sessions & Update Artifacts (3 minutes)
 
 ### Step 1: Read All Session Captures from Today
