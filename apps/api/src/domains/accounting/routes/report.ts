@@ -60,7 +60,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as ProfitLossQuery & { format?: string };
+      const query = request.query as ProfitLossQuery;
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
@@ -118,7 +118,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as BalanceSheetQuery & { format?: string };
+      const query = request.query as BalanceSheetQuery;
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
@@ -176,7 +176,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as CashFlowQuery & { format?: string };
+      const query = request.query as CashFlowQuery;
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
@@ -233,7 +233,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as TrialBalanceQuery & { format?: string };
+      const query = request.query as TrialBalanceQuery;
       const service = new ReportService(request.tenantId, request.userId);
 
       try {
@@ -285,7 +285,7 @@ export async function reportRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Missing tenant context' });
       }
 
-      const query = request.query as GLLedgerQuery & { format?: string };
+      const query = request.query as GLLedgerQuery;
       const service = new ReportService(request.tenantId, request.userId);
 
       try {

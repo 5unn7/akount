@@ -225,13 +225,13 @@ describe('ReportService', () => {
 
       // Revenue: $1,050.00 - $50.00 = $1,000.00
       expect(result.revenue.total).toBe(100000);
-      expect(result.revenue.items).toHaveLength(1);
-      expect(result.revenue.items[0].balance).toBe(100000);
+      expect(result.revenue.sections).toHaveLength(1);
+      expect(result.revenue.sections[0].balance).toBe(100000);
 
       // Expense: $600.00
       expect(result.expenses.total).toBe(60000);
-      expect(result.expenses.items).toHaveLength(1);
-      expect(result.expenses.items[0].balance).toBe(60000);
+      expect(result.expenses.sections).toHaveLength(1);
+      expect(result.expenses.sections[0].balance).toBe(60000);
 
       // Net income: $1,000.00 - $600.00 = $400.00
       expect(result.netIncome).toBe(40000);

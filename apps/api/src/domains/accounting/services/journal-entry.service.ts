@@ -1,6 +1,7 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
+import { reportCache } from './report-cache';
 import type { CreateJournalEntryInput, ListJournalEntriesQuery } from '../schemas/journal-entry.schema';
 
 const JOURNAL_ENTRY_SELECT = {
@@ -249,6 +250,13 @@ export class JournalEntryService {
         },
       });
 
+      // Invalidate report cache (defensive - cache miss is harmless)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch {
+        // Intentionally swallowed
+      }
+
       return entry;
     });
   }
@@ -320,6 +328,13 @@ export class JournalEntryService {
       before: { status: 'DRAFT' },
       after: { status: 'POSTED' },
     });
+
+    // Invalidate report cache (defensive - cache miss is harmless)
+    try {
+      reportCache.invalidate(this.tenantId, /^report:/);
+    } catch {
+      // Intentionally swallowed
+    }
 
     return updated;
   }
@@ -448,6 +463,13 @@ export class JournalEntryService {
         action: 'CREATE',
         after: { memo: `REVERSAL: ${entry.memo}`, status: 'POSTED' },
       });
+
+      // Invalidate report cache (defensive - cache miss is harmless)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch {
+        // Intentionally swallowed
+      }
 
       return {
         voidedEntryId: id,

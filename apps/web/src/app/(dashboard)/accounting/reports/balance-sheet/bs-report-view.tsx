@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, downloadReport, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports';
+import { formatCurrency, formatReportDate, downloadReport, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports-client';
 
 interface BSReportViewProps {
     initialData: BalanceSheetReport | null;
@@ -211,7 +211,7 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                             <h4 className="font-medium font-heading">Assets</h4>
                         </div>
                         <div className="p-6">
-                            <BSSection items={initialData.assets.sections} showComparison={showComparison} />
+                            <BSSection currency={initialData.currency} items={initialData.assets.sections} showComparison={showComparison} />
                             <div className="flex justify-between items-center pt-4 border-t border-ak-border mt-4 font-medium">
                                 <span>Total Assets</span>
                                 <div className="flex gap-8 font-mono">
@@ -234,7 +234,7 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                             <h4 className="font-medium font-heading">Liabilities</h4>
                         </div>
                         <div className="p-6">
-                            <BSSection items={initialData.liabilities.sections} showComparison={showComparison} />
+                            <BSSection currency={initialData.currency} items={initialData.liabilities.sections} showComparison={showComparison} />
                             <div className="flex justify-between items-center pt-4 border-t border-ak-border mt-4 font-medium">
                                 <span>Total Liabilities</span>
                                 <div className="flex gap-8 font-mono">
@@ -257,7 +257,7 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                             <h4 className="font-medium font-heading">Equity</h4>
                         </div>
                         <div className="p-6">
-                            <BSSection items={initialData.equity.sections} showComparison={showComparison} />
+                            <BSSection currency={initialData.currency} items={initialData.equity.sections} showComparison={showComparison} />
 
                             {/* Retained Earnings - Two synthetic line items */}
                             <div className="mt-4 pt-4 border-t border-ak-border">
@@ -313,7 +313,7 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
     );
 }
 
-function BSSection({ items, showComparison }: { items: ReportLineItem[]; showComparison: boolean }) {
+function BSSection({ items, showComparison, currency }: { items: ReportLineItem[]; showComparison: boolean; currency: string }) {
     return (
         <div className="space-y-1">
             {items.map((item, idx) => (
@@ -326,9 +326,9 @@ function BSSection({ items, showComparison }: { items: ReportLineItem[]; showCom
                         {item.code} - {item.name}
                     </span>
                     <div className="flex gap-8 font-mono text-sm">
-                        <span>{formatCurrency(item.balance, 'CAD')}</span>
+                        <span>{formatCurrency(item.balance, currency)}</span>
                         {showComparison && item.previousBalance !== undefined && (
-                            <span className="text-muted-foreground">{formatCurrency(item.previousBalance, 'CAD')}</span>
+                            <span className="text-muted-foreground">{formatCurrency(item.previousBalance, currency)}</span>
                         )}
                     </div>
                 </div>

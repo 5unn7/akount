@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, downloadReport, type ProfitLossReport, type ReportLineItem } from '@/lib/api/reports';
+import { formatCurrency, formatReportDate, downloadReport, type ProfitLossReport, type ReportLineItem } from '@/lib/api/reports-client';
 
 interface PLReportViewProps {
     initialData: ProfitLossReport | null;
@@ -208,7 +208,7 @@ export function PLReportView({ initialData, initialParams, error }: PLReportView
                             <h4 className="font-medium font-heading">Revenue</h4>
                         </div>
                         <div className="p-6">
-                            <PLSection items={initialData.revenue.sections} showComparison={showComparison} />
+                            <PLSection items={initialData.revenue.sections} showComparison={showComparison} currency={initialData.currency} />
                             <div className="flex justify-between items-center pt-4 border-t border-ak-border mt-4 font-medium">
                                 <span>Total Revenue</span>
                                 <div className="flex gap-8 font-mono">
@@ -231,7 +231,7 @@ export function PLReportView({ initialData, initialParams, error }: PLReportView
                             <h4 className="font-medium font-heading">Expenses</h4>
                         </div>
                         <div className="p-6">
-                            <PLSection items={initialData.expenses.sections} showComparison={showComparison} />
+                            <PLSection items={initialData.expenses.sections} showComparison={showComparison} currency={initialData.currency} />
                             <div className="flex justify-between items-center pt-4 border-t border-ak-border mt-4 font-medium">
                                 <span>Total Expenses</span>
                                 <div className="flex gap-8 font-mono">
@@ -270,7 +270,7 @@ export function PLReportView({ initialData, initialParams, error }: PLReportView
     );
 }
 
-function PLSection({ items, showComparison }: { items: ReportLineItem[]; showComparison: boolean }) {
+function PLSection({ items, showComparison, currency }: { items: ReportLineItem[]; showComparison: boolean; currency: string }) {
     return (
         <div className="space-y-1">
             {items.map((item, idx) => (
@@ -283,9 +283,9 @@ function PLSection({ items, showComparison }: { items: ReportLineItem[]; showCom
                         {item.code} - {item.name}
                     </span>
                     <div className="flex gap-8 font-mono text-sm">
-                        <span>{formatCurrency(item.balance, 'CAD')}</span>
+                        <span>{formatCurrency(item.balance, currency)}</span>
                         {showComparison && item.previousBalance !== undefined && (
-                            <span className="text-muted-foreground">{formatCurrency(item.previousBalance, 'CAD')}</span>
+                            <span className="text-muted-foreground">{formatCurrency(item.previousBalance, currency)}</span>
                         )}
                     </div>
                 </div>

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, downloadReport, type CashFlowReport } from '@/lib/api/reports';
+import { formatCurrency, formatReportDate, downloadReport, type CashFlowReport } from '@/lib/api/reports-client';
 
 interface CFReportViewProps {
     initialData: CashFlowReport | null;

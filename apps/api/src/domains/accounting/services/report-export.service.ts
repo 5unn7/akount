@@ -28,7 +28,7 @@ export class ReportExportService {
 
     // Prevent formula injection (starts with =+\-@\t\r)
     if (/^[=+\-@\t\r]/.test(value)) {
-      return `'${value}`; // Prefix with single quote (Excel treats as text)
+      return `"'${value.replace(/"/g, '""')}"`; // Prefix with ' AND wrap in quotes
     }
 
     // Escape quotes and wrap if contains comma, quote, or newline

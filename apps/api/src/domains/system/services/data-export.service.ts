@@ -58,6 +58,7 @@ const EXPORT_TABLES: TableConfig[] = [
     name: 'clients',
     model: 'client',
     columns: ['id', 'name', 'email', 'phone', 'address', 'city', 'state', 'postalCode', 'country', 'taxId', 'createdAt', 'updatedAt'],
+    entityScoped: true,
   },
   {
     name: 'invoices',
@@ -70,6 +71,7 @@ const EXPORT_TABLES: TableConfig[] = [
     name: 'vendors',
     model: 'vendor',
     columns: ['id', 'name', 'email', 'phone', 'address', 'city', 'state', 'postalCode', 'country', 'taxId', 'createdAt', 'updatedAt'],
+    entityScoped: true,
   },
   {
     name: 'bills',

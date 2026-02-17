@@ -45,11 +45,11 @@ export interface ProfitLossReport {
   currency: string;
   comparisonPeriod?: string;
   revenue: {
-    items: ReportLineItem[];
+    sections: ReportLineItem[];
     total: number; // cents
   };
   expenses: {
-    items: ReportLineItem[];
+    sections: ReportLineItem[];
     total: number; // cents
   };
   netIncome: number; // cents (revenue - expenses)
@@ -154,6 +154,8 @@ export interface GLLedgerReport {
   glAccountId: string;
   accountCode: string;
   accountName: string;
+  entityName: string;
+  currency: string;
   startDate: Date;
   endDate: Date;
   entries: GLLedgerEntry[];
@@ -283,10 +285,30 @@ export class ReportService {
    * @throws AccountingError if entities use different currencies
    */
   private async validateMultiEntityCurrency(entityIds: string[]): Promise<string> {
+    if (entityIds.length === 0) {
+      throw new AccountingError(
+        'No entities found for this tenant',
+        'NO_ENTITIES_FOUND',
+        404
+      );
+    }
+
     const entities = await prisma.entity.findMany({
-      where: { id: { in: entityIds } },
+      where: {
+        id: { in: entityIds },
+        tenantId: this.tenantId,
+      },
       select: { functionalCurrency: true },
     });
+
+    if (entities.length === 0) {
+      throw new AccountingError(
+        'No entities found for this tenant',
+        'NO_ENTITIES_FOUND',
+        404
+      );
+    }
+
     const currencies = new Set(entities.map(e => e.functionalCurrency));
     if (currencies.size > 1) {
       throw new AccountingError(
@@ -467,11 +489,11 @@ export class ReportService {
       currency,
       comparisonPeriod: params.comparisonPeriod,
       revenue: {
-        items: revenueItems,
+        sections: revenueItems,
         total: totalRevenue,
       },
       expenses: {
-        items: expenseItems,
+        sections: expenseItems,
         total: totalExpense,
       },
       netIncome,
@@ -495,6 +517,13 @@ export class ReportService {
     asOfDate: Date;
     comparisonDate?: Date;
   }): Promise<BalanceSheetReport> {
+    // Check cache first
+    const cacheKey = `report:balance-sheet:${params.entityId || 'all'}:${params.asOfDate.toISOString()}:${params.comparisonDate?.toISOString() || 'none'}`;
+    const cached = reportCache.get(this.tenantId, cacheKey);
+    if (cached) {
+      return cached as BalanceSheetReport;
+    }
+
     // 1. Determine entity scope
     let entityIds: string[];
     let entityName: string;
@@ -679,6 +708,9 @@ export class ReportService {
       totalLiabilitiesAndEquity,
     };
 
+    // Cache the result
+    reportCache.set(this.tenantId, cacheKey, report);
+
     return report;
   }
 
@@ -697,6 +729,13 @@ export class ReportService {
     startDate: Date;
     endDate: Date;
   }): Promise<CashFlowReport> {
+    // Check cache first
+    const cacheKey = `report:cash-flow:${params.entityId || 'all'}:${params.startDate.toISOString()}:${params.endDate.toISOString()}`;
+    const cached = reportCache.get(this.tenantId, cacheKey);
+    if (cached) {
+      return cached as CashFlowReport;
+    }
+
     // 1. Determine entity scope
     let entityIds: string[];
     let entityName: string;
@@ -901,6 +940,9 @@ export class ReportService {
       closingCash,
     };
 
+    // Cache the result
+    reportCache.set(this.tenantId, cacheKey, report);
+
     return report;
   }
 
@@ -916,6 +958,13 @@ export class ReportService {
     entityId: string;
     asOfDate: Date;
   }): Promise<TrialBalanceReport> {
+    // Check cache first
+    const cacheKey = `report:trial-balance:${params.entityId}:${params.asOfDate.toISOString()}`;
+    const cached = reportCache.get(this.tenantId, cacheKey);
+    if (cached) {
+      return cached as TrialBalanceReport;
+    }
+
     // Trial balance is single-entity only
     await this.validateEntityOwnership(params.entityId);
 
@@ -967,7 +1016,7 @@ export class ReportService {
     const isBalanced = totalDebits === totalCredits;
 
     // Build report
-    return {
+    const report = {
       entityId: params.entityId,
       entityName: entity.name,
       asOfDate: params.asOfDate,
@@ -977,6 +1026,11 @@ export class ReportService {
       isBalanced,
       severity: isBalanced ? 'OK' : 'CRITICAL',
     };
+
+    // Cache the result
+    reportCache.set(this.tenantId, cacheKey, report);
+
+    return report;
   }
 
   /**
@@ -994,6 +1048,13 @@ export class ReportService {
     cursor?: string;
     limit: number;
   }): Promise<GLLedgerReport> {
+    // Check cache first (include cursor for pagination)
+    const cacheKey = `report:gl-ledger:${params.entityId}:${params.glAccountId}:${params.startDate.toISOString()}:${params.endDate.toISOString()}:${params.cursor || 'first'}:${params.limit}`;
+    const cached = reportCache.get(this.tenantId, cacheKey);
+    if (cached) {
+      return cached as GLLedgerReport;
+    }
+
     // Validate entity ownership
     await this.validateEntityOwnership(params.entityId);
 
@@ -1013,6 +1074,52 @@ export class ReportService {
         404
       );
     }
+
+    // Get entity details for currency
+    const entity = await prisma.entity.findFirst({
+      where: {
+        id: params.entityId,
+        tenantId: this.tenantId,
+      },
+      select: {
+        name: true,
+        functionalCurrency: true,
+      },
+    });
+
+    if (!entity) {
+      throw new AccountingError('Entity not found', 'ENTITY_NOT_FOUND', 404);
+    }
+
+    // Calculate opening balance (sum of all entries before startDate)
+    const openingBalanceResult = await tenantScopedQuery<{ openingBalance: bigint }>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          COALESCE(
+            SUM(
+              CASE WHEN gl."normalBalance" = 'DEBIT'
+                THEN jl."debitAmount" - jl."creditAmount"
+                ELSE jl."creditAmount" - jl."debitAmount"
+              END
+            ),
+            0
+          ) as "openingBalance"
+        FROM "JournalLine" jl
+        JOIN "JournalEntry" je ON jl."journalEntryId" = je.id
+        JOIN "GLAccount" gl ON jl."glAccountId" = gl.id
+        INNER JOIN "Entity" e ON e.id = je."entityId"
+        WHERE e."tenantId" = ${tenantId}
+          AND jl."glAccountId" = ${params.glAccountId}
+          AND je."entityId" = ${params.entityId}
+          AND je."status" = 'POSTED'
+          AND je."deletedAt" IS NULL
+          AND jl."deletedAt" IS NULL
+          AND je.date < ${params.startDate}
+      `
+    );
+
+    const openingBalance = Number(openingBalanceResult[0]?.openingBalance ?? 0n);
 
     // Query journal lines with running balance
     // Uses window function with normalBalance for correct direction
@@ -1051,7 +1158,7 @@ export class ReportService {
       `
     );
 
-    // Convert results
+    // Convert results and add opening balance to each running balance
     const entries: GLLedgerEntry[] = results.map((row) => ({
       id: row.id,
       date: row.date,
@@ -1059,21 +1166,28 @@ export class ReportService {
       memo: row.memo,
       debitAmount: row.debitAmount,
       creditAmount: row.creditAmount,
-      runningBalance: this.convertBigInt(row.runningBalance),
+      runningBalance: openingBalance + this.convertBigInt(row.runningBalance),
     }));
 
     const nextCursor = results.length === params.limit ? results[results.length - 1].id : null;
 
-    return {
+    const report = {
       entityId: params.entityId,
       glAccountId: params.glAccountId,
       accountCode: glAccount.code,
       accountName: glAccount.name,
+      entityName: entity.name,
+      currency: entity.functionalCurrency,
       startDate: params.startDate,
       endDate: params.endDate,
       entries,
       nextCursor,
     };
+
+    // Cache the result
+    reportCache.set(this.tenantId, cacheKey, report);
+
+    return report;
   }
 
   /**
@@ -1088,6 +1202,13 @@ export class ReportService {
     startDate: Date;
     endDate: Date;
   }): Promise<SpendingReport> {
+    // Check cache first
+    const cacheKey = `report:spending:${params.entityId || 'all'}:${params.startDate.toISOString()}:${params.endDate.toISOString()}`;
+    const cached = reportCache.get(this.tenantId, cacheKey);
+    if (cached) {
+      return cached as SpendingReport;
+    }
+
     // 1. Determine entity scope
     let entityIds: string[];
     let entityName: string;
@@ -1113,7 +1234,7 @@ export class ReportService {
           gl."id" as "glAccountId",
           gl."code",
           gl."name" as "category",
-          COALESCE(SUM(jl."debitAmount"), 0) as "totalSpend"
+          COALESCE(SUM(jl."debitAmount") - SUM(jl."creditAmount"), 0) as "totalSpend"
         FROM "JournalLine" jl
         JOIN "JournalEntry" je ON jl."journalEntryId" = je.id
         JOIN "GLAccount" gl ON jl."glAccountId" = gl.id
@@ -1141,7 +1262,7 @@ export class ReportService {
       percentage: totalSpend > 0 ? (this.convertBigInt(r.totalSpend) / totalSpend) * 100 : 0,
     }));
 
-    return {
+    const report = {
       entityId: params.entityId,
       entityName,
       startDate: params.startDate,
@@ -1149,6 +1270,11 @@ export class ReportService {
       categories,
       totalSpend,
     };
+
+    // Cache the result
+    reportCache.set(this.tenantId, cacheKey, report);
+
+    return report;
   }
 
   /**
@@ -1163,6 +1289,13 @@ export class ReportService {
     startDate: Date;
     endDate: Date;
   }): Promise<RevenueReport> {
+    // Check cache first
+    const cacheKey = `report:revenue:${params.entityId || 'all'}:${params.startDate.toISOString()}:${params.endDate.toISOString()}`;
+    const cached = reportCache.get(this.tenantId, cacheKey);
+    if (cached) {
+      return cached as RevenueReport;
+    }
+
     // 1. Determine entity scope
     let entityIds: string[];
     let entityName: string;
@@ -1188,7 +1321,7 @@ export class ReportService {
           je."sourceDocument"->>'clientId' as "clientId",
           je."sourceDocument"->>'clientName' as "clientName",
           COUNT(DISTINCT je.id) as "invoiceCount",
-          COALESCE(SUM(jl."creditAmount"), 0) as "totalRevenue"
+          COALESCE(SUM(jl."creditAmount") - SUM(jl."debitAmount"), 0) as "totalRevenue"
         FROM "JournalEntry" je
         JOIN "JournalLine" jl ON jl."journalEntryId" = je.id
         JOIN "GLAccount" gl ON jl."glAccountId" = gl.id
@@ -1219,7 +1352,7 @@ export class ReportService {
       percentage: totalRevenue > 0 ? (this.convertBigInt(r.totalRevenue) / totalRevenue) * 100 : 0,
     }));
 
-    return {
+    const report = {
       entityId: params.entityId,
       entityName,
       startDate: params.startDate,
@@ -1227,5 +1360,10 @@ export class ReportService {
       clients,
       totalRevenue,
     };
+
+    // Cache the result
+    reportCache.set(this.tenantId, cacheKey, report);
+
+    return report;
   }
 }

@@ -17,6 +17,7 @@ export const ProfitLossQuerySchema = z.object({
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
   comparisonPeriod: z.enum(['PREVIOUS_PERIOD', 'PREVIOUS_YEAR']).optional(),
+  format: z.enum(['json', 'csv', 'pdf']).optional(),
 });
 
 export type ProfitLossQuery = z.infer<typeof ProfitLossQuerySchema>;
@@ -28,6 +29,7 @@ export const BalanceSheetQuerySchema = z.object({
   entityId: z.string().cuid().optional(),
   asOfDate: z.coerce.date(),
   comparisonDate: z.coerce.date().optional(),
+  format: z.enum(['json', 'csv', 'pdf']).optional(),
 });
 
 export type BalanceSheetQuery = z.infer<typeof BalanceSheetQuerySchema>;
@@ -39,6 +41,7 @@ export const CashFlowQuerySchema = z.object({
   entityId: z.string().cuid().optional(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
+  format: z.enum(['json', 'csv', 'pdf']).optional(),
 });
 
 export type CashFlowQuery = z.infer<typeof CashFlowQuerySchema>;
@@ -49,6 +52,7 @@ export type CashFlowQuery = z.infer<typeof CashFlowQuerySchema>;
 export const TrialBalanceQuerySchema = z.object({
   entityId: z.string().cuid(), // Required for trial balance
   asOfDate: z.coerce.date().default(() => new Date()),
+  format: z.enum(['json', 'csv', 'pdf']).optional(),
 });
 
 export type TrialBalanceQuery = z.infer<typeof TrialBalanceQuerySchema>;
@@ -63,6 +67,7 @@ export const GLLedgerQuerySchema = z.object({
   endDate: z.coerce.date(),
   cursor: z.string().cuid().optional(), // CUID cursor for pagination
   limit: z.coerce.number().int().min(1).max(200).default(50), // Performance F11
+  format: z.enum(['json', 'csv', 'pdf']).optional(),
 });
 
 export type GLLedgerQuery = z.infer<typeof GLLedgerQuerySchema>;
@@ -74,6 +79,7 @@ export const SpendingQuerySchema = z.object({
   entityId: z.string().cuid().optional(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
+  format: z.enum(['json', 'csv', 'pdf']).optional(),
 });
 
 export type SpendingQuery = z.infer<typeof SpendingQuerySchema>;
@@ -85,6 +91,7 @@ export const RevenueQuerySchema = z.object({
   entityId: z.string().cuid().optional(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
+  format: z.enum(['json', 'csv', 'pdf']).optional(),
 });
 
 export type RevenueQuery = z.infer<typeof RevenueQuerySchema>;

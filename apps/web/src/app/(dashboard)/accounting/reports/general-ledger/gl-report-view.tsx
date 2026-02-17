@@ -10,11 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import {
     formatCurrency,
     formatReportDate,
-    getGLLedgerReport,
     downloadReport,
     type GLLedgerReport,
     type GLLedgerEntry,
-} from '@/lib/api/reports';
+} from '@/lib/api/reports-client';
+import { loadMoreGLEntries } from './actions';
 
 interface GLReportViewProps {
     initialData: GLLedgerReport | null;
@@ -49,7 +49,7 @@ export function GLReportView({ initialData, initialParams, error }: GLReportView
 
         setIsLoadingMore(true);
         try {
-            const more = await getGLLedgerReport({
+            const more = await loadMoreGLEntries({
                 entityId: entityId,
                 glAccountId: glAccountId,
                 startDate: startDate,
