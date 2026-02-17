@@ -32,9 +32,10 @@ export async function generateBalanceSheetPdf(report: BalanceSheetReport): Promi
     );
   }
 
-  const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new AccountingError('PDF generation timed out', 'PDF_TIMEOUT', 408)), PDF_TIMEOUT_MS)
-  );
+  let timeoutHandle: ReturnType<typeof setTimeout>;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutHandle = setTimeout(() => reject(new AccountingError('PDF generation timed out', 'PDF_TIMEOUT', 408)), PDF_TIMEOUT_MS);
+  });
 
   const pdfDoc = (
     <Document>
@@ -115,12 +116,15 @@ export async function generateBalanceSheetPdf(report: BalanceSheetReport): Promi
     </Document>
   );
 
-  const buffer = await Promise.race([
-    renderToBuffer(pdfDoc),
-    timeoutPromise,
-  ]);
-
-  return Buffer.from(buffer);
+  try {
+    const buffer = await Promise.race([
+      renderToBuffer(pdfDoc),
+      timeoutPromise,
+    ]);
+    return Buffer.from(buffer);
+  } finally {
+    clearTimeout(timeoutHandle!);
+  }
 }
 
 function LineItems({ items, currency }: { items: ReportLineItem[]; currency: string }) {

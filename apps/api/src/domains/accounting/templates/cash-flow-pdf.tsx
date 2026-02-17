@@ -32,9 +32,10 @@ export async function generateCashFlowPdf(report: CashFlowReport): Promise<Buffe
     );
   }
 
-  const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new AccountingError('PDF generation timed out', 'PDF_TIMEOUT', 408)), PDF_TIMEOUT_MS)
-  );
+  let timeoutHandle: ReturnType<typeof setTimeout>;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutHandle = setTimeout(() => reject(new AccountingError('PDF generation timed out', 'PDF_TIMEOUT', 408)), PDF_TIMEOUT_MS);
+  });
 
   const pdfDoc = (
     <Document>
@@ -108,12 +109,15 @@ export async function generateCashFlowPdf(report: CashFlowReport): Promise<Buffe
     </Document>
   );
 
-  const buffer = await Promise.race([
-    renderToBuffer(pdfDoc),
-    timeoutPromise,
-  ]);
-
-  return Buffer.from(buffer);
+  try {
+    const buffer = await Promise.race([
+      renderToBuffer(pdfDoc),
+      timeoutPromise,
+    ]);
+    return Buffer.from(buffer);
+  } finally {
+    clearTimeout(timeoutHandle!);
+  }
 }
 
 function ActivityItems({ items, currency }: { items: Array<{ name: string; balance: number }>; currency: string }) {

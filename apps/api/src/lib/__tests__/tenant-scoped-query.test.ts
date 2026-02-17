@@ -50,7 +50,7 @@ describe('tenantScopedQuery', () => {
       tenantScopedQuery(tenantId, () =>
         Prisma.sql`SELECT * FROM "Entity"` // Missing WHERE tenantId
       )
-    ).rejects.toThrow('Raw SQL query does not reference tenantId');
+    ).rejects.toThrow('Raw SQL query does not filter by tenantId in a WHERE clause');
 
     expect(mockPrisma.$queryRaw).not.toHaveBeenCalled();
   });

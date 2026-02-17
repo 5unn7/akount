@@ -112,6 +112,18 @@ const EXPORT_TABLES: TableConfig[] = [
  * Sanitize a value for CSV output.
  * Prevents formula injection per OWASP guidelines.
  */
+/**
+ * Mask sensitive fields — show only last 4 characters.
+ */
+function maskSensitiveValue(value: unknown): string {
+  const str = String(value ?? '');
+  if (str.length <= 4) return '****';
+  return '*'.repeat(str.length - 4) + str.slice(-4);
+}
+
+/** Columns that contain sensitive PII and should be masked in exports */
+const SENSITIVE_COLUMNS = new Set(['accountNumber']);
+
 function sanitizeCsvCell(value: unknown): string {
   if (value === null || value === undefined) return '';
 
@@ -205,7 +217,11 @@ export async function streamDataBackup(
 
       for (const row of rows) {
         const csvRow = table.columns
-          .map(col => sanitizeCsvCell(row[col]))
+          .map(col => {
+            const val = row[col];
+            if (SENSITIVE_COLUMNS.has(col) && val) return sanitizeCsvCell(maskSensitiveValue(val));
+            return sanitizeCsvCell(val);
+          })
           .join(',');
         csvStream.write(csvRow + '\n');
       }

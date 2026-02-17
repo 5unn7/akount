@@ -18,12 +18,17 @@ export async function tenantScopedQuery<T>(
 
   const sql = queryBuilder(tenantId);
 
-  // Runtime assertion: verify the SQL text contains a tenantId parameter
-  // This is defense-in-depth, not a substitute for correct SQL
+  // Runtime assertion: verify the SQL references tenantId in a WHERE clause context
+  // Defense-in-depth — a comment or alias containing "tenantId" won't pass
   const sqlString = sql.strings.join('');
-  if (!sqlString.includes('tenantId') && !sqlString.includes('tenant_id')) {
+  const hasTenantFilter =
+    /WHERE[\s\S]*?"tenantId"\s*=/.test(sqlString) ||
+    /WHERE[\s\S]*?"tenant_id"\s*=/.test(sqlString) ||
+    /WHERE[\s\S]*?\."tenantId"/.test(sqlString);
+
+  if (!hasTenantFilter) {
     throw new Error(
-      'Raw SQL query does not reference tenantId. ' +
+      'Raw SQL query does not filter by tenantId in a WHERE clause. ' +
       'All report queries must filter by tenant for security.'
     );
   }

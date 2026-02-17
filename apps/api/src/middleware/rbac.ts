@@ -1,5 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { TenantUserRole } from '@akount/db';
+import type { PermissionKey, PermissionLevel } from '@akount/types';
+import { getRolesWithAccess } from '@akount/types';
 
 /**
  * Role-Based Access Control (RBAC) Middleware
@@ -47,11 +49,14 @@ export function withRolePermission(allowedRoles: TenantUserRole[]) {
   };
 }
 
+/** DB enum values for filtering roles from the canonical matrix */
+const DB_ROLES = new Set<string>(['OWNER', 'ADMIN', 'ACCOUNTANT', 'VIEWER']);
+
 /**
  * Check if user has required permission level for a domain resource.
  *
- * TODO: Phase 3 - Implement granular permission checking
- * Currently delegates to role-based permissions as a stub.
+ * Queries the canonical PERMISSION_MATRIX from @akount/types.
+ * Filters to roles that exist in the current DB schema (4 of 6).
  *
  * @param domain - Domain name (e.g., 'banking', 'accounting')
  * @param resource - Resource name (e.g., 'accounts', 'transactions')
@@ -62,18 +67,17 @@ export function requirePermission(
   resource: string,
   level: string
 ) {
-  // TODO: Phase 3 - Query PermissionMatrix and check against user's role
-  // For now, use role-based permissions as fallback
+  const key = `${domain}:${resource}` as PermissionKey;
+  const rolesFromMatrix = getRolesWithAccess(key, level as PermissionLevel);
 
-  // Map permission levels to roles (conservative approach)
-  const rolesByLevel: Record<string, TenantUserRole[]> = {
-    VIEW: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'VIEWER'],
-    ACT: ['OWNER', 'ADMIN', 'ACCOUNTANT'],
-    APPROVE: ['OWNER', 'ADMIN'],
-    ADMIN: ['OWNER', 'ADMIN'],
-  };
+  // Filter to roles present in DB enum (schema has 4, design has 6)
+  const allowedRoles = rolesFromMatrix.filter(r => DB_ROLES.has(r)) as TenantUserRole[];
 
-  const allowedRoles = rolesByLevel[level] || ['OWNER'];
+  // Fallback: if matrix has no entry for this key, restrict to OWNER only
+  if (allowedRoles.length === 0) {
+    return withRolePermission(['OWNER']);
+  }
+
   return withRolePermission(allowedRoles);
 }
 
