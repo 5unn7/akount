@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { OnboardingOverlay } from "@/components/onboarding/OnboardingOverlay";
+import { KeyboardShortcutsModal } from "@/components/shared/KeyboardShortcutsModal";
 import { ReactQueryProvider } from '@/providers/query-provider';
 import { listEntities, type Entity } from '@/lib/api/entities';
 import type { Role } from '@akount/types';
@@ -115,6 +116,7 @@ export default async function DashboardLayout({
                     </div>
                 </main>
                 {showOnboardingOverlay && <OnboardingOverlay />}
+                <KeyboardShortcutsModal />
             </div>
         </ReactQueryProvider>
     );

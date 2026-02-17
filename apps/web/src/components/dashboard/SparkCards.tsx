@@ -83,6 +83,7 @@ function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: Sp
                 strokeWidth={1.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="sparkline-path"
             />
         </svg>
     );

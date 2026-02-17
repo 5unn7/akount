@@ -893,11 +893,177 @@ export class ReportService {
     return report;
   }
 
-  // Implemented in Task 8
-  // async generateTrialBalance(params: TrialBalanceQuery): Promise<TrialBalanceReport>
+  /**
+   * Generate Trial Balance
+   * Lists all GL accounts with their debit/credit totals
+   * Verifies double-entry bookkeeping (SUM(debits) === SUM(credits))
+   *
+   * @param params Query parameters (entityId required)
+   * @returns Trial balance with balance validation
+   */
+  async generateTrialBalance(params: {
+    entityId: string;
+    asOfDate: Date;
+  }): Promise<TrialBalanceReport> {
+    // Trial balance is single-entity only
+    await this.validateEntityOwnership(params.entityId);
 
-  // Implemented in Task 8
-  // async generateGLLedger(params: GLLedgerQuery): Promise<GLLedgerReport>
+    const entity = await prisma.entity.findUniqueOrThrow({
+      where: { id: params.entityId },
+    });
+
+    // Query all GL accounts with cumulative balances up to asOfDate
+    const results = await tenantScopedQuery<AggregateRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          gl."id" as "glAccountId",
+          gl."code",
+          gl."name",
+          gl."type",
+          gl."normalBalance",
+          COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
+          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+        FROM "GLAccount" gl
+        LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
+        LEFT JOIN "JournalEntry" je ON jl."journalEntryId" = je.id
+        INNER JOIN "Entity" e ON e.id = gl."entityId"
+        WHERE e."tenantId" = ${tenantId}
+          AND gl."entityId" = ${params.entityId}
+          AND gl."isActive" = true
+          AND (je.id IS NULL OR (
+            je."status" = 'POSTED'
+            AND je."deletedAt" IS NULL
+            AND jl."deletedAt" IS NULL
+            AND je."date" <= ${params.asOfDate}
+          ))
+        GROUP BY gl.id, gl.code, gl.name, gl.type, gl."normalBalance"
+        ORDER BY gl.code ASC
+      `
+    );
+
+    // Convert BigInt and calculate totals
+    const accounts = results.map((row) => ({
+      accountId: row.glAccountId,
+      code: row.code,
+      name: row.name,
+      debit: this.convertBigInt(row.totalDebit),
+      credit: this.convertBigInt(row.totalCredit),
+    }));
+
+    const totalDebits = accounts.reduce((sum, acc) => sum + acc.debit, 0);
+    const totalCredits = accounts.reduce((sum, acc) => sum + acc.credit, 0);
+    const isBalanced = totalDebits === totalCredits;
+
+    // Build report
+    return {
+      entityId: params.entityId,
+      entityName: entity.name,
+      asOfDate: params.asOfDate,
+      accounts,
+      totalDebits,
+      totalCredits,
+      isBalanced,
+      severity: isBalanced ? 'OK' : 'CRITICAL',
+    };
+  }
+
+  /**
+   * Generate General Ledger (Account Activity Detail)
+   * Shows all journal lines for a specific GL account with running balance
+   *
+   * @param params Query parameters with cursor pagination
+   * @returns Ledger entries with running balance
+   */
+  async generateGLLedger(params: {
+    entityId: string;
+    glAccountId: string;
+    startDate: Date;
+    endDate: Date;
+    cursor?: string;
+    limit: number;
+  }): Promise<GLLedgerReport> {
+    // Validate entity ownership
+    await this.validateEntityOwnership(params.entityId);
+
+    // Get GL account details
+    const glAccount = await prisma.gLAccount.findFirst({
+      where: {
+        id: params.glAccountId,
+        entityId: params.entityId,
+        entity: { tenantId: this.tenantId },
+      },
+    });
+
+    if (!glAccount) {
+      throw new AccountingError(
+        'GL Account not found',
+        'GL_ACCOUNT_NOT_FOUND',
+        404
+      );
+    }
+
+    // Query journal lines with running balance
+    // Uses window function with normalBalance for correct direction
+    const results = await tenantScopedQuery<LedgerRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          jl.id,
+          je.date,
+          je."entryNumber",
+          je.memo,
+          jl."debitAmount",
+          jl."creditAmount",
+          gl."normalBalance",
+          SUM(
+            CASE WHEN gl."normalBalance" = 'DEBIT'
+              THEN jl."debitAmount" - jl."creditAmount"
+              ELSE jl."creditAmount" - jl."debitAmount"
+            END
+          ) OVER (ORDER BY jl.id) as "runningBalance"
+        FROM "JournalLine" jl
+        JOIN "JournalEntry" je ON jl."journalEntryId" = je.id
+        JOIN "GLAccount" gl ON jl."glAccountId" = gl.id
+        INNER JOIN "Entity" e ON e.id = je."entityId"
+        WHERE e."tenantId" = ${tenantId}
+          AND jl."glAccountId" = ${params.glAccountId}
+          AND je."entityId" = ${params.entityId}
+          AND je."status" = 'POSTED'
+          AND je."deletedAt" IS NULL
+          AND jl."deletedAt" IS NULL
+          AND je.date >= ${params.startDate}
+          AND je.date <= ${params.endDate}
+          ${params.cursor ? Prisma.sql`AND jl.id > ${params.cursor}` : Prisma.empty}
+        ORDER BY jl.id ASC
+        LIMIT ${params.limit}
+      `
+    );
+
+    // Convert results
+    const entries: GLLedgerEntry[] = results.map((row) => ({
+      id: row.id,
+      date: row.date,
+      entryNumber: row.entryNumber,
+      memo: row.memo,
+      debitAmount: row.debitAmount,
+      creditAmount: row.creditAmount,
+      runningBalance: this.convertBigInt(row.runningBalance),
+    }));
+
+    const nextCursor = results.length === params.limit ? results[results.length - 1].id : null;
+
+    return {
+      entityId: params.entityId,
+      glAccountId: params.glAccountId,
+      accountCode: glAccount.code,
+      accountName: glAccount.name,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      entries,
+      nextCursor,
+    };
+  }
 
   // Implemented in Task 9
   // async generateSpendingByCategory(params: SpendingQuery): Promise<SpendingReport>

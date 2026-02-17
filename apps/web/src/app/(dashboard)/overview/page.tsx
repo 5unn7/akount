@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { EntitiesList } from "@/components/dashboard/EntitiesList";
+import { EntitiesSection } from "@/components/dashboard/EntitiesSection";
 import { DashboardMetrics } from "@/components/dashboard/DashboardMetrics";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
 import { LiquidityHero } from "@/components/dashboard/LiquidityHero";
@@ -12,11 +12,12 @@ import { UpcomingPayments } from "@/components/dashboard/UpcomingPayments";
 import { QuickStats } from "@/components/dashboard/QuickStats";
 import { TwoColumnLayout } from "@/components/shared/TwoColumnLayout";
 import { SectionHeader } from "@/components/shared/SectionHeader";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
-import { DashboardFilters } from "@/components/dashboard/DashboardFilters";
 import { listEntities } from "@/lib/api/entities";
 import { getDashboardMetrics } from "@/lib/api/dashboard";
 import { getPerformanceMetrics } from "@/lib/api/performance";
+import { Building2, TrendingUp } from "lucide-react";
 
 export const metadata: Metadata = {
     title: "Overview | Akount",
@@ -112,34 +113,63 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
 
     return (
         <div className="flex-1 space-y-8">
-            {/* Row 1: Greeting + Filters */}
-            <div className="fi fi1 flex items-start justify-between gap-4">
+            {/* Row 1: Greeting Hero */}
+            <div className="fi fi1">
                 <LiquidityHero
                     totalBalance={totalBalance}
                     baseCurrency={baseCurrency}
                     trend={undefined}
                 />
-                <div className="hidden md:block shrink-0 pt-2">
-                    <DashboardFilters entities={entities} />
-                </div>
             </div>
 
             {/* Onboarding hero — conditional */}
             <OnboardingHeroCard />
 
             {/* Entity Matrix */}
-            <div className="fi fi2 space-y-3">
-                <SectionHeader
-                    title="Liquidity Matrix"
-                    meta={`${entities.length} entit${entities.length === 1 ? 'y' : 'ies'}`}
-                />
-                <EntitiesList entities={entities} />
+            <div className="fi fi2">
+                {entities.length === 0 ? (
+                    <EmptyState
+                        icon={Building2}
+                        title="Set up your first entity"
+                        description="Create a business entity to track finances, manage accounts, and separate operations across countries and currencies."
+                        action={{
+                            label: "Create Entity",
+                            href: "/settings/entities",
+                            variant: "default"
+                        }}
+                        secondaryAction={{
+                            label: "Learn more",
+                            href: "/docs/entities"
+                        }}
+                        variant="compact"
+                    />
+                ) : (
+                    <EntitiesSection entities={entities} />
+                )}
             </div>
 
             {/* Spark KPIs */}
             <div className="fi fi3 space-y-3">
                 <SectionHeader title="Performance" />
-                <SparkCards cards={sparkCards} />
+                {!performance || performance.revenue.current === 0 ? (
+                    <EmptyState
+                        icon={TrendingUp}
+                        title="Import transactions to unlock insights"
+                        description="Upload a bank statement or manually add transactions to track revenue, expenses, and profit trends automatically."
+                        action={{
+                            label: "Import Statement",
+                            href: "/banking/imports",
+                            variant: "default"
+                        }}
+                        secondaryAction={{
+                            label: "Add manually",
+                            href: "/banking/transactions"
+                        }}
+                        variant="compact"
+                    />
+                ) : (
+                    <SparkCards cards={sparkCards} />
+                )}
             </div>
 
             {/* Two Column: Charts + Right Sidebar */}
