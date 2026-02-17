@@ -111,6 +111,7 @@ export interface CashFlowReport {
   netCashChange: number; // cents
   openingCash: number; // cents
   closingCash: number; // cents
+  isReconciled: boolean; // openingCash + netCashChange === closingCash
 }
 
 /**
@@ -168,6 +169,7 @@ export interface GLLedgerReport {
 export interface SpendingReport {
   entityId?: string;
   entityName: string;
+  currency: string;
   startDate: Date;
   endDate: Date;
   categories: Array<{
@@ -184,6 +186,7 @@ export interface SpendingReport {
 export interface RevenueReport {
   entityId?: string;
   entityName: string;
+  currency: string;
   startDate: Date;
   endDate: Date;
   clients: Array<{
@@ -942,6 +945,7 @@ export class ReportService {
       netCashChange,
       openingCash,
       closingCash,
+      isReconciled: openingCash + netCashChange === closingCash,
     };
 
     // Cache the result
@@ -1216,6 +1220,7 @@ export class ReportService {
     // 1. Determine entity scope
     let entityIds: string[];
     let entityName: string;
+    let currency: string;
 
     if (params.entityId) {
       await this.validateEntityOwnership(params.entityId);
@@ -1224,9 +1229,11 @@ export class ReportService {
         where: { id: params.entityId },
       });
       entityName = entity.name;
+      currency = entity.functionalCurrency;
     } else {
       // Multi-entity consolidation
       entityIds = await this.getEntityIds();
+      currency = await this.validateMultiEntityCurrency(entityIds);
       entityName = 'All Entities';
     }
 
@@ -1269,6 +1276,7 @@ export class ReportService {
     const report = {
       entityId: params.entityId,
       entityName,
+      currency,
       startDate: params.startDate,
       endDate: params.endDate,
       categories,
@@ -1303,6 +1311,7 @@ export class ReportService {
     // 1. Determine entity scope
     let entityIds: string[];
     let entityName: string;
+    let currency: string;
 
     if (params.entityId) {
       await this.validateEntityOwnership(params.entityId);
@@ -1311,9 +1320,11 @@ export class ReportService {
         where: { id: params.entityId },
       });
       entityName = entity.name;
+      currency = entity.functionalCurrency;
     } else {
       // Multi-entity consolidation
       entityIds = await this.getEntityIds();
+      currency = await this.validateMultiEntityCurrency(entityIds);
       entityName = 'All Entities';
     }
 
@@ -1359,6 +1370,7 @@ export class ReportService {
     const report = {
       entityId: params.entityId,
       entityName,
+      currency,
       startDate: params.startDate,
       endDate: params.endDate,
       clients,

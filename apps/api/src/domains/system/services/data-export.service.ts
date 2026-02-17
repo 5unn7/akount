@@ -290,5 +290,10 @@ function buildWhere(
     where.tenantId = tenantId;
   }
 
+  // Respect includeSoftDeleted flag — omit deletedAt filter for full backup tables
+  if (!table.includeSoftDeleted) {
+    where.deletedAt = null;
+  }
+
   return where;
 }

@@ -122,6 +122,7 @@ export interface CashFlowReport {
     netCashChange: number; // cents
     openingCash: number; // cents
     closingCash: number; // cents
+    isReconciled: boolean; // openingCash + netCashChange === closingCash
 }
 
 // ============================================================================

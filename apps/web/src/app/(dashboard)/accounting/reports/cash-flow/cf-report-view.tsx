@@ -30,9 +30,7 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
         router.push(`/accounting/reports/cash-flow?${params.toString()}`);
     };
 
-    const isReconciled = initialData
-        ? initialData.openingCash + initialData.netCashChange === initialData.closingCash
-        : true;
+    const isReconciled = initialData?.isReconciled ?? true;
 
     return (
         <div className="flex-1 space-y-6 p-8 pt-6">
