@@ -1,6 +1,7 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { tenantScopedQuery } from '../../../lib/tenant-scoped-query';
+import { reportCache } from './report-cache';
 
 /**
  * Report Service
@@ -359,6 +360,13 @@ export class ReportService {
     endDate: Date;
     comparisonPeriod?: 'PREVIOUS_PERIOD' | 'PREVIOUS_YEAR';
   }): Promise<ProfitLossReport> {
+    // Check cache first
+    const cacheKey = `report:profit-loss:${params.entityId || 'all'}:${params.startDate.toISOString()}:${params.endDate.toISOString()}:${params.comparisonPeriod || 'none'}`;
+    const cached = reportCache.get(this.tenantId, cacheKey);
+    if (cached) {
+      return cached as ProfitLossReport;
+    }
+
     // 1. Determine entity scope
     let entityIds: string[];
     let entityName: string;
@@ -468,6 +476,9 @@ export class ReportService {
       },
       netIncome,
     };
+
+    // Cache the result
+    reportCache.set(this.tenantId, cacheKey, report);
 
     return report;
   }

@@ -26,9 +26,20 @@ vi.mock('../../../../lib/tenant-scoped-query', () => ({
   tenantScopedQuery: vi.fn(),
 }));
 
+vi.mock('../report-cache', () => ({
+  reportCache: {
+    get: vi.fn(() => null), // Always return null (cache miss) in tests
+    set: vi.fn(),
+    clear: vi.fn(),
+    invalidate: vi.fn(),
+  },
+}));
+
 const mockPrisma = vi.mocked(prisma);
 const { tenantScopedQuery } = await import('../../../../lib/tenant-scoped-query');
 const mockTenantScopedQuery = vi.mocked(tenantScopedQuery);
+const { reportCache } = await import('../report-cache');
+const mockReportCache = vi.mocked(reportCache);
 
 describe('ReportService', () => {
   const TENANT_ID = 'tenant_test123';
@@ -69,6 +80,8 @@ describe('ReportService', () => {
   beforeEach(() => {
     service = new ReportService(TENANT_ID, USER_ID);
     vi.clearAllMocks();
+    // Ensure cache always returns null (cache miss)
+    mockReportCache.get.mockReturnValue(null);
   });
 
   afterEach(() => {

@@ -2,6 +2,7 @@ import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
 import { FxRateService } from '../../banking/services/fx-rate.service';
+import { reportCache } from './report-cache';
 
 /**
  * Document Posting Service
@@ -263,6 +264,14 @@ export class DocumentPostingService {
         },
       });
 
+      // 11. Invalidate report cache (defensive - non-critical)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch (err) {
+        // Log but don't fail the transaction
+        console.error('Report cache invalidation failed:', err);
+      }
+
       return {
         journalEntryId: journalEntry.id,
         entryNumber: journalEntry.entryNumber,
@@ -500,6 +509,14 @@ export class DocumentPostingService {
           amount: bill.total,
         },
       });
+
+      // 11. Invalidate report cache (defensive - non-critical)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch (err) {
+        // Log but don't fail the transaction
+        console.error('Report cache invalidation failed:', err);
+      }
 
       return {
         journalEntryId: journalEntry.id,
@@ -754,6 +771,14 @@ export class DocumentPostingService {
           type: isARPayment ? 'AR' : 'AP',
         },
       });
+
+      // 12. Invalidate report cache (defensive - non-critical)
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch (err) {
+        // Log but don't fail the transaction
+        console.error('Report cache invalidation failed:', err);
+      }
 
       return {
         journalEntryId: journalEntry.id,

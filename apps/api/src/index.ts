@@ -20,6 +20,7 @@ import { planningRoutes } from './domains/planning';
 import { aiRoutes } from './domains/ai';
 import { servicesRoutes } from './domains/services';
 import { systemRoutes } from './domains/system';
+import { reportCache } from './domains/accounting/services/report-cache';
 
 const server: FastifyInstance = Fastify({
     logger: true,
@@ -244,6 +245,7 @@ const gracefulShutdown = async () => {
     server.log.info('Shutting down gracefully...');
     try {
         await server.close();
+        reportCache.destroy(); // Cleanup report cache
         await prisma.$disconnect();
         server.log.info('✓ Server and database connections closed gracefully');
         process.exit(0);
