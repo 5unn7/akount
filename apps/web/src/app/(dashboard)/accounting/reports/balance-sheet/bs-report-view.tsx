@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Calendar, Download, Scale, AlertTriangle } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -158,6 +159,49 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                                     CSV
                                 </Button>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* BS Composition Chart */}
+                    <div className="glass rounded-xl p-6">
+                        <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
+                            Balance Sheet Composition
+                        </h4>
+                        <div className="h-48">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                    data={[
+                                        { name: 'Assets', amount: initialData.assets.total / 100 },
+                                        { name: 'Liabilities', amount: initialData.liabilities.total / 100 },
+                                        { name: 'Equity', amount: initialData.equity.total / 100 },
+                                    ]}
+                                    margin={{ top: 8, right: 8, bottom: 0, left: 8 }}
+                                >
+                                    <XAxis
+                                        dataKey="name"
+                                        tick={{ fill: 'var(--color-muted-foreground)', fontSize: 12 }}
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <YAxis
+                                        tick={{ fill: 'var(--color-muted-foreground)', fontSize: 11 }}
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`}
+                                    />
+                                    <Tooltip
+                                        formatter={(value: number) => [`$${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 'Amount']}
+                                        contentStyle={{ background: 'var(--color-ak-bg-2, #15151F)', border: '1px solid var(--color-ak-border)', borderRadius: 8 }}
+                                        labelStyle={{ color: 'var(--color-foreground)' }}
+                                        itemStyle={{ color: 'var(--color-foreground)' }}
+                                    />
+                                    <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
+                                        <Cell fill="var(--color-ak-blue)" />
+                                        <Cell fill="var(--color-ak-red)" />
+                                        <Cell fill="var(--color-ak-green)" />
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 

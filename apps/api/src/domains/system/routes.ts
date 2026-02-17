@@ -7,6 +7,8 @@ import { validateBody } from '../../middleware/validation';
 import { withPermission, adminOnly } from '../../middleware/withPermission';
 import { auditQueryService } from './services/audit-query.service';
 import { EntityService } from './services/entity.service';
+import { streamDataBackup } from './services/data-export.service';
+import { createAuditLog } from '../../lib/audit';
 import { onboardingRoutes } from './routes/onboarding';
 import { onboardingProgressRoutes } from './routes/onboarding-progress';
 import { entityRoutes } from './routes/entity';
@@ -335,6 +337,52 @@ export async function systemRoutes(fastify: FastifyInstance) {
           error: 'Not Implemented',
           message: 'Settings update will be implemented in a future phase',
         });
+      }
+    );
+
+    // ============================================================================
+    // DATA EXPORT (Full Backup)
+    // ============================================================================
+
+    /**
+     * GET /api/system/data-export
+     *
+     * Download a full data backup as a streaming ZIP archive.
+     * OWNER/ADMIN only. Rate limited to 3 requests per minute.
+     * Contains all tenant data as CSV files + metadata.json.
+     */
+    tenantScope.get(
+      '/data-export',
+      {
+        ...adminOnly,
+        config: {
+          rateLimit: {
+            max: 3,
+            timeWindow: '1 minute',
+          },
+        },
+      },
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        const { entityId } = request.query as { entityId?: string };
+
+        await createAuditLog({
+          tenantId: request.tenantId as string,
+          userId: request.userId as string,
+          model: 'DataExport',
+          recordId: 'full-backup',
+          action: 'EXPORT',
+          after: { format: 'zip', entityId: entityId || 'all' },
+        });
+
+        try {
+          await streamDataBackup(reply, request.tenantId as string, entityId);
+        } catch (error) {
+          request.log.error({ error }, 'Data export failed');
+          return reply.status(500).send({
+            error: 'Export Failed',
+            message: 'Failed to generate data export',
+          });
+        }
       }
     );
 

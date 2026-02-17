@@ -2,12 +2,24 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Calendar, Download, PieChart } from 'lucide-react';
+import { Calendar, Download, PieChart as PieChartIcon } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { formatCurrency, formatPercentage, formatReportDate, downloadReport, type SpendingReport } from '@/lib/api/reports';
+
+const CHART_COLORS = [
+    'var(--color-ak-red)',
+    'var(--color-ak-blue)',
+    'var(--color-ak-purple)',
+    'var(--color-ak-green)',
+    'var(--color-ak-teal)',
+    'var(--color-primary)',
+    'var(--color-muted-foreground)',
+    'var(--color-ak-blue)',
+];
 
 interface SpendingReportViewProps {
     initialData: SpendingReport | null;
@@ -94,7 +106,7 @@ export function SpendingReportView({ initialData, initialParams, error }: Spendi
 
             {!initialData && !error && (
                 <div className="glass rounded-xl p-12 text-center">
-                    <PieChart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <PieChartIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">
                         Select a date range and click &quot;Generate Report&quot; to view spending breakdown
                     </p>
@@ -130,6 +142,54 @@ export function SpendingReportView({ initialData, initialParams, error }: Spendi
                             </div>
                         </div>
                     </div>
+
+                    {/* Expense Breakdown Chart */}
+                    {initialData.categories.length > 0 && (
+                        <div className="glass rounded-xl p-6">
+                            <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
+                                Expense Breakdown
+                            </h4>
+                            <div className="h-64 flex items-center justify-center">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie
+                                            data={initialData.categories.slice(0, 8).map(c => ({
+                                                name: c.category,
+                                                value: c.amount / 100,
+                                            }))}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={90}
+                                            paddingAngle={2}
+                                            dataKey="value"
+                                        >
+                                            {initialData.categories.slice(0, 8).map((_, idx) => (
+                                                <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip
+                                            formatter={(value: number) => [`$${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 'Amount']}
+                                            contentStyle={{ background: 'var(--color-ak-bg-2, #15151F)', border: '1px solid var(--color-ak-border)', borderRadius: 8 }}
+                                            labelStyle={{ color: 'var(--color-foreground)' }}
+                                            itemStyle={{ color: 'var(--color-foreground)' }}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div className="flex flex-wrap gap-3 justify-center mt-2">
+                                {initialData.categories.slice(0, 8).map((cat, idx) => (
+                                    <div key={idx} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                        <div
+                                            className="w-2.5 h-2.5 rounded-full"
+                                            style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }}
+                                        />
+                                        {cat.category}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Spending Categories */}
                     <div className="glass rounded-xl overflow-hidden">
