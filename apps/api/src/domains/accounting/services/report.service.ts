@@ -1,5 +1,6 @@
-import { prisma } from '@akount/db';
+import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
+import { tenantScopedQuery } from '../../../lib/tenant-scoped-query';
 
 /**
  * Report Service
@@ -343,10 +344,133 @@ export class ReportService {
     return num;
   }
 
-  // ─── Public Report Generation Methods (implemented in subsequent tasks) ──────
+  // ─── Public Report Generation Methods ────────────────────────────────────────
 
-  // Implemented in Task 3
-  // async generateProfitLoss(params: ProfitLossQuery): Promise<ProfitLossReport>
+  /**
+   * Generate Profit & Loss Statement (Income Statement)
+   * Revenue - Expenses = Net Income
+   *
+   * @param params Query parameters (entityId optional for multi-entity mode)
+   * @returns P&L report with hierarchical account breakdown
+   */
+  async generateProfitLoss(params: {
+    entityId?: string;
+    startDate: Date;
+    endDate: Date;
+    comparisonPeriod?: 'PREVIOUS_PERIOD' | 'PREVIOUS_YEAR';
+  }): Promise<ProfitLossReport> {
+    // 1. Determine entity scope
+    let entityIds: string[];
+    let entityName: string;
+    let currency: string;
+
+    if (params.entityId) {
+      await this.validateEntityOwnership(params.entityId);
+      entityIds = [params.entityId];
+      const entity = await prisma.entity.findUniqueOrThrow({
+        where: { id: params.entityId },
+      });
+      entityName = entity.name;
+      currency = entity.functionalCurrency;
+    } else {
+      // Multi-entity consolidation
+      entityIds = await this.getEntityIds();
+      currency = await this.validateMultiEntityCurrency(entityIds);
+      entityName = 'All Entities';
+    }
+
+    // 2. Query journal line aggregates for REVENUE and EXPENSE accounts
+    // Use tenantScopedQuery for security (defense in depth)
+    const results = await tenantScopedQuery<AggregateRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          gl."id" as "glAccountId",
+          gl."code",
+          gl."name",
+          gl."type",
+          gl."normalBalance",
+          COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
+          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+        FROM "GLAccount" gl
+        INNER JOIN "Entity" e ON e.id = gl."entityId"
+        LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
+        LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
+        WHERE e."tenantId" = ${tenantId}
+          AND gl."entityId" IN (${Prisma.join(entityIds)})
+          AND gl."type" IN ('REVENUE', 'EXPENSE')
+          AND (
+            jl.id IS NULL
+            OR (
+              je."status" = 'POSTED'
+              AND je."date" >= ${params.startDate}
+              AND je."date" <= ${params.endDate}
+              AND je."deletedAt" IS NULL
+              AND jl."deletedAt" IS NULL
+            )
+          )
+        GROUP BY gl.id, gl.code, gl.name, gl.type, gl."normalBalance"
+        ORDER BY gl.code ASC
+      `
+    );
+
+    // 3. Convert BigInt to Number and calculate balances
+    const revenueItems: ReportLineItem[] = [];
+    const expenseItems: ReportLineItem[] = [];
+
+    for (const row of results) {
+      const debit = this.convertBigInt(row.totalDebit);
+      const credit = this.convertBigInt(row.totalCredit);
+
+      // Calculate balance based on account type
+      // REVENUE: credits increase balance (credits - debits)
+      // EXPENSE: debits increase balance (debits - credits)
+      const balance = row.type === 'REVENUE' ? credit - debit : debit - credit;
+
+      const item: ReportLineItem = {
+        accountId: row.glAccountId,
+        code: row.code,
+        name: row.name,
+        type: row.type,
+        normalBalance: row.normalBalance as 'DEBIT' | 'CREDIT',
+        balance,
+        depth: 0, // Flat for now, hierarchical in future iteration
+        isSubtotal: false,
+      };
+
+      if (row.type === 'REVENUE') {
+        revenueItems.push(item);
+      } else {
+        expenseItems.push(item);
+      }
+    }
+
+    // 4. Calculate totals
+    const totalRevenue = revenueItems.reduce((sum, item) => sum + item.balance, 0);
+    const totalExpense = expenseItems.reduce((sum, item) => sum + item.balance, 0);
+    const netIncome = totalRevenue - totalExpense;
+
+    // 5. Build report
+    const report: ProfitLossReport = {
+      entityId: params.entityId,
+      entityName,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      currency,
+      comparisonPeriod: params.comparisonPeriod,
+      revenue: {
+        items: revenueItems,
+        total: totalRevenue,
+      },
+      expenses: {
+        items: expenseItems,
+        total: totalExpense,
+      },
+      netIncome,
+    };
+
+    return report;
+  }
 
   // Implemented in Task 4
   // async generateBalanceSheet(params: BalanceSheetQuery): Promise<BalanceSheetReport>
