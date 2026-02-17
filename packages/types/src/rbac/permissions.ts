@@ -206,6 +206,14 @@ export const PERMISSION_MATRIX: Record<PermissionKey, PermissionEntry> = {
     INVESTOR: 'HIDDEN',
     ADVISOR: 'HIDDEN',
   },
+  'accounting:reports': {
+    OWNER: 'VIEW',
+    ADMIN: 'VIEW',
+    ACCOUNTANT: 'VIEW',
+    BOOKKEEPER: 'HIDDEN',
+    INVESTOR: 'VIEW',
+    ADVISOR: 'VIEW',
+  },
 
   // Planning & Analytics Domain
   'planning:reports': {
