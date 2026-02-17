@@ -1,8 +1,8 @@
 # Akount - Development Roadmap
 
-**Version:** 2.0
-**Last Updated:** 2026-02-15
-**Current Phase:** Phase 4 IN PROGRESS (~80%) — Bill & Get Paid
+**Version:** 2.1
+**Last Updated:** 2026-02-16
+**Current Phase:** Phase 6 — Launch MVP (Not Started)
 
 ---
 
@@ -29,8 +29,8 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 | 1 | See Your Money | COMPLETE | 62 |
 | 2 | Track Your Money | COMPLETE | 117 |
 | 3 | Post Your Money | COMPLETE | 33 posting + COA/JE |
-| 4 | Bill & Get Paid | IN PROGRESS (~80%) | 21 category + Sprint 1-6 |
-| 5 | Understand Your Money | Not started | — |
+| 4 | Bill & Get Paid | COMPLETE | 21 category + Sprint 1-6 |
+| 5 | Understand Your Money | COMPLETE | 18 report + 249 service |
 | 6 | Launch MVP | Not started | — |
 | Post-Launch | Plan & Automate | Not started | — |
 
@@ -341,10 +341,10 @@ This roadmap defines the path from current state to a shippable MVP and beyond. 
 | 1: See Your Money | ~35 | COMPLETE |
 | 2: Track Your Money | ~70 | COMPLETE |
 | 3: Post Your Money | ~45 | COMPLETE |
-| 4: Bill & Get Paid | 40-50 | IN PROGRESS (~80%) |
-| 5: Understand Your Money | 45-55 | Not started |
+| 4: Bill & Get Paid | 40-50 | COMPLETE |
+| 5: Understand Your Money | 45-55 | COMPLETE |
 | 6: Launch MVP | 40-50 | Not started |
-| **MVP Total** | **300-340** | **~70% complete** |
+| **MVP Total** | **300-340** | **~85% complete** |
 | Post-Launch: Plan | 35-45 | Post-launch |
 | Post-Launch: Automate | 30-40 | Post-launch |
 | **Full Product** | **365-425** | |
@@ -386,5 +386,5 @@ These are tracked but not phase-gated — they happen alongside phase work:
 
 ---
 
-**Last Updated:** 2026-02-15
+**Last Updated:** 2026-02-16
 **Next Review:** 2026-02-22

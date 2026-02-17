@@ -1,15 +1,57 @@
 # Akount - Current Status
 
 **Last Updated:** 2026-02-16
-**Overall Progress:** Phase 4 IN PROGRESS (~80%), Phases 1-3 Complete, Onboarding Complete
+**Overall Progress:** Phase 5 COMPLETE, Phases 1-4 Complete, Phase 6 Next
 
 ---
 
-## Current Phase: Phase 4 - Bill & Get Paid (IN PROGRESS)
+## Current Phase: Phase 6 — Launch MVP (NOT STARTED)
+
+**Goal:** Production-ready application — security audit, performance, CI/CD, monitoring.
+
+**Prerequisites:** All core features built (Phases 1-5 complete).
+
+---
+
+## Phase 5: Understand Your Money (COMPLETE — 2026-02-16)
+
+**Goal:** Financial statements, management reports, data export.
+
+### Backend (6 sprints)
+
+| Sprint | Scope | Commit |
+|--------|-------|--------|
+| 0 | Infrastructure — tenantScopedQuery, composite indexes, RBAC, SQL injection hook | 117c040, 76bdd3a, ae9b18c, d8d5456 |
+| 1 | P&L, Balance Sheet, Cash Flow reports + tests | dedec5e, 17d832f, 1077076 |
+| 2 | Trial Balance, GL Ledger, Spending, Revenue + cache | 54f345f, e4eac68, 0344955, c9c1034 |
+| 3 | Frontend report pages (P&L, BS, CF, TB, GL, Spending, Revenue) | bf572a2 |
+| 4 | Cash Flow, Trial Balance, GL Ledger, Spending, Revenue pages | e429674 |
+| 5 | PDF + CSV export with download buttons | 4962165 |
+| 6 | Data backup service, charts, settings export | 26d7a8b |
+
+**7 report endpoints:** P&L, Balance Sheet, Cash Flow, Trial Balance, GL Ledger, Spending, Revenue
+**1 data export endpoint:** GET /api/system/data-export (streaming ZIP)
+**Report cache:** In-memory, bounded (500 entries), 5-min TTL, tenant-scoped
+
+### Frontend (7 report pages + data export)
+
+- Reports home page with navigation cards
+- P&L view with trend bar chart + PDF/CSV export
+- Balance Sheet with composition bar chart + PDF/CSV export
+- Cash Flow statement + PDF/CSV export
+- Trial Balance + PDF/CSV export
+- GL Ledger with account filtering + PDF/CSV export
+- Spending by Category with donut chart + PDF/CSV export
+- Revenue by Client + PDF/CSV export
+- Settings page data export card (streaming ZIP download)
+
+---
+
+## Phase 4: Bill & Get Paid (COMPLETE — 2026-02-16)
 
 **Goal:** Invoice creation, bill tracking, payment allocation with GL posting.
 
-### Backend (6 sprints — 2026-02-15)
+### Backend (6 sprints — 2026-02-15/16)
 
 | Sprint | Scope | Commit |
 |--------|-------|--------|
@@ -17,6 +59,7 @@
 | 2 | DocumentPostingService for GL posting | 9d7cf4d |
 | 3 | Payment service with allocation + deallocation | 904d448 |
 | 5 | Invoice PDF generation + email sending | 5ba12de |
+| E2E | Payment allocation GL posting route | 8bd9d2e |
 
 ### Frontend (2 sprints — 2026-02-15)
 
@@ -25,26 +68,38 @@
 | 4 | Invoice, bill & payment forms + API clients | 2e858b3 |
 | 6 | Detail pages, payment list, AR/AP enhancement | dbb2889 |
 
-### Category Engine (NEW — 2026-02-15, commit 1de961e)
+### Category Engine (2026-02-15, commit 1de961e)
 
 - Category CRUD API (21 route tests), auto-categorization, dedup
 - Single source of truth for default category seeding
 
-### Bug Fixes (2026-02-15)
+---
 
-- Zod `.partial()` on refined schemas — extracted base schemas (f31172a)
-- Onboarding flow — missing page, error classification, mock data removal (0d6f810)
-- PDF import dedup — abs() amount comparison, format-agnostic balance detection (bc16dde)
-- apiClient Content-Type — only set JSON header when body exists (1de961e)
-- Turbopack imports — `import { type X }` → `import type { X }` in 11 components
-- Tenant isolation middleware — 2-hop nesting support (account.entity.tenantId)
+## Code Audit (2026-02-16)
 
-### Infrastructure (2026-02-15)
+- **P0:** Deleted 4,308 lines of dead code (legacy services, orphan files, unused CSS) — 0925fb8
+- **P1:** Type safety fixes (pdfjsLib typed, FxRateService export, @ts-ignore removed) — 0925fb8
+- **P2:** Backend module split: parser.service.ts (1,097L) → parser-csv + parser-pdf + parser-shared — fb900d5
+- **P2:** Frontend splits: chart-of-accounts, journal-entries, reconciliation — fb900d5
+- **P3:** Archived 21 completed plans to docs/archive/plans/ — fb900d5
 
-- Product thinking rule + `/processes:diagnose` + `/processes:end-session` (e35c8ea)
-- PostToolUse type-check hook + SessionStart port-cleanup hook (d3d2356)
-- Entity creation with 195 countries + CountrySelect component (d5ac6d6)
-- Cookie + Context entity switching pattern (uncommitted)
+## Test Coverage Sprint (2026-02-16)
+
+- Added 249 tests across 6 new service test suites
+- Service coverage: 17/27 (63%) → 27/27 (100%)
+- Tests: 720 → 1009 (verified count)
+
+## Dashboard Redesign (2026-02-16, uncommitted)
+
+- NetWorthHero (replaces LiquidityHero), RecentTransactions, 7-stat left rail
+- Enhanced EntitiesSection (country, currency display)
+
+## Onboarding Personal-First Redesign (2026-02-16, uncommitted)
+
+- 3 new step components (EmploymentStep, BusinessSetupStep, AddressStep)
+- Conditional flow: business step only for self-employed/founder
+- IP-based country detection, 195-country CountrySelect
+- Updated stores, wizard, completion step
 
 ---
 
@@ -52,87 +107,21 @@
 
 ### Phase 3: Post Your Money (COMPLETE — 2026-02-15)
 
-**Goal:** Chart of accounts, double-entry journal entries, transaction posting to GL.
+Backend: 33 posting tests, 19 COA/JE endpoints, PostingService (852 lines).
+Frontend: COA tree view, JE form, posting UI. See TASKS.md for details.
 
-**Backend (COMPLETE — 33 posting tests, 19 COA/JE endpoints):**
-- Chart of Accounts API: CRUD, hierarchy, balances, default COA seeding (7 endpoints)
-- Journal Entry API: CRUD, approve, void, post transaction, bulk post (12 endpoints)
-- PostingService: serializable isolation, multi-currency FX, split transactions, largest-remainder rounding (852 lines)
-- 33 posting tests: 11 basic + 7 multi-currency + 5 bulk + 10 split
+### Phase 2: Track Your Money (COMPLETE — 2026-02-12)
 
-**Frontend (COMPLETE — 5 client components, API client, server actions):**
-- Chart of Accounts page: tree view, CRUD Sheet, type filter, seed button, account balances
-- Journal Entry form: dynamic lines, GL account dropdowns, live debit/credit balance indicator
-- Journal Entries list: expandable rows, approve/void/delete actions, status badges, cursor pagination
-- Transaction posting UI: PostingStatusBadge, GL account posting Sheet, single + bulk posting
-- API client (accounting.ts): 12 functions with full type definitions
-- Server actions: COA (6 actions) + JE (4 actions)
-
-**Code Quality Fixes (2026-02-15):**
-- Replaced console.error with user-facing error state in COA client + transactions posting
-- Fixed React import ordering in JE client
-- Fixed deactivate endpoint alignment (POST /deactivate → DELETE /:id)
-
----
-
-### Code Review Fixes (IN PROGRESS — 2026-02-14)
-
-**Goal:** Address critical issues from multi-agent code review (design tokens, loading states, security).
-
-**Plan:** [docs/plans/2026-02-14-fix-code-review-issues.md](docs/plans/2026-02-14-fix-code-review-issues.md)
-
-**Completed (3/5 issues):**
-- ✅ **Issue 1 (Partial):** Added 24 loading/error pages for planning and services domains
-- ✅ **Issue 2:** Deleted unreachable onboarding route (overlay-only design)
-- ✅ **Issue 3:** Fixed badge.tsx and AIBrief.tsx to use semantic tokens (0 hardcoded colors)
-- ✅ **Issue 4:** Split ImportUploadForm complexity (415 → 77 lines)
-- ✅ **Security M-2:** Invoice/bill amount validation (prevent manipulation)
-- ✅ **Security M-4:** Unique constraints on invoice/bill numbers
-- ✅ **Security M-5:** Stats endpoint rate limiting
-
-**Remaining (2/5 issues):**
-- ⏳ **Issue 1 (Partial):** 8 accounting + 8 banking pages still need loading/error states
-- ⏳ **Issue 5:** Service-level tests for client, invoice, bill, vendor services (70+ tests needed)
-
-**Modified Files:** 15 files (API services, schemas, routes, middleware, frontend components)
-
-**Code Quality:** 0 `: any` types, 0 `console.log`, 0 hardcoded colors ✓
-
----
-
-### Slice 4: Business Domain Pages (COMPLETE — 2026-02-14)
-
-**Goal:** AR/AP management with invoices, bills, clients, vendors.
-
-**Backend (100 tests, commits 6f3a840, ddc2e82, 30e3d89, 02caa75):**
-- Invoices API (GET, POST, PATCH, DELETE, stats, aging)
-- Bills API (GET, POST, PATCH, DELETE, stats, aging)
-- Clients API (GET, POST, PATCH, DELETE, list)
-- Vendors API (GET, POST, PATCH, DELETE, list)
-- InvoiceService, BillService, ClientService, VendorService
-
-**Frontend (21 files, commits e7c57c7, 7e3f9e4, 77d74dd):**
-- Invoicing page with AR/AP metrics, aging bars, invoice/bill tables
-- Clients directory with stats grid, client table
-- Vendors directory with stats grid, vendor table
-- 4 DetailPanel components (Invoice, Bill, Client, Vendor) with Sheet integration
-- StatsGrid, AgingBar shared components
-- Loading/error states for all 3 pages
-- API client functions (invoices.ts, bills.ts, clients.ts, vendors.ts)
-
-**Code Review (commit 77d74dd):**
-- Design System: 98% compliance (zero hardcoded colors, glass utilities)
-- Next.js Patterns: 92% compliance (perfect Server/Client boundaries)
-- TypeScript Safety: 94% compliance (zero `: any` types)
-- P2 Fixes: Removed console.error, fixed hardcoded currency (multi-currency support)
+Backend: 117 tests (transactions, import, reconciliation).
+Frontend: CSV/PDF upload, reconciliation dashboard, import history.
 
 ### Phase 1: See Your Money (COMPLETE — 2026-02-09)
 
-Dashboard, account management, multi-currency, entity filtering. 62 backend tests. Full frontend with loading states, error boundaries, SEO.
+Backend: 62 tests (dashboard, accounts, FX). Frontend: dashboard, accounts, entity filter.
 
 ### Foundation (COMPLETE — 2026-02-01)
 
-Auth (Clerk), DB (38 models), API (Fastify), design system (Figma + glass UI), monorepo (Turborepo).
+Auth (Clerk), DB (39 models), API (Fastify), design system, monorepo.
 
 ---
 
@@ -140,14 +129,15 @@ Auth (Clerk), DB (38 models), API (Fastify), design system (Figma + glass UI), m
 
 | Metric | Value |
 |--------|-------|
-| Backend Tests | 747 passing (757 total, 10 pre-existing env failures) |
+| Backend Tests | 1009 passing (verified 2026-02-16) |
 | TypeScript Errors | 0 |
-| API Endpoints (functional) | 100+ |
-| Backend Services | 24+ |
-| Frontend Pages (functional) | 20+ |
-| Frontend Pages (placeholder) | 25 |
+| API Endpoints (functional) | 110+ |
+| Backend Services | 27+ (100% test coverage) |
+| Frontend Pages (functional) | 27+ |
+| Frontend Pages (placeholder) | 15 |
 | Prisma Models | 39 |
 | Code Quality | 0 `: any` prod, 0 console.log, 0 hardcoded colors |
+| Report Endpoints | 7 financial reports + 1 data export |
 
 ---
 
