@@ -472,8 +472,202 @@ export class ReportService {
     return report;
   }
 
-  // Implemented in Task 4
-  // async generateBalanceSheet(params: BalanceSheetQuery): Promise<BalanceSheetReport>
+  /**
+   * Generate Balance Sheet (Statement of Financial Position)
+   * Assets = Liabilities + Equity (accounting equation)
+   *
+   * @param params Query parameters (entityId optional for multi-entity mode)
+   * @returns Balance sheet with A=L+E validation
+   */
+  async generateBalanceSheet(params: {
+    entityId?: string;
+    asOfDate: Date;
+    comparisonDate?: Date;
+  }): Promise<BalanceSheetReport> {
+    // 1. Determine entity scope
+    let entityIds: string[];
+    let entityName: string;
+    let currency: string;
+
+    if (params.entityId) {
+      await this.validateEntityOwnership(params.entityId);
+      entityIds = [params.entityId];
+      const entity = await prisma.entity.findUniqueOrThrow({
+        where: { id: params.entityId },
+      });
+      entityName = entity.name;
+      currency = entity.functionalCurrency;
+    } else {
+      // Multi-entity consolidation
+      entityIds = await this.getEntityIds();
+      currency = await this.validateMultiEntityCurrency(entityIds);
+      entityName = 'All Entities';
+    }
+
+    // 2. Query cumulative balances for ASSET, LIABILITY, and EQUITY accounts up to asOfDate
+    const results = await tenantScopedQuery<AggregateRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          gl."id" as "glAccountId",
+          gl."code",
+          gl."name",
+          gl."type",
+          gl."normalBalance",
+          COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
+          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+        FROM "GLAccount" gl
+        INNER JOIN "Entity" e ON e.id = gl."entityId"
+        LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
+        LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
+        WHERE e."tenantId" = ${tenantId}
+          AND gl."entityId" IN (${Prisma.join(entityIds)})
+          AND gl."type" IN ('ASSET', 'LIABILITY', 'EQUITY')
+          AND (
+            jl.id IS NULL
+            OR (
+              je."status" = 'POSTED'
+              AND je."date" <= ${params.asOfDate}
+              AND je."deletedAt" IS NULL
+              AND jl."deletedAt" IS NULL
+            )
+          )
+        GROUP BY gl.id, gl.code, gl.name, gl.type, gl."normalBalance"
+        ORDER BY gl.code ASC
+      `
+    );
+
+    // 3. Convert BigInt and calculate balances
+    const assetItems: ReportLineItem[] = [];
+    const liabilityItems: ReportLineItem[] = [];
+    const equityItems: ReportLineItem[] = [];
+
+    for (const row of results) {
+      const debit = this.convertBigInt(row.totalDebit);
+      const credit = this.convertBigInt(row.totalCredit);
+
+      // Balance calculation based on normal balance:
+      // ASSET (debit normal): debits - credits
+      // LIABILITY/EQUITY (credit normal): credits - debits
+      const balance = row.normalBalance === 'DEBIT' ? debit - credit : credit - debit;
+
+      const item: ReportLineItem = {
+        accountId: row.glAccountId,
+        code: row.code,
+        name: row.name,
+        type: row.type,
+        normalBalance: row.normalBalance as 'DEBIT' | 'CREDIT',
+        balance,
+        depth: 0,
+        isSubtotal: false,
+      };
+
+      if (row.type === 'ASSET') {
+        assetItems.push(item);
+      } else if (row.type === 'LIABILITY') {
+        liabilityItems.push(item);
+      } else {
+        equityItems.push(item);
+      }
+    }
+
+    // 4. Calculate Retained Earnings
+    // 4a. Prior years balance (from GL account 3100 - Retained Earnings)
+    const retainedEarningsAccount = equityItems.find((item) => item.code === '3100');
+    const priorYearsRetainedEarnings = retainedEarningsAccount?.balance || 0;
+
+    // 4b. Current year net income (REVENUE - EXPENSE from fiscal year start to asOfDate)
+    const { start: fiscalYearStart } = await this.getFiscalYearBoundaries(
+      entityIds[0], // Use first entity for fiscal year boundaries
+      params.asOfDate
+    );
+
+    // Query REVENUE and EXPENSE for current fiscal year
+    const incomeResults = await tenantScopedQuery<AggregateRow>(
+      this.tenantId,
+      (tenantId) => Prisma.sql`
+        SELECT
+          gl."type",
+          COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
+          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+        FROM "GLAccount" gl
+        INNER JOIN "Entity" e ON e.id = gl."entityId"
+        LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
+        LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
+        WHERE e."tenantId" = ${tenantId}
+          AND gl."entityId" IN (${Prisma.join(entityIds)})
+          AND gl."type" IN ('REVENUE', 'EXPENSE')
+          AND (
+            jl.id IS NULL
+            OR (
+              je."status" = 'POSTED'
+              AND je."date" >= ${fiscalYearStart}
+              AND je."date" <= ${params.asOfDate}
+              AND je."deletedAt" IS NULL
+              AND jl."deletedAt" IS NULL
+            )
+          )
+        GROUP BY gl."type"
+      `
+    );
+
+    let currentYearRevenue = 0;
+    let currentYearExpense = 0;
+
+    for (const row of incomeResults) {
+      const debit = this.convertBigInt(row.totalDebit);
+      const credit = this.convertBigInt(row.totalCredit);
+
+      if (row.type === 'REVENUE') {
+        currentYearRevenue = credit - debit;
+      } else {
+        currentYearExpense = debit - credit;
+      }
+    }
+
+    const currentYearNetIncome = currentYearRevenue - currentYearExpense;
+    const totalRetainedEarnings = priorYearsRetainedEarnings + currentYearNetIncome;
+
+    // 5. Calculate totals and validate accounting equation
+    const totalAssets = assetItems.reduce((sum, item) => sum + item.balance, 0);
+    const totalLiabilities = liabilityItems.reduce((sum, item) => sum + item.balance, 0);
+    const totalEquity = equityItems.reduce((sum, item) => sum + item.balance, 0);
+    const totalLiabilitiesAndEquity = totalLiabilities + totalEquity + totalRetainedEarnings;
+
+    // Allow 1 cent rounding difference
+    const isBalanced = Math.abs(totalAssets - totalLiabilitiesAndEquity) <= 1;
+
+    // 6. Build report
+    const report: BalanceSheetReport = {
+      entityId: params.entityId,
+      entityName,
+      asOfDate: params.asOfDate,
+      currency,
+      comparisonDate: params.comparisonDate,
+      assets: {
+        items: assetItems,
+        total: totalAssets,
+      },
+      liabilities: {
+        items: liabilityItems,
+        total: totalLiabilities,
+      },
+      equity: {
+        items: equityItems,
+        total: totalEquity,
+      },
+      retainedEarnings: {
+        priorYears: priorYearsRetainedEarnings,
+        currentYear: currentYearNetIncome,
+        total: totalRetainedEarnings,
+      },
+      isBalanced,
+      totalAssets,
+      totalLiabilitiesAndEquity,
+    };
+
+    return report;
+  }
 
   // Implemented in Task 5
   // async generateCashFlow(params: CashFlowQuery): Promise<CashFlowReport>
