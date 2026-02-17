@@ -19,7 +19,9 @@ export type AccountingErrorCode =
   | 'CROSS_ENTITY_REFERENCE'
   | 'FISCAL_PERIOD_CLOSED'
   | 'SEPARATION_OF_DUTIES'
-  | 'BANK_ACCOUNT_NOT_MAPPED';
+  | 'BANK_ACCOUNT_NOT_MAPPED'
+  | 'MULTI_CURRENCY_CONSOLIDATION_NOT_SUPPORTED'
+  | 'AMOUNT_OVERFLOW';
 
 export class AccountingError extends Error {
   constructor(
