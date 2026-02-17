@@ -24,11 +24,12 @@ export function errorHandler(
     return reply.status(400).send({
       error: 'Validation Error',
       message: 'Request validation failed',
-      details: error.errors.map(err => ({
-        path: err.path.join('.'),
-        message: err.message,
-        code: err.code,
-      })),
+      ...(process.env.NODE_ENV === 'development' && {
+        details: error.errors.map(err => ({
+          path: err.path.join('.'),
+          message: err.message,
+        })),
+      }),
     })
   }
 

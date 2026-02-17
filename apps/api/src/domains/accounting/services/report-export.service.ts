@@ -23,7 +23,7 @@ export class ReportExportService {
    * Characters =+\-@\t\r at the start of a cell can trigger
    * formula execution in Excel/Google Sheets.
    */
-  private sanitizeCsvCell(value: string): string {
+  private sanitizeCsvCell(value: string | null | undefined): string {
     if (!value) return '';
 
     // Prevent formula injection (starts with =+\-@\t\r)

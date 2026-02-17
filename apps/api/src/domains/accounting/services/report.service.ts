@@ -676,8 +676,7 @@ export class ReportService {
     // We only add current year net income separately
     const totalLiabilitiesAndEquity = totalLiabilities + totalEquity + currentYearNetIncome;
 
-    // Allow 1 cent rounding difference
-    const isBalanced = Math.abs(totalAssets - totalLiabilitiesAndEquity) <= 1;
+    const isBalanced = totalAssets === totalLiabilitiesAndEquity;
 
     // 6. Build report
     const report: BalanceSheetReport = {
@@ -1144,7 +1143,7 @@ export class ReportService {
               THEN jl."debitAmount" - jl."creditAmount"
               ELSE jl."creditAmount" - jl."debitAmount"
             END
-          ) OVER (ORDER BY jl.id) as "runningBalance"
+          ) OVER (ORDER BY je.date, jl.id) as "runningBalance"
         FROM "JournalLine" jl
         JOIN "JournalEntry" je ON jl."journalEntryId" = je.id
         JOIN "GLAccount" gl ON jl."glAccountId" = gl.id

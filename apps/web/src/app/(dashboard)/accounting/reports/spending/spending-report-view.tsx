@@ -18,7 +18,7 @@ const CHART_COLORS = [
     'var(--color-ak-teal)',
     'var(--color-primary)',
     'var(--color-muted-foreground)',
-    'var(--color-ak-blue)',
+    'var(--color-ak-pri-text)',
 ];
 
 interface SpendingReportViewProps {

@@ -446,7 +446,7 @@ describe('ReportService', () => {
       expect(result.isBalanced).toBe(false);
     });
 
-    it('should allow 1 cent rounding difference', async () => {
+    it('should detect 1 cent imbalance with strict enforcement', async () => {
       mockPrisma.entity.findUnique.mockResolvedValue(mockEntity);
       mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
 
@@ -489,8 +489,8 @@ describe('ReportService', () => {
         asOfDate,
       });
 
-      // $1,000.01 vs $1,000.00 = 1 cent difference (allowed)
-      expect(result.isBalanced).toBe(true);
+      // $1,000.01 vs $1,000.00 = 1 cent difference (strict: not balanced)
+      expect(result.isBalanced).toBe(false);
     });
   });
 

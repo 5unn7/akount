@@ -394,9 +394,10 @@ export async function reportRoutes(fastify: FastifyInstance) {
  * Sanitize filename to prevent path traversal and special characters.
  */
 function sanitizeFilename(name: string): string {
-  return name
+  const sanitized = name
     .replace(/[^a-zA-Z0-9._-]/g, '_')
     .substring(0, 100);
+  return sanitized || 'report';
 }
 
 /**
