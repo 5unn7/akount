@@ -61,6 +61,7 @@ Start with `SUMMARY.md`, then drill into specific agent reports for context.
 | Review | Date | Verdict | Findings | Key Learnings |
 |--------|------|---------|----------|---------------|
 | [phase5-reports](./phase5-reports/) | 2026-02-17 | ⚠️ Changes Required | 5 P0, 13 P1, 26 P2 | CSV sanitization, server/client split, cache invalidation |
+| [dashboard-overview](./dashboard-overview/) | 2026-02-17 | ⚠️ Changes Required | 1 P0, 7 P1, 13 P2 | XSS in AIBrief, sparkline duplication, page.tsx bloat |
 
 ---
 
