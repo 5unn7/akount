@@ -425,6 +425,21 @@ List 3-5 things that are genuinely good. Not fluff — specific patterns, decisi
 
 ---
 
+## Phase 7.5: Auto-Create Tasks from Audit Findings
+
+**Protocol:** See `.claude/rules/task-population.md` for full approval gate rules.
+
+After generating the audit report:
+
+1. Extract all actionable findings from the Top 5 Action Items and phase-specific findings
+2. Map to domains (most audit items → Dev or Operations)
+3. Priority: P0 findings → Critical, P1 → High, P2 → Medium
+4. **Present proposed tasks to user for approval** with Source (`audit:<YYYY-MM-DD>`) + Reason
+5. Write ONLY approved tasks to correct domain sections in TASKS.md
+6. Output: "Added N audit tasks: [IDs]"
+
+---
+
 ## Phase 8: Update Context Files
 
 If Phase 1 found staleness, offer to update the stale files:

@@ -224,6 +224,24 @@ Ask: "Clean up `.reviews/` directory?"
 
 ---
 
+## Phase 4.5: Auto-Create Tasks from Findings
+
+**Protocol:** See `.claude/rules/task-population.md` for full approval gate rules.
+
+After presenting the synthesis, offer to create tasks from findings:
+
+1. Parse all P0 and P1 findings from `.reviews/SYNTHESIS.md`
+2. Map each finding to domain + priority:
+   - `security-sentinel` → Dev/SEC, `performance-oracle` → Dev/PERF
+   - `financial-data-validator` → Dev/FIN, `kieran-typescript-reviewer` → Dev/DRY
+   - `design-system-enforcer` → Design System/DS
+3. Check for dependency relationships (e.g., "fix X before Y can work")
+4. **Present proposed tasks to user for approval** with Source + Reason columns
+5. Write ONLY approved tasks to correct domain section in TASKS.md
+6. Output: "Added N tasks to TASKS.md: [IDs]"
+
+---
+
 ## Resuming an Interrupted Review
 
 If a review was interrupted (rate limit, context exhaustion, closed session):

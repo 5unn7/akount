@@ -123,6 +123,21 @@ Save to `docs/brainstorms/YYYY-MM-DD-<topic>-brainstorm.md`:
 
 ---
 
+## Phase 3.5: Capture Action Items to TASKS.md
+
+**Protocol:** See `.claude/rules/task-population.md` for full approval gate rules.
+
+After the brainstorm synthesis:
+
+1. Extract concrete action items from the brainstorm output
+2. Classify each: is this a Dev, Design, Marketing, or Ops task?
+3. Note which items must complete before others can start
+4. **Present proposed tasks to user for approval** with Source (`brainstorm:<topic>`) + Reason
+5. Write ONLY approved tasks with appropriate priority and `[needs: ID]` dependencies
+6. Output: "Captured N action items: [IDs]"
+
+---
+
 ## Phase 4: Handoff
 
 The brainstorm file at `docs/brainstorms/YYYY-MM-DD-*.md` is the input for `/processes:plan`. Offer the user:

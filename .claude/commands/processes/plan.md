@@ -123,6 +123,21 @@ List files to read for pattern-matching (don't duplicate the file paths already 
 
 ---
 
+## Phase 2.5: Register Plan Tasks in TASKS.md
+
+**Protocol:** See `.claude/rules/task-population.md` for full approval gate rules.
+
+After breaking the plan into implementation steps:
+
+1. Extract all numbered tasks/sprints from the plan
+2. Map each to the correct TASKS.md domain section
+3. Identify dependency chains (Sprint 2 needs Sprint 1, etc.)
+4. **Present proposed tasks to user for approval** with Source (`plan:<feature-name>`) + Reason
+5. Write ONLY approved tasks with `[needs: PREV-ID]` linking sequential steps
+6. Output: "Registered N tasks: [IDs]. Dependency chain: A → B → C"
+
+---
+
 ## Phase 3: Document
 
 Save to `docs/plans/YYYY-MM-DD-feature-name.md`:

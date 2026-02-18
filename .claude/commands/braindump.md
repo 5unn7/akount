@@ -71,6 +71,20 @@ Consolidate into this format:
 
 ---
 
+## Step 4.5: Capture Agreed Improvements to TASKS.md
+
+**Protocol:** See `.claude/rules/task-population.md` for full approval gate rules.
+
+After synthesizing agent feedback:
+
+1. Extract items where agents AGREED something should change
+2. Skip disagreements or purely informational items
+3. **Present proposed tasks to user for approval** with Source (`braindump:<topic>`) + Reason
+4. Write ONLY approved tasks with domain and priority
+5. Output: "Captured N improvements: [IDs]"
+
+---
+
 ## Usage
 
 ```

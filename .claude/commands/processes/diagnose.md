@@ -156,6 +156,21 @@ Then ask: "Proceed with this fix?" or "Need more investigation?"
 
 ---
 
+## Phase 5.5: Register Fix Tasks in TASKS.md
+
+**Protocol:** See `.claude/rules/task-population.md` for full approval gate rules.
+
+After identifying the root cause and proposed fix:
+
+1. If the fix is multi-step, break into individual tasks
+2. If the fix reveals deeper issues, create follow-up tasks
+3. Mark the immediate fix as Critical/High
+4. **Present proposed tasks to user for approval** with Source (`diagnose:<bug-name>`) + Reason
+5. Write ONLY approved tasks with `[needs: ID]` if fix depends on other work
+6. Output: "Added fix tasks: [IDs]"
+
+---
+
 ## Phase 6: Fix & Document
 
 After user approves:

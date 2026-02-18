@@ -56,9 +56,9 @@ This workflow adapts based on session recency:
 **Determine which tier to use:**
 
 ```bash
-# Check ACTIVE-WORK.md for last session timestamp
-if [ -f "ACTIVE-WORK.md" ]; then
-  LAST_SESSION=$(grep -oP '\d{4}-\d{2}-\d{2} \d{2}:\d{2}' ACTIVE-WORK.md | tail -1)
+# Check TASKS.md "Active Now" table for last session timestamp
+if [ -f "TASKS.md" ]; then
+  LAST_SESSION=$(grep -oP '\d{4}-\d{2}-\d{2} \d{2}:\d{2}' TASKS.md | tail -1)
 
   if [ -n "$LAST_SESSION" ]; then
     # Calculate time diff (simplified - assume same day)
@@ -374,9 +374,9 @@ Consolidate everything into a concise dashboard:
 
 **Workflow:**
 
-1. Read ACTIVE-WORK.md to get current state
-2. Extract available tasks from TASKS.md (filter for `[dependency: none]`)
-3. Show other active work (other agents)
+1. Read "Active Now" table at top of TASKS.md to see other agents
+2. Extract available tasks from ALL 4 domains in TASKS.md (status: `ready`, no unmet `[needs:]` deps)
+3. Show other active work from "Active Now" table
 4. Output lightweight dashboard
 
 **Output format:**
@@ -389,26 +389,29 @@ Consolidate everything into a concise dashboard:
 
 ---
 
-## Available Tasks (dependency: none)
+## Available Tasks (ready, no unmet deps)
 
-**Security & Integrity (Track A):**
-- [ ] **SEC-6.1c:** GL opening balance calculation (1-2 hr, P0)
-- [ ] **SEC-6.1d:** Split reports.ts server/client (30 min, P0)
+**Dev:**
+- [ ] **SEC-8:** Complete security audit (4h, High)
+- [ ] **PERF-1:** Combine redundant BS SQL queries (2h, High)
+- [ ] **DEV-1:** Fix onboarding middleware (1h, Critical)
 
-**Performance (Track B):**
-- [ ] **PERF-6.2a:** Wire up pino in Fastify (30 min, P1)
+**Design System:**
+- [ ] **DS-1:** Figma-to-code token sync audit (2h, High)
 
-**Quality (Track C):**
-- [ ] **QUAL-6.1a:** Create loading/error templates (15 min, P0)
+**Marketing & Content:**
+- [ ] **MKT-1:** Landing page copy (3h, High)
+
+**Operations:**
+- [ ] **INFRA-1:** CI/CD pipeline (3h, High)
 
 ---
 
-## Active Work (Other Agents)
+## Active Now (from TASKS.md)
 
-| Agent ID | Task | Started | Status |
-|----------|------|---------|--------|
-| agent-ab5c159 | SEC-6.1b (CSV injection) | 45 min ago | in_progress |
-| agent-cd7e284 | PERF-6.1a (Cache reports) | 15 min ago | in_progress |
+| Agent | Domain | Task | Started |
+|-------|--------|------|---------|
+| (populated from "Active Now" table in TASKS.md) |
 
 ---
 
