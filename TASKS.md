@@ -33,6 +33,10 @@
 | TEST-3 | 80%+ API test coverage target | 2h | High | ready | [needs: TEST-1] | roadmap |
 | DEV-1 | Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume) | 1h | Critical | ready | | audit:smooth-floating-mountain |
 | DEV-2 | Service tests for client/invoice/bill/vendor services | 3h | High | ready | | audit:smooth-floating-mountain |
+| PERF-9 | Replace console.log with pino structured logging (7 production files) | 2h | High | ready | | plan:phase-6-tasks |
+| UX-8 | Add loading/error states to remaining dashboard pages (~30 pages) | 2h | High | ready | | plan:phase-6-tasks |
+| ARCH-2 | Audit log coverage expansion (bulk ops, imports, exports, reconciliation) | 3h | High | ready | | review:smooth-floating-mountain |
+| DOC-1 | Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy | 30m | High | ready | | review:smooth-floating-mountain |
 
 ### Medium / Low
 
@@ -50,6 +54,11 @@
 | UX-4 | Report views: replace array index React keys with stable identifiers | 15m | Medium | ready | | review:nextjs |
 | UX-6 | Keyboard shortcuts for power users (command palette, table nav) | 2h | Medium | backlog | | roadmap |
 | UX-7 | Help overlay documenting keyboard shortcuts | 1h | Medium | backlog | [needs: UX-6] | roadmap |
+| DOC-2 | Consolidate logging rules (full version in api-conventions.md, update guardrails.md ref) | 30m | Medium | ready | | review:smooth-floating-mountain |
+| DOC-3 | Archive .reviews/ temp workspace to docs/reviews/ or delete | 15m | Medium | ready | | review:smooth-floating-mountain |
+| ARCH-1 | OpenAPI spec auto-generation from Zod schemas (fastify-zod-openapi) | 3h | Medium | backlog | | review:smooth-floating-mountain |
+| ARCH-4 | Background job processing setup (BullMQ for PDF gen, email, imports) | 4h | Medium | backlog | | review:smooth-floating-mountain |
+| TEST-4 | Integration tests (API → DB → API roundtrip for critical flows) | 4h | Medium | backlog | | review:smooth-floating-mountain |
 | FIN-6 | Cash Flow: document hardcoded account code ranges for categorization | doc | Low | backlog | | review:financial |
 
 ---
@@ -97,6 +106,9 @@
 | INFRA-2 | Production environment setup | 2h | High | ready | | roadmap |
 | INFRA-3 | Database backups (automated daily) | 1h | High | ready | | roadmap |
 | INFRA-5 | Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts) | 2h | High | ready | [needs: INFRA-2] | roadmap |
+| INFRA-7 | OpenTelemetry instrumentation (distributed tracing, metrics, alerting) | 4h | High | ready | [needs: INFRA-2] | review:smooth-floating-mountain |
+| INFRA-8 | Docker image building + container deployment pipeline | 3h | High | ready | [needs: INFRA-1] | review:smooth-floating-mountain |
+| ARCH-3 | S3 cloud storage migration for file uploads (replace local filesystem) | 3h | High | ready | | review:smooth-floating-mountain |
 
 ### Medium / Low
 
