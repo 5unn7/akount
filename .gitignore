@@ -21,3 +21,11 @@ figmatoken
 
 # Review agent output (temporary)
 .reviews/
+
+# Task claims (machine-local, not shared via git)
+.claude/task-claims.json
+
+# Task ID counters (machine-local, atomic ID generation)
+.claude/.task-id-counters.json
+.claude/.task-id-counters.json.lock
+.claude/.task-id-counters.json.tmp

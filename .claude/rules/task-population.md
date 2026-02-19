@@ -74,9 +74,112 @@ When a task with `[needs: X]` is claimed, check if X is `done`. If not, warn the
 | Marketing & Content | MKT, CNT |
 | Operations | INFRA, OPS |
 
-## Next ID Resolution
+## ID Reservation (Atomic)
 
-Read TASKS.md, find the highest existing number for the prefix, increment by 1.
+**CRITICAL:** IDs must be reserved atomically to prevent collisions when multiple agents create tasks concurrently.
+
+### Workflow
+
+Before presenting tasks for approval, **reserve IDs** via the atomic ID service:
+
+```bash
+# Reserve 1 ID (default)
+node .claude/scripts/reserve-task-ids.js SEC
+
+# Reserve multiple IDs (batch - for reviews, plans with multiple tasks)
+node .claude/scripts/reserve-task-ids.js UX 5
+
+# Output (JSON):
+# {"ids":["UX-61","UX-62","UX-63","UX-64","UX-65"],"reservedAt":"2026-02-19T18:00:00.000Z"}
+```
+
+**Steps:**
+1. Identify N actionable tasks to create
+2. Reserve N IDs for the appropriate prefix(es) via `reserve-task-ids.js`
+3. Parse JSON output to get reserved IDs array
+4. Assign reserved IDs to tasks
+5. Present tasks for user approval (with pre-assigned IDs)
+6. On approval: submit to inbox with reserved IDs OR write directly to TASKS.md
+7. If using inbox: processor validates IDs and appends to TASKS.md
+
+### Integration Example (from review skill)
+
+```typescript
+// After extracting tasks from review findings
+const taskCount = findings.filter(f => f.actionable).length;
+
+// Reserve IDs atomically
+const reservation = await callTool('Bash', {
+  command: `node .claude/scripts/reserve-task-ids.js SEC ${taskCount}`
+});
+const { ids } = JSON.parse(reservation.output);
+
+// Assign reserved IDs to tasks
+const tasks = findings.map((f, i) => ({
+  id: ids[i],
+  title: f.title,
+  priority: f.severity,
+  source: 'review:security-sentinel',
+  // ... other fields
+}));
+
+// Present for approval (IDs already assigned)
+await askUserApproval(tasks);
+
+// On approval: submit to inbox
+const inbox = JSON.parse(fs.readFileSync('.claude/task-inbox.json'));
+inbox.tasks.push(...tasks);
+fs.writeFileSync('.claude/task-inbox.json', JSON.stringify(inbox, null, 2));
+
+// Process inbox (validates IDs, appends to TASKS.md)
+await callTool('Bash', {
+  command: 'node .claude/scripts/regenerate-task-index.js --process-inbox'
+});
+```
+
+### Fallback (if service unavailable)
+
+If ID reservation fails (timeout, counter file missing):
+1. Run initialization: `node .claude/scripts/init-task-counters.js`
+2. Retry reservation
+3. If still failing: fall back to manual ID assignment (read TASKS.md, find max, increment)
+
+### Why Atomic Reservation?
+
+**Problem:** Old protocol (read TASKS.md → find max → increment) causes race conditions:
+```
+Agent A: reads TASKS.md → sees SEC-19 → assigns SEC-20
+Agent B: reads TASKS.md → sees SEC-19 → assigns SEC-20  ← COLLISION
+```
+
+**Solution:** Atomic file-based counter with lock prevents concurrent access:
+- Lock acquired before read/write
+- Counter incremented atomically
+- Lock released after write
+- No collisions possible
+
+## Enrichment Guidelines (Reduce Hallucination Risk)
+
+When creating tasks, include metadata that helps agents execute safely:
+
+1. **From reviews** — Include `files` from the review's `anti_patterns[].files` in the task description or enrichments sidecar (`.claude/task-enrichments.json`)
+2. **From plans** — Include affected file paths in the task description (e.g., "Add rate limiting to `apps/api/src/middleware/`")
+3. **Manual tasks** — Include at least one affected file path in the description OR add an entry to `.claude/task-enrichments.json` with `files`, `verification`, and `acceptanceCriteria`
+4. **External tasks** — External apps should include `files` array in inbox submissions (`.claude/task-inbox.json`)
+
+**Why:** Tasks without `files` or `acceptanceCriteria` score higher on hallucination risk. Agents picking up high-risk tasks must re-investigate before coding, wasting time. Including files upfront makes tasks safer to execute.
+
+**Enrichment sidecar** (`.claude/task-enrichments.json`):
+```json
+{
+  "SEC-9": {
+    "files": ["apps/api/src/middleware/auth.ts"],
+    "verification": "Grep 'csrf' apps/api/src/",
+    "acceptanceCriteria": ["CSRF tokens validated on POST/PUT/DELETE"],
+    "tags": ["security"]
+  }
+}
+```
 
 ## Validation Rules
 
