@@ -161,7 +161,7 @@ const TYPE_COLORS: Record<string, { icon: string; border: string }> = {
 
 ---
 
-### P2-4: AIBrief uses `text-primary` instead of `text-ai` / `bg-ai` for AI-related elements
+### P2-4: AIBrief uses `text-primary` instead of `text-ai` / `bg-ai` for Insights-related elements
 
 **File:** `apps/web/src/components/dashboard/AIBrief.tsx:17, 20-21, 35`
 
@@ -186,11 +186,11 @@ const TYPE_COLORS: Record<string, { icon: string; border: string }> = {
 <div className="glass rounded-xl p-5 border-l-2 border-l-ai-border">
     <div className="h-2 w-2 rounded-full bg-ai animate-pulse" />
     <span className="text-[10px] uppercase tracking-[0.05em] font-semibold text-ai">
-        AI Advisor
+        Insights
     </span>
 ```
 
-If amber is an intentional brand choice for the AI Advisor section, document this as a deliberate exception.
+If amber is an intentional brand choice for the Insights section, document this as a deliberate exception.
 
 ---
 
@@ -259,7 +259,7 @@ If amber is an intentional brand choice for the AI Advisor section, document thi
 
 2. **Create a chart color mapping utility** -- The ExpenseChart's inline `backgroundColor` from dynamic data should map through token-based CSS variables. Consider a shared `chartColors` map that other chart components (CashFlowChart, future charts) can reuse.
 
-3. **Decide on AI accent color** -- Either update AIBrief to use `text-ai` / `bg-ai` (purple) per the design system spec, or document that the AI Advisor section intentionally uses `text-primary` (amber) as a brand decision.
+3. **Decide on AI accent color** -- Either update AIBrief to use `text-ai` / `bg-ai` (purple) per the design system spec, or document that the Insights section intentionally uses `text-primary` (amber) as a brand decision.
 
 4. **Normalize label sizes** -- Consider defining a shared label utility (e.g., `@utility label { ... }`) that standardizes the `uppercase tracking-[0.05em] text-muted-foreground font-medium` pattern at a consistent size, with a compact variant for dense widgets.
 

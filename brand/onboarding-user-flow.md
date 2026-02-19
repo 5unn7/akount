@@ -1138,7 +1138,7 @@ Based on selected intents, system adjusts:
 - View bills → /expenses/bills
 - Create invoice (quick action)
 - Create bill (quick action)
-- Ask AI Advisor
+- Ask Insights
 
 **Hero Card Layout:**
 ```

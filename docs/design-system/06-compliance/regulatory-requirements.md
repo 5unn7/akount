@@ -210,7 +210,7 @@ Corrections occur via **reversal entries only**.
 
 ---
 
-### 6.6 AI Advisor System
+### 6.6 Insights System
 
 **Requirements:**
 

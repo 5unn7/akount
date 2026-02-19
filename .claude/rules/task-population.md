@@ -15,10 +15,12 @@ After completing its core work, every skill MUST:
 2. **Classify by domain** — Dev, Design System, Marketing & Content, Operations
 3. **Assign priority** — Critical, High, Medium, Low
 4. **Note dependencies** — `[needs: TASK-ID]` if this task requires another first
-5. **Justify** — Every task must have a `Source` (which skill created it) and a 1-line `Reason` explaining WHY it should exist
-6. **Present for approval** — Show the user a formatted table of proposed tasks with source/reason
-7. **User approves** — User can approve all, approve some, reject some, or edit before accepting
-8. **Write approved tasks** — ONLY append user-approved tasks to TASKS.md
+5. **Reserve IDs atomically** — Call `reserve-task-ids.js` to get unique IDs (see ID Reservation section below)
+6. **Assign reserved IDs** — Map reserved IDs to tasks in order
+7. **Justify** — Every task must have a `Source` (which skill created it) and a 1-line `Reason` explaining WHY it should exist
+8. **Present for approval** — Show the user a formatted table of proposed tasks (with pre-assigned IDs) including source/reason
+9. **User approves** — User can approve all, approve some, reject some, or edit before accepting
+10. **Write approved tasks** — ONLY append user-approved tasks to TASKS.md (IDs already assigned, no collision risk)
 
 ## Approval Gate (MANDATORY)
 
