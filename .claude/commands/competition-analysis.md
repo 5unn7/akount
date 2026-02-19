@@ -132,7 +132,7 @@ Output a summary to the user:
 
 **Core Features:**
 - AI categorization (bank transactions)
-- AI Advisor (insights, rules engine)
+- Insights (AI-powered insights, rules engine)
 - Bank statement import (PDF parsing, CSV)
 - Multi-entity management (included, not per-entity pricing)
 - Multi-currency (included, not locked behind expensive tier)

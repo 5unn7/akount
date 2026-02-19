@@ -86,7 +86,7 @@ No feature may violate these principles.
 
 ### 4.3 System Roles
 
-* AI Advisor (non-authoritative)
+* Insights (AI-powered, non-authoritative)
 * External auditors (read-only)
 
 ---
