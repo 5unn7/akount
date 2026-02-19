@@ -223,3 +223,1174 @@
 
 > **Legend:** 🟢 ready · 📦 backlog · 🔒 blocked (has unmet deps) · ⏳ pending · ✅ done
 > **Priority:** 🔴 Critical · 🟠 High · 🟡 Medium · ⚪ Low
+
+<!-- TASK-INDEX:START (auto-generated, do not edit manually)
+{
+  "version": "1.0",
+  "generated": "2026-02-19T16:59:24.724Z",
+  "summary": {
+    "total": 84,
+    "ready": 50,
+    "blocked": 7,
+    "backlog": 26,
+    "done": 0
+  },
+  "byPriority": {
+    "critical": [],
+    "high": [
+      "SEC-8",
+      "SEC-9",
+      "PERF-1",
+      "PERF-5",
+      "PERF-6",
+      "PERF-8",
+      "DRY-1",
+      "UX-1",
+      "UX-2",
+      "TEST-1",
+      "TEST-2",
+      "TEST-3",
+      "DEV-2",
+      "PERF-9",
+      "UX-8",
+      "ARCH-2",
+      "ARCH-6",
+      "SEC-11",
+      "SEC-13",
+      "INFRA-9",
+      "INFRA-10",
+      "FIN-13",
+      "DOC-1",
+      "DS-1",
+      "MKT-1",
+      "INFRA-1",
+      "INFRA-2",
+      "INFRA-3",
+      "ARCH-3",
+      "INFRA-5",
+      "INFRA-7",
+      "INFRA-8"
+    ],
+    "medium": [
+      "PERF-2",
+      "PERF-3",
+      "PERF-7",
+      "DRY-2",
+      "DRY-3",
+      "UX-3",
+      "UX-4",
+      "DOC-2",
+      "DOC-3",
+      "SEC-10",
+      "UX-6",
+      "UX-7",
+      "SEC-12",
+      "SEC-14",
+      "PERF-10",
+      "PERF-12",
+      "FIN-7",
+      "FIN-8",
+      "FIN-9",
+      "FIN-10",
+      "ARCH-5",
+      "ARCH-1",
+      "ARCH-4",
+      "TEST-4",
+      "DRY-7",
+      "UX-9",
+      "DEV-4",
+      "DS-3",
+      "DS-4",
+      "DEV-6",
+      "DEV-8",
+      "DEV-9",
+      "FIN-14",
+      "DOC-4",
+      "SEC-16",
+      "INFRA-11",
+      "DS-2",
+      "MKT-2",
+      "CNT-1",
+      "INFRA-4",
+      "INFRA-6"
+    ],
+    "low": [
+      "PERF-4",
+      "PERF-11",
+      "DRY-5",
+      "DOC-5",
+      "DOC-6",
+      "FIN-11",
+      "FIN-12",
+      "SEC-15",
+      "INFRA-12",
+      "FIN-6"
+    ]
+  },
+  "byEffort": {
+    "quick": [
+      "FIN-13",
+      "UX-4",
+      "DOC-3",
+      "UX-9",
+      "DEV-4",
+      "DS-3",
+      "DEV-6",
+      "DEV-8",
+      "DEV-9",
+      "DOC-4",
+      "DOC-5",
+      "DOC-6"
+    ],
+    "short": [
+      "SEC-9",
+      "PERF-1",
+      "PERF-5",
+      "PERF-6",
+      "PERF-8",
+      "DRY-1",
+      "UX-1",
+      "UX-2",
+      "TEST-3",
+      "PERF-9",
+      "UX-8",
+      "ARCH-6",
+      "INFRA-9",
+      "INFRA-10",
+      "DOC-1",
+      "PERF-2",
+      "PERF-3",
+      "PERF-7",
+      "DRY-2",
+      "DRY-3",
+      "UX-3",
+      "DOC-2",
+      "UX-6",
+      "UX-7",
+      "SEC-12",
+      "SEC-14",
+      "PERF-12",
+      "DRY-7",
+      "DS-4",
+      "FIN-14",
+      "PERF-4",
+      "PERF-11",
+      "DRY-5",
+      "SEC-15",
+      "SEC-16",
+      "INFRA-11",
+      "INFRA-12",
+      "DS-1",
+      "MKT-2",
+      "CNT-1",
+      "INFRA-2",
+      "INFRA-3",
+      "INFRA-5",
+      "INFRA-4",
+      "INFRA-6"
+    ],
+    "medium": [
+      "SEC-8",
+      "TEST-1",
+      "TEST-2",
+      "DEV-2",
+      "ARCH-2",
+      "SEC-11",
+      "SEC-13",
+      "SEC-10",
+      "PERF-10",
+      "FIN-7",
+      "FIN-8",
+      "FIN-9",
+      "FIN-10",
+      "ARCH-5",
+      "ARCH-1",
+      "ARCH-4",
+      "TEST-4",
+      "DS-2",
+      "MKT-1",
+      "INFRA-1",
+      "ARCH-3",
+      "INFRA-7",
+      "INFRA-8"
+    ],
+    "long": [
+      "FIN-11",
+      "FIN-12"
+    ]
+  },
+  "byDomain": {
+    "security": [
+      "SEC-8",
+      "SEC-9",
+      "SEC-11",
+      "SEC-13",
+      "SEC-10",
+      "SEC-12",
+      "SEC-14",
+      "SEC-15",
+      "SEC-16"
+    ],
+    "performance": [
+      "PERF-1",
+      "PERF-5",
+      "PERF-6",
+      "PERF-8",
+      "PERF-9",
+      "PERF-2",
+      "PERF-3",
+      "PERF-7",
+      "PERF-10",
+      "PERF-12",
+      "PERF-4",
+      "PERF-11"
+    ],
+    "code-quality": [
+      "DRY-1",
+      "DRY-2",
+      "DRY-3",
+      "DRY-7",
+      "DRY-5"
+    ],
+    "ux": [
+      "UX-1",
+      "UX-2",
+      "UX-8",
+      "UX-3",
+      "UX-4",
+      "UX-6",
+      "UX-7",
+      "UX-9"
+    ],
+    "testing": [
+      "TEST-1",
+      "TEST-2",
+      "TEST-3",
+      "TEST-4"
+    ],
+    "development": [
+      "DEV-2",
+      "DEV-4",
+      "DEV-6",
+      "DEV-7",
+      "DEV-8",
+      "DEV-9"
+    ],
+    "architecture": [
+      "ARCH-2",
+      "ARCH-6",
+      "ARCH-5",
+      "ARCH-1",
+      "ARCH-4",
+      "ARCH-3"
+    ],
+    "infrastructure": [
+      "INFRA-9",
+      "INFRA-10",
+      "INFRA-11",
+      "INFRA-12",
+      "INFRA-1",
+      "INFRA-2",
+      "INFRA-3",
+      "INFRA-5",
+      "INFRA-7",
+      "INFRA-8",
+      "INFRA-4",
+      "INFRA-6"
+    ],
+    "financial": [
+      "FIN-13",
+      "FIN-7",
+      "FIN-8",
+      "FIN-9",
+      "FIN-10",
+      "FIN-14",
+      "FIN-11",
+      "FIN-12",
+      "FIN-6"
+    ],
+    "documentation": [
+      "DOC-1",
+      "DOC-2",
+      "DOC-3",
+      "DOC-4",
+      "DOC-5",
+      "DOC-6"
+    ],
+    "design-system": [
+      "DS-3",
+      "DS-4",
+      "DS-1",
+      "DS-2"
+    ],
+    "marketing": [
+      "MKT-1",
+      "MKT-2"
+    ],
+    "content": [
+      "CNT-1"
+    ]
+  },
+  "ready": [
+    "SEC-8",
+    "SEC-9",
+    "PERF-1",
+    "PERF-5",
+    "PERF-6",
+    "PERF-8",
+    "DRY-1",
+    "UX-1",
+    "UX-2",
+    "TEST-1",
+    "TEST-2",
+    "DEV-2",
+    "PERF-9",
+    "UX-8",
+    "ARCH-2",
+    "ARCH-6",
+    "SEC-11",
+    "SEC-13",
+    "INFRA-9",
+    "INFRA-10",
+    "FIN-13",
+    "DOC-1",
+    "PERF-2",
+    "PERF-3",
+    "PERF-7",
+    "DRY-2",
+    "DRY-3",
+    "UX-3",
+    "UX-4",
+    "DOC-2",
+    "DOC-3",
+    "SEC-12",
+    "SEC-14",
+    "DRY-7",
+    "UX-9",
+    "DEV-4",
+    "DS-3",
+    "DS-4",
+    "DEV-6",
+    "DEV-8",
+    "DEV-9",
+    "FIN-14",
+    "DOC-4",
+    "DOC-5",
+    "DOC-6",
+    "DS-1",
+    "INFRA-1",
+    "INFRA-2",
+    "INFRA-3",
+    "ARCH-3"
+  ],
+  "quickWins": [
+    "SEC-9",
+    "PERF-1",
+    "PERF-5",
+    "PERF-6",
+    "PERF-8",
+    "DRY-1",
+    "UX-1",
+    "UX-2",
+    "PERF-9",
+    "UX-8",
+    "ARCH-6",
+    "INFRA-9",
+    "INFRA-10",
+    "FIN-13",
+    "DOC-1",
+    "DS-1",
+    "INFRA-2",
+    "INFRA-3"
+  ],
+  "dashboard": [
+    "PERF-5",
+    "PERF-6",
+    "UX-8",
+    "DRY-7",
+    "UX-9",
+    "DEV-4",
+    "DS-3",
+    "DEV-6",
+    "DEV-8",
+    "DEV-9",
+    "FIN-14"
+  ],
+  "tasks": {
+    "SEC-8": {
+      "line": 26,
+      "title": "Complete security audit (OWASP top 10, auth, tenant isolation, input validation)",
+      "effort": "4h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "security"
+    },
+    "SEC-9": {
+      "line": 27,
+      "title": "CSRF protection review",
+      "effort": "1h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "security"
+    },
+    "PERF-1": {
+      "line": 28,
+      "title": "Balance Sheet: combine 2 redundant heavy SQL queries into 1",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "PERF-5": {
+      "line": 29,
+      "title": "Database indexes on hot paths (dashboard, reports)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "PERF-6": {
+      "line": 30,
+      "title": "Query optimization audit (dashboard + report queries)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "PERF-8": {
+      "line": 31,
+      "title": "p95 < 2s page load target verification + load testing",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "DRY-1": {
+      "line": 32,
+      "title": "Report types: move shared types to `packages/types` (eliminate duplication)",
+      "effort": "1h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality"
+    },
+    "UX-1": {
+      "line": 33,
+      "title": "Entity selector: replace hardcoded dropdown with real entity options",
+      "effort": "1-2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux"
+    },
+    "UX-2": {
+      "line": 34,
+      "title": "GL Account ID: replace raw CUID input with searchable dropdown",
+      "effort": "1h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux"
+    },
+    "TEST-1": {
+      "line": 35,
+      "title": "Service tests for 4 remaining reports (BS, CF, TB, GL) + route tests",
+      "effort": "3-4h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "testing"
+    },
+    "TEST-2": {
+      "line": 36,
+      "title": "E2E tests for critical user flows (onboarding, import, posting, reports)",
+      "effort": "4h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "testing"
+    },
+    "TEST-3": {
+      "line": 37,
+      "title": "80%+ API test coverage target",
+      "effort": "2h",
+      "priority": "high",
+      "status": "blocked",
+      "deps": [
+        "TEST-1"
+      ],
+      "domain": "testing"
+    },
+    "DEV-2": {
+      "line": 38,
+      "title": "Service tests for client/invoice/bill/vendor services",
+      "effort": "3h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "development"
+    },
+    "PERF-9": {
+      "line": 39,
+      "title": "Replace console.log with pino structured logging (7 production files)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "UX-8": {
+      "line": 40,
+      "title": "Add loading/error states to remaining dashboard pages (~30 pages)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux"
+    },
+    "ARCH-2": {
+      "line": 41,
+      "title": "Audit log coverage expansion (bulk ops, imports, exports, reconciliation)",
+      "effort": "3h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture"
+    },
+    "ARCH-6": {
+      "line": 42,
+      "title": "Audit logging inside DB transactions (not fire-and-forget outside TX)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture"
+    },
+    "SEC-11": {
+      "line": 43,
+      "title": "File upload virus scanning (ClamAV integration for PDFs/CSVs)",
+      "effort": "3h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "security"
+    },
+    "SEC-13": {
+      "line": 44,
+      "title": "Audit log tamper detection (immutable log storage)",
+      "effort": "3h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "security"
+    },
+    "INFRA-9": {
+      "line": 45,
+      "title": "Secrets management for production (env var vault, not .env files)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure"
+    },
+    "INFRA-10": {
+      "line": 46,
+      "title": "Security scanning in CI (SAST + dependency/supply chain checks)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure"
+    },
+    "FIN-13": {
+      "line": 50,
+      "title": "`UpcomingPayments.amount` typed as `string` — must be `number` (integer cents violation)",
+      "effort": "15m",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "financial"
+    },
+    "DOC-1": {
+      "line": 51,
+      "title": "Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy",
+      "effort": "30m",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation"
+    },
+    "PERF-2": {
+      "line": 57,
+      "title": "Revenue: add JSONB expression index for extraction",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "PERF-3": {
+      "line": 58,
+      "title": "Recharts: code-split import (lazy load)",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "PERF-7": {
+      "line": 59,
+      "title": "Lazy-loading heavy frontend components",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance"
+    },
+    "DRY-2": {
+      "line": 60,
+      "title": "CSV sanitization: deduplicate between report-export and data-export",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality"
+    },
+    "DRY-3": {
+      "line": 61,
+      "title": "Report routes: extract shared 40-line handler pattern into helper",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality"
+    },
+    "UX-3": {
+      "line": 62,
+      "title": "Report tables: add `aria-*` attributes, caption, scope, role=\"progressbar\"",
+      "effort": "45m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux"
+    },
+    "UX-4": {
+      "line": 63,
+      "title": "Report views: replace array index React keys with stable identifiers",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux"
+    },
+    "DOC-2": {
+      "line": 64,
+      "title": "Consolidate logging rules (full version in api-conventions.md, update guardrails.md ref)",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation"
+    },
+    "DOC-3": {
+      "line": 65,
+      "title": "Archive .reviews/ temp workspace to docs/reviews/ or delete",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation"
+    },
+    "SEC-10": {
+      "line": 66,
+      "title": "Row-Level Security (PostgreSQL) for production hardening",
+      "effort": "3h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "security"
+    },
+    "UX-6": {
+      "line": 67,
+      "title": "Keyboard shortcuts for power users (command palette, table nav)",
+      "effort": "2h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "ux"
+    },
+    "UX-7": {
+      "line": 68,
+      "title": "Help overlay documenting keyboard shortcuts",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "blocked",
+      "deps": [
+        "UX-6"
+      ],
+      "domain": "ux"
+    },
+    "SEC-12": {
+      "line": 69,
+      "title": "File upload quota enforcement per tenant (prevent abuse/DoS)",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "security"
+    },
+    "SEC-14": {
+      "line": 70,
+      "title": "Audit log retention policies (prevent unbounded growth, compliance)",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "security"
+    },
+    "PERF-10": {
+      "line": 71,
+      "title": "Distributed caching (Redis) for multi-instance deployment",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "performance"
+    },
+    "PERF-12": {
+      "line": 72,
+      "title": "N+1 query monitoring / slow query detection in production (APM)",
+      "effort": "2h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "performance"
+    },
+    "FIN-7": {
+      "line": 73,
+      "title": "Fiscal period enforcement (prevent posting to locked periods)",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "financial"
+    },
+    "FIN-8": {
+      "line": 74,
+      "title": "Fiscal year close process (closing entries, revenue → retained earnings)",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [
+        "FIN-7"
+      ],
+      "domain": "financial"
+    },
+    "FIN-9": {
+      "line": 75,
+      "title": "Multi-currency revaluation on period close (FX gains/losses, IFRS/GAAP)",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [
+        "FIN-8"
+      ],
+      "domain": "financial"
+    },
+    "FIN-10": {
+      "line": 76,
+      "title": "Invoice/bill reconciliation workflows (AP/AR aging, match/approve)",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "financial"
+    },
+    "ARCH-5": {
+      "line": 77,
+      "title": "Error recovery patterns (idempotency keys, circuit breakers, retry with backoff)",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "architecture"
+    },
+    "ARCH-1": {
+      "line": 78,
+      "title": "OpenAPI spec auto-generation from Zod schemas (fastify-zod-openapi)",
+      "effort": "3h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "architecture"
+    },
+    "ARCH-4": {
+      "line": 79,
+      "title": "Background job processing setup (BullMQ for PDF gen, email, imports)",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "architecture"
+    },
+    "TEST-4": {
+      "line": 80,
+      "title": "Integration tests (API → DB → API roundtrip for critical flows)",
+      "effort": "4h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "testing"
+    },
+    "DRY-7": {
+      "line": 82,
+      "title": "Dashboard page.tsx: extract 120+ lines of data transformation to `lib/dashboard/transformers.ts`",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality"
+    },
+    "UX-9": {
+      "line": 83,
+      "title": "Dashboard: fix SVG gradient ID collision (use `React.useId()`)",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux"
+    },
+    "DEV-4": {
+      "line": 85,
+      "title": "Dashboard: type entity maps as `Record<EntityType, ...>` for exhaustive checking",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "development"
+    },
+    "DS-3": {
+      "line": 86,
+      "title": "Dashboard: replace `hover:glass-3` with proper hover pattern (`hover:border-ak-border-3`)",
+      "effort": "10m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "design-system"
+    },
+    "DS-4": {
+      "line": 87,
+      "title": "ExpenseChart: replace inline `backgroundColor` with token-mapped CSS variables",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "design-system"
+    },
+    "DEV-6": {
+      "line": 91,
+      "title": "Dashboard: delete duplicate `OnboardingHeroCard` in `components/dashboard/` (dead code)",
+      "effort": "5m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "development"
+    },
+    "DEV-7": {
+      "line": 92,
+      "title": "DashboardRightRail: replace `\\",
+      "effort": "\\",
+      "priority": "unknown",
+      "status": "unknown",
+      "deps": [],
+      "domain": "development"
+    },
+    "DEV-8": {
+      "line": 93,
+      "title": "DashboardService: add explicit return type to `getMetrics()` method",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "development"
+    },
+    "DEV-9": {
+      "line": 94,
+      "title": "DashboardService: type `byType` as `Partial<Record<AccountType, number>>` (not `Record<string, number>`)",
+      "effort": "10m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "development"
+    },
+    "FIN-14": {
+      "line": 95,
+      "title": "DashboardService: document or fix float arithmetic in FX conversion (`Math.abs(balance) * rate`)",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "financial"
+    },
+    "DOC-4": {
+      "line": 96,
+      "title": "Elevate source preservation to explicit 5th invariant in guardrails.md",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation"
+    },
+    "PERF-4": {
+      "line": 97,
+      "title": "PDF generation: move to worker thread (unblock event loop)",
+      "effort": "2h",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "performance"
+    },
+    "PERF-11": {
+      "line": 98,
+      "title": "Distributed rate limiting (Redis-backed) for multi-instance",
+      "effort": "2h",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "performance"
+    },
+    "DRY-5": {
+      "line": 99,
+      "title": "`window.Clerk` triple-cast in downloadReport: clean up type assertion",
+      "effort": "30m",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "code-quality"
+    },
+    "DOC-5": {
+      "line": 100,
+      "title": "Add double-entry bookkeeping check to guardrails.md anti-patterns",
+      "effort": "15m",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation"
+    },
+    "DOC-6": {
+      "line": 101,
+      "title": "Update version dates across CLAUDE.md files (inconsistent: 2026-02-15 vs 2026-02-09)",
+      "effort": "15m",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation"
+    },
+    "FIN-11": {
+      "line": 102,
+      "title": "Consolidation/elimination accounting (multi-entity)",
+      "effort": "8h",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "financial"
+    },
+    "FIN-12": {
+      "line": 103,
+      "title": "GAAP-compliant GL export format (XBRL/ixBRL regulatory reporting)",
+      "effort": "6h",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "financial"
+    },
+    "SEC-15": {
+      "line": 104,
+      "title": "Duplicate file detection for uploads",
+      "effort": "1h",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "security"
+    },
+    "SEC-16": {
+      "line": 105,
+      "title": "File retention policies (auto-cleanup of old uploads)",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "security"
+    },
+    "INFRA-11": {
+      "line": 106,
+      "title": "Database migration testing in CI pipeline",
+      "effort": "2h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "infrastructure"
+    },
+    "INFRA-12": {
+      "line": 107,
+      "title": "Usage analytics (companies, transactions, reports generated)",
+      "effort": "2h",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "infrastructure"
+    },
+    "FIN-6": {
+      "line": 108,
+      "title": "Cash Flow: document hardcoded account code ranges for categorization",
+      "effort": "doc",
+      "priority": "low",
+      "status": "backlog",
+      "deps": [],
+      "domain": "financial"
+    },
+    "DS-1": {
+      "line": 118,
+      "title": "Figma-to-code token sync audit",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "design-system"
+    },
+    "DS-2": {
+      "line": 124,
+      "title": "Storybook setup for component documentation",
+      "effort": "3h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "design-system"
+    },
+    "MKT-1": {
+      "line": 134,
+      "title": "Landing page copy and design",
+      "effort": "3h",
+      "priority": "high",
+      "status": "backlog",
+      "deps": [],
+      "domain": "marketing"
+    },
+    "MKT-2": {
+      "line": 140,
+      "title": "User documentation / getting started guide",
+      "effort": "2h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "marketing"
+    },
+    "CNT-1": {
+      "line": 141,
+      "title": "Competitive analysis update",
+      "effort": "2h",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "content"
+    },
+    "INFRA-1": {
+      "line": 151,
+      "title": "CI/CD pipeline (GitHub Actions)",
+      "effort": "3h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure"
+    },
+    "INFRA-2": {
+      "line": 152,
+      "title": "Production environment setup",
+      "effort": "2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure"
+    },
+    "INFRA-3": {
+      "line": 153,
+      "title": "Database backups (automated daily)",
+      "effort": "1h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure"
+    },
+    "ARCH-3": {
+      "line": 154,
+      "title": "S3 cloud storage migration for file uploads (replace local filesystem)",
+      "effort": "3h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture"
+    },
+    "INFRA-5": {
+      "line": 155,
+      "title": "Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts)",
+      "effort": "2h",
+      "priority": "high",
+      "status": "blocked",
+      "deps": [
+        "INFRA-2"
+      ],
+      "domain": "infrastructure"
+    },
+    "INFRA-7": {
+      "line": 156,
+      "title": "OpenTelemetry instrumentation (distributed tracing, metrics, alerting)",
+      "effort": "4h",
+      "priority": "high",
+      "status": "blocked",
+      "deps": [
+        "INFRA-2"
+      ],
+      "domain": "infrastructure"
+    },
+    "INFRA-8": {
+      "line": 157,
+      "title": "Docker image building + container deployment pipeline",
+      "effort": "3h",
+      "priority": "high",
+      "status": "blocked",
+      "deps": [
+        "INFRA-1"
+      ],
+      "domain": "infrastructure"
+    },
+    "INFRA-4": {
+      "line": 163,
+      "title": "Disaster recovery procedure + documentation",
+      "effort": "2h",
+      "priority": "medium",
+      "status": "blocked",
+      "deps": [
+        "INFRA-3"
+      ],
+      "domain": "infrastructure"
+    },
+    "INFRA-6": {
+      "line": 164,
+      "title": "Deployment documentation",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "blocked",
+      "deps": [
+        "INFRA-2"
+      ],
+      "domain": "infrastructure"
+    }
+  }
+}
+TASK-INDEX:END -->

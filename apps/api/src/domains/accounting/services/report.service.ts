@@ -2,6 +2,17 @@ import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { tenantScopedQuery } from '../../../lib/tenant-scoped-query';
 import { reportCache } from './report-cache';
+import type {
+  ReportLineItem,
+  ProfitLossReport,
+  BalanceSheetReport,
+  CashFlowReport,
+  TrialBalanceReport,
+  GLLedgerEntry,
+  GLLedgerReport,
+  SpendingReport,
+  RevenueReport,
+} from '@akount/types/financial';
 
 /**
  * Report Service
@@ -14,190 +25,13 @@ import { reportCache } from './report-cache';
  * - Multi-entity consolidation requires same functional currency
  * - Integer cents maintained through BigInt → Number conversion
  * - COALESCE for nullable baseCurrency fields (handles same-currency entries)
+ *
+ * DRY-1: Report types now imported from @akount/types to eliminate duplication
  */
 
-// ─── Type Definitions ────────────────────────────────────────────────────────
+// ─── Internal Type Definitions (SQL-specific, not exported) ──────────────────
 
-/**
- * Report line item (for hierarchical reports)
- */
-export interface ReportLineItem {
-  accountId: string;
-  code: string;
-  name: string;
-  type: string;
-  normalBalance: 'DEBIT' | 'CREDIT';
-  balance: number; // cents (integer)
-  previousBalance?: number; // cents (integer)
-  depth: number; // hierarchy level (0 = top-level)
-  isSubtotal: boolean;
-  children?: ReportLineItem[];
-}
-
-/**
- * Profit & Loss Statement
- */
-export interface ProfitLossReport {
-  entityId?: string;
-  entityName: string;
-  startDate: Date;
-  endDate: Date;
-  currency: string;
-  comparisonPeriod?: string;
-  revenue: {
-    sections: ReportLineItem[];
-    total: number; // cents
-  };
-  expenses: {
-    sections: ReportLineItem[];
-    total: number; // cents
-  };
-  netIncome: number; // cents (revenue - expenses)
-}
-
-/**
- * Balance Sheet Statement
- */
-export interface BalanceSheetReport {
-  entityId?: string;
-  entityName: string;
-  asOfDate: Date;
-  currency: string;
-  comparisonDate?: Date;
-  assets: {
-    items: ReportLineItem[];
-    total: number; // cents
-  };
-  liabilities: {
-    items: ReportLineItem[];
-    total: number; // cents
-  };
-  equity: {
-    items: ReportLineItem[];
-    total: number; // cents
-  };
-  retainedEarnings: {
-    priorYears: number; // cents (from GL account 3100)
-    currentYear: number; // cents (dynamic INCOME - EXPENSE)
-    total: number; // cents
-  };
-  isBalanced: boolean; // A = L + E
-  totalAssets: number; // cents
-  totalLiabilitiesAndEquity: number; // cents
-}
-
-/**
- * Cash Flow Statement
- */
-export interface CashFlowReport {
-  entityId?: string;
-  entityName: string;
-  startDate: Date;
-  endDate: Date;
-  currency: string;
-  netIncome: number; // cents (from P&L)
-  operating: {
-    items: ReportLineItem[];
-    total: number; // cents
-  };
-  investing: {
-    items: ReportLineItem[];
-    total: number; // cents
-  };
-  financing: {
-    items: ReportLineItem[];
-    total: number; // cents
-  };
-  netCashChange: number; // cents
-  openingCash: number; // cents
-  closingCash: number; // cents
-  isReconciled: boolean; // openingCash + netCashChange === closingCash
-}
-
-/**
- * Trial Balance
- */
-export interface TrialBalanceReport {
-  entityId: string;
-  entityName: string;
-  asOfDate: Date;
-  accounts: Array<{
-    accountId: string;
-    code: string;
-    name: string;
-    debit: number; // cents
-    credit: number; // cents
-  }>;
-  totalDebits: number; // cents
-  totalCredits: number; // cents
-  isBalanced: boolean;
-  severity: 'OK' | 'CRITICAL';
-}
-
-/**
- * General Ledger Entry
- */
-export interface GLLedgerEntry {
-  id: string;
-  date: Date;
-  entryNumber: string;
-  memo: string | null;
-  debitAmount: number; // cents
-  creditAmount: number; // cents
-  runningBalance: number; // cents
-}
-
-/**
- * General Ledger Report
- */
-export interface GLLedgerReport {
-  entityId: string;
-  glAccountId: string;
-  accountCode: string;
-  accountName: string;
-  entityName: string;
-  currency: string;
-  startDate: Date;
-  endDate: Date;
-  entries: GLLedgerEntry[];
-  nextCursor: string | null;
-}
-
-/**
- * Spending by Category Report
- */
-export interface SpendingReport {
-  entityId?: string;
-  entityName: string;
-  currency: string;
-  startDate: Date;
-  endDate: Date;
-  categories: Array<{
-    category: string;
-    amount: number; // cents
-    percentage: number;
-  }>;
-  totalSpend: number; // cents
-}
-
-/**
- * Revenue by Client Report
- */
-export interface RevenueReport {
-  entityId?: string;
-  entityName: string;
-  currency: string;
-  startDate: Date;
-  endDate: Date;
-  clients: Array<{
-    clientId: string;
-    clientName: string;
-    invoiceCount: number;
-    amount: number; // cents
-    percentage: number;
-  }>;
-  totalRevenue: number; // cents
-}
+// Note: These types are internal to the service and handle BigInt conversion from PostgreSQL
 
 // ─── Row Type Interfaces (for BigInt handling from SQL) ─────────────────────
 

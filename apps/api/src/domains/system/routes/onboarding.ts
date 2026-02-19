@@ -258,6 +258,7 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         await clerkClient.users.updateUserMetadata(request.userId as string, {
           publicMetadata: {
             tenantId: result.tenant.id,
+            role: 'OWNER',
             onboardingCompleted: false, // Will be set to true on /complete
           },
         });
@@ -452,6 +453,19 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
       });
 
       request.log.info({ tenantId: data.tenantId, userId: user.id }, 'Onboarding completed');
+
+      // Update Clerk metadata to mark onboarding complete and set role
+      try {
+        await clerkClient.users.updateUserMetadata(request.userId as string, {
+          publicMetadata: {
+            tenantId: data.tenantId,
+            role: tenantUser.role,
+            onboardingCompleted: true,
+          },
+        });
+      } catch (clerkError) {
+        request.log.warn({ clerkError }, 'Failed to update Clerk metadata on complete - non-critical');
+      }
 
       return reply.status(200).send({
         success: true,
