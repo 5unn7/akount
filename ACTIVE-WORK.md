@@ -20,8 +20,26 @@
 
 ---
 
+## Agent Context (for smart defaults)
+
+| Agent ID | Last Claimed Tasks | Last Domain | Last Session |
+|----------|-------------------|-------------|--------------|
+| _(no history yet)_ | | | |
+
+**Purpose:**
+- Tracks agent's task history (rolling 5-task window)
+- Identifies preferred domains
+- Enables "continue where you left off" feature in `/processes:claim`
+
+**Auto-cleanup:**
+- Prune entries older than 7 days
+- Keep only last 5 tasks per agent
+
+---
+
 ## Notes
 
 - Sessions expire after 2 hours of inactivity
 - This file is auto-updated by `/processes:claim` and `/processes:end-session`
 - Task conflicts are detected automatically
+- Agent context powers smart task recommendations

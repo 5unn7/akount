@@ -70,4 +70,39 @@ if [ "$PENDING_EDITS" -gt 5 ]; then
     echo "REMINDER: $PENDING_EDITS code edits since last status update. Consider updating TASKS.md, STATUS.md, and ROADMAP.md." >&2
 fi
 
+# --- Auto-regenerate TASKS.md index if TASKS.md was modified ---
+if [ -n "$CLAUDE_PROJECT_DIR" ]; then
+    TASKS_FILE="$CLAUDE_PROJECT_DIR/TASKS.md"
+
+    # Check if TASKS.md changed in the last commit or is staged
+    TASKS_CHANGED=false
+
+    # Check if file is modified but not committed
+    if git diff --name-only 2>/dev/null | grep -q "^TASKS.md$"; then
+        TASKS_CHANGED=true
+    fi
+
+    # Check if file is staged
+    if git diff --cached --name-only 2>/dev/null | grep -q "^TASKS.md$"; then
+        TASKS_CHANGED=true
+    fi
+
+    # Regenerate index if TASKS.md changed
+    if [ "$TASKS_CHANGED" = true ] && [ -f "$TASKS_FILE" ]; then
+        echo "📊 TASKS.md modified — regenerating task index..." >&2
+
+        # Run regeneration script
+        if node "$CLAUDE_PROJECT_DIR/.claude/scripts/regenerate-task-index.js" 2>&1; then
+            echo "✅ Task index updated successfully" >&2
+
+            # Stage the updated TASKS.md if it was already staged
+            if git diff --cached --name-only 2>/dev/null | grep -q "^TASKS.md$"; then
+                git add "$TASKS_FILE" 2>/dev/null && echo "   Staged updated TASKS.md" >&2
+            fi
+        else
+            echo "⚠️ Index regeneration failed (non-blocking)" >&2
+        fi
+    fi
+fi
+
 exit 0
