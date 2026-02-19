@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-19
 **Current Phase:** Phase 6 — Launch MVP
 
-> **85 tasks** · 🔴 0 critical · 🟠 26 high · 🟡 38 medium · ⚪ 9 low · ✅ 19 done
-> 🟢 53 ready · 📦 21 backlog · 🔒 6 blocked
+> **85 tasks** · 🔴 0 critical · 🟠 26 high · 🟡 33 medium · ⚪ 9 low · ✅ 24 done
+> 🟢 48 ready · 📦 21 backlog · 🔒 6 blocked
 
 ---
 
@@ -78,16 +78,16 @@
 | ARCH-1 | OpenAPI spec auto-generation from Zod schemas (fastify-zod-openapi) | 3h | 🟡 Medium | 📦 | | review:smooth-floating-mountain |
 | ARCH-4 | Background job processing setup (BullMQ for PDF gen, email, imports) | 4h | 🟡 Medium | 📦 | | review:smooth-floating-mountain |
 | TEST-4 | Integration tests (API → DB → API roundtrip for critical flows) | 4h | 🟡 Medium | 📦 | | review:smooth-floating-mountain |
-| DRY-6 | Dashboard: deduplicate SparkCards/DashboardLeftRail (shared types, constants, MiniSparkline) | 45m | 🟡 Medium | 🟢 | | review:dashboard-overview |
+| ~~DRY-6~~ | ~~Dashboard: deduplicate SparkCards/DashboardLeftRail (shared types, constants, MiniSparkline)~~ | 45m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | DRY-7 | Dashboard page.tsx: extract 120+ lines of data transformation to `lib/dashboard/transformers.ts` | 30m | 🟡 Medium | 🟢 | | review:dashboard-overview |
 | UX-9 | Dashboard: fix SVG gradient ID collision (use `React.useId()`) | 15m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DEV-3 | Dashboard: delete dead `handleSkipStep` in OnboardingHeroCard + dead SparkCardsSkeleton | 10m | 🟡 Medium | 🟢 | | review:dashboard-overview |
+| ~~DEV-3~~ | ~~Dashboard: delete dead `handleSkipStep` in OnboardingHeroCard + dead SparkCardsSkeleton~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | DEV-4 | Dashboard: type entity maps as `Record<EntityType, ...>` for exhaustive checking | 15m | 🟡 Medium | 🟢 | | review:dashboard-overview |
 | DS-3 | Dashboard: replace `hover:glass-3` with proper hover pattern (`hover:border-ak-border-3`) | 10m | 🟡 Medium | 🟢 | | review:dashboard-overview |
 | DS-4 | ExpenseChart: replace inline `backgroundColor` with token-mapped CSS variables | 30m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DS-5 | AIBrief: change `text-primary` (amber) to AI-specific purple tokens | 10m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DS-6 | Dashboard: resolve `text-[9px]` vs `text-[10px]` inconsistency with `text-micro` utility | 15m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DEV-5 | Dashboard: add `cancelAnimationFrame` cleanup in DashboardLeftRail/SparkCards useEffect | 10m | 🟡 Medium | 🟢 | | review:dashboard-overview |
+| ~~DS-5~~ | ~~AIBrief: change `text-primary` (amber) to AI-specific purple tokens~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
+| ~~DS-6~~ | ~~Dashboard: resolve `text-[9px]` vs `text-[10px]` inconsistency with `text-micro` utility~~ | 15m | 🟡 Medium | ✅ | | review:dashboard-overview |
+| ~~DEV-5~~ | ~~Dashboard: add `cancelAnimationFrame` cleanup in DashboardLeftRail/SparkCards useEffect~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | DEV-6 | Dashboard: delete duplicate `OnboardingHeroCard` in `components/dashboard/` (dead code) | 5m | 🟡 Medium | 🟢 | | review:dashboard-overview |
 | DEV-7 | DashboardRightRail: replace `\|\|` className with `cn()` for proper class merging | 5m | 🟡 Medium | 🟢 | | review:dashboard-overview |
 | DEV-8 | DashboardService: add explicit return type to `getMetrics()` method | 15m | 🟡 Medium | 🟢 | | review:dashboard-overview |
@@ -179,6 +179,11 @@
 
 | ID | Task | Completed | Commit |
 |----|------|-----------|--------|
+| ✅ DRY-6 | Dashboard: deduplicate SparkCards/DashboardLeftRail | 2026-02-19 | 53d2db6 |
+| ✅ DEV-5 | Dashboard: add cancelAnimationFrame cleanup | 2026-02-19 | 53d2db6 |
+| ✅ DS-5 | AIBrief: change text-primary to AI purple tokens | 2026-02-19 | 53d2db6 |
+| ✅ DS-6 | Dashboard: add text-micro utility for consistency | 2026-02-19 | 53d2db6 |
+| ✅ DEV-3 | Dashboard: delete dead handleSkipStep + SparkCardsSkeleton | 2026-02-19 | 53d2db6 |
 | ✅ SEC-17 | XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief | 2026-02-19 | 76cb077 |
 | ✅ SEC-18 | Dashboard routes: replace unsafe `request.tenantId as string` with `requireTenantId()` | 2026-02-19 | 76cb077 |
 | ✅ SEC-19 | Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generics | 2026-02-19 | 76cb077 |
