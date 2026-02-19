@@ -57,14 +57,17 @@ See `apps/web/CLAUDE.md` for full design system context (loaded when working in 
 
 ---
 
-## 6 Key Invariants (Zero Exceptions)
+## 9 Key Invariants (Zero Exceptions)
 
 1. **Tenant Isolation:** Every query MUST filter by `tenantId` (entity-scoped: `entity: { tenantId }`).
 2. **Money Precision:** All amounts are **integer cents** (1050 = $10.50). Never use floats.
 3. **Double-Entry:** `SUM(debitAmount) === SUM(creditAmount)` always. Validate before creating JournalEntry.
 4. **Soft Delete:** Financial records use `deletedAt: DateTime?`. Filter: `WHERE deletedAt IS NULL`. Never hard delete.
 5. **Source Preservation:** Journal entries store `sourceType`, `sourceId`, `sourceDocument` (JSON snapshot).
-6. **Atomic Task IDs:** When creating tasks, ALWAYS reserve IDs atomically via `node .claude/scripts/reserve-task-ids.js <PREFIX> [count]` BEFORE assigning to tasks. Never manually increment IDs from TASKS.md (race-prone). See `.claude/rules/task-population.md` for full workflow.
+6. **Page Loading States:** Every `page.tsx` under `(dashboard)/` MUST have sibling `loading.tsx` and `error.tsx`.
+7. **Server/Client Separation:** Files MUST NOT mix server-only imports (`prisma`, `fs`, `node:*`) with client-only code (`'use client'`).
+8. **Atomic Task IDs:** When creating tasks, ALWAYS reserve IDs atomically via `node .claude/scripts/reserve-task-ids.js <PREFIX> [count]` BEFORE assigning to tasks. Never manually increment IDs from TASKS.md (race-prone). See `.claude/rules/task-population.md` for full workflow.
+9. **Task Requirement:** If user request requires code editing, there MUST be a corresponding task in TASKS.md. Check task availability before starting any implementation work (see `.claude/rules/guardrails.md` Step 0).
 
 ---
 

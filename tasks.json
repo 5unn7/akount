@@ -1,26 +1,26 @@
 {
   "$schema": "./tasks.schema.json",
   "version": "2.0",
-  "generated": "2026-02-19T21:17:54.942Z",
+  "generated": "2026-02-19T21:36:54.844Z",
   "generatedBy": "regenerate-task-index.js",
   "summary": {
     "total": 256,
-    "active": 226,
-    "done": 30,
+    "active": 225,
+    "done": 31,
     "stale": 0,
     "riskDistribution": {
       "low": 1,
-      "medium": 225,
+      "medium": 224,
       "high": 0
     },
     "byPriority": {
       "critical": 0,
-      "high": 62,
+      "high": 61,
       "medium": 135,
       "low": 28
     },
     "byStatus": {
-      "ready": 96,
+      "ready": 95,
       "blocked": 7,
       "backlog": 122
     }
@@ -1853,42 +1853,6 @@
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
       "line": 86,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-66": {
-      "id": "UX-66",
-      "title": "Rename \"AI Advisor\" → \"Insights\" across entire codebase (~29 files): frontend routes/dir rename/nav/components (9), RBAC comment (1), CLAUDE.md docs (3), design system docs (9), brand/marketing (4), config/meta (2), code reviews (2). Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is.",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:ai-advisor",
-      "created": "2026-02-19",
-      "line": 87,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -8526,6 +8490,14 @@
       "completedAt": null,
       "completedCommit": null
     },
+    "UX-66": {
+      "id": "UX-66",
+      "title": "Rename \"AI Advisor\" → \"Insights\" across entire codebase (~29 files): frontend routes/dir rename/nav/components, RBAC comment, CLAUDE.md docs, design system docs, config/meta. Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is.",
+      "domain": "ux",
+      "source": "audit:ai-advisor",
+      "completedAt": "2026-02-19",
+      "completedCommit": "pending"
+    },
     "UX-43": {
       "id": "UX-43",
       "title": "Business: Add payment allocation UI~~ (merged into DEV-76)",
@@ -8714,7 +8686,6 @@
         "UX-58",
         "UX-59",
         "UX-60",
-        "UX-66",
         "UX-33",
         "UX-34",
         "UX-35",
@@ -8979,7 +8950,6 @@
         "UX-58",
         "UX-59",
         "UX-60",
-        "UX-66",
         "DEV-112",
         "DEV-113",
         "DS-1",
@@ -9378,7 +9348,6 @@
         "DEV-77",
         "DEV-78",
         "UX-45",
-        "UX-66",
         "DEV-112",
         "UX-33",
         "UX-35",

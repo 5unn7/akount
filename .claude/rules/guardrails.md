@@ -2,7 +2,7 @@
 
 > **Auto-loaded globally** — enforces critical rules via hooks
 
-## 7 Key Invariants (Zero Exceptions)
+## 9 Key Invariants (Zero Exceptions)
 
 These invariants are enforced across the entire codebase. Violations will fail commits or trigger reset.
 
@@ -13,6 +13,8 @@ These invariants are enforced across the entire codebase. Violations will fail c
 5. **Source Preservation** — Journal entries store `sourceType`, `sourceId`, `sourceDocument` (JSON snapshot).
 6. **Page Loading States** — Every `page.tsx` under `(dashboard)/` MUST have sibling `loading.tsx` and `error.tsx`
 7. **Server/Client Separation** — Files MUST NOT mix server-only imports (`prisma`, `fs`, `node:*`) with client-only code (`'use client'`)
+8. **Atomic Task IDs** — When creating tasks, ALWAYS reserve IDs atomically via `node .claude/scripts/reserve-task-ids.js <PREFIX> [count]` BEFORE assigning to tasks. Never manually increment IDs from TASKS.md (race-prone).
+9. **Task Requirement** — If user request requires code editing, there MUST be a corresponding task in TASKS.md. Check task availability before starting any implementation work (see Step 0 below).
 
 **Why these are zero-tolerance:**
 - Invariants 1-5: Financial data integrity, audit compliance, multi-tenancy security
