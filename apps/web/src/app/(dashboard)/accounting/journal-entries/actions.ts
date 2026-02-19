@@ -5,15 +5,23 @@ import {
     approveJournalEntry,
     voidJournalEntry,
     deleteJournalEntry,
+    createJournalEntry as createJournalEntryApi,
     type ListJournalEntriesParams,
     type ListJournalEntriesResponse,
     type JournalEntry,
+    type CreateJournalEntryInput,
 } from '@/lib/api/accounting';
 
 export async function fetchJournalEntries(
     params: ListJournalEntriesParams
 ): Promise<ListJournalEntriesResponse> {
     return listJournalEntries(params);
+}
+
+export async function createEntryAction(
+    input: CreateJournalEntryInput
+): Promise<JournalEntry> {
+    return createJournalEntryApi(input);
 }
 
 export async function approveEntryAction(

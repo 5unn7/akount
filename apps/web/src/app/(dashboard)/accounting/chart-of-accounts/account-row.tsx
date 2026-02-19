@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ChevronRight, ChevronDown, Pencil, Power } from 'lucide-react';
 import type { GLAccount, GLAccountType, GLAccountBalance } from '@/lib/api/accounting';
-import { formatAmount } from '@/lib/api/accounting';
+import { formatAmount } from '@/lib/api/transactions.types';
 import { Badge } from '@/components/ui/badge';
 
 // ============================================================================

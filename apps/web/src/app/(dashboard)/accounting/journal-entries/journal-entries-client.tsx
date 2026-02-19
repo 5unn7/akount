@@ -14,7 +14,7 @@ import type {
     JournalEntry,
     JournalEntryStatus,
 } from '@/lib/api/accounting';
-import { formatAmount, formatDate } from '@/lib/api/accounting';
+import { formatAmount, formatDate } from '@/lib/api/transactions.types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

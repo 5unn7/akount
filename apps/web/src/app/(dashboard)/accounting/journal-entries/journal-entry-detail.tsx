@@ -2,7 +2,7 @@
 
 import { Check, Ban, Trash2, Loader2 } from 'lucide-react';
 import type { JournalEntry, JournalEntryStatus } from '@/lib/api/accounting';
-import { formatAmount } from '@/lib/api/accounting';
+import { formatAmount } from '@/lib/api/transactions.types';
 import { Button } from '@/components/ui/button';
 
 // ============================================================================

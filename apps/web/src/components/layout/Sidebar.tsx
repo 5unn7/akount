@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUser, useClerk } from "@clerk/nextjs";
-import { ChevronDown, ChevronRight, Menu, LogOut, ChevronLeft, ChevronRightIcon } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
+import { ChevronDown, ChevronRight, Menu, ChevronLeft, ChevronRightIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -29,53 +29,31 @@ function getActiveDomainId(domains: NavDomain[], pathname: string): string | und
     )?.id;
 }
 
-/* ── User profile card ── */
+/* ── User profile card using Clerk's UserButton ── */
 function UserProfileCard({ collapsed }: { collapsed?: boolean }) {
-    const { user } = useUser();
-    const { signOut } = useClerk();
-    if (!user) return null;
-
-    const initials = [user.firstName?.[0], user.lastName?.[0]]
-        .filter(Boolean)
-        .join('')
-        .toUpperCase() || '?';
-    const displayName = user.fullName || user.primaryEmailAddress?.emailAddress || 'User';
-
-    if (collapsed) {
-        return (
-            <div className="flex flex-col items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-semibold" title={displayName}>
-                    {initials}
-                </div>
-                <button
-                    onClick={() => signOut({ redirectUrl: '/' })}
-                    className="h-8 w-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Sign out"
-                    title="Sign out"
-                >
-                    <LogOut className="h-3.5 w-3.5" />
-                </button>
-            </div>
-        );
-    }
-
     return (
-        <div className="flex items-center gap-3 px-1">
-            <div className="h-8 w-8 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-semibold shrink-0">
-                {initials}
-            </div>
-            <div className="min-w-0 flex-1">
-                <p className="text-sm text-foreground truncate">{displayName}</p>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Free Plan</p>
-            </div>
-            <button
-                onClick={() => signOut({ redirectUrl: '/' })}
-                className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Sign out"
-                title="Sign out"
-            >
-                <LogOut className="h-3.5 w-3.5" />
-            </button>
+        <div className={cn(
+            "flex items-center",
+            collapsed ? "justify-center" : "justify-start"
+        )}>
+            <UserButton
+                afterSignOutUrl="/"
+                afterSwitchSessionUrl="/overview"
+                showName={!collapsed}
+                appearance={{
+                    elements: {
+                        rootBox: "w-full",
+                        userButtonTrigger: cn(
+                            "rounded-lg focus:shadow-none",
+                            !collapsed && "w-full py-1 px-1 hover:bg-ak-bg-3 transition-colors"
+                        ),
+                        userButtonBox: !collapsed ? "flex-row gap-3 w-full" : undefined,
+                        userButtonOuterIdentifier: "text-sm truncate",
+                        avatarBox: "h-8 w-8",
+                        userButtonPopoverCard: "z-[90]",
+                    },
+                }}
+            />
         </div>
     );
 }

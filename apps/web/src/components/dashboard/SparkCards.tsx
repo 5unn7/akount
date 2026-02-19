@@ -1,98 +1,23 @@
 'use client';
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
-
-interface SparkCardData {
-    label: string;
-    value: string;
-    trend?: {
-        direction: 'up' | 'down' | 'flat';
-        text: string;
-    };
-    sparkline?: number[];
-    color?: 'green' | 'red' | 'blue' | 'purple' | 'primary';
-}
+import { MiniSparkline } from './MiniSparkline';
+import {
+    trendColorMap,
+    glowColorMap,
+    type StatCardData,
+} from '@/lib/dashboard/constants';
 
 interface SparkCardsProps {
-    cards: SparkCardData[];
+    cards: StatCardData[];
     className?: string;
 }
 
-const sparkColorMap = {
-    green: { stroke: 'var(--ak-green)', fill: 'var(--ak-green-fill)' },
-    red: { stroke: 'var(--ak-red)', fill: 'var(--ak-red-fill)' },
-    blue: { stroke: 'var(--ak-blue)', fill: 'var(--ak-blue-fill)' },
-    purple: { stroke: 'var(--ak-purple)', fill: 'var(--ak-purple-fill)' },
-    primary: { stroke: 'var(--ak-pri)', fill: 'var(--ak-pri-fill)' },
-} as const;
-
-const trendColorMap = {
-    up: 'text-ak-green',
-    down: 'text-ak-red',
-    flat: 'text-muted-foreground',
-} as const;
-
 const TrendIcon = { up: ArrowUp, down: ArrowDown, flat: Minus } as const;
 
-const glowColorMap = {
-    green: 'var(--ak-green-fill)',
-    red: 'var(--ak-red-fill)',
-    blue: 'var(--ak-blue-fill)',
-    purple: 'var(--ak-purple-fill)',
-    primary: 'var(--ak-pri-fill)',
-} as const;
-
-function MiniSparkline({ data, color = 'primary' }: { data: number[]; color?: SparkCardData['color'] }) {
-    if (data.length < 2) return null;
-
-    const width = 80;
-    const height = 24;
-    const padding = 1;
-
-    const min = Math.min(...data);
-    const max = Math.max(...data);
-    const range = max - min || 1;
-
-    const points = data.map((v, i) => {
-        const x = padding + (i / (data.length - 1)) * (width - 2 * padding);
-        const y = height - padding - ((v - min) / range) * (height - 2 * padding);
-        return `${x},${y}`;
-    });
-
-    const polyline = points.join(' ');
-    const fillPath = `M${padding},${height} ${points.join(' ')} ${width - padding},${height} Z`;
-    const colors = sparkColorMap[color ?? 'primary'];
-
-    return (
-        <svg
-            width={width}
-            height={height}
-            viewBox={`0 0 ${width} ${height}`}
-            className="shrink-0"
-        >
-            <defs>
-                <linearGradient id={`spark-grad-${color}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={colors.fill} />
-                    <stop offset="100%" stopColor="transparent" />
-                </linearGradient>
-            </defs>
-            <path d={fillPath} fill={`url(#spark-grad-${color})`} />
-            <polyline
-                points={polyline}
-                fill="none"
-                stroke={colors.stroke}
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="sparkline-path"
-            />
-        </svg>
-    );
-}
-
-function SparkCard({ card, index }: { card: SparkCardData; index: number }) {
+function SparkCard({ card, index }: { card: StatCardData; index: number }) {
     const frameRef = useRef<number>(0);
     const glowColor = glowColorMap[card.color ?? 'primary'];
 
@@ -109,6 +34,12 @@ function SparkCard({ card, index }: { card: SparkCardData; index: number }) {
             target.style.setProperty('--glow-x', `${x}%`);
             target.style.setProperty('--glow-y', `${y}%`);
         });
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            cancelAnimationFrame(frameRef.current);
+        };
     }, []);
 
     return (
@@ -131,7 +62,11 @@ function SparkCard({ card, index }: { card: SparkCardData; index: number }) {
                 </div>
                 {card.sparkline && card.sparkline.length > 1 && (
                     <div className="shrink-0 w-20">
-                        <MiniSparkline data={card.sparkline} color={card.color} />
+                        <MiniSparkline
+                            data={card.sparkline}
+                            color={card.color}
+                            gradientId={`spark-grad-${card.color}-${index}`}
+                        />
                     </div>
                 )}
             </div>

@@ -421,6 +421,12 @@
   animation: glow-pulse 4s ease-in-out infinite;
 }
 
+/* Text utilities */
+@utility text-micro {
+  font-size: 10px;
+  line-height: 1.4;
+}
+
 /* Dropdown appear */
 @keyframes dd-in {
   from {

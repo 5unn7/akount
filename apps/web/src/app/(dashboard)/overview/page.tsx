@@ -252,17 +252,3 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
         </div>
     );
 }
-
-function SparkCardsSkeleton() {
-    return (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="glass rounded-lg px-4 py-3.5">
-                    <div className="h-3 w-16 bg-muted animate-pulse rounded mb-2" />
-                    <div className="h-5 w-20 bg-muted animate-pulse rounded mb-2" />
-                    <div className="h-3 w-24 bg-muted animate-pulse rounded" />
-                </div>
-            ))}
-        </div>
-    );
-}

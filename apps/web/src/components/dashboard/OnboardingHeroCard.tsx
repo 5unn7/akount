@@ -44,14 +44,6 @@ export function OnboardingHeroCard() {
     setProgress(null)
   }
 
-  async function handleSkipStep(step: string) {
-    await apiFetch('/api/system/onboarding/skip-step', {
-      method: 'POST',
-      body: JSON.stringify({ step, skipDurationDays: 7 })
-    })
-    fetchProgress()
-  }
-
   if (isLoading) {
     return (
       <div className="h-64 glass animate-pulse rounded-lg" />

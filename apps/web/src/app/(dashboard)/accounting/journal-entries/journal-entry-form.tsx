@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import type { GLAccount, CreateJournalEntryInput } from '@/lib/api/accounting';
-import { createJournalEntry, formatAmount } from '@/lib/api/accounting';
+import { formatAmount } from '@/lib/api/transactions.types';
+import { createEntryAction } from './actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -127,7 +128,7 @@ export function JournalEntryForm({
                 })),
             };
 
-            await createJournalEntry(input);
+            await createEntryAction(input);
             router.push('/accounting/journal-entries');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to create entry');
