@@ -68,16 +68,30 @@ export default clerkMiddleware(async (auth, request) => {
   // Require authentication for all other routes
   const { userId, sessionClaims } = await auth.protect();
 
-  // TODO: Onboarding redirect disabled - needs database check instead of metadata
-  // Existing users don't have tenantId in Clerk metadata yet
-  // const hasTenant = !!(sessionClaims?.metadata as Record<string, unknown>)?.tenantId;
-  // if (!hasTenant && !request.nextUrl.pathname.startsWith('/onboarding')) {
-  //   return NextResponse.redirect(new URL('/onboarding', request.url));
-  // }
+  // Check if onboarding is complete via Clerk metadata
+  // This flag is set by the onboarding API endpoints (onboarding.ts)
+  const metadata = (sessionClaims?.metadata as Record<string, unknown>) || {};
+  const onboardingCompleted = metadata.onboardingCompleted as boolean | undefined;
 
-  // Get user role from session claims (set in Clerk user metadata)
-  // Default to INVESTOR (most restrictive) if no role found
-  const role = ((sessionClaims?.metadata as Record<string, unknown>)?.role as Role) || 'INVESTOR';
+  // Onboarding flow control
+  // - onboardingCompleted === false: user started but didn't finish
+  // - onboardingCompleted === undefined: new user, hasn't started
+  // - onboardingCompleted === true: user finished onboarding
+  if (onboardingCompleted !== true) {
+    // User hasn't completed onboarding - only allow /onboarding routes
+    if (!request.nextUrl.pathname.startsWith('/onboarding')) {
+      return NextResponse.redirect(new URL('/onboarding', request.url));
+    }
+  } else {
+    // User completed onboarding - redirect away from /onboarding to dashboard
+    if (request.nextUrl.pathname.startsWith('/onboarding')) {
+      return NextResponse.redirect(new URL('/overview', request.url));
+    }
+  }
+
+  // Get user role from session claims (set in Clerk user metadata during onboarding)
+  // Default to OWNER — self-registered users are always owners; invited users get role from metadata
+  const role = ((sessionClaims?.metadata as Record<string, unknown>)?.role as Role) || 'OWNER';
 
   // ============================================================================
   // RBAC Checks
