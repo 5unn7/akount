@@ -20,6 +20,8 @@ These invariants are enforced across the entire codebase. Violations will fail c
 - Invariants 1-5: Financial data integrity, audit compliance, multi-tenancy security
 - Invariant 6: Without loading.tsx, users see blank screens during data fetches. Without error.tsx, errors crash the entire layout.
 - Invariant 7: Mixing server/client code causes runtime crashes and bundler instability. 5 P0 crashes traced to this in Phase 5 review.
+- Invariant 8: Manual ID assignment causes race conditions and ID collisions between concurrent agents/sessions.
+- Invariant 9: Untracked work creates technical debt, makes progress invisible, and prevents proper planning/estimation.
 
 ---
 
@@ -199,7 +201,7 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 
 Use `/processes:reset` when:
 
-- AI violates any of the 7 Key Invariants
+- AI violates any of the 9 Key Invariants
 - AI uses floats for money (Invariant #2)
 - AI proposes `: any` types
 - AI forgets `tenantId` in queries (Invariant #1)
