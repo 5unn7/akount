@@ -2,6 +2,37 @@
 
 > **Auto-loaded globally** — enforces plan-driven development
 
+## Automatic Task Checking (NEW - Runs Without Commands)
+
+**Trigger:** User message indicates implementation work (fix, add, create, implement, build, etc.)
+
+**Behavior:**
+
+1. **Extract task index** from TASKS.md HTML comment (fast path, ~2K tokens)
+2. **Semantic search** for matching task:
+   - Parse user message for keywords
+   - Match against task titles and descriptions
+   - Consider domain context (recent file changes, git history)
+3. **If task FOUND:**
+   - Note task ID for status updates
+   - Proceed with implementation (guardrails.md Steps 1-14)
+4. **If task NOT FOUND:**
+   - Display task creation prompt with 3 options (see guardrails.md Step 0)
+   - Wait for user decision before proceeding
+   - Auto-fill domain, priority, effort (NO user questions)
+   - Create task if user chooses option 1
+
+**When to skip:**
+- Exploratory work ("explain", "show me", "analyze")
+- Explicit command calls (`/processes:claim`, `/processes:plan`)
+- Questions without code changes
+
+**Fallback:**
+- If index missing or malformed, fall back to full TASKS.md read (15K tokens)
+- If semantic search fails, show task creation prompt (safer to ask than assume)
+
+---
+
 ## Before Starting ANY New Work Unit
 
 Before writing code or making changes for a new task:

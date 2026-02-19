@@ -61,6 +61,72 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 
 **Before writing ANY code, Claude MUST:**
 
+0. ✅ **Check task availability** (AUTOMATIC - runs first):
+
+   **When to check:**
+   - User message indicates implementation work (keywords: fix, add, create, implement, build, update, refactor)
+   - User did NOT invoke explicit command (`/processes:*`, `/quality:*`, etc.)
+   - Work is non-trivial (not just answering questions or explaining code)
+
+   **How to check:**
+   ```bash
+   # Fast path: extract task index from TASKS.md HTML comment
+   INDEX=$(grep -Pzo '(?s)<!-- TASK-INDEX:START.*?TASK-INDEX:END -->' TASKS.md)
+
+   # Parse JSON index
+   TASKS_JSON=$(echo "$INDEX" | sed 's/.*TASK-INDEX:START//' | sed 's/TASK-INDEX:END.*//')
+
+   # Semantic search for matching task
+   # - Extract keywords from user message
+   # - Search task titles/descriptions in index
+   # - Check domain relevance (banking, invoicing, etc.)
+   ```
+
+   **If task FOUND:**
+   ```
+   ✅ Found existing task: SEC-9 (CSRF protection review)
+
+   Proceeding with SEC-9 implementation...
+   [continue to Step 1-14]
+   ```
+
+   **If task NOT FOUND:**
+   ```
+   📋 UNTRACKED WORK DETECTED
+
+   You're about to: [describe the work from user's request]
+
+   Would you like to:
+   1. ✅ Add to TASKS.md (auto-filled)
+   2. 📋 Use /processes:plan (for complex features)
+   3. ⚡ Skip tracking
+
+   [User answers: 1, 2, or 3]
+
+   [If user chooses 1:]
+   ✅ Added [TASK-ID] to TASKS.md:
+   | [TASK-ID] | [auto-extracted title] | [auto-inferred effort] | [auto-inferred priority] | 🟢 ready | | ad-hoc:session-xyz |
+
+   Auto-filled details:
+   - Domain: [auto-detected]
+   - Priority: [auto-inferred from work type]
+   - Effort: [auto-inferred from complexity]
+
+   [Proceed with implementation]
+   ```
+
+   **Auto-fill logic (NO user questions):**
+   - **Domain:** Keyword matching + git history fallback
+   - **Priority:** Critical (crashes) → High (bugs) → Medium (features) → Low (refactors)
+   - **Effort:** <1h (simple bugs) → 1-2h (default) → 2-4h (multi-step) → >4h (complex)
+   - **Task ID:** Auto-generated from domain prefix + next number
+
+   **When to SKIP this check:**
+   - Exploratory questions ("explain", "show me", "analyze", "research")
+   - Explicit command calls (user already specified workflow)
+   - Pure documentation work
+   - Answering questions without code changes
+
 1. ✅ **Classify the change** — Bug fix, feature, refactor, or config? (see `product-thinking.md`)
 2. ✅ **Read existing files first** — never edit blindly
 3. ✅ **Search for patterns** — `Grep "similar-feature" apps/`
@@ -122,6 +188,11 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ✅ **Keep Server Components pure** — data fetch only, no event handlers
 - ✅ **Mark Client Components explicitly** — add `'use client'` directive when needed
 
+### Task Tracking
+- ❌ **NEVER start implementation without checking TASKS.md** — always run Step 0
+- ❌ **NEVER assume task exists** — verify with index lookup
+- ❌ **NEVER skip task creation prompt** — let user decide tracking
+
 ## Reset Triggers
 
 Use `/processes:reset` when:
@@ -136,6 +207,7 @@ Use `/processes:reset` when:
 - AI mixes mock data into implementation
 - AI creates pages without loading/error states (Invariant #6)
 - AI mixes server-only imports with `'use client'` (Invariant #7)
+- AI skips task availability check before implementation
 - AI doesn't check existing patterns first
 - AI rewrites code without understanding why it exists
 - AI fixes a symptom without tracing root cause

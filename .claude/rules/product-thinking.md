@@ -25,6 +25,18 @@ Classify your work BEFORE starting. Different types require different investigat
 
 ## Investigation Protocol (MANDATORY for Bug Fix and Feature)
 
+### Step 0: Task Availability (AUTOMATIC - runs first)
+
+Before reading any files or investigating code, check if this work is tracked in TASKS.md.
+
+**See guardrails.md Step 0 for full checking logic and task creation prompt.**
+
+**Quick reference:**
+- Implementation work → check TASKS.md index
+- Task found → note ID, proceed
+- Task not found → show 3-option prompt (create / plan / skip)
+- Exploratory work → skip check
+
 ### Step 1: Understand What Exists (before ANY edit)
 
 ```
