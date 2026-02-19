@@ -68,6 +68,21 @@ export async function tenantMiddleware(
     }
 }
 
+/**
+ * Helper to safely extract tenantId from request
+ * Throws 500 if tenantId is missing (which should never happen after tenant middleware runs)
+ */
+export function requireTenantId(request: FastifyRequest): string {
+    if (!request.tenantId) {
+        request.log.error(
+            { userId: request.userId },
+            'CRITICAL: tenantId missing from request (tenant middleware may not have run)'
+        );
+        throw new Error('Tenant context missing from request');
+    }
+    return request.tenantId;
+}
+
 // Extend FastifyRequest interface to include tenant properties
 declare module 'fastify' {
     interface FastifyRequest {

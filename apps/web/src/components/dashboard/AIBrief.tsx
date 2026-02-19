@@ -26,10 +26,9 @@ export function AIBrief({ body, date }: AIBriefProps) {
                 </span>
             </div>
             {body ? (
-                <p
-                    className="text-sm font-heading italic text-foreground/90 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: body }}
-                />
+                <p className="text-sm font-heading italic text-foreground/90 leading-relaxed">
+                    {body}
+                </p>
             ) : (
                 <div className="flex flex-col items-center gap-2 py-2 text-center">
                     <Sparkles className="h-5 w-5 text-primary/40" />

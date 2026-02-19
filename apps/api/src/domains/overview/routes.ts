@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { DashboardService } from './services/dashboard.service';
 import { PerformanceService } from './services/performance.service';
 import { authMiddleware } from '../../middleware/auth';
-import { tenantMiddleware } from '../../middleware/tenant';
+import { tenantMiddleware, requireTenantId } from '../../middleware/tenant';
 import { validateQuery } from '../../middleware/validation';
 import { withPermission } from '../../middleware/withPermission';
 import { PerformanceQuerySchema } from './schemas/performance.schema';
@@ -33,17 +33,16 @@ export async function overviewRoutes(fastify: FastifyInstance) {
    * Returns dashboard metrics including net worth, cash position, and account summary.
    * Aggregates data across all entities or filtered by entityId.
    */
-  fastify.get(
+  fastify.get<{ Querystring: DashboardQuery }>(
     '/dashboard',
     {
       ...withPermission('overview', 'dashboard', 'VIEW'),
       preValidation: [validateQuery(dashboardQuerySchema)],
     },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       try {
-        const service = new DashboardService(request.tenantId as string);
-        const query = request.query as DashboardQuery;
-        const { entityId, currency } = query;
+        const service = new DashboardService(requireTenantId(request));
+        const { entityId, currency } = request.query;
 
         const metrics = await service.getMetrics(entityId, currency);
 
@@ -71,17 +70,16 @@ export async function overviewRoutes(fastify: FastifyInstance) {
    *
    * Returns detailed net worth breakdown.
    */
-  fastify.get(
+  fastify.get<{ Querystring: DashboardQuery }>(
     '/net-worth',
     {
       ...withPermission('overview', 'net-worth', 'VIEW'),
       preValidation: [validateQuery(dashboardQuerySchema)],
     },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       try {
-        const service = new DashboardService(request.tenantId as string);
-        const query = request.query as DashboardQuery;
-        const { entityId, currency } = query;
+        const service = new DashboardService(requireTenantId(request));
+        const { entityId, currency } = request.query;
 
         const metrics = await service.getMetrics(entityId, currency);
 
@@ -110,17 +108,16 @@ export async function overviewRoutes(fastify: FastifyInstance) {
    *
    * Returns cash flow summary.
    */
-  fastify.get(
+  fastify.get<{ Querystring: DashboardQuery }>(
     '/cash-flow',
     {
       ...withPermission('overview', 'cash-flow', 'VIEW'),
       preValidation: [validateQuery(dashboardQuerySchema)],
     },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       try {
-        const service = new DashboardService(request.tenantId as string);
-        const query = request.query as DashboardQuery;
-        const { entityId, currency } = query;
+        const service = new DashboardService(requireTenantId(request));
+        const { entityId, currency } = request.query;
 
         const metrics = await service.getMetrics(entityId, currency);
 
@@ -147,17 +144,16 @@ export async function overviewRoutes(fastify: FastifyInstance) {
    * Returns performance metrics (revenue, expenses, profit) with sparkline trends.
    * Calculates from transaction data with category-based filtering.
    */
-  fastify.get(
+  fastify.get<{ Querystring: z.infer<typeof PerformanceQuerySchema> }>(
     '/performance',
     {
       ...withPermission('overview', 'performance', 'VIEW'),
       preValidation: [validateQuery(PerformanceQuerySchema)],
     },
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request, reply) => {
       try {
-        const service = new PerformanceService(request.tenantId as string);
-        const query = request.query as z.infer<typeof PerformanceQuerySchema>;
-        const { entityId, currency, period } = query;
+        const service = new PerformanceService(requireTenantId(request));
+        const { entityId, currency, period } = request.query;
 
         const metrics = await service.getPerformanceMetrics(
           entityId,
