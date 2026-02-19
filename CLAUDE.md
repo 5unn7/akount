@@ -107,6 +107,7 @@ Distilled rules are already in `.claude/rules/financial-rules.md` (loaded when w
 - `MEMORY.md` — work state, learned patterns, gotchas
 - `.claude/rules/*.md` — modular rules (path-scoped)
 - `.claude/rules/product-thinking.md` — investigation protocol, domain awareness, review lens
+- `.claude/rules/plan-enforcement.md` — task validation, status updates, unplanned work detection
 
 **Layer 2 (Loaded when working in directory):**
 
