@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-19
 **Current Phase:** Phase 6 — Launch MVP
 
-> **85 tasks** · 🔴 0 critical · 🟠 29 high · 🟡 38 medium · ⚪ 9 low · ✅ 16 done
-> 🟢 56 ready · 📦 21 backlog · 🔒 6 blocked
+> **85 tasks** · 🔴 0 critical · 🟠 26 high · 🟡 38 medium · ⚪ 9 low · ✅ 19 done
+> 🟢 53 ready · 📦 21 backlog · 🔒 6 blocked
 
 ---
 
@@ -44,9 +44,9 @@
 | SEC-13 | Audit log tamper detection (immutable log storage) | 3h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.2.4 |
 | INFRA-9 | Secrets management for production (env var vault, not .env files) | 2h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.4.4 |
 | INFRA-10 | Security scanning in CI (SAST + dependency/supply chain checks) | 2h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.4.4 |
-| SEC-17 | XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief (DOMPurify or markdown renderer) | 30m | 🟠 High | 🟢 | | review:dashboard-overview |
-| SEC-18 | Dashboard routes: replace unsafe `request.tenantId as string` with `requireTenantId()` guard | 30m | 🟠 High | 🟢 | | review:dashboard-overview |
-| SEC-19 | Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generic route typing | 1h | 🟠 High | 🟢 | | review:dashboard-overview |
+| ~~SEC-17~~ | ~~XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief (DOMPurify or markdown renderer)~~ | 30m | 🟠 High | ✅ | | review:dashboard-overview |
+| ~~SEC-18~~ | ~~Dashboard routes: replace unsafe `request.tenantId as string` with `requireTenantId()` guard~~ | 30m | 🟠 High | ✅ | | review:dashboard-overview |
+| ~~SEC-19~~ | ~~Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generic route typing~~ | 1h | 🟠 High | ✅ | | review:dashboard-overview |
 | FIN-13 | `UpcomingPayments.amount` typed as `string` — must be `number` (integer cents violation) | 15m | 🟠 High | 🟢 | | review:dashboard-overview |
 | DOC-1 | Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy | 30m | 🟠 High | 🟢 | | review:smooth-floating-mountain |
 
@@ -179,6 +179,9 @@
 
 | ID | Task | Completed | Commit |
 |----|------|-----------|--------|
+| ✅ SEC-17 | XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief | 2026-02-19 | 76cb077 |
+| ✅ SEC-18 | Dashboard routes: replace unsafe `request.tenantId as string` with `requireTenantId()` | 2026-02-19 | 76cb077 |
+| ✅ SEC-19 | Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generics | 2026-02-19 | 76cb077 |
 | ✅ DEV-1 | Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume) | 2026-02-19 | e4fe40e |
 | ✅ SEC-1 | RBAC middleware: Wire requirePermission() to canonical PERMISSION_MATRIX | 2026-02-17 | 5e18109 |
 | ✅ SEC-2 | tenantScopedQuery string check — strengthen runtime assertion | 2026-02-17 | 5e18109 |
