@@ -1,10 +1,10 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-17
+**Last Updated:** 2026-02-19
 **Current Phase:** Phase 6 — Launch MVP
 
-> **85 tasks** · 🔴 1 critical · 🟠 29 high · 🟡 38 medium · ⚪ 9 low · ✅ 15 done
-> 🟢 57 ready · 📦 21 backlog · 🔒 6 blocked
+> **85 tasks** · 🔴 0 critical · 🟠 29 high · 🟡 38 medium · ⚪ 9 low · ✅ 16 done
+> 🟢 56 ready · 📦 21 backlog · 🔒 6 blocked
 
 ---
 
@@ -22,7 +22,7 @@
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
-| DEV-1 | Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume) | 1h | 🔴 Critical | 🟢 | | audit:smooth-floating-mountain |
+| ~~DEV-1~~ | ~~Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume)~~ | 1h | 🔴 Critical | ✅ | | audit:smooth-floating-mountain |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟢 | | roadmap |
 | SEC-9 | CSRF protection review | 1h | 🟠 High | 🟢 | | roadmap |
 | PERF-1 | Balance Sheet: combine 2 redundant heavy SQL queries into 1 | 2h | 🟠 High | 🟢 | | review:performance |
@@ -179,6 +179,7 @@
 
 | ID | Task | Completed | Commit |
 |----|------|-----------|--------|
+| ✅ DEV-1 | Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume) | 2026-02-19 | e4fe40e |
 | ✅ SEC-1 | RBAC middleware: Wire requirePermission() to canonical PERMISSION_MATRIX | 2026-02-17 | 5e18109 |
 | ✅ SEC-2 | tenantScopedQuery string check — strengthen runtime assertion | 2026-02-17 | 5e18109 |
 | ✅ SEC-3 | Data export: mask bank account numbers (show last 4 only) | 2026-02-17 | 5e18109 |
