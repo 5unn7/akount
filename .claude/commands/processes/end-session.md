@@ -99,6 +99,44 @@ Save to `docs/archive/sessions/YYYY-MM-DD-HHMM-session.md`:
 - [What was started but not completed, with context for next instance]
 - [Include: file paths, what's left to do, any blockers]
 
+## Self-Reflection (AI Agent Quality Check)
+
+### Did I Follow the Pre-Flight Checklist?
+- [ ] Checked task availability (Step 0) before implementation
+- [ ] Read existing files before editing (never edited blindly)
+- [ ] Searched for patterns via Grep before creating new code
+- [ ] Used offset/limit for large files (>300 lines)
+- [ ] Verified patterns with Grep (didn't claim patterns without proof)
+- [ ] Searched MEMORY topic files before implementing
+
+### Did I Violate Any Invariants?
+- [ ] All queries included tenantId filter ✅
+- [ ] All money fields used integer cents (no floats) ✅
+- [ ] All financial records soft-deleted (no hard deletes) ✅
+- [ ] All page.tsx files have loading.tsx + error.tsx ✅
+- [ ] No mixing server imports with 'use client' ✅
+- [ ] Used design tokens (no hardcoded colors) ✅
+- [ ] Used request.log/server.log (no console.log in production) ✅
+- [ ] No `: any` types (used specific types or unknown) ✅
+
+### Loops or Repeated Mistakes Detected?
+- [Did I retry the same failing approach multiple times?]
+- [Did I make the same type of error repeatedly?]
+- [Did I ignore earlier feedback or context?]
+- [Examples: "Tried reading file 3 times without using offset/limit", "Forgot tenantId filter twice"]
+- [Skip if no loops detected]
+
+### What Would I Do Differently Next Time?
+- [Specific improvements based on this session's mistakes]
+- [Examples: "Use Grep BEFORE claiming pattern exists", "Read files with offset/limit first"]
+- [Skip if session went smoothly]
+
+### Context Efficiency Score (Self-Grade)
+- **File reads:** Efficient (used offset/limit) / Mixed / Wasteful (read entire files)
+- **Pattern verification:** Always verified / Mostly verified / Often assumed
+- **Memory usage:** Checked topic files first / Sometimes checked / Never checked
+- **Overall grade:** A (efficient) / B (good) / C (needs improvement) / D (wasteful)
+
 ## Artifact Update Hints
 - [Suggest which files might need updating based on what was done]
 - [Examples: "New /api/vendors/bills endpoint → apps/api/CLAUDE.md needs update"]
@@ -120,8 +158,9 @@ git commit -m "docs: End session capture YYYY-MM-DD HH:MM"
 
 - **Fast** — mostly auto-populated from git, user fills in non-obvious items
 - **Raw** — capture facts, don't analyze or update other files
+- **Self-aware** — AI reflects on its own behavior to catch patterns and loops
 - **Stackable** — multiple sessions per day create separate timestamped files
-- **Bridge to EOD** — "Artifact Update Hints" tells EOD what MIGHT need updating
+- **Bridge to EOD** — "Artifact Update Hints" and self-reflection data feed into EOD analysis
 
 ---
 
@@ -131,4 +170,4 @@ If a section doesn't apply (no bugs fixed, nothing new learned), either skip it 
 
 ---
 
-_~80 lines. Fast capture. Git-powered. Feeds into /processes:eod._
+_~140 lines. Fast capture. Self-aware. Git-powered. Feeds into /processes:eod._

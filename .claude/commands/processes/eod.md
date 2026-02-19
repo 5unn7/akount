@@ -12,9 +12,9 @@ keywords:
 
 # Workflow: End of Day (EOD)
 
-Fast 3-phase process. Regenerates STATUS.md from TASKS.md + metrics.
+Fast 4-phase process. Regenerates STATUS.md from TASKS.md + metrics + session quality insights.
 
-**Time:** ~90 seconds
+**Time:** ~2 minutes
 **When to use:** Once at end of day (after all instances run `/processes:end-session`).
 **Prereq:** Each instance should have already run `/processes:end-session` to capture session files.
 
@@ -55,7 +55,27 @@ git status --short
 
 ---
 
-## Phase 2: Regenerate STATUS.md (30 seconds)
+## Phase 2: Aggregate Session Self-Reflections (30 seconds)
+
+Read all session files from today (`docs/archive/sessions/$(date +%Y-%m-%d)-*.md`) and extract self-reflection data:
+
+**Aggregate metrics:**
+- Count of invariant violations (group by type)
+- Count of loops/repeated mistakes
+- Most common "what would I do differently" themes
+- Average context efficiency grade (A/B/C/D)
+- Pre-flight checklist compliance rate
+
+**Output:** Add a "Session Quality Insights" section to STATUS.md (see Phase 3)
+
+**If patterns detected:**
+- Multiple sessions forgot tenantId → Update MEMORY.md with reminder
+- Multiple sessions didn't use offset/limit → Flag in debugging-log.md
+- Same mistake across 3+ sessions → Update guardrails.md with specific rule
+
+---
+
+## Phase 3: Regenerate STATUS.md (30 seconds)
 
 Overwrite STATUS.md with fresh auto-generated content:
 
@@ -95,6 +115,26 @@ Overwrite STATUS.md with fresh auto-generated content:
 | Test | X | X | X% |
 | Infra | X | X | X% |
 
+## Session Quality Insights (Today)
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| Sessions completed | X | - |
+| Invariant violations | X | [✅/⚠️/❌] |
+| Pre-flight compliance | X% | [✅/⚠️/❌] |
+| Context efficiency avg | [A/B/C/D] | [✅/⚠️/❌] |
+| Loops detected | X | [✅/⚠️/❌] |
+
+### Common Patterns (Today's Sessions)
+- [Most frequent "what would I do differently" themes]
+- [Recurring mistakes across multiple sessions]
+- [Skip if no patterns detected]
+
+### Actions Taken
+- [MEMORY updates made based on reflections]
+- [Guardrails updates made based on violations]
+- [Skip if no actions needed]
+
 _For full roadmap see ROADMAP.md. For task details see TASKS.md._
 ```
 
@@ -105,7 +145,7 @@ _For full roadmap see ROADMAP.md. For task details see TASKS.md._
 
 ---
 
-## Phase 3: Commit (30 seconds)
+## Phase 4: Commit (30 seconds)
 
 ```bash
 git add STATUS.md TASKS.md
@@ -133,4 +173,4 @@ git commit -m "docs: EOD status update YYYY-MM-DD"
 
 ---
 
-_~120 lines. 3 phases, ~90 seconds. Regenerates STATUS.md from source of truth._
+_~150 lines. 4 phases, ~2 minutes. Regenerates STATUS.md from source of truth + session quality insights._
