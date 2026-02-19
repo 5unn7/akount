@@ -4,6 +4,17 @@ import { Check, Ban, Trash2, Loader2 } from 'lucide-react';
 import type { JournalEntry, JournalEntryStatus } from '@/lib/api/accounting';
 import { formatAmount } from '@/lib/api/transactions.types';
 import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 // ============================================================================
 // Status Badge
@@ -141,29 +152,72 @@ export function EntryDetail({
                                     )}
                                     Approve
                                 </Button>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="rounded-lg border-red-500/20 text-red-400 hover:bg-red-500/10 text-xs h-8"
-                                    onClick={() => onDelete(entry.id)}
-                                    disabled={isActing}
-                                >
-                                    <Trash2 className="h-3 w-3 mr-1" />
-                                    Delete
-                                </Button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="rounded-lg border-red-500/20 text-red-400 hover:bg-red-500/10 text-xs h-8"
+                                            disabled={isActing}
+                                        >
+                                            <Trash2 className="h-3 w-3 mr-1" />
+                                            Delete
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Delete draft journal entry?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This will permanently delete JE-{String(entry.entryNumber).padStart(3, '0')}.
+                                                Draft entries that have not been posted can be safely removed.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                onClick={() => onDelete(entry.id)}
+                                            >
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </>
                         )}
                         {entry.status === 'POSTED' && (
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                className="rounded-lg border-red-500/20 text-red-400 hover:bg-red-500/10 text-xs h-8"
-                                onClick={() => onVoid(entry.id)}
-                                disabled={isActing}
-                            >
-                                <Ban className="h-3 w-3 mr-1" />
-                                Void Entry
-                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="rounded-lg border-red-500/20 text-red-400 hover:bg-red-500/10 text-xs h-8"
+                                        disabled={isActing}
+                                    >
+                                        <Ban className="h-3 w-3 mr-1" />
+                                        Void Entry
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Void this journal entry?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This will create a reversal entry for JE-{String(entry.entryNumber).padStart(3, '0')}.
+                                            The original entry will be marked as voided and a new offsetting entry will be posted.
+                                            This action cannot be undone.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                            onClick={() => onVoid(entry.id)}
+                                        >
+                                            Void Entry
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         )}
                         {entry.reversalOfId && (
                             <span className="text-xs text-muted-foreground">

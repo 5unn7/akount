@@ -10,13 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { GLAccountCombobox } from '@/components/accounting/gl-account-combobox';
 
 // ============================================================================
 // Types
@@ -206,29 +200,13 @@ export function JournalEntryForm({
                                         className="border-b border-ak-border"
                                     >
                                         <td className="py-2 pr-2">
-                                            <Select
+                                            <GLAccountCombobox
+                                                accounts={glAccounts}
                                                 value={line.glAccountId}
                                                 onValueChange={(v) =>
                                                     updateLine(line.id, 'glAccountId', v)
                                                 }
-                                            >
-                                                <SelectTrigger className="rounded-lg border-ak-border-2 glass text-xs h-9">
-                                                    <SelectValue placeholder="Select account" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {glAccounts.map((a) => (
-                                                        <SelectItem
-                                                            key={a.id}
-                                                            value={a.id}
-                                                        >
-                                                            <span className="font-mono mr-2">
-                                                                {a.code}
-                                                            </span>
-                                                            {a.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
+                                            />
                                         </td>
                                         <td className="py-2 px-1">
                                             <Input

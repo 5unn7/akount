@@ -64,16 +64,20 @@ export function TransactionRow({
     suggestions,
     isLoadingSuggestions,
     matchingTxn,
+    isUnmatching,
     onGetSuggestions,
     onMatch,
+    onUnmatch,
 }: {
     transaction: Transaction;
     isExpanded: boolean;
     suggestions?: MatchSuggestion[];
     isLoadingSuggestions: boolean;
     matchingTxn: string | null;
+    isUnmatching?: boolean;
     onGetSuggestions: () => void;
     onMatch: (transactionId: string) => void;
+    onUnmatch?: () => void;
 }) {
     const isMatched = !!transaction.journalEntryId;
 
@@ -103,7 +107,22 @@ export function TransactionRow({
                     )}
                 </TableCell>
                 <TableCell className="text-right">
-                    {!isMatched && (
+                    {isMatched && onUnmatch ? (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-lg border-red-500/20 text-red-400 hover:bg-red-500/10 h-7 text-xs"
+                            onClick={onUnmatch}
+                            disabled={isUnmatching}
+                        >
+                            {isUnmatching ? (
+                                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                            ) : (
+                                <Unlink className="h-3 w-3 mr-1" />
+                            )}
+                            Unmatch
+                        </Button>
+                    ) : !isMatched ? (
                         <Button
                             variant="outline"
                             size="sm"
@@ -118,7 +137,7 @@ export function TransactionRow({
                             )}
                             {isExpanded ? 'Hide' : 'Find Match'}
                         </Button>
-                    )}
+                    ) : null}
                 </TableCell>
             </TableRow>
 

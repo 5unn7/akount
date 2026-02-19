@@ -9,6 +9,7 @@ import {
     fetchReconciliationStatus,
     fetchSuggestions,
     matchTransactions,
+    unmatchTransactions,
     fetchAccountTransactions,
 } from '@/app/(dashboard)/banking/reconciliation/actions';
 import { Button } from '@/components/ui/button';
@@ -53,6 +54,7 @@ export function ReconciliationDashboard({
     const [suggestions, setSuggestions] = useState<Record<string, MatchSuggestion[]>>({});
     const [loadingSuggestions, setLoadingSuggestions] = useState<string | null>(null);
     const [matchingTxn, setMatchingTxn] = useState<string | null>(null);
+    const [unmatchingTxn, setUnmatchingTxn] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     function handleAccountChange(accountId: string) {
@@ -123,6 +125,27 @@ export function ReconciliationDashboard({
             setError(err instanceof Error ? err.message : 'Failed to match transactions');
         } finally {
             setMatchingTxn(null);
+        }
+    }
+
+    async function handleUnmatch(transactionId: string, matchId: string) {
+        setUnmatchingTxn(transactionId);
+        try {
+            await unmatchTransactions(matchId);
+
+            // Refresh status and transactions
+            if (selectedAccountId) {
+                const [statusResult, txnResult] = await Promise.all([
+                    fetchReconciliationStatus(selectedAccountId),
+                    fetchAccountTransactions(selectedAccountId),
+                ]);
+                setStatus(statusResult);
+                setTransactions(txnResult);
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to unmatch transaction');
+        } finally {
+            setUnmatchingTxn(null);
         }
     }
 
@@ -247,18 +270,23 @@ export function ReconciliationDashboard({
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {transactions.map((txn) => (
-                                <TransactionRow
-                                    key={txn.id}
-                                    transaction={txn}
-                                    isExpanded={expandedTxnId === txn.id}
-                                    suggestions={suggestions[txn.id]}
-                                    isLoadingSuggestions={loadingSuggestions === txn.id}
-                                    matchingTxn={matchingTxn}
-                                    onGetSuggestions={() => handleGetSuggestions(txn.id)}
-                                    onMatch={(matchId) => handleMatch(txn.id, matchId)}
-                                />
-                            ))}
+                            {transactions.map((txn) => {
+                                const matchId = txn.matches?.[0]?.id;
+                                return (
+                                    <TransactionRow
+                                        key={txn.id}
+                                        transaction={txn}
+                                        isExpanded={expandedTxnId === txn.id}
+                                        suggestions={suggestions[txn.id]}
+                                        isLoadingSuggestions={loadingSuggestions === txn.id}
+                                        matchingTxn={matchingTxn}
+                                        isUnmatching={unmatchingTxn === txn.id}
+                                        onGetSuggestions={() => handleGetSuggestions(txn.id)}
+                                        onMatch={(id) => handleMatch(txn.id, id)}
+                                        onUnmatch={matchId ? () => handleUnmatch(txn.id, matchId) : undefined}
+                                    />
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </div>

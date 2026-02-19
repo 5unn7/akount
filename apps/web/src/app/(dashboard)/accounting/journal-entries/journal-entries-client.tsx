@@ -63,6 +63,7 @@ export function JournalEntriesClient({
 
     // Filters
     const [statusFilter, setStatusFilter] = useState<string>('all');
+    const [sourceTypeFilter, setSourceTypeFilter] = useState<string>('all');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
@@ -74,6 +75,7 @@ export function JournalEntriesClient({
                 entityId,
                 cursor: nextCursor,
                 status: statusFilter !== 'all' ? (statusFilter as JournalEntryStatus) : undefined,
+                sourceType: sourceTypeFilter !== 'all' ? sourceTypeFilter : undefined,
                 startDate: startDate || undefined,
                 endDate: endDate || undefined,
             });
@@ -123,7 +125,7 @@ export function JournalEntriesClient({
     }
 
     // Empty state
-    if (entries.length === 0 && !startDate && !endDate && statusFilter === 'all') {
+    if (entries.length === 0 && !startDate && !endDate && statusFilter === 'all' && sourceTypeFilter === 'all') {
         return (
             <Card className="glass rounded-[14px]">
                 <CardContent className="flex flex-col items-center justify-center py-16 text-center">
@@ -163,6 +165,22 @@ export function JournalEntriesClient({
                         <SelectItem value="DRAFT">Draft</SelectItem>
                         <SelectItem value="POSTED">Posted</SelectItem>
                         <SelectItem value="VOIDED">Voided</SelectItem>
+                    </SelectContent>
+                </Select>
+
+                <Select value={sourceTypeFilter} onValueChange={setSourceTypeFilter}>
+                    <SelectTrigger className="w-40 rounded-lg border-ak-border-2 glass">
+                        <SelectValue placeholder="All Sources" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Sources</SelectItem>
+                        <SelectItem value="MANUAL">Manual</SelectItem>
+                        <SelectItem value="INVOICE">Invoice</SelectItem>
+                        <SelectItem value="BILL">Bill</SelectItem>
+                        <SelectItem value="PAYMENT">Payment</SelectItem>
+                        <SelectItem value="BANK_FEED">Bank Feed</SelectItem>
+                        <SelectItem value="TRANSFER">Transfer</SelectItem>
+                        <SelectItem value="ADJUSTMENT">Adjustment</SelectItem>
                     </SelectContent>
                 </Select>
 

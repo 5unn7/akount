@@ -22,6 +22,14 @@ const TRANSACTION_INCLUDE = {
       color: true,
     },
   },
+  matches: {
+    select: {
+      id: true,
+      status: true,
+    },
+    take: 1,
+    orderBy: { createdAt: 'desc' as const },
+  },
 } as const;
 
 const TRANSACTION_INCLUDE_WITH_ENTITY = {

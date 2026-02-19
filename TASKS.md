@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-19
 **Current Phase:** Phase 6 — Launch MVP
 
-> **123 tasks** · 🔴 0 critical · 🟠 27 high · 🟡 62 medium · ⚪ 14 low · ✅ 27 done
-> 🟢 55 ready · 📦 49 backlog · 🔒 6 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **228 tasks** · 🔴 1 critical · 🟠 71 high · 🟡 136 medium · ⚪ 20 low · ✅ 31 done
+> 🟢 100 ready · 📦 100 backlog · 🔒 9 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -24,14 +24,14 @@
 |----|------|--------|----------|--------|------|--------|
 | ~~DEV-1~~ | ~~Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume)~~ | 1h | 🔴 Critical | ✅ | | audit:smooth-floating-mountain |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟢 | | roadmap |
-| SEC-9 | CSRF protection review | 1h | 🟠 High | 🟢 | | roadmap |
+| ~~SEC-9~~ | ~~CSRF protection review (N/A — pure JWT Bearer auth, no cookies, not vulnerable to CSRF)~~ | 1h | 🟠 High | ✅ | | roadmap |
 | PERF-1 | Balance Sheet: combine 2 redundant heavy SQL queries into 1 | 2h | 🟠 High | 🟢 | | review:performance |
 | PERF-5 | Database indexes on hot paths (dashboard, reports) | 2h | 🟠 High | 🟢 | | roadmap |
 | PERF-6 | Query optimization audit (dashboard + report queries) | 2h | 🟠 High | 🟢 | | roadmap |
 | PERF-8 | p95 < 2s page load target verification + load testing | 2h | 🟠 High | 🟢 | | roadmap |
 | ~~DRY-1~~ | ~~Report types: move shared types to `packages/types` (eliminate duplication)~~ | 1h | 🟠 High | ✅ | | review:typescript |
-| UX-1 | Entity selector: replace hardcoded dropdown with real entity options | 1-2h | 🟠 High | 🟢 | | review:nextjs |
-| UX-2 | GL Account ID: replace raw CUID input with searchable dropdown | 1h | 🟠 High | 🟢 | | review:nextjs |
+| UX-1 | Entity selector: replace 7+ hardcoded `entities[0]` with real selector (Accounting JE/COA, AccountFormSheet, Navbar, Invoicing, Vendors — all domains affected) | 2-3h | 🟠 High | 🟢 | | review:nextjs, audit:acct-fe-be, audit:app-ux |
+| ~~UX-2~~ | ~~GL Account ID: replace raw CUID input with searchable dropdown (also: JE form uses plain Select)~~ | 1h | 🟠 High | ✅ | | review:nextjs, audit:acct-fe-be |
 | TEST-1 | Service tests for 4 remaining reports (BS, CF, TB, GL) + route tests | 3-4h | 🟠 High | 🟢 | | review:typescript |
 | TEST-2 | E2E tests for critical user flows (onboarding, import, posting, reports) | 4h | 🟠 High | 🟢 | | roadmap |
 | TEST-3 | 80%+ API test coverage target | 2h | 🟠 High | 🔒 | [needs: TEST-1] | roadmap |
@@ -53,11 +53,77 @@
 | UX-12 | Overview: Wire `/overview/cash-flow` page with real data (backend endpoint exists, page says "coming soon") | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
 | FIN-15 | Performance endpoint: Wire receivables data from invoicing domain (currently hardcoded to 0) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
 | DEV-10 | Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-43 | Banking: Add manual transaction creation form (POST endpoint exists, no UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-44 | Banking: Wire XLSX import support in import wizard (backend endpoint exists) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| UX-13 | Banking: Add category management page — edit, delete, detail view (3 endpoints exist, no UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| ~~UX-14~~ | ~~Banking: Add unmatch button to reconciliation (DELETE endpoint exists, no UI)~~ | 1h | 🟠 High | ✅ | | audit:fe-be-parity |
+| DEV-45 | Banking: Add import batch detail page — drill into imported transactions (GET endpoint exists) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-46 | Banking: Implement transfers page — inter-account transfers with journal entry creation | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
+| UX-15 | Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
+| ~~UX-16~~ | ~~Accounting: Add confirmation dialogs on Void/Delete journal entry actions (no prompt currently)~~ | 30m | 🟠 High | ✅ | | audit:acct-fe-be |
+| UX-17 | App-wide: Add toast notifications on ALL mutations — zero toast usage across entire app (accounting, banking, invoicing, vendors, settings: ~20+ mutation points) | 3-4h | 🟠 High | 🟢 | | audit:acct-fe-be, audit:app-ux |
+| UX-18 | Accounting: Add landing page at `/accounting` with summary stats (draft JEs, account count, recent activity) | 2-3h | 🟠 High | 🟢 | | audit:acct-fe-be |
+| DEV-59 | Accounting: Add transaction posting UI — post bank txns to GL (3 backend endpoints exist, no UI) | 3-4h | 🟠 High | 🟢 | | audit:acct-fe-be |
+| ~~DEV-60~~ | ~~Accounting: Add journal entry sourceType filter (backend supports, UI only has status filter)~~ | 30m | 🟠 High | ✅ | | audit:acct-fe-be |
+| UX-29 | App-wide: Add confirmation dialogs on ALL destructive actions — Cancel Invoice/Bill, Bulk Delete, account deactivate (6+ unconfirmed actions) | 2h | 🟠 High | 🟢 | | audit:app-ux |
+| UX-30 | Banking: Fix posted transaction link (goes to filtered list, not specific journal entry) | 30m | 🟠 High | 🟢 | | audit:app-ux |
+| UX-31 | Invoicing: Add search/filter bar — no search, status filter, or date filter on invoice/bill/client lists | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
+| UX-32 | Invoicing: Add pagination controls — backend supports cursor pagination, frontend shows max 50 items with no "Load More" | 1-2h | 🟠 High | 🟢 | | audit:app-ux |
+| DEV-71 | Invoicing: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
+| DEV-72 | Invoicing: Add void invoice action (POST /invoices/:id/void exists, no UI button) | 1h | 🟠 High | 🟢 | | audit:app-ux |
+| DEV-73 | Vendors: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only) | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
+| DEV-74 | Vendors: Add bill edit/delete for non-posted bills (PUT/DELETE endpoints exist, no UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
+| DEV-75 | Vendors: Replace bills "Coming Soon" stub with real bill list page (API ready, `/business/bills` is placeholder) | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
+| DEV-78 | Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + 3 endpoints exist) | 3-4h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| UX-45 | Business: Add edit invoice form for DRAFT status (PUT /invoices/:id exists, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| UX-46 | Business: Add edit bill form for DRAFT status (PUT /bills/:id exists, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| UX-47 | Business: Add client CRUD — create, edit, delete (full backend API exists, only inline creation from invoice form) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| UX-48 | Business: Add vendor CRUD — create, edit, delete (full backend API exists, only inline creation from bill form) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-79 | Business: Wire delete invoice/bill actions (DELETE endpoints exist, no UI buttons) | 1h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-80 | Business: Wire bills list page with real data (stub page exists, API fully ready) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-81 | Business: Wire edit/delete payment actions (PUT/DELETE /payments/:id exist, no UI) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-82 | Business: Wire "Post to GL" button on payment allocation (backend route exists, no frontend trigger) | 1h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| UX-49 | Business: Add quick "Record Payment" button on invoice detail page (shortcut to payment form) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
 
 ### Medium / Low
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
+| UX-33 | App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill (isolated views currently) | 2-3h | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-34 | App-wide: Add bulk operations to list pages — Invoicing (batch send/approve), Vendors (batch approve bills), Banking accounts (batch deactivate) | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
+| UX-35 | Sidebar: Add "Coming Soon" badge to 17 placeholder pages or hide unimplemented nav items | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-36 | Invoicing: Add "Create Client" / "Create Vendor" standalone buttons (currently only via invoice/bill forms) | 1h | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-37 | Invoicing: Add client/vendor edit capability in detail panels (backend PUT endpoints exist, panels are read-only) | 1-2h | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-38 | Banking: Add active/inactive account filter toggle (backend supports `isActive` param, UI shows all) | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-39 | Banking: Add aria-labels to bulk action buttons, select-all checkbox, filter dropdowns (a11y) | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-40 | Vendors: Add mark-overdue button on bill detail (backend endpoint exists, no UI) | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-41 | Vendors: Fix hardcoded 'CAD' currency on vendor/client pages — should use entity functional currency | 15m | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-42 | Invoicing: Add "View Journal Entry" link after posting invoice/bill to GL | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-43 | Invoicing: Add payment allocation UI — split single payment across multiple invoices (PaymentAllocation model ready) | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
+| UX-44 | Invoicing: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
+| DEV-76 | Invoicing: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
+| DEV-77 | App-wide: Fix navigation.ts mismatches — Bills route points to stub, verify all nav items match real pages | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
+| UX-19 | Accounting COA: Add search input for GL accounts (backend `search` param exists, UI only has type filter) | 30m | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| UX-20 | Accounting COA: Add reactivate button for deactivated accounts (PATCH isActive:true works, no UI) | 15m | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| UX-21 | Accounting COA: Add balance summary header (Total Assets/Liabilities/Equity cards, data already fetched) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| UX-22 | Accounting JE: Fix filter auto-refresh (date/status changes don't re-fetch, only affect loadMore) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| ~~UX-23~~ | ~~Accounting JE: Replace GL account Select with searchable Combobox (31+ accounts hard to scroll)~~ | 1h | 🟡 Medium | ✅ | | audit:acct-fe-be |
+| UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| UX-25 | Accounting Reports: Add quick-generate buttons (Last Month / This Quarter / YTD) on report hub cards | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| UX-26 | Accounting JE: Add source cross-links (click source type navigates to source transaction/invoice/bill) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| UX-27 | Accounting COA: Replace `window.location.reload()` after seed with state update (jarring full reload) | 30m | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| UX-28 | Sidebar: Add "Coming Soon" badge or hide unimplemented pages (Assets, Tax Rates, Fiscal Periods) | 15m | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| DEV-61 | Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-62 | Accounting JE: Add batch approve (select multiple drafts → approve all, needs new backend endpoint) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-63 | Accounting: Add recurring journal entry templates (monthly depreciation, rent, etc.) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-64 | Accounting: Add journal entry CSV import (bulk import from external accounting software) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-65 | Accounting: Add account reconciliation page (compare GL vs bank statement balances) | 4-6h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-66 | Accounting: Add aged receivables/payables report (AR/AP aging 30/60/90+ day buckets) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-67 | Accounting: Add audit trail view (who approved/voided/created entries, timestamps) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-68 | Accounting: Add GL account merge/reclassify (move journal lines between accounts) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-69 | Accounting Reports: Add year-over-year comparison mode (multi-year P&L and BS trends) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| DEV-70 | Accounting Reports: One-click export all statements as ZIP | 1-2h | ⚪ Low | 📦 | | audit:acct-fe-be |
 | PERF-2 | Revenue: add JSONB expression index for extraction | 30m | 🟡 Medium | 🟢 | | review:performance |
 | PERF-3 | Recharts: code-split import (lazy load) | 30m | 🟡 Medium | 🟢 | | review:performance |
 | PERF-7 | Lazy-loading heavy frontend components | 1h | 🟡 Medium | 🟢 | | roadmap |
@@ -129,6 +195,38 @@
 | DEV-40 | Overview: Onboarding Completion nudge widget — checklist of remaining steps (OnboardingProgress model) | 1-2h | ⚪ Low | 📦 | | audit:fe-be-parity |
 | DEV-41 | Overview: Tax Liability Estimate widget — estimated taxes due this quarter (needs tax rules engine) | 4-6h | ⚪ Low | 📦 | | audit:fe-be-parity |
 | DEV-42 | Overview: Subscription MRR/ARR widget — recurring revenue detection for SaaS solopreneurs | 4-6h | ⚪ Low | 📦 | | audit:fe-be-parity |
+| DEV-47 | Banking: Add transaction full-text search on description/notes | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-48 | Banking: Add transaction split UI + endpoint (isSplit field exists, no implementation) | 3-4h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-49 | Banking: Show multi-currency amounts — display original + base currency on transactions | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-50 | Banking: Add transaction export (CSV/PDF) for filtered transaction views | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-51 | Banking: Add account balance history chart — historical balance trend over time | 3-4h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-52 | Banking: Add duplicate management UI — view detected duplicates, approve/dismiss | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-53 | Banking: Add transaction auto-categorization rules UI (Rule model exists in AI domain) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-54 | Banking: Add batch transaction edit — bulk update description/category/notes | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-55 | Banking: Recurring transaction detection — identify frequency patterns (e.g. Netflix monthly, API subscriptions) | 3-4h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-56 | Banking: Add receipt/attachment upload per transaction (notes field exists, need file storage) | 3-4h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-57 | Banking: Add CSV import column mapping UI (backend supports columnMappings, frontend hardcoded) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-58 | Banking: Add import error detail view — show per-row errors when import partially fails | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| UX-50 | Business: Add search/filter bar on invoice list — search by number, client, status, date range | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| UX-51 | Business: Add search/filter bar on bill list — search by number, vendor, status, date range | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| UX-52 | Business: Add sort by columns on invoice/bill/client/vendor lists (backend supports orderBy) | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| UX-53 | Business: Add pagination controls — backend supports cursor pagination, frontend shows max 50 | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-83 | Business: Add client invoice history tab — all invoices + payments for a client on detail page | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-84 | Business: Add vendor bill history tab — all bills + payments for a vendor on detail page | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-85 | Business: Add bill PDF generation (invoice PDF exists, bills have no PDF) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-86 | Business: Add aging drill-down — click AR/AP aging bucket to see individual invoices/bills | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-87 | Business: Add duplicate invoice/bill detection — flag same vendor+amount+date combinations | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-88 | Business: Add email reminder for overdue invoices (mark-overdue endpoint exists, no notification) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-89 | Business: Add recurring invoice templates — auto-generate invoices on schedule | 4-6h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| UX-54 | Business: Auto-fill due date from client/vendor payment terms (terms field exists, not used in form) | 30m | 🟡 Medium | 🟢 | | audit:fe-be-parity |
+| UX-55 | Business: Add visual status pipeline on invoice/bill list — Draft→Sent→Partial→Paid flow | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| UX-56 | Business: Add partial payment progress bar on invoice/bill detail (amountPaid vs total) | 1h | 🟡 Medium | 🟢 | | audit:fe-be-parity |
+| DEV-90 | Business: Add top debtors/creditors summary widget — clients with most outstanding AR, vendors with most AP | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-91 | Business: Add invoice/bill/client/vendor CSV export | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-92 | Business: Build credit notes feature (CreditNote model exists, zero endpoints or UI) | 4-6h | ⚪ Low | 📦 | | audit:fe-be-parity |
+| DEV-93 | Business: Add payment receipt PDF generation | 2-3h | ⚪ Low | 📦 | | audit:fe-be-parity |
+| DEV-94 | Business: Add batch invoice creation — generate multiple invoices from template | 3-4h | ⚪ Low | 📦 | | audit:fe-be-parity |
+| UX-57 | Business: Add notes/activity log per client and vendor (notes field exists, no UI) | 2-3h | ⚪ Low | 📦 | | audit:fe-be-parity |
 | DOC-4 | Elevate source preservation to explicit 5th invariant in guardrails.md | 15m | 🟡 Medium | 🟢 | | review:smooth-floating-mountain §1.2 |
 | DEV-15 | Overview: Add top expense categories widget (data exists in categorized transactions) | 1-2h | ⚪ Low | 🟢 | | audit:fe-be-parity |
 | DEV-16 | Overview: Add unreconciled transaction count badge to dashboard | 1h | ⚪ Low | 🟢 | | audit:fe-be-parity |

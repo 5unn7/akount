@@ -264,6 +264,14 @@ describe('TransactionService', () => {
             color: true,
           },
         },
+        matches: {
+          select: {
+            id: true,
+            status: true,
+          },
+          take: 1,
+          orderBy: { createdAt: 'desc' },
+        },
       });
     });
   });
@@ -470,6 +478,14 @@ describe('TransactionService', () => {
             color: true,
           },
         },
+        matches: {
+          select: {
+            id: true,
+            status: true,
+          },
+          take: 1,
+          orderBy: { createdAt: 'desc' },
+        },
       });
     });
   });
@@ -525,6 +541,14 @@ describe('TransactionService', () => {
               name: true,
               color: true,
             },
+          },
+          matches: {
+            select: {
+              id: true,
+              status: true,
+            },
+            take: 1,
+            orderBy: { createdAt: 'desc' },
           },
         },
       });
