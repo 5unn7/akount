@@ -99,6 +99,12 @@ if [ -n "$CLAUDE_PROJECT_DIR" ]; then
             if git diff --cached --name-only 2>/dev/null | grep -q "^TASKS.md$"; then
                 git add "$TASKS_FILE" 2>/dev/null && echo "   Staged updated TASKS.md" >&2
             fi
+
+            # Stage tasks.json if it was generated/updated
+            TASKS_JSON="$CLAUDE_PROJECT_DIR/tasks.json"
+            if [ -f "$TASKS_JSON" ] && git diff --name-only 2>/dev/null | grep -q "^tasks.json$"; then
+                git add "$TASKS_JSON" 2>/dev/null && echo "   Staged updated tasks.json" >&2
+            fi
         else
             echo "⚠️ Index regeneration failed (non-blocking)" >&2
         fi

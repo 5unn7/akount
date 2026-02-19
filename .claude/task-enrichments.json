@@ -1,0 +1,122 @@
+{
+  "$comment": "Manual enrichments for high-risk tasks. Fields here override auto-computed values in tasks.json. Run regenerate-task-index.js after editing.",
+  "SEC-9": {
+    "files": ["apps/api/src/middleware/auth.ts", "apps/api/src/index.ts", "apps/api/src/domains/system/routes/"],
+    "verification": "Check if CSRF tokens are validated on state-changing endpoints (POST/PUT/DELETE). Grep for 'csrf' in apps/api/src/",
+    "acceptanceCriteria": [
+      "All state-changing API endpoints validate CSRF token or use SameSite cookie",
+      "Clerk session tokens configured with SameSite=Strict",
+      "No state-changing GET endpoints exist"
+    ],
+    "tags": ["security", "middleware"]
+  },
+  "TEST-3": {
+    "files": ["apps/api/src/domains/", "apps/api/src/__tests__/"],
+    "verification": "Run: npx vitest run --coverage && check coverage report for <80% files",
+    "acceptanceCriteria": [
+      "Overall API test coverage >= 80% (statement coverage)",
+      "All critical paths (auth, tenant, financial) >= 90%",
+      "Coverage report generated and reviewed"
+    ],
+    "tags": ["testing", "quality"]
+  },
+  "PERF-7": {
+    "files": ["apps/web/src/app/(dashboard)/", "apps/web/src/components/"],
+    "verification": "Check bundle size with: cd apps/web && npx next build --debug. Look for chunks >200KB",
+    "acceptanceCriteria": [
+      "Heavy components (charts, PDF viewer, rich editor) use next/dynamic",
+      "No dashboard page loads >500KB JS on initial render",
+      "Lighthouse performance score >= 80 on dashboard"
+    ],
+    "tags": ["performance", "frontend"]
+  },
+  "UX-7": {
+    "files": ["apps/web/src/components/help/", "apps/web/src/app/(dashboard)/layout.tsx"],
+    "verification": "Check if keyboard shortcut system exists: Grep 'useHotkeys\\|keyboard.*shortcut' apps/web/src/",
+    "acceptanceCriteria": [
+      "Help overlay triggered by '?' key",
+      "Lists all active keyboard shortcuts grouped by domain",
+      "Overlay dismissable with Escape"
+    ],
+    "tags": ["ux", "frontend", "accessibility"]
+  },
+  "DS-2": {
+    "files": ["packages/ui/", "packages/ui/.storybook/", "package.json"],
+    "verification": "Check if Storybook is already configured: ls packages/ui/.storybook/ && Grep 'storybook' package.json",
+    "acceptanceCriteria": [
+      "Storybook 8+ configured in packages/ui/",
+      "All glass-ui components have stories (ButtonGlass, InputGlass, GlassCard, etc.)",
+      "Storybook builds without errors: npx storybook build"
+    ],
+    "staleAfterDays": 21,
+    "tags": ["design-system", "documentation"]
+  },
+  "MKT-1": {
+    "files": ["apps/web/src/app/(marketing)/", "apps/web/src/app/page.tsx"],
+    "verification": "Check if marketing pages exist: ls apps/web/src/app/\\(marketing\\)/ 2>/dev/null || echo 'No marketing directory yet'",
+    "acceptanceCriteria": [
+      "Landing page with hero, features, pricing sections",
+      "Responsive design (mobile + desktop)",
+      "Copy follows Akount brand voice (see .claude/rules/design-aesthetic.md)"
+    ],
+    "staleAfterDays": 30,
+    "tags": ["marketing", "frontend"]
+  },
+  "CNT-1": {
+    "files": ["brand/competitive-analysis.md"],
+    "verification": "Check last modified date of brand/competitive-analysis.md",
+    "acceptanceCriteria": [
+      "Competitive analysis updated with current competitor features",
+      "Differentiation points documented",
+      "Pricing comparison table current"
+    ],
+    "staleAfterDays": 30,
+    "tags": ["content", "strategy"]
+  },
+  "INFRA-2": {
+    "files": ["docker-compose.yml", "Dockerfile", ".env.production", "apps/api/src/lib/env.ts"],
+    "verification": "Check if production Docker/deploy config exists: ls Dockerfile docker-compose.yml .env.production 2>/dev/null",
+    "acceptanceCriteria": [
+      "Production Docker image builds successfully",
+      "Environment variables documented and validated",
+      "Database migration runs on deploy",
+      "Health check endpoint responds"
+    ],
+    "tags": ["infrastructure", "devops"]
+  },
+  "INFRA-8": {
+    "files": ["Dockerfile", "docker-compose.yml", ".github/workflows/"],
+    "verification": "Check if CI/CD pipeline exists: ls .github/workflows/ 2>/dev/null",
+    "acceptanceCriteria": [
+      "Multi-stage Dockerfile for API and web",
+      "CI pipeline runs tests on PR",
+      "CD pipeline deploys on merge to main",
+      "Image tagged with git SHA"
+    ],
+    "tags": ["infrastructure", "ci-cd"]
+  },
+  "INFRA-4": {
+    "files": ["docs/operations/disaster-recovery.md", "packages/db/prisma/"],
+    "verification": "Check if DR docs exist: ls docs/operations/ 2>/dev/null",
+    "acceptanceCriteria": [
+      "Database backup procedure documented and tested",
+      "Recovery time objective (RTO) defined",
+      "Recovery point objective (RPO) defined",
+      "Runbook for common failure scenarios"
+    ],
+    "staleAfterDays": 30,
+    "tags": ["infrastructure", "operations"]
+  },
+  "INFRA-6": {
+    "files": ["docs/operations/deployment.md", "Dockerfile", "docker-compose.yml"],
+    "verification": "Check if deployment docs exist: ls docs/operations/deployment.md 2>/dev/null",
+    "acceptanceCriteria": [
+      "Step-by-step deployment guide",
+      "Environment variable reference",
+      "Rollback procedure documented",
+      "Pre-deployment checklist"
+    ],
+    "staleAfterDays": 30,
+    "tags": ["infrastructure", "documentation"]
+  }
+}

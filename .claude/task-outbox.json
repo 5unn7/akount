@@ -1,0 +1,4 @@
+{
+  "$comment": "Completion notifications for external apps. External app polls this file, processes updates, then clears.",
+  "updates": []
+}
