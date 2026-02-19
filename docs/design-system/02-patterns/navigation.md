@@ -131,13 +131,13 @@ The sidebar must:
 | Goals       | Flag       | Goal tracking      |
 | Forecasting | TrendingUp | Financial forecast |
 
-#### 🧠 AI ADVISOR (Differentiator)
+#### 🧠 INSIGHTS (Differentiator)
 
 **Mental Mode:** "What should I do?"
 
 | Item              | Icon      | Why                     |
 | ----------------- | --------- | ----------------------- |
-| AI Advisor        | Sparkles  | Main AI insights panel  |
+| Insights          | Sparkles  | Main AI insights panel  |
 | Tax Opportunities | Lightbulb | Tax optimization tips   |
 | Policy Alerts     | Bell      | System policy changes   |
 | Optimization      | Wand2     | AI recommendations      |
@@ -438,9 +438,9 @@ That's the difference between bookkeeping software and **Akount**.
 - Goals: Owner only
 - Forecasts: Owner/Admin/Investor
 
-**AI ADVISOR**
+**INSIGHTS**
 
-- AI Advisor: Owner/Admin/Accountant
+- Insights: Owner/Admin/Accountant
 - Tax Opportunities: Owner/Admin/Accountant
 - Policy Alerts: Owner/Admin/Accountant
 - **Hidden from:** Bookkeeper, Investor

@@ -71,7 +71,7 @@ architecture_strengths:
     location: "apps/api/src/domains/overview/services/dashboard.service.ts"
 
 cross_domain_impacts:
-  - change: "AIBrief XSS becomes exploitable when AI Advisor is wired up"
+  - change: "AIBrief XSS becomes exploitable when Insights is wired up"
     affected: [apps/web/src/components/dashboard/AIBrief.tsx, apps/api/src/domains/ai/]
     lesson: "Sanitize all HTML before dangerouslySetInnerHTML, even for internal API responses"
 
@@ -111,7 +111,7 @@ high_confidence:
 
 | Priority | Count | Effort | Blocking? |
 |----------|-------|--------|-----------|
-| **P0 (Critical)** | 1 | ~30 min | ⚠️ Fix before AI Advisor wired up |
+| **P0 (Critical)** | 1 | ~30 min | ⚠️ Fix before Insights wired up |
 | **P1 (Important)** | 7 | ~3 hours | ⚠️ Fix before production |
 | **P2 (Nice-to-Have)** | 13 | ~4 hours | Optional |
 
@@ -122,7 +122,7 @@ high_confidence:
 ## Top 5 Findings (Must Fix)
 
 ### 🔴 P0-1: XSS via `dangerouslySetInnerHTML` in AIBrief
-**Risk:** Arbitrary script execution when AI Advisor body is populated
+**Risk:** Arbitrary script execution when Insights body is populated
 **Fix:** Sanitize with DOMPurify or use markdown renderer (30 min)
 **Agents:** security-sentinel, kieran-typescript-reviewer, design-system-enforcer
 
@@ -173,7 +173,7 @@ high_confidence:
 
 ## Fix Timeline
 
-### Before AI Advisor Integration (P0) — ~30 min
+### Before Insights Integration (P0) — ~30 min
 1. Sanitize AIBrief body content (30 min)
 
 ### Before Production (P1) — ~3 hours

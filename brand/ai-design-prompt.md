@@ -176,7 +176,7 @@ border: 1px solid [semantic-color];
 **Sidebar (Collapsible, 240px):**
 - Logo + entity switcher at top
 - Navigation sections with icons
-- AI Advisor entry point at bottom
+- Insights entry point at bottom
 - Glassmorphic background (bg-1)
 
 **Main Content (Fluid):**
@@ -200,7 +200,7 @@ border: 1px solid [semantic-color];
 4. **Expenses** — Bills, vendors, payables
 5. **Accounting** — Chart of accounts, journal entries, reports
 6. **Planning** — Budgets, forecasts, goals
-7. **AI Advisor** — Insights, categorization rules, chat
+7. **Insights** — AI-powered insights, categorization rules, chat
 8. **Settings** — Integrations, team, preferences
 
 ---
@@ -410,7 +410,7 @@ border: 1px solid [semantic-color];
 - Create invoice
 - Create bill
 - Reconcile transactions
-- Ask AI Advisor
+- Ask Insights
 
 **Layout:**
 ```

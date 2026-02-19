@@ -51,7 +51,7 @@ const FEATURES = [
     ),
   },
   {
-    title: 'AI Financial Advisor',
+    title: 'AI-Powered Insights',
     desc: 'Proactive insights about cash flow, unusual spending, and optimization opportunities. Like a CFO in your pocket.',
     color: 'purple',
     icon: (
@@ -683,12 +683,12 @@ export default function LandingPage({ isSignedIn }: LandingPageProps) {
         </div>
       </section>
 
-      {/* ═══ SHOWCASE 2: AI Advisor ═══ */}
+      {/* ═══ SHOWCASE 2: Insights ═══ */}
       <section className={s.showcase}>
         <div className={s.container}>
           <div className={`${s.showcasePair} ${s.showcasePairFlip}`}>
             <div className={`${s.scText} ${s.reveal}`}>
-              <div className={s.scTag}>AI Advisor</div>
+              <div className={s.scTag}>Insights</div>
               <h3 className={s.scTextTitle}>Your finances,<br />interpreted beautifully</h3>
               <p className={s.scTextDesc}>The AI Pulse reads your financial data and tells you what matters — in plain language. No dashboards to decipher. No reports to generate. Just clarity.</p>
               <ul className={s.scList}>

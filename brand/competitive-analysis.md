@@ -166,7 +166,7 @@ No competitor offers ALL of: AI-first + multi-entity (included) + multi-currency
 6. **Tax anxiety** — Quarterly estimates, international complexity → Tax estimation features
 7. **Tool fragmentation** — Banking, invoicing, accounting all separate → All-in-one
 8. **Boring, anxiety-inducing UX** — Designed for accountants → Glass morphism "Financial Clarity"
-9. **Lack of actionable insights** — Data exists but no one explains it → AI Advisor
+9. **Lack of actionable insights** — Data exists but no one explains it → Insights
 10. **Poor customer support** — Xero: no phone/email/chat; QB: widely criticized → Community + AI support
 
 ---

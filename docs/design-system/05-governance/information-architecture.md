@@ -299,7 +299,7 @@ This is a **canonical IA document** that:
 
 ---
 
-### AI Advisor
+### Insights
 
 **Purpose:** Intelligence, not authority
 
@@ -512,7 +512,7 @@ Use emoji only on sitemap (not UI).
 | 3 | Business Operations | 💼 | AR/AP |
 | 4 | Accounting | 🧮 | Compliance & audit |
 | 5 | Planning & Analytics | 📊 | Forecasting |
-| 6 | AI Advisor | 🧠 | Intelligence |
+| 6 | Insights | 🧠 | Intelligence |
 | 7 | Services | 🤝 | Collaboration |
 | 8 | System | ⚙️ | Governance |
 | Right | Global | 🌐 | Always available |

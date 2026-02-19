@@ -48,10 +48,10 @@ Not:
 
 Rules can be created from:
 
-* Transactions table (“Create rule from this”)
-* AI Advisor suggestion
+* Transactions table ("Create rule from this")
+* Insights suggestion
 * Settings → Rules & Automation
-* Bulk action (“Apply rule”)
+* Bulk action ("Apply rule")
 
 Context is preserved.
 

@@ -249,7 +249,7 @@ export const PERMISSION_MATRIX: Record<PermissionKey, PermissionEntry> = {
     ADVISOR: 'VIEW',
   },
 
-  // AI Advisor Domain
+  // Insights Domain (AI-powered)
   'ai:insight-feed': {
     OWNER: 'VIEW',
     ADMIN: 'VIEW',

@@ -9,7 +9,7 @@ Patterns are reusable UI solutions that combine components and foundations to so
 - **`navigation.md`** - Global sidebar, top command bar, entity/period selectors (consolidated from 3 files)
 - **`tables-data.md`** - Canonical table anatomy, row states, bulk actions, multi-entity awareness (extracted from transaction pattern)
 - **`forms-input.md`** - Form layouts, validation, multi-step workflows, auto-save, mobile patterns
-- **`ai-interaction.md`** - AI advisor panel, insight feed, detail view, escalation (consolidated from advisor pattern)
+- **`ai-interaction.md`** - Insights panel, insight feed, detail view, escalation (consolidated from advisor pattern)
 - **`financial-workflows.md`** - Journal entries, reconciliation, FX adjustments, transfers, approvals (consolidated from workflow patterns)
 
 ## When to Use

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth, useUser } from '@clerk/nextjs'
+import { useAuth, useUser, useSession } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { apiFetch } from '@/lib/api/client-browser'
@@ -20,6 +20,7 @@ export function CompletionStep() {
   const router = useRouter()
   const { userId } = useAuth()
   const { user } = useUser()
+  const { session } = useSession()
   const store = useOnboardingStore()
   const { reset, goToStep } = store
 
@@ -120,6 +121,16 @@ export function CompletionStep() {
         }),
       })
 
+      // Force session token refresh so middleware sees updated publicMetadata
+      // (onboardingCompleted: true was set by the API via Clerk backend)
+      if (session) {
+        try {
+          await session.touch()
+        } catch {
+          // Non-critical — token will refresh on its own eventually
+        }
+      }
+
       // Animate remaining checklist items
       for (let i = 1; i < SETUP_ITEMS.length; i++) {
         await new Promise((r) => setTimeout(r, 500))
@@ -130,7 +141,7 @@ export function CompletionStep() {
       await new Promise((r) => setTimeout(r, 400))
       setIsDone(true)
 
-      // Clear store and auto-redirect
+      // Clear store and redirect (session token should be fresh by now)
       reset()
       setTimeout(() => router.replace('/overview'), 2000)
     } catch (err) {
@@ -165,7 +176,7 @@ export function CompletionStep() {
 
       setError(message)
     }
-  }, [userId, user, router, reset, goToStep])
+  }, [userId, user, session, router, reset, goToStep])
 
   useEffect(() => {
     runSetup()

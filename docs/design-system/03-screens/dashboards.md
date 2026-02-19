@@ -703,7 +703,7 @@ Consistent and predictable.
 | -------------- | --------------------- |
 | Transactions   | Entry point           |
 | Reconciliation | Attention surfacing   |
-| AI Advisor     | Insight preview       |
+| Insights       | Insight preview       |
 | Reports        | Drill-down            |
 | Planning       | Context for decisions |
 

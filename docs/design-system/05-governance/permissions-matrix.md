@@ -150,7 +150,7 @@ These apply everywhere and **never appear as tabs** in the sidebar.
 
 ---
 
-### 🧠 AI ADVISOR
+### 🧠 INSIGHTS
 
 | Screen        | Owner | Admin | Accountant | Bookkeeper | Investor |
 | ------------- | ----- | ----- | ---------- | ---------- | -------- |

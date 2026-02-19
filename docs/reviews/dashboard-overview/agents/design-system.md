@@ -165,20 +165,20 @@ const TYPE_COLORS: Record<string, { icon: string; border: string }> = {
 
 **File:** `apps/web/src/components/dashboard/AIBrief.tsx:17, 20-21, 35`
 
-**Issue:** The AI Advisor brief card uses `text-primary` (amber/orange) and `border-l-primary` for its accent styling. The design system defines `text-ai` / `bg-ai` / `border-ai-border` tokens specifically for AI-related elements (mapped to purple/violet). The system instructions state: "AI elements use `text-ai` or `bg-ai` (violet accent)".
+**Issue:** The Insights brief card uses `text-primary` (amber/orange) and `border-l-primary` for its accent styling. The design system defines `text-ai` / `bg-ai` / `border-ai-border` tokens specifically for AI-related elements (mapped to purple/violet). The system instructions state: "AI elements use `text-ai` or `bg-ai` (violet accent)".
 
 ```tsx
 // Found
 <div className="glass rounded-xl p-5 border-l-2 border-l-primary">
     <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
     <span className="text-[10px] uppercase tracking-[0.05em] font-semibold text-primary">
-        AI Advisor
+        Insights
     </span>
     ...
     <Sparkles className="h-5 w-5 text-primary/40" />
 ```
 
-**Impact:** The AI Advisor card uses the primary amber color instead of the AI-specific purple/violet tokens. This is a design decision that could be intentional (treating AI Advisor as a primary feature), but it conflicts with the design system specification that AI elements should use the violet accent to differentiate AI-generated content from user-generated content.
+**Impact:** The Insights card uses the primary amber color instead of the AI-specific purple/violet tokens. This is a design decision that could be intentional (treating Insights as a primary feature), but it conflicts with the design system specification that AI elements should use the violet accent to differentiate AI-generated content from user-generated content.
 
 **Fix:** If the intent is to follow the design system strictly, update to AI tokens:
 

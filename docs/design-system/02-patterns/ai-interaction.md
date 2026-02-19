@@ -61,11 +61,11 @@ Multiple intentional ways to access AI insights:
 - Warning banner ("New policy affects you")
 - Quick tip widget on dashboard
 
-**All roads lead to one unified panel** - the AI Advisor Side Panel.
+**All roads lead to one unified panel** - the Insights Panel.
 
 ---
 
-## AI Advisor Side Panel
+## Insights Panel
 
 ### Panel Anatomy
 
@@ -374,7 +374,7 @@ That's the product moat.
 
 ### Composites
 
-- `AIAdvisorPanel` - Main side panel
+- `InsightsPanel` - Main side panel
 - `InsightFeed` - Prioritized list of insights
 - `InsightDetail` - Expanded view with full context
 - `InlineAISuggestion` - Chip/popover in transaction/form context

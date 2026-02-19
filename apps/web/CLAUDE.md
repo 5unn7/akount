@@ -59,10 +59,10 @@ src/app/
 - `/planning/forecasts` — Forecasting
 - `/planning/reports` — Financial reports
 
-### AI Advisor (3 pages)
-- `/ai-advisor/insights` — AI-generated insights
-- `/ai-advisor/history` — Chat history
-- `/ai-advisor/policy-alerts` — Policy alerts
+### Insights (3 pages)
+- `/insights/insights` — AI-generated insights
+- `/insights/history` — Chat history
+- `/insights/policy-alerts` — Policy alerts
 
 ### Services (3 pages)
 - `/services/accountant` — Accountant portal
@@ -89,7 +89,7 @@ src/app/
 | Accounting | Chart of Accounts, Journal Entries, Fiscal Periods, Tax Rates | Built |
 | Business | Invoices, Bills, Clients, Vendors, Payments | Pages exist (stub/planned) |
 | Planning | Budgets, Goals, Forecasts, Reports | Pages exist (stub/planned) |
-| AI Advisor | Insights, History, Policy Alerts | Pages exist (stub/planned) |
+| Insights | Insights, History, Policy Alerts | Pages exist (stub/planned) |
 | Services | Accountant, Bookkeeping, Documents | Pages exist (stub/planned) |
 | System | Settings, Entities, Users, Audit Log, Integrations, Rules, Security | Built |
 

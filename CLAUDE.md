@@ -17,7 +17,7 @@
 
 **Request Flow:** Browser → Next.js SSR → Fastify API → Middleware chain (Auth → Tenant → Validation) → Domain services → Prisma → PostgreSQL. Auth via Clerk JWT; tenant loaded from TenantUser membership; all queries filtered by tenantId. Frontend: Server Components (data fetch) + Client Components (interactivity). Backend: Route → Schema (Zod) → Service (business logic) → Prisma.
 
-**8 Domains:** Overview (dashboard), Banking (accounts, transactions), Invoicing (invoices, clients), Vendors (bills, payments), Accounting (GL, journal entries), Planning (budgets, forecasts), AI Advisor (insights, rules), Services (integrations), System (settings, users).
+**8 Domains:** Overview (dashboard), Banking (accounts, transactions), Invoicing (invoices, clients), Vendors (bills, payments), Accounting (GL, journal entries), Planning (budgets, forecasts), Insights (AI-powered insights, rules), Services (integrations), System (settings, users).
 
 **Actual API folder names:** `domains/overview/`, `domains/banking/`, `domains/accounting/`, `domains/system/`, `domains/ai/`, `domains/planning/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`.
 

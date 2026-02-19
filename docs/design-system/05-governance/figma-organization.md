@@ -349,12 +349,12 @@ Standard Reports:
 
 ---
 
-# 🧠 DOMAIN 6 — AI ADVISOR
+# 🧠 DOMAIN 6 — INSIGHTS
 
 ### Frame Name
 
 ```
-Domain / AI Advisor
+Domain / Insights
 ```
 
 #### Insight Feed
