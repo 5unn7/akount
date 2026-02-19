@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * Loading state for AI advisor history page
+ * Loading state for insights history page
  * Shown during route transitions
  */
 export default function HistoryLoading() {

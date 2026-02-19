@@ -240,28 +240,28 @@ export const navigationDomains: NavDomain[] = [
   },
 
   // ========================================
-  // DOMAIN 6: AI ADVISOR
+  // DOMAIN 6: INSIGHTS
   // ========================================
   {
-    id: 'ai-advisor',
-    label: 'AI Advisor',
+    id: 'insights',
+    label: 'Insights',
     icon: Sparkles,
     roles: ['OWNER', 'ADMIN', 'ACCOUNTANT'],
     items: [
       {
         label: 'Insights',
         icon: Sparkles,
-        href: '/ai-advisor/insights',
+        href: '/insights/insights',
       },
       {
         label: 'Policy Alerts',
         icon: AlertTriangle,
-        href: '/ai-advisor/policy-alerts',
+        href: '/insights/policy-alerts',
       },
       {
         label: 'History',
         icon: History,
-        href: '/ai-advisor/history',
+        href: '/insights/history',
       },
     ],
   },

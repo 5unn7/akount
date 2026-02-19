@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 /**
- * Loading state for AI insights page
+ * Loading state for insights page
  * Shown during route transitions
  */
 export default function InsightsLoading() {

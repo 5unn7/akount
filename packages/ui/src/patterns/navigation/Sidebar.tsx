@@ -141,11 +141,11 @@ const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
-    title: 'AI Advisor',
+    title: 'Insights',
     items: [
       {
         label: 'Insights',
-        href: '/ai-advisor',
+        href: '/insights',
         icon: '\u{1F9E0}',
         permissionKey: 'ai:insight-feed',
       },

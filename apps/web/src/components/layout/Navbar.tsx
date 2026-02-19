@@ -3,12 +3,6 @@
 import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSyncStatus } from '@/hooks/use-sync-status';
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { MobileSidebar } from "./Sidebar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -190,27 +184,21 @@ export function Navbar({ entities }: NavbarProps) {
                 </button>
             </div>
 
-            {/* Right: Actions — Sync, Notification, Theme, Help */}
-            <div className="flex items-center gap-1 shrink-0">
-                <TooltipProvider>
-                    <Tooltip delayDuration={0}>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                                onClick={sync}
-                                disabled={isSyncing}
-                                aria-label="Sync data"
-                            >
-                                <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="text-xs">
-                            <p>{isSyncing ? 'Syncing...' : `Synced ${getTimeSinceSync()}`}</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+            {/* Right: Actions — Status, Notification, Theme, Help */}
+            <div className="flex items-center gap-1.5 shrink-0">
+                {/* Live status pill with refresh */}
+                <button
+                    onClick={sync}
+                    disabled={isSyncing}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs glass hover:border-ak-border-2 transition-colors disabled:opacity-60"
+                    aria-label="Sync data"
+                >
+                    <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${isSyncing ? 'bg-primary animate-pulse' : 'bg-ak-green'}`} />
+                    <span className="hidden sm:inline text-muted-foreground whitespace-nowrap">
+                        {isSyncing ? 'Syncing…' : getTimeSinceSync()}
+                    </span>
+                    <RefreshCw className={`h-3 w-3 text-muted-foreground ${isSyncing ? 'animate-spin' : ''}`} />
+                </button>
                 <Button variant="ghost" size="icon" className="relative h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Notifications">
                     <Bell className="h-4 w-4" />
                     <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-primary" />

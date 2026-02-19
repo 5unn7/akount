@@ -11,12 +11,12 @@ interface ErrorProps {
 }
 
 /**
- * Error boundary for AI advisor history page
+ * Error boundary for insights history page
  * Catches and displays errors with retry option
  */
 export default function HistoryError({ error, reset }: ErrorProps) {
     useEffect(() => {
-        console.error('AI advisor history page error:', error);
+        console.error('Insights history page error:', error);
     }, [error]);
 
     return (

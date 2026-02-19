@@ -252,7 +252,7 @@ export function TopCommandBar({
               <span role="img" aria-hidden="true">
                 {ICONS.brain}
               </span>
-              <span className="sr-only">AI Advisor</span>
+              <span className="sr-only">Insights</span>
             </button>
           )}
 

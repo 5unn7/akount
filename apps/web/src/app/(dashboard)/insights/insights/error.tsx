@@ -11,18 +11,18 @@ interface ErrorProps {
 }
 
 /**
- * Error boundary for AI insights page
+ * Error boundary for insights page
  * Catches and displays errors with retry option
  */
 export default function InsightsError({ error, reset }: ErrorProps) {
     useEffect(() => {
-        console.error('AI insights page error:', error);
+        console.error('Insights page error:', error);
     }, [error]);
 
     return (
         <div className="flex-1 space-y-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight font-heading">AI Insights</h2>
+                <h2 className="text-3xl font-bold tracking-tight font-heading">Insights</h2>
             </div>
 
             <Card className="border-destructive">
@@ -34,7 +34,7 @@ export default function InsightsError({ error, reset }: ErrorProps) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <p className="text-sm text-muted-foreground">
-                        {error.message || 'An error occurred while loading AI insights.'}
+                        {error.message || 'An error occurred while loading insights.'}
                     </p>
                     {error.digest && (
                         <p className="text-xs text-muted-foreground">

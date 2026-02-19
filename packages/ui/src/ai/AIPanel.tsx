@@ -33,7 +33,7 @@ export interface AIPanelProps {
 }
 
 /**
- * AI Advisor side panel for displaying insights.
+ * Insights side panel for displaying AI-powered insights.
  *
  * @example
  * ```tsx
@@ -90,7 +90,7 @@ export function AIPanel({
           isOpen ? 'translate-x-0' : 'translate-x-full',
           className
         )}
-        aria-label="AI Advisor panel"
+        aria-label="Insights panel"
         aria-hidden={!isOpen}
       >
         {/* Header */}
