@@ -1,6 +1,6 @@
 # AI Interaction Patterns
 
-> **Extracted from:** `ai-advisor-sidepanel.md` + Design Philosophy (AI Transparency)
+> **Extracted from:** `insights-sidepanel.md` + Design Philosophy (AI Transparency)
 >
 > **Last Updated:** 2026-02-04
 

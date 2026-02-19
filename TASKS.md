@@ -84,7 +84,7 @@
 | UX-58 | Planning: Build goals page — list goals, create form, progress tracking, status updates | 3-4h | 🟠 High | 📦 | [needs: DEV-97] | audit:fe-be-parity |
 | UX-59 | Planning: Build budgets page — list budgets, create form, budget vs actual bars | 3-4h | 🟠 High | 📦 | [needs: DEV-98] | audit:fe-be-parity |
 | UX-60 | Planning: Add planning landing page at `/planning` with summary cards (active goals, budget utilization, forecast status) | 2-3h | 🟠 High | 📦 | [needs: DEV-97, DEV-98] | audit:fe-be-parity |
-| UX-66 | Rename "AI Advisor" → "Insights" across entire codebase (~29 files): frontend routes/dir rename/nav/components (9), RBAC comment (1), CLAUDE.md docs (3), design system docs (9), brand/marketing (4), config/meta (2), code reviews (2). Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is. | 2-3h | 🟠 High | 🟢 | | audit:ai-advisor |
+| ~~UX-66~~ | ~~Rename "AI Advisor" → "Insights" across entire codebase (~29 files): frontend routes/dir rename/nav/components, RBAC comment, CLAUDE.md docs, design system docs, config/meta. Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is.~~ | 2-3h | 🟠 High | ✅ | | audit:ai-advisor |
 | DEV-112 | Insights: Create API client (`apps/web/src/lib/api/ai.ts`) for 5 existing AI endpoints | 30m | 🟠 High | 🟢 | | audit:ai-advisor |
 | DEV-113 | Insights: Build AI Chat interface on Insights page (wire to existing `POST /api/ai/chat`) | 2-3h | 🟠 High | 📦 | [needs: UX-66, DEV-112] | audit:ai-advisor |
 
@@ -348,6 +348,7 @@
 | ✅ DRY-6 | Dashboard: deduplicate SparkCards/DashboardLeftRail | 2026-02-19 | 53d2db6 |
 | ✅ DEV-5 | Dashboard: add cancelAnimationFrame cleanup | 2026-02-19 | 53d2db6 |
 | ✅ DS-5 | AIBrief: change text-primary to AI purple tokens | 2026-02-19 | 53d2db6 |
+| ✅ UX-66 | Rename "AI Advisor" → "Insights" across codebase (~29 files) | 2026-02-19 | pending |
 | ✅ DS-6 | Dashboard: add text-micro utility for consistency | 2026-02-19 | 53d2db6 |
 | ✅ DEV-3 | Dashboard: delete dead handleSkipStep + SparkCardsSkeleton | 2026-02-19 | 53d2db6 |
 | ✅ SEC-17 | XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief | 2026-02-19 | 76cb077 |
@@ -397,16 +398,17 @@
 
 
 
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-19T21:17:54.939Z",
+  "generated": "2026-02-19T21:36:54.841Z",
   "summary": {
     "total": 256,
-    "ready": 96,
+    "ready": 95,
     "blocked": 7,
     "backlog": 122,
-    "done": 30
+    "done": 31
   },
   "byPriority": {
     "critical": [
@@ -1202,7 +1204,6 @@
     "DEV-77",
     "DEV-78",
     "UX-45",
-    "UX-66",
     "DEV-112",
     "UX-33",
     "UX-35",
@@ -1861,10 +1862,10 @@
     },
     "UX-66": {
       "line": 87,
-      "title": "Rename \"AI Advisor\" → \"Insights\" across entire codebase (~29 files): frontend routes/dir rename/nav/components (9), RBAC comment (1), CLAUDE.md docs (3), design system docs (9), brand/marketing (4), config/meta (2), code reviews (2). Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is.",
+      "title": "Rename \"AI Advisor\" → \"Insights\" across entire codebase (~29 files): frontend routes/dir rename/nav/components, RBAC comment, CLAUDE.md docs, design system docs, config/meta. Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is.",
       "effort": "2-3h",
       "priority": "high",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "ux"
     },

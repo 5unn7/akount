@@ -260,7 +260,7 @@ model RuleSuggestion {
 }
 ```
 
-**When to activate:** Phase 7 (AI Advisor)
+**When to activate:** Phase 7 (Insights)
 
 **What it enables:**
 
@@ -476,7 +476,7 @@ class TenantScopedPrisma {
 - [ ] Seed: CTA equity accounts
 - [ ] Implement: FX translation logic
 
-### Phase 7 (AI Advisor)
+### Phase 7 (Insights)
 
 - [ ] Activate: `RuleSuggestion` model
 - [ ] Implement: Human-in-the-loop rule approval

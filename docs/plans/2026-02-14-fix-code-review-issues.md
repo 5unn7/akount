@@ -98,7 +98,7 @@ Estimated total time: **4-6 hours** across 5 parallel-friendly tasks.
 **Success:** All business pages have loading/error states
 
 #### Task 1.5: Add loading/error to remaining domains (19 pages)
-**Files:** ai-advisor (3), overview (2), planning (4), services (3), system (6), business/clients (1)
+**Files:** insights (3), overview (2), planning (4), services (3), system (6), business/clients (1)
 **What:** Copy template and customize skeleton to match page structure
 **Depends on:** Task 1.1
 **Success:** All remaining pages have loading/error states
