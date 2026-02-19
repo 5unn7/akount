@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-19
 **Current Phase:** Phase 6 — Launch MVP
 
-> **85 tasks** · 🔴 0 critical · 🟠 26 high · 🟡 33 medium · ⚪ 9 low · ✅ 24 done
-> 🟢 48 ready · 📦 21 backlog · 🔒 6 blocked
+> **85 tasks** · 🔴 0 critical · 🟠 23 high · 🟡 33 medium · ⚪ 9 low · ✅ 27 done
+> 🟢 45 ready · 📦 21 backlog · 🔒 6 blocked
 
 ---
 
@@ -29,7 +29,7 @@
 | PERF-5 | Database indexes on hot paths (dashboard, reports) | 2h | 🟠 High | 🟢 | | roadmap |
 | PERF-6 | Query optimization audit (dashboard + report queries) | 2h | 🟠 High | 🟢 | | roadmap |
 | PERF-8 | p95 < 2s page load target verification + load testing | 2h | 🟠 High | 🟢 | | roadmap |
-| DRY-1 | Report types: move shared types to `packages/types` (eliminate duplication) | 1h | 🟠 High | 🟢 | | review:typescript |
+| ~~DRY-1~~ | ~~Report types: move shared types to `packages/types` (eliminate duplication)~~ | 1h | 🟠 High | ✅ | | review:typescript |
 | UX-1 | Entity selector: replace hardcoded dropdown with real entity options | 1-2h | 🟠 High | 🟢 | | review:nextjs |
 | UX-2 | GL Account ID: replace raw CUID input with searchable dropdown | 1h | 🟠 High | 🟢 | | review:nextjs |
 | TEST-1 | Service tests for 4 remaining reports (BS, CF, TB, GL) + route tests | 3-4h | 🟠 High | 🟢 | | review:typescript |
@@ -47,8 +47,8 @@
 | ~~SEC-17~~ | ~~XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief (DOMPurify or markdown renderer)~~ | 30m | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~SEC-18~~ | ~~Dashboard routes: replace unsafe `request.tenantId as string` with `requireTenantId()` guard~~ | 30m | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~SEC-19~~ | ~~Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generic route typing~~ | 1h | 🟠 High | ✅ | | review:dashboard-overview |
-| FIN-13 | `UpcomingPayments.amount` typed as `string` — must be `number` (integer cents violation) | 15m | 🟠 High | 🟢 | | review:dashboard-overview |
-| DOC-1 | Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy | 30m | 🟠 High | 🟢 | | review:smooth-floating-mountain |
+| ~~FIN-13~~ | ~~`UpcomingPayments.amount` typed as `string` — must be `number` (integer cents violation)~~ | 15m | 🟠 High | ✅ | | review:dashboard-overview |
+| ~~DOC-1~~ | ~~Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy~~ | 30m | 🟠 High | ✅ | | review:smooth-floating-mountain |
 
 ### Medium / Low
 
@@ -179,6 +179,9 @@
 
 | ID | Task | Completed | Commit |
 |----|------|-----------|--------|
+| ✅ FIN-13 | Change UpcomingPayments.amount to integer cents | 2026-02-19 | 8ec6cf5 |
+| ✅ DRY-1 | Move report types to packages/types | 2026-02-19 | 9503c36 |
+| ✅ DOC-1 | Add plan-enforcement.md to CLAUDE.md Layer 1 | 2026-02-19 | 2d1dce0 |
 | ✅ DRY-6 | Dashboard: deduplicate SparkCards/DashboardLeftRail | 2026-02-19 | 53d2db6 |
 | ✅ DEV-5 | Dashboard: add cancelAnimationFrame cleanup | 2026-02-19 | 53d2db6 |
 | ✅ DS-5 | AIBrief: change text-primary to AI purple tokens | 2026-02-19 | 53d2db6 |
