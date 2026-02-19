@@ -4,7 +4,7 @@ interface Payment {
     id: string;
     name: string;
     meta: string;
-    amount: string;
+    amount: number; // Integer cents (e.g., 1050 = $10.50)
     date: { day: string; month: string };
     color?: 'red' | 'primary' | 'default';
 }
@@ -18,6 +18,15 @@ const colorMap = {
     primary: 'text-primary',
     default: '',
 } as const;
+
+/**
+ * Format cents to currency string
+ * @param cents - Integer cents (e.g., 1050 = $10.50)
+ */
+function formatCurrency(cents: number): string {
+    const dollars = cents / 100;
+    return `$${dollars.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
 
 export function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
     return (
@@ -47,7 +56,7 @@ export function UpcomingPayments({ payments }: UpcomingPaymentsProps) {
                                 <p className="text-[10px] text-muted-foreground truncate">{item.meta}</p>
                             </div>
                             <span className={`text-xs font-mono font-medium shrink-0 ${colorMap[item.color ?? 'default']}`}>
-                                {item.amount}
+                                {formatCurrency(item.amount)}
                             </span>
                         </div>
                     ))}
