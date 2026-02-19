@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-19
 **Current Phase:** Phase 6 — Launch MVP
 
-> **85 tasks** · 🔴 0 critical · 🟠 23 high · 🟡 33 medium · ⚪ 9 low · ✅ 27 done
-> 🟢 45 ready · 📦 21 backlog · 🔒 6 blocked
+> **123 tasks** · 🔴 0 critical · 🟠 27 high · 🟡 62 medium · ⚪ 14 low · ✅ 27 done
+> 🟢 55 ready · 📦 49 backlog · 🔒 6 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -49,6 +49,10 @@
 | ~~SEC-19~~ | ~~Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generic route typing~~ | 1h | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~FIN-13~~ | ~~`UpcomingPayments.amount` typed as `string` — must be `number` (integer cents violation)~~ | 15m | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~DOC-1~~ | ~~Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy~~ | 30m | 🟠 High | ✅ | | review:smooth-floating-mountain |
+| UX-11 | Overview: Wire `/overview/net-worth` page with real data (backend endpoint exists, page says "coming soon") | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| UX-12 | Overview: Wire `/overview/cash-flow` page with real data (backend endpoint exists, page says "coming soon") | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| FIN-15 | Performance endpoint: Wire receivables data from invoicing domain (currently hardcoded to 0) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| DEV-10 | Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
 
 ### Medium / Low
 
@@ -80,20 +84,54 @@
 | TEST-4 | Integration tests (API → DB → API roundtrip for critical flows) | 4h | 🟡 Medium | 📦 | | review:smooth-floating-mountain |
 | ~~DRY-6~~ | ~~Dashboard: deduplicate SparkCards/DashboardLeftRail (shared types, constants, MiniSparkline)~~ | 45m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | DRY-7 | Dashboard page.tsx: extract 120+ lines of data transformation to `lib/dashboard/transformers.ts` | 30m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| UX-9 | Dashboard: fix SVG gradient ID collision (use `React.useId()`) | 15m | 🟡 Medium | 🟢 | | review:dashboard-overview |
+| ~~UX-9~~ | ~~Dashboard: fix SVG gradient ID collision (use `React.useId()`)~~ | 15m | 🟡 Medium | ✅ | | review:dashboard-overview |
+| UX-10 | Navbar: add live sync status indicator with refresh button | 30m | 🟡 Medium | 🟢 | | ad-hoc:user-request |
 | ~~DEV-3~~ | ~~Dashboard: delete dead `handleSkipStep` in OnboardingHeroCard + dead SparkCardsSkeleton~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
-| DEV-4 | Dashboard: type entity maps as `Record<EntityType, ...>` for exhaustive checking | 15m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DS-3 | Dashboard: replace `hover:glass-3` with proper hover pattern (`hover:border-ak-border-3`) | 10m | 🟡 Medium | 🟢 | | review:dashboard-overview |
+| ~~DEV-4~~ | ~~Dashboard: type entity maps as `Record<EntityType, ...>` for exhaustive checking~~ | 15m | 🟡 Medium | ✅ | | review:dashboard-overview |
+| ~~DS-3~~ | ~~Dashboard: replace `hover:glass-3` with proper hover pattern~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | DS-4 | ExpenseChart: replace inline `backgroundColor` with token-mapped CSS variables | 30m | 🟡 Medium | 🟢 | | review:dashboard-overview |
 | ~~DS-5~~ | ~~AIBrief: change `text-primary` (amber) to AI-specific purple tokens~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | ~~DS-6~~ | ~~Dashboard: resolve `text-[9px]` vs `text-[10px]` inconsistency with `text-micro` utility~~ | 15m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | ~~DEV-5~~ | ~~Dashboard: add `cancelAnimationFrame` cleanup in DashboardLeftRail/SparkCards useEffect~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
-| DEV-6 | Dashboard: delete duplicate `OnboardingHeroCard` in `components/dashboard/` (dead code) | 5m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DEV-7 | DashboardRightRail: replace `\|\|` className with `cn()` for proper class merging | 5m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DEV-8 | DashboardService: add explicit return type to `getMetrics()` method | 15m | 🟡 Medium | 🟢 | | review:dashboard-overview |
-| DEV-9 | DashboardService: type `byType` as `Partial<Record<AccountType, number>>` (not `Record<string, number>`) | 10m | 🟡 Medium | 🟢 | | review:dashboard-overview |
+| ~~DEV-6~~ | ~~Dashboard: delete duplicate `OnboardingHeroCard` in `components/dashboard/` (dead code)~~ | 5m | 🟡 Medium | ✅ | | review:dashboard-overview |
+| ~~DEV-7~~ | ~~DashboardRightRail: replace `\|\|` className with `cn()` for proper class merging~~ | 5m | 🟡 Medium | ✅ | | review:dashboard-overview |
+| ~~DEV-8~~ | ~~DashboardService: add explicit return type to `getMetrics()` method~~ | 15m | 🟡 Medium | ✅ | | review:dashboard-overview |
+| ~~DEV-9~~ | ~~DashboardService: type `byType` as `Partial<Record<AccountType, number>>` (not `Record<string, number>`)~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | FIN-14 | DashboardService: document or fix float arithmetic in FX conversion (`Math.abs(balance) * rate`) | 30m | 🟡 Medium | 🟢 | | review:dashboard-overview |
+| DEV-11 | Overview: Add upcoming payments endpoint — bills due + expected invoice payments (RightRail placeholder) | 2-3h | 🟡 Medium | 🟢 | | audit:fe-be-parity |
+| DEV-12 | Overview: Add action items endpoint — unreconciled txns, overdue invoices, overdue bills (RightRail placeholder) | 3-4h | 🟡 Medium | 🟢 | | audit:fe-be-parity |
+| DEV-13 | Overview: Add cash flow time-series chart endpoint — historical cash position by day/week (CashFlowChart placeholder) | 3-4h | 🟡 Medium | 🟢 | | audit:fe-be-parity |
+| DEV-14 | Overview: Add expense breakdown by category endpoint for ExpenseChart (placeholder component) | 2-3h | 🟡 Medium | 🟢 | | audit:fe-be-parity |
+| DEV-17 | Overview: P&L Summary mini-widget — revenue vs expense bars + YTD trend (ReportService ready) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-18 | Overview: Balance Sheet Snapshot widget — asset:liability donut + equity trend (ReportService ready) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-19 | Overview: Trial Balance Status widget — balanced alert + account type counts (ReportService ready) | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| FIN-16 | Overview: Financial Health Ratios widget — current ratio, working capital, debt-to-equity, profit margin (computed from BS+P&L) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-20 | Overview: Top Revenue Clients widget — top 5 by YTD revenue + concentration % (ReportService ready) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-21 | Overview: Client Payment Health widget — % paid on time, avg days-to-payment, overdue count (Invoice model) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-22 | Overview: Invoice Aging Waterfall widget — AR buckets 0-30, 31-60, 61-90, 90+ days | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-23 | Overview: Revenue by Category widget — revenue sources breakdown from InvoiceLine + Category | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-24 | Overview: Top Expense Vendors widget — top 5 by YTD spend + % of total (Bill + vendor aggregations) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-25 | Overview: Bill Aging Waterfall widget — AP buckets 0-30, 31-60, 61-90, 90+ days | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-26 | Overview: Vendor Payment Terms widget — on-time vs late payment performance | 2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-27 | Overview: Reconciliation Status widget — progress bar per account + unmatched count (ReconciliationService ready) | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-28 | Overview: Import Health widget — last import date, success rate, failed imports (ImportBatch model) | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-29 | Overview: Categorization Gap widget — % of transactions uncategorized by account (Transaction.categoryId) | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-30 | Overview: Duplicate Detection Stats widget — duplicates detected this month (duplication.service) | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-31 | Overview: Journal Entry Status widget — count by status (DRAFT/POSTED/VOIDED), draft aging > 7d alert | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-32 | Overview: GL Posting Pipeline widget — pending bank feed txns waiting to post, oldest first | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-33 | Overview: Ledger Spike Detection widget — accounts with unusual balance swings this month | 3-4h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-34 | Overview: Goal Progress widget — progress bars for active goals, days to deadline (Goal model) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-35 | Overview: Budget vs Actual widget — % of budget used this month, over-budget alerts (Budget model) | 3-4h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-36 | Overview: Expense Forecast widget — projected monthly spend at current 3-month run rate | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-37 | Overview: Cash Runway widget — days of cash remaining at burn rate, healthy/monitor/critical | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-38 | Overview: Multi-Currency Exposure widget — portfolio breakdown by currency + FX risk % | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-39 | Overview: Entity KPI Comparison widget — side-by-side entity performance for multi-business users | 3-4h | 🟡 Medium | 📦 | | audit:fe-be-parity |
+| DEV-40 | Overview: Onboarding Completion nudge widget — checklist of remaining steps (OnboardingProgress model) | 1-2h | ⚪ Low | 📦 | | audit:fe-be-parity |
+| DEV-41 | Overview: Tax Liability Estimate widget — estimated taxes due this quarter (needs tax rules engine) | 4-6h | ⚪ Low | 📦 | | audit:fe-be-parity |
+| DEV-42 | Overview: Subscription MRR/ARR widget — recurring revenue detection for SaaS solopreneurs | 4-6h | ⚪ Low | 📦 | | audit:fe-be-parity |
 | DOC-4 | Elevate source preservation to explicit 5th invariant in guardrails.md | 15m | 🟡 Medium | 🟢 | | review:smooth-floating-mountain §1.2 |
+| DEV-15 | Overview: Add top expense categories widget (data exists in categorized transactions) | 1-2h | ⚪ Low | 🟢 | | audit:fe-be-parity |
+| DEV-16 | Overview: Add unreconciled transaction count badge to dashboard | 1h | ⚪ Low | 🟢 | | audit:fe-be-parity |
 | PERF-4 | PDF generation: move to worker thread (unblock event loop) | 2h | ⚪ Low | 📦 | | review:performance |
 | PERF-11 | Distributed rate limiting (Redis-backed) for multi-instance | 2h | ⚪ Low | 📦 | | review:smooth-floating-mountain §2.1.4 |
 | DRY-5 | `window.Clerk` triple-cast in downloadReport: clean up type assertion | 30m | ⚪ Low | 📦 | | review:typescript |
@@ -227,19 +265,25 @@
 > **Legend:** 🟢 ready · 📦 backlog · 🔒 blocked (has unmet deps) · ⏳ pending · ✅ done
 > **Priority:** 🔴 Critical · 🟠 High · 🟡 Medium · ⚪ Low
 
+
+
+
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-19T16:59:24.724Z",
+  "generated": "2026-02-19T17:52:47.485Z",
   "summary": {
-    "total": 84,
-    "ready": 50,
+    "total": 93,
+    "ready": 47,
     "blocked": 7,
     "backlog": 26,
-    "done": 0
+    "done": 12
   },
   "byPriority": {
-    "critical": [],
+    "critical": [
+      "DEV-1"
+    ],
     "high": [
       "SEC-8",
       "SEC-9",
@@ -262,6 +306,9 @@
       "SEC-13",
       "INFRA-9",
       "INFRA-10",
+      "SEC-17",
+      "SEC-18",
+      "SEC-19",
       "FIN-13",
       "DOC-1",
       "DS-1",
@@ -299,11 +346,16 @@
       "ARCH-1",
       "ARCH-4",
       "TEST-4",
+      "DRY-6",
       "DRY-7",
       "UX-9",
+      "DEV-3",
       "DEV-4",
       "DS-3",
       "DS-4",
+      "DS-5",
+      "DS-6",
+      "DEV-5",
       "DEV-6",
       "DEV-8",
       "DEV-9",
@@ -336,8 +388,12 @@
       "UX-4",
       "DOC-3",
       "UX-9",
+      "DEV-3",
       "DEV-4",
       "DS-3",
+      "DS-5",
+      "DS-6",
+      "DEV-5",
       "DEV-6",
       "DEV-8",
       "DEV-9",
@@ -346,6 +402,7 @@
       "DOC-6"
     ],
     "short": [
+      "DEV-1",
       "SEC-9",
       "PERF-1",
       "PERF-5",
@@ -360,6 +417,9 @@
       "ARCH-6",
       "INFRA-9",
       "INFRA-10",
+      "SEC-17",
+      "SEC-18",
+      "SEC-19",
       "DOC-1",
       "PERF-2",
       "PERF-3",
@@ -373,6 +433,7 @@
       "SEC-12",
       "SEC-14",
       "PERF-12",
+      "DRY-6",
       "DRY-7",
       "DS-4",
       "FIN-14",
@@ -423,11 +484,25 @@
     ]
   },
   "byDomain": {
+    "development": [
+      "DEV-1",
+      "DEV-2",
+      "DEV-3",
+      "DEV-4",
+      "DEV-5",
+      "DEV-6",
+      "DEV-7",
+      "DEV-8",
+      "DEV-9"
+    ],
     "security": [
       "SEC-8",
       "SEC-9",
       "SEC-11",
       "SEC-13",
+      "SEC-17",
+      "SEC-18",
+      "SEC-19",
       "SEC-10",
       "SEC-12",
       "SEC-14",
@@ -452,6 +527,7 @@
       "DRY-1",
       "DRY-2",
       "DRY-3",
+      "DRY-6",
       "DRY-7",
       "DRY-5"
     ],
@@ -470,14 +546,6 @@
       "TEST-2",
       "TEST-3",
       "TEST-4"
-    ],
-    "development": [
-      "DEV-2",
-      "DEV-4",
-      "DEV-6",
-      "DEV-7",
-      "DEV-8",
-      "DEV-9"
     ],
     "architecture": [
       "ARCH-2",
@@ -523,6 +591,8 @@
     "design-system": [
       "DS-3",
       "DS-4",
+      "DS-5",
+      "DS-6",
       "DS-1",
       "DS-2"
     ],
@@ -541,7 +611,6 @@
     "PERF-5",
     "PERF-6",
     "PERF-8",
-    "DRY-1",
     "UX-1",
     "UX-2",
     "TEST-1",
@@ -555,8 +624,6 @@
     "SEC-13",
     "INFRA-9",
     "INFRA-10",
-    "FIN-13",
-    "DOC-1",
     "PERF-2",
     "PERF-3",
     "PERF-7",
@@ -592,7 +659,6 @@
     "PERF-5",
     "PERF-6",
     "PERF-8",
-    "DRY-1",
     "UX-1",
     "UX-2",
     "PERF-9",
@@ -600,8 +666,6 @@
     "ARCH-6",
     "INFRA-9",
     "INFRA-10",
-    "FIN-13",
-    "DOC-1",
     "DS-1",
     "INFRA-2",
     "INFRA-3"
@@ -620,6 +684,15 @@
     "FIN-14"
   ],
   "tasks": {
+    "DEV-1": {
+      "line": 25,
+      "title": "Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume)",
+      "effort": "1h",
+      "priority": "critical",
+      "status": "done",
+      "deps": [],
+      "domain": "development"
+    },
     "SEC-8": {
       "line": 26,
       "title": "Complete security audit (OWASP top 10, auth, tenant isolation, input validation)",
@@ -679,7 +752,7 @@
       "title": "Report types: move shared types to `packages/types` (eliminate duplication)",
       "effort": "1h",
       "priority": "high",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "code-quality"
     },
@@ -811,12 +884,39 @@
       "deps": [],
       "domain": "infrastructure"
     },
+    "SEC-17": {
+      "line": 47,
+      "title": "XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief (DOMPurify or markdown renderer)",
+      "effort": "30m",
+      "priority": "high",
+      "status": "done",
+      "deps": [],
+      "domain": "security"
+    },
+    "SEC-18": {
+      "line": 48,
+      "title": "Dashboard routes: replace unsafe `request.tenantId as string` with `requireTenantId()` guard",
+      "effort": "30m",
+      "priority": "high",
+      "status": "done",
+      "deps": [],
+      "domain": "security"
+    },
+    "SEC-19": {
+      "line": 49,
+      "title": "Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generic route typing",
+      "effort": "1h",
+      "priority": "high",
+      "status": "done",
+      "deps": [],
+      "domain": "security"
+    },
     "FIN-13": {
       "line": 50,
       "title": "`UpcomingPayments.amount` typed as `string` — must be `number` (integer cents violation)",
       "effort": "15m",
       "priority": "high",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "financial"
     },
@@ -825,7 +925,7 @@
       "title": "Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy",
       "effort": "30m",
       "priority": "high",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "documentation"
     },
@@ -1051,6 +1151,15 @@
       "deps": [],
       "domain": "testing"
     },
+    "DRY-6": {
+      "line": 81,
+      "title": "Dashboard: deduplicate SparkCards/DashboardLeftRail (shared types, constants, MiniSparkline)",
+      "effort": "45m",
+      "priority": "medium",
+      "status": "done",
+      "deps": [],
+      "domain": "code-quality"
+    },
     "DRY-7": {
       "line": 82,
       "title": "Dashboard page.tsx: extract 120+ lines of data transformation to `lib/dashboard/transformers.ts`",
@@ -1068,6 +1177,15 @@
       "status": "ready",
       "deps": [],
       "domain": "ux"
+    },
+    "DEV-3": {
+      "line": 84,
+      "title": "Dashboard: delete dead `handleSkipStep` in OnboardingHeroCard + dead SparkCardsSkeleton",
+      "effort": "10m",
+      "priority": "medium",
+      "status": "done",
+      "deps": [],
+      "domain": "development"
     },
     "DEV-4": {
       "line": 85,
@@ -1095,6 +1213,33 @@
       "status": "ready",
       "deps": [],
       "domain": "design-system"
+    },
+    "DS-5": {
+      "line": 88,
+      "title": "AIBrief: change `text-primary` (amber) to AI-specific purple tokens",
+      "effort": "10m",
+      "priority": "medium",
+      "status": "done",
+      "deps": [],
+      "domain": "design-system"
+    },
+    "DS-6": {
+      "line": 89,
+      "title": "Dashboard: resolve `text-[9px]` vs `text-[10px]` inconsistency with `text-micro` utility",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "done",
+      "deps": [],
+      "domain": "design-system"
+    },
+    "DEV-5": {
+      "line": 90,
+      "title": "Dashboard: add `cancelAnimationFrame` cleanup in DashboardLeftRail/SparkCards useEffect",
+      "effort": "10m",
+      "priority": "medium",
+      "status": "done",
+      "deps": [],
+      "domain": "development"
     },
     "DEV-6": {
       "line": 91,
