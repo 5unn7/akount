@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { AIBrief } from './AIBrief';
 import { QuickActions } from './QuickActions';
 import { ActionItems } from './ActionItems';
@@ -9,7 +10,7 @@ interface DashboardRightRailProps {
 
 export function DashboardRightRail({ className }: DashboardRightRailProps) {
     return (
-        <aside className={className || "hidden xl:block w-80 shrink-0"}>
+        <aside className={cn("hidden xl:block w-80 shrink-0", className)}>
             <div className="xl:sticky xl:top-6 space-y-4">
                 <AIBrief />
                 <QuickActions />

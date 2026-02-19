@@ -1,5 +1,23 @@
-import { prisma } from '@akount/db';
+import { prisma, type AccountType } from '@akount/db';
 import { FxRateService } from '../../banking/services/fx-rate.service';
+
+interface DashboardMetrics {
+  netWorth: {
+    amount: number;
+    currency: string;
+  };
+  cashPosition: {
+    cash: number;
+    debt: number;
+    net: number;
+    currency: string;
+  };
+  accounts: {
+    total: number;
+    active: number;
+    byType: Partial<Record<AccountType, number>>;
+  };
+}
 
 export class DashboardService {
   private fxService: FxRateService;
@@ -8,7 +26,7 @@ export class DashboardService {
     this.fxService = new FxRateService();
   }
 
-  async getMetrics(entityId?: string, targetCurrency: string = 'USD') {
+  async getMetrics(entityId?: string, targetCurrency: string = 'USD'): Promise<DashboardMetrics> {
     const baseCurrency = targetCurrency || 'USD';
 
     // Query all active accounts for the tenant
@@ -79,12 +97,12 @@ export class DashboardService {
       accounts: {
         total: accounts.length,
         active: accounts.length,
-        byType: accounts.reduce(
+        byType: accounts.reduce<Partial<Record<AccountType, number>>>(
           (acc, curr) => {
             acc[curr.type] = (acc[curr.type] || 0) + 1;
             return acc;
           },
-          {} as Record<string, number>
+          {}
         ),
       },
     };

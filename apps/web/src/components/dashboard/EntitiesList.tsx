@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import { Building2, User, ArrowRight, Plus, MapPin, Wallet } from 'lucide-react';
 import { GlowCard } from '@/components/ui/glow-card';
-import type { Entity } from '@/lib/api/entities';
+import type { Entity, EntityType } from '@/lib/api/entities';
 import { EntityFormSheet } from './EntityFormSheet';
 
 interface EntitiesListProps {
     entities: Entity[];
 }
 
-const TYPE_LABELS: Record<string, string> = {
+const TYPE_LABELS: Record<EntityType, string> = {
     PERSONAL: 'Personal',
     CORPORATION: 'Corporation',
     SOLE_PROPRIETORSHIP: 'Sole Prop.',
@@ -16,7 +16,7 @@ const TYPE_LABELS: Record<string, string> = {
     LLC: 'LLC',
 };
 
-const TYPE_COLORS: Record<string, { icon: string; border: string }> = {
+const TYPE_COLORS: Record<EntityType, { icon: string; border: string }> = {
     PERSONAL: { icon: 'text-ak-green', border: 'border-l-[color:var(--ak-green)]' },
     CORPORATION: { icon: 'text-ak-blue', border: 'border-l-[color:var(--ak-blue)]' },
     SOLE_PROPRIETORSHIP: { icon: 'text-ak-purple', border: 'border-l-[color:var(--ak-purple)]' },

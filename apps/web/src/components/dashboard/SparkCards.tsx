@@ -65,7 +65,6 @@ function SparkCard({ card, index }: { card: StatCardData; index: number }) {
                         <MiniSparkline
                             data={card.sparkline}
                             color={card.color}
-                            gradientId={`spark-grad-${card.color}-${index}`}
                         />
                     </div>
                 )}

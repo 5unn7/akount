@@ -1,3 +1,6 @@
+'use client';
+
+import { useId } from 'react';
 import { sparkColorMap, type SparkColor } from '@/lib/dashboard/constants';
 
 interface MiniSparklineProps {
@@ -5,20 +8,21 @@ interface MiniSparklineProps {
     color?: SparkColor;
     width?: number;
     height?: number;
-    gradientId: string; // Unique ID to avoid SVG gradient conflicts
 }
 
 /**
  * Reusable mini sparkline component
  * Renders a small area chart with gradient fill
+ * Uses React.useId() to generate unique SVG gradient IDs (no collision)
  */
 export function MiniSparkline({
     data,
     color = 'primary',
     width = 80,
     height = 24,
-    gradientId,
 }: MiniSparklineProps) {
+    const gradientId = useId();
+
     if (data.length < 2) return null;
 
     const padding = 1;

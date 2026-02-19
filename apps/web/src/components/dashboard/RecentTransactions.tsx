@@ -74,7 +74,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
                     return (
                         <div
                             key={transaction.id}
-                            className="glass-2 rounded-lg p-3 hover:glass-3 transition-all cursor-pointer group"
+                            className="glass-2 rounded-lg p-3 hover:bg-ak-bg-3 hover:border-ak-border-2 transition-all cursor-pointer group"
                         >
                             <div className="flex items-center gap-3">
                                 {/* Icon */}

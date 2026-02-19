@@ -64,7 +64,6 @@ function StatCard({ stat, index }: { stat: StatCardData; index: number }) {
                             color={stat.color}
                             width={56}
                             height={20}
-                            gradientId={`rail-spark-grad-${stat.color}-${index}`}
                         />
                     </div>
                 )}

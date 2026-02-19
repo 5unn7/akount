@@ -25,7 +25,7 @@ export function QuickActions() {
                     <Link
                         key={action.label}
                         href={action.href}
-                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg glass-2 hover:glass-3 transition-colors text-sm text-muted-foreground hover:text-foreground"
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg glass-2 hover:bg-ak-bg-3 hover:border-ak-border-2 transition-colors text-sm text-muted-foreground hover:text-foreground"
                     >
                         <action.icon className="h-4 w-4 shrink-0" />
                         <span className="text-xs font-medium">{action.label}</span>
