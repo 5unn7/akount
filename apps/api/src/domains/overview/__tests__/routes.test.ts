@@ -19,6 +19,7 @@ vi.mock('../../../middleware/tenant', () => ({
     request.tenantId = 'tenant-abc-123';
     request.tenantRole = 'OWNER';
   }),
+  requireTenantId: vi.fn((request) => request.tenantId || 'tenant-abc-123'),
 }));
 
 // Mock withPermission to be a no-op (pass through)
