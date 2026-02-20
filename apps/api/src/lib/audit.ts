@@ -1,4 +1,4 @@
-import { prisma, AuditAction } from '@akount/db';
+import { prisma, AuditAction, Prisma } from '@akount/db';
 import { createHash } from 'crypto';
 import { logger } from './logger';
 
@@ -12,6 +12,11 @@ import { logger } from './logger';
  * - SHA-256 integrity hash per entry (detects modification)
  * - Hash chain linking (detects deletion/insertion)
  * - Monotonic sequence numbers per tenant (detects gaps)
+ *
+ * ARCH-6 Enhancement:
+ * - Transaction-safe: accepts optional Prisma transaction client
+ * - When called inside a transaction, audit logs roll back with the parent operation
+ * - Prevents phantom audit trails for failed operations
  */
 export interface AuditLogParams {
   tenantId: string;
@@ -67,12 +72,25 @@ function computeEntryHash(
  * 2. Computes integrity hash covering entry data + previous hash
  * 3. Stores entry with hash, previous hash, and sequence number
  *
+ * ARCH-6: Transaction-safe logging
+ * - If `tx` is provided, uses the transaction client (logs roll back with parent operation)
+ * - If `tx` is omitted, uses global prisma client (fire-and-forget, backward compatible)
+ *
  * Non-critical: errors are logged but do not fail the parent operation.
+ *
+ * @param params - Audit log parameters
+ * @param tx - Optional Prisma transaction client (for transaction-safe logging)
  */
-export async function createAuditLog(params: AuditLogParams): Promise<void> {
+export async function createAuditLog(
+  params: AuditLogParams,
+  tx?: Prisma.TransactionClient
+): Promise<void> {
   try {
+    // Use transaction client if provided, otherwise use global prisma
+    const client = tx ?? prisma;
+
     // Get latest entry for this tenant to build hash chain
-    const lastEntry = await prisma.auditLog.findFirst({
+    const lastEntry = await client.auditLog.findFirst({
       where: { tenantId: params.tenantId },
       orderBy: { createdAt: 'desc' },
       select: { integrityHash: true, sequenceNumber: true },
@@ -94,7 +112,7 @@ export async function createAuditLog(params: AuditLogParams): Promise<void> {
 
     const integrityHash = computeEntryHash(entryData, previousHash, sequenceNumber);
 
-    await prisma.auditLog.create({
+    await client.auditLog.create({
       data: {
         ...entryData,
         integrityHash,

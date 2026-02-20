@@ -117,7 +117,7 @@ export async function seedDefaultCOA(
       }
     }
 
-    // Audit log
+    // Audit log (transaction-safe — ARCH-6)
     await createAuditLog({
       tenantId,
       userId,
@@ -129,7 +129,7 @@ export async function seedDefaultCOA(
         operation: 'seed_default_coa',
         accountCount: DEFAULT_COA_TEMPLATE.length,
       },
-    });
+    }, tx);
 
     return { seeded: true, accountCount: DEFAULT_COA_TEMPLATE.length };
   });

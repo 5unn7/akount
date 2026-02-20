@@ -246,7 +246,7 @@ export class PostingService {
         data: { journalEntryId: journalEntry.id },
       });
 
-      // 12. Audit log
+      // 12. Audit log (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -261,7 +261,7 @@ export class PostingService {
           status: 'POSTED',
           amount: absAmount,
         },
-      });
+      }, tx);
 
       return {
         journalEntryId: journalEntry.id,
@@ -480,7 +480,7 @@ export class PostingService {
         });
       }
 
-      // Audit log for batch
+      // Audit log for batch (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -492,7 +492,7 @@ export class PostingService {
           batchSize: results.length,
           journalEntryIds: results.map(r => r.journalEntryId),
         },
-      });
+      }, tx);
 
       return {
         posted: results.length,
@@ -768,7 +768,7 @@ export class PostingService {
         });
       }
 
-      // 12. Audit log
+      // 12. Audit log (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -784,7 +784,7 @@ export class PostingService {
           splitCount: splits.length,
           amount: absTransactionAmount,
         },
-      });
+      }, tx);
 
       return {
         journalEntryId: journalEntry.id,

@@ -233,7 +233,7 @@ export class JournalEntryService {
         select: JOURNAL_ENTRY_SELECT,
       });
 
-      // 7. Audit log
+      // 7. Audit log (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -248,7 +248,7 @@ export class JournalEntryService {
           lineCount: data.lines.length,
           totalAmount: totalDebits,
         },
-      });
+      }, tx);
 
       // Invalidate report cache (defensive - cache miss is harmless)
       try {
@@ -442,7 +442,7 @@ export class JournalEntryService {
         },
       });
 
-      // Audit logs
+      // Audit logs (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -452,7 +452,7 @@ export class JournalEntryService {
         action: 'UPDATE',
         before: { status: 'POSTED' },
         after: { status: 'VOIDED', reversalId: reversal.id },
-      });
+      }, tx);
 
       await createAuditLog({
         tenantId: this.tenantId,
@@ -462,7 +462,7 @@ export class JournalEntryService {
         recordId: reversal.id,
         action: 'CREATE',
         after: { memo: `REVERSAL: ${entry.memo}`, status: 'POSTED' },
-      });
+      }, tx);
 
       // Invalidate report cache (defensive - cache miss is harmless)
       try {

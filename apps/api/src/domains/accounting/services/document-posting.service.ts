@@ -247,7 +247,7 @@ export class DocumentPostingService {
         },
       });
 
-      // 10. Audit log
+      // 10. Audit log (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -262,7 +262,7 @@ export class DocumentPostingService {
           status: 'POSTED',
           amount: invoice.total,
         },
-      });
+      }, tx);
 
       // 11. Invalidate report cache (defensive - non-critical, swallow errors)
       try {
@@ -492,7 +492,7 @@ export class DocumentPostingService {
         },
       });
 
-      // 10. Audit log
+      // 10. Audit log (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -507,7 +507,7 @@ export class DocumentPostingService {
           status: 'POSTED',
           amount: bill.total,
         },
-      });
+      }, tx);
 
       // 11. Invalidate report cache (defensive - non-critical, swallow errors)
       try {
@@ -752,7 +752,7 @@ export class DocumentPostingService {
         },
       });
 
-      // 11. Audit log
+      // 11. Audit log (transaction-safe — ARCH-6)
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
@@ -768,7 +768,7 @@ export class DocumentPostingService {
           amount: allocation.amount,
           type: isARPayment ? 'AR' : 'AP',
         },
-      });
+      }, tx);
 
       // 12. Invalidate report cache (defensive - non-critical, swallow errors)
       try {
