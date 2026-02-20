@@ -3,6 +3,7 @@ import { ImportService } from '../services/import.service';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { scanFile } from '../../../lib/file-scanner';
+import { createAuditLog } from '../../../lib/audit';
 import { z } from 'zod';
 
 /**
@@ -133,6 +134,21 @@ export async function importsRoutes(fastify: FastifyInstance) {
           accountId,
           columnMappings,
           dateFormat,
+        });
+
+        // Audit log (ARCH-2)
+        await createAuditLog({
+          tenantId: request.tenantId as string,
+          userId: request.userId as string,
+          model: 'ImportBatch',
+          recordId: result.id,
+          action: 'CREATE',
+          after: {
+            sourceType: 'CSV',
+            accountId,
+            fileName: data.filename,
+            transactionCount: result.stats.imported,
+          },
         });
 
         return reply.status(201).send(result);
@@ -374,6 +390,21 @@ export async function importsRoutes(fastify: FastifyInstance) {
           file: fileBuffer,
           accountId,
           dateFormat,
+        });
+
+        // Audit log (ARCH-2)
+        await createAuditLog({
+          tenantId: request.tenantId as string,
+          userId: request.userId as string,
+          model: 'ImportBatch',
+          recordId: result.id,
+          action: 'CREATE',
+          after: {
+            sourceType: 'PDF',
+            accountId,
+            fileName: data.filename,
+            transactionCount: result.stats.imported,
+          },
         });
 
         return reply.status(201).send(result);
