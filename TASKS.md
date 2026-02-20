@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-20
 **Current Phase:** Phase 6 — Launch MVP
 
-> **256 tasks** · 🔴 0 critical · 🟠 61 high · 🟡 130 medium · ⚪ 28 low · ✅ 37 done
-> 🟢 95 ready · 📦 117 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **256 tasks** · 🔴 0 critical · 🟠 59 high · 🟡 130 medium · ⚪ 28 low · ✅ 39 done
+> 🟢 93 ready · 📦 117 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -43,8 +43,8 @@
 | DEV-2 | Service tests for client/invoice/bill/vendor services | 3h | 🟠 High | 🟢 | | audit:smooth-floating-mountain |
 | ~~PERF-9~~ | ~~Replace console.log with pino structured logging (7 production files — already compliant, only env.ts pre-boot)~~ | 2h | 🟠 High | ✅ | | plan:phase-6-tasks |
 | UX-8 | Add loading/error states to remaining dashboard pages (~30 pages) | 2h | 🟠 High | 🟢 | | plan:phase-6-tasks |
-| ARCH-2 | Audit log coverage expansion (bulk ops, imports, exports, reconciliation) | 3h | 🟠 High | 🟢 | | review:smooth-floating-mountain |
-| ARCH-6 | Audit logging inside DB transactions (not fire-and-forget outside TX) | 2h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.2.1 |
+| ~~ARCH-2~~ | ~~Audit log coverage expansion (bulk ops, imports, exports, reconciliation)~~ | 3h | 🟠 High | ✅ | | review:smooth-floating-mountain (commit 7b709b6) |
+| ~~ARCH-6~~ | ~~Audit logging inside DB transactions (not fire-and-forget outside TX)~~ | 2h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.2.1 (commit 86f13c4) |
 | ~~SEC-11~~ | ~~File upload virus scanning (ClamAV integration for PDFs/CSVs)~~ | 3h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.2.3 |
 | ~~SEC-13~~ | ~~Audit log tamper detection (immutable log storage)~~ | 3h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.2.4 |
 | ~~INFRA-9~~ | ~~Secrets management for production (env var vault, not .env files)~~ | 2h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.4.4 |
