@@ -32,9 +32,15 @@ export async function authMiddleware(
 
   try {
     // Verify the JWT token using networkless verification (modern Clerk approach)
-    const payload = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY!,
-    })
+    // with 3-second timeout to prevent hanging requests
+    const payload = await Promise.race([
+      verifyToken(token, {
+        secretKey: process.env.CLERK_SECRET_KEY!,
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Auth verification timeout')), 3000)
+      )
+    ])
 
     if (!payload || !payload.sub) {
       return reply.status(401).send({
@@ -76,9 +82,15 @@ export async function optionalAuthMiddleware(
   const token = authHeader.substring(7)
 
   try {
-    const payload = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY!,
-    })
+    // Apply 3-second timeout to optional auth as well
+    const payload = await Promise.race([
+      verifyToken(token, {
+        secretKey: process.env.CLERK_SECRET_KEY!,
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Auth verification timeout')), 3000)
+      )
+    ])
 
     if (payload?.sub) {
       request.userId = payload.sub
