@@ -41,4 +41,3 @@ CREATE INDEX "CreditNote_entityId_deletedAt_idx" ON "CreditNote"("entityId", "de
 CREATE INDEX "Account_entityId_deletedAt_idx" ON "Account"("entityId", "deletedAt");
 CREATE INDEX "BankFeedTransaction_accountId_deletedAt_idx" ON "BankFeedTransaction"("accountId", "deletedAt");
 CREATE INDEX "Transaction_accountId_deletedAt_idx" ON "Transaction"("accountId", "deletedAt");
-CREATE INDEX "Category_tenantId_deletedAt_idx" ON "Category"("tenantId", "deletedAt");
