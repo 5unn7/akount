@@ -5,7 +5,7 @@
  * SparkCards and DashboardLeftRail components.
  */
 
-export type SparkColor = 'green' | 'red' | 'blue' | 'purple' | 'primary';
+export type SparkColor = 'green' | 'red' | 'blue' | 'purple' | 'primary' | 'teal';
 
 export type TrendDirection = 'up' | 'down' | 'flat';
 
@@ -31,6 +31,7 @@ export const sparkColorMap = {
     blue: { stroke: 'var(--ak-blue)', fill: 'var(--ak-blue-fill)' },
     purple: { stroke: 'var(--ak-purple)', fill: 'var(--ak-purple-fill)' },
     primary: { stroke: 'var(--ak-pri)', fill: 'var(--ak-pri-fill)' },
+    teal: { stroke: 'var(--ak-teal)', fill: 'var(--ak-teal-fill)' },
 } as const;
 
 /**
@@ -51,6 +52,7 @@ export const glowColorMap = {
     blue: 'var(--ak-blue-fill)',
     purple: 'var(--ak-purple-fill)',
     primary: 'var(--ak-pri-fill)',
+    teal: 'var(--ak-teal-fill)',
 } as const;
 
 /**
@@ -62,4 +64,5 @@ export const colorMap = {
     blue: 'text-ak-blue',
     purple: 'text-ak-purple',
     primary: 'text-primary',
+    teal: 'text-ak-teal',
 } as const;

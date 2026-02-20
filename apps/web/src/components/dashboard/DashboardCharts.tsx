@@ -2,37 +2,44 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { getCashFlowProjection, type CashFlowProjectionPoint } from '@/lib/api/dashboard';
+import { getCashFlowProjection, type CashFlowProjectionPoint } from '@/lib/api/dashboard-client';
 
 // Client-side only chart loading (avoids SSR chart rendering issues)
-const CashFlowChart = dynamic(
+const CashFlowChartInner = dynamic(
     () => import('./CashFlowChart').then((m) => m.CashFlowChart),
     { ssr: false, loading: () => <ChartSkeleton /> }
 );
 
-const ExpenseChart = dynamic(
+const ExpenseChartInner = dynamic(
     () => import('./ExpenseChart').then((m) => m.ExpenseChart),
     { ssr: false, loading: () => <ChartSkeleton /> }
 );
 
-export function DashboardCharts() {
+/** Cash Flow chart with data fetching */
+export function DashboardCashFlowChart() {
     const [cashFlowData, setCashFlowData] = useState<CashFlowProjectionPoint[] | undefined>();
 
     useEffect(() => {
-        // Fetch cash flow projection data
         getCashFlowProjection()
             .then((response) => setCashFlowData(response.data))
-            .catch((error) => {
-                console.error('Failed to fetch cash flow projection:', error);
-                setCashFlowData(undefined);
-            });
+            .catch(() => setCashFlowData(undefined));
     }, []);
 
+    return <CashFlowChartInner data={cashFlowData} />;
+}
+
+/** Expense breakdown chart */
+export function DashboardExpenseChart() {
+    return <ExpenseChartInner />;
+}
+
+/** Combined charts — kept for backward compatibility */
+export function DashboardCharts() {
     return (
-        <>
-            <CashFlowChart data={cashFlowData} />
-            <ExpenseChart />
-        </>
+        <div className="space-y-4">
+            <DashboardCashFlowChart />
+            <DashboardExpenseChart />
+        </div>
     );
 }
 

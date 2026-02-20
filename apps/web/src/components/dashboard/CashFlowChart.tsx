@@ -25,48 +25,32 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
     const svgRef = useRef<SVGSVGElement>(null);
     const [tooltip, setTooltip] = useState<{ x: number; y: number; value: string; date: string } | null>(null);
 
-    if (!data || data.length === 0) {
-        return (
-            <div className={cn('glass rounded-xl p-5', className)}>
-                <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-heading font-normal">Cash Flow Projection</h3>
-                    <span className="text-xs text-muted-foreground font-mono">60-day view</span>
-                </div>
-                <div className="flex flex-col items-center gap-2 py-10 text-center">
-                    <TrendingUp className="h-8 w-8 text-muted-foreground/30" />
-                    <p className="text-xs text-muted-foreground">Cash flow chart will populate with transaction data</p>
-                </div>
-            </div>
-        );
-    }
-
     const width = 600;
     const paddingTop = 10;
     const paddingBottom = 24;
     const paddingX = 0;
 
-    const values = data.map((d) => d.value);
-    const min = Math.min(...values) * 0.95;
-    const max = Math.max(...values) * 1.05;
+    const hasData = data && data.length > 0;
+
+    const values = hasData ? data.map((d) => d.value) : [];
+    const min = hasData ? Math.min(...values) * 0.95 : 0;
+    const max = hasData ? Math.max(...values) * 1.05 : 1;
     const range = max - min || 1;
 
-    const todayIndex = Math.floor(data.length * 0.5);
+    const todayIndex = hasData ? Math.floor(data.length * 0.5) : 0;
 
-    const points = data.map((d, i) => {
-        const x = paddingX + (i / (data.length - 1)) * (width - 2 * paddingX);
-        const y = paddingTop + (1 - (d.value - min) / range) * (height - paddingTop - paddingBottom);
-        return { x, y, ...d };
-    });
-
-    const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
-    const areaPath = `${linePath} L${points[points.length - 1].x},${height - paddingBottom} L${points[0].x},${height - paddingBottom} Z`;
-
-    const todayX = points[todayIndex]?.x || width / 2;
+    const points = hasData
+        ? data.map((d, i) => {
+            const x = paddingX + (i / (data.length - 1)) * (width - 2 * paddingX);
+            const y = paddingTop + (1 - (d.value - min) / range) * (height - paddingTop - paddingBottom);
+            return { x, y, ...d };
+        })
+        : [];
 
     const handleMouseMove = useCallback(
         (e: React.MouseEvent<SVGSVGElement>) => {
             const svg = svgRef.current;
-            if (!svg) return;
+            if (!svg || points.length === 0) return;
             const rect = svg.getBoundingClientRect();
             const mouseX = ((e.clientX - rect.left) / rect.width) * width;
 
@@ -92,6 +76,26 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
 
     const handleMouseLeave = useCallback(() => setTooltip(null), []);
 
+    if (!hasData) {
+        return (
+            <div className={cn('glass rounded-xl p-5', className)}>
+                <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-heading font-normal">Cash Flow Projection</h3>
+                    <span className="text-xs text-muted-foreground font-mono">60-day view</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 py-10 text-center">
+                    <TrendingUp className="h-8 w-8 text-muted-foreground/30" />
+                    <p className="text-xs text-muted-foreground">Cash flow chart will populate with transaction data</p>
+                </div>
+            </div>
+        );
+    }
+
+    const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ');
+    const areaPath = `${linePath} L${points[points.length - 1].x},${height - paddingBottom} L${points[0].x},${height - paddingBottom} Z`;
+
+    const todayX = points[todayIndex]?.x || width / 2;
+
     // X-axis labels (show ~6)
     const labelStep = Math.floor(data.length / 6);
     const xLabels = data.filter((_, i) => i % labelStep === 0 || i === data.length - 1);
@@ -113,12 +117,12 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
             >
                 <defs>
                     <linearGradient id="cfGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(245,158,11,0.15)" />
-                        <stop offset="100%" stopColor="rgba(245,158,11,0)" />
+                        <stop offset="0%" stopColor="var(--ak-pri-dim)" />
+                        <stop offset="100%" stopColor="transparent" />
                     </linearGradient>
                     <linearGradient id="todayGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(245,158,11,0.4)" />
-                        <stop offset="100%" stopColor="rgba(245,158,11,0)" />
+                        <stop offset="0%" stopColor="var(--ak-pri-active)" />
+                        <stop offset="100%" stopColor="transparent" />
                     </linearGradient>
                 </defs>
 
@@ -180,7 +184,7 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
                             y1={paddingTop}
                             x2={tooltip.x}
                             y2={height - paddingBottom}
-                            stroke="rgba(255,255,255,0.15)"
+                            stroke="var(--ak-border-2)"
                             strokeWidth={1}
                         />
                         <circle cx={tooltip.x} cy={tooltip.y} r={4} fill="var(--ak-pri)" />

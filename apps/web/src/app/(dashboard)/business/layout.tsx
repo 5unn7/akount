@@ -14,7 +14,7 @@ export default function BusinessLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex-1 space-y-6 p-6">
+    <div className="space-y-4">
       <DomainTabs tabs={tabs} />
       {children}
     </div>
