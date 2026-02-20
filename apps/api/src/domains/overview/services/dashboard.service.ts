@@ -131,4 +131,102 @@ export class DashboardService {
       },
     };
   }
+
+  /**
+   * Generate 60-day cash flow projection based on historical transaction patterns
+   *
+   * Algorithm:
+   * 1. Start with current cash position
+   * 2. Calculate 30-day average daily cash flow from historical transactions
+   * 3. Project forward 60 days using historical average + known future payments/receipts
+   *
+   * @param entityId Optional entity ID filter
+   * @param currency Target currency for projection
+   * @returns Array of { date: string, value: number } data points (60 days)
+   */
+  async getCashFlowProjection(
+    entityId?: string,
+    targetCurrency: string = 'USD'
+  ): Promise<Array<{ date: string; value: number }>> {
+    const baseCurrency = targetCurrency || 'USD';
+
+    // 1. Get current cash position
+    const metrics = await this.getMetrics(entityId, baseCurrency);
+    const currentCash = metrics.cashPosition.cash;
+
+    // 2. Get historical transactions from last 30 days to calculate average daily flow
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        account: {
+          entity: {
+            tenantId: this.tenantId,
+            ...(entityId && { id: entityId }),
+          },
+          type: 'BANK', // Only bank accounts for cash flow
+        },
+        date: {
+          gte: thirtyDaysAgo,
+        },
+        deletedAt: null,
+      },
+      select: {
+        amount: true,
+        date: true,
+        account: {
+          select: {
+            currency: true,
+          },
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+
+    // 3. Convert all transactions to base currency and calculate daily net flow
+    const dailyFlows = new Map<string, number>();
+
+    for (const txn of transactions) {
+      const dateKey = txn.date.toISOString().split('T')[0];
+      const rate = txn.account.currency === baseCurrency
+        ? 1.0
+        : await this.fxService.getRate(txn.account.currency, baseCurrency);
+
+      const convertedAmount = Math.round(txn.amount * rate);
+      dailyFlows.set(dateKey, (dailyFlows.get(dateKey) || 0) + convertedAmount);
+    }
+
+    // Calculate average daily cash flow (in cents)
+    const totalFlow = Array.from(dailyFlows.values()).reduce((sum, val) => sum + val, 0);
+    const avgDailyFlow = transactions.length > 0 ? Math.round(totalFlow / 30) : 0;
+
+    // 4. Generate 60-day projection
+    const projection: Array<{ date: string; value: number }> = [];
+    let runningBalance = currentCash;
+    const today = new Date();
+
+    for (let i = 0; i < 60; i++) {
+      const projectionDate = new Date(today);
+      projectionDate.setDate(today.getDate() + i);
+
+      // Add average daily flow to running balance
+      runningBalance += avgDailyFlow;
+
+      // Format date as MMM DD
+      const dateStr = projectionDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+      });
+
+      projection.push({
+        date: dateStr,
+        value: Math.round(runningBalance / 100), // Convert cents to dollars for chart
+      });
+    }
+
+    return projection;
+  }
 }

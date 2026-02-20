@@ -179,4 +179,42 @@ export async function overviewRoutes(fastify: FastifyInstance) {
       }
     }
   );
+
+  /**
+   * GET /api/overview/cash-flow-projection
+   *
+   * Returns 60-day cash flow projection based on historical transaction patterns.
+   * Used by the dashboard CashFlowChart component.
+   */
+  fastify.get<{ Querystring: DashboardQuery }>(
+    '/cash-flow-projection',
+    {
+      ...withPermission('overview', 'cash-flow-projection', 'VIEW'),
+      preValidation: [validateQuery(dashboardQuerySchema)],
+    },
+    async (request, reply) => {
+      try {
+        const service = new DashboardService(requireTenantId(request));
+        const { entityId, currency } = request.query;
+
+        const projection = await service.getCashFlowProjection(entityId, currency);
+
+        request.log.info(
+          { userId: request.userId, tenantId: request.tenantId, entityId, currency },
+          'Retrieved cash flow projection'
+        );
+
+        return { data: projection };
+      } catch (error) {
+        request.log.error(
+          { error, userId: request.userId, tenantId: request.tenantId },
+          'Error fetching cash flow projection'
+        );
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to fetch cash flow projection',
+        });
+      }
+    }
+  );
 }

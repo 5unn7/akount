@@ -92,12 +92,12 @@
 | ~~UX-66~~ | ~~Rename "AI Advisor" → "Insights" across entire codebase (~29 files): frontend routes/dir rename/nav/components, RBAC comment, CLAUDE.md docs, design system docs, config/meta. Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is.~~ | 2-3h | 🟠 High | ✅ | | audit:ai-advisor |
 | DEV-112 | Insights: Create API client (`apps/web/src/lib/api/ai.ts`) for 5 existing AI endpoints | 30m | 🟠 High | 🟢 | | audit:ai-advisor |
 | DEV-113 | Insights: Build AI Chat interface on Insights page (wire to existing `POST /api/ai/chat`) | 2-3h | 🟠 High | 📦 | [needs: UX-66, DEV-112] | audit:ai-advisor |
+| UX-72 | Dashboard: Implement cash flow projection endpoint + wire chart (CashFlowChart expects time-series data, endpoint returns static snapshot only) | 3-4h | 🟠 High | 🟢 | | manual:bug-fix |
 
 ### Medium / Low
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
-| UX-72 | Dashboard: Implement cash flow projection endpoint + wire chart (CashFlowChart expects time-series data, endpoint returns static snapshot only) | 3-4h | 🟠 High | 🟢 | | manual:bug-fix |
 | UX-33 | App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill (isolated views currently) | 2-3h | 🟡 Medium | 🟢 | | audit:app-ux |
 | UX-34 | App-wide: Add bulk operations to list pages — Business (batch send/approve invoices, batch approve bills), Banking (batch deactivate accounts) | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
 | UX-35 | Sidebar: Add "Coming Soon" badge to 17 placeholder pages or hide unimplemented nav items | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
