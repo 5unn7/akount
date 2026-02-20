@@ -33,7 +33,7 @@
 | ~~PERF-6~~ | ~~Query optimization audit (dashboard + report queries)~~ | 2h | 🟠 High | ✅ | | roadmap |
 | PERF-8 | p95 < 2s page load target verification + load testing | 2h | 🟠 High | 🟢 | | roadmap |
 | INFRA-14 | Add timeout to Clerk auth verification (3-second Promise.race wrapper in auth middleware) | 4h | 🟠 High | 🟢 | | audit:2026-02-20 |
-| SEC-23 | Replace console.log in webhook route with structured logging (apps/web/src/app/api/webhooks/clerk/route.ts — 7 occurrences) | 30m | 🟠 High | 🟢 | | audit:2026-02-20 |
+| ~~SEC-23~~ | ~~Replace console.log in webhook route with structured logging (apps/web/src/app/api/webhooks/clerk/route.ts — 7 occurrences)~~ | 30m | 🟠 High | ✅ | | audit:2026-02-20 |
 | ~~DRY-1~~ | ~~Report types: move shared types to `packages/types` (eliminate duplication)~~ | 1h | 🟠 High | ✅ | | review:typescript |
 | UX-1 | Entity selector: replace 7+ hardcoded `entities[0]` with real selector (Accounting JE/COA, AccountFormSheet, Navbar, Invoicing, Vendors — all domains affected) | 2-3h | 🟠 High | 🟢 | | review:nextjs, audit:acct-fe-be, audit:app-ux |
 | ~~UX-2~~ | ~~GL Account ID: replace raw CUID input with searchable dropdown (also: JE form uses plain Select)~~ | 1h | 🟠 High | ✅ | | review:nextjs, audit:acct-fe-be |
