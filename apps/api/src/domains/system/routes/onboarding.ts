@@ -494,9 +494,13 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
    * GET /status
    *
    * Returns the current onboarding status for the authenticated user.
+   * Cached for 30 seconds to prevent rate limit issues during development.
    */
   fastify.get<{ Reply: StatusResponse | ErrorResponse }>('/status', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
+      // Add cache headers to reduce API calls (30 seconds)
+      reply.header('Cache-Control', 'private, max-age=30');
+
       const user = await prisma.user.findUnique({
         where: { clerkUserId: request.userId as string },
         include: { memberships: { include: { tenant: true } } },
