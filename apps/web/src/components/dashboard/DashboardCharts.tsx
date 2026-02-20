@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { getCashFlowProjection, type CashFlowProjectionPoint } from '@/lib/api/dashboard';
 
 // Client-side only chart loading (avoids SSR chart rendering issues)
 const CashFlowChart = dynamic(
@@ -14,9 +16,21 @@ const ExpenseChart = dynamic(
 );
 
 export function DashboardCharts() {
+    const [cashFlowData, setCashFlowData] = useState<CashFlowProjectionPoint[] | undefined>();
+
+    useEffect(() => {
+        // Fetch cash flow projection data
+        getCashFlowProjection()
+            .then((response) => setCashFlowData(response.data))
+            .catch((error) => {
+                console.error('Failed to fetch cash flow projection:', error);
+                setCashFlowData(undefined);
+            });
+    }, []);
+
     return (
         <>
-            <CashFlowChart />
+            <CashFlowChart data={cashFlowData} />
             <ExpenseChart />
         </>
     );
