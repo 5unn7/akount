@@ -15,11 +15,26 @@ vi.mock('@akount/db', () => ({
       findMany: (...args: unknown[]) => mockFindMany(...args),
       count: (...args: unknown[]) => mockCount(...args),
     },
+    // ARCH-7: createAuditLog now wraps in serializable transaction when no tx provided
+    $transaction: async (fn: (tx: unknown) => Promise<unknown>, _opts?: unknown) => {
+      const txClient = {
+        auditLog: {
+          create: (...args: unknown[]) => mockCreate(...args),
+          findFirst: (...args: unknown[]) => mockFindFirst(...args),
+        },
+      };
+      return fn(txClient);
+    },
   },
   AuditAction: {
     CREATE: 'CREATE',
     UPDATE: 'UPDATE',
     DELETE: 'DELETE',
+  },
+  Prisma: {
+    TransactionIsolationLevel: {
+      Serializable: 'Serializable',
+    },
   },
 }));
 
@@ -145,6 +160,96 @@ describe('Audit Log with Tamper Detection', () => {
         action: 'CREATE' as const,
       });
 
+      expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    it('should normalize empty string entityId to undefined (FIN-19)', async () => {
+      mockFindFirst.mockResolvedValue(null);
+      mockCreate.mockResolvedValue({ id: 'log-fin19a' });
+
+      await createAuditLog({
+        tenantId: TENANT_ID,
+        userId: USER_ID,
+        entityId: '',
+        model: 'Category',
+        recordId: 'cat-1',
+        action: 'CREATE' as const,
+      });
+
+      const createArg = mockCreate.mock.calls[0][0];
+      expect(createArg.data.entityId).toBeUndefined();
+    });
+
+    it('should normalize whitespace-only entityId to undefined (FIN-19)', async () => {
+      mockFindFirst.mockResolvedValue(null);
+      mockCreate.mockResolvedValue({ id: 'log-fin19b' });
+
+      await createAuditLog({
+        tenantId: TENANT_ID,
+        userId: USER_ID,
+        entityId: '   ',
+        model: 'Category',
+        recordId: 'cat-2',
+        action: 'UPDATE' as const,
+      });
+
+      const createArg = mockCreate.mock.calls[0][0];
+      expect(createArg.data.entityId).toBeUndefined();
+    });
+
+    it('should preserve valid entityId (FIN-19)', async () => {
+      mockFindFirst.mockResolvedValue(null);
+      mockCreate.mockResolvedValue({ id: 'log-fin19c' });
+
+      await createAuditLog({
+        tenantId: TENANT_ID,
+        userId: USER_ID,
+        entityId: 'entity-valid-123',
+        model: 'Transaction',
+        recordId: 'txn-1',
+        action: 'CREATE' as const,
+      });
+
+      const createArg = mockCreate.mock.calls[0][0];
+      expect(createArg.data.entityId).toBe('entity-valid-123');
+    });
+
+    it('should use serializable transaction when no tx provided (ARCH-7)', async () => {
+      mockFindFirst.mockResolvedValue(null);
+      mockCreate.mockResolvedValue({ id: 'log-arch7' });
+
+      await createAuditLog({
+        tenantId: TENANT_ID,
+        userId: USER_ID,
+        model: 'Invoice',
+        recordId: 'inv-1',
+        action: 'CREATE' as const,
+      });
+
+      // Verify it went through the $transaction path (mock create was called)
+      expect(mockCreate).toHaveBeenCalledOnce();
+    });
+
+    it('should use caller tx directly when provided (ARCH-7)', async () => {
+      const txFindFirst = vi.fn().mockResolvedValue(null);
+      const txCreate = vi.fn().mockResolvedValue({ id: 'log-arch7b' });
+      const callerTx = {
+        auditLog: {
+          findFirst: txFindFirst,
+          create: txCreate,
+        },
+      };
+
+      await createAuditLog({
+        tenantId: TENANT_ID,
+        userId: USER_ID,
+        model: 'Invoice',
+        recordId: 'inv-1',
+        action: 'CREATE' as const,
+      }, callerTx as never);
+
+      // Should use caller's tx, not global prisma
+      expect(txCreate).toHaveBeenCalledOnce();
       expect(mockCreate).not.toHaveBeenCalled();
     });
 

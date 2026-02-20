@@ -441,7 +441,7 @@ export class TransactionService {
     await createAuditLog({
       tenantId: this.tenantId,
       userId: this.userId,
-      entityId: owned[0]?.account.entityId || '',
+      entityId: owned[0]?.account.entityId,
       model: 'Transaction',
       recordId: 'bulk',
       action: 'UPDATE',
@@ -493,7 +493,7 @@ export class TransactionService {
     await createAuditLog({
       tenantId: this.tenantId,
       userId: this.userId,
-      entityId: owned[0]?.account.entityId || '',
+      entityId: owned[0]?.account.entityId,
       model: 'Transaction',
       recordId: 'bulk',
       action: 'DELETE',

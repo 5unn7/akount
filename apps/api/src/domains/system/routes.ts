@@ -365,13 +365,15 @@ export async function systemRoutes(fastify: FastifyInstance) {
       async (request: FastifyRequest, reply: FastifyReply) => {
         const { entityId } = request.query as { entityId?: string };
 
+        // FIN-18: Include entityId for entity-level audit traceability
         await createAuditLog({
           tenantId: request.tenantId as string,
           userId: request.userId as string,
+          entityId: entityId || undefined,
           model: 'DataExport',
           recordId: 'full-backup',
           action: 'EXPORT',
-          after: { format: 'zip', entityId: entityId || 'all' },
+          after: { format: 'zip', entityScope: entityId || 'all' },
         });
 
         try {

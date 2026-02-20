@@ -86,23 +86,13 @@ export async function createAuditLog(
   tx?: Prisma.TransactionClient
 ): Promise<void> {
   try {
-    // Use transaction client if provided, otherwise use global prisma
-    const client = tx ?? prisma;
-
-    // Get latest entry for this tenant to build hash chain
-    const lastEntry = await client.auditLog.findFirst({
-      where: { tenantId: params.tenantId },
-      orderBy: { createdAt: 'desc' },
-      select: { integrityHash: true, sequenceNumber: true },
-    });
-
-    const previousHash = lastEntry?.integrityHash ?? 'GENESIS';
-    const sequenceNumber = (lastEntry?.sequenceNumber ?? 0) + 1;
+    // FIN-19: Normalize empty string entityId to undefined to prevent FK violations
+    const entityId = params.entityId && params.entityId.trim() !== '' ? params.entityId : undefined;
 
     const entryData = {
       tenantId: params.tenantId,
       userId: params.userId,
-      entityId: params.entityId,
+      entityId,
       model: params.model,
       recordId: params.recordId,
       action: params.action,
@@ -110,20 +100,63 @@ export async function createAuditLog(
       after: params.after ? JSON.parse(JSON.stringify(params.after)) : null,
     };
 
-    const integrityHash = computeEntryHash(entryData, previousHash, sequenceNumber);
-
-    await client.auditLog.create({
-      data: {
-        ...entryData,
-        integrityHash,
-        previousHash,
-        sequenceNumber,
-      },
-    });
+    // ARCH-7: The read (findFirst) + write (create) must be atomic to prevent
+    // concurrent requests from producing duplicate sequence numbers.
+    // When a caller-provided tx exists, use it directly (caller owns the lock).
+    // Otherwise, wrap in a serializable transaction for hash chain integrity.
+    if (tx) {
+      await writeAuditEntry(tx, params.tenantId, entryData);
+    } else {
+      await prisma.$transaction(
+        async (txClient) => {
+          await writeAuditEntry(txClient, params.tenantId, entryData);
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+      );
+    }
   } catch (error) {
     // Don't fail the operation if audit logging fails, but log the error
     logger.error({ err: error }, 'Failed to create audit log');
   }
+}
+
+/**
+ * Internal: write audit entry with hash chain linking.
+ * Must be called within a serializable transaction for correctness.
+ */
+async function writeAuditEntry(
+  client: Prisma.TransactionClient,
+  tenantId: string,
+  entryData: {
+    tenantId: string;
+    userId: string;
+    entityId?: string;
+    model: string;
+    recordId: string;
+    action: AuditAction;
+    before: unknown;
+    after: unknown;
+  },
+): Promise<void> {
+  const lastEntry = await client.auditLog.findFirst({
+    where: { tenantId },
+    orderBy: { sequenceNumber: 'desc' },
+    select: { integrityHash: true, sequenceNumber: true },
+  });
+
+  const previousHash = lastEntry?.integrityHash ?? 'GENESIS';
+  const sequenceNumber = (lastEntry?.sequenceNumber ?? 0) + 1;
+
+  const integrityHash = computeEntryHash(entryData, previousHash, sequenceNumber);
+
+  await client.auditLog.create({
+    data: {
+      ...entryData,
+      integrityHash,
+      previousHash,
+      sequenceNumber,
+    },
+  });
 }
 
 export interface AuditChainVerification {

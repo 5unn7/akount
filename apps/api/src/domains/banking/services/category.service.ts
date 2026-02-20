@@ -186,7 +186,6 @@ export class CategoryService {
     await createAuditLog({
       tenantId: this.tenantId,
       userId: this.userId,
-      entityId: '',
       model: 'Category',
       recordId: category.id,
       action: 'CREATE',
@@ -269,7 +268,6 @@ export class CategoryService {
     await createAuditLog({
       tenantId: this.tenantId,
       userId: this.userId,
-      entityId: '',
       model: 'Category',
       recordId: id,
       action: 'UPDATE',
@@ -298,34 +296,34 @@ export class CategoryService {
       throw new Error('Category not found');
     }
 
-    // Soft-delete the category and its children
-    await prisma.$transaction([
-      prisma.category.update({
+    // ARCH-8: Soft-delete + audit log in one transaction for atomicity
+    const deletedAt = new Date();
+    await prisma.$transaction(async (tx) => {
+      await tx.category.update({
         where: { id },
-        data: { deletedAt: new Date() },
-      }),
+        data: { deletedAt },
+      });
       // Also soft-delete child categories
-      prisma.category.updateMany({
+      await tx.category.updateMany({
         where: {
           parentCategoryId: id,
           tenantId: this.tenantId,
           deletedAt: null,
         },
-        data: { deletedAt: new Date() },
-      }),
-    ]);
+        data: { deletedAt },
+      });
 
-    await createAuditLog({
-      tenantId: this.tenantId,
-      userId: this.userId,
-      entityId: '',
-      model: 'Category',
-      recordId: id,
-      action: 'DELETE',
-      before: { name: existing.name, type: existing.type },
+      await createAuditLog({
+        tenantId: this.tenantId,
+        userId: this.userId,
+        model: 'Category',
+        recordId: id,
+        action: 'DELETE',
+        before: { name: existing.name, type: existing.type },
+      }, tx);
     });
 
-    return { id, deletedAt: new Date() };
+    return { id, deletedAt };
   }
 
   /**
@@ -446,7 +444,6 @@ export class CategoryService {
       await createAuditLog({
         tenantId: this.tenantId,
         userId: this.userId,
-        entityId: '',
         model: 'Category',
         recordId: 'batch-dedup',
         action: 'UPDATE',

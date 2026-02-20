@@ -98,6 +98,12 @@
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
+| FIN-17 | Fix missing entityId on import audit logs (imports.ts:140, 396 — audit gap, imports not traceable by entity) | 30m | 🟡 Medium | 🟢 | | diagnose:audit-fk-bug |
+| FIN-18 | Fix missing entityId on data export audit log (system/routes.ts:368 — sensitive export op not traceable by entity) | 15m | 🟡 Medium | 🟢 | | diagnose:audit-fk-bug |
+| ARCH-7 | Fix audit log hash chain race condition (concurrent writes produce duplicate sequenceNumbers, breaks tamper detection) | 1h | 🟡 Medium | 🟢 | | diagnose:audit-fk-bug |
+| ARCH-8 | Pass tx to remaining audit log calls for atomic audit+operation (most callers are fire-and-forget) | 1-2h | 🟡 Medium | 🟢 | | diagnose:audit-fk-bug |
+| FIN-19 | Add entityId validation guard in createAuditLog to reject empty strings (prevent future FK violations) | 15m | ⚪ Low | 🟢 | | diagnose:audit-fk-bug |
+| FIN-20 | Add integration-style audit log test to catch FK violations (mocks hide real errors) | 30m | ⚪ Low | 🟢 | | diagnose:audit-fk-bug |
 | UX-33 | App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill (isolated views currently) | 2-3h | 🟡 Medium | 🟢 | | audit:app-ux |
 | UX-34 | App-wide: Add bulk operations to list pages — Business (batch send/approve invoices, batch approve bills), Banking (batch deactivate accounts) | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
 | UX-35 | Sidebar: Add "Coming Soon" badge to 17 placeholder pages or hide unimplemented nav items | 30m | 🟡 Medium | 🟢 | | audit:app-ux |

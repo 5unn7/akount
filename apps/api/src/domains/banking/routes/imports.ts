@@ -136,10 +136,11 @@ export async function importsRoutes(fastify: FastifyInstance) {
           dateFormat,
         });
 
-        // Audit log (ARCH-2)
+        // Audit log (ARCH-2, FIN-17: include entityId for entity-level traceability)
         await createAuditLog({
           tenantId: request.tenantId as string,
           userId: request.userId as string,
+          entityId: result.entityId,
           model: 'ImportBatch',
           recordId: result.id,
           action: 'CREATE',
@@ -392,10 +393,11 @@ export async function importsRoutes(fastify: FastifyInstance) {
           dateFormat,
         });
 
-        // Audit log (ARCH-2)
+        // Audit log (ARCH-2, FIN-17: include entityId for entity-level traceability)
         await createAuditLog({
           tenantId: request.tenantId as string,
           userId: request.userId as string,
+          entityId: result.entityId,
           model: 'ImportBatch',
           recordId: result.id,
           action: 'CREATE',

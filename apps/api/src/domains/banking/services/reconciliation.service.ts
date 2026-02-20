@@ -290,7 +290,7 @@ export class ReconciliationService {
       throw new Error('Transaction is already matched');
     }
 
-    // 5. Create match and update bank feed status atomically
+    // 5. Create match, update bank feed status, and audit log atomically (ARCH-8)
     const match = await prisma.$transaction(async (tx) => {
       // Create the match record
       const created = await tx.transactionMatch.create({
@@ -318,22 +318,22 @@ export class ReconciliationService {
         data: { status: BankFeedStatus.POSTED },
       });
 
-      return created;
-    });
+      // 6. Audit log inside transaction for atomicity
+      await createAuditLog({
+        tenantId: this.tenantId,
+        userId: this.userId,
+        entityId: bankFeedTxn.account.entityId,
+        model: 'TransactionMatch',
+        recordId: created.id,
+        action: 'CREATE',
+        after: {
+          bankFeedTransactionId,
+          transactionId,
+          status: 'MATCHED',
+        },
+      }, tx);
 
-    // 6. Audit log
-    await createAuditLog({
-      tenantId: this.tenantId,
-      userId: this.userId,
-      entityId: bankFeedTxn.account.entityId,
-      model: 'TransactionMatch',
-      recordId: match.id,
-      action: 'CREATE',
-      after: {
-        bankFeedTransactionId,
-        transactionId,
-        status: 'MATCHED',
-      },
+      return created;
     });
 
     return match;
@@ -374,7 +374,7 @@ export class ReconciliationService {
       throw new Error('Match not found');
     }
 
-    // 2. Delete match and reset bank feed status atomically
+    // 2. Delete match, reset bank feed status, and audit log atomically (ARCH-8)
     await prisma.$transaction(async (tx) => {
       // Delete the match record
       await tx.transactionMatch.delete({
@@ -386,21 +386,21 @@ export class ReconciliationService {
         where: { id: match.bankFeedTransactionId },
         data: { status: BankFeedStatus.PENDING },
       });
-    });
 
-    // 3. Audit log
-    await createAuditLog({
-      tenantId: this.tenantId,
-      userId: this.userId,
-      entityId: match.bankFeedTransaction.account.entityId,
-      model: 'TransactionMatch',
-      recordId: matchId,
-      action: 'DELETE',
-      before: {
-        bankFeedTransactionId: match.bankFeedTransactionId,
-        transactionId: match.transactionId,
-        status: 'MATCHED',
-      },
+      // 3. Audit log inside transaction for atomicity
+      await createAuditLog({
+        tenantId: this.tenantId,
+        userId: this.userId,
+        entityId: match.bankFeedTransaction.account.entityId,
+        model: 'TransactionMatch',
+        recordId: matchId,
+        action: 'DELETE',
+        before: {
+          bankFeedTransactionId: match.bankFeedTransactionId,
+          transactionId: match.transactionId,
+          status: 'MATCHED',
+        },
+      }, tx);
     });
   }
 

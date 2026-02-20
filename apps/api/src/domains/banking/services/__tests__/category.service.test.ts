@@ -41,7 +41,21 @@ vi.mock('@akount/db', () => ({
     invoiceLine: {
       updateMany: (...args: unknown[]) => mockInvoiceLineUpdateMany(...args),
     },
-    $transaction: (...args: unknown[]) => mockTransaction(...args),
+    // Support both interactive (callback) and batch (array) transaction styles
+    $transaction: async (fnOrOps: unknown, ...rest: unknown[]) => {
+      if (typeof fnOrOps === 'function') {
+        // Interactive transaction: call the callback with a tx client
+        const txClient = {
+          category: {
+            update: (...a: unknown[]) => mockUpdate(...a),
+            updateMany: (...a: unknown[]) => mockUpdateMany(...a),
+          },
+        };
+        return (fnOrOps as (tx: unknown) => Promise<unknown>)(txClient);
+      }
+      // Batch transaction: forward to mockTransaction
+      return mockTransaction(fnOrOps, ...rest);
+    },
   },
 }));
 
@@ -322,7 +336,6 @@ describe('CategoryService', () => {
       expect(mockCreateAuditLog).toHaveBeenCalledWith({
         tenantId: TENANT_ID,
         userId: USER_ID,
-        entityId: '',
         model: 'Category',
         recordId: 'cat-new',
         action: 'CREATE',
@@ -456,7 +469,6 @@ describe('CategoryService', () => {
       expect(mockCreateAuditLog).toHaveBeenCalledWith({
         tenantId: TENANT_ID,
         userId: USER_ID,
-        entityId: '',
         model: 'Category',
         recordId: 'cat-1',
         action: 'UPDATE',
@@ -470,18 +482,12 @@ describe('CategoryService', () => {
     it('should soft delete category and its children', async () => {
       const existing = mockCategory({ id: 'cat-1' });
       mockFindFirst.mockResolvedValueOnce(existing);
-      // $transaction executes the array of operations passed to it
-      mockTransaction.mockImplementation(async (operations) => {
-        return Promise.all(operations);
-      });
       mockUpdate.mockResolvedValueOnce({});
       mockUpdateMany.mockResolvedValueOnce({ count: 2 });
 
       await service.softDeleteCategory('cat-1');
 
-      // Verify the transaction was called
-      expect(mockTransaction).toHaveBeenCalledTimes(1);
-      // Verify update was called for the category itself
+      // Verify update was called for the category itself (via interactive tx)
       expect(mockUpdate).toHaveBeenCalledWith({
         where: { id: 'cat-1' },
         data: { deletedAt: expect.any(Date) },
@@ -524,25 +530,27 @@ describe('CategoryService', () => {
     it('should create audit log after deletion', async () => {
       const existing = mockCategory({ id: 'cat-1', name: 'To Delete', type: 'EXPENSE' });
       mockFindFirst.mockResolvedValueOnce(existing);
-      mockTransaction.mockResolvedValueOnce([{}, {}]);
+      mockUpdate.mockResolvedValueOnce({});
+      mockUpdateMany.mockResolvedValueOnce({ count: 0 });
 
       await service.softDeleteCategory('cat-1');
 
+      // ARCH-8: audit log is now called inside the transaction with tx as second arg
       expect(mockCreateAuditLog).toHaveBeenCalledWith({
         tenantId: TENANT_ID,
         userId: USER_ID,
-        entityId: '',
         model: 'Category',
         recordId: 'cat-1',
         action: 'DELETE',
         before: { name: 'To Delete', type: 'EXPENSE' },
-      });
+      }, expect.any(Object));
     });
 
     it('should return deletedAt timestamp', async () => {
       const existing = mockCategory({ id: 'cat-1' });
       mockFindFirst.mockResolvedValueOnce(existing);
-      mockTransaction.mockResolvedValueOnce([{}, {}]);
+      mockUpdate.mockResolvedValueOnce({});
+      mockUpdateMany.mockResolvedValueOnce({ count: 0 });
 
       const result = await service.softDeleteCategory('cat-1');
 
@@ -777,7 +785,6 @@ describe('CategoryService', () => {
       expect(mockCreateAuditLog).toHaveBeenCalledWith({
         tenantId: TENANT_ID,
         userId: USER_ID,
-        entityId: '',
         model: 'Category',
         recordId: 'batch-dedup',
         action: 'UPDATE',
