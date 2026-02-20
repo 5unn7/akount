@@ -171,7 +171,7 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
                                         <div key={idx} className="flex justify-between items-center py-1 pl-4">
                                             <span className="text-sm">{item.name}</span>
                                             <span className="font-mono text-sm">
-                                                {formatCurrency(item.amount, initialData.currency)}
+                                                {formatCurrency(item.balance, initialData.currency)}
                                             </span>
                                         </div>
                                     ))}
@@ -200,7 +200,7 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
                                     <div key={idx} className="flex justify-between items-center py-1.5">
                                         <span className="text-sm">{item.name}</span>
                                         <span className="font-mono text-sm">
-                                            {formatCurrency(item.amount, initialData.currency)}
+                                            {formatCurrency(item.balance, initialData.currency)}
                                         </span>
                                     </div>
                                 ))
@@ -228,7 +228,7 @@ export function CFReportView({ initialData, initialParams, error }: CFReportView
                                     <div key={idx} className="flex justify-between items-center py-1.5">
                                         <span className="text-sm">{item.name}</span>
                                         <span className="font-mono text-sm">
-                                            {formatCurrency(item.amount, initialData.currency)}
+                                            {formatCurrency(item.balance, initialData.currency)}
                                         </span>
                                     </div>
                                 ))

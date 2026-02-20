@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import type { Invoice } from '@/lib/api/invoices';
+import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction } from './actions';
 import { Send, BookOpen, Download, XCircle, Loader2 } from 'lucide-react';
 
 interface InvoiceActionsProps {
@@ -31,22 +32,13 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
     };
 
     const handleSend = () =>
-        handleAction('send', async () => {
-            const { sendInvoice } = await import('@/lib/api/invoices');
-            return sendInvoice(invoice.id);
-        });
+        handleAction('send', () => sendInvoiceAction(invoice.id));
 
     const handlePost = () =>
-        handleAction('post', async () => {
-            const { postInvoice } = await import('@/lib/api/invoices');
-            return postInvoice(invoice.id);
-        });
+        handleAction('post', () => postInvoiceAction(invoice.id));
 
     const handleCancel = () =>
-        handleAction('cancel', async () => {
-            const { cancelInvoice } = await import('@/lib/api/invoices');
-            return cancelInvoice(invoice.id);
-        });
+        handleAction('cancel', () => cancelInvoiceAction(invoice.id));
 
     const handleDownloadPdf = () => {
         window.open(`/api/business/invoices/${invoice.id}/pdf`, '_blank');

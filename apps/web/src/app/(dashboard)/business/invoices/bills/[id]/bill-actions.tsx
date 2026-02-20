@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import type { Bill } from '@/lib/api/bills';
+import { approveBillAction, postBillAction, cancelBillAction } from './actions';
 import { CheckCircle, BookOpen, XCircle, Loader2 } from 'lucide-react';
 
 interface BillActionsProps {
@@ -31,22 +32,13 @@ export function BillActions({ bill }: BillActionsProps) {
     };
 
     const handleApprove = () =>
-        handleAction('approve', async () => {
-            const { approveBill } = await import('@/lib/api/bills');
-            return approveBill(bill.id);
-        });
+        handleAction('approve', () => approveBillAction(bill.id));
 
     const handlePost = () =>
-        handleAction('post', async () => {
-            const { postBill } = await import('@/lib/api/bills');
-            return postBill(bill.id);
-        });
+        handleAction('post', () => postBillAction(bill.id));
 
     const handleCancel = () =>
-        handleAction('cancel', async () => {
-            const { cancelBill } = await import('@/lib/api/bills');
-            return cancelBill(bill.id);
-        });
+        handleAction('cancel', () => cancelBillAction(bill.id));
 
     const canApprove = bill.status === 'DRAFT';
     const canPost = !['CANCELLED', 'DRAFT'].includes(bill.status);

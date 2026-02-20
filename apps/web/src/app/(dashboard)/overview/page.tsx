@@ -151,7 +151,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
         {
             label: 'Accounts Receivable',
             value: performance ? formatCurrency(performance.receivables.outstanding) : '—',
-            trend: performance?.receivables.sparkline.length > 0 ? { direction: 'flat' as const, text: `${formatCurrency(performance.receivables.overdue)} overdue` } : undefined,
+            trend: (performance?.receivables.sparkline.length ?? 0) > 0 ? { direction: 'flat' as const, text: `${formatCurrency(performance!.receivables.overdue)} overdue` } : undefined,
             sparkline: performance ? convertSparkline(performance.receivables.sparkline) : [],
             color: 'blue' as const,
         },
