@@ -16,6 +16,8 @@
  * - Configurable TTL via REPORT_CACHE_TTL_MS env var
  */
 
+import { env } from '../../../lib/env';
+
 interface CacheEntry {
   data: unknown;
   expiry: number; // Unix timestamp in milliseconds
@@ -24,10 +26,7 @@ interface CacheEntry {
 export class ReportCache {
   private cache = new Map<string, CacheEntry>();
   private readonly MAX_ENTRIES = 500;
-  private readonly DEFAULT_TTL_MS = (() => {
-    const parsed = parseInt(process.env.REPORT_CACHE_TTL_MS || '300000', 10);
-    return Number.isNaN(parsed) ? 300000 : parsed;
-  })(); // 5 minutes
+  private readonly DEFAULT_TTL_MS = env.REPORT_CACHE_TTL_MS;
   private cleanupTimer: NodeJS.Timeout | null = null;
 
   constructor() {

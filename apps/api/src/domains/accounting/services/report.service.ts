@@ -49,6 +49,22 @@ interface AggregateRow {
 }
 
 /**
+ * Combined Balance Sheet row — includes both cumulative and current-year aggregations
+ * in a single query using conditional CASE expressions (PERF-1 optimization)
+ */
+interface BalanceSheetRow {
+  glAccountId: string;
+  code: string;
+  name: string;
+  type: string;
+  normalBalance: string;
+  totalDebit: bigint;
+  totalCredit: bigint;
+  currentYearDebit: bigint;  // Fiscal-year-scoped for retained earnings calc
+  currentYearCredit: bigint;
+}
+
+/**
  * Ledger row from raw SQL
  */
 interface LedgerRow {
@@ -381,8 +397,17 @@ export class ReportService {
       entityName = 'All Entities';
     }
 
-    // 2. Query cumulative balances for ASSET, LIABILITY, and EQUITY accounts up to asOfDate
-    const results = await tenantScopedQuery<AggregateRow>(
+    // 2. Get fiscal year boundaries (needed for retained earnings calculation)
+    const { start: fiscalYearStart } = await this.getFiscalYearBoundaries(
+      entityIds[0], // Use first entity for fiscal year boundaries
+      params.asOfDate
+    );
+
+    // 3. Single combined query for ALL account types (PERF-1: merged 2 queries → 1)
+    // Uses conditional CASE aggregation to compute both:
+    //   - Cumulative balances (ASSET/LIABILITY/EQUITY up to asOfDate)
+    //   - Current fiscal year income (REVENUE/EXPENSE from fiscalYearStart to asOfDate)
+    const results = await tenantScopedQuery<BalanceSheetRow>(
       this.tenantId,
       (tenantId) => Prisma.sql`
         SELECT
@@ -392,14 +417,16 @@ export class ReportService {
           gl."type",
           gl."normalBalance",
           COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
-          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
+          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit",
+          COALESCE(SUM(CASE WHEN je."date" >= ${fiscalYearStart} THEN jl."debitAmount" ELSE 0 END), 0) as "currentYearDebit",
+          COALESCE(SUM(CASE WHEN je."date" >= ${fiscalYearStart} THEN jl."creditAmount" ELSE 0 END), 0) as "currentYearCredit"
         FROM "GLAccount" gl
         INNER JOIN "Entity" e ON e.id = gl."entityId"
         LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
         LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
         WHERE e."tenantId" = ${tenantId}
           AND gl."entityId" IN (${Prisma.join(entityIds)})
-          AND gl."type" IN ('ASSET', 'LIABILITY', 'EQUITY')
+          AND gl."type" IN ('ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE')
           AND (
             jl.id IS NULL
             OR (
@@ -414,14 +441,32 @@ export class ReportService {
       `
     );
 
-    // 3. Convert BigInt and calculate balances
+    // 4. Convert BigInt and calculate balances
     const assetItems: ReportLineItem[] = [];
     const liabilityItems: ReportLineItem[] = [];
     const equityItems: ReportLineItem[] = [];
+    let currentYearRevenue = 0;
+    let currentYearExpense = 0;
 
     for (const row of results) {
       const debit = this.convertBigInt(row.totalDebit);
       const credit = this.convertBigInt(row.totalCredit);
+
+      if (row.type === 'REVENUE') {
+        // Revenue: credit-normal, fiscal-year-scoped via CASE columns
+        const fyDebit = this.convertBigInt(row.currentYearDebit);
+        const fyCredit = this.convertBigInt(row.currentYearCredit);
+        currentYearRevenue += fyCredit - fyDebit;
+        continue;
+      }
+
+      if (row.type === 'EXPENSE') {
+        // Expense: debit-normal, fiscal-year-scoped via CASE columns
+        const fyDebit = this.convertBigInt(row.currentYearDebit);
+        const fyCredit = this.convertBigInt(row.currentYearCredit);
+        currentYearExpense += fyDebit - fyCredit;
+        continue;
+      }
 
       // Balance calculation based on normal balance:
       // ASSET (debit normal): debits - credits
@@ -448,64 +493,16 @@ export class ReportService {
       }
     }
 
-    // 4. Calculate Retained Earnings
-    // 4a. Prior years balance (from GL account 3100 - Retained Earnings)
+    // 5. Calculate Retained Earnings
+    // 5a. Prior years balance (from GL account 3100 - Retained Earnings)
     const retainedEarningsAccount = equityItems.find((item) => item.code === '3100');
     const priorYearsRetainedEarnings = retainedEarningsAccount?.balance || 0;
 
-    // 4b. Current year net income (REVENUE - EXPENSE from fiscal year start to asOfDate)
-    const { start: fiscalYearStart } = await this.getFiscalYearBoundaries(
-      entityIds[0], // Use first entity for fiscal year boundaries
-      params.asOfDate
-    );
-
-    // Query REVENUE and EXPENSE for current fiscal year
-    const incomeResults = await tenantScopedQuery<AggregateRow>(
-      this.tenantId,
-      (tenantId) => Prisma.sql`
-        SELECT
-          gl."type",
-          COALESCE(SUM(jl."debitAmount"), 0) as "totalDebit",
-          COALESCE(SUM(jl."creditAmount"), 0) as "totalCredit"
-        FROM "GLAccount" gl
-        INNER JOIN "Entity" e ON e.id = gl."entityId"
-        LEFT JOIN "JournalLine" jl ON jl."glAccountId" = gl.id
-        LEFT JOIN "JournalEntry" je ON je.id = jl."journalEntryId"
-        WHERE e."tenantId" = ${tenantId}
-          AND gl."entityId" IN (${Prisma.join(entityIds)})
-          AND gl."type" IN ('REVENUE', 'EXPENSE')
-          AND (
-            jl.id IS NULL
-            OR (
-              je."status" = 'POSTED'
-              AND je."date" >= ${fiscalYearStart}
-              AND je."date" <= ${params.asOfDate}
-              AND je."deletedAt" IS NULL
-              AND jl."deletedAt" IS NULL
-            )
-          )
-        GROUP BY gl."type"
-      `
-    );
-
-    let currentYearRevenue = 0;
-    let currentYearExpense = 0;
-
-    for (const row of incomeResults) {
-      const debit = this.convertBigInt(row.totalDebit);
-      const credit = this.convertBigInt(row.totalCredit);
-
-      if (row.type === 'REVENUE') {
-        currentYearRevenue = credit - debit;
-      } else {
-        currentYearExpense = debit - credit;
-      }
-    }
-
+    // 5b. Current year net income (computed from REVENUE/EXPENSE rows above)
     const currentYearNetIncome = currentYearRevenue - currentYearExpense;
     const totalRetainedEarnings = priorYearsRetainedEarnings + currentYearNetIncome;
 
-    // 5. Calculate totals and validate accounting equation
+    // 6. Calculate totals and validate accounting equation
     const totalAssets = assetItems.reduce((sum, item) => sum + item.balance, 0);
     const totalLiabilities = liabilityItems.reduce((sum, item) => sum + item.balance, 0);
     const totalEquity = equityItems.reduce((sum, item) => sum + item.balance, 0);
@@ -515,7 +512,7 @@ export class ReportService {
 
     const isBalanced = totalAssets === totalLiabilitiesAndEquity;
 
-    // 6. Build report
+    // 7. Build report
     const report: BalanceSheetReport = {
       entityId: params.entityId,
       entityName,

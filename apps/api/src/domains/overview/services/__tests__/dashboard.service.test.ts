@@ -20,6 +20,25 @@ vi.mock('../../../banking/services/fx-rate.service', () => {
   };
 });
 
+// Mock invoice/bill stats (called in Promise.all by DashboardService)
+vi.mock('../../../vendors/services/bill.service', () => ({
+  getBillStats: vi.fn().mockResolvedValue({
+    outstandingAP: 0,
+    overdue: 0,
+    totalBilled: 0,
+    paid: 0,
+  }),
+}));
+
+vi.mock('../../../invoicing/services/invoice.service', () => ({
+  getInvoiceStats: vi.fn().mockResolvedValue({
+    outstandingAR: 0,
+    overdue: 0,
+    totalInvoiced: 0,
+    collected: 0,
+  }),
+}));
+
 import { prisma } from '@akount/db';
 
 const TENANT_ID = 'tenant-abc-123';

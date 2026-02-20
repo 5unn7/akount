@@ -81,6 +81,60 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/akount_test
           NODE_ENV: test
+          CLERK_SECRET_KEY: sk_test_ci_placeholder
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ci_placeholder
+
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Dependency audit (known CVEs)
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Check for secret patterns in code
+        run: |
+          echo "Scanning for potential secrets in tracked files..."
+          ISSUES=0
+
+          # Check for hardcoded API keys / tokens (common patterns)
+          if git grep -lnE '(sk_live_|sk_test_[a-zA-Z0-9]{20,}|pk_live_|re_[a-zA-Z0-9]{20,}|pplx-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36})' -- ':!*.example' ':!*.md' ':!*.yml' ':!*.yaml' ':!.github/' ':!node_modules/' 2>/dev/null; then
+            echo "::warning::Potential API keys found in source code"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          # Check for private key files
+          if git grep -rlnE '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' -- ':!node_modules/' 2>/dev/null; then
+            echo "::error::Private key found in repository!"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          # Check for connection strings with passwords
+          if git grep -lnE '(postgresql|mysql|mongodb)://[^:]+:[^@]+@' -- '*.ts' '*.tsx' '*.js' '*.jsx' ':!*.example' ':!*.test.*' ':!*.spec.*' ':!test/' ':!__tests__/' ':!.github/' 2>/dev/null; then
+            echo "::warning::Database connection strings with credentials found in source"
+            ISSUES=$((ISSUES + 1))
+          fi
+
+          if [ "$ISSUES" -eq 0 ]; then
+            echo "No secret patterns detected."
+          else
+            echo "Found $ISSUES potential issue(s). Review the warnings above."
+          fi
+
+      - name: License compatibility check
+        run: npx license-checker --production --failOn 'GPL-3.0;AGPL-3.0' --summary || true
 
   build:
     name: Build

@@ -1,5 +1,6 @@
 import { prisma } from '@akount/db';
 import type { PerformanceMetrics } from '../schemas/performance.schema';
+import { getInvoiceStats } from '../../invoicing/services/invoice.service';
 
 /**
  * Performance metrics service - calculates revenue, expenses, profit, and trends
@@ -47,45 +48,46 @@ export class PerformanceService {
       deletedAt: null, // Soft delete filter
     };
 
-    // Fetch current period transactions with category type
-    const currentTransactions = await prisma.transaction.findMany({
-      where: {
-        ...baseWhere,
-        date: {
-          gte: currentStart,
-          lte: now,
-        },
-      },
-      select: {
-        amount: true,
-        date: true,
-        category: {
-          select: {
-            type: true,
+    // PERF-6: Fetch both periods + invoice stats in parallel (was 3 sequential queries)
+    const [currentTransactions, previousTransactions, invoiceStats] = await Promise.all([
+      prisma.transaction.findMany({
+        where: {
+          ...baseWhere,
+          date: {
+            gte: currentStart,
+            lte: now,
           },
         },
-      },
-      orderBy: { date: 'asc' },
-    });
-
-    // Fetch previous period transactions
-    const previousTransactions = await prisma.transaction.findMany({
-      where: {
-        ...baseWhere,
-        date: {
-          gte: previousStart,
-          lt: currentStart, // Exclusive to avoid overlap
-        },
-      },
-      select: {
-        amount: true,
-        category: {
-          select: {
-            type: true,
+        select: {
+          amount: true,
+          date: true,
+          category: {
+            select: {
+              type: true,
+            },
           },
         },
-      },
-    });
+        orderBy: { date: 'asc' },
+      }),
+      prisma.transaction.findMany({
+        where: {
+          ...baseWhere,
+          date: {
+            gte: previousStart,
+            lt: currentStart, // Exclusive to avoid overlap
+          },
+        },
+        select: {
+          amount: true,
+          category: {
+            select: {
+              type: true,
+            },
+          },
+        },
+      }),
+      getInvoiceStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }),
+    ]);
 
     // Classify transactions as revenue or expense:
     // 1. If categorized: use category type (INCOME / EXPENSE)
@@ -155,15 +157,16 @@ export class PerformanceService {
       currentProfit
     );
 
-    // Fetch receivables (outstanding invoices) — placeholder for Phase 3
+    // Receivables from invoicing domain (already fetched in parallel above)
     const receivables = {
-      outstanding: 0,
-      overdue: 0,
-      sparkline: [] as number[],
+      outstanding: invoiceStats.outstandingAR,
+      overdue: invoiceStats.overdue,
+      sparkline: [] as number[], // TODO: Generate sparkline from invoice aging data
     };
 
-    // Fetch account counts
-    const accountCounts = await prisma.account.aggregate({
+    // PERF-6: Single query with groupBy replaces 2 separate aggregate calls
+    const accountsByActive = await prisma.account.groupBy({
+      by: ['isActive'],
       where: {
         entity: {
           tenantId: this.tenantId,
@@ -175,18 +178,9 @@ export class PerformanceService {
       },
     });
 
-    const activeAccountCounts = await prisma.account.aggregate({
-      where: {
-        entity: {
-          tenantId: this.tenantId,
-          ...(entityId && { id: entityId }),
-        },
-        isActive: true,
-      },
-      _count: {
-        id: true,
-      },
-    });
+    const activeCount = accountsByActive.find((g) => g.isActive)?._count.id ?? 0;
+    const inactiveCount = accountsByActive.find((g) => !g.isActive)?._count.id ?? 0;
+    const totalCount = activeCount + inactiveCount;
 
     return {
       revenue: {
@@ -209,8 +203,8 @@ export class PerformanceService {
       },
       receivables,
       accounts: {
-        active: activeAccountCounts._count.id,
-        total: accountCounts._count.id,
+        active: activeCount,
+        total: totalCount,
       },
       currency: targetCurrency,
     };

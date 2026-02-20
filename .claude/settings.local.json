@@ -96,7 +96,12 @@
       "Bash(shellcheck:*)",
       "Bash(CLAUDE_TOOL_INPUT='{\"\"file_path\"\":\"\"apps/api/src/test-unsafe.ts\"\",\"\"content\"\":\"\"import { prisma } from \\\\\"\"@akount/db\\\\\"\";\\\\n\\\\nconst badQuery = async \\(userId: string\\) => {\\\\n  return prisma.$queryRawUnsafe\\(`SELECT * FROM users WHERE id = \\\\\"\"${userId}\\\\\"\"`\\);\\\\n};\"\"}' bash ../../.claude/hooks/hard-rules.sh)",
       "Bash(npx prisma db execute:*)",
-      "Bash(code:*)"
+      "Bash(code:*)",
+      "Bash(if [ -f \".claude/scripts/update-metrics.sh\" ])",
+      "Bash(then bash .claude/scripts/update-metrics.sh)",
+      "Bash(else echo \"Metrics script not found\")",
+      "Bash(fi)",
+      "Bash(npm view:*)"
     ],
     "deny": [
       "Bash(git reset --hard *)",

@@ -1,9 +1,9 @@
 'use client';
 
-import type { Transaction } from '@/lib/api/transactions';
-import type { MatchSuggestion } from '@/lib/api/reconciliation';
-import { formatAmount, formatDate } from '@/lib/api/transactions';
-import { getConfidenceLevel, formatConfidence } from '@/lib/api/reconciliation';
+import type { Transaction } from '@/lib/api/transactions.types';
+import type { MatchSuggestion } from '@/lib/api/reconciliation.types';
+import { formatAmount, formatDate } from '@/lib/api/transactions.types';
+import { getConfidenceLevel, formatConfidence } from '@/lib/api/reconciliation.types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {

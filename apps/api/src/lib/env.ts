@@ -23,6 +23,22 @@ const envSchema = z.object({
 
     // CORS Configuration
     CORS_ORIGINS: z.string().optional().default('http://localhost:3000'),
+
+    // Logging
+    LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).optional().default('info'),
+
+    // Report cache TTL in milliseconds (default: 5 minutes)
+    REPORT_CACHE_TTL_MS: z.coerce.number().positive().int().optional().default(300000),
+
+    // Email (Resend) — optional, email disabled when unset
+    RESEND_API_KEY: z.string().optional(),
+
+    // AI (Perplexity) — optional, AI features disabled when unset
+    PERPLEXITY_API_KEY: z.string().optional(),
+
+    // File Scanning (optional — ClamAV daemon for virus scanning)
+    CLAMAV_HOST: z.string().optional(),
+    CLAMAV_PORT: z.coerce.number().positive().int().optional().default(3310),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -73,6 +89,34 @@ function validateEnv(): Env {
  * ```
  */
 export const env = validateEnv();
+
+// Production safety checks — catch misconfigured deployments early
+if (env.NODE_ENV === 'production') {
+    const warnings: string[] = [];
+
+    // Clerk keys must be production (live) keys
+    if (env.CLERK_SECRET_KEY.startsWith('sk_test_')) {
+        warnings.push('CLERK_SECRET_KEY is a test key — use sk_live_* in production');
+    }
+    if (env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.startsWith('pk_test_')) {
+        warnings.push('NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is a test key — use pk_live_* in production');
+    }
+
+    // CORS should not be wildcard in production
+    if (env.CORS_ORIGINS === '*' || env.CORS_ORIGINS === 'http://localhost:3000') {
+        warnings.push('CORS_ORIGINS is set to development default — whitelist production domain(s)');
+    }
+
+    // DATABASE_URL should not point to localhost in production
+    if (env.DATABASE_URL.includes('localhost') || env.DATABASE_URL.includes('127.0.0.1')) {
+        warnings.push('DATABASE_URL points to localhost — use a production database URL');
+    }
+
+    if (warnings.length > 0) {
+        console.error('⚠️  Production environment warnings:');
+        warnings.forEach(w => console.error(`  - ${w}`));
+    }
+}
 
 // Log successful validation in development
 if (env.NODE_ENV === 'development') {

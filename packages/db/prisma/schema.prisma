@@ -283,6 +283,7 @@ model Invoice {
   @@index([dueDate])
   @@index([issueDate])
   @@index([entityId, deletedAt])
+  @@index([entityId, status, dueDate, deletedAt]) // PERF-5: Composite for AR aging bucket queries
 }
 
 model InvoiceLine {
@@ -354,6 +355,7 @@ model Bill {
   @@index([dueDate])
   @@index([issueDate])
   @@index([entityId, deletedAt])
+  @@index([entityId, status, dueDate, deletedAt]) // PERF-5: Composite for AP aging bucket queries
 }
 
 model BillLine {
@@ -541,6 +543,7 @@ model Transaction {
   @@index([categoryId])
   @@index([sourceType, sourceId])
   @@index([accountId, deletedAt])
+  @@index([accountId, date, deletedAt]) // PERF-5: Composite for dashboard date-range queries with soft-delete
   @@index([importBatchId])
 }
 
@@ -736,24 +739,28 @@ model FXRate {
 }
 
 model AuditLog {
-  id        String      @id @default(cuid())
-  tenantId  String
-  entityId  String?
-  userId    String?
-  model     String
-  recordId  String
-  action    AuditAction
-  before    Json?
-  after     Json?
-  createdAt DateTime    @default(now())
-  entity    Entity?     @relation(fields: [entityId], references: [id])
-  tenant    Tenant      @relation(fields: [tenantId], references: [id])
-  user      User?       @relation(fields: [userId], references: [id])
+  id             String      @id @default(cuid())
+  tenantId       String
+  entityId       String?
+  userId         String?
+  model          String
+  recordId       String
+  action         AuditAction
+  before         Json?
+  after          Json?
+  integrityHash  String?     // SHA-256 hash of entry data for tamper detection
+  previousHash   String?     // Hash of previous entry (chain link)
+  sequenceNumber Int?        // Monotonic sequence per tenant for gap detection
+  createdAt      DateTime    @default(now())
+  entity         Entity?     @relation(fields: [entityId], references: [id])
+  tenant         Tenant      @relation(fields: [tenantId], references: [id])
+  user           User?       @relation(fields: [userId], references: [id])
 
   @@index([tenantId, createdAt])
   @@index([entityId, createdAt])
   @@index([userId, createdAt])
   @@index([model, recordId])
+  @@index([tenantId, sequenceNumber])
 }
 
 model DomainEvent {

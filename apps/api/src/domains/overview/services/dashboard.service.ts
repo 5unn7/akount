@@ -1,5 +1,7 @@
 import { prisma, type AccountType } from '@akount/db';
 import { FxRateService } from '../../banking/services/fx-rate.service';
+import { getBillStats } from '../../vendors/services/bill.service';
+import { getInvoiceStats } from '../../invoicing/services/invoice.service';
 
 interface DashboardMetrics {
   netWorth: {
@@ -16,6 +18,14 @@ interface DashboardMetrics {
     total: number;
     active: number;
     byType: Partial<Record<AccountType, number>>;
+  };
+  receivables?: {
+    outstanding: number;
+    overdue: number;
+  };
+  payables?: {
+    outstanding: number;
+    overdue: number;
   };
 }
 
@@ -39,6 +49,12 @@ export class DashboardService {
         isActive: true,
       },
     });
+
+    // Fetch receivables and payables in parallel
+    const [invoiceStats, billStats] = await Promise.all([
+      getInvoiceStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }, entityId),
+      getBillStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }, entityId),
+    ]);
 
     // Extract unique currencies and batch fetch FX rates (eliminates N+1 queries)
     const uniqueCurrencies = [...new Set(accounts.map((a) => a.currency))];
@@ -104,6 +120,14 @@ export class DashboardService {
           },
           {}
         ),
+      },
+      receivables: {
+        outstanding: invoiceStats.outstandingAR,
+        overdue: invoiceStats.overdue,
+      },
+      payables: {
+        outstanding: billStats.outstandingAP,
+        overdue: billStats.overdue,
       },
     };
   }

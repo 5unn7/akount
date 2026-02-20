@@ -2,6 +2,7 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { ImportService } from '../services/import.service';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
+import { scanFile } from '../../../lib/file-scanner';
 import { z } from 'zod';
 
 /**
@@ -111,6 +112,17 @@ export async function importsRoutes(fastify: FastifyInstance) {
           return reply.status(413).send({
             error: 'Payload Too Large',
             message: `File size exceeds 10MB limit. Your file is ${(fileBuffer.length / 1024 / 1024).toFixed(2)}MB`,
+          });
+        }
+
+        // Security scan: magic bytes + content patterns + optional ClamAV
+        const scanResult = await scanFile(fileBuffer, 'csv');
+        if (!scanResult.safe) {
+          request.log.warn({ threats: scanResult.threats, fileName }, 'CSV file rejected by security scan');
+          return reply.status(422).send({
+            error: 'File Rejected',
+            message: 'File failed security scan',
+            threats: scanResult.threats,
           });
         }
 
@@ -224,6 +236,18 @@ export async function importsRoutes(fastify: FastifyInstance) {
           });
         }
 
+        // Security scan: magic bytes + content patterns + optional ClamAV
+        const xlsxType = fileName.endsWith('.xls') ? 'xls' : 'xlsx';
+        const scanResult = await scanFile(fileBuffer, xlsxType);
+        if (!scanResult.safe) {
+          request.log.warn({ threats: scanResult.threats, fileName }, 'XLSX file rejected by security scan');
+          return reply.status(422).send({
+            error: 'File Rejected',
+            message: 'File failed security scan',
+            threats: scanResult.threats,
+          });
+        }
+
         const importService = new ImportService(request.tenantId as string);
         const result = await importService.createXLSXImport({
           file: fileBuffer,
@@ -330,6 +354,17 @@ export async function importsRoutes(fastify: FastifyInstance) {
           return reply.status(413).send({
             error: 'Payload Too Large',
             message: `File size exceeds 10MB limit. Your file is ${(fileBuffer.length / 1024 / 1024).toFixed(2)}MB`,
+          });
+        }
+
+        // Security scan: magic bytes + content patterns + optional ClamAV
+        const scanResult = await scanFile(fileBuffer, 'pdf');
+        if (!scanResult.safe) {
+          request.log.warn({ threats: scanResult.threats, fileName }, 'PDF file rejected by security scan');
+          return reply.status(422).send({
+            error: 'File Rejected',
+            message: 'File failed security scan',
+            threats: scanResult.threats,
           });
         }
 

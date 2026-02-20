@@ -6,6 +6,8 @@ export class AIService {
   private defaultProvider: string = 'perplexity';
 
   constructor() {
+    // Read directly from process.env — AI key is checked at construction time
+    // and tests dynamically set/unset it between test cases
     const perplexityKey = process.env.PERPLEXITY_API_KEY;
     if (perplexityKey) {
       this.providers.set('perplexity', new PerplexityProvider(perplexityKey));

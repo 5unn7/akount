@@ -7,9 +7,19 @@ vi.mock('@akount/db', () => ({
       findMany: vi.fn(),
     },
     account: {
-      aggregate: vi.fn(),
+      groupBy: vi.fn(),
     },
   },
+}));
+
+// Mock getInvoiceStats (now called in Promise.all with transactions)
+vi.mock('../../../invoicing/services/invoice.service', () => ({
+  getInvoiceStats: vi.fn().mockResolvedValue({
+    outstandingAR: 0,
+    overdue: 0,
+    totalInvoiced: 0,
+    collected: 0,
+  }),
 }));
 
 import { PerformanceService } from '../performance.service';
@@ -17,7 +27,7 @@ import { prisma } from '@akount/db';
 
 // Get typed mock references
 const mockFindMany = vi.mocked(prisma.transaction.findMany);
-const mockAggregate = vi.mocked(prisma.account.aggregate);
+const mockGroupBy = vi.mocked(prisma.account.groupBy);
 
 const TENANT_ID = 'tenant-abc-123';
 const ENTITY_ID = 'entity-xyz-456';
@@ -53,17 +63,11 @@ describe('PerformanceService', () => {
     vi.clearAllMocks();
     service = new PerformanceService(TENANT_ID);
 
-    // Default mock for account aggregates (alternates between total and active)
-    // First call = total (5), second call = active (4), then repeats
-    let callCount = 0;
-    mockAggregate.mockImplementation(async () => {
-      callCount++;
-      if (callCount % 2 === 1) {
-        return { _count: { id: 5 } }; // total (odd calls)
-      } else {
-        return { _count: { id: 4 } }; // active (even calls)
-      }
-    });
+    // Default mock for account groupBy (PERF-6: replaces 2 aggregate calls)
+    mockGroupBy.mockResolvedValue([
+      { isActive: true, _count: { id: 4 } },
+      { isActive: false, _count: { id: 1 } },
+    ] as never);
   });
 
   describe('getPerformanceMetrics', () => {
@@ -317,11 +321,12 @@ describe('PerformanceService', () => {
     it('should calculate account counts correctly', async () => {
       mockFindMany.mockResolvedValue([]);
 
-      // Reset aggregate mock and set custom values for this test
-      mockAggregate.mockReset();
-      mockAggregate
-        .mockResolvedValueOnce({ _count: { id: 8 } }) // total accounts
-        .mockResolvedValueOnce({ _count: { id: 6 } }); // active accounts
+      // Reset groupBy mock and set custom values for this test
+      mockGroupBy.mockReset();
+      mockGroupBy.mockResolvedValueOnce([
+        { isActive: true, _count: { id: 6 } },
+        { isActive: false, _count: { id: 2 } },
+      ] as never);
 
       const result = await service.getPerformanceMetrics(ENTITY_ID, 'CAD', '30d');
 

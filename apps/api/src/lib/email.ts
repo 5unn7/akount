@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { env } from './env';
 
 /**
  * Email service using Resend.
@@ -39,7 +40,7 @@ let resendClient: Resend | null = null;
 function getResendClient(): Resend | null {
   if (resendClient) return resendClient;
 
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = env.RESEND_API_KEY;
   if (!apiKey) return null;
 
   resendClient = new Resend(apiKey);

@@ -157,8 +157,8 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
         },
         {
             label: 'Accounts Payable',
-            value: '—',
-            trend: { direction: 'flat' as const, text: 'Coming soon' },
+            value: metrics?.payables ? formatCurrency(metrics.payables.outstanding) : '—',
+            trend: metrics?.payables?.overdue ? { direction: 'flat' as const, text: `${formatCurrency(metrics.payables.overdue)} overdue` } : undefined,
             sparkline: [],
             color: 'purple' as const,
         },

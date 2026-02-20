@@ -18,6 +18,17 @@ vi.mock('../../../../middleware/tenant', () => ({
   }),
 }));
 
+// Mock file scanner (security scanning tested separately in file-scanner.test.ts)
+vi.mock('../../../../lib/file-scanner', () => ({
+  scanFile: vi.fn().mockResolvedValue({
+    safe: true,
+    threats: [],
+    fileType: 'csv',
+    magicBytesValid: true,
+    clamavScanned: false,
+  }),
+}));
+
 // Mock ImportService
 const mockCreateCSVImport = vi.fn();
 const mockCreatePDFImport = vi.fn();

@@ -329,8 +329,10 @@ describe('ReportService', () => {
       mockPrisma.entity.findUnique.mockResolvedValue(mockEntity);
       mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
 
-      // Mock balance sheet accounts query
-      // Note: Retained Earnings (3100) is handled separately, not in this query
+      // Mock fiscal year lookup (called before the combined query now)
+      mockPrisma.fiscalCalendar.findFirst.mockResolvedValue(null);
+
+      // PERF-1: Single combined query returns ALL account types with currentYear CASE columns
       mockTenantScopedQuery.mockResolvedValueOnce([
         {
           glAccountId: 'gl_asset_001',
@@ -340,6 +342,8 @@ describe('ReportService', () => {
           normalBalance: 'DEBIT',
           totalDebit: BigInt(100000), // $1,000.00
           totalCredit: BigInt(0),
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
         {
           glAccountId: 'gl_liability_001',
@@ -349,6 +353,8 @@ describe('ReportService', () => {
           normalBalance: 'CREDIT',
           totalDebit: BigInt(0),
           totalCredit: BigInt(50000), // $500.00
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
         {
           glAccountId: 'gl_equity_002',
@@ -357,7 +363,9 @@ describe('ReportService', () => {
           type: 'EQUITY',
           normalBalance: 'CREDIT',
           totalDebit: BigInt(0),
-          totalCredit: BigInt(0), // No common stock in this test
+          totalCredit: BigInt(0),
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
         {
           glAccountId: 'gl_equity_001',
@@ -367,24 +375,30 @@ describe('ReportService', () => {
           normalBalance: 'CREDIT',
           totalDebit: BigInt(0),
           totalCredit: BigInt(40000), // $400.00 prior years
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
-      ]);
-
-      // Mock fiscal year lookup
-      mockPrisma.fiscalCalendar.findFirst.mockResolvedValue(null);
-      mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
-
-      // Mock current year income query (for retained earnings)
-      mockTenantScopedQuery.mockResolvedValueOnce([
         {
+          glAccountId: 'gl_revenue_001',
+          code: '4000',
+          name: 'Revenue',
           type: 'REVENUE',
+          normalBalance: 'CREDIT',
           totalDebit: BigInt(0),
-          totalCredit: BigInt(100000), // $1,000.00 revenue
+          totalCredit: BigInt(100000),
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(100000), // $1,000.00 current year revenue
         },
         {
+          glAccountId: 'gl_expense_001',
+          code: '5000',
+          name: 'Expenses',
           type: 'EXPENSE',
-          totalDebit: BigInt(90000), // $900.00 expense
+          normalBalance: 'DEBIT',
+          totalDebit: BigInt(90000),
           totalCredit: BigInt(0),
+          currentYearDebit: BigInt(90000), // $900.00 current year expenses
+          currentYearCredit: BigInt(0),
         },
       ]);
 
@@ -411,7 +425,9 @@ describe('ReportService', () => {
     it('should mark unbalanced when A ≠ L + E', async () => {
       mockPrisma.entity.findUnique.mockResolvedValue(mockEntity);
       mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
+      mockPrisma.fiscalCalendar.findFirst.mockResolvedValue(null);
 
+      // PERF-1: Single combined query
       mockTenantScopedQuery.mockResolvedValueOnce([
         {
           glAccountId: 'gl_asset_001',
@@ -421,6 +437,8 @@ describe('ReportService', () => {
           normalBalance: 'DEBIT',
           totalDebit: BigInt(100000), // $1,000.00
           totalCredit: BigInt(0),
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
         {
           glAccountId: 'gl_liability_001',
@@ -430,12 +448,10 @@ describe('ReportService', () => {
           normalBalance: 'CREDIT',
           totalDebit: BigInt(0),
           totalCredit: BigInt(30000), // $300.00 (doesn't balance!)
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
       ]);
-
-      mockPrisma.fiscalCalendar.findFirst.mockResolvedValue(null);
-      mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
-      mockTenantScopedQuery.mockResolvedValueOnce([]);
 
       const result = await service.generateBalanceSheet({
         entityId: ENTITY_ID,
@@ -449,7 +465,9 @@ describe('ReportService', () => {
     it('should detect 1 cent imbalance with strict enforcement', async () => {
       mockPrisma.entity.findUnique.mockResolvedValue(mockEntity);
       mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
+      mockPrisma.fiscalCalendar.findFirst.mockResolvedValue(null);
 
+      // PERF-1: Single combined query
       mockTenantScopedQuery.mockResolvedValueOnce([
         {
           glAccountId: 'gl_asset_001',
@@ -459,6 +477,8 @@ describe('ReportService', () => {
           normalBalance: 'DEBIT',
           totalDebit: BigInt(100001), // $1,000.01
           totalCredit: BigInt(0),
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
         {
           glAccountId: 'gl_liability_001',
@@ -468,6 +488,8 @@ describe('ReportService', () => {
           normalBalance: 'CREDIT',
           totalDebit: BigInt(0),
           totalCredit: BigInt(50000), // $500.00
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
         {
           glAccountId: 'gl_equity_001',
@@ -477,12 +499,10 @@ describe('ReportService', () => {
           normalBalance: 'CREDIT',
           totalDebit: BigInt(0),
           totalCredit: BigInt(50000), // $500.00
+          currentYearDebit: BigInt(0),
+          currentYearCredit: BigInt(0),
         },
       ]);
-
-      mockPrisma.fiscalCalendar.findFirst.mockResolvedValue(null);
-      mockPrisma.entity.findUniqueOrThrow.mockResolvedValue(mockEntity);
-      mockTenantScopedQuery.mockResolvedValueOnce([]);
 
       const result = await service.generateBalanceSheet({
         entityId: ENTITY_ID,
