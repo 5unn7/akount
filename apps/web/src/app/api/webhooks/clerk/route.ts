@@ -2,6 +2,7 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { prisma } from '@akount/db'
+import { logger } from '@/lib/logger'
 
 /**
  * Clerk Webhook Handler
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET
 
   if (!WEBHOOK_SECRET) {
-    console.error('CLERK_WEBHOOK_SECRET is not set')
+    logger.error('Webhook secret not configured', { service: 'clerk-webhook' })
     return new Response('Webhook secret not configured', { status: 500 })
   }
 
@@ -27,7 +28,10 @@ export async function POST(req: Request) {
   const svix_signature = headerPayload.get('svix-signature')
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.error('Missing svix headers')
+    logger.error('Missing required webhook headers', {
+      service: 'clerk-webhook',
+      headers: { svix_id: !!svix_id, svix_timestamp: !!svix_timestamp, svix_signature: !!svix_signature }
+    })
     return new Response('Missing required webhook headers', { status: 400 })
   }
 
@@ -46,7 +50,10 @@ export async function POST(req: Request) {
       'svix-signature': svix_signature,
     }) as WebhookEvent
   } catch (err) {
-    console.error('Error verifying webhook signature:', err)
+    logger.error('Invalid webhook signature', {
+      service: 'clerk-webhook',
+      error: err instanceof Error ? err.message : 'Unknown error'
+    })
     return new Response('Invalid webhook signature', { status: 400 })
   }
 
@@ -55,7 +62,11 @@ export async function POST(req: Request) {
     const { id: clerkUserId, email_addresses, first_name, last_name } = evt.data
 
     if (!email_addresses || email_addresses.length === 0) {
-      console.error('No email addresses in user.created event')
+      logger.error('No email address in user.created event', {
+        service: 'clerk-webhook',
+        eventType: 'user.created',
+        clerkUserId
+      })
       return new Response('No email address provided', { status: 400 })
     }
 
@@ -72,7 +83,12 @@ export async function POST(req: Request) {
         },
       })
 
-      console.log(`User created successfully: ${user.id} (${email})`)
+      logger.info('User created successfully', {
+        service: 'clerk-webhook',
+        userId: user.id,
+        email,
+        clerkUserId
+      })
       return new Response(JSON.stringify({ success: true, userId: user.id }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -80,14 +96,23 @@ export async function POST(req: Request) {
     } catch (error) {
       // Check if user already exists (race condition with simultaneous events)
       if (error instanceof Error && error.message.includes('Unique constraint failed')) {
-        console.warn(`User already exists: ${email}`)
+        logger.warn('User already exists', {
+          service: 'clerk-webhook',
+          email,
+          clerkUserId
+        })
         return new Response(
           JSON.stringify({ success: true, message: 'User already exists' }),
           { status: 200, headers: { 'Content-Type': 'application/json' } }
         )
       }
 
-      console.error('Error creating user in database:', error)
+      logger.error('Error creating user in database', {
+        service: 'clerk-webhook',
+        email,
+        clerkUserId,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      })
       return new Response('Error processing webhook', { status: 500 })
     }
   }
