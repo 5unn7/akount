@@ -1,26 +1,26 @@
 {
   "$schema": "./tasks.schema.json",
   "version": "2.0",
-  "generated": "2026-02-19T21:36:54.844Z",
+  "generated": "2026-02-20T17:13:00.612Z",
   "generatedBy": "regenerate-task-index.js",
   "summary": {
-    "total": 256,
-    "active": 225,
-    "done": 31,
+    "total": 266,
+    "active": 220,
+    "done": 46,
     "stale": 0,
     "riskDistribution": {
       "low": 1,
-      "medium": 224,
+      "medium": 219,
       "high": 0
     },
     "byPriority": {
-      "critical": 0,
-      "high": 61,
+      "critical": 3,
+      "high": 51,
       "medium": 135,
-      "low": 28
+      "low": 30
     },
     "byStatus": {
-      "ready": 95,
+      "ready": 89,
       "blocked": 7,
       "backlog": 122
     }
@@ -31,18 +31,18 @@
     "high": "Read affected files, re-scope the task, and consider running a fresh review before starting. The codebase may have changed significantly since this task was created."
   },
   "tasks": {
-    "SEC-8": {
-      "id": "SEC-8",
-      "title": "Complete security audit (OWASP top 10, auth, tenant isolation, input validation)",
-      "effort": "4h",
-      "effortMinutes": 240,
-      "effortCategory": "medium",
-      "priority": "high",
+    "PERF-18": {
+      "id": "PERF-18",
+      "title": "Add composite index on Invoice for AR aging (entityId, status, dueDate, deletedAt)",
+      "effort": "2h",
+      "effortMinutes": 120,
+      "effortCategory": "short",
+      "priority": "critical",
       "status": "ready",
       "deps": [],
-      "domain": "security",
-      "source": "roadmap",
-      "created": "2026-02-18",
+      "domain": "performance",
+      "source": "audit:2026-02-20",
+      "created": "2026-02-20",
       "line": 26,
       "files": [],
       "verification": null,
@@ -54,45 +54,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 17,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 5,
-      "riskFactors": [
-        "no_files",
-        "large_effort",
-        "no_acceptance_criteria",
-        "source_unspecific"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "PERF-1": {
-      "id": "PERF-1",
-      "title": "Balance Sheet: combine 2 redundant heavy SQL queries into 1",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "performance",
-      "source": "review:performance",
-      "created": "2026-02-18",
-      "line": 28,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 0,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -105,18 +67,90 @@
       "claimed": false,
       "claimedBy": null
     },
-    "PERF-5": {
-      "id": "PERF-5",
-      "title": "Database indexes on hot paths (dashboard, reports)",
+    "PERF-19": {
+      "id": "PERF-19",
+      "title": "Add composite index on Transaction for date range queries (accountId, categoryId, date, deletedAt)",
       "effort": "2h",
       "effortMinutes": 120,
       "effortCategory": "short",
-      "priority": "high",
+      "priority": "critical",
       "status": "ready",
       "deps": [],
       "domain": "performance",
+      "source": "audit:2026-02-20",
+      "created": "2026-02-20",
+      "line": 27,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "PERF-20": {
+      "id": "PERF-20",
+      "title": "Add composite index on Bill for AP aging (entityId, status, dueDate, deletedAt)",
+      "effort": "2h",
+      "effortMinutes": 120,
+      "effortCategory": "short",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance",
+      "source": "audit:2026-02-20",
+      "created": "2026-02-20",
+      "line": 28,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "SEC-8": {
+      "id": "SEC-8",
+      "title": "Complete security audit (OWASP top 10, auth, tenant isolation, input validation)",
+      "effort": "4h",
+      "effortMinutes": 240,
+      "effortCategory": "medium",
+      "priority": "high",
+      "status": "unknown",
+      "deps": [],
+      "domain": "security",
       "source": "roadmap",
-      "created": "2026-02-18",
+      "created": "2026-02-20",
       "line": 29,
       "files": [],
       "verification": null,
@@ -124,59 +158,19 @@
       "lastVerified": null,
       "sourceRef": null,
       "externalId": null,
-      "tags": [
-        "dashboard"
-      ],
+      "tags": [],
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 20,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 17,
         "recommendation": "ok"
       },
       "hallucinationRisk": "medium",
-      "riskScore": 4,
+      "riskScore": 5,
       "riskFactors": [
         "no_files",
-        "no_acceptance_criteria",
-        "source_unspecific"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "PERF-6": {
-      "id": "PERF-6",
-      "title": "Query optimization audit (dashboard + report queries)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "performance",
-      "source": "roadmap",
-      "created": "2026-02-18",
-      "line": 30,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "dashboard"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 20,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 4,
-      "riskFactors": [
-        "no_files",
+        "large_effort",
         "no_acceptance_criteria",
         "source_unspecific"
       ],
@@ -195,7 +189,7 @@
       "domain": "performance",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 31,
+      "line": 34,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -206,7 +200,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -216,6 +210,79 @@
         "no_files",
         "no_acceptance_criteria",
         "source_unspecific"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "INFRA-14": {
+      "id": "INFRA-14",
+      "title": "Add timeout to Clerk auth verification (3-second Promise.race wrapper in auth middleware)",
+      "effort": "4h",
+      "effortMinutes": 240,
+      "effortCategory": "medium",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure",
+      "source": "audit:2026-02-20",
+      "created": "2026-02-20",
+      "line": 35,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 4,
+      "riskFactors": [
+        "no_files",
+        "large_effort",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "SEC-23": {
+      "id": "SEC-23",
+      "title": "Replace console.log in webhook route with structured logging (apps/web/src/app/api/webhooks/clerk/route.ts — 7 occurrences)",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "security",
+      "source": "audit:2026-02-20",
+      "created": "2026-02-20",
+      "line": 36,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
       ],
       "claimed": false,
       "claimedBy": null
@@ -232,7 +299,7 @@
       "domain": "ux",
       "source": "review:nextjs, audit:acct-fe-be, audit:app-ux",
       "created": "2026-02-19",
-      "line": 33,
+      "line": 38,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -243,7 +310,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -268,7 +335,7 @@
       "domain": "testing",
       "source": "review:typescript",
       "created": "2026-02-18",
-      "line": 35,
+      "line": 40,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -279,7 +346,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -305,7 +372,7 @@
       "domain": "testing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 36,
+      "line": 41,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -316,7 +383,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -345,7 +412,7 @@
       "domain": "testing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 37,
+      "line": 42,
       "files": [
         "apps/api/src/domains/",
         "apps/api/src/__tests__/"
@@ -366,7 +433,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -391,7 +458,7 @@
       "domain": "development",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 38,
+      "line": 43,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -402,7 +469,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -411,42 +478,6 @@
       "riskFactors": [
         "no_files",
         "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "PERF-9": {
-      "id": "PERF-9",
-      "title": "Replace console.log with pino structured logging (7 production files)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "performance",
-      "source": "plan:phase-6-tasks",
-      "created": "2026-02-18",
-      "line": 39,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
         "no_acceptance_criteria"
       ],
       "claimed": false,
@@ -464,7 +495,7 @@
       "domain": "ux",
       "source": "plan:phase-6-tasks",
       "created": "2026-02-18",
-      "line": 40,
+      "line": 45,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -477,7 +508,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -502,7 +533,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 41,
+      "line": 46,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -513,7 +544,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -539,7 +570,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain §2.2.1",
       "created": "2026-02-18",
-      "line": 42,
+      "line": 47,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -550,299 +581,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "SEC-11": {
-      "id": "SEC-11",
-      "title": "File upload virus scanning (ClamAV integration for PDFs/CSVs)",
-      "effort": "3h",
-      "effortMinutes": 180,
-      "effortCategory": "medium",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "security",
-      "source": "review:smooth-floating-mountain §2.2.3",
-      "created": "2026-02-18",
-      "line": 43,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 4,
-      "riskFactors": [
-        "no_files",
-        "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "SEC-13": {
-      "id": "SEC-13",
-      "title": "Audit log tamper detection (immutable log storage)",
-      "effort": "3h",
-      "effortMinutes": 180,
-      "effortCategory": "medium",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "security",
-      "source": "review:smooth-floating-mountain §2.2.4",
-      "created": "2026-02-18",
-      "line": 44,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 4,
-      "riskFactors": [
-        "no_files",
-        "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-9": {
-      "id": "INFRA-9",
-      "title": "Secrets management for production (env var vault, not .env files)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "review:smooth-floating-mountain §2.4.4",
-      "created": "2026-02-18",
-      "line": 45,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-10": {
-      "id": "INFRA-10",
-      "title": "Security scanning in CI (SAST + dependency/supply chain checks)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "review:smooth-floating-mountain §2.4.4",
-      "created": "2026-02-18",
-      "line": 46,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-11": {
-      "id": "UX-11",
-      "title": "Overview: Wire `/overview/net-worth` page with real data (backend endpoint exists, page says \"coming soon\")",
-      "effort": "1-2h",
-      "effortMinutes": 90,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 52,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-12": {
-      "id": "UX-12",
-      "title": "Overview: Wire `/overview/cash-flow` page with real data (backend endpoint exists, page says \"coming soon\")",
-      "effort": "1-2h",
-      "effortMinutes": 90,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 53,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "FIN-15": {
-      "id": "FIN-15",
-      "title": "Performance endpoint: Wire receivables data from invoicing domain (currently hardcoded to 0)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "financial",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 54,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-10": {
-      "id": "DEV-10",
-      "title": "Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 55,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "dashboard"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -867,7 +606,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 56,
+      "line": 61,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -878,7 +617,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -903,7 +642,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 57,
+      "line": 62,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -914,7 +653,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -939,7 +678,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 58,
+      "line": 63,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -950,7 +689,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -975,7 +714,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 60,
+      "line": 65,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -986,7 +725,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1011,7 +750,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 61,
+      "line": 66,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1022,7 +761,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -1048,7 +787,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 62,
+      "line": 67,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1059,7 +798,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1084,7 +823,7 @@
       "domain": "infrastructure",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 63,
+      "line": 68,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1095,7 +834,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -1121,7 +860,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be, audit:app-ux",
       "created": "2026-02-19",
-      "line": 65,
+      "line": 70,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1132,7 +871,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1158,7 +897,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 66,
+      "line": 71,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1169,7 +908,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1194,7 +933,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 67,
+      "line": 72,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1205,7 +944,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1231,7 +970,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 69,
+      "line": 74,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1242,7 +981,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1267,7 +1006,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 70,
+      "line": 75,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1278,7 +1017,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1303,7 +1042,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 71,
+      "line": 76,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1314,7 +1053,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1339,7 +1078,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 72,
+      "line": 77,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1350,7 +1089,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1375,7 +1114,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 73,
+      "line": 78,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1386,7 +1125,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1411,7 +1150,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 74,
+      "line": 79,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1422,7 +1161,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1447,7 +1186,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 75,
+      "line": 80,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1458,7 +1197,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1483,7 +1222,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 76,
+      "line": 81,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1494,7 +1233,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1519,7 +1258,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 77,
+      "line": 82,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1530,7 +1269,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1555,7 +1294,7 @@
       "domain": "development",
       "source": "audit:app-ux, audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 78,
+      "line": 83,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1566,7 +1305,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1592,7 +1331,7 @@
       "domain": "development",
       "source": "audit:app-ux, audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 79,
+      "line": 84,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1603,7 +1342,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1628,7 +1367,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 80,
+      "line": 85,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1639,7 +1378,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1664,7 +1403,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 81,
+      "line": 86,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1675,7 +1414,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1700,7 +1439,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 82,
+      "line": 87,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1711,7 +1450,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -1737,7 +1476,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 83,
+      "line": 88,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1748,7 +1487,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -1776,7 +1515,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 84,
+      "line": 89,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1787,7 +1526,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1815,7 +1554,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 85,
+      "line": 90,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1826,7 +1565,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1852,7 +1591,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 86,
+      "line": 91,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1863,7 +1602,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1888,7 +1627,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 88,
+      "line": 93,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1899,7 +1638,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1924,7 +1663,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 89,
+      "line": 94,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1935,7 +1674,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1960,7 +1699,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 95,
+      "line": 100,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1971,7 +1710,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1996,7 +1735,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 96,
+      "line": 101,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2007,7 +1746,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2033,7 +1772,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 97,
+      "line": 102,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2044,7 +1783,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2069,7 +1808,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 98,
+      "line": 103,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2080,7 +1819,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2105,7 +1844,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 99,
+      "line": 104,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2116,7 +1855,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2141,7 +1880,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 100,
+      "line": 105,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2152,7 +1891,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2177,7 +1916,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 101,
+      "line": 106,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2188,7 +1927,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2213,7 +1952,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 102,
+      "line": 107,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2224,7 +1963,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2249,7 +1988,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 103,
+      "line": 108,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2260,7 +1999,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -2285,7 +2024,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 104,
+      "line": 109,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2296,7 +2035,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2321,7 +2060,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 106,
+      "line": 111,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2332,7 +2071,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2357,7 +2096,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 107,
+      "line": 112,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2368,7 +2107,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -2394,7 +2133,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 108,
+      "line": 113,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2405,7 +2144,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2430,7 +2169,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 109,
+      "line": 114,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2441,7 +2180,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2466,7 +2205,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 110,
+      "line": 115,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2477,7 +2216,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -2502,7 +2241,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 111,
+      "line": 116,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2513,7 +2252,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2538,7 +2277,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 112,
+      "line": 117,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2549,7 +2288,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2574,7 +2313,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 114,
+      "line": 119,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2585,7 +2324,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2610,7 +2349,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 115,
+      "line": 120,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2621,7 +2360,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2646,7 +2385,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 116,
+      "line": 121,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2657,7 +2396,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2682,7 +2421,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 117,
+      "line": 122,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2693,7 +2432,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2718,7 +2457,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 119,
+      "line": 124,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2729,7 +2468,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2754,7 +2493,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 120,
+      "line": 125,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2765,7 +2504,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2790,7 +2529,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 121,
+      "line": 126,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2801,7 +2540,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2827,7 +2566,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 122,
+      "line": 127,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2838,7 +2577,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2864,7 +2603,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 123,
+      "line": 128,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2875,7 +2614,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -2901,7 +2640,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 124,
+      "line": 129,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2912,7 +2651,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2938,7 +2677,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 125,
+      "line": 130,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2949,7 +2688,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2974,7 +2713,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 126,
+      "line": 131,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2985,7 +2724,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3011,7 +2750,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 127,
+      "line": 132,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3022,7 +2761,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3047,7 +2786,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 128,
+      "line": 133,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3058,7 +2797,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3083,7 +2822,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 129,
+      "line": 134,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3094,7 +2833,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3120,7 +2859,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 130,
+      "line": 135,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3131,7 +2870,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3156,7 +2895,7 @@
       "domain": "performance",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 131,
+      "line": 138,
       "files": [
         "apps/web/src/app/(dashboard)/",
         "apps/web/src/components/"
@@ -3177,7 +2916,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -3202,7 +2941,7 @@
       "domain": "code-quality",
       "source": "review:simplicity",
       "created": "2026-02-18",
-      "line": 132,
+      "line": 139,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3213,7 +2952,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3239,7 +2978,7 @@
       "domain": "code-quality",
       "source": "review:simplicity",
       "created": "2026-02-18",
-      "line": 133,
+      "line": 140,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3250,7 +2989,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3275,7 +3014,7 @@
       "domain": "ux",
       "source": "review:nextjs",
       "created": "2026-02-18",
-      "line": 134,
+      "line": 141,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3286,7 +3025,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3311,7 +3050,7 @@
       "domain": "ux",
       "source": "review:nextjs",
       "created": "2026-02-18",
-      "line": 135,
+      "line": 142,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3322,7 +3061,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -3347,7 +3086,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 136,
+      "line": 143,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3358,7 +3097,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3383,7 +3122,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 137,
+      "line": 144,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3394,7 +3133,79 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DOC-7": {
+      "id": "DOC-7",
+      "title": "Update test/page counts in context files (apps/api: 362→1010 tests, apps/web: 38→54 pages, root: 38→40 models)",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation",
+      "source": "audit:2026-02-20",
+      "created": "2026-02-20",
+      "line": 145,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DOC-8": {
+      "id": "DOC-8",
+      "title": "Update domain status in apps/api/CLAUDE.md (Invoicing marked \"stub\" but is fully built)",
+      "effort": "15m",
+      "effortMinutes": 15,
+      "effortCategory": "quick",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "documentation",
+      "source": "audit:2026-02-20",
+      "created": "2026-02-20",
+      "line": 146,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -3419,7 +3230,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 138,
+      "line": 147,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3430,7 +3241,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -3457,7 +3268,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 139,
+      "line": 148,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3468,7 +3279,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -3496,7 +3307,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 140,
+      "line": 149,
       "files": [
         "apps/web/src/components/help/",
         "apps/web/src/app/(dashboard)/layout.tsx"
@@ -3518,7 +3329,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -3543,7 +3354,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3",
       "created": "2026-02-18",
-      "line": 141,
+      "line": 150,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3554,7 +3365,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3579,7 +3390,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.4",
       "created": "2026-02-18",
-      "line": 142,
+      "line": 151,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3590,7 +3401,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3615,7 +3426,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.1",
       "created": "2026-02-18",
-      "line": 143,
+      "line": 153,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3626,7 +3437,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3652,7 +3463,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.3",
       "created": "2026-02-18",
-      "line": 144,
+      "line": 154,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3663,7 +3474,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3688,7 +3499,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.2",
       "created": "2026-02-18",
-      "line": 145,
+      "line": 155,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3699,7 +3510,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3727,7 +3538,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.2",
       "created": "2026-02-18",
-      "line": 146,
+      "line": 156,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3738,7 +3549,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3766,7 +3577,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.1",
       "created": "2026-02-18",
-      "line": 147,
+      "line": 157,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3777,7 +3588,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3803,7 +3614,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.4",
       "created": "2026-02-18",
-      "line": 148,
+      "line": 158,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3814,7 +3625,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3840,7 +3651,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain §2.2.2",
       "created": "2026-02-18",
-      "line": 149,
+      "line": 159,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3851,7 +3662,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3877,7 +3688,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 150,
+      "line": 160,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3888,7 +3699,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3914,7 +3725,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 151,
+      "line": 161,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3925,7 +3736,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3951,7 +3762,7 @@
       "domain": "testing",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 152,
+      "line": 162,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3962,7 +3773,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3988,7 +3799,7 @@
       "domain": "code-quality",
       "source": "review:dashboard-overview",
       "created": "2026-02-18",
-      "line": 154,
+      "line": 164,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx"
       ],
@@ -4005,7 +3816,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4027,7 +3838,7 @@
       "domain": "ux",
       "source": "ad-hoc:user-request",
       "created": "2026-02-19",
-      "line": 156,
+      "line": 166,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4038,7 +3849,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4063,7 +3874,7 @@
       "domain": "design-system",
       "source": "review:dashboard-overview",
       "created": "2026-02-18",
-      "line": 160,
+      "line": 170,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4074,7 +3885,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4099,45 +3910,7 @@
       "domain": "development",
       "source": "✅",
       "created": "2026-02-19",
-      "line": 165,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "dashboard"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "FIN-14": {
-      "id": "FIN-14",
-      "title": "DashboardService: document or fix float arithmetic in FX conversion (`Math.abs(balance) * rate`)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "financial",
-      "source": "review:dashboard-overview",
-      "created": "2026-02-18",
-      "line": 168,
+      "line": 175,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4163,19 +3936,19 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-11": {
-      "id": "DEV-11",
-      "title": "Overview: Add upcoming payments endpoint — bills due + expected invoice payments (RightRail placeholder)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
+    "FIN-14": {
+      "id": "FIN-14",
+      "title": "DashboardService: document or fix float arithmetic in FX conversion (`Math.abs(balance) * rate`)",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
       "priority": "medium",
       "status": "ready",
       "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 169,
+      "domain": "financial",
+      "source": "review:dashboard-overview",
+      "created": "2026-02-18",
+      "line": 178,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4188,7 +3961,45 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 2,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-11": {
+      "id": "DEV-11",
+      "title": "Overview: Add upcoming payments endpoint — bills due + expected invoice payments (RightRail placeholder)",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:fe-be-parity",
+      "created": "2026-02-19",
+      "line": 179,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "dashboard"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4213,7 +4024,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 170,
+      "line": 180,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4226,7 +4037,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -4252,7 +4063,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 171,
+      "line": 181,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4263,7 +4074,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -4289,7 +4100,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 172,
+      "line": 182,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4300,7 +4111,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4325,7 +4136,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 173,
+      "line": 183,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4336,7 +4147,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4361,7 +4172,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 174,
+      "line": 184,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4372,7 +4183,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4397,7 +4208,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 175,
+      "line": 185,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4408,7 +4219,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4433,7 +4244,7 @@
       "domain": "financial",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 176,
+      "line": 186,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4444,7 +4255,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4469,7 +4280,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 177,
+      "line": 187,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4480,7 +4291,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4505,7 +4316,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 178,
+      "line": 188,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4516,7 +4327,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4541,7 +4352,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 179,
+      "line": 189,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4552,7 +4363,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4577,7 +4388,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 180,
+      "line": 190,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4588,7 +4399,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4613,7 +4424,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 181,
+      "line": 191,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4624,7 +4435,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4649,7 +4460,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 182,
+      "line": 192,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4660,7 +4471,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4685,7 +4496,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 183,
+      "line": 193,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4696,7 +4507,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4721,7 +4532,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 184,
+      "line": 194,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4732,7 +4543,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4757,7 +4568,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 185,
+      "line": 195,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4768,7 +4579,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4793,7 +4604,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 186,
+      "line": 196,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4804,7 +4615,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4829,7 +4640,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 187,
+      "line": 197,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4840,7 +4651,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4865,7 +4676,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 188,
+      "line": 198,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4876,7 +4687,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4901,7 +4712,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 189,
+      "line": 199,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4912,7 +4723,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4937,7 +4748,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 190,
+      "line": 200,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4948,7 +4759,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -4974,7 +4785,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 191,
+      "line": 201,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4985,7 +4796,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5010,7 +4821,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 192,
+      "line": 202,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5021,7 +4832,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5047,7 +4858,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 193,
+      "line": 203,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5058,7 +4869,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5083,7 +4894,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 194,
+      "line": 204,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5094,7 +4905,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5119,7 +4930,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 195,
+      "line": 205,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5130,7 +4941,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5155,7 +4966,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 196,
+      "line": 206,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5166,7 +4977,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5192,7 +5003,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 197,
+      "line": 207,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5203,7 +5014,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5228,7 +5039,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 198,
+      "line": 208,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5239,7 +5050,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -5265,7 +5076,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 199,
+      "line": 209,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5276,7 +5087,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -5302,7 +5113,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 200,
+      "line": 210,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5313,7 +5124,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5338,7 +5149,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 201,
+      "line": 211,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5349,7 +5160,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5375,7 +5186,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 202,
+      "line": 212,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5386,7 +5197,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5411,7 +5222,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 203,
+      "line": 213,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5422,7 +5233,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5447,7 +5258,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 204,
+      "line": 214,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5458,7 +5269,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5484,7 +5295,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 205,
+      "line": 215,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5495,7 +5306,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5520,7 +5331,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 206,
+      "line": 216,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5531,7 +5342,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5556,7 +5367,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 207,
+      "line": 217,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5567,7 +5378,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5592,7 +5403,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 208,
+      "line": 218,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5603,7 +5414,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5629,7 +5440,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 209,
+      "line": 219,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5640,7 +5451,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5666,7 +5477,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 210,
+      "line": 220,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5677,7 +5488,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5702,7 +5513,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 211,
+      "line": 221,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5713,7 +5524,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5738,7 +5549,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 214,
+      "line": 224,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5749,7 +5560,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5774,7 +5585,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 216,
+      "line": 226,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5785,7 +5596,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5810,7 +5621,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 217,
+      "line": 227,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5821,7 +5632,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5846,7 +5657,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 218,
+      "line": 228,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5857,7 +5668,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5882,7 +5693,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 219,
+      "line": 229,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5893,7 +5704,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5918,7 +5729,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 220,
+      "line": 230,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5929,7 +5740,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5954,7 +5765,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 221,
+      "line": 231,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -5965,7 +5776,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5990,7 +5801,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 222,
+      "line": 232,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6001,7 +5812,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -6027,7 +5838,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 223,
+      "line": 233,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6038,7 +5849,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6063,7 +5874,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 224,
+      "line": 234,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6074,7 +5885,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6099,7 +5910,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 225,
+      "line": 235,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6110,7 +5921,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6135,7 +5946,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 226,
+      "line": 236,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6146,7 +5957,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6171,7 +5982,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 227,
+      "line": 237,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6182,7 +5993,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6207,7 +6018,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 229,
+      "line": 239,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6218,7 +6029,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6244,7 +6055,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 230,
+      "line": 240,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6255,7 +6066,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6281,7 +6092,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 231,
+      "line": 241,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6292,7 +6103,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6319,7 +6130,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 232,
+      "line": 242,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6330,7 +6141,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6358,7 +6169,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 233,
+      "line": 243,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6369,7 +6180,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6395,7 +6206,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 234,
+      "line": 244,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6406,7 +6217,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6431,7 +6242,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 235,
+      "line": 245,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6442,7 +6253,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6468,7 +6279,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 236,
+      "line": 246,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6479,7 +6290,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -6507,7 +6318,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 237,
+      "line": 247,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6518,7 +6329,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6545,7 +6356,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 238,
+      "line": 248,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6556,7 +6367,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6581,7 +6392,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 239,
+      "line": 249,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6592,7 +6403,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6617,7 +6428,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 240,
+      "line": 250,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6628,7 +6439,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6656,7 +6467,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 241,
+      "line": 251,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6669,7 +6480,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6696,7 +6507,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 242,
+      "line": 252,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6707,7 +6518,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6732,7 +6543,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 243,
+      "line": 253,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6743,7 +6554,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6770,7 +6581,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 244,
+      "line": 254,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6781,7 +6592,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -6809,7 +6620,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 245,
+      "line": 255,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6820,7 +6631,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6845,7 +6656,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 246,
+      "line": 256,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6856,7 +6667,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6883,7 +6694,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 247,
+      "line": 257,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6894,7 +6705,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6921,7 +6732,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 248,
+      "line": 258,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6932,7 +6743,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -6960,7 +6771,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 249,
+      "line": 259,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6971,7 +6782,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6996,7 +6807,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 250,
+      "line": 260,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7007,7 +6818,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -7032,7 +6843,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 251,
+      "line": 261,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7043,7 +6854,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7068,7 +6879,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 252,
+      "line": 262,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7079,7 +6890,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7106,7 +6917,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 253,
+      "line": 263,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7119,7 +6930,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7144,7 +6955,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 254,
+      "line": 264,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7155,7 +6966,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -7181,7 +6992,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 255,
+      "line": 265,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7192,7 +7003,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -7220,7 +7031,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 256,
+      "line": 266,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7231,7 +7042,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7256,7 +7067,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2",
       "created": "2026-02-18",
-      "line": 257,
+      "line": 267,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7267,7 +7078,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -7292,7 +7103,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 258,
+      "line": 268,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7303,7 +7114,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7328,7 +7139,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 259,
+      "line": 269,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7341,7 +7152,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 1,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7366,7 +7177,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 260,
+      "line": 270,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7377,7 +7188,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7402,7 +7213,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.4",
       "created": "2026-02-18",
-      "line": 261,
+      "line": 271,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7413,7 +7224,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7438,7 +7249,7 @@
       "domain": "code-quality",
       "source": "review:typescript",
       "created": "2026-02-18",
-      "line": 262,
+      "line": 272,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7449,7 +7260,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7474,7 +7285,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2",
       "created": "2026-02-18",
-      "line": 263,
+      "line": 273,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7485,7 +7296,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -7510,7 +7321,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2",
       "created": "2026-02-18",
-      "line": 264,
+      "line": 274,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7521,7 +7332,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -7546,7 +7357,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.1",
       "created": "2026-02-18",
-      "line": 265,
+      "line": 275,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7557,7 +7368,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -7583,7 +7394,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.3",
       "created": "2026-02-18",
-      "line": 266,
+      "line": 276,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7594,7 +7405,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -7620,7 +7431,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3",
       "created": "2026-02-18",
-      "line": 267,
+      "line": 277,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7631,7 +7442,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7657,7 +7468,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3",
       "created": "2026-02-18",
-      "line": 268,
+      "line": 278,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7668,7 +7479,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7693,7 +7504,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain §2.4.4",
       "created": "2026-02-18",
-      "line": 269,
+      "line": 279,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7704,7 +7515,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7730,7 +7541,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain §2.4.5",
       "created": "2026-02-18",
-      "line": 270,
+      "line": 280,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7741,7 +7552,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7766,7 +7577,7 @@
       "domain": "financial",
       "source": "review:financial",
       "created": "2026-02-18",
-      "line": 271,
+      "line": 281,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7777,7 +7588,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7802,7 +7613,7 @@
       "domain": "design-system",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 281,
+      "line": 291,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7813,7 +7624,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7839,7 +7650,7 @@
       "domain": "design-system",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 287,
+      "line": 297,
       "files": [
         "packages/ui/",
         "packages/ui/.storybook/",
@@ -7861,7 +7672,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 21,
         "recommendation": "ok"
       },
@@ -7887,7 +7698,7 @@
       "domain": "marketing",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 297,
+      "line": 307,
       "files": [
         "apps/web/src/app/(marketing)/",
         "apps/web/src/app/page.tsx"
@@ -7908,7 +7719,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -7934,7 +7745,7 @@
       "domain": "marketing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 303,
+      "line": 313,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -7945,7 +7756,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -7971,7 +7782,7 @@
       "domain": "content",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 304,
+      "line": 314,
       "files": [
         "brand/competitive-analysis.md"
       ],
@@ -7991,7 +7802,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -8016,7 +7827,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 314,
+      "line": 324,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -8027,7 +7838,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -8054,7 +7865,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 315,
+      "line": 325,
       "files": [
         "docker-compose.yml",
         "Dockerfile",
@@ -8078,7 +7889,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -8103,7 +7914,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 316,
+      "line": 326,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -8114,7 +7925,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -8140,7 +7951,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 317,
+      "line": 327,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -8151,7 +7962,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -8179,7 +7990,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 318,
+      "line": 328,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -8190,7 +8001,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -8218,7 +8029,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 319,
+      "line": 329,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -8229,7 +8040,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -8257,7 +8068,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 320,
+      "line": 330,
       "files": [
         "Dockerfile",
         "docker-compose.yml",
@@ -8280,7 +8091,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -8307,7 +8118,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 326,
+      "line": 336,
       "files": [
         "docs/operations/disaster-recovery.md",
         "packages/db/prisma/"
@@ -8329,7 +8140,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -8356,7 +8167,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 327,
+      "line": 337,
       "files": [
         "docs/operations/deployment.md",
         "Dockerfile",
@@ -8379,7 +8190,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -8410,6 +8221,30 @@
       "completedAt": null,
       "completedCommit": null
     },
+    "PERF-1": {
+      "id": "PERF-1",
+      "title": "Balance Sheet: combine 2 redundant heavy SQL queries into 1",
+      "domain": "performance",
+      "source": "review:performance",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "PERF-5": {
+      "id": "PERF-5",
+      "title": "Database indexes on hot paths (dashboard, reports)",
+      "domain": "performance",
+      "source": "roadmap",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "PERF-6": {
+      "id": "PERF-6",
+      "title": "Query optimization audit (dashboard + report queries)",
+      "domain": "performance",
+      "source": "roadmap",
+      "completedAt": null,
+      "completedCommit": null
+    },
     "DRY-1": {
       "id": "DRY-1",
       "title": "Report types: move shared types to `packages/types` (eliminate duplication)",
@@ -8423,6 +8258,46 @@
       "title": "GL Account ID: replace raw CUID input with searchable dropdown (also: JE form uses plain Select)",
       "domain": "ux",
       "source": "review:nextjs, audit:acct-fe-be",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "PERF-9": {
+      "id": "PERF-9",
+      "title": "Replace console.log with pino structured logging (7 production files — already compliant, only env.ts pre-boot)",
+      "domain": "performance",
+      "source": "plan:phase-6-tasks",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "SEC-11": {
+      "id": "SEC-11",
+      "title": "File upload virus scanning (ClamAV integration for PDFs/CSVs)",
+      "domain": "security",
+      "source": "review:smooth-floating-mountain §2.2.3",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "SEC-13": {
+      "id": "SEC-13",
+      "title": "Audit log tamper detection (immutable log storage)",
+      "domain": "security",
+      "source": "review:smooth-floating-mountain §2.2.4",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "INFRA-9": {
+      "id": "INFRA-9",
+      "title": "Secrets management for production (env var vault, not .env files)",
+      "domain": "infrastructure",
+      "source": "review:smooth-floating-mountain §2.4.4",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "INFRA-10": {
+      "id": "INFRA-10",
+      "title": "Security scanning in CI (SAST + dependency/supply chain checks)",
+      "domain": "infrastructure",
+      "source": "review:smooth-floating-mountain §2.4.4",
       "completedAt": null,
       "completedCommit": null
     },
@@ -8465,6 +8340,38 @@
       "source": "review:smooth-floating-mountain",
       "completedAt": "2026-02-19",
       "completedCommit": "2d1dce0"
+    },
+    "UX-11": {
+      "id": "UX-11",
+      "title": "Overview: Wire `/overview/net-worth` page with real data (backend endpoint exists, page says \"coming soon\")",
+      "domain": "ux",
+      "source": "audit:fe-be-parity",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-12": {
+      "id": "UX-12",
+      "title": "Overview: Wire `/overview/cash-flow` page with real data (backend endpoint exists, page says \"coming soon\")",
+      "domain": "ux",
+      "source": "audit:fe-be-parity",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "FIN-15": {
+      "id": "FIN-15",
+      "title": "Performance endpoint: Wire receivables data from invoicing domain (currently hardcoded to 0)",
+      "domain": "financial",
+      "source": "audit:fe-be-parity",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-10": {
+      "id": "DEV-10",
+      "title": "Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain)",
+      "domain": "development",
+      "source": "audit:fe-be-parity",
+      "completedAt": null,
+      "completedCommit": null
     },
     "UX-14": {
       "id": "UX-14",
@@ -8519,6 +8426,30 @@
       "title": "Sidebar: Add \"Coming Soon\" badge or hide unimplemented pages~~ (merged into UX-35)",
       "domain": "ux",
       "source": "audit:acct-fe-be",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "PERF-21": {
+      "id": "PERF-21",
+      "title": "Add composite index on JournalLine for GL account filtering (glAccountId, journalEntryId, deletedAt)",
+      "domain": "performance",
+      "source": "audit:2026-02-20",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "PERF-22": {
+      "id": "PERF-22",
+      "title": "Add composite index on Payment for client/vendor filtering (clientId, vendorId, status, date, deletedAt)",
+      "domain": "performance",
+      "source": "audit:2026-02-20",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "INFRA-15": {
+      "id": "INFRA-15",
+      "title": "Add security headers to Next.js API routes (X-Frame-Options, CSP, HSTS in next.config.js)",
+      "domain": "infrastructure",
+      "source": "audit:2026-02-20",
       "completedAt": null,
       "completedCommit": null
     },
@@ -8645,22 +8576,11 @@
   },
   "indexes": {
     "byDomain": {
-      "security": [
-        "SEC-8",
-        "SEC-11",
-        "SEC-13",
-        "SEC-10",
-        "SEC-12",
-        "SEC-14",
-        "SEC-15",
-        "SEC-16"
-      ],
       "performance": [
-        "PERF-1",
-        "PERF-5",
-        "PERF-6",
+        "PERF-18",
+        "PERF-19",
+        "PERF-20",
         "PERF-8",
-        "PERF-9",
         "PERF-2",
         "PERF-3",
         "PERF-7",
@@ -8669,11 +8589,32 @@
         "PERF-4",
         "PERF-11"
       ],
+      "security": [
+        "SEC-8",
+        "SEC-23",
+        "SEC-10",
+        "SEC-12",
+        "SEC-14",
+        "SEC-15",
+        "SEC-16"
+      ],
+      "infrastructure": [
+        "INFRA-14",
+        "INFRA-13",
+        "INFRA-11",
+        "INFRA-12",
+        "INFRA-1",
+        "INFRA-2",
+        "INFRA-3",
+        "INFRA-5",
+        "INFRA-7",
+        "INFRA-8",
+        "INFRA-4",
+        "INFRA-6"
+      ],
       "ux": [
         "UX-1",
         "UX-8",
-        "UX-11",
-        "UX-12",
         "UX-13",
         "UX-15",
         "UX-17",
@@ -8729,7 +8670,6 @@
       ],
       "development": [
         "DEV-2",
-        "DEV-10",
         "DEV-43",
         "DEV-44",
         "DEV-45",
@@ -8844,33 +8784,6 @@
         "ARCH-4",
         "ARCH-3"
       ],
-      "infrastructure": [
-        "INFRA-9",
-        "INFRA-10",
-        "INFRA-13",
-        "INFRA-11",
-        "INFRA-12",
-        "INFRA-1",
-        "INFRA-2",
-        "INFRA-3",
-        "INFRA-5",
-        "INFRA-7",
-        "INFRA-8",
-        "INFRA-4",
-        "INFRA-6"
-      ],
-      "financial": [
-        "FIN-15",
-        "FIN-7",
-        "FIN-8",
-        "FIN-9",
-        "FIN-10",
-        "FIN-14",
-        "FIN-16",
-        "FIN-11",
-        "FIN-12",
-        "FIN-6"
-      ],
       "code-quality": [
         "DRY-2",
         "DRY-3",
@@ -8880,9 +8793,22 @@
       "documentation": [
         "DOC-2",
         "DOC-3",
+        "DOC-7",
+        "DOC-8",
         "DOC-4",
         "DOC-5",
         "DOC-6"
+      ],
+      "financial": [
+        "FIN-7",
+        "FIN-8",
+        "FIN-9",
+        "FIN-10",
+        "FIN-14",
+        "FIN-16",
+        "FIN-11",
+        "FIN-12",
+        "FIN-6"
       ],
       "design-system": [
         "DS-4",
@@ -8898,30 +8824,24 @@
       ]
     },
     "byPriority": {
-      "critical": [],
+      "critical": [
+        "PERF-18",
+        "PERF-19",
+        "PERF-20"
+      ],
       "high": [
         "SEC-8",
-        "PERF-1",
-        "PERF-5",
-        "PERF-6",
         "PERF-8",
+        "INFRA-14",
+        "SEC-23",
         "UX-1",
         "TEST-1",
         "TEST-2",
         "TEST-3",
         "DEV-2",
-        "PERF-9",
         "UX-8",
         "ARCH-2",
         "ARCH-6",
-        "SEC-11",
-        "SEC-13",
-        "INFRA-9",
-        "INFRA-10",
-        "UX-11",
-        "UX-12",
-        "FIN-15",
-        "DEV-10",
         "DEV-43",
         "DEV-44",
         "UX-13",
@@ -9101,6 +9021,8 @@
       ],
       "low": [
         "DEV-70",
+        "DOC-7",
+        "DOC-8",
         "DEV-40",
         "DEV-41",
         "DEV-42",
@@ -9136,24 +9058,21 @@
         "UX-20",
         "UX-4",
         "DOC-3",
+        "DOC-8",
         "DEV-114",
         "DOC-4",
         "DOC-5",
         "DOC-6"
       ],
       "short": [
-        "PERF-1",
-        "PERF-5",
-        "PERF-6",
+        "PERF-18",
+        "PERF-19",
+        "PERF-20",
         "PERF-8",
+        "SEC-23",
         "TEST-3",
-        "PERF-9",
         "UX-8",
         "ARCH-6",
-        "INFRA-9",
-        "INFRA-10",
-        "UX-11",
-        "UX-12",
         "DEV-44",
         "DEV-45",
         "UX-15",
@@ -9187,6 +9106,7 @@
         "DRY-3",
         "UX-3",
         "DOC-2",
+        "DOC-7",
         "UX-6",
         "UX-7",
         "SEC-12",
@@ -9238,12 +9158,11 @@
       ],
       "medium": [
         "SEC-8",
+        "INFRA-14",
         "TEST-1",
         "TEST-2",
         "DEV-2",
         "ARCH-2",
-        "SEC-11",
-        "SEC-13",
         "UX-17",
         "DEV-59",
         "DEV-76",
@@ -9306,27 +9225,19 @@
     },
     "byStatus": {
       "ready": [
-        "SEC-8",
-        "PERF-1",
-        "PERF-5",
-        "PERF-6",
+        "PERF-18",
+        "PERF-19",
+        "PERF-20",
         "PERF-8",
+        "INFRA-14",
+        "SEC-23",
         "UX-1",
         "TEST-1",
         "TEST-2",
         "DEV-2",
-        "PERF-9",
         "UX-8",
         "ARCH-2",
         "ARCH-6",
-        "SEC-11",
-        "SEC-13",
-        "INFRA-9",
-        "INFRA-10",
-        "UX-11",
-        "UX-12",
-        "FIN-15",
-        "DEV-10",
         "DEV-43",
         "DEV-44",
         "UX-13",
@@ -9376,6 +9287,8 @@
         "UX-4",
         "DOC-2",
         "DOC-3",
+        "DOC-7",
+        "DOC-8",
         "SEC-12",
         "SEC-14",
         "DRY-7",
@@ -9537,17 +9450,13 @@
       ]
     },
     "quickWins": [
-      "PERF-1",
-      "PERF-5",
-      "PERF-6",
+      "PERF-18",
+      "PERF-19",
+      "PERF-20",
       "PERF-8",
-      "PERF-9",
+      "SEC-23",
       "UX-8",
       "ARCH-6",
-      "INFRA-9",
-      "INFRA-10",
-      "UX-11",
-      "UX-12",
       "DEV-44",
       "DEV-45",
       "UX-15",

@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-20
 **Current Phase:** Phase 6 — Launch MVP
 
-> **256 tasks** · 🔴 3 critical · 🟠 61 high · 🟡 133 medium · ⚪ 28 low · ✅ 31 done
-> 🟢 101 ready · 📦 117 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **256 tasks** · 🔴 3 critical · 🟠 61 high · 🟡 130 medium · ⚪ 28 low · ✅ 34 done
+> 🟢 98 ready · 📦 117 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -133,8 +133,8 @@
 | DEV-70 | Accounting Reports: One-click export all statements as ZIP | 1-2h | ⚪ Low | 📦 | | audit:acct-fe-be |
 | PERF-2 | Revenue: add JSONB expression index for extraction | 30m | 🟡 Medium | 🟢 | | review:performance |
 | PERF-3 | Recharts: code-split import (lazy load) | 30m | 🟡 Medium | 🟢 | | review:performance |
-| PERF-21 | Add composite index on JournalLine for GL account filtering (glAccountId, journalEntryId, deletedAt) | 1h | 🟡 Medium | 🟢 | | audit:2026-02-20 |
-| PERF-22 | Add composite index on Payment for client/vendor filtering (clientId, vendorId, status, date, deletedAt) | 1h | 🟡 Medium | 🟢 | | audit:2026-02-20 |
+| ~~PERF-21~~ | ~~Add composite index on JournalLine for GL account filtering (glAccountId, journalEntryId, deletedAt)~~ | 1h | 🟡 Medium | ✅ | | audit:2026-02-20 |
+| ~~PERF-22~~ | ~~Add composite index on Payment for client/vendor filtering (clientId, vendorId, status, date, deletedAt)~~ | 1h | 🟡 Medium | ✅ | | audit:2026-02-20 |
 | PERF-7 | Lazy-loading heavy frontend components | 1h | 🟡 Medium | 🟢 | | roadmap |
 | DRY-2 | CSV sanitization: deduplicate between report-export and data-export | 30m | 🟡 Medium | 🟢 | | review:simplicity |
 | DRY-3 | Report routes: extract shared 40-line handler pattern into helper | 1h | 🟡 Medium | 🟢 | | review:simplicity |
@@ -149,7 +149,7 @@
 | UX-7 | Help overlay documenting keyboard shortcuts | 1h | 🟡 Medium | 🔒 | [needs: UX-6] | roadmap |
 | SEC-12 | File upload quota enforcement per tenant (prevent abuse/DoS) | 1h | 🟡 Medium | 🟢 | | review:smooth-floating-mountain §2.2.3 |
 | SEC-14 | Audit log retention policies (prevent unbounded growth, compliance) | 1h | 🟡 Medium | 🟢 | | review:smooth-floating-mountain §2.2.4 |
-| INFRA-15 | Add security headers to Next.js API routes (X-Frame-Options, CSP, HSTS in next.config.js) | 1h | 🟡 Medium | 🟢 | | audit:2026-02-20 |
+| ~~INFRA-15~~ | ~~Add security headers to Next.js API routes (X-Frame-Options, CSP, HSTS in next.config.js)~~ | 1h | 🟡 Medium | ✅ | | audit:2026-02-20 |
 | PERF-10 | Distributed caching (Redis) for multi-instance deployment | 4h | 🟡 Medium | 📦 | | review:smooth-floating-mountain §2.1.1 |
 | PERF-12 | N+1 query monitoring / slow query detection in production (APM) | 2h | 🟡 Medium | 📦 | | review:smooth-floating-mountain §2.1.3 |
 | FIN-7 | Fiscal period enforcement (prevent posting to locked periods) | 4h | 🟡 Medium | 📦 | | review:smooth-floating-mountain §2.3.2 |
@@ -410,16 +410,17 @@
 
 
 
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-20T16:52:06.643Z",
+  "generated": "2026-02-20T17:13:00.609Z",
   "summary": {
     "total": 266,
-    "ready": 92,
+    "ready": 89,
     "blocked": 7,
     "backlog": 122,
-    "done": 43
+    "done": 46
   },
   "byPriority": {
     "critical": [
@@ -1258,8 +1259,6 @@
     "UX-27",
     "PERF-2",
     "PERF-3",
-    "PERF-21",
-    "PERF-22",
     "PERF-7",
     "DRY-2",
     "DRY-3",
@@ -1271,7 +1270,6 @@
     "DOC-8",
     "SEC-12",
     "SEC-14",
-    "INFRA-15",
     "DRY-7",
     "UX-10",
     "DS-4",
@@ -2292,7 +2290,7 @@
       "title": "Add composite index on JournalLine for GL account filtering (glAccountId, journalEntryId, deletedAt)",
       "effort": "1h",
       "priority": "medium",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "performance"
     },
@@ -2301,7 +2299,7 @@
       "title": "Add composite index on Payment for client/vendor filtering (clientId, vendorId, status, date, deletedAt)",
       "effort": "1h",
       "priority": "medium",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "performance"
     },
@@ -2438,7 +2436,7 @@
       "title": "Add security headers to Next.js API routes (X-Frame-Options, CSP, HSTS in next.config.js)",
       "effort": "1h",
       "priority": "medium",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "infrastructure"
     },

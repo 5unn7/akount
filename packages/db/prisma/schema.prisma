@@ -187,6 +187,7 @@ model JournalLine {
   @@index([glAccountId])
   @@index([journalEntryId, deletedAt])
   @@index([glAccountId, deletedAt]) // Composite index for report aggregations (Phase 5)
+  @@index([glAccountId, journalEntryId, deletedAt]) // PERF-21: GL account filtering (speeds up GL ledger queries)
 }
 
 model TaxRate {
@@ -401,6 +402,8 @@ model Payment {
   @@index([clientId])
   @@index([vendorId])
   @@index([entityId, deletedAt])
+  @@index([clientId, date, deletedAt]) // PERF-22: Client payment history queries
+  @@index([vendorId, date, deletedAt]) // PERF-22: Vendor payment history queries
 }
 
 model PaymentAllocation {
@@ -543,7 +546,7 @@ model Transaction {
   @@index([categoryId])
   @@index([sourceType, sourceId])
   @@index([accountId, deletedAt])
-  @@index([accountId, date, deletedAt]) // PERF-5: Composite for dashboard date-range queries with soft-delete
+  @@index([accountId, categoryId, date, deletedAt]) // PERF-19: Composite for date range queries with category filter and soft-delete
   @@index([importBatchId])
 }
 
