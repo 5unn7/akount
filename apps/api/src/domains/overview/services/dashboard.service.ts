@@ -187,13 +187,21 @@ export class DashboardService {
     });
 
     // 3. Convert all transactions to base currency and calculate daily net flow
+    // Extract unique currencies and batch fetch FX rates
+    const uniqueCurrencies = [...new Set(transactions.map((t) => t.account.currency))];
+    const currencyPairs = uniqueCurrencies.map((curr) => ({
+      from: curr,
+      to: baseCurrency,
+    }));
+
+    const rates = await this.fxService.getRateBatch(currencyPairs);
+
     const dailyFlows = new Map<string, number>();
 
     for (const txn of transactions) {
       const dateKey = txn.date.toISOString().split('T')[0];
-      const rate = txn.account.currency === baseCurrency
-        ? 1.0
-        : await this.fxService.getRate(txn.account.currency, baseCurrency);
+      const rateKey = `${txn.account.currency}_${baseCurrency}`;
+      const rate = rates.get(rateKey) ?? 1.0;
 
       const convertedAmount = Math.round(txn.amount * rate);
       dailyFlows.set(dateKey, (dailyFlows.get(dateKey) || 0) + convertedAmount);
