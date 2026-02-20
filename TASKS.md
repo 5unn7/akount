@@ -23,11 +23,11 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | ~~DEV-1~~ | ~~Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume)~~ | 1h | 🔴 Critical | ✅ | | audit:smooth-floating-mountain |
-| SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟢 | | roadmap |
+| SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | ~~SEC-9~~ | ~~CSRF protection review (N/A — pure JWT Bearer auth, no cookies, not vulnerable to CSRF)~~ | 1h | 🟠 High | ✅ | | roadmap |
-| PERF-1 | Balance Sheet: combine 2 redundant heavy SQL queries into 1 | 2h | 🟠 High | 🟢 | | review:performance |
-| PERF-5 | Database indexes on hot paths (dashboard, reports) | 2h | 🟠 High | 🟢 | | roadmap |
-| PERF-6 | Query optimization audit (dashboard + report queries) | 2h | 🟠 High | 🟢 | | roadmap |
+| ~~PERF-1~~ | ~~Balance Sheet: combine 2 redundant heavy SQL queries into 1~~ | 2h | 🟠 High | ✅ | | review:performance |
+| ~~PERF-5~~ | ~~Database indexes on hot paths (dashboard, reports)~~ | 2h | 🟠 High | ✅ | | roadmap |
+| ~~PERF-6~~ | ~~Query optimization audit (dashboard + report queries)~~ | 2h | 🟠 High | ✅ | | roadmap |
 | PERF-8 | p95 < 2s page load target verification + load testing | 2h | 🟠 High | 🟢 | | roadmap |
 | ~~DRY-1~~ | ~~Report types: move shared types to `packages/types` (eliminate duplication)~~ | 1h | 🟠 High | ✅ | | review:typescript |
 | UX-1 | Entity selector: replace 7+ hardcoded `entities[0]` with real selector (Accounting JE/COA, AccountFormSheet, Navbar, Invoicing, Vendors — all domains affected) | 2-3h | 🟠 High | 🟢 | | review:nextjs, audit:acct-fe-be, audit:app-ux |
@@ -36,23 +36,23 @@
 | TEST-2 | E2E tests for critical user flows (onboarding, import, posting, reports) | 4h | 🟠 High | 🟢 | | roadmap |
 | TEST-3 | 80%+ API test coverage target | 2h | 🟠 High | 🔒 | [needs: TEST-1] | roadmap |
 | DEV-2 | Service tests for client/invoice/bill/vendor services | 3h | 🟠 High | 🟢 | | audit:smooth-floating-mountain |
-| PERF-9 | Replace console.log with pino structured logging (7 production files) | 2h | 🟠 High | 🟢 | | plan:phase-6-tasks |
+| ~~PERF-9~~ | ~~Replace console.log with pino structured logging (7 production files — already compliant, only env.ts pre-boot)~~ | 2h | 🟠 High | ✅ | | plan:phase-6-tasks |
 | UX-8 | Add loading/error states to remaining dashboard pages (~30 pages) | 2h | 🟠 High | 🟢 | | plan:phase-6-tasks |
 | ARCH-2 | Audit log coverage expansion (bulk ops, imports, exports, reconciliation) | 3h | 🟠 High | 🟢 | | review:smooth-floating-mountain |
 | ARCH-6 | Audit logging inside DB transactions (not fire-and-forget outside TX) | 2h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.2.1 |
-| SEC-11 | File upload virus scanning (ClamAV integration for PDFs/CSVs) | 3h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.2.3 |
-| SEC-13 | Audit log tamper detection (immutable log storage) | 3h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.2.4 |
-| INFRA-9 | Secrets management for production (env var vault, not .env files) | 2h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.4.4 |
-| INFRA-10 | Security scanning in CI (SAST + dependency/supply chain checks) | 2h | 🟠 High | 🟢 | | review:smooth-floating-mountain §2.4.4 |
+| ~~SEC-11~~ | ~~File upload virus scanning (ClamAV integration for PDFs/CSVs)~~ | 3h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.2.3 |
+| ~~SEC-13~~ | ~~Audit log tamper detection (immutable log storage)~~ | 3h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.2.4 |
+| ~~INFRA-9~~ | ~~Secrets management for production (env var vault, not .env files)~~ | 2h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.4.4 |
+| ~~INFRA-10~~ | ~~Security scanning in CI (SAST + dependency/supply chain checks)~~ | 2h | 🟠 High | ✅ | | review:smooth-floating-mountain §2.4.4 |
 | ~~SEC-17~~ | ~~XSS fix: sanitize `dangerouslySetInnerHTML` in AIBrief (DOMPurify or markdown renderer)~~ | 30m | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~SEC-18~~ | ~~Dashboard routes: replace unsafe `request.tenantId as string` with `requireTenantId()` guard~~ | 30m | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~SEC-19~~ | ~~Dashboard routes: replace unsafe `as DashboardQuery` casts with Fastify generic route typing~~ | 1h | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~FIN-13~~ | ~~`UpcomingPayments.amount` typed as `string` — must be `number` (integer cents violation)~~ | 15m | 🟠 High | ✅ | | review:dashboard-overview |
 | ~~DOC-1~~ | ~~Add plan-enforcement.md to CLAUDE.md Tier 1/2 context hierarchy~~ | 30m | 🟠 High | ✅ | | review:smooth-floating-mountain |
-| UX-11 | Overview: Wire `/overview/net-worth` page with real data (backend endpoint exists, page says "coming soon") | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
-| UX-12 | Overview: Wire `/overview/cash-flow` page with real data (backend endpoint exists, page says "coming soon") | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
-| FIN-15 | Performance endpoint: Wire receivables data from invoicing domain (currently hardcoded to 0) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
-| DEV-10 | Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| ~~UX-11~~ | ~~Overview: Wire `/overview/net-worth` page with real data (backend endpoint exists, page says "coming soon")~~ | 1-2h | 🟠 High | ✅ | | audit:fe-be-parity |
+| ~~UX-12~~ | ~~Overview: Wire `/overview/cash-flow` page with real data (backend endpoint exists, page says "coming soon")~~ | 1-2h | 🟠 High | ✅ | | audit:fe-be-parity |
+| ~~FIN-15~~ | ~~Performance endpoint: Wire receivables data from invoicing domain (currently hardcoded to 0)~~ | 2-3h | 🟠 High | ✅ | | audit:fe-be-parity |
+| ~~DEV-10~~ | ~~Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain)~~ | 2-3h | 🟠 High | ✅ | | audit:fe-be-parity |
 | DEV-43 | Banking: Add manual transaction creation form (POST endpoint exists, no UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
 | DEV-44 | Banking: Wire XLSX import support in import wizard (backend endpoint exists) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
 | UX-13 | Banking: Add category management page — edit, delete, detail view (3 endpoints exist, no UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
