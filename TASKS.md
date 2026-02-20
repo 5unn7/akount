@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-20
 **Current Phase:** Phase 6 — Launch MVP
 
-> **256 tasks** · 🔴 3 critical · 🟠 61 high · 🟡 130 medium · ⚪ 28 low · ✅ 34 done
-> 🟢 98 ready · 📦 117 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **256 tasks** · 🔴 0 critical · 🟠 61 high · 🟡 130 medium · ⚪ 28 low · ✅ 37 done
+> 🟢 95 ready · 📦 117 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -23,9 +23,9 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | ~~DEV-1~~ | ~~Onboarding middleware fix (middleware.ts TODO — disabled, blocks resume)~~ | 1h | 🔴 Critical | ✅ | | audit:smooth-floating-mountain |
-| PERF-18 | Add composite index on Invoice for AR aging (entityId, status, dueDate, deletedAt) | 2h | 🔴 Critical | 🟢 | | audit:2026-02-20 |
-| PERF-19 | Add composite index on Transaction for date range queries (accountId, categoryId, date, deletedAt) | 2h | 🔴 Critical | 🟢 | | audit:2026-02-20 |
-| PERF-20 | Add composite index on Bill for AP aging (entityId, status, dueDate, deletedAt) | 2h | 🔴 Critical | 🟢 | | audit:2026-02-20 |
+| ~~PERF-18~~ | ~~Add composite index on Invoice for AR aging (entityId, status, dueDate, deletedAt)~~ | 2h | 🔴 Critical | ✅ | | audit:2026-02-20 |
+| ~~PERF-19~~ | ~~Add composite index on Transaction for date range queries (accountId, categoryId, date, deletedAt)~~ | 2h | 🔴 Critical | ✅ | | audit:2026-02-20 |
+| ~~PERF-20~~ | ~~Add composite index on Bill for AP aging (entityId, status, dueDate, deletedAt)~~ | 2h | 🔴 Critical | ✅ | | audit:2026-02-20 |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | ~~SEC-9~~ | ~~CSRF protection review (N/A — pure JWT Bearer auth, no cookies, not vulnerable to CSRF)~~ | 1h | 🟠 High | ✅ | | roadmap |
 | ~~PERF-1~~ | ~~Balance Sheet: combine 2 redundant heavy SQL queries into 1~~ | 2h | 🟠 High | ✅ | | review:performance |
