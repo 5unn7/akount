@@ -97,6 +97,7 @@
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
+| UX-72 | Dashboard: Implement cash flow projection endpoint + wire chart (CashFlowChart expects time-series data, endpoint returns static snapshot only) | 3-4h | 🟠 High | 🟢 | | manual:bug-fix |
 | UX-33 | App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill (isolated views currently) | 2-3h | 🟡 Medium | 🟢 | | audit:app-ux |
 | UX-34 | App-wide: Add bulk operations to list pages — Business (batch send/approve invoices, batch approve bills), Banking (batch deactivate accounts) | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
 | UX-35 | Sidebar: Add "Coming Soon" badge to 17 placeholder pages or hide unimplemented nav items | 30m | 🟡 Medium | 🟢 | | audit:app-ux |
