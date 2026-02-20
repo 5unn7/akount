@@ -58,11 +58,11 @@
 | ~~UX-12~~ | ~~Overview: Wire `/overview/cash-flow` page with real data (backend endpoint exists, page says "coming soon")~~ | 1-2h | 🟠 High | ✅ | | audit:fe-be-parity |
 | ~~FIN-15~~ | ~~Performance endpoint: Wire receivables data from invoicing domain (currently hardcoded to 0)~~ | 2-3h | 🟠 High | ✅ | | audit:fe-be-parity |
 | ~~DEV-10~~ | ~~Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain)~~ | 2-3h | 🟠 High | ✅ | | audit:fe-be-parity |
-| DEV-43 | Banking: Add manual transaction creation form (POST endpoint exists, no UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
-| DEV-44 | Banking: Wire XLSX import support in import wizard (backend endpoint exists) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| ~~DEV-43~~ | ~~Banking: Add manual transaction creation form (POST endpoint exists, no UI)~~ | 2-3h | 🟠 High | ✅ | | audit:fe-be-parity |
+| ~~DEV-44~~ | ~~Banking: Wire XLSX import support in import wizard (backend endpoint exists)~~ | 1-2h | 🟠 High | ✅ | | audit:fe-be-parity |
 | UX-13 | Banking: Add category management page — edit, delete, detail view (3 endpoints exist, no UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity |
 | ~~UX-14~~ | ~~Banking: Add unmatch button to reconciliation (DELETE endpoint exists, no UI)~~ | 1h | 🟠 High | ✅ | | audit:fe-be-parity |
-| DEV-45 | Banking: Add import batch detail page — drill into imported transactions (GET endpoint exists) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
+| ~~DEV-45~~ | ~~Banking: Add import batch detail page — drill into imported transactions (GET endpoint exists)~~ | 1-2h | 🟠 High | ✅ | | audit:fe-be-parity |
 | DEV-46 | Banking: Implement transfers page — inter-account transfers with journal entry creation | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
 | UX-15 | Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
@@ -353,6 +353,9 @@
 
 | ID | Task | Completed | Commit |
 |----|------|-----------|--------|
+| ✅ DEV-43 | Banking: Add manual transaction creation form | 2026-02-20 | 300b7ee |
+| ✅ DEV-44 | Banking: Wire XLSX import support (fix sourceType bug) | 2026-02-20 | 300b7ee |
+| ✅ DEV-45 | Banking: Add import batch detail page | 2026-02-20 | 300b7ee |
 | ✅ FIN-13 | Change UpcomingPayments.amount to integer cents | 2026-02-19 | 8ec6cf5 |
 | ✅ DRY-1 | Move report types to packages/types | 2026-02-19 | 9503c36 |
 | ✅ DOC-1 | Add plan-enforcement.md to CLAUDE.md Layer 1 | 2026-02-19 | 2d1dce0 |
