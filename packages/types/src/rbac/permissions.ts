@@ -72,11 +72,19 @@ export const PERMISSION_MATRIX: Record<PermissionKey, PermissionEntry> = {
     INVESTOR: 'VIEW',
     ADVISOR: 'VIEW',
   },
-  'overview:cash-overview': {
+  'overview:cash-flow': {
     OWNER: 'VIEW',
     ADMIN: 'VIEW',
     ACCOUNTANT: 'VIEW',
     BOOKKEEPER: 'HIDDEN',
+    INVESTOR: 'VIEW',
+    ADVISOR: 'VIEW',
+  },
+  'overview:cash-flow-projection': {
+    OWNER: 'VIEW',
+    ADMIN: 'VIEW',
+    ACCOUNTANT: 'VIEW',
+    BOOKKEEPER: 'VIEW',
     INVESTOR: 'VIEW',
     ADVISOR: 'VIEW',
   },
