@@ -15,7 +15,7 @@ import {
 interface ImportConfirmationProps {
   result: {
     id: string;
-    sourceType: 'CSV' | 'PDF';
+    sourceType: 'CSV' | 'PDF' | 'XLSX';
     sourceFileName: string;
     status: string;
     totalRows: number;

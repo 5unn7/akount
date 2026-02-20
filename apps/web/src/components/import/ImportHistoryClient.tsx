@@ -43,6 +43,7 @@ interface ImportHistoryClientProps {
 
 const SOURCE_ICONS: Record<string, typeof FileText> = {
     CSV: FileSpreadsheet,
+    XLSX: FileSpreadsheet,
     PDF: FileText,
     BANK_FEED: FileText,
     API: FileText,
@@ -77,6 +78,7 @@ const STATUS_CONFIG: Record<string, {
 
 const SOURCE_BADGE_STYLES: Record<string, string> = {
     CSV: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
+    XLSX: 'bg-ak-green/10 text-ak-green border-ak-green/20',
     PDF: 'bg-ak-purple/10 text-ak-purple border-ak-purple/20',
     BANK_FEED: 'bg-ak-green/10 text-ak-green border-ak-green/20',
     API: 'bg-primary/10 text-primary border-primary/20',
@@ -177,6 +179,7 @@ export function ImportHistoryClient({
                                 <SelectContent className="glass-2 rounded-lg border-ak-border-2">
                                     <SelectItem value="all">All</SelectItem>
                                     <SelectItem value="CSV">CSV</SelectItem>
+                                    <SelectItem value="XLSX">Excel</SelectItem>
                                     <SelectItem value="PDF">PDF</SelectItem>
                                     <SelectItem value="BANK_FEED">Bank Feed</SelectItem>
                                     <SelectItem value="API">API</SelectItem>

@@ -8,6 +8,7 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
+| agent-banking-ui | 2026-02-20 20:15 | DEV-43, DEV-44, DEV-45: Banking transaction form, XLSX import, batch detail | in_progress | main |
 | agent-infra-perf | 2026-02-20 12:54 | INFRA-14, PERF-8: Auth timeout + load testing | completed | main |
 | agent-sec23-logging | 2026-02-20 11:47 | SEC-23: Replace console.log with structured logging in webhook | completed | main |
 | opus-sec-batch | 2026-02-19 18:45 | SEC-8, SEC-11, SEC-13, INFRA-9, INFRA-10 | expired | main |

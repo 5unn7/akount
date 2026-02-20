@@ -7,7 +7,7 @@ export interface ImportBatch {
   id: string;
   entityId: string;
   accountId: string;
-  sourceType: 'CSV' | 'PDF' | 'BANK_FEED' | 'API';
+  sourceType: 'CSV' | 'PDF' | 'XLSX' | 'BANK_FEED' | 'API';
   sourceFileName: string;
   status: 'PENDING' | 'PROCESSING' | 'PROCESSED' | 'FAILED';
   totalRows: number;
@@ -25,11 +25,30 @@ export interface ImportBatch {
 }
 
 /**
+ * Import batch with transactions (returned by GET /imports/:id)
+ */
+export interface ImportBatchDetail extends ImportBatch {
+  transactions: Array<{
+    id: string;
+    date: string;
+    description: string;
+    amount: number;
+    currency: string;
+    categoryId: string | null;
+    sourceType: string;
+    category?: { id: string; name: string } | null;
+  }>;
+  _count: {
+    transactions: number;
+  };
+}
+
+/**
  * Query parameters for listing import batches
  */
 export interface ListImportsParams {
   entityId?: string;
-  sourceType?: 'CSV' | 'PDF' | 'BANK_FEED' | 'API';
+  sourceType?: 'CSV' | 'PDF' | 'XLSX' | 'BANK_FEED' | 'API';
   status?: 'PENDING' | 'PROCESSING' | 'PROCESSED' | 'FAILED';
   cursor?: string;
   limit?: number;
@@ -65,8 +84,8 @@ export async function listImports(
 /**
  * Fetch a single import batch with transactions
  */
-export async function getImportBatch(id: string): Promise<ImportBatch> {
-  return apiClient<ImportBatch>(`/api/banking/imports/${id}`);
+export async function getImportBatch(id: string): Promise<ImportBatchDetail> {
+  return apiClient<ImportBatchDetail>(`/api/banking/imports/${id}`);
 }
 
 /**

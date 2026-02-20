@@ -5,6 +5,9 @@ import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TransactionsList } from "@/components/transactions/TransactionsList";
+import { CreateTransactionDialog } from "@/components/transactions/CreateTransactionForm";
+import { listAccounts } from "@/lib/api/accounts";
+import { listCategories } from "@/lib/api/categories";
 
 export const metadata: Metadata = {
     title: "Transactions | Akount",
@@ -22,6 +25,30 @@ interface TransactionsPageProps {
 export default async function TransactionsPage({ searchParams }: TransactionsPageProps) {
     const params = await searchParams;
 
+    // Fetch accounts and categories for the create form
+    let accounts: Array<{ id: string; name: string; type: string; currency: string }> = [];
+    let categories: Array<{ id: string; name: string; type: string }> = [];
+
+    try {
+        const [accountsResult, categoriesResult] = await Promise.all([
+            listAccounts({ isActive: true }),
+            listCategories({ isActive: true }),
+        ]);
+        accounts = accountsResult.accounts.map((a) => ({
+            id: a.id,
+            name: a.name,
+            type: a.type,
+            currency: a.currency,
+        }));
+        categories = categoriesResult.categories.map((c) => ({
+            id: c.id,
+            name: c.name,
+            type: c.type,
+        }));
+    } catch {
+        // Non-blocking — form will show empty selectors
+    }
+
     return (
         <div className="flex-1 space-y-5">
             <div className="fi fi1">
@@ -29,16 +56,22 @@ export default async function TransactionsPage({ searchParams }: TransactionsPag
                     title="Transactions"
                     subtitle="View, filter, and manage all your transactions"
                     actions={
-                        <Button
-                            size="sm"
-                            className="h-8 gap-1.5 rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
-                            asChild
-                        >
-                            <Link href="/banking/imports">
-                                <Upload className="h-3.5 w-3.5" />
-                                Import
-                            </Link>
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <CreateTransactionDialog
+                                accounts={accounts}
+                                categories={categories}
+                            />
+                            <Button
+                                size="sm"
+                                className="h-8 gap-1.5 rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
+                                asChild
+                            >
+                                <Link href="/banking/imports">
+                                    <Upload className="h-3.5 w-3.5" />
+                                    Import
+                                </Link>
+                            </Button>
+                        </div>
                     }
                 />
             </div>

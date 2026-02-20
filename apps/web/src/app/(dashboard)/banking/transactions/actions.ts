@@ -2,11 +2,14 @@
 
 import {
     listTransactions,
+    createTransaction,
     bulkCategorizeTransactions,
     bulkDeleteTransactions,
     updateTransaction,
     type ListTransactionsParams,
     type ListTransactionsResponse,
+    type CreateTransactionInput,
+    type Transaction,
 } from '@/lib/api/transactions';
 import {
     postTransaction,
@@ -25,6 +28,12 @@ export async function fetchMoreTransactions(
     params?: ListTransactionsParams
 ): Promise<ListTransactionsResponse> {
     return listTransactions(params);
+}
+
+export async function createTransactionAction(
+    input: CreateTransactionInput
+): Promise<Transaction> {
+    return createTransaction(input);
 }
 
 export async function bulkCategorizeAction(

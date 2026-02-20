@@ -105,7 +105,7 @@ export function UploadProgressStep({
 
                 const result: ImportResult = {
                     id: data.id,
-                    sourceType: fileType === 'pdf' ? 'PDF' : 'CSV',
+                    sourceType: fileType === 'pdf' ? 'PDF' : fileType === 'xlsx' ? 'XLSX' : 'CSV',
                     sourceFileName: item.file.name,
                     status: data.status,
                     totalRows: data.stats?.total ?? 0,

@@ -12,7 +12,7 @@ export interface ImportAccount {
 
 export interface ImportResult {
   id: string;
-  sourceType: 'CSV' | 'PDF';
+  sourceType: 'CSV' | 'PDF' | 'XLSX';
   sourceFileName: string;
   status: string;
   totalRows: number;
