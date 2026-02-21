@@ -128,12 +128,15 @@ export function Navbar({ entities }: NavbarProps) {
     const searchParams = useSearchParams();
     const { isSyncing, sync, getTimeSinceSync } = useSyncStatus();
 
-    const currentEntityId = searchParams.get('entityId') || entities[0]?.id || null;
-    const selectedEntity = entities.find(e => e.id === currentEntityId) || entities[0];
-    const currentCurrency = searchParams.get('currency') || selectedEntity?.currency || 'CAD';
+    // Filter out archived entities for the switcher
+    const activeEntities = entities.filter(e => e.status !== 'ARCHIVED');
 
-    // Derive unique currencies from entities
-    const currencies = Array.from(new Set(entities.map(e => e.currency).filter(Boolean)));
+    const currentEntityId = searchParams.get('entityId') || activeEntities[0]?.id || null;
+    const selectedEntity = activeEntities.find(e => e.id === currentEntityId) || activeEntities[0];
+    const currentCurrency = searchParams.get('currency') || selectedEntity?.functionalCurrency || 'CAD';
+
+    // Derive unique currencies from active entities
+    const currencies = Array.from(new Set(activeEntities.map(e => e.functionalCurrency).filter(Boolean)));
     // Ensure current currency is in the list
     if (!currencies.includes(currentCurrency)) currencies.push(currentCurrency);
 
@@ -147,19 +150,19 @@ export function Navbar({ entities }: NavbarProps) {
         const params = new URLSearchParams(searchParams.toString());
         params.set('entityId', entityId);
         // Reset currency to the selected entity's base currency
-        const entity = entities.find(e => e.id === entityId);
-        if (entity) params.set('currency', entity.currency);
+        const entity = activeEntities.find(e => e.id === entityId);
+        if (entity) params.set('currency', entity.functionalCurrency);
         router.push(`?${params.toString()}`, { scroll: false });
-    }, [router, searchParams, entities]);
+    }, [router, searchParams, activeEntities]);
 
     return (
-        <div className="flex items-center px-4 md:px-6 min-h-14 py-3 glass-blur border-b border-ak-border">
+        <div className="flex items-center px-4 md:px-6 min-h-14 py-3 glass-blur border-b border-ak-border-2">
             <MobileSidebar />
 
             {/* Left: Entity + Currency selectors */}
             <div className="hidden md:flex items-center gap-2 shrink-0">
                 <EntitySelector
-                    entities={entities}
+                    entities={activeEntities}
                     selectedId={currentEntityId}
                     onSelect={handleEntitySelect}
                 />
