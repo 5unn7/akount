@@ -1,7 +1,7 @@
 # API Context (apps/api)
 
 > **Loaded automatically** when Claude accesses files in `apps/api/`
-> **Last verified:** 2026-02-14
+> **Last verified:** 2026-02-21
 
 **Conventions:** See `.claude/rules/api-conventions.md` (middleware chain, service pattern, error responses, SRP).
 **Financial rules:** See `.claude/rules/financial-rules.md` (integer cents, tenant isolation, soft delete).
@@ -11,17 +11,31 @@
 
 ## Domain Structure
 
-| Domain | Folder | Status |
-|--------|--------|--------|
-| Overview | `domains/overview/` | Built (dashboard, net-worth, cash-flow) |
-| Banking | `domains/banking/` | Built (accounts, transactions, imports, reconciliation) |
-| Accounting | `domains/accounting/` | Built (chart of accounts, journal entries, posting) |
-| System | `domains/system/` | Built (entities, onboarding, audit-log) |
-| AI | `domains/ai/` | Partial (chat, categorization built; insights, rules stub) |
-| Planning | `domains/planning/` | Partial (goals built; budgets, reports, forecasts stub) |
-| Invoicing | `domains/invoicing/` | Stub (planned Phase 4) |
-| Clients | `domains/clients/` | Stub (planned Phase 4) |
-| Vendors | `domains/vendors/` | Stub (planned Phase 4) |
+**8 Registered API Routes** (in `src/index.ts`):
+- `/api/overview` → `domains/overview/`
+- `/api/banking` → `domains/banking/`
+- `/api/business` → `domains/business/` + `domains/invoicing/` + `domains/clients/` + `domains/vendors/`
+- `/api/accounting` → `domains/accounting/`
+- `/api/planning` → `domains/planning/`
+- `/api/ai` → `domains/ai/`
+- `/api/services` → `domains/services/`
+- `/api/system` → `domains/system/`
+
+**File Structure** (11 folders for modularity):
+
+| Domain Folder | Route Prefix | Status | File Count |
+|---------------|--------------|--------|------------|
+| `domains/overview/` | `/api/overview` | Built (dashboard, net-worth, cash-flow) | 6 files |
+| `domains/banking/` | `/api/banking` | Built (accounts, transactions, imports, reconciliation, categories, connections) | 35 files |
+| `domains/business/` | `/api/business` | Built (unified route handler for invoices/bills/payments/clients/vendors) | 1 file |
+| `domains/invoicing/` | `/api/business/invoices` | Built (maps to business route) | 14 files |
+| `domains/clients/` | `/api/business/clients` | Built (maps to business route) | 4 files |
+| `domains/vendors/` | `/api/business/vendors` | Built (maps to business route) | 5 files |
+| `domains/accounting/` | `/api/accounting` | Built (chart of accounts, journal entries, posting, reports) | 16 files |
+| `domains/planning/` | `/api/planning` | Partial (goals built; budgets, forecasts stub) | 1 file |
+| `domains/ai/` | `/api/ai` | Partial (chat, categorization built; insights, rules stub) | 7 files |
+| `domains/services/` | `/api/services` | Stub (planned) | 2 files |
+| `domains/system/` | `/api/system` | Built (entities, onboarding, audit-log, users, settings) | 17 files |
 
 ---
 
@@ -66,6 +80,33 @@
 - `POST /api/banking/reconciliation/matches` — Create match
 - `DELETE /api/banking/reconciliation/matches/:matchId` — Unmatch
 - `GET /api/banking/reconciliation/status/:accountId` — Reconciliation status
+
+### Business — Invoices, Bills, Clients, Vendors, Payments
+
+- `GET /api/business/invoices` — List invoices with filters & pagination
+- `GET /api/business/invoices/:id` — Single invoice details
+- `POST /api/business/invoices` — Create invoice (DRAFT)
+- `PATCH /api/business/invoices/:id` — Update invoice
+- `DELETE /api/business/invoices/:id` — Soft delete
+- `POST /api/business/invoices/:id/send` — Send invoice to client
+- `GET /api/business/bills` — List bills with filters & pagination
+- `GET /api/business/bills/:id` — Single bill details
+- `POST /api/business/bills` — Create bill (DRAFT)
+- `PATCH /api/business/bills/:id` — Update bill
+- `DELETE /api/business/bills/:id` — Soft delete
+- `GET /api/business/clients` — List clients with pagination
+- `GET /api/business/clients/:id` — Single client details
+- `POST /api/business/clients` — Create client
+- `PATCH /api/business/clients/:id` — Update client
+- `DELETE /api/business/clients/:id` — Soft delete
+- `GET /api/business/vendors` — List vendors with pagination
+- `GET /api/business/vendors/:id` — Single vendor details
+- `POST /api/business/vendors` — Create vendor
+- `PATCH /api/business/vendors/:id` — Update vendor
+- `DELETE /api/business/vendors/:id` — Soft delete
+- `GET /api/business/payments` — List payments with filters
+- `POST /api/business/payments` — Create payment with allocations
+- `GET /api/business/payments/:id` — Single payment details
 
 ### Accounting — Chart of Accounts
 
@@ -137,16 +178,21 @@
 
 ---
 
-## Test Coverage (362 tests, 19 files)
+## Test Coverage (1,133 tests passing)
 
-| Domain | Tests | Files |
-|--------|-------|-------|
-| Accounting | 117 | GL Account (35), Journal Entry (49), Posting (33) |
-| Banking | 174 | Accounts (41), Transactions (55), Reconciliation (43), Imports (35) |
-| Overview | 16 | Dashboard service + routes |
-| System | 26 | Entity (12), Onboarding (14) |
-| Planning | 17 | Goals |
-| Shared | 12 | FX Rate service |
+**Total:** 1,133 tests across all domains (all passing as of 2026-02-21)
+
+**Coverage by Domain:**
+- **Banking:** Largest test suite (accounts, transactions, imports, reconciliation, categories, connections)
+- **Accounting:** Comprehensive (GL accounts, journal entries, posting, reports, fiscal periods)
+- **Business:** Full coverage (invoices, bills, payments, clients, vendors)
+- **System:** Complete (entities, onboarding, audit-log, users, settings)
+- **Overview:** Dashboard metrics and aggregations
+- **Planning:** Goals service
+- **AI:** Categorization and chat
+- **Shared:** FX rates, utilities
+
+**Test Distribution:** Every service has corresponding test file in `__tests__/` subdirectory. Financial invariant assertions enforced (integer cents, soft delete, tenant isolation, double-entry).
 
 ---
 

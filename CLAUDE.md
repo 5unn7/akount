@@ -1,6 +1,6 @@
 # Akount Project - Agent Context
 
-> **Last Updated:** 2026-02-19
+> **Last Updated:** 2026-02-21
 > **Context Architecture:** Hierarchical (root + directory-specific + rules)
 
 ---
@@ -13,17 +13,21 @@
 
 ---
 
-## Architecture Snapshot (verified: 2026-02-09)
+## Architecture Snapshot (verified: 2026-02-21)
 
 **Request Flow:** Browser → Next.js SSR → Fastify API → Middleware chain (Auth → Tenant → Validation) → Domain services → Prisma → PostgreSQL. Auth via Clerk JWT; tenant loaded from TenantUser membership; all queries filtered by tenantId. Frontend: Server Components (data fetch) + Client Components (interactivity). Backend: Route → Schema (Zod) → Service (business logic) → Prisma.
 
-**8 Domains:** Overview (dashboard), Banking (accounts, transactions), Invoicing (invoices, clients), Vendors (bills, payments), Accounting (GL, journal entries), Planning (budgets, forecasts), Insights (AI-powered insights, rules), Services (integrations), System (settings, users).
+**8 Domains (User-Facing):** Overview (dashboard), Banking (accounts, transactions), Business (invoices, bills, clients, vendors, payments), Accounting (GL, journal entries, reports), Planning (budgets, forecasts, goals), Insights (AI-powered insights, rules), Services (accountant, bookkeeping, documents), System (entities, settings, users, audit).
 
-**Actual API folder names:** `domains/overview/`, `domains/banking/`, `domains/accounting/`, `domains/system/`, `domains/ai/`, `domains/planning/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`.
+**Frontend Navigation:** 8 domains in `apps/web/src/lib/navigation.ts` — `overview`, `banking`, `business`, `accounting`, `planning`, `insights`, `services`, `system`.
+
+**Backend API Routes:** 8 registered prefixes in `apps/api/src/index.ts` — `/api/overview`, `/api/banking`, `/api/business`, `/api/accounting`, `/api/planning`, `/api/ai`, `/api/services`, `/api/system`.
+
+**Backend File Structure:** Split folders for modularity — `domains/overview/`, `domains/banking/`, `domains/business/`, `domains/invoicing/`, `domains/clients/`, `domains/vendors/`, `domains/accounting/`, `domains/planning/`, `domains/ai/`, `domains/services/`, `domains/system/`. Note: `invoicing/`, `clients/`, `vendors/` folders route to `/api/business` prefix.
 
 ---
 
-## Core Model Hierarchy (verified: 2026-02-09)
+## Core Model Hierarchy (verified: 2026-02-21)
 
 ```
 Tenant (subscription account)
@@ -38,11 +42,11 @@ Tenant (subscription account)
     └── Category (for AI categorization)
 ```
 
-**38 Prisma models total.** Entity-scoped models require `entity: { tenantId }` filter. See `packages/db/CLAUDE.md` for full model table. See `docs/context-map.md` for comprehensive glossary.
+**41 Prisma models total.** Entity-scoped models require `entity: { tenantId }` filter. See `packages/db/CLAUDE.md` for full model table. See `docs/context-map.md` for comprehensive glossary.
 
 ---
 
-## Design System Reference (verified: 2026-02-09)
+## Design System Reference (verified: 2026-02-21)
 
 **Base:** shadcn/ui + shadcn-glass-ui@2.11.2 (glass morphism)
 **Styling:** Tailwind v4.1.18 (CSS config, NO tailwind.config.ts)

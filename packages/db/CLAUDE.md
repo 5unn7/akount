@@ -1,9 +1,9 @@
 # Database Context (packages/db)
 
 > **Loaded automatically** when Claude accesses files in `packages/db/`
-> **Last verified:** 2026-02-14
+> **Last verified:** 2026-02-21
 
-## Prisma Models (39 Total)
+## Prisma Models (41 Total)
 
 | Model | Scope | Key Fields | Soft Delete |
 |-------|-------|------------|-------------|
@@ -27,6 +27,7 @@
 | Bill | Entity | id, entityId, vendorId, billNumber, status, total | **Yes** |
 | BillLine | Bill | id, billId, description, amount, glAccountId | **Yes** |
 | Payment | Entity | id, entityId, clientId/vendorId, amount | **Yes** |
+| PaymentAllocation | Payment | id, paymentId, invoiceId/billId, amount, appliedAt | No |
 | CreditNote | Entity | id, entityId, creditNoteNumber, amount | **Yes** |
 | **Banking** | | | |
 | Account | Entity | id, entityId, name, type, currency, currentBalance | **Yes** |
@@ -45,6 +46,7 @@
 | RuleSuggestion | Entity | id, entityId, suggestedRule, aiConfidence, status | No |
 | **Onboarding** | | | |
 | OnboardingProgress | Tenant | id, tenantId, userId, completedSteps, dismissed | No |
+| OnboardingWizardState | Tenant | id, tenantId, userId, currentStep, formData, completed | No |
 | **Misc** | | | |
 | Project | Entity | id, entityId, name, code, status | No |
 | Snapshot | Entity | id, entityId, date, categoryId/glAccountId, balance | No |
