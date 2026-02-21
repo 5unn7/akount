@@ -212,7 +212,82 @@ grep "$TASK_ID" ACTIVE-WORK.md
 - Ask user which task to claim instead
 
 **If task available:**
-- Proceed to Step 6
+- Proceed to Step 5b
+
+---
+
+### Step 5b: Load Rich Context (NEW — Plan-Driven Protocol)
+
+After confirming task availability, check for rich context before starting work:
+
+**1. Check Source column for `plan:` tag:**
+```bash
+# Extract source field from TASKS.md for this task
+SOURCE=$(grep "| $TASK_ID |" TASKS.md | awk -F'|' '{print $NF}')
+```
+
+**If Source contains `plan:<filename>`:**
+```bash
+# Load the referenced plan file
+Read docs/plans/<filename>
+# Agent now has full sprint context: file paths, acceptance criteria, patterns
+echo "📋 Plan loaded: docs/plans/<filename>"
+```
+The agent reads the relevant sections of the plan file and extracts:
+- Affected file paths
+- Pattern to follow
+- Acceptance criteria
+- Dependencies within the plan
+
+**2. Check Source column for `[atomic]` tag:**
+```
+echo "⚡ Atomic task — no plan needed, proceed directly"
+```
+Skip context loading. Task is self-contained.
+
+**3. Check cluster map for mini-plan context:**
+```bash
+# Read cluster map from task-enrichments.json
+CLUSTER=$(jq -r '._clusterMap | to_entries[] | select(.value[] == "'$TASK_ID'") | .key' .claude/task-enrichments.json)
+
+if [ -n "$CLUSTER" ]; then
+  # Load mini-plan section
+  Read docs/plans/mini-plans.md  # Agent searches for matching cluster heading
+  echo "📋 Mini-plan loaded: $CLUSTER"
+fi
+```
+
+**4. Check task-enrichments.json for direct enrichment:**
+```bash
+ENRICHMENT=$(jq -r ".\"$TASK_ID\" // empty" .claude/task-enrichments.json)
+if [ -n "$ENRICHMENT" ]; then
+  echo "📋 Enrichment loaded: files, verification, acceptance criteria"
+fi
+```
+
+**5. No context found (fallback):**
+```
+⚠️ No plan, mini-plan, or enrichment found for this task.
+Agent will investigate before coding (read files, grep patterns).
+Consider running /processes:plan first for complex tasks.
+```
+
+**Context loading priority (first match wins):**
+1. `plan:<filename>` → Full plan file (richest context)
+2. `_clusterMap` match → Mini-plan section (medium context)
+3. `task-enrichments.json` entry → Files + acceptance criteria (lightweight context)
+4. `[atomic]` tag → No extra context needed (self-contained)
+5. None of the above → Warn and investigate
+
+**Output after context load:**
+```markdown
+## Context Loaded
+
+**Type:** Plan / Mini-Plan / Enrichment / Atomic / None
+**Files:** [list of affected files from context]
+**Pattern:** [pattern to follow]
+**Acceptance:** [criteria from context]
+```
 
 ---
 
@@ -246,15 +321,32 @@ Add to "Agent Context" section (for smart defaults in future sessions):
 
 ### Step 8: Create TodoWrite (15 seconds)
 
-Based on task details from index, create minimal TodoWrite with 3-4 sub-tasks.
+Based on task details **AND loaded context** (from Step 5b), create TodoWrite sub-tasks.
 
-**Example for SEC-9 (CSRF protection):**
+**If plan/mini-plan context was loaded:**
+- Use the plan's file paths and acceptance criteria to generate specific sub-tasks
+- Each sub-task should reference a specific file from the plan
+- Include verification step from acceptance criteria
+
+**If atomic task:**
+- Generate 2-3 simple sub-tasks based on task description
+
+**Example for DEV-122 (with mini-plan context):**
 
 ```
-1. Read existing auth middleware to understand current protection
-2. Add CSRF token generation and validation
-3. Add test cases for CSRF attack scenarios
-4. Verify existing auth flows still work
+1. Create apps/web/src/app/(dashboard)/business/clients/[id]/page.tsx (server component)
+2. Create client-detail-client.tsx with tabs: Overview, Invoice History, Payments
+3. Add loading.tsx + error.tsx for loading/error states
+4. Wire edit capability via existing ClientDetailPanel pattern
+5. Verify: navigate to /business/clients/[id] shows full detail with all tabs
+```
+
+**Example for UX-41 (atomic — no plan needed):**
+
+```
+1. Find hardcoded 'CAD' in vendor/client pages
+2. Replace with entity.functionalCurrency from context
+3. Verify currency displays correctly
 ```
 
 ---

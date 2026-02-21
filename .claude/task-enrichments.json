@@ -118,5 +118,16 @@
     ],
     "staleAfterDays": 30,
     "tags": ["infrastructure", "documentation"]
+  },
+  "_clusterMap": {
+    "$comment": "Maps task IDs to mini-plan clusters. Agent reads docs/plans/mini-plans.md § matching cluster.",
+    "cluster-a-testing": ["TEST-1", "TEST-2", "TEST-3", "DEV-2"],
+    "cluster-b-business": ["UX-17", "UX-29", "UX-31", "UX-32", "UX-33", "UX-34", "UX-36", "UX-44", "UX-52", "UX-55", "DEV-59", "DEV-83", "DEV-85", "DEV-122", "DEV-123"],
+    "cluster-c-accounting": ["UX-18", "UX-19", "UX-20", "UX-21", "UX-22", "UX-24", "UX-25", "DEV-61", "DEV-62", "DEV-63", "DEV-64", "DEV-65", "DEV-66", "DEV-67", "DEV-68", "DEV-69", "DEV-70"],
+    "cluster-d-banking": ["DEV-47", "DEV-48", "DEV-49", "DEV-50", "DEV-51", "DEV-52", "DEV-53", "DEV-54", "DEV-55", "DEV-56", "DEV-57", "DEV-58"],
+    "cluster-e-planning": ["DEV-97", "DEV-98", "DEV-99", "DEV-100", "DEV-101", "DEV-102", "DEV-103", "DEV-104", "DEV-105", "DEV-107", "DEV-108", "DEV-109", "DEV-110", "DEV-111", "UX-58", "UX-59", "UX-60", "UX-61", "UX-62", "UX-63", "UX-64", "UX-65"],
+    "cluster-f-insights": ["DEV-113", "DEV-115", "DEV-116", "DEV-117", "DEV-118", "DEV-119", "DEV-120"],
+    "cluster-g-infra": ["SEC-8", "SEC-10", "INFRA-1", "INFRA-2", "INFRA-3", "INFRA-5", "INFRA-7", "INFRA-8", "INFRA-11", "INFRA-13", "ARCH-1", "ARCH-3", "ARCH-5"],
+    "cluster-h-financial": ["FIN-7", "FIN-8", "FIN-9", "FIN-10", "FIN-11", "FIN-12", "DEV-66", "DEV-67", "DEV-68", "DEV-69", "DEV-70"]
   }
 }
