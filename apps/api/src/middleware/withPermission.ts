@@ -88,7 +88,7 @@ export const adminOnly = withRole(['OWNER', 'ADMIN']);
 export const accountingAccess = withRole(['OWNER', 'ADMIN', 'ACCOUNTANT']);
 
 /**
- * Preset for transaction routes (includes bookkeeper).
+ * Preset for transaction routes (OWNER, ADMIN, ACCOUNTANT).
  */
 export const transactingAccess = withRole(['OWNER', 'ADMIN', 'ACCOUNTANT']);
 
