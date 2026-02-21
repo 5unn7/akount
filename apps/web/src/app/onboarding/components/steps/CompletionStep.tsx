@@ -71,6 +71,18 @@ export function CompletionStep() {
                   ...(state.businessIndustry && {
                     industry: state.businessIndustry,
                   }),
+                  ...(state.businessStreetAddress && {
+                    streetAddress: state.businessStreetAddress,
+                  }),
+                  ...(state.businessCity && {
+                    city: state.businessCity,
+                  }),
+                  ...(state.businessProvince && {
+                    province: state.businessProvince,
+                  }),
+                  ...(state.businessPostalCode && {
+                    postalCode: state.businessPostalCode,
+                  }),
                 },
               }
             : {}
@@ -95,6 +107,7 @@ export function CompletionStep() {
             city: state.city || undefined,
             province: state.province || undefined,
             postalCode: state.postalCode || undefined,
+            taxId: state.taxId || undefined,
             ...businessPayload,
           }),
         })

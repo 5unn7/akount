@@ -18,12 +18,14 @@ export function AddressStep({ onNext }: AddressStepProps) {
     city,
     province,
     postalCode,
+    taxId,
     setCountry,
     setCurrency,
     setStreetAddress,
     setCity,
     setProvince,
     setPostalCode,
+    setTaxId,
   } = useOnboardingStore()
 
   const [ipDetected, setIpDetected] = useState(false)
@@ -62,15 +64,11 @@ export function AddressStep({ onNext }: AddressStepProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!country || !streetAddress.trim() || !city.trim() || !postalCode.trim()) return
+    if (!country) return
     onNext()
   }
 
-  const canSubmit =
-    country.length > 0 &&
-    streetAddress.trim().length > 0 &&
-    city.trim().length > 0 &&
-    postalCode.trim().length > 0
+  const canSubmit = country.length > 0
 
   const inputClasses =
     'w-full px-4 py-2.5 glass-2 border border-ak-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all outline-none'
@@ -82,10 +80,10 @@ export function AddressStep({ onNext }: AddressStepProps) {
       {/* Header */}
       <div className="text-center space-y-1">
         <h2 className="text-2xl font-heading font-normal text-foreground">
-          Your location
+          Your details
         </h2>
         <p className="text-sm text-muted-foreground">
-          We'll use this to show you the right tax info and currency.
+          Country sets your currency and tax rules. Everything else is optional.
         </p>
       </div>
 
@@ -125,7 +123,7 @@ export function AddressStep({ onNext }: AddressStepProps) {
         {/* Street address */}
         <div>
           <label htmlFor="streetAddress" className={labelClasses}>
-            Street Address
+            Street Address <span className="text-muted-foreground/60 normal-case font-normal">(optional)</span>
           </label>
           <input
             type="text"
@@ -133,7 +131,6 @@ export function AddressStep({ onNext }: AddressStepProps) {
             value={streetAddress}
             onChange={(e) => setStreetAddress(e.target.value)}
             placeholder="123 Main Street, Apt 4B"
-            required
             className={inputClasses}
           />
         </div>
@@ -142,7 +139,7 @@ export function AddressStep({ onNext }: AddressStepProps) {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label htmlFor="city" className={labelClasses}>
-              City
+              City <span className="text-muted-foreground/60 normal-case font-normal">(optional)</span>
             </label>
             <input
               type="text"
@@ -150,7 +147,6 @@ export function AddressStep({ onNext }: AddressStepProps) {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="Toronto"
-              required
               className={inputClasses}
             />
           </div>
@@ -172,7 +168,7 @@ export function AddressStep({ onNext }: AddressStepProps) {
         {/* Postal code */}
         <div>
           <label htmlFor="postalCode" className={labelClasses}>
-            Postal / Zip Code
+            Postal / Zip Code <span className="text-muted-foreground/60 normal-case font-normal">(optional)</span>
           </label>
           <input
             type="text"
@@ -180,9 +176,27 @@ export function AddressStep({ onNext }: AddressStepProps) {
             value={postalCode}
             onChange={(e) => setPostalCode(e.target.value)}
             placeholder="M5V 1A1"
-            required
             className={inputClasses}
           />
+        </div>
+
+        {/* Tax ID (optional) */}
+        <div>
+          <label htmlFor="taxId" className={labelClasses}>
+            Tax ID / Business Number <span className="text-muted-foreground/60 normal-case font-normal">(optional)</span>
+          </label>
+          <input
+            type="text"
+            id="taxId"
+            value={taxId}
+            onChange={(e) => setTaxId(e.target.value)}
+            placeholder="e.g., 123456789"
+            maxLength={50}
+            className={inputClasses}
+          />
+          <p className="text-[10px] text-muted-foreground mt-1">
+            Appears on your invoices. You can add this later in Settings.
+          </p>
         </div>
 
         {/* Submit */}

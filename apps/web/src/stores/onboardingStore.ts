@@ -36,13 +36,20 @@ export interface OnboardingState {
   businessCountry: string
   businessIndustry: string
 
-  // Step 5: Residential address
+  // Step 5: Details + address
   country: string
   currency: string
   streetAddress: string
   city: string
   province: string
   postalCode: string
+  taxId: string
+
+  // Business entity address (separate from personal)
+  businessStreetAddress: string
+  businessCity: string
+  businessProvince: string
+  businessPostalCode: string
 
   // Legacy fields (kept for backward compat with existing API)
   entityName: string
@@ -71,6 +78,11 @@ export interface OnboardingState {
   setCity: (city: string) => void
   setProvince: (province: string) => void
   setPostalCode: (code: string) => void
+  setTaxId: (taxId: string) => void
+  setBusinessStreetAddress: (address: string) => void
+  setBusinessCity: (city: string) => void
+  setBusinessProvince: (province: string) => void
+  setBusinessPostalCode: (code: string) => void
   setPhoneNumber: (phone: string) => void
   setTimezone: (timezone: string) => void
   setEntityName: (name: string) => void
@@ -118,6 +130,13 @@ const initialState = {
   city: '',
   province: '',
   postalCode: '',
+  taxId: '',
+
+  // Business address
+  businessStreetAddress: '',
+  businessCity: '',
+  businessProvince: '',
+  businessPostalCode: '',
 
   // Legacy
   entityName: '',
@@ -163,6 +182,11 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
   setCity: (city: string) => set({ city }),
   setProvince: (province: string) => set({ province: province }),
   setPostalCode: (code: string) => set({ postalCode: code }),
+  setTaxId: (taxId: string) => set({ taxId }),
+  setBusinessStreetAddress: (address: string) => set({ businessStreetAddress: address }),
+  setBusinessCity: (city: string) => set({ businessCity: city }),
+  setBusinessProvince: (province: string) => set({ businessProvince: province }),
+  setBusinessPostalCode: (code: string) => set({ businessPostalCode: code }),
 
   setPhoneNumber: (phone: string) => set({ phoneNumber: phone }),
   setTimezone: (timezone: string) => set({ timezone }),
@@ -197,12 +221,8 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
   reset: () => set(initialState),
 
   shouldShowBusinessStep: () => {
-    const { accountType, employmentStatus } = get()
-    return (
-      accountType === 'business' &&
-      employmentStatus !== null &&
-      BUSINESS_EMPLOYMENT_STATUSES.includes(employmentStatus)
-    )
+    const { accountType } = get()
+    return accountType === 'business'
   },
 
   getTotalSteps: () => {

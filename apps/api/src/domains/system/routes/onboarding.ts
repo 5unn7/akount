@@ -32,6 +32,7 @@ const initializeOnboardingSchema = z.object({
   city: z.string().optional(),
   province: z.string().optional(),
   postalCode: z.string().optional(),
+  taxId: z.string().max(50).optional(),
   // Optional business entity (created alongside personal entity)
   businessEntity: z.object({
     name: z.string().min(1).max(255),
@@ -39,6 +40,10 @@ const initializeOnboardingSchema = z.object({
     country: z.string().length(2).toUpperCase(),
     currency: z.string().length(3).toUpperCase(),
     industry: z.string().optional(),
+    streetAddress: z.string().optional(),
+    city: z.string().optional(),
+    province: z.string().optional(),
+    postalCode: z.string().optional(),
   }).optional(),
 });
 
@@ -221,6 +226,7 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
             ...(data.city && { city: data.city }),
             ...(data.province && { state: data.province }),
             ...(data.postalCode && { postalCode: data.postalCode }),
+            ...(data.taxId && { taxId: data.taxId }),
           },
         });
 
@@ -241,6 +247,10 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
               functionalCurrency: bizCurrency,
               reportingCurrency: bizCurrency,
               ...(data.businessEntity.industry && { industry: data.businessEntity.industry }),
+              ...(data.businessEntity.streetAddress && { address: data.businessEntity.streetAddress }),
+              ...(data.businessEntity.city && { city: data.businessEntity.city }),
+              ...(data.businessEntity.province && { state: data.businessEntity.province }),
+              ...(data.businessEntity.postalCode && { postalCode: data.businessEntity.postalCode }),
             },
           });
 

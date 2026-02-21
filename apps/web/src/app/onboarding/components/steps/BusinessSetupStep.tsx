@@ -38,11 +38,19 @@ export function BusinessSetupStep({ onNext }: BusinessSetupStepProps) {
     businessEntityType,
     businessCountry,
     businessIndustry,
+    businessStreetAddress,
+    businessCity,
+    businessProvince,
+    businessPostalCode,
     setWantsBusinessEntity,
     setBusinessName,
     setBusinessEntityType,
     setBusinessCountry,
     setBusinessIndustry,
+    setBusinessStreetAddress,
+    setBusinessCity,
+    setBusinessProvince,
+    setBusinessPostalCode,
   } = useOnboardingStore()
 
   const handleYes = () => {
@@ -212,6 +220,45 @@ export function BusinessSetupStep({ onNext }: BusinessSetupStepProps) {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Business address (optional) */}
+        <div className="pt-2">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+            Business Address <span className="text-muted-foreground/60 normal-case font-normal">(optional — shows on invoices)</span>
+          </p>
+          <div className="space-y-3">
+            <input
+              type="text"
+              value={businessStreetAddress}
+              onChange={(e) => setBusinessStreetAddress(e.target.value)}
+              placeholder="Street address"
+              className={inputClasses}
+            />
+            <div className="grid grid-cols-2 gap-3">
+              <input
+                type="text"
+                value={businessCity}
+                onChange={(e) => setBusinessCity(e.target.value)}
+                placeholder="City"
+                className={inputClasses}
+              />
+              <input
+                type="text"
+                value={businessProvince}
+                onChange={(e) => setBusinessProvince(e.target.value)}
+                placeholder="Province / State"
+                className={inputClasses}
+              />
+            </div>
+            <input
+              type="text"
+              value={businessPostalCode}
+              onChange={(e) => setBusinessPostalCode(e.target.value)}
+              placeholder="Postal / Zip code"
+              className={inputClasses}
+            />
+          </div>
         </div>
 
         {/* Submit */}
