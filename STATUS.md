@@ -1,126 +1,171 @@
 # Akount — Status Dashboard
 
-**Auto-generated via `/processes:eod`** | **Last Updated:** 2026-02-19
+**Auto-generated via `/processes:eod`** | **Last Updated:** 2026-02-21
 
 ## Metrics
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Backend Tests | 1010 | 1100+ | ⚠️ 92% |
+| Backend Tests | 1133 | 1100+ | ✅ 103% |
 | Service Coverage | 27/27 | 27/27 | ✅ 100% |
-| TypeScript Errors | 235 | 0 | ❌ |
-| NPM Vulnerabilities | 17 (13 high) | 0 | ❌ |
+| TypeScript Errors | 0 | 0 | ✅ |
+| NPM Vulnerabilities | 16 (13 high) | 0 | ❌ |
 | Frontend Tests | 0 | 100+ | ❌ 0% |
-| Loading States | 48/47 | 47/47 | ✅ 102% |
+| Loading States | 50/49 | 49/49 | ✅ 102% |
 
 ## Task Summary (from TASKS.md)
 
 | Domain | Total | Critical | High | Medium | Low | Ready | Backlog | Blocked | Done |
 |--------|-------|----------|------|--------|-----|-------|---------|---------|------|
-| Dev | 206 | 0 | 59 | 130 | 17 | 91 | 89 | 7 | 19 |
-| Design System | 3 | 0 | 0 | 3 | 0 | 0 | 3 | 0 | 0 |
-| Marketing & Content | 3 | 0 | 0 | 3 | 0 | 0 | 3 | 0 | 0 |
-| Operations | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **TOTAL** | **212** | **0** | **59** | **136** | **17** | **91** | **95** | **7** | **19** |
+| Dev | 236 | 1 | 43 | 130 | 28 | 71 | 93 | 7 | 65 |
+| Design System | 3 | 0 | 1 | 2 | 0 | 1 | 1 | 0 | 1 |
+| Marketing & Content | 3 | 0 | 1 | 2 | 0 | 0 | 3 | 0 | 0 |
+| Operations | 14 | 0 | 7 | 4 | 0 | 3 | 0 | 4 | 0 |
+| **TOTAL** | **256** | **1** | **52** | **138** | **28** | **75** | **97** | **11** | **66** |
 
 ## Phase 6 Progress
 
 | Track | Total | Done | % | Key Tasks Remaining |
 |-------|-------|------|---|---------------------|
-| Security | 19 | 7 | 37% | SEC-8 (OWASP audit), SEC-11 (virus scanning), SEC-13 (audit log tamper detection) |
-| Performance | 9 | 0 | 0% | PERF-1 (combine queries), PERF-5 (indexes), PERF-6 (query optimization), PERF-8 (load testing) |
-| Financial | 15 | 3 | 20% | FIN-15 (receivables data), plus 12 business domain financial tasks |
-| DRY/Quality | 8 | 1 | 13% | TEST-1 (report tests), TEST-2 (E2E tests), TEST-3 (80% coverage) |
-| UX | 89 | 7 | 8% | UX-1 (entity selector), UX-8 (loading states), UX-17 (toast notifications), UX-29 (confirmation dialogs) |
-| Infrastructure | 12 | 1 | 8% | INFRA-9 (secrets management), INFRA-10 (security scanning), INFRA-13 (bank integration) |
-| Architecture | 4 | 0 | 0% | ARCH-2 (audit log coverage), ARCH-6 (audit logging in transactions) |
+| Security | 19 | 12 | 63% | SEC-8 (OWASP audit deferred), SEC-10 (RLS), SEC-12 (upload quota) |
+| Performance | 12 | 8 | 67% | PERF-2 (JSONB index), PERF-3 (Recharts split), PERF-7 (lazy loading) |
+| Financial | 20 | 8 | 40% | FIN-7 (fiscal periods), FIN-14 (FX float), FIN-16 (health ratios) |
+| DRY/Quality | 8 | 3 | 38% | TEST-1 (report tests), TEST-2 (E2E), DRY-2 (CSV dedup) |
+| UX | 65 | 16 | 25% | UX-1 (entity selector), UX-17 (toasts), UX-29 (confirmations), UX-31 (search/filter) |
+| Infrastructure | 14 | 3 | 21% | INFRA-1 (CI/CD), INFRA-2 (production), INFRA-13 (bank connection) |
+| Architecture | 8 | 5 | 63% | ARCH-1 (OpenAPI), ARCH-4 (BullMQ), ARCH-5 (error recovery) |
+| Documentation | 8 | 3 | 38% | DOC-2 (logging consolidation), DOC-7/8 (counts update) |
 
-## Session Quality Insights (2026-02-19)
+## Completed Plans (Feb 20-21)
+
+| Plan | Tasks | Status |
+|------|-------|--------|
+| Banking Command Center | 28/28 (4 sprints) | ✅ COMPLETE |
+| Entity Management Hub | 16/16 (3 sprints) | ✅ COMPLETE |
+| New User Journey UX Overhaul | 34/34 (8 sprints) | ✅ COMPLETE |
+| Command Center Dashboard Redesign | 15/15 (3 sprints) | ✅ COMPLETE |
+| Onboarding Flow Overhaul | 6/6 sprints | ✅ COMPLETE |
+
+## Session Quality Insights (Feb 20-21)
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Sessions completed | 7 | ✅ |
+| Sessions completed | 18 (12 on Feb 20, 6 on Feb 21) | ✅ |
+| Commits | 44 | ✅ |
 | Invariant violations | 0 | ✅ |
-| Pre-flight compliance | ~95% | ✅ |
-| Context efficiency avg | B+ | ✅ |
-| Loops detected | 1 (session 16:30) | ⚠️ |
+| Pre-flight compliance | ~96% | ✅ |
+| Context efficiency avg | A- | ✅ |
+| Loops detected | 2 (baseline migration 3x, EntityFormSheet props) | ⚠️ |
 
-### Common Patterns (Today's Sessions)
+### Feb 20 Summary (12 sessions, 24 commits)
+
+**Performance & Security:**
+- PERF-18/19/20 (critical composite indexes), PERF-21/22 (medium indexes), INFRA-15 (security headers)
+- SEC-23 (structured logging), INFRA-14 (Clerk auth timeout), PERF-8 (load testing)
+- ARCH-2 (audit log coverage), ARCH-6 (transaction-safe audit logging)
+- Weekly audit executed (Grade B, 80/100)
+
+**Feature Development:**
+- UX-72: Cash flow projection endpoint + dashboard chart wiring
+- DEV-43/44/45: Transaction form, XLSX import fix, import batch detail page
+- Command Center Dashboard redesign (3 sprints, 15 tasks)
+- Banking Command Center plan (28 tasks, review-hardened)
+- New User Journey UX Overhaul plan (34 tasks, 5-agent review)
+
+**Bug Fixes:**
+- RBAC permission key mismatch (`overview:cash-overview` → `overview:cash-flow`)
+- Audit log FK constraint violation (empty `entityId` → undefined guard)
+- 6 audit system hardening tasks (FIN-17-20, ARCH-7-8)
+- BillStatus `'SENT'` → `'PENDING'` fix
+- CashFlowChart hooks ordering fix
+- Tenant filter false-positive (recursive `hasTenantFilter`)
+
+### Feb 21 Summary (6 sessions, 20 commits)
+
+**Entity Management Hub (COMPLETE):**
+- Sprint 1: Jurisdiction data (US/CA/IN), Prisma schema migration, entity service expansion, tax ID validator, 46 new tests
+- Sprint 2+3: Entity hub page, EntityCard, entity detail page, inline-edit form, Navbar fixes
+
+**Prisma Migration Fix:**
+- Shadow database P3006 error diagnosed and fixed
+- Squashed 3 conflicting migrations into 1
+- Baseline drift migration (~30 schema changes captured)
+
+**Banking Command Center Sprint 3 (COMPLETE):**
+- Mobile responsive polish, deleted 8 deprecated components (-726 lines)
+
+**New User Journey UX Overhaul (COMPLETE):**
+- Sprint 0: Schema migrations, COA seeding, GL helper
+- Sprint 1: Account creation flow overhaul
+- Sprint 2: Flinks bank connection integration
+- Sprint 3: Import wizard error recovery, step indicator
+- Sprint 4: Transaction list improvements, dashboard freshness
+- Sprint 5: Onboarding handoff, empty states
+- Sprint 6: Import polish, form dropdowns, urgency signals
+- Sprint 7: Import polish, AI nudge, report shortcuts
+
+**Onboarding Flow (COMPLETE):**
+- Sprint 4-6: Business flow fix, auto-save/resume, dead code cleanup
+
+**UX Polish:**
+- Unified empty states across 9 banking components
+- Fixed API limit violations (200/500 → 100)
+- Fixed MTD stats inconsistency
+- Fixed onboarding hero card broken navigation links
+
+### Common Patterns (Feb 20-21 Sessions)
 
 **Successes:**
-- All 7 sessions completed planned work without TypeScript errors or test failures
-- Zero financial invariant violations (tenantId, integer cents, soft delete)
-- Progressive task claiming via `/processes:begin` worked smoothly across sessions
-- Automatic task detection system implemented and committed (session 2026-02-19)
+- Zero invariant violations across all 18 sessions
+- 5 complete plans executed (93 tasks total)
+- Backend tests: 1010 → 1133 (+123)
+- TypeScript errors: 235 → 0 (fully resolved)
+- Pre-flight checklist followed consistently
 
 **Challenges:**
-- **Multi-agent file collision** (session 16:30): 5+ "file modified since read" errors when editing TASKS.md concurrently with other agents. Solution adopted: separate task files merged later.
-- **Plan mode unexpected activation** (session 16:30): Plan mode activated mid-session, blocking edits. Took time to exit.
-- **ID renumbering waste** (session 16:30): Proposed IDs already taken by parallel agents, requiring full re-read and renumbering.
-- **Partial mock gotcha** (session 13:40): `vi.mock` only mocked `tenantMiddleware`, missing `requireTenantId` export → 3 test failures.
+- Prisma migration ordering (indexes before columns) — 3 iterations to fix baseline
+- EntityFormSheet props mismatch (trigger pattern, not open/close)
+- "File has not been read yet" tool state errors (recurring, worked around)
 
 ### Actions Taken
 
-**MEMORY updates:**
-- None needed today — no new patterns discovered (existing patterns followed successfully)
+**MEMORY updates needed:**
+- Test count: 1010 → 1133
+- TS errors: 235 → 0
+- Plans completed: Banking Command Center, Entity Hub, NUJ UX Overhaul, Dashboard Redesign, Onboarding
+- Migration pattern: baseline drift workflow documented
 
-**Guardrails updates:**
-- ✅ Automatic task detection added to Pre-Flight Checklist (Step 0 in guardrails.md)
-- ✅ plan-enforcement.md updated with automatic checking section
-- ✅ product-thinking.md updated with Step 0 reference
+**Patterns to preserve:**
+- `EntityFormSheet` uses trigger pattern (not open/close props)
+- Next.js 16 params are Promises (`await params` before destructuring)
+- Empty state design pattern: icon `h-8 w-8 text-muted-foreground/20` + `text-xs text-muted-foreground`
+- NavItem doesn't support children — use flat sibling items for sub-navigation
 
-**Workflow improvements discovered:**
-- **Multi-agent coordination:** Use separate task files when parallel agents are editing TASKS.md, merge later via `/processes:eod`
-- **ID reservation:** Always grep for highest ID *immediately* before insertion, not minutes earlier
-- **vi.mock completeness:** ALL exports used by code under test must be mocked, not just primary export
+## Uncommitted Work
 
-## Today's Commits (2026-02-19)
-
-```
-a417234 fix: Remaining AI Advisor → Insights renames + task updates
-06dfbac chore: Update task cache, guardrails, CLAUDE.md, and task index
-cf3cc87 fix: Final AI Advisor → Insights rename in competition-analysis and compliance docs
-6c1a6f2 feat: Complete AI Advisor → Insights rename in docs, brand, and types
-8ba170c feat: Rename AI Advisor to Insights across frontend
-d8751eb feat: Complete 5 high-priority tasks (SEC-9, DEV-60, UX-16, UX-2, UX-14)
-155e9c8 fix: Dashboard cleanup sprint (7 tasks)
-063d0cf docs: Mark FIN-13, DRY-1, DOC-1 complete in TASKS.md
-2d1dce0 docs: Add plan-enforcement.md to CLAUDE.md Layer 1 context (DOC-1)
-9503c36 refactor: Move report types to packages/types (DRY-1)
-8ec6cf5 fix(dashboard): Change UpcomingPayments.amount to integer cents (FIN-13)
-728deff feat: Add automatic task detection to Pre-Flight Checklist
-```
-
-**Total:** 12 commits across 7 sessions
-
-## Uncommitted Work (as of 17:30)
-
-- Dashboard redesign components (NetWorthHero, RecentTransactions, 7-stat left rail)
-- Onboarding redesign (personal-first UX, 3 new steps, conditional flow)
-- Journal entries UI updates
-- Sidebar navigation updates
-- Test fix for overview routes (requireTenantId mock)
-- 2 task files pending merge:
-  - `docs/system-screen-tasks.md` (39 tasks)
-  - `docs/services-screen-tasks.md` (35 tasks)
+| Item | Files | Status |
+|------|-------|--------|
+| Prisma migration consolidation | `packages/db/prisma/migrations/` | ⏳ needs commit |
+| Onboarding href fix | `OnboardingHeroCard.tsx`, `overview/page.tsx` | ⏳ needs commit |
+| Various config files | `.mcp.json`, `tasks.json`, settings | ⏳ needs review |
 
 ## Next Session Recommendations
 
 **High Priority:**
-1. Commit uncommitted work (dashboard, onboarding, test fix)
-2. Merge system + services task files into TASKS.md
-3. Fix TypeScript errors (235 → 0 target)
-4. Address NPM vulnerabilities (17 high-severity packages)
-5. Start Performance track (PERF-1, PERF-5, PERF-6)
+1. Commit migration consolidation + onboarding fix
+2. Start UX track tasks: UX-1 (entity selector), UX-17 (toasts), UX-29 (confirmations)
+3. Start DEV-121 (journal entry detail page — only remaining Critical task)
+4. Fix routing issues: UX-77 (bills route nesting), UX-78 (insights stuttering URL)
+
+**Medium Priority:**
+5. Frontend tests (currently 0 — target 100+)
+6. NPM vulnerability audit (16 vulnerabilities, 13 high)
+7. Business domain CRUD: DEV-73 (vendor), DEV-74 (client), DEV-75 (bills page)
+8. TEST-1 (remaining report service tests)
 
 **Infrastructure:**
-- Review auto task detection accuracy after ~1 week of production use
-- Consider adding E2E tests (TEST-2) for critical flows
-
-**Phase 6 Focus:**
-- Security: Complete SEC-11, SEC-13 (remaining high-priority)
-- Performance: All 9 PERF tasks still pending
-- UX: Entity selector (UX-1), loading states (UX-8), toasts (UX-17)
+9. INFRA-1 (CI/CD pipeline), INFRA-2 (production environment)
+10. Entity Management Hub review + merge task
 
 ---
 
