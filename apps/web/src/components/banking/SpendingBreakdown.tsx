@@ -90,7 +90,7 @@ export function SpendingBreakdown({
                                             className: cn('w-2 h-2 rounded-full bg-muted-foreground'),
                                         })}
                                     />
-                                    <span className="text-xs truncate max-w-[110px]">
+                                    <span className="text-xs truncate max-w-[100px] sm:max-w-[140px]">
                                         {cat.categoryName}
                                     </span>
                                     <span className="text-[10px] text-muted-foreground">

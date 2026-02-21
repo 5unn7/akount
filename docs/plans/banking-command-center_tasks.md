@@ -54,11 +54,11 @@
 
 | ID | Task | Effort | Priority | Status | Deps |
 |----|------|--------|----------|--------|------|
-| — | Mobile responsive layout for Accounts | 30m | 🟡 Medium | 📦 | |
-| — | Mobile responsive layout for Account Detail | 30m | 🟡 Medium | 📦 | |
-| — | Mobile responsive layout for Transactions | 30m | 🟡 Medium | 📦 | |
-| — | Update transactions/loading.tsx skeleton | 15m | 🟡 Medium | 📦 | |
-| — | Cleanup deprecated components | 30m | 🟡 Medium | 📦 | |
+| — | Mobile responsive layout for Accounts | 30m | 🟡 Medium | ✅ | |
+| — | Mobile responsive layout for Account Detail | 30m | 🟡 Medium | ✅ | |
+| — | Mobile responsive layout for Transactions | 30m | 🟡 Medium | ✅ | |
+| — | Update transactions/loading.tsx skeleton | 15m | 🟡 Medium | ✅ | Done in Sprint 2 |
+| — | Cleanup deprecated components | 30m | 🟡 Medium | ✅ | Deleted 8 unused components |
 
 ---
 

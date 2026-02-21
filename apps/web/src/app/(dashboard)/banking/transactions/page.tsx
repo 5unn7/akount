@@ -120,7 +120,7 @@ export default async function TransactionsPage({
     return (
         <div className="flex-1 space-y-5">
             {/* Row 1: Header + Actions */}
-            <div className="flex items-center justify-between fi fi1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 fi fi1">
                 <div>
                     <h1 className="text-2xl font-heading font-medium">
                         Transaction Intelligence

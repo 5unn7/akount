@@ -133,7 +133,7 @@ export function BankingBalanceHero({
                                 Total Balance
                             </p>
                             <span
-                                className={`text-[40px] font-mono font-bold tracking-tight leading-none ${totalBalance >= 0 ? 'text-ak-green' : 'text-ak-red'}`}
+                                className={`text-[28px] md:text-[40px] font-mono font-bold tracking-tight leading-none ${totalBalance >= 0 ? 'text-ak-green' : 'text-ak-red'}`}
                             >
                                 {formatCurrency(totalBalance, primaryCurrency)}
                             </span>

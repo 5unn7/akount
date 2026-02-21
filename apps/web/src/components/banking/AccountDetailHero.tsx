@@ -152,13 +152,13 @@ export function AccountDetailHero({
                 </div>
 
                 {/* Balance + Sparkline */}
-                <div className="mt-6 flex items-end gap-4">
+                <div className="mt-6 flex flex-col sm:flex-row sm:items-end gap-4">
                     <div>
                         <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                             Current Balance
                         </p>
                         <span
-                            className={`text-[40px] font-mono font-bold tracking-tight leading-none ${isNegative ? 'text-destructive' : ''}`}
+                            className={`text-[28px] md:text-[40px] font-mono font-bold tracking-tight leading-none ${isNegative ? 'text-destructive' : ''}`}
                         >
                             {formatCurrency(
                                 account.currentBalance,
