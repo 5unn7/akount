@@ -21,7 +21,7 @@
         "db:seed": "cd packages/db && npm run seed",
         "db:reset": "cd packages/db && npm run db:reset",
         "linear:setup": "dotenv -e .env -- tsx .claude/scripts/linear-setup-workspace.ts",
-        "linear:import": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts import",
+        "linear:import": "dotenv -e .env -- tsx .claude/scripts/linear-import-simple.ts",
         "linear:sync": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts sync",
         "linear:pull": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts pull",
         "linear:push": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts push"
