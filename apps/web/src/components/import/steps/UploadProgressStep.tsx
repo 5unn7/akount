@@ -39,7 +39,9 @@ export function UploadProgressStep({
     const [currentIndex, setCurrentIndex] = useState(0);
     const [authError, setAuthError] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [timeEstimate, setTimeEstimate] = useState<string | null>(null);
     const cancelledRef = useRef(false);
+    const startTimeRef = useRef<number>(0);
 
     useEffect(() => {
         cancelledRef.current = false;
@@ -66,6 +68,7 @@ export function UploadProgressStep({
 
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
         const updatedFiles = [...files];
+        startTimeRef.current = Date.now();
 
         for (let i = 0; i < updatedFiles.length; i++) {
             if (cancelledRef.current) break;
@@ -138,6 +141,23 @@ export function UploadProgressStep({
                     error: errorMessage,
                 };
             }
+
+            // Update time estimate based on elapsed time per file
+            const filesCompleted = i + 1;
+            const filesRemaining = updatedFiles.length - filesCompleted;
+            if (filesRemaining > 0 && startTimeRef.current > 0) {
+                const elapsed = Date.now() - startTimeRef.current;
+                const avgPerFile = elapsed / filesCompleted;
+                const remainingMs = avgPerFile * filesRemaining;
+                const remainingSec = Math.ceil(remainingMs / 1000);
+                setTimeEstimate(
+                    remainingSec >= 60
+                        ? `About ${Math.ceil(remainingSec / 60)} min remaining...`
+                        : `About ${remainingSec}s remaining...`
+                );
+            } else {
+                setTimeEstimate(null);
+            }
         }
 
         setIsUploading(false);
@@ -189,6 +209,13 @@ export function UploadProgressStep({
                     files={files}
                     currentIndex={currentIndex}
                 />
+
+                {/* Time estimate */}
+                {timeEstimate && isUploading && (
+                    <p className="text-xs text-muted-foreground text-center">
+                        {timeEstimate}
+                    </p>
+                )}
 
                 {/* Cancel button */}
                 {isUploading && (

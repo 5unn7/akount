@@ -92,63 +92,79 @@ export function FileListEditor({
                 </div>
             )}
 
-            {files.map((item) => {
+            {files.map((item, idx) => {
                 const fileType = getFileType(item.file.name);
+                const isUnassigned = !item.accountId;
                 return (
                     <div
                         key={item.id}
-                        className="flex items-center gap-3 p-3 glass rounded-lg border border-ak-border"
+                        className={`p-3 glass rounded-lg border ${
+                            isUnassigned ? 'border-primary/30' : 'border-ak-border'
+                        }`}
                     >
-                        {/* File info */}
-                        <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium truncate">
-                                    {item.file.name}
+                        {/* File header row */}
+                        <div className="flex items-center gap-3">
+                            <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium truncate">
+                                        {item.file.name}
+                                    </span>
+                                    <Badge
+                                        variant="outline"
+                                        className={`text-[9px] px-1.5 py-0 rounded-md ${TYPE_COLORS[fileType]}`}
+                                    >
+                                        {fileType}
+                                    </Badge>
+                                </div>
+                                <span className="text-[10px] text-muted-foreground font-mono">
+                                    {(item.file.size / 1024).toFixed(1)} KB
+                                    {files.length > 1 && (
+                                        <span className="ml-2 text-muted-foreground/60">
+                                            File {idx + 1} of {files.length}
+                                        </span>
+                                    )}
                                 </span>
-                                <Badge
-                                    variant="outline"
-                                    className={`text-[9px] px-1.5 py-0 rounded-md ${TYPE_COLORS[fileType]}`}
-                                >
-                                    {fileType}
-                                </Badge>
                             </div>
-                            <span className="text-[10px] text-muted-foreground font-mono">
-                                {(item.file.size / 1024).toFixed(1)} KB
-                            </span>
+
+                            {/* Remove button */}
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 flex-shrink-0 text-muted-foreground hover:text-ak-red hover:bg-ak-red/10"
+                                onClick={() => onRemoveFile(item.id)}
+                                disabled={disabled}
+                                aria-label={`Remove ${item.file.name}`}
+                            >
+                                <X className="h-3.5 w-3.5" />
+                            </Button>
                         </div>
 
-                        {/* Account selector */}
-                        <Select
-                            value={item.accountId || undefined}
-                            onValueChange={(val) => onAccountChange(item.id, val)}
-                            disabled={disabled}
-                        >
-                            <SelectTrigger className="w-[200px] h-8 text-xs glass-2 rounded-lg border-ak-border focus:ring-primary">
-                                <SelectValue placeholder="Select account" />
-                            </SelectTrigger>
-                            <SelectContent className="glass-2 rounded-lg border-ak-border-2">
-                                {accounts.map((account) => (
-                                    <SelectItem key={account.id} value={account.id}>
-                                        <span className="text-xs">
-                                            {account.name} ({account.currency})
-                                        </span>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-
-                        {/* Remove button */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 flex-shrink-0 text-muted-foreground hover:text-ak-red hover:bg-ak-red/10"
-                            onClick={() => onRemoveFile(item.id)}
-                            disabled={disabled}
-                            aria-label={`Remove ${item.file.name}`}
-                        >
-                            <X className="h-3.5 w-3.5" />
-                        </Button>
+                        {/* Account selector — full width below filename */}
+                        <div className="mt-2 pt-2 border-t border-ak-border">
+                            <Select
+                                value={item.accountId || undefined}
+                                onValueChange={(val) => onAccountChange(item.id, val)}
+                                disabled={disabled}
+                            >
+                                <SelectTrigger className={`w-full h-8 text-xs glass-2 rounded-lg ${
+                                    isUnassigned
+                                        ? 'border-primary/30 ring-1 ring-primary/20'
+                                        : 'border-ak-border'
+                                } focus:ring-primary`}>
+                                    <SelectValue placeholder="Select destination account" />
+                                </SelectTrigger>
+                                <SelectContent className="glass-2 rounded-lg border-ak-border-2">
+                                    {accounts.map((account) => (
+                                        <SelectItem key={account.id} value={account.id}>
+                                            <span className="text-xs">
+                                                {account.name} ({account.currency})
+                                            </span>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
                 );
             })}

@@ -34,6 +34,8 @@ import { CheckCircle2, Upload, Eye, Plus } from 'lucide-react';
 import type { Account, AccountType } from '@/lib/api/accounts';
 import type { Entity } from '@/lib/api/entities';
 import { formatCurrency } from '@/lib/utils/currency';
+import { CountrySelect } from '@/components/ui/country-select';
+import { getCurrencyForCountry, getCountryByCode } from '@/lib/data/countries';
 import {
     createAccountAction,
     updateAccountAction,
@@ -73,6 +75,16 @@ export function AccountFormSheet({
     const [country, setCountry] = useState(account?.country ?? 'CA');
     const [openingBalance, setOpeningBalance] = useState('');
     const [createdAccount, setCreatedAccount] = useState<Account | null>(null);
+
+    const handleCountryChange = (newCountry: string) => {
+        setCountry(newCountry);
+        setCurrency(getCurrencyForCountry(newCountry));
+    };
+
+    const selectedCountry = getCountryByCode(country);
+    const currencyLabel = selectedCountry
+        ? `${selectedCountry.currency} — ${selectedCountry.currencyName}`
+        : currency;
 
     // Reset form state when account prop changes or sheet reopens
     useEffect(() => {
@@ -241,29 +253,28 @@ export function AccountFormSheet({
                                 </Select>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="account-currency">Currency</Label>
-                                    <Input
-                                        id="account-currency"
-                                        value={currency}
-                                        onChange={(e) => setCurrency(e.target.value.toUpperCase())}
-                                        maxLength={3}
-                                        placeholder="CAD"
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="account-country">Country</Label>
-                                    <Input
-                                        id="account-country"
-                                        value={country}
-                                        onChange={(e) => setCountry(e.target.value.toUpperCase())}
-                                        maxLength={3}
-                                        placeholder="CA"
-                                        required
-                                    />
-                                </div>
+                            <div className="space-y-2">
+                                <Label>Country</Label>
+                                <CountrySelect
+                                    value={country}
+                                    onChange={handleCountryChange}
+                                    disabled={isPending}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="account-currency">Currency</Label>
+                                <input
+                                    id="account-currency"
+                                    type="text"
+                                    value={currencyLabel}
+                                    readOnly
+                                    disabled
+                                    className="w-full px-3 py-2 text-sm rounded-lg border border-input bg-muted text-muted-foreground cursor-not-allowed font-mono"
+                                />
+                                <p className="text-[10px] text-muted-foreground">
+                                    Auto-set from country. Change country to update.
+                                </p>
                             </div>
                         </>
                     )}

@@ -27,7 +27,7 @@ import {
     SheetDescription,
 } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
-import { Loader2, Upload, FileText, BookOpen } from 'lucide-react';
+import { Loader2, Upload, FileText, BookOpen, AlertTriangle } from 'lucide-react';
 import {
     fetchMoreTransactions,
     bulkCategorizeAction,
@@ -327,6 +327,8 @@ export function TransactionsListClient({
         );
     }
 
+    const uncategorizedCount = transactions.filter((t) => !t.categoryId).length;
+
     return (
         <div className="space-y-4">
             <TransactionsFilters
@@ -337,6 +339,30 @@ export function TransactionsListClient({
                 onFilterChange={handleFilterChange}
                 onClearFilters={handleClearFilters}
             />
+
+            {/* Uncategorized urgency banner */}
+            {uncategorizedCount > 0 && (
+                <div className="flex items-center justify-between gap-3 px-4 py-3 bg-ak-pri-dim border border-ak-border rounded-lg">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                        <AlertTriangle className="h-4 w-4 text-primary shrink-0" />
+                        <p className="text-sm text-foreground">
+                            <span className="font-mono font-semibold">{uncategorizedCount}</span>
+                            {' '}uncategorized transaction{uncategorizedCount !== 1 ? 's' : ''}
+                            <span className="text-muted-foreground"> — these won&apos;t appear in financial reports</span>
+                        </p>
+                    </div>
+                    <Button
+                        size="sm"
+                        className="shrink-0 rounded-lg bg-primary hover:bg-ak-pri-hover text-black text-xs font-medium h-7 px-3"
+                        onClick={() => {
+                            const uncatIds = transactions.filter((t) => !t.categoryId).map((t) => t.id);
+                            setSelectedIds(new Set(uncatIds));
+                        }}
+                    >
+                        Select All Uncategorized
+                    </Button>
+                </div>
+            )}
 
             <TransactionsTable
                 transactions={transactions}

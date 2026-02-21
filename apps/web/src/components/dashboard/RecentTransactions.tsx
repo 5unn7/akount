@@ -98,7 +98,10 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
 
                                         {/* Details */}
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-xs font-medium truncate group-hover:text-foreground transition-colors">
+                                            <p
+                                                className="text-xs font-medium truncate group-hover:text-foreground transition-colors"
+                                                title={tx.description}
+                                            >
                                                 {tx.description}
                                             </p>
                                             {tx.category && (
