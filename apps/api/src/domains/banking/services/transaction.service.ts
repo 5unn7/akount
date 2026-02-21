@@ -457,6 +457,111 @@ export class TransactionService {
   }
 
   /**
+   * Get spending breakdown by category
+   *
+   * Groups expense transactions (negative amounts) by category,
+   * returning totals, counts, and percentages.
+   */
+  async getSpendingByCategory(params: {
+    entityId?: string;
+    accountId?: string;
+    startDate?: string;
+    endDate?: string;
+  }): Promise<{
+    categories: Array<{
+      categoryId: string | null;
+      categoryName: string;
+      categoryColor: string | null;
+      totalAmount: number;
+      transactionCount: number;
+      percentOfTotal: number;
+    }>;
+    totalExpenses: number;
+    currency: string;
+  }> {
+    const where: Prisma.TransactionWhereInput = {
+      deletedAt: null,
+      amount: { lt: 0 }, // Only expenses (negative amounts)
+      account: {
+        entity: { tenantId: this.tenantId },
+        ...(params.entityId ? { entityId: params.entityId } : {}),
+      },
+      ...(params.accountId ? { accountId: params.accountId } : {}),
+    };
+
+    if (params.startDate || params.endDate) {
+      where.date = {};
+      if (params.startDate) where.date.gte = new Date(params.startDate);
+      if (params.endDate) where.date.lte = new Date(params.endDate);
+    }
+
+    // Group by categoryId with aggregate sum and count
+    const grouped = await prisma.transaction.groupBy({
+      by: ['categoryId'],
+      where,
+      _sum: { amount: true },
+      _count: { id: true },
+      orderBy: { _sum: { amount: 'asc' } }, // Most negative (biggest expense) first
+    });
+
+    // Fetch category details for non-null categoryIds
+    const categoryIds = grouped
+      .map((g) => g.categoryId)
+      .filter((id): id is string => id !== null);
+
+    const categories = categoryIds.length > 0
+      ? await prisma.category.findMany({
+          where: { id: { in: categoryIds }, tenantId: this.tenantId },
+          select: { id: true, name: true, color: true },
+        })
+      : [];
+
+    const categoryMap = new Map(categories.map((c) => [c.id, c]));
+
+    // Compute total expenses (sum of all negative amounts → make positive for display)
+    const totalExpenses = grouped.reduce(
+      (sum, g) => sum + Math.abs(g._sum.amount ?? 0),
+      0
+    );
+
+    // Determine currency from first account (fallback to USD)
+    let currency = 'USD';
+    if (params.accountId) {
+      const account = await prisma.account.findFirst({
+        where: { id: params.accountId, entity: { tenantId: this.tenantId } },
+        select: { currency: true },
+      });
+      if (account) currency = account.currency;
+    } else {
+      const firstAccount = await prisma.account.findFirst({
+        where: { entity: { tenantId: this.tenantId } },
+        select: { currency: true },
+        orderBy: { createdAt: 'asc' },
+      });
+      if (firstAccount) currency = firstAccount.currency;
+    }
+
+    return {
+      categories: grouped.map((g) => {
+        const cat = g.categoryId ? categoryMap.get(g.categoryId) : null;
+        const absAmount = Math.abs(g._sum.amount ?? 0);
+        return {
+          categoryId: g.categoryId,
+          categoryName: cat?.name ?? 'Uncategorized',
+          categoryColor: cat?.color ?? null,
+          totalAmount: absAmount,
+          transactionCount: g._count.id,
+          percentOfTotal: totalExpenses > 0
+            ? Math.round((absAmount / totalExpenses) * 10000) / 100
+            : 0,
+        };
+      }),
+      totalExpenses,
+      currency,
+    };
+  }
+
+  /**
    * Bulk soft delete transactions
    *
    * Soft-deletes multiple transactions. All must belong to tenant.

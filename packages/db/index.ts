@@ -33,24 +33,29 @@ const TENANT_SCOPED_MODELS = [
 ] as const;
 
 // Helper function to check if a where clause includes tenant isolation
-function hasTenantFilter(where: any): boolean {
-    if (!where) return false;
+// Recursively traverses relation filters to detect tenantId at any depth
+// e.g., where.tenantId, where.entity.tenantId, where.account.entity.tenantId
+function hasTenantFilter(where: any, depth: number = 0): boolean {
+    if (!where || depth > 5) return false;
 
     // Check for direct tenantId filter
     if (where.tenantId) return true;
 
-    // Check for nested entity.tenantId filter
-    if (where.entity?.tenantId) return true;
-
-    // Check for nested relations (e.g., invoice.entity.tenantId)
-    if (where.entity && where.entity.tenantId) return true;
-
     // Check for AND/OR conditions
     if (where.AND && Array.isArray(where.AND)) {
-        return where.AND.some((condition: any) => hasTenantFilter(condition));
+        if (where.AND.some((condition: any) => hasTenantFilter(condition, depth + 1))) return true;
     }
     if (where.OR && Array.isArray(where.OR)) {
-        return where.OR.some((condition: any) => hasTenantFilter(condition));
+        if (where.OR.some((condition: any) => hasTenantFilter(condition, depth + 1))) return true;
+    }
+
+    // Recursively check nested relation objects for tenantId
+    // This handles patterns like: entity.tenantId, account.entity.tenantId
+    const RELATION_KEYS = ['entity', 'account', 'invoice', 'bill', 'client', 'vendor'];
+    for (const key of RELATION_KEYS) {
+        if (where[key] && typeof where[key] === 'object') {
+            if (hasTenantFilter(where[key], depth + 1)) return true;
+        }
     }
 
     return false;

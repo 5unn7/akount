@@ -7,6 +7,8 @@ export type {
     ListTransactionsResponse,
     CreateTransactionInput,
     UpdateTransactionInput,
+    SpendingByCategoryResponse,
+    SpendingByCategoryParams,
 } from './transactions.types';
 
 export { formatAmount, formatDate } from './transactions.types';
@@ -18,6 +20,8 @@ import type {
     ListTransactionsResponse,
     CreateTransactionInput,
     UpdateTransactionInput,
+    SpendingByCategoryResponse,
+    SpendingByCategoryParams,
 } from './transactions.types';
 
 /**
@@ -140,4 +144,23 @@ export async function deduplicateTransactions(
         method: 'POST',
         body: JSON.stringify({ accountId }),
     });
+}
+
+/**
+ * Get spending breakdown by category
+ */
+export async function getSpendingByCategory(
+    params?: SpendingByCategoryParams
+): Promise<SpendingByCategoryResponse> {
+    const searchParams = new URLSearchParams();
+
+    if (params?.entityId) searchParams.append('entityId', params.entityId);
+    if (params?.accountId) searchParams.append('accountId', params.accountId);
+    if (params?.startDate) searchParams.append('startDate', params.startDate);
+    if (params?.endDate) searchParams.append('endDate', params.endDate);
+
+    const qs = searchParams.toString();
+    return apiClient<SpendingByCategoryResponse>(
+        `/api/banking/transactions/spending-by-category${qs ? `?${qs}` : ''}`
+    );
 }

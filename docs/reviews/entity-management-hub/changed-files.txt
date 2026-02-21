@@ -1,0 +1,76 @@
+# Files reviewed by entity-management-hub review agents
+# Format: file_path | agent(s) | relevance
+
+# Plan under review
+docs/plans/2026-02-20-entity-management-hub.md | all | Primary review target
+
+# API - System Domain (Entity routes and services)
+apps/api/src/domains/system/routes.ts | security, architecture, prisma | Entity CRUD routes, Zod schemas, RBAC guards
+apps/api/src/domains/system/routes/entity.ts | security, architecture | Business details PATCH (broken tenant lookup)
+apps/api/src/domains/system/services/entity.service.ts | security, architecture, prisma, financial | Entity CRUD service (no audit logging)
+apps/api/src/domains/system/services/__tests__/entity.service.test.ts | prisma | Entity service tests
+
+# API - Overview Domain (Dashboard)
+apps/api/src/domains/overview/services/dashboard.service.ts | financial | Dashboard metrics (no entity status filter)
+
+# API - Accounting Domain (Reports)
+apps/api/src/domains/accounting/services/report.service.ts | financial | Report service (getEntityIds returns all entities)
+
+# API - Invoicing Domain
+apps/api/src/domains/invoicing/services/invoice.service.ts | financial | Invoice stats (entityId parameter silently ignored)
+
+# API - Banking Domain
+apps/api/src/domains/banking/services/account.service.ts | financial | Account service (entity filter, no status check)
+
+# API - Vendors Domain
+apps/api/src/domains/vendors/services/bill.service.ts | financial | Bill stats (no entity status filter)
+
+# API - Middleware
+apps/api/src/middleware/rbac.ts | security | RBAC enforcement logic
+apps/api/src/middleware/withPermission.ts | security | Permission helper with preset roles
+apps/api/src/middleware/tenant.ts | security | Tenant isolation middleware
+apps/api/src/middleware/auth.ts | security | JWT handling (sets request.userId)
+apps/api/src/middleware/validation.ts | security | Zod validation middleware
+apps/api/src/middleware/security-headers.ts | security | Security headers
+
+# API - Libraries
+apps/api/src/lib/audit.ts | security, financial | Audit logging (SHA-256 hash chain)
+apps/api/src/lib/tenant-scoped-query.ts | financial | Raw SQL tenant isolation wrapper
+
+# Database
+packages/db/prisma/schema.prisma | prisma, architecture, financial | Entity model, EntityType enum, 22 entity-scoped models
+packages/db/index.ts | prisma | Prisma client singleton, TENANT_SCOPED_MODELS middleware
+
+# Frontend - Overview Pages
+apps/web/src/app/(dashboard)/overview/layout.tsx | nextjs, architecture | Overview tab navigation
+apps/web/src/app/(dashboard)/overview/page.tsx | nextjs, architecture | Dashboard page (EntitiesSection embedded)
+apps/web/src/app/(dashboard)/overview/loading.tsx | nextjs | Dashboard loading skeleton
+apps/web/src/app/(dashboard)/overview/cash-flow/page.tsx | nextjs | Cash flow sub-tab (canonical pattern)
+apps/web/src/app/(dashboard)/overview/cash-flow/loading.tsx | nextjs | Cash flow loading skeleton
+apps/web/src/app/(dashboard)/overview/cash-flow/error.tsx | nextjs | Cash flow error boundary
+apps/web/src/app/(dashboard)/overview/net-worth/page.tsx | nextjs | Net worth sub-tab (canonical pattern)
+apps/web/src/app/(dashboard)/overview/net-worth/loading.tsx | nextjs | Net worth loading skeleton
+apps/web/src/app/(dashboard)/overview/net-worth/error.tsx | nextjs | Net worth error boundary
+
+# Frontend - System Pages
+apps/web/src/app/(dashboard)/system/entities/page.tsx | architecture, simplicity, nextjs | Existing "Coming Soon" stub
+apps/web/src/app/(dashboard)/layout.tsx | nextjs, architecture | Dashboard shell (entity fetch for Navbar)
+
+# Frontend - Components
+apps/web/src/components/dashboard/EntityFormSheet.tsx | security, simplicity, nextjs | Entity creation form (338 lines)
+apps/web/src/components/dashboard/EntitiesSection.tsx | simplicity, nextjs | Collapsible entity section
+apps/web/src/components/dashboard/EntitiesList.tsx | simplicity, architecture | Entity card grid
+apps/web/src/components/shared/DomainTabs.tsx | nextjs | Tab navigation with active state
+apps/web/src/components/layout/Navbar.tsx | architecture, simplicity | Entity selector dropdown
+
+# Frontend - Providers and API
+apps/web/src/providers/entity-provider.tsx | architecture, nextjs | Entity context (cookies, selection)
+apps/web/src/lib/api/entities.ts | prisma, nextjs | Frontend Entity type and API client
+apps/web/src/lib/api/client.ts | nextjs | Server-only API client
+apps/web/src/lib/api/client-browser.ts | security, nextjs | Browser-safe API client
+
+# Types
+packages/types/src/rbac/permissions.ts | security | Permission matrix (entity role definitions)
+
+# Rules
+.claude/rules/financial-rules.md | financial | Financial invariants reference

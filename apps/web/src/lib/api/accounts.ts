@@ -45,6 +45,8 @@ export interface CreateAccountInput {
     currency: string;
     country: string;
     institution?: string;
+    openingBalance?: number;       // Integer cents
+    openingBalanceDate?: string;   // ISO date string
 }
 
 /**

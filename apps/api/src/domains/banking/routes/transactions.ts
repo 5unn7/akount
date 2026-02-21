@@ -6,6 +6,8 @@ import { withRolePermission } from '../../../middleware/rbac';
 import { prisma } from '@akount/db';
 import { TransactionService } from '../services/transaction.service';
 import { deduplicateExistingTransactions } from '../services/duplication.service';
+import { statsRateLimitConfig } from '../../../middleware/rate-limit';
+import { reportCache } from '../../accounting/services/report-cache';
 import {
   CreateTransactionSchema,
   UpdateTransactionSchema,
@@ -13,12 +15,14 @@ import {
   TransactionIdParamSchema,
   BulkCategorizeSchema,
   BulkDeleteSchema,
+  SpendingByCategoryQuerySchema,
   type CreateTransactionInput,
   type UpdateTransactionInput,
   type ListTransactionsQuery,
   type TransactionIdParam,
   type BulkCategorizeInput,
   type BulkDeleteInput,
+  type SpendingByCategoryQuery,
 } from '../schemas/transaction.schema';
 
 /**
@@ -255,6 +259,45 @@ export async function transactionRoutes(fastify: FastifyInstance) {
         // Re-throw other errors for global error handler
         throw error;
       }
+    }
+  );
+
+  // GET /api/banking/transactions/spending-by-category — Spending breakdown
+  fastify.get(
+    '/spending-by-category',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      config: {
+        rateLimit: statsRateLimitConfig(),
+      },
+      preValidation: [validateQuery(SpendingByCategoryQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const query = request.query as SpendingByCategoryQuery;
+
+      // Check cache first
+      const cacheKey = `spending-by-category:${JSON.stringify(query)}`;
+      const cached = reportCache.get(request.tenantId, cacheKey);
+      if (cached) {
+        return reply.status(200).send(cached);
+      }
+
+      const service = new TransactionService(request.tenantId, request.userId);
+      const result = await service.getSpendingByCategory({
+        entityId: query.entityId,
+        accountId: query.accountId,
+        startDate: query.startDate,
+        endDate: query.endDate,
+      });
+
+      // Cache for 5 minutes
+      reportCache.set(request.tenantId, cacheKey, result);
+
+      return reply.status(200).send(result);
     }
   );
 

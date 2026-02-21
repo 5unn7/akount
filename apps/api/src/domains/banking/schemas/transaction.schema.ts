@@ -97,6 +97,22 @@ export const BulkCategorizeSchema = z.object({
 
 export type BulkCategorizeInput = z.infer<typeof BulkCategorizeSchema>;
 
+// GET /api/banking/transactions/spending-by-category
+export const SpendingByCategoryQuerySchema = z.object({
+  entityId: z.string().cuid('Invalid entity ID format').optional(),
+  accountId: z.string().cuid('Invalid account ID format').optional(),
+  startDate: z
+    .string()
+    .datetime('Start date must be in ISO 8601 format')
+    .optional(),
+  endDate: z
+    .string()
+    .datetime('End date must be in ISO 8601 format')
+    .optional(),
+});
+
+export type SpendingByCategoryQuery = z.infer<typeof SpendingByCategoryQuerySchema>;
+
 // DELETE /api/banking/transactions/bulk - Bulk soft delete
 export const BulkDeleteSchema = z.object({
   transactionIds: z

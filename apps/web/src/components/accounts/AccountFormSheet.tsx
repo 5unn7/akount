@@ -1,6 +1,7 @@
 'use client';
 
 import { useTransition, useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
     Sheet,
     SheetContent,
@@ -29,8 +30,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { CheckCircle2, Upload, Eye, Plus } from 'lucide-react';
 import type { Account, AccountType } from '@/lib/api/accounts';
 import type { Entity } from '@/lib/api/entities';
+import { formatCurrency } from '@/lib/utils/currency';
 import {
     createAccountAction,
     updateAccountAction,
@@ -68,8 +71,10 @@ export function AccountFormSheet({
     const [institution, setInstitution] = useState(account?.institution ?? '');
     const [currency, setCurrency] = useState(account?.currency ?? 'CAD');
     const [country, setCountry] = useState(account?.country ?? 'CA');
+    const [openingBalance, setOpeningBalance] = useState('');
+    const [createdAccount, setCreatedAccount] = useState<Account | null>(null);
 
-    // Reset form state when account prop changes (opening different account)
+    // Reset form state when account prop changes or sheet reopens
     useEffect(() => {
         setName(account?.name ?? '');
         setType(account?.type ?? 'BANK');
@@ -77,8 +82,10 @@ export function AccountFormSheet({
         setInstitution(account?.institution ?? '');
         setCurrency(account?.currency ?? 'CAD');
         setCountry(account?.country ?? 'CA');
+        setOpeningBalance('');
+        setCreatedAccount(null);
         setError(null);
-    }, [account, entities]);
+    }, [account, entities, open]);
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -98,10 +105,18 @@ export function AccountFormSheet({
                     currency,
                     country,
                     institution: institution || undefined,
+                    ...(openingBalance && {
+                        openingBalance: Math.round(parseFloat(openingBalance) * 100),
+                        openingBalanceDate: new Date().toISOString(),
+                    }),
                 });
 
             if (!result.success) {
                 setError(result.error);
+                return;
+            }
+            if (!isEdit) {
+                setCreatedAccount(result.data);
                 return;
             }
             onOpenChange(false);
@@ -133,6 +148,49 @@ export function AccountFormSheet({
                     </SheetDescription>
                 </SheetHeader>
 
+                {createdAccount ? (
+                    <div className="flex flex-col items-center text-center mt-8 space-y-4">
+                        <CheckCircle2 className="h-12 w-12 text-ak-green" />
+                        <h3 className="text-lg font-heading font-normal">Account created!</h3>
+                        <p className="text-sm text-muted-foreground">
+                            {createdAccount.name}
+                        </p>
+                        <span className="text-2xl font-mono font-bold">
+                            {formatCurrency(createdAccount.currentBalance, createdAccount.currency)}
+                        </span>
+
+                        <div className="flex flex-col gap-2 w-full pt-4">
+                            <Button asChild className="gap-1.5 bg-primary hover:bg-ak-pri-hover text-black font-medium">
+                                <Link href={`/banking/imports?accountId=${createdAccount.id}`}>
+                                    <Upload className="h-4 w-4" />
+                                    Import Transactions
+                                </Link>
+                            </Button>
+                            <Button variant="outline" asChild className="gap-1.5 border-ak-border-2 hover:bg-ak-bg-3">
+                                <Link href={`/banking/accounts/${createdAccount.id}`}>
+                                    <Eye className="h-4 w-4" />
+                                    View Account
+                                </Link>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                className="gap-1.5"
+                                onClick={() => {
+                                    setCreatedAccount(null);
+                                    setName('');
+                                    setType('BANK');
+                                    setInstitution('');
+                                    setOpeningBalance('');
+                                    setError(null);
+                                }}
+                            >
+                                <Plus className="h-4 w-4" />
+                                Add Another
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <>
                 {error && (
                     <p className="text-sm text-destructive mt-2">{error}</p>
                 )}
@@ -220,6 +278,27 @@ export function AccountFormSheet({
                         />
                     </div>
 
+                    {!isEdit && (
+                        <div className="space-y-2">
+                            <Label htmlFor="account-opening-balance">Opening Balance (optional)</Label>
+                            <div className="relative">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-mono">$</span>
+                                <Input
+                                    id="account-opening-balance"
+                                    type="number"
+                                    step="0.01"
+                                    value={openingBalance}
+                                    onChange={(e) => setOpeningBalance(e.target.value)}
+                                    placeholder="0.00"
+                                    className="pl-7 font-mono"
+                                />
+                            </div>
+                            <p className="text-[10px] text-muted-foreground">
+                                Current balance of this account. A journal entry will be created automatically.
+                            </p>
+                        </div>
+                    )}
+
                     <div className="flex items-center gap-2 pt-4">
                         <Button type="submit" disabled={isPending || !name}>
                             {isPending ? 'Saving...' : isEdit ? 'Update' : 'Create'}
@@ -255,6 +334,8 @@ export function AccountFormSheet({
                         )}
                     </div>
                 </form>
+                    </>
+                )}
             </SheetContent>
         </Sheet>
     );

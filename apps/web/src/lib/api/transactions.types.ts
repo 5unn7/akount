@@ -85,6 +85,32 @@ export interface UpdateTransactionInput {
 }
 
 /**
+ * Spending by category response from the API
+ */
+export interface SpendingByCategoryResponse {
+    categories: Array<{
+        categoryId: string | null;
+        categoryName: string;
+        categoryColor: string | null;
+        totalAmount: number; // integer cents (positive)
+        transactionCount: number;
+        percentOfTotal: number;
+    }>;
+    totalExpenses: number; // integer cents (positive)
+    currency: string;
+}
+
+/**
+ * Query parameters for spending-by-category
+ */
+export interface SpendingByCategoryParams {
+    entityId?: string;
+    accountId?: string;
+    startDate?: string;
+    endDate?: string;
+}
+
+/**
  * Format amount from cents to currency string
  */
 export function formatAmount(cents: number, currency: string = 'CAD'): string {

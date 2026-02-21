@@ -794,6 +794,198 @@ export class DocumentPostingService {
     });
   }
 
+  /**
+   * Post an opening balance journal entry for a newly created account.
+   *
+   * Creates journal entry:
+   *   For debit-normal accounts (BANK, INVESTMENT):
+   *     DR Account GL (openingBalance)
+   *     CR Opening Balance Equity (openingBalance)
+   *   For credit-normal accounts (CREDIT_CARD, LOAN, MORTGAGE):
+   *     DR Opening Balance Equity (openingBalance)
+   *     CR Account GL (openingBalance)
+   *
+   * Prerequisites:
+   *   - Account must already exist
+   *   - GL account must be assigned (glAccountId)
+   *   - Opening Balance Equity (3300) must exist in entity COA
+   *   - Called within an existing prisma.$transaction (receives tx client)
+   */
+  async postOpeningBalance(
+    tx: Prisma.TransactionClient,
+    params: {
+      accountId: string;
+      entityId: string;
+      glAccountId: string;
+      openingBalance: number; // Integer cents (always positive)
+      openingBalanceDate: Date;
+      accountName: string;
+      accountType: string;
+    }
+  ) {
+    const {
+      accountId, entityId, glAccountId,
+      openingBalance, openingBalanceDate,
+      accountName, accountType,
+    } = params;
+
+    // Skip if opening balance is zero
+    if (openingBalance === 0) {
+      return null;
+    }
+
+    // 1. Check idempotency — prevent duplicate opening balance JE
+    const existingJE = await tx.journalEntry.findFirst({
+      where: {
+        sourceType: 'OPENING_BALANCE',
+        sourceId: accountId,
+        deletedAt: null,
+        status: { not: 'VOIDED' },
+      },
+      select: { id: true },
+    });
+
+    if (existingJE) {
+      throw new AccountingError(
+        'Opening balance already posted for this account',
+        'ALREADY_POSTED',
+        409,
+        { journalEntryId: existingJE.id }
+      );
+    }
+
+    // 2. Fiscal period check
+    await this.checkFiscalPeriod(tx, entityId, openingBalanceDate);
+
+    // 3. Resolve Opening Balance Equity GL account (code 3300)
+    const obeAccount = await this.resolveGLAccountByCode(
+      tx, entityId, WELL_KNOWN_CODES.OPENING_BALANCE_EQUITY
+    );
+
+    // 4. Determine debit/credit direction based on account type
+    // Credit-normal accounts: CREDIT_CARD, LOAN, MORTGAGE
+    const isCreditNormal = ['CREDIT_CARD', 'LOAN', 'MORTGAGE'].includes(accountType);
+    const absAmount = Math.abs(openingBalance);
+
+    const lines = isCreditNormal
+      ? [
+          // Credit-normal: DR Opening Balance Equity, CR Account GL
+          {
+            glAccountId: obeAccount.id,
+            debitAmount: absAmount,
+            creditAmount: 0,
+            memo: `Opening balance: ${accountName}`,
+          },
+          {
+            glAccountId: glAccountId,
+            debitAmount: 0,
+            creditAmount: absAmount,
+            memo: `Opening balance: ${accountName}`,
+          },
+        ]
+      : [
+          // Debit-normal: DR Account GL, CR Opening Balance Equity
+          {
+            glAccountId: glAccountId,
+            debitAmount: absAmount,
+            creditAmount: 0,
+            memo: `Opening balance: ${accountName}`,
+          },
+          {
+            glAccountId: obeAccount.id,
+            debitAmount: 0,
+            creditAmount: absAmount,
+            memo: `Opening balance: ${accountName}`,
+          },
+        ];
+
+    // 5. Validate balance before creating
+    const totalDebits = lines.reduce((sum, l) => sum + l.debitAmount, 0);
+    const totalCredits = lines.reduce((sum, l) => sum + l.creditAmount, 0);
+    if (totalDebits !== totalCredits) {
+      throw new AccountingError(
+        'Opening balance journal entry is unbalanced',
+        'UNBALANCED_ENTRY',
+        500,
+        { totalDebits, totalCredits }
+      );
+    }
+
+    // 6. Generate entry number
+    const entryNumber = await this.generateEntryNumber(tx, entityId);
+
+    // 7. Source document snapshot
+    const sourceDocument = {
+      accountId,
+      accountName,
+      accountType,
+      openingBalance,
+      openingBalanceDate: openingBalanceDate.toISOString(),
+      capturedAt: new Date().toISOString(),
+    };
+
+    // 8. Create journal entry
+    const journalEntry = await tx.journalEntry.create({
+      data: {
+        entityId,
+        entryNumber,
+        date: openingBalanceDate,
+        memo: `Opening balance: ${accountName}`,
+        sourceType: 'OPENING_BALANCE',
+        sourceId: accountId,
+        sourceDocument: sourceDocument as unknown as Prisma.InputJsonValue,
+        status: 'POSTED',
+        createdBy: this.userId,
+        journalLines: { create: lines },
+      },
+      select: {
+        id: true,
+        entryNumber: true,
+        journalLines: {
+          select: {
+            id: true,
+            glAccountId: true,
+            debitAmount: true,
+            creditAmount: true,
+          },
+        },
+      },
+    });
+
+    // 9. Audit log
+    await createAuditLog({
+      tenantId: this.tenantId,
+      userId: this.userId,
+      entityId,
+      model: 'JournalEntry',
+      recordId: journalEntry.id,
+      action: 'CREATE',
+      after: {
+        entryNumber: journalEntry.entryNumber,
+        sourceType: 'OPENING_BALANCE',
+        sourceId: accountId,
+        status: 'POSTED',
+        amount: absAmount,
+        accountName,
+        accountType,
+      },
+    }, tx);
+
+    // 10. Invalidate report cache
+    try {
+      reportCache.invalidate(this.tenantId, /^report:/);
+    } catch {
+      // Intentionally swallowed — cache miss is harmless
+    }
+
+    return {
+      journalEntryId: journalEntry.id,
+      entryNumber: journalEntry.entryNumber,
+      amount: absAmount,
+      lines: journalEntry.journalLines,
+    };
+  }
+
   // ============================================================================
   // Private Helpers
   // ============================================================================

@@ -148,34 +148,67 @@ export class AccountService {
       currency: string;
       country: string;
       institution?: string;
+      openingBalance?: number; // Integer cents
+      openingBalanceDate?: Date;
     }
   ) {
-    // Verify entity belongs to tenant
-    const entity = await prisma.entity.findFirst({
-      where: {
-        id: data.entityId,
-        tenantId: this.tenantId,
-      },
-    });
+    const accountType = data.type as AccountType;
+    const hasOpeningBalance = data.openingBalance != null && data.openingBalance !== 0;
 
-    if (!entity) {
-      throw new Error('Entity not found or access denied');
-    }
+    return prisma.$transaction(async (tx) => {
+      // 1. Verify entity belongs to tenant
+      const entity = await tx.entity.findFirst({
+        where: {
+          id: data.entityId,
+          tenantId: this.tenantId,
+        },
+      });
 
-    return prisma.account.create({
-      data: {
-        entityId: data.entityId,
-        name: data.name,
-        type: data.type as 'BANK' | 'CREDIT_CARD' | 'INVESTMENT' | 'LOAN' | 'MORTGAGE' | 'OTHER',
-        currency: data.currency,
-        country: data.country,
-        institution: data.institution,
-        currentBalance: 0,
-        isActive: true,
-      },
-      include: {
-        entity: true,
-      },
+      if (!entity) {
+        throw new Error('Entity not found or access denied');
+      }
+
+      // 2. Auto-assign GL account based on type
+      const glAccountId = await getDefaultGLAccountForType(tx, data.entityId, accountType);
+
+      // 3. Create the account
+      const account = await tx.account.create({
+        data: {
+          entityId: data.entityId,
+          name: data.name,
+          type: accountType,
+          currency: data.currency,
+          country: data.country,
+          institution: data.institution,
+          currentBalance: hasOpeningBalance ? data.openingBalance! : 0,
+          glAccountId,
+          isActive: true,
+        },
+        include: {
+          entity: true,
+        },
+      });
+
+      // 4. Create opening balance journal entry if balance provided + GL resolved
+      let journalEntry = null;
+      if (hasOpeningBalance && glAccountId) {
+        // Import lazily to avoid circular dependency
+        const { DocumentPostingService } = await import(
+          '../../accounting/services/document-posting.service'
+        );
+        const postingService = new DocumentPostingService(this.tenantId, userId);
+        journalEntry = await postingService.postOpeningBalance(tx, {
+          accountId: account.id,
+          entityId: data.entityId,
+          glAccountId,
+          openingBalance: data.openingBalance!,
+          openingBalanceDate: data.openingBalanceDate ?? new Date(),
+          accountName: data.name,
+          accountType,
+        });
+      }
+
+      return { ...account, journalEntry };
     });
   }
 

@@ -111,7 +111,7 @@ export default async function DashboardLayout({
                 <Sidebar role={role} />
                 <main className="md:pl-16">
                     <Navbar entities={entities} />
-                    <div className="px-4 md:px-6 py-6">
+                    <div className="px-4 md:px-6 py-4">
                         {children}
                     </div>
                 </main>

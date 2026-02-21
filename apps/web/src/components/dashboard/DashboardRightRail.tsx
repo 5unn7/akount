@@ -9,9 +9,14 @@ interface DashboardRightRailProps {
 }
 
 export function DashboardRightRail({ className }: DashboardRightRailProps) {
+    const isDesktopRail = !className?.includes('w-full');
+
     return (
         <aside className={cn("hidden xl:block w-80 shrink-0", className)}>
-            <div className="xl:sticky xl:top-6 space-y-4">
+            <div className="xl:sticky xl:top-6 space-y-3">
+                {isDesktopRail && (
+                    <div className="h-8" aria-hidden="true" />
+                )}
                 <AIBrief />
                 <QuickActions />
                 <ActionItems />

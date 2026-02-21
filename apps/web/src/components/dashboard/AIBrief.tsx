@@ -31,7 +31,7 @@ export function AIBrief({ body, date }: AIBriefProps) {
                 </p>
             ) : (
                 <div className="flex flex-col items-center gap-2 py-2 text-center">
-                    <Sparkles className="h-5 w-5 text-ak-purple/40" />
+                    <Sparkles className="h-8 w-8 text-ak-purple/40" />
                     <p className="text-sm font-heading italic text-foreground/70 leading-relaxed">
                         Add transactions and invoices to unlock AI-powered insights about your finances.
                     </p>

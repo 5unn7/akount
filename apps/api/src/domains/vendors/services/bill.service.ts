@@ -42,7 +42,7 @@ export async function getBillStats(ctx: TenantContext, entityId?: string) {
     prisma.bill.aggregate({
       where: {
         ...baseWhere,
-        status: { in: ['SENT', 'PARTIALLY_PAID', 'OVERDUE'] },
+        status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
         dueDate: { lt: now },
       },
       _sum: { total: true, paidAmount: true },

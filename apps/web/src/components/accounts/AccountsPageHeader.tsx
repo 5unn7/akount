@@ -13,7 +13,7 @@ import {
 import { Plus, RotateCw, Upload } from 'lucide-react';
 import { PageHeader } from '@/components/shared/PageHeader';
 import type { Entity } from '@/lib/api/entities';
-import { AccountFormSheet } from './AccountFormSheet';
+import { AddAccountModal } from './AddAccountModal';
 import Link from 'next/link';
 
 const ACCOUNT_TYPE_OPTIONS: { value: string; label: string }[] = [
@@ -88,7 +88,7 @@ export function AccountsPageHeader({ entities, currencies = [], accountCount = 0
                         >
                             <Link href="/banking/imports">
                                 <Upload className="h-3.5 w-3.5" />
-                                Import
+                                Import Statements
                             </Link>
                         </Button>
                         <Button
@@ -97,7 +97,7 @@ export function AccountsPageHeader({ entities, currencies = [], accountCount = 0
                             className="h-8 gap-1.5 rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
                         >
                             <Plus className="h-3.5 w-3.5" />
-                            Connect Account
+                            Add Account
                         </Button>
                     </div>
                 }
@@ -141,8 +141,7 @@ export function AccountsPageHeader({ entities, currencies = [], accountCount = 0
                 </button>
             </div>
 
-            <AccountFormSheet
-                key="create"
+            <AddAccountModal
                 open={createOpen}
                 onOpenChange={setCreateOpen}
                 entities={entities}

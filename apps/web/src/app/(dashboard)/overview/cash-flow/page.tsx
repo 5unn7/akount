@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Wallet, TrendingUp, CreditCard, Landmark } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { getCashFlow } from "@/lib/api/dashboard";
 import { formatCurrency } from "@/lib/utils/currency";
 
@@ -11,6 +12,28 @@ export const metadata: Metadata = {
 
 export default async function CashFlowPage() {
     const data = await getCashFlow();
+
+    // Show empty state if no accounts exist
+    if (data.accounts.total === 0) {
+        return (
+            <div className="flex-1 space-y-4 p-8 pt-6">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-3xl font-bold tracking-tight font-heading">Cash Flow</h2>
+                </div>
+                <EmptyState
+                    icon={Wallet}
+                    title="No accounts connected"
+                    description="Connect your bank accounts, credit cards, and other financial accounts to track your cash flow."
+                    action={{
+                        label: "Add Account",
+                        href: "/banking/accounts",
+                        variant: "default"
+                    }}
+                    variant="compact"
+                />
+            </div>
+        );
+    }
 
     const netCash = data.cashPosition.net;
     const isPositive = netCash >= 0;

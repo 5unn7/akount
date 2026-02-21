@@ -5,7 +5,11 @@ import { AccountService, getDefaultGLAccountForType } from '../account.service';
 const mockTxClient = {
   account: {
     findFirst: vi.fn(),
+    create: vi.fn(),
     update: vi.fn(),
+  },
+  entity: {
+    findFirst: vi.fn(),
   },
   gLAccount: {
     findFirst: vi.fn(),
@@ -222,8 +226,9 @@ describe('AccountService', () => {
   describe('createAccount', () => {
     it('should verify entity belongs to tenant before creating', async () => {
       const entity = { id: 'entity-1', tenantId: TENANT_ID, name: 'Corp' };
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.account.create).mockResolvedValueOnce(
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-1' } as never);
+      vi.mocked(mockTxClient.account.create).mockResolvedValueOnce(
         mockAccount({ entityId: 'entity-1' }) as never
       );
 
@@ -235,7 +240,7 @@ describe('AccountService', () => {
         country: 'US',
       });
 
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith({
+      expect(mockTxClient.entity.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'entity-1',
           tenantId: TENANT_ID,
@@ -244,7 +249,7 @@ describe('AccountService', () => {
     });
 
     it('should throw if entity does not belong to tenant', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(
         service.createAccount('user-1', {
@@ -257,10 +262,11 @@ describe('AccountService', () => {
       ).rejects.toThrow('Entity not found or access denied');
     });
 
-    it('should set currentBalance to 0 on new account', async () => {
+    it('should set currentBalance to 0 when no opening balance', async () => {
       const entity = { id: 'entity-1', tenantId: TENANT_ID };
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.account.create).mockResolvedValueOnce(mockAccount() as never);
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-1' } as never);
+      vi.mocked(mockTxClient.account.create).mockResolvedValueOnce(mockAccount() as never);
 
       await service.createAccount('user-1', {
         entityId: 'entity-1',
@@ -270,8 +276,48 @@ describe('AccountService', () => {
         country: 'US',
       });
 
-      const createArgs = vi.mocked(prisma.account.create).mock.calls[0][0]!;
+      const createArgs = vi.mocked(mockTxClient.account.create).mock.calls[0][0]!;
       expect(createArgs.data.currentBalance).toBe(0);
+    });
+
+    it('should set currentBalance to openingBalance when provided', async () => {
+      const entity = { id: 'entity-1', tenantId: TENANT_ID };
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
+      // GL not found — skips JE posting but still sets currentBalance
+      vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce(null as never);
+      vi.mocked(mockTxClient.account.create).mockResolvedValueOnce(
+        mockAccount({ currentBalance: 150000 }) as never
+      );
+
+      await service.createAccount('user-1', {
+        entityId: 'entity-1',
+        name: 'New Account',
+        type: 'BANK',
+        currency: 'USD',
+        country: 'US',
+        openingBalance: 150000, // $1,500.00
+      });
+
+      const createArgs = vi.mocked(mockTxClient.account.create).mock.calls[0][0]!;
+      expect(createArgs.data.currentBalance).toBe(150000);
+    });
+
+    it('should auto-assign GL account based on account type', async () => {
+      const entity = { id: 'entity-1', tenantId: TENANT_ID };
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-bank-1100' } as never);
+      vi.mocked(mockTxClient.account.create).mockResolvedValueOnce(mockAccount() as never);
+
+      await service.createAccount('user-1', {
+        entityId: 'entity-1',
+        name: 'New Account',
+        type: 'BANK',
+        currency: 'USD',
+        country: 'US',
+      });
+
+      const createArgs = vi.mocked(mockTxClient.account.create).mock.calls[0][0]!;
+      expect(createArgs.data.glAccountId).toBe('gl-bank-1100');
     });
   });
 

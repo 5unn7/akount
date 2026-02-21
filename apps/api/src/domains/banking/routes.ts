@@ -5,6 +5,7 @@ import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../middleware/validation';
 import { withPermission } from '../../middleware/withPermission';
+import { AccountingError } from '../accounting/errors';
 import { importsRoutes } from './routes/imports';
 import { transactionRoutes } from './routes/transactions';
 import { reconciliationRoutes } from './routes/reconciliation';
@@ -29,6 +30,8 @@ const createAccountBodySchema = z.object({
   type: z.enum(['BANK', 'CREDIT_CARD', 'INVESTMENT', 'LOAN', 'MORTGAGE', 'OTHER']),
   currency: z.string().length(3),
   country: z.string().min(2).max(3),
+  openingBalance: z.number().int().min(-999_999_999_99).max(999_999_999_99).optional(),
+  openingBalanceDate: z.coerce.date().optional(),
   institution: z.string().max(255).optional(),
 });
 
@@ -203,6 +206,8 @@ export async function bankingRoutes(fastify: FastifyInstance) {
           currency: body.currency,
           country: body.country,
           institution: body.institution,
+          openingBalance: body.openingBalance,
+          openingBalanceDate: body.openingBalanceDate,
         });
 
         request.log.info(
@@ -215,6 +220,12 @@ export async function bankingRoutes(fastify: FastifyInstance) {
         if (error instanceof Error && error.message === 'Entity not found or access denied') {
           return reply.status(404).send({
             error: 'Not Found',
+            message: error.message,
+          });
+        }
+        if (error instanceof AccountingError) {
+          return reply.status(error.statusCode).send({
+            error: error.code,
             message: error.message,
           });
         }

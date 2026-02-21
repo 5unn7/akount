@@ -13,8 +13,9 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowUpRight, ArrowDownRight, BookOpen } from 'lucide-react';
+import { ArrowUpRight, ArrowDownRight, BookOpen, RefreshCw, AlertTriangle } from 'lucide-react';
 import { CategorySelector } from './CategorySelector';
+import { cn } from '@/lib/utils';
 
 interface TransactionsTableProps {
     transactions: Transaction[];
@@ -24,6 +25,9 @@ interface TransactionsTableProps {
     categories?: Category[];
     onCategoryChange?: (transactionId: string, categoryId: string | null) => void;
     onCreateCategory?: (name: string, type: 'INCOME' | 'EXPENSE' | 'TRANSFER') => void;
+    showRunningBalance?: boolean;
+    recurringIds?: Set<string>;
+    anomalyIds?: Set<string>;
 }
 
 const SOURCE_BADGE_STYLES: Record<string, string> = {
@@ -67,6 +71,9 @@ export function TransactionsTable({
     categories,
     onCategoryChange,
     onCreateCategory,
+    showRunningBalance,
+    recurringIds,
+    anomalyIds,
 }: TransactionsTableProps) {
     const selectable = !!onSelectionChange;
     const allSelected = selectable && transactions.length > 0 && transactions.every(t => selectedIds?.has(t.id));
@@ -130,21 +137,32 @@ export function TransactionsTable({
                             <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">
                                 Amount
                             </TableHead>
+                            {showRunningBalance && (
+                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                    Balance
+                                </TableHead>
+                            )}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {transactions.map((transaction) => {
+                        {transactions.map((transaction, idx) => {
                             const isIncome = transaction.amount > 0;
                             const Icon = isIncome ? ArrowUpRight : ArrowDownRight;
                             const sourceStyle = SOURCE_BADGE_STYLES[transaction.sourceType] || SOURCE_BADGE_STYLES.MANUAL;
                             const isSelected = selectedIds?.has(transaction.id);
+                            const isUncategorized = !transaction.categoryId;
+                            const isRecurring = recurringIds?.has(transaction.id);
+                            const isAnomaly = anomalyIds?.has(transaction.id);
 
                             return (
                                 <TableRow
                                     key={transaction.id}
-                                    className={`border-b border-ak-border hover:bg-ak-bg-3/50 transition-colors ${
-                                        isSelected ? 'bg-ak-pri-dim' : ''
-                                    }`}
+                                    className={cn(
+                                        'border-b border-ak-border hover:bg-ak-bg-3/50 transition-colors',
+                                        isSelected && 'bg-ak-pri-dim',
+                                        isUncategorized && 'border-l-2 border-l-primary/40 bg-primary/[0.02]',
+                                        isAnomaly && 'border-l-2 border-l-ak-red/60 bg-ak-red/[0.02]',
+                                    )}
                                 >
                                     {selectable && (
                                         <TableCell className="pl-4">
@@ -161,14 +179,20 @@ export function TransactionsTable({
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-medium">
-                                                {transaction.description}
-                                            </span>
-                                            {transaction.notes && (
-                                                <span className="text-xs text-muted-foreground">
-                                                    {transaction.notes}
+                                            <div className="flex items-center gap-1.5">
+                                                {isRecurring && (
+                                                    <RefreshCw className="h-3 w-3 text-ak-teal shrink-0" />
+                                                )}
+                                                {isAnomaly && (
+                                                    <AlertTriangle className="h-3 w-3 text-ak-red shrink-0" />
+                                                )}
+                                                <span className="text-sm font-medium">
+                                                    {transaction.description}
                                                 </span>
-                                            )}
+                                            </div>
+                                            <span className="text-[10px] text-muted-foreground">
+                                                {transaction.account?.name ?? ''}{transaction.account?.name && transaction.sourceType ? ' · ' : ''}{transaction.sourceType}
+                                            </span>
                                         </div>
                                     </TableCell>
                                     <TableCell>
@@ -250,6 +274,13 @@ export function TransactionsTable({
                                             </span>
                                         </div>
                                     </TableCell>
+                                    {showRunningBalance && (
+                                        <TableCell className="text-right">
+                                            <span className="font-mono text-sm text-muted-foreground">
+                                                &mdash;
+                                            </span>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             );
                         })}

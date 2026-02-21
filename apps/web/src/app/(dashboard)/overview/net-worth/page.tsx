@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
+import { TrendingUp, TrendingDown, DollarSign, Wallet } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { getNetWorth } from "@/lib/api/dashboard";
 import { formatCurrency } from "@/lib/utils/currency";
 
@@ -11,6 +12,34 @@ export const metadata: Metadata = {
 
 export default async function NetWorthPage() {
     const data = await getNetWorth();
+
+    // Show empty state if no accounts with balances exist
+    const hasData = data.breakdown.assets > 0 || data.breakdown.liabilities > 0;
+
+    if (!hasData) {
+        return (
+            <div className="flex-1 space-y-4 p-8 pt-6">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-3xl font-bold tracking-tight font-heading">Net Worth</h2>
+                </div>
+                <EmptyState
+                    icon={Wallet}
+                    title="No financial data yet"
+                    description="Add accounts with balances or import transactions to start tracking your net worth."
+                    action={{
+                        label: "Add Account",
+                        href: "/banking/accounts",
+                        variant: "default"
+                    }}
+                    secondaryAction={{
+                        label: "Import Transactions",
+                        href: "/banking/import"
+                    }}
+                    variant="compact"
+                />
+            </div>
+        );
+    }
 
     const netWorthAmount = data.netWorth.amount;
     const isPositive = netWorthAmount >= 0;
