@@ -33,14 +33,14 @@ const CAPABILITIES = [
     key: 'entitySetupComplete',
     unlock: 'Multi-entity tracking',
     nudge: 'Set up your business entities for organized financials',
-    href: '/settings/entities',
+    href: '/system/entities',
     ctaLabel: 'Set Up Entity',
   },
   {
     key: 'businessDetailsComplete',
     unlock: 'Tax readiness',
     nudge: 'Add business details so Akount can prepare you for tax season',
-    href: '/settings/entities',
+    href: '/system/entities',
     ctaLabel: 'Add Details',
   },
   {

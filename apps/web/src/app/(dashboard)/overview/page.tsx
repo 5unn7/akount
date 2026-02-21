@@ -260,7 +260,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
                             description="Create a business entity to track finances, manage accounts, and separate operations across countries and currencies."
                             action={{
                                 label: "Create Entity",
-                                href: "/settings/entities",
+                                href: "/system/entities",
                                 variant: "default"
                             }}
                             secondaryAction={{
