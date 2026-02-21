@@ -220,8 +220,8 @@ describe('ReportService', () => {
       expect(result.entityId).toBe(ENTITY_ID);
       expect(result.entityName).toBe('Test Entity Ltd');
       expect(result.currency).toBe('CAD');
-      expect(result.startDate).toEqual(startDate);
-      expect(result.endDate).toEqual(endDate);
+      expect(result.startDate).toBe(startDate.toISOString());
+      expect(result.endDate).toBe(endDate.toISOString());
 
       // Revenue: $1,050.00 - $50.00 = $1,000.00
       expect(result.revenue.total).toBe(100000);

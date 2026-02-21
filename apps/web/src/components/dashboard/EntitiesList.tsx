@@ -77,7 +77,7 @@ export function EntitiesList({ entities }: EntitiesListProps): React.ReactElemen
                             <div className="flex items-center gap-1.5">
                                 <Wallet className="h-3 w-3 text-muted-foreground shrink-0" />
                                 <span className="text-[10px] font-mono text-muted-foreground">
-                                    {entity.currency}
+                                    {entity.functionalCurrency}
                                 </span>
                             </div>
                         </div>

@@ -70,8 +70,8 @@ export function EntityProvider({
       if (id) {
         const entity = entities.find((e) => e.id === id);
         if (entity) {
-          setCurrencyState(entity.currency);
-          setCookie('ak-currency', entity.currency);
+          setCurrencyState(entity.functionalCurrency);
+          setCookie('ak-currency', entity.functionalCurrency);
         }
       }
 

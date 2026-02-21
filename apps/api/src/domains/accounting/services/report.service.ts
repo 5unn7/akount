@@ -14,6 +14,19 @@ import type {
   RevenueReport,
 } from '@akount/types/financial';
 
+// Re-export for consumers (report-export.service, PDF templates)
+export type {
+  ReportLineItem,
+  ProfitLossReport,
+  BalanceSheetReport,
+  CashFlowReport,
+  TrialBalanceReport,
+  GLLedgerEntry,
+  GLLedgerReport,
+  SpendingReport,
+  RevenueReport,
+};
+
 /**
  * Report Service
  *
@@ -337,8 +350,8 @@ export class ReportService {
     const report: ProfitLossReport = {
       entityId: params.entityId,
       entityName,
-      startDate: params.startDate,
-      endDate: params.endDate,
+      startDate: params.startDate.toISOString(),
+      endDate: params.endDate.toISOString(),
       currency,
       comparisonPeriod: params.comparisonPeriod,
       revenue: {
@@ -516,9 +529,9 @@ export class ReportService {
     const report: BalanceSheetReport = {
       entityId: params.entityId,
       entityName,
-      asOfDate: params.asOfDate,
+      asOfDate: params.asOfDate.toISOString(),
       currency,
-      comparisonDate: params.comparisonDate,
+      comparisonDate: params.comparisonDate?.toISOString(),
       assets: {
         items: assetItems,
         total: totalAssets,
@@ -757,8 +770,8 @@ export class ReportService {
     const report: CashFlowReport = {
       entityId: params.entityId,
       entityName,
-      startDate: params.startDate,
-      endDate: params.endDate,
+      startDate: params.startDate.toISOString(),
+      endDate: params.endDate.toISOString(),
       currency,
       netIncome,
       operating: {
@@ -855,10 +868,11 @@ export class ReportService {
     const isBalanced = totalDebits === totalCredits;
 
     // Build report
-    const report = {
+    const report: TrialBalanceReport = {
       entityId: params.entityId,
       entityName: entity.name,
-      asOfDate: params.asOfDate,
+      currency: entity.functionalCurrency,
+      asOfDate: params.asOfDate.toISOString(),
       accounts,
       totalDebits,
       totalCredits,
@@ -1010,15 +1024,15 @@ export class ReportService {
 
     const nextCursor = results.length === params.limit ? results[results.length - 1].id : null;
 
-    const report = {
+    const report: GLLedgerReport = {
       entityId: params.entityId,
       glAccountId: params.glAccountId,
       accountCode: glAccount.code,
       accountName: glAccount.name,
       entityName: entity.name,
       currency: entity.functionalCurrency,
-      startDate: params.startDate,
-      endDate: params.endDate,
+      startDate: params.startDate.toISOString(),
+      endDate: params.endDate.toISOString(),
       entries,
       nextCursor,
     };
@@ -1104,12 +1118,12 @@ export class ReportService {
       percentage: totalSpend > 0 ? (this.convertBigInt(r.totalSpend) / totalSpend) * 100 : 0,
     }));
 
-    const report = {
+    const report: SpendingReport = {
       entityId: params.entityId,
       entityName,
       currency,
-      startDate: params.startDate,
-      endDate: params.endDate,
+      startDate: params.startDate.toISOString(),
+      endDate: params.endDate.toISOString(),
       categories,
       totalSpend,
     };
@@ -1198,12 +1212,12 @@ export class ReportService {
       percentage: totalRevenue > 0 ? (this.convertBigInt(r.totalRevenue) / totalRevenue) * 100 : 0,
     }));
 
-    const report = {
+    const report: RevenueReport = {
       entityId: params.entityId,
       entityName,
       currency,
-      startDate: params.startDate,
-      endDate: params.endDate,
+      startDate: params.startDate.toISOString(),
+      endDate: params.endDate.toISOString(),
       clients,
       totalRevenue,
     };

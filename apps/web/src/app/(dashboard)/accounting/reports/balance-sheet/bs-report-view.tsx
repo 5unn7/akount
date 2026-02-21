@@ -211,7 +211,7 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                             <h4 className="font-medium font-heading">Assets</h4>
                         </div>
                         <div className="p-6">
-                            <BSSection currency={initialData.currency} items={initialData.assets.sections} showComparison={showComparison} />
+                            <BSSection currency={initialData.currency} items={initialData.assets.items} showComparison={showComparison} />
                             <div className="flex justify-between items-center pt-4 border-t border-ak-border mt-4 font-medium">
                                 <span>Total Assets</span>
                                 <div className="flex gap-8 font-mono">
@@ -234,7 +234,7 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                             <h4 className="font-medium font-heading">Liabilities</h4>
                         </div>
                         <div className="p-6">
-                            <BSSection currency={initialData.currency} items={initialData.liabilities.sections} showComparison={showComparison} />
+                            <BSSection currency={initialData.currency} items={initialData.liabilities.items} showComparison={showComparison} />
                             <div className="flex justify-between items-center pt-4 border-t border-ak-border mt-4 font-medium">
                                 <span>Total Liabilities</span>
                                 <div className="flex gap-8 font-mono">
@@ -257,21 +257,21 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                             <h4 className="font-medium font-heading">Equity</h4>
                         </div>
                         <div className="p-6">
-                            <BSSection currency={initialData.currency} items={initialData.equity.sections} showComparison={showComparison} />
+                            <BSSection currency={initialData.currency} items={initialData.equity.items} showComparison={showComparison} />
 
                             {/* Retained Earnings - Two synthetic line items */}
                             <div className="mt-4 pt-4 border-t border-ak-border">
                                 <div className="flex justify-between items-center py-1.5 text-sm">
                                     <span>Retained Earnings (Prior Years)</span>
                                     <div className="flex gap-8 font-mono">
-                                        <span>{formatCurrency(initialData.equity.retainedEarnings.priorYears, initialData.currency)}</span>
+                                        <span>{formatCurrency(initialData.retainedEarnings.priorYears, initialData.currency)}</span>
                                         {showComparison && <span className="text-muted-foreground">—</span>}
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center py-1.5 text-sm">
                                     <span>Net Income (Current Year)</span>
                                     <div className="flex gap-8 font-mono">
-                                        <span>{formatCurrency(initialData.equity.retainedEarnings.currentYear, initialData.currency)}</span>
+                                        <span>{formatCurrency(initialData.retainedEarnings.currentYear, initialData.currency)}</span>
                                         {showComparison && <span className="text-muted-foreground">—</span>}
                                     </div>
                                 </div>

@@ -44,6 +44,7 @@ export interface Transaction {
  * Query parameters for listing transactions
  */
 export interface ListTransactionsParams {
+    entityId?: string;
     accountId?: string;
     categoryId?: string;
     startDate?: string; // ISO date string

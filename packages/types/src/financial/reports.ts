@@ -39,6 +39,7 @@ export interface ProfitLossQuery {
 }
 
 export interface ProfitLossReport {
+    entityId?: string;
     entityName: string;
     currency: string;
     startDate: string;
@@ -69,33 +70,34 @@ export interface BalanceSheetQuery {
 }
 
 export interface BalanceSheetReport {
+    entityId?: string;
     entityName: string;
     currency: string;
     asOfDate: string;
     comparisonDate?: string;
     assets: {
-        sections: ReportLineItem[];
+        items: ReportLineItem[];
         total: number; // cents
         previousTotal?: number;
     };
     liabilities: {
-        sections: ReportLineItem[];
+        items: ReportLineItem[];
         total: number; // cents
         previousTotal?: number;
     };
     equity: {
-        sections: ReportLineItem[];
-        retainedEarnings: {
-            priorYears: number; // cents
-            currentYear: number; // cents
-            total: number; // cents
-        };
+        items: ReportLineItem[];
         total: number; // cents
         previousTotal?: number;
     };
+    retainedEarnings: {
+        priorYears: number; // cents
+        currentYear: number; // cents
+        total: number; // cents
+    };
+    isBalanced: boolean;
     totalAssets: number; // cents
     totalLiabilitiesAndEquity: number; // cents
-    isBalanced: boolean;
 }
 
 // ============================================================================
@@ -109,6 +111,7 @@ export interface CashFlowQuery {
 }
 
 export interface CashFlowReport {
+    entityId?: string;
     entityName: string;
     currency: string;
     startDate: string;
@@ -150,6 +153,7 @@ export interface TrialBalanceAccount {
 }
 
 export interface TrialBalanceReport {
+    entityId?: string;
     entityName: string;
     currency: string;
     asOfDate: string;
@@ -175,15 +179,17 @@ export interface GLLedgerQuery {
 
 export interface GLLedgerEntry {
     id: string;
-    date: string;
-    entryNumber: number;
-    memo: string;
+    date: Date | string;
+    entryNumber: number | string;
+    memo: string | null;
     debitAmount: number; // cents
     creditAmount: number; // cents
     runningBalance: number; // cents
 }
 
 export interface GLLedgerReport {
+    entityId?: string;
+    glAccountId?: string;
     accountCode: string;
     accountName: string;
     entityName: string;
@@ -191,7 +197,7 @@ export interface GLLedgerReport {
     startDate: string;
     endDate: string;
     entries: GLLedgerEntry[];
-    nextCursor?: string;
+    nextCursor?: string | null;
 }
 
 // ============================================================================
@@ -211,6 +217,7 @@ export interface SpendingCategory {
 }
 
 export interface SpendingReport {
+    entityId?: string;
     entityName: string;
     currency: string;
     startDate: string;
@@ -238,6 +245,7 @@ export interface RevenueClient {
 }
 
 export interface RevenueReport {
+    entityId?: string;
     entityName: string;
     currency: string;
     startDate: string;
