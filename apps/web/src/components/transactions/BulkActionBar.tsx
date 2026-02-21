@@ -2,13 +2,28 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Trash2, X, Loader2, Tag } from 'lucide-react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Trash2, X, Loader2, Tag, Tags } from 'lucide-react';
+
+interface CategoryOption {
+    id: string;
+    name: string;
+    type?: string;
+}
 
 interface BulkActionBarProps {
     selectedCount: number;
     onClearSelection: () => void;
     onBulkUncategorize: () => Promise<void>;
     onBulkDelete: () => Promise<void>;
+    onBulkCategorize?: (categoryId: string) => Promise<void>;
+    categories?: CategoryOption[];
     extraActions?: React.ReactNode;
 }
 
@@ -17,10 +32,13 @@ export function BulkActionBar({
     onClearSelection,
     onBulkUncategorize,
     onBulkDelete,
+    onBulkCategorize,
+    categories = [],
     extraActions,
 }: BulkActionBarProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isUncategorizing, setIsUncategorizing] = useState(false);
+    const [isCategorizing, setIsCategorizing] = useState(false);
 
     if (selectedCount === 0) return null;
 
@@ -42,7 +60,17 @@ export function BulkActionBar({
         }
     }
 
-    const busy = isDeleting || isUncategorizing;
+    async function handleCategorize(categoryId: string) {
+        if (!onBulkCategorize) return;
+        setIsCategorizing(true);
+        try {
+            await onBulkCategorize(categoryId);
+        } finally {
+            setIsCategorizing(false);
+        }
+    }
+
+    const busy = isDeleting || isUncategorizing || isCategorizing;
 
     return (
         <div className="sticky bottom-6 z-40 flex justify-center">
@@ -53,6 +81,32 @@ export function BulkActionBar({
                 </span>
 
                 <div className="h-4 w-px bg-ak-border-2" />
+
+                {/* Categorize (inline dropdown) */}
+                {onBulkCategorize && categories.length > 0 && (
+                    <div className="flex items-center gap-1.5">
+                        {isCategorizing ? (
+                            <Button variant="ghost" size="sm" className="h-8 rounded-lg text-xs" disabled>
+                                <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+                                Categorizing...
+                            </Button>
+                        ) : (
+                            <Select onValueChange={handleCategorize} disabled={busy}>
+                                <SelectTrigger className="h-8 w-[140px] text-xs glass-2 rounded-lg border-ak-border">
+                                    <Tags className="h-3.5 w-3.5 mr-1.5" />
+                                    <SelectValue placeholder="Categorize" />
+                                </SelectTrigger>
+                                <SelectContent className="glass-2 rounded-lg border-ak-border-2 max-h-60">
+                                    {categories.map((cat) => (
+                                        <SelectItem key={cat.id} value={cat.id}>
+                                            <span className="text-xs">{cat.name}</span>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    </div>
+                )}
 
                 {/* Uncategorize */}
                 <Button

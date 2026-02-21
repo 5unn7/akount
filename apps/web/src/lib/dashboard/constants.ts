@@ -20,6 +20,7 @@ export interface StatCardData {
     trend?: TrendData;
     sparkline?: number[];
     color?: SparkColor;
+    href?: string;
 }
 
 /**

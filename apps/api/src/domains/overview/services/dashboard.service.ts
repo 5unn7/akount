@@ -211,30 +211,56 @@ export class DashboardService {
     const totalFlow = Array.from(dailyFlows.values()).reduce((sum, val) => sum + val, 0);
     const avgDailyFlow = transactions.length > 0 ? Math.round(totalFlow / 30) : 0;
 
-    // 4. Generate 60-day projection
-    const projection: Array<{ date: string; value: number }> = [];
-    let runningBalance = currentCash;
+    // Return empty when truly no data exists
+    if (transactions.length === 0 && currentCash === 0) {
+      return [];
+    }
+
     const today = new Date();
+    const result: Array<{ date: string; value: number }> = [];
 
-    for (let i = 0; i < 60; i++) {
-      const projectionDate = new Date(today);
-      projectionDate.setDate(today.getDate() + i);
+    // 4. Build 30 days of historical actuals (reconstruct balance from transactions)
+    let historicalBalance = currentCash - totalFlow; // estimated balance 30 days ago
 
-      // Add average daily flow to running balance
-      runningBalance += avgDailyFlow;
+    for (let i = 0; i < 30; i++) {
+      const pastDate = new Date(today);
+      pastDate.setDate(today.getDate() - (30 - i));
+      const dateKey = pastDate.toISOString().split('T')[0];
+      const dayFlow = dailyFlows.get(dateKey) ?? 0;
 
-      // Format date as MMM DD
-      const dateStr = projectionDate.toLocaleDateString('en-US', {
+      historicalBalance += dayFlow;
+
+      const dateStr = pastDate.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
 
-      projection.push({
+      result.push({
         date: dateStr,
-        value: Math.round(runningBalance / 100), // Convert cents to dollars for chart
+        value: Math.round(historicalBalance / 100),
       });
     }
 
-    return projection;
+    // 5. Generate 30-day forward projection using average daily flow
+    let projectedBalance = currentCash;
+
+    for (let i = 0; i < 30; i++) {
+      const futureDate = new Date(today);
+      futureDate.setDate(today.getDate() + i);
+
+      projectedBalance += avgDailyFlow;
+
+      const dateStr = futureDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      });
+
+      result.push({
+        date: dateStr,
+        value: Math.round(projectedBalance / 100),
+      });
+    }
+
+    return result;
   }
 }

@@ -127,6 +127,20 @@ export function TransactionsListClient({
         }
     }
 
+    async function handleBulkCategorize(categoryId: string) {
+        const ids = Array.from(selectedIds);
+        await bulkCategorizeAction(ids, categoryId);
+        const cat = categories.find((c) => c.id === categoryId);
+        setTransactions((prev) =>
+            prev.map((t) =>
+                selectedIds.has(t.id)
+                    ? { ...t, categoryId, category: cat ? { id: cat.id, name: cat.name } : undefined }
+                    : t
+            )
+        );
+        setSelectedIds(new Set());
+    }
+
     async function handleBulkUncategorize() {
         const ids = Array.from(selectedIds);
         await bulkCategorizeAction(ids, null);
@@ -359,6 +373,8 @@ export function TransactionsListClient({
                 onClearSelection={() => setSelectedIds(new Set())}
                 onBulkUncategorize={handleBulkUncategorize}
                 onBulkDelete={handleBulkDelete}
+                onBulkCategorize={handleBulkCategorize}
+                categories={categories}
                 extraActions={
                     unpostedSelectedCount > 0 ? (
                         <Button

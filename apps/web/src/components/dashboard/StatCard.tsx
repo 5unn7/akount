@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MiniSparkline } from './MiniSparkline';
@@ -14,6 +15,7 @@ import {
 const TrendIcon = { up: ArrowUp, down: ArrowDown, flat: Minus } as const;
 
 export function StatCard({ stat, index }: { stat: StatCardData; index: number }) {
+    const router = useRouter();
     const frameRef = useRef<number>(0);
     const Icon = stat.trend ? TrendIcon[stat.trend.direction] : null;
     const trendColor = stat.trend ? trendColorMap[stat.trend.direction] : '';
@@ -34,6 +36,12 @@ export function StatCard({ stat, index }: { stat: StatCardData; index: number })
         });
     }, []);
 
+    const handleClick = useCallback(() => {
+        if (stat.href) {
+            router.push(stat.href);
+        }
+    }, [stat.href, router]);
+
     useEffect(() => {
         return () => {
             cancelAnimationFrame(frameRef.current);
@@ -42,12 +50,15 @@ export function StatCard({ stat, index }: { stat: StatCardData; index: number })
 
     return (
         <div
+            role={stat.href ? 'link' : undefined}
             className={cn(
-                'glass rounded-lg px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px cursor-pointer glow-track fi',
+                'glass rounded-lg px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px glow-track fi',
+                stat.href ? 'cursor-pointer active:scale-[0.98]' : '',
                 `fi${Math.min(index + 1, 6)}`
             )}
             style={{ '--glow-color': glowColor } as React.CSSProperties}
             onMouseMove={handleMouseMove}
+            onClick={handleClick}
         >
             <div className="flex items-start justify-between mb-2 h-5">
                 <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">

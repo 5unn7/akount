@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import {
     listTransactions,
     createTransaction,
@@ -24,6 +25,23 @@ import {
     type Category,
 } from '@/lib/api/categories';
 
+/**
+ * Revalidate all dashboard/banking paths after data changes.
+ * Called after imports, bulk operations, and transaction mutations.
+ */
+function revalidateDashboardPaths() {
+    revalidatePath('/overview');
+    revalidatePath('/overview/cash-flow');
+    revalidatePath('/overview/net-worth');
+    revalidatePath('/banking/accounts');
+    revalidatePath('/banking/transactions');
+}
+
+/** Standalone action for import results to call */
+export async function revalidateAfterImport() {
+    revalidateDashboardPaths();
+}
+
 export async function fetchMoreTransactions(
     params?: ListTransactionsParams
 ): Promise<ListTransactionsResponse> {
@@ -33,20 +51,26 @@ export async function fetchMoreTransactions(
 export async function createTransactionAction(
     input: CreateTransactionInput
 ): Promise<Transaction> {
-    return createTransaction(input);
+    const result = await createTransaction(input);
+    revalidateDashboardPaths();
+    return result;
 }
 
 export async function bulkCategorizeAction(
     transactionIds: string[],
     categoryId: string | null
 ): Promise<{ updated: number }> {
-    return bulkCategorizeTransactions(transactionIds, categoryId);
+    const result = await bulkCategorizeTransactions(transactionIds, categoryId);
+    revalidateDashboardPaths();
+    return result;
 }
 
 export async function bulkDeleteAction(
     transactionIds: string[]
 ): Promise<{ deleted: number }> {
-    return bulkDeleteTransactions(transactionIds);
+    const result = await bulkDeleteTransactions(transactionIds);
+    revalidateDashboardPaths();
+    return result;
 }
 
 export async function postTransactionAction(
@@ -81,6 +105,7 @@ export async function assignCategoryAction(
     categoryId: string | null
 ): Promise<void> {
     await updateTransaction(transactionId, { categoryId });
+    revalidateDashboardPaths();
 }
 
 export async function createCategoryAction(

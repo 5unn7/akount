@@ -87,6 +87,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             trend: performance ? formatTrend(performance.revenue.percentChange) : undefined,
             sparkline: performance ? convertSparkline(performance.revenue.sparkline) : [],
             color: 'green' as const,
+            href: '/accounting/reports/revenue',
         },
         {
             label: 'Expenses',
@@ -94,6 +95,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             trend: performance ? formatTrend(-performance.expenses.percentChange) : undefined,
             sparkline: performance ? convertSparkline(performance.expenses.sparkline) : [],
             color: 'red' as const,
+            href: '/accounting/reports/spending',
         },
         {
             label: 'Profit',
@@ -101,6 +103,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             trend: performance ? formatTrend(performance.profit.percentChange) : undefined,
             sparkline: performance ? convertSparkline(performance.profit.sparkline) : [],
             color: 'primary' as const,
+            href: '/accounting/reports/profit-loss',
         },
         {
             label: 'Receivables',
@@ -108,6 +111,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             trend: (performance?.receivables.sparkline.length ?? 0) > 0 ? { direction: 'flat' as const, text: `${formatCurrencyValue(performance!.receivables.overdue)} overdue` } : undefined,
             sparkline: performance ? convertSparkline(performance.receivables.sparkline) : [],
             color: 'blue' as const,
+            href: '/invoicing/invoices?status=outstanding',
         },
         {
             label: 'Payables',
@@ -115,6 +119,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             trend: metrics?.payables?.overdue ? { direction: 'flat' as const, text: `${formatCurrencyValue(metrics.payables.overdue)} overdue` } : undefined,
             sparkline: [],
             color: 'purple' as const,
+            href: '/vendors/bills?status=outstanding',
         },
         {
             label: 'Runway',
@@ -125,6 +130,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             } : undefined,
             sparkline: [],
             color: runwayMonths >= 6 ? ('teal' as const) : runwayMonths >= 3 ? ('primary' as const) : ('red' as const),
+            href: '/overview/cash-flow',
         },
         {
             label: 'Cash Burn',
@@ -132,6 +138,7 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
             trend: cashBurnTrend,
             sparkline: performance ? convertSparkline(performance.expenses.sparkline) : [],
             color: 'red' as const,
+            href: '/overview/cash-flow',
         },
     ];
 

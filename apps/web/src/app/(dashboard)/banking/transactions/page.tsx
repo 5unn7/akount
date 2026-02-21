@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { TransactionsList } from '@/components/transactions/TransactionsList';
 import { CreateTransactionDialog } from '@/components/transactions/CreateTransactionForm';
 import { TransactionsStatsRow } from '@/components/banking/TransactionsStatsRow';
@@ -27,6 +28,8 @@ interface TransactionsPageProps {
         accountId?: string;
         startDate?: string;
         endDate?: string;
+        importBatchId?: string;
+        filter?: string; // 'uncategorized' | 'recent-import'
     }>;
 }
 
@@ -125,9 +128,16 @@ export default async function TransactionsPage({
                     <h1 className="text-2xl font-heading font-medium">
                         Transaction Intelligence
                     </h1>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                        {monthTransactions.length} transactions this month
-                    </p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                        <p className="text-sm text-muted-foreground">
+                            {monthTransactions.length} transactions this month
+                        </p>
+                        {uncategorized.length > 0 && (
+                            <Badge className="text-[10px] px-1.5 py-0 bg-ak-red-dim text-ak-red border-ak-red/20">
+                                {uncategorized.length} uncategorized
+                            </Badge>
+                        )}
+                    </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <CreateTransactionDialog

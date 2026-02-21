@@ -80,12 +80,12 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
         return (
             <div className={cn('glass rounded-xl p-5', className)}>
                 <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-heading font-normal">Cash Flow Projection</h3>
-                    <span className="text-xs text-muted-foreground font-mono">60-day view</span>
+                    <h3 className="text-sm font-heading font-normal">Cash Flow</h3>
+                    <span className="text-xs text-muted-foreground font-mono">30d history + 30d forecast</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 py-10 text-center">
                     <TrendingUp className="h-8 w-8 text-muted-foreground/30" />
-                    <p className="text-xs text-muted-foreground">Cash flow chart will populate with transaction data</p>
+                    <p className="text-xs text-muted-foreground">Add transactions to see your cash flow</p>
                 </div>
             </div>
         );
@@ -103,8 +103,8 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
     return (
         <div className={cn('glass rounded-xl p-5', className)}>
             <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-heading font-normal">Cash Flow Projection</h3>
-                <span className="text-xs text-muted-foreground font-mono">60-day view</span>
+                <h3 className="text-sm font-heading font-normal">Cash Flow</h3>
+                <span className="text-xs text-muted-foreground font-mono">30d history + 30d forecast</span>
             </div>
 
             <svg

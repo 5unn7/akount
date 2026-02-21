@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { BatchImportResults } from '../BatchImportResults';
+import { revalidateAfterImport } from '@/app/(dashboard)/banking/transactions/actions';
 import type { ImportAccount, UploadFileItem, BatchImportResult } from '../types';
 
 /**
@@ -22,6 +24,11 @@ export function ResultsStep({
     onReset,
     onRetryFailed,
 }: ResultsStepProps) {
+    // Revalidate dashboard paths so imported data shows immediately
+    useEffect(() => {
+        revalidateAfterImport();
+    }, []);
+
     // Build aggregate stats from uploaded files
     const successFiles = files.filter(f => f.status === 'success');
     const aggregate = {
