@@ -274,6 +274,30 @@ describe('Bill Routes', () => {
       );
     });
 
+    it('should filter by entityId', async () => {
+      await app.inject({
+        method: 'GET',
+        url: '/bills?entityId=entity-1',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      expect(mockListBills).toHaveBeenCalledWith(
+        expect.objectContaining({ entityId: 'entity-1' }),
+        expect.any(Object)
+      );
+    });
+
+    it('should return all entities when entityId is omitted', async () => {
+      await app.inject({
+        method: 'GET',
+        url: '/bills',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      const callArgs = mockListBills.mock.calls[0][0];
+      expect(callArgs.entityId).toBeUndefined();
+    });
+
     it('should filter by status', async () => {
       await app.inject({
         method: 'GET',

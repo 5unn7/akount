@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { StatsGrid } from '@/components/shared/StatsGrid';
 import { ClientsTable } from '@/components/business/ClientsTable';
 import { listClients } from '@/lib/api/clients';
+import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { formatCurrency } from '@/lib/utils/currency';
 
 export const metadata: Metadata = {
@@ -10,7 +12,13 @@ export const metadata: Metadata = {
 };
 
 export default async function ClientsPage() {
-    const clientsResult = await listClients({ limit: 50 });
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities) ?? undefined;
+
+    const clientsResult = await listClients({ limit: 50, entityId });
     const clients = clientsResult.clients;
 
     // Derive primary currency from first client or default to CAD

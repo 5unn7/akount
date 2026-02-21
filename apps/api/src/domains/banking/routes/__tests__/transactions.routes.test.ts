@@ -143,6 +143,29 @@ describe('Transaction Routes', () => {
       );
     });
 
+    it('should filter by entityId', async () => {
+      await app.inject({
+        method: 'GET',
+        url: '/transactions?entityId=entity-1',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      expect(mockListTransactions).toHaveBeenCalledWith(
+        expect.objectContaining({ entityId: 'entity-1' })
+      );
+    });
+
+    it('should return all entities when entityId is omitted', async () => {
+      await app.inject({
+        method: 'GET',
+        url: '/transactions',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      const callArgs = mockListTransactions.mock.calls[0][0];
+      expect(callArgs.entityId).toBeUndefined();
+    });
+
     it('should handle date range filters', async () => {
       const startDate = '2024-01-01T00:00:00.000Z';
       const endDate = '2024-01-31T23:59:59.999Z';

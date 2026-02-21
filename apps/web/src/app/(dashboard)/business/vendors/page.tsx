@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { StatsGrid } from '@/components/shared/StatsGrid';
 import { VendorsTable } from '@/components/business/VendorsTable';
 import { listVendors } from '@/lib/api/vendors';
+import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { formatCurrency } from '@/lib/utils/currency';
 
 export const metadata: Metadata = {
@@ -10,7 +12,13 @@ export const metadata: Metadata = {
 };
 
 export default async function VendorsPage() {
-    const vendorsResult = await listVendors({ limit: 50 });
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities) ?? undefined;
+
+    const vendorsResult = await listVendors({ limit: 50, entityId });
     const vendors = vendorsResult.vendors;
 
     // Derive primary currency from first vendor or default to CAD

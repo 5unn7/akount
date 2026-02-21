@@ -11,6 +11,7 @@ import { listEntities } from '@/lib/api/entities';
 import { listAccounts } from '@/lib/api/accounts';
 import { listTransactions } from '@/lib/api/transactions';
 import { computeTransactionStats } from '@/lib/utils/account-helpers';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 
 export const metadata: Metadata = {
     title: 'Banking | Akount',
@@ -18,19 +19,27 @@ export const metadata: Metadata = {
 };
 
 export default async function AccountsPage() {
+    // Read entity selection from cookie
+    const [{ entityId: rawEntityId }, allEntities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, allEntities) ?? undefined;
+
     // Current month date range for MTD stats
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-    // Parallel data fetching
+    // Parallel data fetching — filtered by entity
     const [entities, accountsResult, txnResult] = await Promise.all([
-        listEntities(),
-        listAccounts({ isActive: true }),
+        Promise.resolve(allEntities),
+        listAccounts({ isActive: true, entityId }),
         listTransactions({
             startDate: monthStart.toISOString(),
             endDate: monthEnd.toISOString(),
             limit: 100,
+            entityId,
         }),
     ]);
 

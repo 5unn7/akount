@@ -8,6 +8,8 @@ import { getInvoiceStats, listInvoices } from '@/lib/api/invoices';
 import { getBillStats, listBills } from '@/lib/api/bills';
 import { listClients } from '@/lib/api/clients';
 import { listVendors } from '@/lib/api/vendors';
+import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { formatCurrency } from '@/lib/utils/currency';
 
 export const metadata: Metadata = {
@@ -16,14 +18,20 @@ export const metadata: Metadata = {
 };
 
 export default async function InvoicingPage() {
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities) ?? undefined;
+
     // Fetch all data in parallel
     const [invoiceStats, billStats, invoicesResult, billsResult, clientsResult, vendorsResult] = await Promise.all([
         getInvoiceStats(),
         getBillStats(),
-        listInvoices({ limit: 20 }),
-        listBills({ limit: 20 }),
-        listClients({ limit: 100 }),
-        listVendors({ limit: 100 }),
+        listInvoices({ limit: 20, entityId }),
+        listBills({ limit: 20, entityId }),
+        listClients({ limit: 100, entityId }),
+        listVendors({ limit: 100, entityId }),
     ]);
 
     const primaryCurrency = invoicesResult.invoices[0]?.currency || billsResult.bills[0]?.currency || 'CAD';

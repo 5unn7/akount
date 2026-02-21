@@ -48,6 +48,7 @@ export const CreateBillSchema = CreateBillBaseSchema.refine(
 export const UpdateBillSchema = CreateBillBaseSchema.partial();
 
 export const ListBillsSchema = z.object({
+  entityId: z.string().cuid().optional(),
   status: z.enum(['DRAFT', 'RECEIVED', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),
   vendorId: z.string().cuid().optional(),
   dateFrom: z.string().datetime().optional(),

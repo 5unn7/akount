@@ -5,7 +5,9 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { OnboardingOverlay } from "@/components/onboarding/OnboardingOverlay";
 import { KeyboardShortcutsModal } from "@/components/shared/KeyboardShortcutsModal";
 import { ReactQueryProvider } from '@/providers/query-provider';
+import { EntityProvider } from '@/providers/entity-provider';
 import { listEntities, type Entity } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import type { Role } from '@akount/types';
 
 interface OnboardingStatus {
@@ -67,6 +69,10 @@ export default async function DashboardLayout({
         listEntities().catch(() => [] as Entity[]),
     ]);
 
+    // Read entity selection from cookie and validate against user's entities
+    const { entityId: rawEntityId, currency } = await getEntitySelection();
+    const validatedEntityId = validateEntityId(rawEntityId, entities);
+
     // API is unreachable — show connection error instead of black screen
     if (onboarding === null) {
         return (
@@ -107,17 +113,23 @@ export default async function DashboardLayout({
 
     return (
         <ReactQueryProvider>
-            <div className="h-full relative">
-                <Sidebar role={role} />
-                <main className="md:pl-16">
-                    <Navbar entities={entities} />
-                    <div className="px-4 md:px-6 py-4">
-                        {children}
-                    </div>
-                </main>
-                {showOnboardingOverlay && <OnboardingOverlay />}
-                <KeyboardShortcutsModal />
-            </div>
+            <EntityProvider
+                entities={entities}
+                initialEntityId={validatedEntityId}
+                initialCurrency={currency}
+            >
+                <div className="h-full relative">
+                    <Sidebar role={role} />
+                    <main className="md:pl-16">
+                        <Navbar entities={entities} />
+                        <div className="px-4 md:px-6 py-4">
+                            {children}
+                        </div>
+                    </main>
+                    {showOnboardingOverlay && <OnboardingOverlay />}
+                    <KeyboardShortcutsModal />
+                </div>
+            </EntityProvider>
         </ReactQueryProvider>
     );
 }

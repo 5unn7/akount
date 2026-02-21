@@ -54,6 +54,7 @@ export type UpdateTransactionInput = z.infer<typeof UpdateTransactionSchema>;
 
 // GET /api/banking/transactions - List transactions (query params)
 export const ListTransactionsQuerySchema = z.object({
+  entityId: z.string().cuid('Invalid entity ID format').optional(),
   accountId: z.string().cuid('Invalid account ID format').optional(),
   startDate: z
     .string()

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { getTrialBalanceReport } from "@/lib/api/reports";
+import { listEntities } from "@/lib/api/entities";
+import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
 import { TBReportView } from "./tb-report-view";
 
 export const metadata: Metadata = {
@@ -9,7 +11,6 @@ export const metadata: Metadata = {
 
 interface PageProps {
     searchParams: Promise<{
-        entityId?: string;
         asOfDate?: string;
     }>;
 }
@@ -17,13 +18,20 @@ interface PageProps {
 export default async function TrialBalancePage({ searchParams }: PageProps) {
     const params = await searchParams;
 
+    // Force entity selection for accounting — trial balance requires entityId
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities) || entities[0]?.id;
+
     let report = null;
     let error: string | null = null;
 
-    if (params.entityId) {
+    if (entityId) {
         try {
             report = await getTrialBalanceReport({
-                entityId: params.entityId,
+                entityId,
                 asOfDate: params.asOfDate,
             });
         } catch (err) {
@@ -31,5 +39,5 @@ export default async function TrialBalancePage({ searchParams }: PageProps) {
         }
     }
 
-    return <TBReportView initialData={report} initialParams={params} error={error} />;
+    return <TBReportView initialData={report} initialParams={{ ...params, entityId }} error={error} />;
 }

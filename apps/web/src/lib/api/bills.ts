@@ -65,6 +65,7 @@ export interface BillStats {
 }
 
 export interface ListBillsParams {
+  entityId?: string;
   status?: 'DRAFT' | 'PENDING' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   vendorId?: string;
   dateFrom?: string;
@@ -125,6 +126,7 @@ export async function listBills(
 ): Promise<ListBillsResponse> {
   const searchParams = new URLSearchParams();
 
+  if (params?.entityId) searchParams.append('entityId', params.entityId);
   if (params?.status) searchParams.append('status', params.status);
   if (params?.vendorId) searchParams.append('vendorId', params.vendorId);
   if (params?.dateFrom) searchParams.append('dateFrom', params.dateFrom);

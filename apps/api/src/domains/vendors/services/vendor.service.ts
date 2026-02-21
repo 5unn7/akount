@@ -53,7 +53,10 @@ export async function listVendors(
   ctx: TenantContext
 ) {
   const where: Prisma.VendorWhereInput = {
-    entity: { tenantId: ctx.tenantId },
+    entity: {
+      tenantId: ctx.tenantId,
+      ...(filters.entityId && { id: filters.entityId }),
+    },
     deletedAt: null,
   };
 

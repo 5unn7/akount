@@ -24,6 +24,7 @@ export const CreateVendorSchema = z.object({
 export const UpdateVendorSchema = CreateVendorSchema.partial().omit({ entityId: true });
 
 export const ListVendorsSchema = z.object({
+  entityId: z.string().cuid().optional(),
   status: z.enum(['active', 'inactive']).optional(),
   search: z.string().max(100).optional(), // Search name or email
   cursor: z.string().cuid().optional(),

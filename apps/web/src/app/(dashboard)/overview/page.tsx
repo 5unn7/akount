@@ -15,6 +15,7 @@ import { listEntities } from "@/lib/api/entities";
 import { getDashboardMetrics } from "@/lib/api/dashboard";
 import { getPerformanceMetrics } from "@/lib/api/performance";
 import { listTransactions } from "@/lib/api/transactions";
+import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
 import { Building2, Landmark, Upload, PenLine } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -22,30 +23,28 @@ export const metadata: Metadata = {
     description: "View your financial overview, net worth, and account summaries",
 };
 
-interface OverviewPageProps {
-    searchParams: Promise<{ entityId?: string; currency?: string }>;
-}
-
-export default async function OverviewPage({ searchParams }: OverviewPageProps) {
-    const params = await searchParams;
-    const entityId = params.entityId;
-    const currency = params.currency || 'CAD';
+export default async function OverviewPage() {
+    // Read entity selection from cookie (not URL params)
+    const [{ entityId: rawEntityId, currency: cookieCurrency }, allEntities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, allEntities) ?? undefined;
+    const currency = cookieCurrency || 'CAD';
 
     // Parallel data fetch
-    let entities: Awaited<ReturnType<typeof listEntities>> = [];
+    const entities = allEntities;
     let metrics: Awaited<ReturnType<typeof getDashboardMetrics>> | null = null;
     let performance: Awaited<ReturnType<typeof getPerformanceMetrics>> | null = null;
     let recentTransactions: Awaited<ReturnType<typeof listTransactions>> = { transactions: [], hasMore: false };
 
     try {
-        const [entitiesResult, metricsResult, performanceResult, transactionsResult] = await Promise.allSettled([
-            listEntities(),
+        const [metricsResult, performanceResult, transactionsResult] = await Promise.allSettled([
             getDashboardMetrics(entityId, currency),
             getPerformanceMetrics(entityId, currency),
-            listTransactions({ limit: 10 }),
+            listTransactions({ limit: 10, entityId }),
         ]);
 
-        if (entitiesResult.status === 'fulfilled') entities = entitiesResult.value;
         if (metricsResult.status === 'fulfilled') metrics = metricsResult.value;
         if (performanceResult.status === 'fulfilled') performance = performanceResult.value;
         if (transactionsResult.status === 'fulfilled') recentTransactions = transactionsResult.value;

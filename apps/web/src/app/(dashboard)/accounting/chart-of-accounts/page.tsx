@@ -4,20 +4,20 @@ import { listGLAccounts, getAccountBalances } from '@/lib/api/accounting';
 import { listEntities } from '@/lib/api/entities';
 import { ChartOfAccountsClient } from './chart-of-accounts-client';
 import { Card, CardContent } from '@/components/ui/card';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 
 export const metadata: Metadata = {
     title: 'Chart of Accounts | Akount',
     description: 'Manage your chart of accounts',
 };
 
-interface ChartOfAccountsPageProps {
-    searchParams: Promise<{ entityId?: string }>;
-}
-
-export default async function ChartOfAccountsPage({
-    searchParams,
-}: ChartOfAccountsPageProps) {
-    const params = await searchParams;
+export default async function ChartOfAccountsPage() {
+    // Accounting pages force entity selection — "All Entities" falls back to first entity
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities);
 
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
@@ -33,19 +33,17 @@ export default async function ChartOfAccountsPage({
             </div>
 
             <Suspense
-                key={params.entityId}
+                key={entityId}
                 fallback={<COASkeleton />}
             >
-                <COAData entityId={params.entityId} />
+                <COAData entityId={entityId} entities={entities} />
             </Suspense>
         </div>
     );
 }
 
-async function COAData({ entityId }: { entityId?: string }) {
+async function COAData({ entityId, entities }: { entityId: string | null; entities: Awaited<ReturnType<typeof listEntities>> }) {
     try {
-        const entities = await listEntities();
-
         if (entities.length === 0) {
             return (
                 <Card className="glass rounded-[14px]">
@@ -58,6 +56,7 @@ async function COAData({ entityId }: { entityId?: string }) {
             );
         }
 
+        // Force entity selection for accounting pages
         const selectedEntityId = entityId || entities[0].id;
 
         const [accounts, balances] = await Promise.all([

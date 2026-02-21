@@ -93,7 +93,10 @@ export async function createBill(data: CreateBillInput, ctx: TenantContext) {
 
 export async function listBills(filters: ListBillsInput, ctx: TenantContext) {
   const where: Prisma.BillWhereInput = {
-    entity: { tenantId: ctx.tenantId },
+    entity: {
+      tenantId: ctx.tenantId,
+      ...(filters.entityId && { id: filters.entityId }),
+    },
     deletedAt: null,
   };
 

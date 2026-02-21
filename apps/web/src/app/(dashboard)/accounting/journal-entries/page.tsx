@@ -4,6 +4,7 @@ import { listJournalEntries } from '@/lib/api/accounting';
 import { listEntities } from '@/lib/api/entities';
 import { JournalEntriesClient } from './journal-entries-client';
 import { Card, CardContent } from '@/components/ui/card';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 
 export const metadata: Metadata = {
     title: 'Journal Entries | Akount',
@@ -12,7 +13,6 @@ export const metadata: Metadata = {
 
 interface JournalEntriesPageProps {
     searchParams: Promise<{
-        entityId?: string;
         status?: string;
         startDate?: string;
         endDate?: string;
@@ -23,6 +23,13 @@ export default async function JournalEntriesPage({
     searchParams,
 }: JournalEntriesPageProps) {
     const params = await searchParams;
+
+    // Accounting pages force entity selection
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities);
 
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
@@ -38,11 +45,12 @@ export default async function JournalEntriesPage({
             </div>
 
             <Suspense
-                key={`${params.entityId}-${params.status}-${params.startDate}-${params.endDate}`}
+                key={`${entityId}-${params.status}-${params.startDate}-${params.endDate}`}
                 fallback={<JournalEntriesSkeleton />}
             >
                 <JournalEntriesData
-                    entityId={params.entityId}
+                    entityId={entityId}
+                    entities={entities}
                     status={params.status}
                     startDate={params.startDate}
                     endDate={params.endDate}
@@ -54,18 +62,18 @@ export default async function JournalEntriesPage({
 
 async function JournalEntriesData({
     entityId,
+    entities,
     status,
     startDate,
     endDate,
 }: {
-    entityId?: string;
+    entityId: string | null;
+    entities: Awaited<ReturnType<typeof listEntities>>;
     status?: string;
     startDate?: string;
     endDate?: string;
 }) {
     try {
-        const entities = await listEntities();
-
         if (entities.length === 0) {
             return (
                 <Card className="glass rounded-[14px]">
@@ -78,6 +86,7 @@ async function JournalEntriesData({
             );
         }
 
+        // Force entity selection for accounting pages
         const selectedEntityId = entityId || entities[0].id;
         const validStatuses = ['DRAFT', 'POSTED', 'VOIDED', 'ARCHIVED'];
         const statusParam = status && validStatuses.includes(status)

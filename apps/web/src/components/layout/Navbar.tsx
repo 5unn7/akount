@@ -1,8 +1,7 @@
 'use client';
 
-import { useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useSyncStatus } from '@/hooks/use-sync-status';
+import { useEntity } from '@/providers/entity-provider';
 import { MobileSidebar } from "./Sidebar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -23,19 +22,21 @@ import {
 } from "@/components/ui/select";
 import {
     Search, RefreshCw, HelpCircle, Bell,
-    Building2, Check, Plus,
+    Building2, Check, Plus, Globe,
 } from 'lucide-react';
 import type { Entity } from '@/lib/api/entities';
 
 /* ── Entity Selector ── */
 const ENTITY_COLORS = ['hsl(var(--primary))', 'var(--ak-blue)', 'var(--ak-green)', 'var(--ak-purple)', 'var(--ak-teal)'];
 
-function EntitySelector({ entities, selectedId, onSelect }: {
+function EntitySelector({ entities, selectedId, onSelect, isPending }: {
     entities: Entity[];
     selectedId: string | null;
-    onSelect: (id: string) => void;
+    onSelect: (id: string | null) => void;
+    isPending: boolean;
 }) {
-    const selected = entities.find(e => e.id === selectedId) || entities[0];
+    const isAllEntities = selectedId === null;
+    const selected = isAllEntities ? null : entities.find(e => e.id === selectedId);
 
     if (entities.length === 0) {
         return (
@@ -47,16 +48,35 @@ function EntitySelector({ entities, selectedId, onSelect }: {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-sm glass hover:border-ak-border-2 transition-colors">
-                    <span
-                        className="h-2.5 w-2.5 rounded-full shrink-0 bg-primary"
-                    />
+                    {isPending ? (
+                        <span className="h-2.5 w-2.5 rounded-full shrink-0 bg-primary animate-pulse" />
+                    ) : isAllEntities ? (
+                        <Globe className="h-3.5 w-3.5 text-primary shrink-0" />
+                    ) : (
+                        <span className="h-2.5 w-2.5 rounded-full shrink-0 bg-primary" />
+                    )}
                     <span className="text-foreground font-medium hidden lg:inline max-w-[140px] truncate">
-                        {selected?.name ?? 'Select entity'}
+                        {isAllEntities ? 'All Entities' : selected?.name ?? 'Select entity'}
                     </span>
                     <Building2 className="h-3.5 w-3.5 text-muted-foreground lg:hidden" />
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
+                {/* All Entities option */}
+                <DropdownMenuItem
+                    onClick={() => onSelect(null)}
+                    className="flex items-center gap-2.5 py-2"
+                >
+                    <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    <div className="min-w-0">
+                        <p className="text-foreground">All Entities</p>
+                        <p className="text-[10px] text-muted-foreground">Consolidated view</p>
+                    </div>
+                    {isAllEntities && (
+                        <Check className="h-3.5 w-3.5 text-primary ml-auto shrink-0" />
+                    )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 {entities.map((entity, i) => (
                     <DropdownMenuItem
                         key={entity.id}
@@ -71,7 +91,7 @@ function EntitySelector({ entities, selectedId, onSelect }: {
                             <p className="text-foreground truncate">{entity.name}</p>
                             <p className="text-[10px] text-muted-foreground">{entity.type}</p>
                         </div>
-                        {entity.id === selected?.id && (
+                        {entity.id === selectedId && (
                             <Check className="h-3.5 w-3.5 text-primary ml-auto shrink-0" />
                         )}
                     </DropdownMenuItem>
@@ -124,36 +144,16 @@ interface NavbarProps {
 }
 
 export function Navbar({ entities }: NavbarProps) {
-    const router = useRouter();
-    const searchParams = useSearchParams();
     const { isSyncing, sync, getTimeSinceSync } = useSyncStatus();
+    const { selectedEntityId, currency, setEntity, setCurrency, isPending } = useEntity();
 
     // Filter out archived entities for the switcher
     const activeEntities = entities.filter(e => e.status !== 'ARCHIVED');
 
-    const currentEntityId = searchParams.get('entityId') || activeEntities[0]?.id || null;
-    const selectedEntity = activeEntities.find(e => e.id === currentEntityId) || activeEntities[0];
-    const currentCurrency = searchParams.get('currency') || selectedEntity?.functionalCurrency || 'CAD';
-
     // Derive unique currencies from active entities
     const currencies = Array.from(new Set(activeEntities.map(e => e.functionalCurrency).filter(Boolean)));
     // Ensure current currency is in the list
-    if (!currencies.includes(currentCurrency)) currencies.push(currentCurrency);
-
-    const updateParam = useCallback((key: string, value: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set(key, value);
-        router.push(`?${params.toString()}`, { scroll: false });
-    }, [router, searchParams]);
-
-    const handleEntitySelect = useCallback((entityId: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('entityId', entityId);
-        // Reset currency to the selected entity's base currency
-        const entity = activeEntities.find(e => e.id === entityId);
-        if (entity) params.set('currency', entity.functionalCurrency);
-        router.push(`?${params.toString()}`, { scroll: false });
-    }, [router, searchParams, activeEntities]);
+    if (!currencies.includes(currency)) currencies.push(currency);
 
     return (
         <div className="flex items-center px-4 md:px-6 min-h-14 py-3 glass-blur border-b border-ak-border-2">
@@ -163,13 +163,14 @@ export function Navbar({ entities }: NavbarProps) {
             <div className="hidden md:flex items-center gap-2 shrink-0">
                 <EntitySelector
                     entities={activeEntities}
-                    selectedId={currentEntityId}
-                    onSelect={handleEntitySelect}
+                    selectedId={selectedEntityId}
+                    onSelect={setEntity}
+                    isPending={isPending}
                 />
                 <CurrencySelector
                     currencies={currencies}
-                    selectedCode={currentCurrency}
-                    onSelect={(code) => updateParam('currency', code)}
+                    selectedCode={currency}
+                    onSelect={setCurrency}
                 />
             </div>
 

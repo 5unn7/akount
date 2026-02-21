@@ -33,6 +33,7 @@ export interface Vendor {
 }
 
 export interface ListVendorsParams {
+  entityId?: string;
   status?: 'active' | 'inactive';
   search?: string; // Searches name or email
   cursor?: string;
@@ -75,6 +76,7 @@ export async function listVendors(
 ): Promise<ListVendorsResponse> {
   const searchParams = new URLSearchParams();
 
+  if (params?.entityId) searchParams.append('entityId', params.entityId);
   if (params?.status) searchParams.append('status', params.status);
   if (params?.search) searchParams.append('search', params.search);
   if (params?.cursor) searchParams.append('cursor', params.cursor);

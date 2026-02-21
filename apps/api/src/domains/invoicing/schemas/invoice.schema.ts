@@ -45,6 +45,7 @@ export const CreateInvoiceSchema = CreateInvoiceBaseSchema.refine(
 export const UpdateInvoiceSchema = CreateInvoiceBaseSchema.partial();
 
 export const ListInvoicesSchema = z.object({
+  entityId: z.string().cuid().optional(),
   status: z.enum(['DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),
   clientId: z.string().cuid().optional(),
   dateFrom: z.string().datetime().optional(),

@@ -59,6 +59,7 @@ export async function transactionRoutes(fastify: FastifyInstance) {
       const query = request.query as ListTransactionsQuery;
 
       const result = await service.listTransactions({
+        entityId: query.entityId,
         accountId: query.accountId,
         startDate: query.startDate,
         endDate: query.endDate,

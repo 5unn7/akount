@@ -207,6 +207,30 @@ describe('Vendor Routes', () => {
       );
     });
 
+    it('should filter by entityId', async () => {
+      await app.inject({
+        method: 'GET',
+        url: '/vendors?entityId=entity-1',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      expect(mockListVendors).toHaveBeenCalledWith(
+        expect.objectContaining({ entityId: 'entity-1' }),
+        expect.any(Object)
+      );
+    });
+
+    it('should return all entities when entityId is omitted', async () => {
+      await app.inject({
+        method: 'GET',
+        url: '/vendors',
+        headers: { authorization: 'Bearer test-token' },
+      });
+
+      const callArgs = mockListVendors.mock.calls[0][0];
+      expect(callArgs.entityId).toBeUndefined();
+    });
+
     it('should filter by status', async () => {
       await app.inject({
         method: 'GET',

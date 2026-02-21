@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useCallback,
+  useEffect,
   useState,
   useTransition,
   type ReactNode,
@@ -25,7 +26,9 @@ interface EntityContextValue {
 const EntityContext = createContext<EntityContextValue | null>(null);
 
 function setCookie(name: string, value: string) {
-  document.cookie = `${name}=${encodeURIComponent(value)};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+  const maxAge = 60 * 60 * 24 * 90; // 90 days (P1-1: reduced from 365)
+  const secure = window.location.protocol === 'https:' ? ';Secure' : '';
+  document.cookie = `${name}=${encodeURIComponent(value)};path=/;max-age=${maxAge};SameSite=Lax${secure}`;
 }
 
 interface EntityProviderProps {
@@ -49,6 +52,14 @@ export function EntityProvider({
   const selectedEntity = entityId
     ? entities.find((e) => e.id === entityId) ?? null
     : null;
+
+  // P2-5: Stale entity self-healing — if cookie entity isn't in the list, auto-clear
+  useEffect(() => {
+    if (entityId && !entities.some((e) => e.id === entityId)) {
+      setEntityId(null);
+      setCookie('ak-entity-id', '');
+    }
+  }, [entityId, entities]);
 
   const setEntity = useCallback(
     (id: string | null) => {

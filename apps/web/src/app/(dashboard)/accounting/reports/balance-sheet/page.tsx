@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { getBalanceSheetReport } from "@/lib/api/reports";
+import { listEntities } from "@/lib/api/entities";
+import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
 import { BSReportView } from "./bs-report-view";
 
 export const metadata: Metadata = {
@@ -9,7 +11,6 @@ export const metadata: Metadata = {
 
 interface PageProps {
     searchParams: Promise<{
-        entityId?: string;
         asOfDate?: string;
         comparison?: string;
     }>;
@@ -18,14 +19,20 @@ interface PageProps {
 export default async function BalanceSheetPage({ searchParams }: PageProps) {
     const params = await searchParams;
 
-    // Server-side data fetch (auth handled by apiClient)
+    // Force entity selection for accounting
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities) || entities[0]?.id;
+
     let report = null;
     let error: string | null = null;
 
     if (params.asOfDate) {
         try {
             report = await getBalanceSheetReport({
-                entityId: params.entityId,
+                entityId,
                 asOfDate: params.asOfDate,
                 comparisonDate: params.comparison,
             });
@@ -34,5 +41,5 @@ export default async function BalanceSheetPage({ searchParams }: PageProps) {
         }
     }
 
-    return <BSReportView initialData={report} initialParams={params} error={error} />;
+    return <BSReportView initialData={report} initialParams={{ ...params, entityId }} error={error} />;
 }

@@ -24,3 +24,18 @@ export async function getEntitySelection(
     currency,
   };
 }
+
+/**
+ * Validate a cookie entityId against the user's actual entities list.
+ * Returns the entityId if valid, or null if stale/tampered/missing.
+ *
+ * Defense-in-depth: even if cookie is tampered, backend enforces tenantId.
+ * This prevents UI showing data for a non-existent entity.
+ */
+export function validateEntityId(
+  rawEntityId: string | null,
+  entities: { id: string }[]
+): string | null {
+  if (!rawEntityId) return null;
+  return entities.some((e) => e.id === rawEntityId) ? rawEntityId : null;
+}

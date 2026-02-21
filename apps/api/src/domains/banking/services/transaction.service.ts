@@ -67,6 +67,7 @@ type TransactionWithEntity = Prisma.TransactionGetPayload<{
 
 // Types for pagination and filtering
 export interface ListTransactionsParams {
+  entityId?: string;
   accountId?: string;
   startDate?: string; // ISO 8601 date string
   endDate?: string; // ISO 8601 date string
@@ -117,7 +118,7 @@ export class TransactionService {
    * List transactions with filters and cursor-based pagination
    */
   async listTransactions(params: ListTransactionsParams = {}): Promise<PaginatedTransactions> {
-    const { accountId, startDate, endDate, categoryId, cursor } = params;
+    const { entityId, accountId, startDate, endDate, categoryId, cursor } = params;
 
     // Ensure limit is within bounds
     const limit = Math.min(params.limit || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
@@ -127,19 +128,20 @@ export class TransactionService {
       deletedAt: null, // Soft delete filter
     };
 
-    // Account filter (entity-scoped tenant check)
+    // Account filter with compound entity pattern (entity-scoped tenant check)
     if (accountId) {
       where.account = {
         id: accountId,
         entity: {
           tenantId: this.tenantId,
+          ...(entityId && { id: entityId }),
         },
       };
     } else {
-      // If no accountId, filter all transactions by tenant
       where.account = {
         entity: {
           tenantId: this.tenantId,
+          ...(entityId && { id: entityId }),
         },
       };
     }

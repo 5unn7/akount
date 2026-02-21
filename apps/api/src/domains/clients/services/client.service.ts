@@ -51,7 +51,10 @@ export async function listClients(
   ctx: TenantContext
 ) {
   const where: Prisma.ClientWhereInput = {
-    entity: { tenantId: ctx.tenantId },
+    entity: {
+      tenantId: ctx.tenantId,
+      ...(filters.entityId && { id: filters.entityId }),
+    },
     deletedAt: null,
   };
 

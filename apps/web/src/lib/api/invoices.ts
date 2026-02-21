@@ -65,6 +65,7 @@ export interface InvoiceStats {
 }
 
 export interface ListInvoicesParams {
+  entityId?: string;
   status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
   clientId?: string;
   dateFrom?: string;
@@ -125,6 +126,7 @@ export async function listInvoices(
 ): Promise<ListInvoicesResponse> {
   const searchParams = new URLSearchParams();
 
+  if (params?.entityId) searchParams.append('entityId', params.entityId);
   if (params?.status) searchParams.append('status', params.status);
   if (params?.clientId) searchParams.append('clientId', params.clientId);
   if (params?.dateFrom) searchParams.append('dateFrom', params.dateFrom);
