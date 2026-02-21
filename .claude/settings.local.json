@@ -101,7 +101,9 @@
       "Bash(then bash .claude/scripts/update-metrics.sh)",
       "Bash(else echo \"Metrics script not found\")",
       "Bash(fi)",
-      "Bash(npm view:*)"
+      "Bash(npm view:*)",
+      "WebFetch(domain:help.flinks.com)",
+      "WebFetch(domain:docs.flinks.com)"
     ],
     "deny": [
       "Bash(git reset --hard *)",

@@ -91,12 +91,10 @@ CREATE INDEX "AuditLog_tenantId_sequenceNumber_idx" ON "AuditLog"("tenantId", "s
 -- ALTER TABLE: Category (tenant scoping)
 -- ============================================================
 
-ALTER TABLE "Category" ADD COLUMN "tenantId" TEXT;
+ALTER TABLE "Category" ADD COLUMN "tenantId" TEXT NOT NULL;
 
--- Note: tenantId may need to be populated for existing rows before adding FK
--- This was handled during db push with existing data
 ALTER TABLE "Category" ADD CONSTRAINT "Category_tenantId_fkey"
-    FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+    FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 CREATE INDEX "Category_tenantId_idx" ON "Category"("tenantId");
 CREATE INDEX "Category_tenantId_type_idx" ON "Category"("tenantId", "type");
