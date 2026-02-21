@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Landmark, Upload, PenLine } from 'lucide-react';
 import { BankingBalanceHero } from '@/components/banking/BankingBalanceHero';
 import { BankingInsightPanel } from '@/components/banking/BankingInsightPanel';
 import { AccountCardGrid } from '@/components/banking/AccountCardGrid';
 import { BankingStatsRow } from '@/components/banking/BankingStatsRow';
+import { GlowCard } from '@/components/ui/glow-card';
+import { CardContent } from '@/components/ui/card';
 import { listEntities } from '@/lib/api/entities';
 import { listAccounts } from '@/lib/api/accounts';
 import { listTransactions } from '@/lib/api/transactions';
@@ -58,13 +62,51 @@ export default async function AccountsPage() {
 
             {/* Row 3: Account Card Grid (full width) */}
             {allAccounts.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <p className="text-muted-foreground mb-2">
-                        No accounts found
+                <div className="flex flex-col items-center py-12">
+                    <div className="p-4 rounded-full bg-primary/10 mb-4">
+                        <Landmark className="h-8 w-8 text-primary" />
+                    </div>
+                    <h2 className="text-lg font-heading font-normal mb-1">
+                        Add your first account to start tracking
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-6 max-w-sm text-center">
+                        Connect a bank, import a statement, or enter details manually.
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                        Connect your bank accounts to get started.
-                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-lg">
+                        <Link href="/banking/accounts?addAccount=connect">
+                            <GlowCard variant="glass" className="cursor-pointer transition-all hover:border-primary/40 hover:-translate-y-px h-full">
+                                <CardContent className="flex flex-col items-center gap-2 p-4 text-center">
+                                    <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-primary/15 text-primary">
+                                        <Landmark className="h-5 w-5" />
+                                    </div>
+                                    <p className="text-sm font-medium">Connect Bank</p>
+                                    <p className="text-[10px] text-muted-foreground">Automatic sync</p>
+                                </CardContent>
+                            </GlowCard>
+                        </Link>
+                        <Link href="/banking/imports">
+                            <GlowCard variant="glass" className="cursor-pointer transition-all hover:border-primary/20 hover:-translate-y-px h-full">
+                                <CardContent className="flex flex-col items-center gap-2 p-4 text-center">
+                                    <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-ak-pri-dim text-ak-pri-text">
+                                        <Upload className="h-5 w-5" />
+                                    </div>
+                                    <p className="text-sm font-medium">Import Statement</p>
+                                    <p className="text-[10px] text-muted-foreground">CSV or PDF</p>
+                                </CardContent>
+                            </GlowCard>
+                        </Link>
+                        <Link href="/banking/accounts?addAccount=manual">
+                            <GlowCard variant="glass" className="cursor-pointer transition-all hover:border-ak-border-2 hover:-translate-y-px h-full">
+                                <CardContent className="flex flex-col items-center gap-2 p-4 text-center">
+                                    <div className="h-10 w-10 rounded-lg flex items-center justify-center glass-2 text-muted-foreground">
+                                        <PenLine className="h-5 w-5" />
+                                    </div>
+                                    <p className="text-sm font-medium">Add Manually</p>
+                                    <p className="text-[10px] text-muted-foreground">Enter by hand</p>
+                                </CardContent>
+                            </GlowCard>
+                        </Link>
+                    </div>
                 </div>
             ) : (
                 <AccountCardGrid accounts={allAccounts} />

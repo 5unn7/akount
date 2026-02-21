@@ -26,26 +26,36 @@ const CAPABILITIES = [
     key: 'basicInfoComplete',
     unlock: 'Personalized insights',
     nudge: 'Tell Akount about yourself so it can tailor your experience',
+    href: '/onboarding',
+    ctaLabel: 'Complete Profile',
   },
   {
     key: 'entitySetupComplete',
     unlock: 'Multi-entity tracking',
     nudge: 'Set up your business entities for organized financials',
+    href: '/settings/entities',
+    ctaLabel: 'Set Up Entity',
   },
   {
     key: 'businessDetailsComplete',
     unlock: 'Tax readiness',
     nudge: 'Add business details so Akount can prepare you for tax season',
+    href: '/settings/entities',
+    ctaLabel: 'Add Details',
   },
   {
     key: 'bankConnectionComplete',
     unlock: 'Live cash flow',
     nudge: 'Connect your bank for real-time cash position tracking',
+    href: '/banking/accounts',
+    ctaLabel: 'Add Account',
   },
   {
     key: 'goalsSetupComplete',
     unlock: 'Smart forecasting',
     nudge: 'Set financial goals and Akount will track your progress',
+    href: '/planning/goals',
+    ctaLabel: 'Set Goals',
   },
 ] as const
 
@@ -117,10 +127,10 @@ export function OnboardingHeroCard() {
         <div className="flex items-center gap-2 shrink-0">
           {nextCapability && (
             <Link
-              href="/overview"
+              href={nextCapability.href}
               className="px-4 py-1.5 text-xs font-medium text-primary bg-ak-pri-dim rounded-lg hover:bg-primary hover:text-black transition-all"
             >
-              Enable
+              {nextCapability.ctaLabel}
             </Link>
           )}
           <button

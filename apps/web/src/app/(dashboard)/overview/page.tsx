@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { EntitiesSection } from "@/components/dashboard/EntitiesSection";
 import { DashboardCashFlowChart, DashboardExpenseChart } from "@/components/dashboard/DashboardCharts";
 import { NetWorthHero } from "@/components/dashboard/NetWorthHero";
@@ -8,11 +9,13 @@ import { CommandCenterRightPanel } from "@/components/dashboard/CommandCenterRig
 import { RecentTransactions } from "@/components/dashboard/RecentTransactions";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
+import { GlowCard } from "@/components/ui/glow-card";
+import { CardContent } from "@/components/ui/card";
 import { listEntities } from "@/lib/api/entities";
 import { getDashboardMetrics } from "@/lib/api/dashboard";
 import { getPerformanceMetrics } from "@/lib/api/performance";
 import { listTransactions } from "@/lib/api/transactions";
-import { Building2 } from "lucide-react";
+import { Building2, Landmark, Upload, PenLine } from "lucide-react";
 
 export const metadata: Metadata = {
     title: "Overview | Akount",
@@ -48,6 +51,63 @@ export default async function OverviewPage({ searchParams }: OverviewPageProps) 
         if (transactionsResult.status === 'fulfilled') recentTransactions = transactionsResult.value;
     } catch {
         // Continue with defaults
+    }
+
+    // First-run experience: no accounts and no transactions
+    const totalAccounts = metrics?.accounts.total ?? 0;
+    const hasTransactions = recentTransactions.transactions.length > 0;
+
+    if (totalAccounts === 0 && !hasTransactions) {
+        return (
+            <div className="space-y-4">
+                <div className="flex flex-col items-center py-16 max-w-lg mx-auto text-center">
+                    <div className="p-5 rounded-full bg-primary/10 mb-5">
+                        <Landmark className="h-10 w-10 text-primary" />
+                    </div>
+                    <h1 className="text-2xl font-heading font-normal mb-2">
+                        Welcome to Akount
+                    </h1>
+                    <p className="text-sm text-muted-foreground mb-8 max-w-sm">
+                        Your financial command center starts here. Add an account to see your dashboard come alive.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+                        <Link href="/banking/accounts?addAccount=connect">
+                            <GlowCard variant="glass" className="cursor-pointer transition-all hover:border-primary/40 hover:-translate-y-px h-full">
+                                <CardContent className="flex flex-col items-center gap-2 p-5 text-center">
+                                    <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-primary/15 text-primary">
+                                        <Landmark className="h-5 w-5" />
+                                    </div>
+                                    <p className="text-sm font-medium">Connect Bank</p>
+                                    <p className="text-[10px] text-muted-foreground">Securely link for automatic sync</p>
+                                </CardContent>
+                            </GlowCard>
+                        </Link>
+                        <Link href="/banking/imports">
+                            <GlowCard variant="glass" className="cursor-pointer transition-all hover:border-primary/20 hover:-translate-y-px h-full">
+                                <CardContent className="flex flex-col items-center gap-2 p-5 text-center">
+                                    <div className="h-10 w-10 rounded-lg flex items-center justify-center bg-ak-pri-dim text-ak-pri-text">
+                                        <Upload className="h-5 w-5" />
+                                    </div>
+                                    <p className="text-sm font-medium">Import Statement</p>
+                                    <p className="text-[10px] text-muted-foreground">Upload CSV or PDF</p>
+                                </CardContent>
+                            </GlowCard>
+                        </Link>
+                        <Link href="/banking/accounts?addAccount=manual">
+                            <GlowCard variant="glass" className="cursor-pointer transition-all hover:border-ak-border-2 hover:-translate-y-px h-full">
+                                <CardContent className="flex flex-col items-center gap-2 p-5 text-center">
+                                    <div className="h-10 w-10 rounded-lg flex items-center justify-center glass-2 text-muted-foreground">
+                                        <PenLine className="h-5 w-5" />
+                                    </div>
+                                    <p className="text-sm font-medium">Add Manually</p>
+                                    <p className="text-[10px] text-muted-foreground">Enter account details</p>
+                                </CardContent>
+                            </GlowCard>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     // Derive net worth data from API metrics
