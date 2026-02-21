@@ -2,6 +2,7 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '@akount/db';
 import { createClerkClient } from '@clerk/backend';
+import { seedDefaultCOA } from '../../accounting/services/coa-template';
 
 // Initialize Clerk client with secret key
 const clerkClient = createClerkClient({
@@ -48,6 +49,13 @@ const completeOnboardingSchema = z.object({
   country: z.string().length(2).toUpperCase(),
   currency: z.string().length(3).toUpperCase(),
   fiscalYearStart: z.number().int().min(1).max(12),
+});
+
+// Wizard state schemas
+const saveStepSchema = z.object({
+  step: z.number().int().min(0).max(10),
+  data: z.record(z.unknown()),
+  version: z.number().int().min(0),
 });
 
 // Response types
@@ -216,6 +224,9 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
           },
         });
 
+        // Seed 30-account Chart of Accounts for personal entity
+        await seedDefaultCOA(entity.id, tenant.id, user.id, tx);
+
         // Optionally create a business entity (same tenant, separate entity)
         let businessEntity = null;
         if (data.businessEntity) {
@@ -232,6 +243,9 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
               ...(data.businessEntity.industry && { industry: data.businessEntity.industry }),
             },
           });
+
+          // Seed 30-account Chart of Accounts for business entity
+          await seedDefaultCOA(businessEntity.id, tenant.id, user.id, tx);
         }
 
         // Create onboarding progress (40% complete: basic_info + entity_setup)
@@ -247,6 +261,15 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
 
         return { tenant, entity, businessEntity };
       });
+
+      // Clean up temporary wizard state — data is now materialized in Tenant/Entity
+      try {
+        await prisma.onboardingWizardState.delete({
+          where: { clerkUserId: request.userId as string },
+        });
+      } catch {
+        // No-op if state doesn't exist (user may not have auto-saved)
+      }
 
       request.log.info(
         { tenantId: result.tenant.id, entityId: result.entity.id, businessEntityId: result.businessEntity?.id, userId: user.id },
@@ -412,42 +435,8 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
           update: {},
         });
 
-        // Create basic Chart of Accounts (6 core accounts)
-        // Uses createMany + skipDuplicates so this endpoint is idempotent
-        const defaultAccounts = [
-          { code: '1000', name: 'Bank Account', type: 'ASSET' as const, balance: 'DEBIT' as const },
-          {
-            code: '1100',
-            name: 'Accounts Receivable',
-            type: 'ASSET' as const,
-            balance: 'DEBIT' as const,
-          },
-          {
-            code: '2000',
-            name: 'Accounts Payable',
-            type: 'LIABILITY' as const,
-            balance: 'CREDIT' as const,
-          },
-          {
-            code: '3000',
-            name: 'Owner Equity',
-            type: 'EQUITY' as const,
-            balance: 'CREDIT' as const,
-          },
-          { code: '4000', name: 'Revenue', type: 'INCOME' as const, balance: 'CREDIT' as const },
-          { code: '5000', name: 'Expenses', type: 'EXPENSE' as const, balance: 'DEBIT' as const },
-        ];
-
-        await tx.gLAccount.createMany({
-          data: defaultAccounts.map((account) => ({
-            entityId: entity.id,
-            code: account.code,
-            name: account.name,
-            type: account.type,
-            normalBalance: account.balance,
-          })),
-          skipDuplicates: true,
-        });
+        // Seed proper 30-account COA (idempotent — skips if accounts exist from /initialize)
+        await seedDefaultCOA(entity.id, data.tenantId, user.id, tx);
 
         return { tenant, entity: updatedEntity };
       });
@@ -531,6 +520,107 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
       return reply.status(500).send({
         error: 'InternalError',
         message: 'Failed to check onboarding status',
+      });
+    }
+  });
+
+  /**
+   * POST /save-step
+   *
+   * Persists wizard state for auto-save/resume.
+   * Keyed by clerkUserId (pre-tenant). Implements optimistic locking via version.
+   */
+  fastify.post('/save-step', {
+    config: { bodyLimit: 51200 }, // 50KB max to prevent DoS
+  }, async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const body = saveStepSchema.parse(request.body);
+      const clerkUserId = request.userId as string;
+
+      // Check existing state for optimistic locking
+      const existing = await prisma.onboardingWizardState.findUnique({
+        where: { clerkUserId },
+        select: { version: true },
+      });
+
+      if (existing && body.version < existing.version) {
+        return reply.status(409).send({
+          error: 'VersionConflict',
+          message: 'Stale version — another tab may have saved newer data',
+          currentVersion: existing.version,
+        });
+      }
+
+      const newVersion = (existing?.version ?? 0) + 1;
+
+      await prisma.onboardingWizardState.upsert({
+        where: { clerkUserId },
+        create: {
+          clerkUserId,
+          currentStep: body.step,
+          stepData: body.data,
+          version: newVersion,
+        },
+        update: {
+          currentStep: body.step,
+          stepData: body.data,
+          version: newVersion,
+        },
+      });
+
+      return reply.status(200).send({
+        success: true,
+        version: newVersion,
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({
+          error: 'ValidationError',
+          message: 'Invalid save-step payload',
+        });
+      }
+      request.log.error({ error }, 'Error saving wizard step');
+      return reply.status(500).send({
+        error: 'InternalError',
+        message: 'Failed to save wizard step',
+      });
+    }
+  });
+
+  /**
+   * GET /resume
+   *
+   * Returns saved wizard state for the authenticated user.
+   * Returns defaults for users with no saved state (fresh start).
+   */
+  fastify.get('/resume', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const clerkUserId = request.userId as string;
+
+      const state = await prisma.onboardingWizardState.findUnique({
+        where: { clerkUserId },
+      });
+
+      if (state) {
+        return reply.status(200).send({
+          currentStep: state.currentStep,
+          stepData: state.stepData ?? {},
+          version: state.version,
+          isNew: false,
+        });
+      }
+
+      return reply.status(200).send({
+        currentStep: 0,
+        stepData: {},
+        version: 0,
+        isNew: true,
+      });
+    } catch (error) {
+      request.log.error({ error }, 'Error resuming wizard state');
+      return reply.status(500).send({
+        error: 'InternalError',
+        message: 'Failed to resume wizard state',
       });
     }
   });

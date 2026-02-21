@@ -872,6 +872,16 @@ model OnboardingProgress {
   @@index([tenantId])
 }
 
+model OnboardingWizardState {
+  id          String   @id @default(cuid())
+  clerkUserId String   @unique
+  currentStep Int      @default(0)
+  stepData    Json?
+  version     Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model RuleSuggestion {
   id             String               @id @default(cuid())
   entityId       String

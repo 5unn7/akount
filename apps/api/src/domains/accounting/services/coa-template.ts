@@ -53,17 +53,23 @@ const DEFAULT_COA_TEMPLATE: readonly COATemplateAccount[] = [
   { code: '5990', name: 'Other Expenses', type: 'EXPENSE', normalBalance: 'DEBIT' },
 ] as const satisfies readonly COATemplateAccount[];
 
+// Prisma transaction client type — the subset exposed inside $transaction callbacks
+type TransactionClient = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
+
 /**
  * Seed default Chart of Accounts for an entity.
  *
- * Atomic + idempotent: wrapped in a transaction, skips if entity already has GL accounts.
+ * Atomic + idempotent: skips if entity already has GL accounts.
+ * If txClient is provided, runs inside the caller's transaction (no nested $transaction).
+ * If txClient is omitted, wraps itself in its own $transaction (backward compatible).
  */
 export async function seedDefaultCOA(
   entityId: string,
   tenantId: string,
-  userId: string
+  userId: string,
+  txClient?: TransactionClient
 ): Promise<{ seeded: boolean; accountCount: number }> {
-  return prisma.$transaction(async (tx) => {
+  async function doSeed(tx: TransactionClient): Promise<{ seeded: boolean; accountCount: number }> {
     // Validate entity belongs to tenant
     const entity = await tx.entity.findFirst({
       where: { id: entityId, tenantId },
@@ -133,5 +139,13 @@ export async function seedDefaultCOA(
     }, tx);
 
     return { seeded: true, accountCount: DEFAULT_COA_TEMPLATE.length };
-  });
+  }
+
+  // If caller provides a transaction client, run directly (no nested transaction)
+  if (txClient) {
+    return doSeed(txClient);
+  }
+
+  // Otherwise, wrap in own transaction (standalone usage)
+  return prisma.$transaction(async (tx) => doSeed(tx));
 }
