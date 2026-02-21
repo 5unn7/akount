@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
 import { Loader2, FileText, BookOpen, AlertTriangle } from 'lucide-react';
+import { toast } from 'sonner';
 import {
     fetchMoreTransactions,
     bulkCategorizeAction,
@@ -127,55 +128,79 @@ export function TransactionsListClient({
 
     async function handleBulkCategorize(categoryId: string) {
         const ids = Array.from(selectedIds);
-        await bulkCategorizeAction(ids, categoryId);
-        const cat = categories.find((c) => c.id === categoryId);
-        setTransactions((prev) =>
-            prev.map((t) =>
-                selectedIds.has(t.id)
-                    ? { ...t, categoryId, category: cat ? { id: cat.id, name: cat.name } : undefined }
-                    : t
-            )
-        );
-        setSelectedIds(new Set());
+        try {
+            await bulkCategorizeAction(ids, categoryId);
+            const cat = categories.find((c) => c.id === categoryId);
+            setTransactions((prev) =>
+                prev.map((t) =>
+                    selectedIds.has(t.id)
+                        ? { ...t, categoryId, category: cat ? { id: cat.id, name: cat.name } : undefined }
+                        : t
+                )
+            );
+            setSelectedIds(new Set());
+            toast.success(`${ids.length} transactions categorized`);
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to categorize');
+        }
     }
 
     async function handleBulkUncategorize() {
         const ids = Array.from(selectedIds);
-        await bulkCategorizeAction(ids, null);
-        setTransactions((prev) =>
-            prev.map((t) =>
-                selectedIds.has(t.id) ? { ...t, categoryId: undefined, category: undefined } : t
-            )
-        );
-        setSelectedIds(new Set());
+        try {
+            await bulkCategorizeAction(ids, null);
+            setTransactions((prev) =>
+                prev.map((t) =>
+                    selectedIds.has(t.id) ? { ...t, categoryId: undefined, category: undefined } : t
+                )
+            );
+            setSelectedIds(new Set());
+            toast.success(`${ids.length} transactions uncategorized`);
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to uncategorize');
+        }
     }
 
     async function handleBulkDelete() {
         const ids = Array.from(selectedIds);
-        await bulkDeleteAction(ids);
-        setTransactions((prev) => prev.filter((t) => !selectedIds.has(t.id)));
-        setSelectedIds(new Set());
+        try {
+            await bulkDeleteAction(ids);
+            setTransactions((prev) => prev.filter((t) => !selectedIds.has(t.id)));
+            setSelectedIds(new Set());
+            toast.success(`${ids.length} transactions deleted`);
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to delete');
+        }
     }
 
     async function handleCategoryChange(transactionId: string, categoryId: string | null) {
-        await assignCategoryAction(transactionId, categoryId);
-        const cat = categoryId ? categories.find((c) => c.id === categoryId) : null;
-        setTransactions((prev) =>
-            prev.map((t) =>
-                t.id === transactionId
-                    ? {
-                          ...t,
-                          categoryId: categoryId ?? undefined,
-                          category: cat ? { id: cat.id, name: cat.name } : undefined,
-                      }
-                    : t
-            )
-        );
+        try {
+            await assignCategoryAction(transactionId, categoryId);
+            const cat = categoryId ? categories.find((c) => c.id === categoryId) : null;
+            setTransactions((prev) =>
+                prev.map((t) =>
+                    t.id === transactionId
+                        ? {
+                              ...t,
+                              categoryId: categoryId ?? undefined,
+                              category: cat ? { id: cat.id, name: cat.name } : undefined,
+                          }
+                        : t
+                )
+            );
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to update category');
+        }
     }
 
     async function handleCreateCategory(name: string, type: 'INCOME' | 'EXPENSE' | 'TRANSFER') {
-        const newCat = await createCategoryAction(name, type);
-        setCategories((prev) => [...prev, newCat]);
+        try {
+            const newCat = await createCategoryAction(name, type);
+            setCategories((prev) => [...prev, newCat]);
+            toast.success(`Category "${name}" created`);
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to create category');
+        }
     }
 
     // Open posting sheet for a single transaction
@@ -241,8 +266,11 @@ export function TransactionsListClient({
                 )
             );
             setPostingSheetOpen(false);
+            toast.success('Transaction posted to GL');
         } catch (error) {
-            setPostingError(error instanceof Error ? error.message : 'Failed to post transaction');
+            const msg = error instanceof Error ? error.message : 'Failed to post transaction';
+            toast.error(msg);
+            setPostingError(msg);
         } finally {
             setIsPosting(false);
         }
@@ -274,8 +302,11 @@ export function TransactionsListClient({
             );
             setSelectedIds(new Set());
             setPostingSheetOpen(false);
+            toast.success(`${ids.length} transactions posted to GL`);
         } catch (error) {
-            setPostingError(error instanceof Error ? error.message : 'Failed to bulk post transactions');
+            const msg = error instanceof Error ? error.message : 'Failed to bulk post transactions';
+            toast.error(msg);
+            setPostingError(msg);
         } finally {
             setIsPosting(false);
         }
