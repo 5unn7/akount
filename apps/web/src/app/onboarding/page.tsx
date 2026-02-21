@@ -8,12 +8,16 @@ export const metadata: Metadata = {
   description: 'Set up your Akount workspace in under 60 seconds',
 }
 
-async function getOnboardingProgress(userId: string) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+async function getOnboardingProgress(token: string | null) {
+  if (!token) {
+    return { currentStep: 0, stepData: {}, version: 0, isNew: true }
+  }
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
   try {
-    const response = await fetch(`${apiUrl}/system/onboarding/resume`, {
-      headers: { 'x-user-id': userId },
+    const response = await fetch(`${apiUrl}/api/system/onboarding/resume`, {
+      headers: { Authorization: `Bearer ${token}` },
       cache: 'no-store',
     })
 
@@ -28,13 +32,14 @@ async function getOnboardingProgress(userId: string) {
 }
 
 export default async function OnboardingPage() {
-  const { userId } = await auth()
+  const { userId, getToken } = await auth()
 
   if (!userId) {
     redirect('/sign-in')
   }
 
-  const resumeState = await getOnboardingProgress(userId)
+  const token = await getToken()
+  const resumeState = await getOnboardingProgress(token)
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8">

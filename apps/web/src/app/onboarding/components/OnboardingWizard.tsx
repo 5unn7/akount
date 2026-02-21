@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
 import { useOnboardingStore } from '@/stores/onboardingStore'
+import { apiFetch } from '@/lib/api/client-browser'
 import { ChevronLeft, Check, Loader2 } from 'lucide-react'
 import { WelcomeStep } from './steps/WelcomeStep'
 import { IntentStep } from './steps/IntentStep'
@@ -18,7 +19,7 @@ import { CompletionStep } from './steps/CompletionStep'
  * 0: Welcome     — "Just me" / "Me + my business"
  * 1: Intent      — Multi-select goals
  * 2: Employment  — Single select employment status
- * 3: Business    — CONDITIONAL (only if business + self-employed/founder)
+ * 3: Business    — CONDITIONAL (only if "Me + my business")
  * 3/4: Address   — Residential address + country
  * 4/5: Complete  — API calls + animated checklist
  */
@@ -101,9 +102,8 @@ export function OnboardingWizard({ initialState = DEFAULT_INITIAL_STATE }: Onboa
 
     saveTimeoutRef.current = setTimeout(async () => {
       try {
-        const response = await fetch('/api/system/onboarding/save-step', {
+        const result = await apiFetch<{ version: number }>('/api/system/onboarding/save-step', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             step: currentStep,
             data: {
@@ -121,20 +121,20 @@ export function OnboardingWizard({ initialState = DEFAULT_INITIAL_STATE }: Onboa
               city: store.city,
               province: store.province,
               postalCode: store.postalCode,
+              taxId: store.taxId,
+              businessStreetAddress: store.businessStreetAddress,
+              businessCity: store.businessCity,
+              businessProvince: store.businessProvince,
+              businessPostalCode: store.businessPostalCode,
             },
             version,
           }),
         })
 
-        if (response.ok) {
-          const result = await response.json()
-          lastSavedVersionRef.current = result.version
-          store.setVersion(result.version)
-          setSaveStatus('saved')
-          setTimeout(() => setSaveStatus('idle'), 2000)
-        } else {
-          setSaveStatus('error')
-        }
+        lastSavedVersionRef.current = result.version
+        store.setVersion(result.version)
+        setSaveStatus('saved')
+        setTimeout(() => setSaveStatus('idle'), 2000)
       } catch {
         setSaveStatus('error')
       }
