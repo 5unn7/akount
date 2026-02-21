@@ -45,6 +45,15 @@ export function FileListEditor({
     disabled = false,
 }: FileListEditorProps) {
     const allHaveAccounts = files.every((f) => f.accountId);
+    const unassignedCount = files.filter(f => !f.accountId).length;
+
+    const handleBulkAssign = (accountId: string) => {
+        for (const file of files) {
+            if (!file.accountId) {
+                onAccountChange(file.id, accountId);
+            }
+        }
+    };
 
     return (
         <div className="space-y-2">
@@ -58,6 +67,30 @@ export function FileListEditor({
                     </p>
                 )}
             </div>
+
+            {/* Bulk Account Assignment (Task 3.5) */}
+            {files.length > 1 && unassignedCount > 0 && accounts.length > 0 && (
+                <div className="flex items-center gap-2 p-2.5 glass rounded-lg border border-ak-border mb-1">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">Assign all to:</span>
+                    <Select
+                        onValueChange={handleBulkAssign}
+                        disabled={disabled}
+                    >
+                        <SelectTrigger className="h-7 text-xs glass-2 rounded-lg border-ak-border flex-1">
+                            <SelectValue placeholder="Select account for all files" />
+                        </SelectTrigger>
+                        <SelectContent className="glass-2 rounded-lg border-ak-border-2">
+                            {accounts.map((account) => (
+                                <SelectItem key={account.id} value={account.id}>
+                                    <span className="text-xs">
+                                        {account.name} ({account.currency})
+                                    </span>
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            )}
 
             {files.map((item) => {
                 const fileType = getFileType(item.file.name);

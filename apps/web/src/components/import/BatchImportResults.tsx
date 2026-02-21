@@ -4,12 +4,16 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { GlowCard } from '@/components/ui/glow-card';
 import {
     CheckCircle2,
     XCircle,
     ArrowRight,
     Upload,
     FileText,
+    RefreshCw,
+    Tags,
+    Lightbulb,
 } from 'lucide-react';
 import type { BatchImportResult, ImportAccount } from './types';
 
@@ -17,16 +21,19 @@ interface BatchImportResultsProps {
     batchResult: BatchImportResult;
     accounts: ImportAccount[];
     onAddMoreFiles: () => void;
+    onRetryFailed: () => void;
 }
 
 export function BatchImportResults({
     batchResult,
     accounts,
     onAddMoreFiles,
+    onRetryFailed,
 }: BatchImportResultsProps) {
     const { aggregateStats, files } = batchResult;
     const allSuccess = aggregateStats.successFiles === aggregateStats.totalFiles;
     const hasErrors = aggregateStats.totalFiles - aggregateStats.successFiles > 0;
+    const failedCount = aggregateStats.totalFiles - aggregateStats.successFiles;
 
     const getAccountName = (accountId: string) => {
         const account = accounts.find((a) => a.id === accountId);
@@ -57,6 +64,29 @@ export function BatchImportResults({
                             </p>
                         </div>
                     </div>
+
+                    {/* Retry failed files (Task 3.1) */}
+                    {hasErrors && (
+                        <div className="mt-4 flex items-center gap-3 p-3 bg-ak-red-dim border border-ak-red/20 rounded-lg">
+                            <XCircle className="h-5 w-5 text-ak-red flex-shrink-0" />
+                            <div className="flex-1">
+                                <p className="text-sm font-medium text-ak-red">
+                                    {failedCount} file{failedCount !== 1 ? 's' : ''} failed to import
+                                </p>
+                                <p className="text-xs text-ak-red/80 mt-0.5">
+                                    Network issues or unsupported format. You can retry these files.
+                                </p>
+                            </div>
+                            <Button
+                                size="sm"
+                                className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
+                                onClick={onRetryFailed}
+                            >
+                                <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+                                Retry Failed
+                            </Button>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
@@ -107,6 +137,17 @@ export function BatchImportResults({
                 </Card>
             </div>
 
+            {/* Duplicate Explanation (Task 3.4) */}
+            {aggregateStats.duplicates > 0 && (
+                <div className="flex items-start gap-3 px-4 py-3 glass rounded-lg">
+                    <Lightbulb className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground font-mono">{aggregateStats.duplicates}</span>{' '}
+                        duplicate{aggregateStats.duplicates !== 1 ? 's' : ''} skipped — these transactions were already in your account from a previous import.
+                    </p>
+                </div>
+            )}
+
             {/* Per-file Breakdown */}
             <Card className="glass rounded-[14px]">
                 <CardHeader>
@@ -144,7 +185,11 @@ export function BatchImportResults({
                                     >
                                         <td className="py-3 px-4">
                                             <div className="flex items-center gap-2">
-                                                <FileText className="h-3.5 w-3.5 text-muted-foreground" />
+                                                {item.status === 'success' ? (
+                                                    <CheckCircle2 className="h-3.5 w-3.5 text-ak-green flex-shrink-0" />
+                                                ) : (
+                                                    <XCircle className="h-3.5 w-3.5 text-ak-red flex-shrink-0" />
+                                                )}
                                                 <span className="text-sm truncate max-w-[200px]">
                                                     {item.file.name}
                                                 </span>
@@ -201,6 +246,35 @@ export function BatchImportResults({
                     )}
                 </CardContent>
             </Card>
+
+            {/* What's Next — contextual guidance (Task 3.4) */}
+            {aggregateStats.imported > 0 && (
+                <GlowCard variant="glass" className="rounded-[14px]">
+                    <CardContent className="pt-6 space-y-3">
+                        <h4 className="font-heading text-base">What&apos;s Next</h4>
+                        <div className="space-y-2">
+                            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-ak-bg-3 transition-colors">
+                                <Tags className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="text-sm font-medium">Categorize Transactions</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        Assign categories so transactions appear in your reports and budget tracking.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-ak-bg-3 transition-colors">
+                                <Upload className="h-4 w-4 text-ak-blue flex-shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="text-sm font-medium">Import More Statements</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        Upload statements from other accounts or earlier date ranges.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </GlowCard>
+            )}
 
             {/* Actions */}
             <div className="flex items-center gap-3">

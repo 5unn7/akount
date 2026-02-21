@@ -147,9 +147,11 @@ export function FileSelectionStep({
         <div className="space-y-6">
             <Card variant="glass">
                 <CardHeader>
-                    <CardTitle className="font-heading font-normal">Upload Bank Statements</CardTitle>
+                    <CardTitle className="font-heading font-normal">
+                        Upload your bank statements to import transactions
+                    </CardTitle>
                     <CardDescription>
-                        Drop one or more files. Supported: CSV, PDF, OFX/QFX, Excel. Max 10MB each, up to 10 files.
+                        Supports CSV, PDF, Excel, and OFX/QFX files. Up to {MAX_FILES} files, {MAX_FILE_SIZE / 1024 / 1024}MB each.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">

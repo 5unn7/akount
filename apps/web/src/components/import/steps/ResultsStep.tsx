@@ -6,11 +6,6 @@ import type { ImportAccount, UploadFileItem, BatchImportResult } from '../types'
 /**
  * Results Step — Display import results with aggregate stats
  *
- * Responsibilities:
- * - Aggregate stats calculation
- * - Display via BatchImportResults component
- * - Reset functionality
- *
  * Simple wrapper around BatchImportResults with state transformation.
  */
 
@@ -18,12 +13,14 @@ interface ResultsStepProps {
     files: UploadFileItem[];
     accounts: ImportAccount[];
     onReset: () => void;
+    onRetryFailed: () => void;
 }
 
 export function ResultsStep({
     files,
     accounts,
     onReset,
+    onRetryFailed,
 }: ResultsStepProps) {
     // Build aggregate stats from uploaded files
     const successFiles = files.filter(f => f.status === 'success');
@@ -46,6 +43,7 @@ export function ResultsStep({
             batchResult={batchResult}
             accounts={accounts}
             onAddMoreFiles={onReset}
+            onRetryFailed={onRetryFailed}
         />
     );
 }
