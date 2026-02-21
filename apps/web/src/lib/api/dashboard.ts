@@ -61,6 +61,19 @@ export async function getDashboardMetrics(
 }
 
 /**
+ * Fetch the user's onboarding intents for dashboard personalization.
+ * Returns empty array if no intents were set.
+ */
+export async function getIntents(): Promise<string[]> {
+    try {
+        const result = await apiClient<{ intents: string[] }>('/api/system/onboarding/intents');
+        return result.intents;
+    } catch {
+        return [];
+    }
+}
+
+/**
  * Net worth response from API
  */
 export interface NetWorthData {

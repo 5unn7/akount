@@ -104,6 +104,47 @@ function getStepFieldName(step: OnboardingStep): keyof Omit<ProgressResponse, 'c
 
 export async function onboardingProgressRoutes(fastify: FastifyInstance) {
   /**
+   * GET /intents
+   *
+   * Returns the user's onboarding intents (goals they selected during onboarding).
+   * Used by the dashboard to personalize widget ordering and greeting text.
+   * ✅ SECURITY: Uses request.tenantId from middleware
+   */
+  fastify.get<{
+    Reply: { intents: string[]; employmentStatus?: string } | ErrorResponse;
+  }>('/intents', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      if (!request.tenantId) {
+        return reply.status(403).send({
+          error: 'Forbidden',
+          message: 'No tenant access',
+        });
+      }
+
+      const tenant = await prisma.tenant.findUnique({
+        where: { id: request.tenantId },
+        select: { onboardingData: true },
+      });
+
+      if (!tenant?.onboardingData || typeof tenant.onboardingData !== 'object') {
+        return reply.status(200).send({ intents: [] });
+      }
+
+      const data = tenant.onboardingData as Record<string, unknown>;
+      const intents = Array.isArray(data.intents) ? data.intents.filter((i): i is string => typeof i === 'string') : [];
+      const employmentStatus = typeof data.employmentStatus === 'string' ? data.employmentStatus : undefined;
+
+      return reply.status(200).send({ intents, employmentStatus });
+    } catch (error) {
+      request.log.error({ error }, 'Error fetching onboarding intents');
+      return reply.status(500).send({
+        error: 'InternalError',
+        message: 'Failed to fetch onboarding intents',
+      });
+    }
+  });
+
+  /**
    * GET /progress
    *
    * Fetch current onboarding progress for the authenticated user's tenant.

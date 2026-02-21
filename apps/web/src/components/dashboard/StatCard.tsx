@@ -14,7 +14,7 @@ import {
 
 const TrendIcon = { up: ArrowUp, down: ArrowDown, flat: Minus } as const;
 
-export function StatCard({ stat, index }: { stat: StatCardData; index: number }) {
+export function StatCard({ stat, index, highlighted }: { stat: StatCardData; index: number; highlighted?: boolean }) {
     const router = useRouter();
     const frameRef = useRef<number>(0);
     const Icon = stat.trend ? TrendIcon[stat.trend.direction] : null;
@@ -54,6 +54,7 @@ export function StatCard({ stat, index }: { stat: StatCardData; index: number })
             className={cn(
                 'glass rounded-lg px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px glow-track fi',
                 stat.href ? 'cursor-pointer active:scale-[0.98]' : '',
+                highlighted && 'border-ak-border-3',
                 `fi${Math.min(index + 1, 6)}`
             )}
             style={{ '--glow-color': glowColor } as React.CSSProperties}

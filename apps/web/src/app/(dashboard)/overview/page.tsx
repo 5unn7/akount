@@ -12,10 +12,11 @@ import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
 import { GlowCard } from "@/components/ui/glow-card";
 import { CardContent } from "@/components/ui/card";
 import { listEntities } from "@/lib/api/entities";
-import { getDashboardMetrics } from "@/lib/api/dashboard";
+import { getDashboardMetrics, getIntents } from "@/lib/api/dashboard";
 import { getPerformanceMetrics } from "@/lib/api/performance";
 import { listTransactions } from "@/lib/api/transactions";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
+import { getDashboardConfig } from "@/lib/dashboard-personalization";
 import { Building2, Landmark, Upload, PenLine } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -32,25 +33,31 @@ export default async function OverviewPage() {
     const entityId = validateEntityId(rawEntityId, allEntities) ?? undefined;
     const currency = cookieCurrency || 'CAD';
 
-    // Parallel data fetch
+    // Parallel data fetch (includes intents for personalization)
     const entities = allEntities;
     let metrics: Awaited<ReturnType<typeof getDashboardMetrics>> | null = null;
     let performance: Awaited<ReturnType<typeof getPerformanceMetrics>> | null = null;
     let recentTransactions: Awaited<ReturnType<typeof listTransactions>> = { transactions: [], hasMore: false };
+    let intents: string[] = [];
 
     try {
-        const [metricsResult, performanceResult, transactionsResult] = await Promise.allSettled([
+        const [metricsResult, performanceResult, transactionsResult, intentsResult] = await Promise.allSettled([
             getDashboardMetrics(entityId, currency),
             getPerformanceMetrics(entityId, currency),
             listTransactions({ limit: 10, entityId }),
+            getIntents(),
         ]);
 
         if (metricsResult.status === 'fulfilled') metrics = metricsResult.value;
         if (performanceResult.status === 'fulfilled') performance = performanceResult.value;
         if (transactionsResult.status === 'fulfilled') recentTransactions = transactionsResult.value;
+        if (intentsResult.status === 'fulfilled') intents = intentsResult.value;
     } catch {
         // Continue with defaults
     }
+
+    // Personalize dashboard based on onboarding intents
+    const dashboardConfig = getDashboardConfig(intents);
 
     // First-run experience: no accounts and no transactions
     const totalAccounts = metrics?.accounts.total ?? 0;
@@ -201,8 +208,22 @@ export default async function OverviewPage() {
         },
     ];
 
+    // Reorder stats based on user's onboarding intents
+    const orderedStats = dashboardConfig.statOrder.length > 0
+        ? dashboardConfig.statOrder
+            .map(label => quickStats.find(s => s.label === label))
+            .filter((s): s is typeof quickStats[number] => s !== undefined)
+        : quickStats;
+
     return (
         <div className="space-y-4">
+            {/* Personalized greeting from onboarding intents */}
+            {dashboardConfig.greeting && (
+                <p className="text-sm font-heading italic text-muted-foreground">
+                    {dashboardConfig.greeting}
+                </p>
+            )}
+
             {/* Onboarding hero — conditional, above grid */}
             <OnboardingHeroCard />
 
@@ -228,12 +249,16 @@ export default async function OverviewPage() {
                     <InsightCards />
                 </div>
 
-                {/* Row 3: Quick Stats (full width, responsive grid) */}
+                {/* Row 3: Quick Stats (full width, responsive grid, intent-ordered) */}
                 <div className="xl:col-span-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3">
-                        {quickStats.map((stat, index) => (
-                            <div key={stat.label} className={index === quickStats.length - 1 ? 'col-span-2 md:col-span-1' : undefined}>
-                                <StatCard stat={stat} index={index} />
+                        {orderedStats.map((stat, index) => (
+                            <div key={stat.label} className={index === orderedStats.length - 1 ? 'col-span-2 md:col-span-1' : undefined}>
+                                <StatCard
+                                    stat={stat}
+                                    index={index}
+                                    highlighted={dashboardConfig.highlightWidgets.includes(stat.label)}
+                                />
                             </div>
                         ))}
                     </div>
