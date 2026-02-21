@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Landmark } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { GlowCard } from '@/components/ui/glow-card';
 import { CardContent } from '@/components/ui/card';
@@ -161,10 +162,9 @@ export function AccountCardGrid({ accounts }: AccountCardGridProps) {
             </div>
 
             {filtered.length === 0 && (
-                <div className="text-center py-8">
-                    <p className="text-sm text-muted-foreground">
-                        No accounts match this filter.
-                    </p>
+                <div className="flex flex-col items-center justify-center py-10 gap-2 text-center">
+                    <Landmark className="h-8 w-8 text-muted-foreground/20" />
+                    <p className="text-xs text-muted-foreground">No accounts match this filter</p>
                 </div>
             )}
         </div>

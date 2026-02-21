@@ -1,3 +1,4 @@
+import { Store } from 'lucide-react';
 import type { Transaction } from '@/lib/api/transactions.types';
 import { formatCurrency } from '@/lib/utils/currency';
 
@@ -45,8 +46,9 @@ export function TopMerchants({ transactions, currency }: TopMerchantsProps) {
                 <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                     Top Merchants
                 </h3>
-                <div className="flex items-center justify-center h-16 text-sm text-muted-foreground">
-                    No expense data
+                <div className="flex flex-col items-center justify-center py-6 gap-2 text-center">
+                    <Store className="h-8 w-8 text-muted-foreground/20" />
+                    <p className="text-xs text-muted-foreground">No expense data</p>
                 </div>
             </div>
         );

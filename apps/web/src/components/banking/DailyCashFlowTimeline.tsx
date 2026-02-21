@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useId, useMemo } from 'react';
+import { BarChart3 } from 'lucide-react';
 import type { Transaction } from '@/lib/api/transactions.types';
 import { formatCurrency } from '@/lib/utils/currency';
 
@@ -67,6 +68,22 @@ export function DailyCashFlowTimeline({
             };
         });
     }, [transactions, currentYear, currentMonth, today, daysInMonth]);
+
+    const hasData = days.some((d) => d.income > 0 || d.expense > 0);
+
+    if (!hasData) {
+        return (
+            <div className="glass rounded-xl p-5">
+                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+                    Daily Cash Flow
+                </h3>
+                <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
+                    <BarChart3 className="h-8 w-8 text-muted-foreground/20" />
+                    <p className="text-xs text-muted-foreground">No cash flow data this month</p>
+                </div>
+            </div>
+        );
+    }
 
     const maxVal = Math.max(
         ...days.map((d) => Math.max(d.income, d.expense)),

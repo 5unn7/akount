@@ -110,8 +110,9 @@ export function RecurringDetected({
                         Recurring Detected
                     </h3>
                 </div>
-                <div className="flex items-center justify-center h-16 text-sm text-muted-foreground">
-                    No recurring patterns found
+                <div className="flex flex-col items-center justify-center py-6 gap-2 text-center">
+                    <RefreshCw className="h-8 w-8 text-muted-foreground/20" />
+                    <p className="text-xs text-muted-foreground">No recurring patterns found</p>
                 </div>
             </div>
         );

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PieChart } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { cn } from '@/lib/utils';
 
@@ -72,8 +73,9 @@ export function SpendingBreakdown({
             </div>
 
             {data.length === 0 ? (
-                <div className="flex items-center justify-center h-24 text-sm text-muted-foreground">
-                    No expenses in this period
+                <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
+                    <PieChart className="h-8 w-8 text-muted-foreground/20" />
+                    <p className="text-xs text-muted-foreground">No expenses in this period</p>
                 </div>
             ) : (
                 <div className="space-y-2.5">

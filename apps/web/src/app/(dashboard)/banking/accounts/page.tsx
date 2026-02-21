@@ -18,11 +18,20 @@ export const metadata: Metadata = {
 };
 
 export default async function AccountsPage() {
+    // Current month date range for MTD stats
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+
     // Parallel data fetching
     const [entities, accountsResult, txnResult] = await Promise.all([
         listEntities(),
         listAccounts({ isActive: true }),
-        listTransactions({ limit: 200 }),
+        listTransactions({
+            startDate: monthStart.toISOString(),
+            endDate: monthEnd.toISOString(),
+            limit: 100,
+        }),
     ]);
 
     const allAccounts = accountsResult.accounts;

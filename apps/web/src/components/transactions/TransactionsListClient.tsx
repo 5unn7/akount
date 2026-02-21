@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import type { Transaction } from '@/lib/api/transactions';
 import type { Account } from '@/lib/api/accounts';
 import type { GLAccount } from '@/lib/api/accounting';
@@ -11,7 +10,6 @@ import { TransactionsTable } from './TransactionsTable';
 import { TransactionsFilters } from './TransactionsFilters';
 import { BulkActionBar } from './BulkActionBar';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import {
     Select,
     SelectContent,
@@ -27,7 +25,7 @@ import {
     SheetDescription,
 } from '@/components/ui/sheet';
 import { Label } from '@/components/ui/label';
-import { Loader2, Upload, FileText, BookOpen, AlertTriangle } from 'lucide-react';
+import { Loader2, FileText, BookOpen, AlertTriangle } from 'lucide-react';
 import {
     fetchMoreTransactions,
     bulkCategorizeAction,
@@ -299,30 +297,16 @@ export function TransactionsListClient({
                     onFilterChange={handleFilterChange}
                     onClearFilters={handleClearFilters}
                 />
-                <Card className="glass rounded-[14px]">
-                    <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="p-4 rounded-full bg-primary/10 mb-4">
-                            <FileText className="h-8 w-8 text-primary" />
-                        </div>
-                        <p className="text-lg font-heading font-normal mb-2">
-                            No transactions yet
-                        </p>
-                        <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+                <div className="glass rounded-xl p-5">
+                    <div className="flex flex-col items-center justify-center py-10 gap-2 text-center">
+                        <FileText className="h-8 w-8 text-muted-foreground/20" />
+                        <p className="text-xs text-muted-foreground">
                             {accountId || startDate || endDate
-                                ? 'No transactions match your filters. Try adjusting them or import a bank statement.'
-                                : 'Upload your first bank statement to start tracking transactions.'}
+                                ? 'No transactions match your filters'
+                                : 'No transactions yet'}
                         </p>
-                        <Button
-                            className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium"
-                            asChild
-                        >
-                            <Link href="/banking/import">
-                                <Upload className="h-4 w-4 mr-2" />
-                                Import Statement
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         );
     }

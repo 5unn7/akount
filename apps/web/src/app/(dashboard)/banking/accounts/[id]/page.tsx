@@ -64,9 +64,9 @@ export default async function AccountDetailPage({
         [monthTxns, allTxns] = await Promise.all([
             listAccountTransactions(id, {
                 startDate: monthStart,
-                limit: 200,
+                limit: 100,
             }),
-            listAccountTransactions(id, { limit: 500 }),
+            listAccountTransactions(id, { limit: 100 }),
         ]);
     } catch {
         monthTxns = { transactions: [], hasMore: false };

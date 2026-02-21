@@ -31,8 +31,9 @@ export function AICategoryQueue({
                         AI Category Queue
                     </h3>
                 </div>
-                <div className="flex items-center justify-center h-16 text-sm text-muted-foreground">
-                    All transactions categorized
+                <div className="flex flex-col items-center justify-center py-6 gap-2 text-center">
+                    <Sparkles className="h-8 w-8 text-muted-foreground/20" />
+                    <p className="text-xs text-muted-foreground">All transactions categorized</p>
                 </div>
             </div>
         );
