@@ -3,6 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import type { Bill } from '@/lib/api/bills';
 import { approveBillAction, postBillAction, cancelBillAction } from './actions';
 import { CheckCircle, BookOpen, XCircle, Loader2 } from 'lucide-react';
@@ -86,20 +97,41 @@ export function BillActions({ bill }: BillActionsProps) {
                 </Button>
             )}
             {canCancel && (
-                <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={handleCancel}
-                    disabled={loading !== null}
-                    className="gap-1.5 text-ak-red hover:text-ak-red"
-                >
-                    {loading === 'cancel' ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                        <XCircle className="h-4 w-4" />
-                    )}
-                    Cancel
-                </Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={loading !== null}
+                            className="gap-1.5 text-ak-red hover:text-ak-red"
+                        >
+                            {loading === 'cancel' ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <XCircle className="h-4 w-4" />
+                            )}
+                            Cancel
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Cancel this bill?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This bill will be marked as cancelled.
+                                This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Bill</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={handleCancel}
+                            >
+                                Cancel Bill
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             )}
         </div>
     );

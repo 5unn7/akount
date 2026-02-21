@@ -3,6 +3,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import type { Invoice } from '@/lib/api/invoices';
 import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction } from './actions';
 import { Send, BookOpen, Download, XCircle, Loader2 } from 'lucide-react';
@@ -100,20 +111,41 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
                 PDF
             </Button>
             {canCancel && (
-                <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={handleCancel}
-                    disabled={loading !== null}
-                    className="gap-1.5 text-ak-red hover:text-ak-red"
-                >
-                    {loading === 'cancel' ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                        <XCircle className="h-4 w-4" />
-                    )}
-                    Cancel
-                </Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={loading !== null}
+                            className="gap-1.5 text-ak-red hover:text-ak-red"
+                        >
+                            {loading === 'cancel' ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <XCircle className="h-4 w-4" />
+                            )}
+                            Cancel
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Cancel this invoice?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Invoice #{invoice.invoiceNumber} will be marked as cancelled.
+                                This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Invoice</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={handleCancel}
+                            >
+                                Cancel Invoice
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             )}
         </div>
     );

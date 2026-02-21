@@ -2,6 +2,17 @@
 
 import { useState } from 'react';
 import { ChevronRight, ChevronDown, Pencil, Power } from 'lucide-react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import type { GLAccount, GLAccountType, GLAccountBalance } from '@/lib/api/accounting';
 import { formatAmount } from '@/lib/api/transactions.types';
 import { Badge } from '@/components/ui/badge';
@@ -148,13 +159,34 @@ export function AccountRow({
                             <Pencil className="h-3.5 w-3.5" />
                         </button>
                         {node.isActive && (
-                            <button
-                                onClick={() => onDeactivate(node.id)}
-                                className="p-1.5 rounded-md hover:bg-red-500/10 text-muted-foreground hover:text-red-400"
-                                title="Deactivate"
-                            >
-                                <Power className="h-3.5 w-3.5" />
-                            </button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <button
+                                        className="p-1.5 rounded-md hover:bg-red-500/10 text-muted-foreground hover:text-red-400"
+                                        title="Deactivate"
+                                    >
+                                        <Power className="h-3.5 w-3.5" />
+                                    </button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Deactivate account?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            &ldquo;{node.code} &mdash; {node.name}&rdquo; will be deactivated.
+                                            The account and its history will be preserved but hidden from selection.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                            onClick={() => onDeactivate(node.id)}
+                                        >
+                                            Deactivate
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         )}
                     </div>
                 </td>

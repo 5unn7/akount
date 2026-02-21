@@ -10,6 +10,17 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Trash2, X, Loader2, Tag, Tags } from 'lucide-react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface CategoryOption {
     id: string;
@@ -125,20 +136,41 @@ export function BulkActionBar({
                 </Button>
 
                 {/* Delete */}
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 rounded-lg text-xs text-ak-red hover:bg-ak-red/10 hover:text-ak-red"
-                    onClick={handleDelete}
-                    disabled={busy}
-                >
-                    {isDeleting ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
-                    ) : (
-                        <Trash2 className="h-3.5 w-3.5 mr-1.5" />
-                    )}
-                    Delete
-                </Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 rounded-lg text-xs text-ak-red hover:bg-ak-red/10 hover:text-ak-red"
+                            disabled={busy}
+                        >
+                            {isDeleting ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+                            ) : (
+                                <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                            )}
+                            Delete
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete {selectedCount} transactions?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This will permanently delete the selected transactions.
+                                This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={handleDelete}
+                            >
+                                Delete {selectedCount} transactions
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
 
                 {extraActions && (
                     <>
