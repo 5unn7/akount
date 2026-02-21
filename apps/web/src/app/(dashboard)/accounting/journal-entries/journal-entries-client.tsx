@@ -262,7 +262,13 @@ export function JournalEntriesClient({
                                                 {formatDate(entry.date)}
                                             </td>
                                             <td className="px-4 py-3 font-mono text-sm">
-                                                JE-{String(entry.entryNumber).padStart(3, '0')}
+                                                <Link
+                                                    href={`/accounting/journal-entries/${entry.id}`}
+                                                    className="text-primary hover:underline"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    JE-{String(entry.entryNumber).padStart(3, '0')}
+                                                </Link>
                                             </td>
                                             <td className="px-4 py-3 text-sm max-w-[240px] truncate">
                                                 {entry.memo}

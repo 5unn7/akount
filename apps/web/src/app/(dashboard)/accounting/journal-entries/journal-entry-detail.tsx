@@ -1,6 +1,7 @@
 'use client';
 
-import { Check, Ban, Trash2, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { Check, Ban, Trash2, Loader2, ExternalLink } from 'lucide-react';
 import type { JournalEntry, JournalEntryStatus } from '@/lib/api/accounting';
 import { formatAmount } from '@/lib/api/transactions.types';
 import { Button } from '@/components/ui/button';
@@ -137,6 +138,12 @@ export function EntryDetail({
                     </table>
 
                     <div className="flex items-center gap-2 pt-2 border-t border-ak-border">
+                        <Button size="sm" variant="outline" className="rounded-lg text-xs h-8" asChild>
+                            <Link href={`/accounting/journal-entries/${entry.id}`}>
+                                <ExternalLink className="h-3 w-3 mr-1" />
+                                View Full
+                            </Link>
+                        </Button>
                         {entry.status === 'DRAFT' && (
                             <>
                                 <Button
