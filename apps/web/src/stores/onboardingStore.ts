@@ -12,9 +12,6 @@ export type EmploymentStatus =
   | 'not-working'
   | 'prefer-not-to-say'
 
-/** Steps that trigger the conditional business setup question */
-export const BUSINESS_EMPLOYMENT_STATUSES: EmploymentStatus[] = ['self-employed', 'founder']
-
 export interface OnboardingState {
   // Current step tracking
   currentStep: number
@@ -51,14 +48,6 @@ export interface OnboardingState {
   businessProvince: string
   businessPostalCode: string
 
-  // Legacy fields (kept for backward compat with existing API)
-  entityName: string
-  entityType: EntityType | null
-  phoneNumber: string
-  timezone: string
-  fiscalYearEnd: string
-  industry: string
-
   // API response
   tenantId: string | null
   entityId: string | null
@@ -83,12 +72,6 @@ export interface OnboardingState {
   setBusinessCity: (city: string) => void
   setBusinessProvince: (province: string) => void
   setBusinessPostalCode: (code: string) => void
-  setPhoneNumber: (phone: string) => void
-  setTimezone: (timezone: string) => void
-  setEntityName: (name: string) => void
-  setEntityType: (type: EntityType) => void
-  setFiscalYearEnd: (month: string) => void
-  setIndustry: (industry: string) => void
   nextStep: () => void
   previousStep: () => void
   goToStep: (step: number) => void
@@ -138,14 +121,6 @@ const initialState = {
   businessProvince: '',
   businessPostalCode: '',
 
-  // Legacy
-  entityName: '',
-  entityType: null as EntityType | null,
-  phoneNumber: '',
-  timezone: 'America/Toronto',
-  fiscalYearEnd: '12',
-  industry: '',
-
   // API
   tenantId: null as string | null,
   entityId: null as string | null,
@@ -187,13 +162,6 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
   setBusinessCity: (city: string) => set({ businessCity: city }),
   setBusinessProvince: (province: string) => set({ businessProvince: province }),
   setBusinessPostalCode: (code: string) => set({ businessPostalCode: code }),
-
-  setPhoneNumber: (phone: string) => set({ phoneNumber: phone }),
-  setTimezone: (timezone: string) => set({ timezone }),
-  setEntityName: (name: string) => set({ entityName: name }),
-  setEntityType: (type: EntityType) => set({ entityType: type }),
-  setFiscalYearEnd: (month: string) => set({ fiscalYearEnd: month }),
-  setIndustry: (industry: string) => set({ industry }),
 
   nextStep: () =>
     set((state) => ({

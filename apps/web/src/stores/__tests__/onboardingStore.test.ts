@@ -25,19 +25,22 @@ describe('onboardingStore', () => {
       const state = useOnboardingStore.getState()
       expect(state.country).toBe('')
       expect(state.currency).toBe('')
-      expect(state.timezone).toBe('America/Toronto')
-    })
-
-    it('defaults fiscal year end to December', () => {
-      expect(useOnboardingStore.getState().fiscalYearEnd).toBe('12')
-    })
-
-    it('defaults industry to empty string', () => {
-      expect(useOnboardingStore.getState().industry).toBe('')
     })
 
     it('defaults employment status to null', () => {
       expect(useOnboardingStore.getState().employmentStatus).toBeNull()
+    })
+
+    it('defaults taxId to empty string', () => {
+      expect(useOnboardingStore.getState().taxId).toBe('')
+    })
+
+    it('defaults business address fields to empty strings', () => {
+      const state = useOnboardingStore.getState()
+      expect(state.businessStreetAddress).toBe('')
+      expect(state.businessCity).toBe('')
+      expect(state.businessProvince).toBe('')
+      expect(state.businessPostalCode).toBe('')
     })
   })
 
@@ -123,75 +126,33 @@ describe('onboardingStore', () => {
   })
 
   describe('conditional business step', () => {
-    it('shows business step when accountType=business and employment=self-employed', () => {
+    it('shows business step when accountType=business', () => {
       useOnboardingStore.getState().setAccountType('business')
-      useOnboardingStore.getState().setEmploymentStatus('self-employed')
       expect(useOnboardingStore.getState().shouldShowBusinessStep()).toBe(true)
       expect(useOnboardingStore.getState().getTotalSteps()).toBe(6)
     })
 
-    it('shows business step when accountType=business and employment=founder', () => {
+    it('shows business step regardless of employment status', () => {
       useOnboardingStore.getState().setAccountType('business')
-      useOnboardingStore.getState().setEmploymentStatus('founder')
+      useOnboardingStore.getState().setEmploymentStatus('student')
       expect(useOnboardingStore.getState().shouldShowBusinessStep()).toBe(true)
       expect(useOnboardingStore.getState().getTotalSteps()).toBe(6)
     })
 
     it('hides business step for personal account type', () => {
       useOnboardingStore.getState().setAccountType('personal')
-      useOnboardingStore.getState().setEmploymentStatus('self-employed')
-      expect(useOnboardingStore.getState().shouldShowBusinessStep()).toBe(false)
-      expect(useOnboardingStore.getState().getTotalSteps()).toBe(5)
-    })
-
-    it('hides business step for non-business employment', () => {
-      useOnboardingStore.getState().setAccountType('business')
-      useOnboardingStore.getState().setEmploymentStatus('student')
       expect(useOnboardingStore.getState().shouldShowBusinessStep()).toBe(false)
       expect(useOnboardingStore.getState().getTotalSteps()).toBe(5)
     })
   })
 
   describe('form field setters', () => {
-    it('sets phone number', () => {
-      useOnboardingStore.getState().setPhoneNumber('+1-416-555-1234')
-      expect(useOnboardingStore.getState().phoneNumber).toBe('+1-416-555-1234')
-    })
-
-    it('sets timezone', () => {
-      useOnboardingStore.getState().setTimezone('America/Vancouver')
-      expect(useOnboardingStore.getState().timezone).toBe('America/Vancouver')
-    })
-
-    it('sets entity name', () => {
-      useOnboardingStore.getState().setEntityName('Acme Corp')
-      expect(useOnboardingStore.getState().entityName).toBe('Acme Corp')
-    })
-
-    it('sets entity type', () => {
-      useOnboardingStore.getState().setEntityType('CORPORATION')
-      expect(useOnboardingStore.getState().entityType).toBe('CORPORATION')
-    })
-
     it('sets country and currency independently', () => {
       useOnboardingStore.getState().setCountry('US')
       useOnboardingStore.getState().setCurrency('USD')
       const state = useOnboardingStore.getState()
       expect(state.country).toBe('US')
       expect(state.currency).toBe('USD')
-    })
-
-    it('sets fiscal year end as string month', () => {
-      useOnboardingStore.getState().setFiscalYearEnd('7')
-      expect(useOnboardingStore.getState().fiscalYearEnd).toBe('7')
-
-      useOnboardingStore.getState().setFiscalYearEnd('1')
-      expect(useOnboardingStore.getState().fiscalYearEnd).toBe('1')
-    })
-
-    it('sets industry', () => {
-      useOnboardingStore.getState().setIndustry('technology')
-      expect(useOnboardingStore.getState().industry).toBe('technology')
     })
 
     it('sets address fields', () => {
@@ -204,6 +165,35 @@ describe('onboardingStore', () => {
       expect(state.city).toBe('Toronto')
       expect(state.province).toBe('ON')
       expect(state.postalCode).toBe('M5V 1A1')
+    })
+
+    it('sets taxId', () => {
+      useOnboardingStore.getState().setTaxId('123456789')
+      expect(useOnboardingStore.getState().taxId).toBe('123456789')
+    })
+
+    it('sets business address fields', () => {
+      useOnboardingStore.getState().setBusinessStreetAddress('456 Commerce Ave')
+      useOnboardingStore.getState().setBusinessCity('Vancouver')
+      useOnboardingStore.getState().setBusinessProvince('BC')
+      useOnboardingStore.getState().setBusinessPostalCode('V6B 1A1')
+      const state = useOnboardingStore.getState()
+      expect(state.businessStreetAddress).toBe('456 Commerce Ave')
+      expect(state.businessCity).toBe('Vancouver')
+      expect(state.businessProvince).toBe('BC')
+      expect(state.businessPostalCode).toBe('V6B 1A1')
+    })
+
+    it('sets business entity fields', () => {
+      useOnboardingStore.getState().setBusinessName('Acme Corp')
+      useOnboardingStore.getState().setBusinessEntityType('CORPORATION')
+      useOnboardingStore.getState().setBusinessCountry('US')
+      useOnboardingStore.getState().setBusinessIndustry('technology')
+      const state = useOnboardingStore.getState()
+      expect(state.businessName).toBe('Acme Corp')
+      expect(state.businessEntityType).toBe('CORPORATION')
+      expect(state.businessCountry).toBe('US')
+      expect(state.businessIndustry).toBe('technology')
     })
   })
 
@@ -222,10 +212,10 @@ describe('onboardingStore', () => {
       useOnboardingStore.getState().setAccountType('business')
       useOnboardingStore.getState().toggleIntent('track-spending')
       useOnboardingStore.getState().toggleIntent('tax-ready')
-      useOnboardingStore.getState().setEntityName('Test Corp')
       useOnboardingStore.getState().setTenantAndEntity('t-1', 'e-1')
-      useOnboardingStore.getState().setIndustry('consulting')
       useOnboardingStore.getState().setEmploymentStatus('founder')
+      useOnboardingStore.getState().setTaxId('999888777')
+      useOnboardingStore.getState().setBusinessStreetAddress('100 Biz Rd')
       useOnboardingStore.getState().nextStep()
 
       // Reset
@@ -236,13 +226,12 @@ describe('onboardingStore', () => {
       expect(state.getTotalSteps()).toBe(5)
       expect(state.accountType).toBeNull()
       expect(state.intents).toEqual([])
-      expect(state.entityName).toBe('')
       expect(state.tenantId).toBeNull()
       expect(state.entityId).toBeNull()
       expect(state.country).toBe('')
       expect(state.currency).toBe('')
-      expect(state.industry).toBe('')
-      expect(state.fiscalYearEnd).toBe('12')
+      expect(state.taxId).toBe('')
+      expect(state.businessStreetAddress).toBe('')
       expect(state.employmentStatus).toBeNull()
     })
   })
