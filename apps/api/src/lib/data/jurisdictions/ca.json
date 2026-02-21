@@ -1,0 +1,37 @@
+{
+  "countryCode": "CA",
+  "countryName": "Canada",
+  "flag": "\ud83c\udde8\ud83c\udde6",
+  "entityTypes": [
+    {
+      "enumValue": "CORPORATION",
+      "displayName": "Corporation",
+      "description": "Federal or provincial corporation",
+      "subTypes": [
+        { "value": "FEDERAL_CORP", "displayName": "Federal Corporation" },
+        { "value": "PROVINCIAL_CORP", "displayName": "Provincial Corporation" }
+      ]
+    },
+    {
+      "enumValue": "SOLE_PROPRIETORSHIP",
+      "displayName": "Sole Proprietorship",
+      "description": "Unincorporated business owned by one individual"
+    },
+    {
+      "enumValue": "PARTNERSHIP",
+      "displayName": "Partnership",
+      "description": "General or limited partnership"
+    }
+  ],
+  "taxIdFormats": [
+    {
+      "name": "BN",
+      "label": "Business Number",
+      "pattern": "^\\d{9}$",
+      "placeholder": "XXXXXXXXX",
+      "formatDescription": "9 digits"
+    }
+  ],
+  "defaultFiscalYearStartMonth": 1,
+  "defaultCurrency": "CAD"
+}

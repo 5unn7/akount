@@ -2,11 +2,13 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '@akount/db';
 import { validateBody } from '../../../middleware/validation';
+import { withPermission } from '../../../middleware/withPermission';
 
 /**
- * Entity Management Routes
+ * Entity Management Routes (Legacy)
  *
  * Handle entity-level operations like updating business details.
+ * Note: Main entity CRUD is in routes.ts (inline) — will be consolidated in Task 7.
  */
 
 // Validation schema for business details update
@@ -26,30 +28,21 @@ export async function entityRoutes(fastify: FastifyInstance) {
    * Update business details for the current user's entity
    */
   fastify.patch('/business-details', {
+    ...withPermission('system', 'entities', 'ADMIN'),
     preValidation: [validateBody(UpdateBusinessDetailsSchema)],
   }, async (request, reply) => {
     try {
-      // Get user's tenant
-      const tenantUser = await prisma.tenantUser.findFirst({
-        where: { userId: request.userId as string },
-      });
-
-      if (!tenantUser) {
-        return reply.status(404).send({
-          error: 'Not Found',
-          message: 'No tenant found for this user',
-        });
-      }
+      const tenantId = request.tenantId as string;
 
       // Get the first entity for this tenant
       const entity = await prisma.entity.findFirst({
-        where: { tenantId: tenantUser.tenantId },
+        where: { tenantId },
       });
 
       if (!entity) {
         return reply.status(404).send({
           error: 'Not Found',
-          message: 'No entity found for this user',
+          message: 'No entity found for this tenant',
         });
       }
       const data = request.body as z.infer<typeof UpdateBusinessDetailsSchema>;
@@ -73,7 +66,7 @@ export async function entityRoutes(fastify: FastifyInstance) {
         entity: updatedEntity,
       });
     } catch (error) {
-      request.log.error(error);
+      request.log.error({ err: error }, 'Failed to update business details');
       return reply.status(500).send({
         error: 'Internal Server Error',
         message: 'Failed to update business details',

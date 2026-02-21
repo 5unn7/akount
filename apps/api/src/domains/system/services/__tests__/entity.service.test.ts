@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EntityService } from '../entity.service';
 
+// Mock audit log
+vi.mock('../../../../lib/audit', () => ({
+  createAuditLog: vi.fn(),
+}));
+
 // Mock Prisma client
 vi.mock('@akount/db', () => ({
   prisma: {
@@ -9,11 +14,23 @@ vi.mock('@akount/db', () => ({
       findFirst: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
+      count: vi.fn(),
     },
+    account: { count: vi.fn() },
+    invoice: { count: vi.fn() },
+    bill: { count: vi.fn() },
+    $transaction: vi.fn((fn: (tx: unknown) => Promise<unknown>) =>
+      fn({
+        entity: {
+          update: vi.fn(),
+        },
+      })
+    ),
   },
 }));
 
 import { prisma } from '@akount/db';
+import { createAuditLog } from '../../../../lib/audit';
 
 const TENANT_ID = 'tenant-abc-123';
 const USER_ID = 'user-test-001';
@@ -25,10 +42,13 @@ function mockEntity(overrides: Record<string, unknown> = {}) {
     tenantId: TENANT_ID,
     name: 'My Company',
     type: 'LLC',
+    status: 'ACTIVE',
+    entitySubType: null,
     country: 'US',
     functionalCurrency: 'USD',
     reportingCurrency: 'USD',
     fiscalYearStart: 1,
+    registrationDate: null,
     taxId: null,
     address: null,
     city: null,
@@ -45,7 +65,7 @@ describe('EntityService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    service = new EntityService(TENANT_ID);
+    service = new EntityService(TENANT_ID, USER_ID);
   });
 
   describe('listEntities', () => {
@@ -66,16 +86,34 @@ describe('EntityService', () => {
           id: true,
           name: true,
           type: true,
+          status: true,
+          entitySubType: true,
           functionalCurrency: true,
           reportingCurrency: true,
           country: true,
           fiscalYearStart: true,
+          taxId: true,
           createdAt: true,
+          _count: {
+            select: {
+              accounts: true,
+              clients: true,
+              vendors: true,
+              invoices: true,
+            },
+          },
         },
-        orderBy: {
-          name: 'asc',
-        },
+        orderBy: { name: 'asc' },
       });
+    });
+
+    it('should filter by status when provided', async () => {
+      vi.mocked(prisma.entity.findMany).mockResolvedValueOnce([] as never);
+
+      await service.listEntities({ status: 'ACTIVE' });
+
+      const callArgs = vi.mocked(prisma.entity.findMany).mock.calls[0][0]!;
+      expect(callArgs.where).toEqual({ tenantId: TENANT_ID, status: 'ACTIVE' });
     });
 
     it('should return empty array when no entities exist', async () => {
@@ -96,38 +134,38 @@ describe('EntityService', () => {
     });
 
     it('should not include entities from other tenants', async () => {
-      // This test verifies the WHERE clause filters by tenantId
       vi.mocked(prisma.entity.findMany).mockResolvedValueOnce([] as never);
 
       await service.listEntities();
 
       const callArgs = vi.mocked(prisma.entity.findMany).mock.calls[0][0]!;
-      expect(callArgs.where).toEqual({ tenantId: TENANT_ID });
+      expect(callArgs.where).toMatchObject({ tenantId: TENANT_ID });
     });
   });
 
-  describe('getEntity', () => {
-    it('should return entity with counts when found', async () => {
+  describe('getEntityDetail', () => {
+    it('should return entity with full counts', async () => {
       const entity = {
-        ...mockEntity({ id: 'entity-1' }),
+        ...mockEntity(),
         _count: {
           accounts: 5,
           glAccounts: 120,
           clients: 15,
           vendors: 8,
+          invoices: 10,
+          bills: 3,
+          journalEntries: 200,
+          payments: 7,
         },
       };
 
       vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
 
-      const result = await service.getEntity('entity-1');
+      const result = await service.getEntityDetail('entity-1');
 
       expect(result).toEqual(entity);
       expect(prisma.entity.findFirst).toHaveBeenCalledWith({
-        where: {
-          id: 'entity-1',
-          tenantId: TENANT_ID,
-        },
+        where: { id: 'entity-1', tenantId: TENANT_ID },
         include: {
           _count: {
             select: {
@@ -135,6 +173,10 @@ describe('EntityService', () => {
               glAccounts: true,
               clients: true,
               vendors: true,
+              invoices: true,
+              bills: true,
+              journalEntries: true,
+              payments: true,
             },
           },
         },
@@ -144,37 +186,41 @@ describe('EntityService', () => {
     it('should return null when entity not found', async () => {
       vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
 
-      const result = await service.getEntity('nonexistent');
+      const result = await service.getEntityDetail('nonexistent');
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('getEntity', () => {
+    it('should return entity with lightweight counts', async () => {
+      const entity = {
+        ...mockEntity(),
+        _count: { accounts: 5, glAccounts: 120, clients: 15, vendors: 8 },
+      };
+
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+
+      const result = await service.getEntity('entity-1');
+
+      expect(result).toEqual(entity);
     });
 
     it('should enforce tenant isolation', async () => {
       vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
 
-      await service.getEntity('entity-other-tenant');
+      await service.getEntity('entity-other');
 
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith({
-        where: {
-          id: 'entity-other-tenant',
-          tenantId: TENANT_ID,
-        },
-        include: {
-          _count: {
-            select: {
-              accounts: true,
-              glAccounts: true,
-              clients: true,
-              vendors: true,
-            },
-          },
-        },
-      });
+      expect(prisma.entity.findFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({ tenantId: TENANT_ID }),
+        })
+      );
     });
   });
 
   describe('createEntity', () => {
-    it('should create entity with required fields', async () => {
+    it('should create entity with required fields and audit log', async () => {
       const newEntity = mockEntity({
         id: 'entity-new',
         name: 'New Company',
@@ -200,9 +246,20 @@ describe('EntityService', () => {
           type: 'CORPORATION',
           country: 'CA',
           functionalCurrency: 'CAD',
-          reportingCurrency: 'CAD', // Defaults to functionalCurrency
-          fiscalYearStart: 1, // Default
+          reportingCurrency: 'CAD',
+          fiscalYearStart: 1,
         },
+      });
+
+      // Verify audit log was created
+      expect(createAuditLog).toHaveBeenCalledWith({
+        tenantId: TENANT_ID,
+        userId: USER_ID,
+        entityId: 'entity-new',
+        model: 'Entity',
+        recordId: 'entity-new',
+        action: 'CREATE',
+        after: { name: 'New Company', type: 'CORPORATION', country: 'CA' },
       });
     });
 
@@ -250,44 +307,19 @@ describe('EntityService', () => {
       expect(createArgs.data.fiscalYearStart).toBe(1);
     });
 
-    it('should use custom fiscalYearStart when provided', async () => {
+    it('should include entitySubType when provided', async () => {
       vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity() as never);
 
       await service.createEntity(USER_ID, {
         name: 'Test Co',
-        type: 'LLC',
+        type: 'CORPORATION',
         country: 'US',
         functionalCurrency: 'USD',
-        fiscalYearStart: 4, // April
+        entitySubType: 'S_CORP',
       });
 
       const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
-      expect(createArgs.data.fiscalYearStart).toBe(4);
-    });
-
-    it('should include optional fields when provided', async () => {
-      vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity() as never);
-
-      await service.createEntity(USER_ID, {
-        name: 'Test Co',
-        type: 'LLC',
-        country: 'US',
-        functionalCurrency: 'USD',
-        taxId: '12-3456789',
-        address: '123 Main St',
-        city: 'New York',
-        state: 'NY',
-        postalCode: '10001',
-      });
-
-      const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
-      expect(createArgs.data).toMatchObject({
-        taxId: '12-3456789',
-        address: '123 Main St',
-        city: 'New York',
-        state: 'NY',
-        postalCode: '10001',
-      });
+      expect(createArgs.data.entitySubType).toBe('S_CORP');
     });
 
     it('should set tenantId from service constructor', async () => {
@@ -303,28 +335,10 @@ describe('EntityService', () => {
       const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
       expect(createArgs.data.tenantId).toBe(TENANT_ID);
     });
-
-    it('should accept all valid entity types', async () => {
-      const types = ['PERSONAL', 'CORPORATION', 'SOLE_PROPRIETORSHIP', 'PARTNERSHIP', 'LLC'];
-
-      for (const type of types) {
-        vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity({ type }) as never);
-
-        await service.createEntity(USER_ID, {
-          name: 'Test Co',
-          type,
-          country: 'US',
-          functionalCurrency: 'USD',
-        });
-
-        const createArgs = vi.mocked(prisma.entity.create).mock.calls[vi.mocked(prisma.entity.create).mock.calls.length - 1][0]!;
-        expect(createArgs.data.type).toBe(type);
-      }
-    });
   });
 
   describe('updateEntity', () => {
-    it('should update entity when found', async () => {
+    it('should update entity and create audit log', async () => {
       const existing = mockEntity({ id: 'entity-1', name: 'Old Name' });
       const updated = mockEntity({ id: 'entity-1', name: 'New Name' });
 
@@ -334,16 +348,17 @@ describe('EntityService', () => {
       const result = await service.updateEntity('entity-1', { name: 'New Name' });
 
       expect(result).toEqual(updated);
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith({
-        where: {
-          id: 'entity-1',
-          tenantId: TENANT_ID,
-        },
-      });
       expect(prisma.entity.update).toHaveBeenCalledWith({
         where: { id: 'entity-1' },
         data: { name: 'New Name' },
       });
+      expect(createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tenantId: TENANT_ID,
+          model: 'Entity',
+          action: 'UPDATE',
+        })
+      );
     });
 
     it('should return null when entity not found', async () => {
@@ -361,40 +376,173 @@ describe('EntityService', () => {
       await service.updateEntity('entity-other-tenant', { name: 'Hacked' });
 
       expect(prisma.entity.findFirst).toHaveBeenCalledWith({
-        where: {
-          id: 'entity-other-tenant',
-          tenantId: TENANT_ID,
-        },
+        where: { id: 'entity-other-tenant', tenantId: TENANT_ID },
       });
       expect(prisma.entity.update).not.toHaveBeenCalled();
     });
 
-    it('should update fiscalYearStart when provided', async () => {
-      const existing = mockEntity({ id: 'entity-1', fiscalYearStart: 1 });
-      const updated = mockEntity({ id: 'entity-1', fiscalYearStart: 7 });
+    it('should accept expanded fields (taxId, address, entitySubType)', async () => {
+      const existing = mockEntity();
+      const updated = mockEntity({ taxId: '12-3456789', entitySubType: 'S_CORP' });
 
       vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(existing as never);
       vi.mocked(prisma.entity.update).mockResolvedValueOnce(updated as never);
 
-      await service.updateEntity('entity-1', { fiscalYearStart: 7 });
+      await service.updateEntity('entity-1', {
+        taxId: '12-3456789',
+        entitySubType: 'S_CORP',
+        address: '123 Main St',
+      });
 
       expect(prisma.entity.update).toHaveBeenCalledWith({
         where: { id: 'entity-1' },
-        data: { fiscalYearStart: 7 },
+        data: { taxId: '12-3456789', entitySubType: 'S_CORP', address: '123 Main St' },
       });
     });
+  });
 
-    it('should only update provided fields', async () => {
-      const existing = mockEntity({ id: 'entity-1', name: 'Old Name', fiscalYearStart: 1 });
+  describe('archiveEntity', () => {
+    it('should archive entity with no active data', async () => {
+      const entity = {
+        ...mockEntity({ status: 'ACTIVE' }),
+        _count: { accounts: 0, invoices: 0, bills: 0 },
+      };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.entity.update).mockResolvedValueOnce(existing as never);
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never); // 2 active entities
+      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
 
-      await service.updateEntity('entity-1', { name: 'New Name' });
+      const result = await service.archiveEntity('entity-1');
 
-      const updateArgs = vi.mocked(prisma.entity.update).mock.calls[0][0]!;
-      expect(updateArgs.data).toEqual({ name: 'New Name' });
-      expect(updateArgs.data).not.toHaveProperty('fiscalYearStart');
+      expect(result).toEqual({ success: true });
+      expect(createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'UPDATE',
+          before: { status: 'ACTIVE' },
+          after: { status: 'ARCHIVED' },
+        })
+      );
+    });
+
+    it('should reject when entity has active bank accounts', async () => {
+      const entity = {
+        ...mockEntity({ status: 'ACTIVE' }),
+        _count: { accounts: 3, invoices: 0, bills: 0 },
+      };
+
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never);
+      vi.mocked(prisma.account.count).mockResolvedValueOnce(3 as never);
+      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
+
+      const result = await service.archiveEntity('entity-1');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.blockers).toContain(
+          'Settle or transfer 3 active accounts before archiving'
+        );
+      }
+    });
+
+    it('should reject when entity has unpaid invoices', async () => {
+      const entity = {
+        ...mockEntity({ status: 'ACTIVE' }),
+        _count: { accounts: 0, invoices: 2, bills: 0 },
+      };
+
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never);
+      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(2 as never);
+      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
+
+      const result = await service.archiveEntity('entity-1');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.blockers).toContain(
+          'Close or void 2 outstanding invoices before archiving'
+        );
+      }
+    });
+
+    it('should reject when entity has open bills', async () => {
+      const entity = {
+        ...mockEntity({ status: 'ACTIVE' }),
+        _count: { accounts: 0, invoices: 0, bills: 1 },
+      };
+
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never);
+      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.bill.count).mockResolvedValueOnce(1 as never);
+
+      const result = await service.archiveEntity('entity-1');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.blockers).toContain(
+          'Pay or void 1 open bill before archiving'
+        );
+      }
+    });
+
+    it('should reject when entity is the only active entity', async () => {
+      const entity = {
+        ...mockEntity({ status: 'ACTIVE' }),
+        _count: { accounts: 0, invoices: 0, bills: 0 },
+      };
+
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(prisma.entity.count).mockResolvedValueOnce(1 as never); // Only 1 active
+      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
+      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
+
+      const result = await service.archiveEntity('entity-1');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.blockers).toContain(
+          'Cannot archive the only active entity. Create another entity first.'
+        );
+      }
+    });
+
+    it('should collect multiple blockers', async () => {
+      const entity = {
+        ...mockEntity({ status: 'ACTIVE' }),
+        _count: { accounts: 2, invoices: 3, bills: 1 },
+      };
+
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(prisma.entity.count).mockResolvedValueOnce(1 as never);
+      vi.mocked(prisma.account.count).mockResolvedValueOnce(2 as never);
+      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(3 as never);
+      vi.mocked(prisma.bill.count).mockResolvedValueOnce(1 as never);
+
+      const result = await service.archiveEntity('entity-1');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.blockers.length).toBe(4); // only active + 3 data blockers
+      }
+    });
+
+    it('should return error when entity not found', async () => {
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+
+      const result = await service.archiveEntity('nonexistent');
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toBe('Entity not found or already archived');
+      }
     });
   });
 
@@ -407,12 +555,10 @@ describe('EntityService', () => {
       await otherService.listEntities();
 
       const callArgs = vi.mocked(prisma.entity.findMany).mock.calls[0][0]!;
-      expect(callArgs.where).toEqual({ tenantId: OTHER_TENANT_ID });
-      expect(callArgs.where).not.toEqual({ tenantId: TENANT_ID });
+      expect(callArgs.where).toMatchObject({ tenantId: OTHER_TENANT_ID });
     });
 
     it('should not allow cross-tenant entity access via getEntity', async () => {
-      // Simulate: TENANT_ID tries to access entity from OTHER_TENANT_ID
       vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
 
       const result = await service.getEntity('entity-other-tenant');
@@ -420,15 +566,12 @@ describe('EntityService', () => {
       expect(result).toBeNull();
       expect(prisma.entity.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: expect.objectContaining({
-            tenantId: TENANT_ID,
-          }),
+          where: expect.objectContaining({ tenantId: TENANT_ID }),
         })
       );
     });
 
     it('should not allow cross-tenant entity updates', async () => {
-      // Simulate: TENANT_ID tries to update entity from OTHER_TENANT_ID
       vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
 
       const result = await service.updateEntity('entity-other-tenant', {

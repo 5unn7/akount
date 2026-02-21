@@ -1,0 +1,48 @@
+{
+  "countryCode": "IN",
+  "countryName": "India",
+  "flag": "\ud83c\uddee\ud83c\uddf3",
+  "entityTypes": [
+    {
+      "enumValue": "CORPORATION",
+      "displayName": "Private Limited Company",
+      "description": "Private limited company under Companies Act",
+      "subTypes": [
+        { "value": "PRIVATE_LIMITED", "displayName": "Private Limited" },
+        { "value": "OPC", "displayName": "One Person Company" }
+      ]
+    },
+    {
+      "enumValue": "PARTNERSHIP",
+      "displayName": "Partnership / LLP",
+      "description": "Partnership firm or Limited Liability Partnership",
+      "subTypes": [
+        { "value": "PARTNERSHIP_FIRM", "displayName": "Partnership Firm" },
+        { "value": "LLP", "displayName": "Limited Liability Partnership" }
+      ]
+    },
+    {
+      "enumValue": "SOLE_PROPRIETORSHIP",
+      "displayName": "Sole Proprietorship",
+      "description": "Proprietorship business"
+    }
+  ],
+  "taxIdFormats": [
+    {
+      "name": "PAN",
+      "label": "Permanent Account Number",
+      "pattern": "^[A-Z]{5}\\d{4}[A-Z]$",
+      "placeholder": "XXXXX0000X",
+      "formatDescription": "5 letters + 4 digits + 1 letter"
+    },
+    {
+      "name": "GSTIN",
+      "label": "GST Identification Number",
+      "pattern": "^\\d{2}[A-Z]{5}\\d{4}[A-Z]\\d[Z][A-Z\\d]$",
+      "placeholder": "22XXXXX0000X1Z5",
+      "formatDescription": "2-digit state code + PAN + 1 digit + Z + check character (15 chars)"
+    }
+  ],
+  "defaultFiscalYearStartMonth": 4,
+  "defaultCurrency": "INR"
+}

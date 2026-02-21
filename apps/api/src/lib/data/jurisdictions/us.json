@@ -1,0 +1,42 @@
+{
+  "countryCode": "US",
+  "countryName": "United States",
+  "flag": "\ud83c\uddfa\ud83c\uddf8",
+  "entityTypes": [
+    {
+      "enumValue": "CORPORATION",
+      "displayName": "Corporation",
+      "description": "C-Corporation or S-Corporation",
+      "subTypes": [
+        { "value": "C_CORP", "displayName": "C-Corporation" },
+        { "value": "S_CORP", "displayName": "S-Corporation" }
+      ]
+    },
+    {
+      "enumValue": "LLC",
+      "displayName": "Limited Liability Company",
+      "description": "Single-member or multi-member LLC"
+    },
+    {
+      "enumValue": "SOLE_PROPRIETORSHIP",
+      "displayName": "Sole Proprietorship",
+      "description": "Unincorporated business owned by one individual"
+    },
+    {
+      "enumValue": "PARTNERSHIP",
+      "displayName": "Partnership",
+      "description": "General or limited partnership"
+    }
+  ],
+  "taxIdFormats": [
+    {
+      "name": "EIN",
+      "label": "Employer Identification Number",
+      "pattern": "^\\d{2}-?\\d{7}$",
+      "placeholder": "XX-XXXXXXX",
+      "formatDescription": "9 digits (XX-XXXXXXX)"
+    }
+  ],
+  "defaultFiscalYearStartMonth": 1,
+  "defaultCurrency": "USD"
+}

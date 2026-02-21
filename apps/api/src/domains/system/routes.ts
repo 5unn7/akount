@@ -3,15 +3,14 @@ import { z } from 'zod';
 import { prisma } from '@akount/db';
 import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
-import { validateBody } from '../../middleware/validation';
 import { withPermission, adminOnly } from '../../middleware/withPermission';
 import { auditQueryService } from './services/audit-query.service';
-import { EntityService } from './services/entity.service';
 import { streamDataBackup } from './services/data-export.service';
 import { createAuditLog } from '../../lib/audit';
 import { onboardingRoutes } from './routes/onboarding';
 import { onboardingProgressRoutes } from './routes/onboarding-progress';
 import { entityRoutes } from './routes/entity';
+import { entityManagementRoutes } from './routes/entities';
 
 // Validation schemas
 const auditLogQuerySchema = z.object({
@@ -26,21 +25,6 @@ const auditLogQuerySchema = z.object({
 });
 
 type AuditLogQuery = z.infer<typeof auditLogQuerySchema>;
-
-// Response types
-type EntityListResponse = {
-  entities: Array<{
-    id: string;
-    name: string;
-    type: string;
-    currency: string;
-  }>;
-};
-
-type ErrorResponse = {
-  error: string;
-  message: string;
-};
 
 /**
  * System Domain Routes
@@ -70,144 +54,7 @@ export async function systemRoutes(fastify: FastifyInstance) {
     tenantScope.addHook('preHandler', tenantMiddleware);
 
     await tenantScope.register(entityRoutes, { prefix: '/entity' });
-
-    // ============================================================================
-    // ENTITIES
-    // ============================================================================
-
-    /**
-     * GET /api/system/entities
-     *
-     * Returns all entities for the authenticated user's tenant.
-     * Entities are filtered by tenant to ensure data isolation.
-     */
-    tenantScope.get<{ Reply: EntityListResponse | ErrorResponse }>(
-    '/entities',
-    async (request: FastifyRequest, reply: FastifyReply): Promise<EntityListResponse | ErrorResponse> => {
-      try {
-        const service = new EntityService(request.tenantId as string);
-        const entities = await service.listEntities();
-
-        return {
-          entities: entities.map((e) => ({
-            id: e.id,
-            name: e.name,
-            type: e.type,
-            currency: e.functionalCurrency,
-          })),
-        };
-      } catch (error) {
-        request.log.error({ error }, 'Error fetching entities');
-        return reply.status(500).send({
-          error: 'Internal Server Error',
-          message: 'Failed to fetch entities',
-        });
-      }
-    }
-  );
-
-    /**
-     * GET /api/system/entities/:id
-     *
-     * Returns a specific entity by ID.
-     */
-    tenantScope.get(
-      '/entities/:id',
-      async (request: FastifyRequest, reply: FastifyReply) => {
-        try {
-          const { id } = request.params as { id: string };
-          const service = new EntityService(request.tenantId as string);
-          const entity = await service.getEntity(id);
-
-          if (!entity) {
-            return reply.status(404).send({
-              error: 'Not Found',
-              message: 'Entity not found',
-            });
-          }
-
-          return entity;
-        } catch (error) {
-          request.log.error({ error }, 'Error fetching entity');
-          return reply.status(500).send({
-            error: 'Internal Server Error',
-            message: 'Failed to fetch entity',
-          });
-        }
-      }
-    );
-
-    /**
-     * POST /api/system/entities
-     *
-     * Create a new entity for the tenant.
-     * RBAC: OWNER, ADMIN only.
-     */
-    tenantScope.post(
-      '/entities',
-      {
-        ...withPermission('system', 'entities', 'ADMIN'),
-      },
-      async (request: FastifyRequest, reply: FastifyReply) => {
-        try {
-          const CreateEntitySchema = z.object({
-            name: z.string().min(1).max(200),
-            type: z.enum([
-              'PERSONAL',
-              'CORPORATION',
-              'SOLE_PROPRIETORSHIP',
-              'PARTNERSHIP',
-              'LLC',
-            ]),
-            country: z.string().min(2).max(3),
-            currency: z.string().min(3).max(3),
-            fiscalYearStart: z.number().int().min(1).max(12).optional(),
-            taxId: z.string().max(50).optional(),
-            address: z.string().max(500).optional(),
-            city: z.string().max(100).optional(),
-            state: z.string().max(100).optional(),
-            postalCode: z.string().max(20).optional(),
-          });
-
-          const parsed = CreateEntitySchema.safeParse(request.body);
-          if (!parsed.success) {
-            return reply.status(400).send({
-              error: 'Validation Error',
-              message: 'Invalid entity data',
-              details: parsed.error.errors,
-            });
-          }
-
-          const service = new EntityService(request.tenantId as string);
-          const entity = await service.createEntity(request.userId as string, {
-            name: parsed.data.name,
-            type: parsed.data.type,
-            country: parsed.data.country,
-            functionalCurrency: parsed.data.currency,
-            fiscalYearStart: parsed.data.fiscalYearStart,
-            taxId: parsed.data.taxId,
-            address: parsed.data.address,
-            city: parsed.data.city,
-            state: parsed.data.state,
-            postalCode: parsed.data.postalCode,
-          });
-
-          return reply.status(201).send({
-            id: entity.id,
-            name: entity.name,
-            type: entity.type,
-            currency: entity.functionalCurrency,
-            country: entity.country,
-          });
-        } catch (error) {
-          request.log.error({ error }, 'Error creating entity');
-          return reply.status(500).send({
-            error: 'Internal Server Error',
-            message: 'Failed to create entity',
-          });
-        }
-      }
-    );
+    await tenantScope.register(entityManagementRoutes, { prefix: '/entities' });
 
     // ============================================================================
     // USERS
