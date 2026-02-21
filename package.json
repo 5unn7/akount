@@ -19,11 +19,20 @@
         "db:generate": "cd packages/db && npm run generate",
         "db:migrate": "cd packages/db && npm run migrate",
         "db:seed": "cd packages/db && npm run seed",
-        "db:reset": "cd packages/db && npm run db:reset"
+        "db:reset": "cd packages/db && npm run db:reset",
+        "linear:setup": "dotenv -e .env -- tsx .claude/scripts/linear-setup-workspace.ts",
+        "linear:import": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts import",
+        "linear:sync": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts sync",
+        "linear:pull": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts pull",
+        "linear:push": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts push"
     },
     "devDependencies": {
-        "markdownlint-cli2": "^0.20.0",
+        "@linear/sdk": "^33.0.0",
+        "dotenv": "^17.3.1",
+        "dotenv-cli": "^11.0.0",
+        "markdownlint-cli2": "^0.21.0",
         "prettier": "^3.1.0",
+        "tsx": "^4.7.0",
         "turbo": "^2.3.3",
         "typescript": "^5.3.3"
     },

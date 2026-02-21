@@ -24,7 +24,7 @@
     "@akount/design-tokens": "*",
     "@akount/types": "*",
     "clsx": "^2.0.0",
-    "markdownlint-cli2": "0.20.0",
+    "markdownlint-cli2": "^0.21.0",
     "tailwind-merge": "^2.0.0"
   },
   "devDependencies": {

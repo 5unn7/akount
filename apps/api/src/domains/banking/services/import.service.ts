@@ -253,7 +253,7 @@ export class ImportService {
         where: { id: importBatch.id },
         data: {
           status: 'FAILED',
-          error: error.message || 'Unknown error during CSV import',
+          error: error instanceof Error ? error.message : 'Unknown error during CSV import',
         },
       });
 
@@ -294,7 +294,7 @@ export class ImportService {
     });
 
     try {
-      const parseResult = parseXLSX(file, columnMappings, dateFormat);
+      const parseResult = await parseXLSX(file, columnMappings, dateFormat);
 
       if (parseResult.transactions.length === 0) {
         await prisma.importBatch.update({
@@ -377,7 +377,7 @@ export class ImportService {
     } catch (error: unknown) {
       await prisma.importBatch.update({
         where: { id: importBatch.id },
-        data: { status: 'FAILED', error: error.message || 'Unknown error during XLSX import' },
+        data: { status: 'FAILED', error: error instanceof Error ? error.message : 'Unknown error during XLSX import' },
       });
 
       throw error;
@@ -530,7 +530,7 @@ export class ImportService {
         where: { id: importBatch.id },
         data: {
           status: 'FAILED',
-          error: error.message || 'Unknown error during PDF import',
+          error: error instanceof Error ? error.message : 'Unknown error during PDF import',
         },
       });
 

@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-21
 **Current Phase:** Phase 6 — Launch MVP
 
-> **256 tasks** · 🔴 0 critical · 🟠 49 high · 🟡 137 medium · ⚪ 28 low · ✅ 70 done
-> 🟢 72 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **269 tasks** · 🔴 0 critical · 🟠 62 high · 🟡 137 medium · ⚪ 28 low · ✅ 70 done
+> 🟢 85 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -33,6 +33,19 @@
 | ~~PERF-6~~ | ~~Query optimization audit (dashboard + report queries)~~ | 2h | 🟠 High | ✅ | | roadmap |
 | ~~PERF-8~~ | ~~p95 < 2s page load target verification + load testing~~ | 2h | 🟠 High | ✅ | | roadmap |
 | ~~INFRA-14~~ | ~~Add timeout to Clerk auth verification (3-second Promise.race wrapper in auth middleware)~~ | 4h | 🟠 High | ✅ | | audit:2026-02-20 |
+| INFRA-16 | Upgrade markdownlint-cli2 to fix markdown-it ReDoS (0.20.0 → 0.21.0+) | 15m | 🟠 High | 🟢 | | plan:npm-audit |
+| INFRA-17 | Upgrade eslint to v10 to fix minimatch ReDoS (8.57.1 → 10.0.0+) | 30m | 🟠 High | 🟢 | [needs: INFRA-16] | plan:npm-audit |
+| INFRA-18 | Verify dev dependency fixes (should reduce vulnerabilities from 15 → 3) | 10m | 🟠 High | 🟢 | [needs: INFRA-17] | plan:npm-audit |
+| INFRA-19 | Install exceljs and remove vulnerable xlsx package | 10m | 🟠 High | 🟢 | [needs: INFRA-18] | plan:npm-audit |
+| INFRA-20 | Migrate parseXLSX function to exceljs API (apps/api/src/domains/banking/services/parser-csv.ts) | 1-2h | 🟠 High | 🟢 | [needs: INFRA-19] | plan:npm-audit |
+| INFRA-21 | Verify XLSX magic bytes detection still works in file scanner | 15m | 🟠 High | 🟢 | [needs: INFRA-20] | plan:npm-audit |
+| INFRA-22 | Update parseXLSX tests for exceljs async API | 30m | 🟠 High | 🟢 | [needs: INFRA-20] | plan:npm-audit |
+| INFRA-23 | Update XLSX import route tests (5 tests in imports.routes.test.ts) | 30m | 🟠 High | 🟢 | [needs: INFRA-22] | plan:npm-audit |
+| INFRA-24 | Update file scanner tests (magic bytes + macro detection) | 30m | 🟠 High | 🟢 | [needs: INFRA-23] | plan:npm-audit |
+| INFRA-25 | Run full test suite (verify all 1133+ tests pass) | 10m | 🟠 High | 🟢 | [needs: INFRA-24] | plan:npm-audit |
+| INFRA-26 | Type check (maintain 0 TypeScript errors) | 5m | 🟠 High | 🟢 | [needs: INFRA-25] | plan:npm-audit |
+| INFRA-27 | Final npm audit verification (all 15 vulnerabilities resolved) | 5m | 🟠 High | 🟢 | [needs: INFRA-26] | plan:npm-audit |
+| INFRA-28 | Update MEMORY.md Known Issues (remove npm vulnerabilities entry) | 5m | 🟠 High | 🟢 | [needs: INFRA-27] | plan:npm-audit |
 | ~~SEC-23~~ | ~~Replace console.log in webhook route with structured logging (apps/web/src/app/api/webhooks/clerk/route.ts — 7 occurrences)~~ | 30m | 🟠 High | ✅ | | audit:2026-02-20 |
 | ~~DRY-1~~ | ~~Report types: move shared types to `packages/types` (eliminate duplication)~~ | 1h | 🟠 High | ✅ | | review:typescript |
 | ~~UX-1~~ | ~~Entity selector: replace 7+ hardcoded `entities[0]` with real selector (Accounting JE/COA, AccountFormSheet, Navbar, Invoicing, Vendors — all domains affected)~~ | 2-3h | 🟠 High | ✅ | 1b338f8 | review:nextjs, audit:acct-fe-be, audit:app-ux |

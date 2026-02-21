@@ -24,6 +24,7 @@
         "@types/papaparse": "^5.5.2",
         "@types/string-similarity": "^4.0.2",
         "archiver": "^7.0.1",
+        "exceljs": "^4.4.0",
         "fastify": "^5.7.2",
         "openai": "^6.17.0",
         "papaparse": "^5.5.3",
@@ -31,18 +32,20 @@
         "pdfkit": "^0.17.2",
         "resend": "^6.9.2",
         "string-similarity": "^4.0.4",
-        "xlsx": "^0.18.5",
         "zod": "^3.22.0"
     },
     "devDependencies": {
         "@types/archiver": "^7.0.0",
         "@types/node": "^20.10.0",
         "@types/pdfkit": "^0.17.5",
+        "@typescript-eslint/eslint-plugin": "^8.56.0",
+        "@typescript-eslint/parser": "^8.56.0",
         "@vitest/coverage-v8": "^4.0.18",
-        "eslint": "^8.56.0",
+        "eslint": "^10.0.1",
         "tsup": "^8.0.0",
         "tsx": "^4.7.0",
         "typescript": "^5.3.0",
+        "typescript-eslint": "^8.56.0",
         "vitest": "^4.0.18"
     }
 }

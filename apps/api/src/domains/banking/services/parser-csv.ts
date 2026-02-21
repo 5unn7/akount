@@ -1,5 +1,5 @@
 import Papa, { ParseResult as PapaParseResult } from 'papaparse';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 import type { ColumnMappings, ExternalAccountData } from '../../../schemas/import';
 import {
   type ParseResult,
@@ -88,30 +88,56 @@ export function parseCSV(
  * Parse XLSX/XLS file by converting the first sheet to CSV rows,
  * then using the same column detection and parsing logic as CSV.
  */
-export function parseXLSX(
+export async function parseXLSX(
   fileBuffer: Buffer,
   columnMappings?: ColumnMappings,
   dateFormat?: string
-): ParseResult {
-  const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
-  const sheetName = workbook.SheetNames[0];
+): Promise<ParseResult> {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(fileBuffer.buffer as ArrayBuffer);
 
-  if (!sheetName) {
+  const worksheet = workbook.worksheets[0];
+
+  if (!worksheet) {
     throw new Error('XLSX file contains no sheets');
   }
 
-  const sheet = workbook.Sheets[sheetName];
-  // Convert sheet to array of objects (same format as Papa Parse header mode)
-  const rows = XLSX.utils.sheet_to_json<Record<string, string>>(sheet, {
-    raw: false, // Return formatted strings (not raw numbers)
-    defval: '',
+  // Convert worksheet to array of objects (same format as Papa Parse header mode)
+  const rows: Array<Record<string, string>> = [];
+  const columns: string[] = [];
+
+  // Get header row (first row)
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell((cell, colNumber) => {
+    columns.push(String(cell.value || `Column${colNumber}`));
+  });
+
+  if (columns.length === 0) {
+    throw new Error('XLSX file contains no header row');
+  }
+
+  // Get data rows (skip header)
+  worksheet.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return; // Skip header
+
+    const rowData: Record<string, string> = {};
+    row.eachCell((cell, colNumber) => {
+      const columnName = columns[colNumber - 1]; // Excel columns are 1-indexed
+      if (columnName) {
+        // Format cell value as string (handles dates, numbers, formulas)
+        rowData[columnName] = String(cell.value || '');
+      }
+    });
+
+    // Only add rows that have at least one non-empty cell
+    if (Object.values(rowData).some((v) => v !== '')) {
+      rows.push(rowData);
+    }
   });
 
   if (rows.length === 0) {
     throw new Error('XLSX file contains no data rows');
   }
-
-  const columns = Object.keys(rows[0]);
 
   // Reuse CSV column detection + parsing
   const mappings = columnMappings || detectColumnMappings(columns);
