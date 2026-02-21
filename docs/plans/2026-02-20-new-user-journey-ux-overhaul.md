@@ -801,7 +801,7 @@ FLINKS_API_URL=https://toolbox-api.private.fin.ag/v3      # REST API base URL (B
 
 ## Progress
 
-- [ ] Sprint 0: Schema Migrations (pre-req)
+- [x] Sprint 0: Schema Migrations (pre-req) — 2026-02-21, 1051 tests passing
 - [ ] Sprint 1: Account Creation Fix (P0)
 - [ ] Sprint 2: Flinks Connect Integration
 - [ ] Sprint 3: Import Wizard Fix (P0) — can run parallel with Sprint 4

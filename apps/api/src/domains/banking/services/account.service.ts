@@ -1,8 +1,54 @@
-import { prisma } from '@akount/db';
+import { prisma, type AccountType, type Prisma } from '@akount/db';
 
 // Constants for pagination
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
+
+/**
+ * Maps banking AccountType to default well-known GL account code from COA template.
+ * Used by opening balance and Flinks sync to auto-assign GL accounts.
+ *
+ * See: apps/api/src/domains/accounting/services/coa-template.ts
+ * See: apps/api/src/domains/accounting/services/document-posting.service.ts (WELL_KNOWN_CODES)
+ */
+const ACCOUNT_TYPE_TO_GL_CODE: Record<AccountType, string> = {
+  BANK: '1100',         // Bank Account (Asset)
+  CREDIT_CARD: '2100',  // Credit Card Payable (Liability)
+  LOAN: '2500',         // Loans Payable (Liability)
+  MORTGAGE: '2500',     // Loans Payable (Liability)
+  INVESTMENT: '1100',   // Bank Account (Asset) — fallback until Investment GL added
+  OTHER: '1100',        // Bank Account (Asset) — generic fallback
+};
+
+/**
+ * Resolve the default GL account for a banking AccountType.
+ *
+ * Looks up the entity's COA for the well-known code matching the account type.
+ * Returns null if the GL account doesn't exist (e.g., COA not seeded yet).
+ *
+ * @param tx - Prisma transaction client (for atomicity with account creation)
+ * @param entityId - The entity whose COA to search
+ * @param accountType - The banking account type (BANK, CREDIT_CARD, etc.)
+ * @returns The GL account ID, or null if not found
+ */
+export async function getDefaultGLAccountForType(
+  tx: Prisma.TransactionClient,
+  entityId: string,
+  accountType: AccountType
+): Promise<string | null> {
+  const glCode = ACCOUNT_TYPE_TO_GL_CODE[accountType];
+
+  const glAccount = await tx.gLAccount.findFirst({
+    where: {
+      entityId,
+      code: glCode,
+      isActive: true,
+    },
+    select: { id: true },
+  });
+
+  return glAccount?.id ?? null;
+}
 
 // Types for pagination
 export interface ListAccountsParams {

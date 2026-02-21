@@ -64,6 +64,7 @@ model Entity {
   tenantId           String
   name               String
   type               EntityType
+  status             EntityStatus       @default(ACTIVE)
   country            String
   taxId              String?
   functionalCurrency String
@@ -71,6 +72,8 @@ model Entity {
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
   fiscalYearStart    Int?
+  entitySubType      String?
+  registrationDate   DateTime?
   industryCode       String?
   coaTemplateUsed    String?
   setupCompletedAt   DateTime?
@@ -106,6 +109,7 @@ model Entity {
 
   @@index([tenantId])
   @@index([tenantId, type])
+  @@index([tenantId, status])
 }
 
 model GLAccount {
@@ -454,16 +458,19 @@ model Account {
   glAccountId    String? // Bank-to-GL mapping for posting
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
-  deletedAt      DateTime? // Soft delete - financial data never hard deleted
-  entity         Entity                @relation(fields: [entityId], references: [id])
-  feedTxns       BankFeedTransaction[]
-  glAccount      GLAccount?            @relation(fields: [glAccountId], references: [id])
-  transactions   Transaction[]
+  deletedAt        DateTime? // Soft delete - financial data never hard deleted
+  bankConnectionId String?
+  entity           Entity                @relation(fields: [entityId], references: [id])
+  bankConnection   BankConnection?       @relation(fields: [bankConnectionId], references: [id])
+  feedTxns         BankFeedTransaction[]
+  glAccount        GLAccount?            @relation(fields: [glAccountId], references: [id])
+  transactions     Transaction[]
 
   @@index([entityId])
   @@index([entityId, type])
   @@index([entityId, isActive])
   @@index([entityId, deletedAt])
+  @@index([bankConnectionId])
 }
 
 model BankConnection {
@@ -478,11 +485,14 @@ model BankConnection {
   errorMessage    String?
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
+  deletedAt       DateTime?
   entity          Entity                 @relation(fields: [entityId], references: [id])
+  accounts        Account[]
   feedTxns        BankFeedTransaction[]
 
   @@index([entityId])
   @@index([entityId, status])
+  @@index([entityId, deletedAt])
   @@index([provider, status])
 }
 
@@ -942,6 +952,7 @@ enum JournalEntrySourceType {
   MANUAL
   TRANSFER
   ADJUSTMENT
+  OPENING_BALANCE
 }
 
 enum InvoiceStatus {
@@ -1059,6 +1070,11 @@ enum EntityType {
   LLC
   PARTNERSHIP
   SOLE_PROPRIETORSHIP
+}
+
+enum EntityStatus {
+  ACTIVE
+  ARCHIVED
 }
 
 enum FiscalPeriodStatus {

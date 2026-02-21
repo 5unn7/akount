@@ -31,6 +31,7 @@ const DEFAULT_COA_TEMPLATE: readonly COATemplateAccount[] = [
   { code: '3000', name: "Owner's Equity", type: 'EQUITY', normalBalance: 'CREDIT' },
   { code: '3100', name: 'Retained Earnings', type: 'EQUITY', normalBalance: 'CREDIT' },
   { code: '3200', name: "Owner's Draws", type: 'EQUITY', normalBalance: 'DEBIT' },
+  { code: '3300', name: 'Opening Balance Equity', type: 'EQUITY', normalBalance: 'CREDIT' },
 
   // Income (4000-4999)
   { code: '4000', name: 'Service Revenue', type: 'INCOME', normalBalance: 'CREDIT' },

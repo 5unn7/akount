@@ -1,11 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { AccountService } from '../account.service';
+import { AccountService, getDefaultGLAccountForType } from '../account.service';
 
 // Mock Prisma client
 const mockTxClient = {
   account: {
     findFirst: vi.fn(),
     update: vi.fn(),
+  },
+  gLAccount: {
+    findFirst: vi.fn(),
   },
 };
 
@@ -483,5 +486,91 @@ describe('AccountService', () => {
         deletedAt: null,
       });
     });
+  });
+});
+
+describe('getDefaultGLAccountForType', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should return GL account ID for BANK type (code 1100)', async () => {
+    vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-bank' } as never);
+
+    const result = await getDefaultGLAccountForType(mockTxClient as never, 'entity-1', 'BANK');
+
+    expect(result).toBe('gl-bank');
+    expect(mockTxClient.gLAccount.findFirst).toHaveBeenCalledWith({
+      where: { entityId: 'entity-1', code: '1100', isActive: true },
+      select: { id: true },
+    });
+  });
+
+  it('should return GL account ID for CREDIT_CARD type (code 2100)', async () => {
+    vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-cc' } as never);
+
+    const result = await getDefaultGLAccountForType(mockTxClient as never, 'entity-1', 'CREDIT_CARD');
+
+    expect(result).toBe('gl-cc');
+    expect(mockTxClient.gLAccount.findFirst).toHaveBeenCalledWith({
+      where: { entityId: 'entity-1', code: '2100', isActive: true },
+      select: { id: true },
+    });
+  });
+
+  it('should return GL account ID for LOAN type (code 2500)', async () => {
+    vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-loan' } as never);
+
+    const result = await getDefaultGLAccountForType(mockTxClient as never, 'entity-1', 'LOAN');
+
+    expect(result).toBe('gl-loan');
+    expect(mockTxClient.gLAccount.findFirst).toHaveBeenCalledWith({
+      where: { entityId: 'entity-1', code: '2500', isActive: true },
+      select: { id: true },
+    });
+  });
+
+  it('should return GL account ID for MORTGAGE type (code 2500, same as LOAN)', async () => {
+    vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-mortgage' } as never);
+
+    const result = await getDefaultGLAccountForType(mockTxClient as never, 'entity-1', 'MORTGAGE');
+
+    expect(result).toBe('gl-mortgage');
+    expect(mockTxClient.gLAccount.findFirst).toHaveBeenCalledWith({
+      where: { entityId: 'entity-1', code: '2500', isActive: true },
+      select: { id: true },
+    });
+  });
+
+  it('should return GL account ID for INVESTMENT type (fallback to 1100)', async () => {
+    vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-invest' } as never);
+
+    const result = await getDefaultGLAccountForType(mockTxClient as never, 'entity-1', 'INVESTMENT');
+
+    expect(result).toBe('gl-invest');
+    expect(mockTxClient.gLAccount.findFirst).toHaveBeenCalledWith({
+      where: { entityId: 'entity-1', code: '1100', isActive: true },
+      select: { id: true },
+    });
+  });
+
+  it('should return GL account ID for OTHER type (fallback to 1100)', async () => {
+    vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce({ id: 'gl-other' } as never);
+
+    const result = await getDefaultGLAccountForType(mockTxClient as never, 'entity-1', 'OTHER');
+
+    expect(result).toBe('gl-other');
+    expect(mockTxClient.gLAccount.findFirst).toHaveBeenCalledWith({
+      where: { entityId: 'entity-1', code: '1100', isActive: true },
+      select: { id: true },
+    });
+  });
+
+  it('should return null when GL account not found (COA not seeded)', async () => {
+    vi.mocked(mockTxClient.gLAccount.findFirst).mockResolvedValueOnce(null as never);
+
+    const result = await getDefaultGLAccountForType(mockTxClient as never, 'entity-1', 'BANK');
+
+    expect(result).toBeNull();
   });
 });

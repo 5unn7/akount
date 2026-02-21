@@ -25,8 +25,12 @@ import { reportCache } from './report-cache';
 
 // Well-known COA codes from coa-template.ts
 const WELL_KNOWN_CODES = {
+  BANK_ACCOUNT: '1100',
   ACCOUNTS_RECEIVABLE: '1200',
   ACCOUNTS_PAYABLE: '2000',
+  CREDIT_CARD_PAYABLE: '2100',
+  LOANS_PAYABLE: '2500',
+  OPENING_BALANCE_EQUITY: '3300',
   SALES_TAX_PAYABLE: '2300',
   SERVICE_REVENUE: '4000',
   OTHER_EXPENSES: '5990',
