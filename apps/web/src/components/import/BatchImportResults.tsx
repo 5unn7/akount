@@ -14,6 +14,7 @@ import {
     RefreshCw,
     Tags,
     Lightbulb,
+    Sparkles,
 } from 'lucide-react';
 import type { BatchImportResult, ImportAccount } from './types';
 
@@ -247,30 +248,46 @@ export function BatchImportResults({
                 </CardContent>
             </Card>
 
-            {/* What's Next — contextual guidance (Task 3.4) */}
+            {/* AI Categorization Nudge (Task 7.3) + What's Next */}
             {aggregateStats.imported > 0 && (
-                <GlowCard variant="glass" className="rounded-[14px]">
-                    <CardContent className="pt-6 space-y-3">
-                        <h4 className="font-heading text-base">What&apos;s Next</h4>
-                        <div className="space-y-2">
-                            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-ak-bg-3 transition-colors">
-                                <Tags className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="text-sm font-medium">Categorize Transactions</p>
-                                    <p className="text-xs text-muted-foreground">
-                                        Assign categories so transactions appear in your reports and budget tracking.
-                                    </p>
-                                </div>
+                <GlowCard variant="glass" glowColor="rgba(167,139,250,0.04)" className="rounded-[14px]">
+                    <CardContent className="pt-6 space-y-4">
+                        <div className="flex items-start gap-3">
+                            <div className="p-2 rounded-lg bg-ak-purple-dim">
+                                <Sparkles className="h-4 w-4 text-ak-purple" />
                             </div>
-                            <div className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-ak-bg-3 transition-colors">
-                                <Upload className="h-4 w-4 text-ak-blue flex-shrink-0 mt-0.5" />
-                                <div>
-                                    <p className="text-sm font-medium">Import More Statements</p>
-                                    <p className="text-xs text-muted-foreground">
-                                        Upload statements from other accounts or earlier date ranges.
-                                    </p>
-                                </div>
+                            <div className="flex-1">
+                                <h4 className="font-heading text-base">
+                                    Categorize with AI
+                                </h4>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    Akount can auto-categorize your {aggregateStats.imported} imported transactions
+                                    so they appear in financial reports and budget tracking.
+                                </p>
                             </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                size="sm"
+                                className="rounded-lg bg-ak-purple hover:bg-ak-purple/90 text-black text-xs font-medium"
+                                asChild
+                            >
+                                <Link href="/banking/transactions">
+                                    <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                                    Auto-Categorize
+                                </Link>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="rounded-lg text-xs text-muted-foreground"
+                                asChild
+                            >
+                                <Link href="/banking/transactions">
+                                    <Tags className="h-3.5 w-3.5 mr-1.5" />
+                                    I&apos;ll do it manually
+                                </Link>
+                            </Button>
                         </div>
                     </CardContent>
                 </GlowCard>

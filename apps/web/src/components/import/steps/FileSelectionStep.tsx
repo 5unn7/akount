@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, AlertCircle } from 'lucide-react';
+import { Upload, AlertCircle, AlertTriangle } from 'lucide-react';
 import { FileListEditor } from '../FileListEditor';
 import type { ImportAccount, UploadFileItem } from '../types';
 
@@ -24,6 +24,7 @@ interface FileSelectionStepProps {
     files: UploadFileItem[];
     onFilesChange: (files: UploadFileItem[]) => void;
     onNext: () => void;
+    recentFileNames?: string[];
 }
 
 const VALID_EXTENSIONS = ['.csv', '.pdf', '.ofx', '.qfx', '.xlsx', '.xls'];
@@ -43,6 +44,7 @@ export function FileSelectionStep({
     files,
     onFilesChange,
     onNext,
+    recentFileNames = [],
 }: FileSelectionStepProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dragActive, setDragActive] = React.useState(false);
@@ -226,6 +228,26 @@ export function FileSelectionStep({
                     )}
                 </CardContent>
             </Card>
+
+            {/* Duplicate file warning */}
+            {files.length > 0 && recentFileNames.length > 0 && (() => {
+                const dupes = files.filter(f => recentFileNames.includes(f.file.name));
+                if (dupes.length === 0) return null;
+                return (
+                    <div className="flex items-start gap-2.5 p-3 bg-primary/[0.06] border border-primary/20 rounded-lg">
+                        <AlertTriangle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground">
+                                Possible duplicate{dupes.length !== 1 ? 's' : ''}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                                {dupes.map(d => d.file.name).join(', ')} {dupes.length === 1 ? 'was' : 'were'} imported
+                                earlier this session. Import anyway if this is intentional.
+                            </p>
+                        </div>
+                    </div>
+                );
+            })()}
 
             {/* File list with per-file account assignment */}
             {files.length > 0 && (

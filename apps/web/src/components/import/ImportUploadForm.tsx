@@ -24,6 +24,7 @@ interface ImportUploadFormProps {
 export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
     const [step, setStep] = useState<WizardStep>('select');
     const [files, setFiles] = useState<UploadFileItem[]>([]);
+    const [completedBatches, setCompletedBatches] = useState<UploadFileItem[][]>([]);
 
     const handleNext = () => setStep('uploading');
 
@@ -44,6 +45,10 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
     };
 
     const handleReset = () => {
+        // Preserve current batch results before starting a new import
+        if (files.length > 0) {
+            setCompletedBatches(prev => [...prev, files]);
+        }
         setStep('select');
         setFiles([]);
     };
@@ -60,6 +65,7 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
                     accounts={accounts}
                     onReset={handleReset}
                     onRetryFailed={handleRetryFailed}
+                    completedBatches={completedBatches}
                 />
             </div>
         );
@@ -91,6 +97,7 @@ export function ImportUploadForm({ accounts = [] }: ImportUploadFormProps) {
                 files={files}
                 onFilesChange={setFiles}
                 onNext={handleNext}
+                recentFileNames={completedBatches.flatMap(batch => batch.map(f => f.file.name))}
             />
         </div>
     );

@@ -193,6 +193,24 @@ export const navigationDomains: NavDomain[] = [
         roles: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'INVESTOR', 'ADVISOR'],
       },
       {
+        label: 'Balance Sheet',
+        icon: ScrollText,
+        href: '/accounting/reports/balance-sheet',
+        roles: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'INVESTOR', 'ADVISOR'],
+      },
+      {
+        label: 'Profit & Loss',
+        icon: TrendingUp,
+        href: '/accounting/reports/profit-loss',
+        roles: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'INVESTOR', 'ADVISOR'],
+      },
+      {
+        label: 'Trial Balance',
+        icon: ListTree,
+        href: '/accounting/reports/trial-balance',
+        roles: ['OWNER', 'ADMIN', 'ACCOUNTANT', 'INVESTOR', 'ADVISOR'],
+      },
+      {
         label: 'Assets',
         icon: Package,
         href: '/accounting/assets',
