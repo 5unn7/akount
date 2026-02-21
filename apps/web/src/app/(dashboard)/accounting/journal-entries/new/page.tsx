@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { listGLAccounts } from '@/lib/api/accounting';
 import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { JournalEntryForm } from '../journal-entry-form';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -11,7 +12,10 @@ export const metadata: Metadata = {
 
 export default async function NewJournalEntryPage() {
     try {
-        const entities = await listEntities();
+        const [{ entityId: rawEntityId }, entities] = await Promise.all([
+            getEntitySelection(),
+            listEntities(),
+        ]);
 
         if (entities.length === 0) {
             return (
@@ -27,7 +31,8 @@ export default async function NewJournalEntryPage() {
             );
         }
 
-        const entityId = entities[0].id;
+        // Force entity selection for accounting — fall back to first entity
+        const entityId = validateEntityId(rawEntityId, entities) || entities[0].id;
         const accounts = await listGLAccounts({
             entityId,
             isActive: true,

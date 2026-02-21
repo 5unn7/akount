@@ -1,5 +1,5 @@
 import { prisma } from '@akount/db';
-import type { TenantContext } from '../../../types/tenant-context';
+import type { TenantContext } from '../../../middleware/tenant.js';
 
 /**
  * Get bill statistics for accounts payable

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import { useEntity } from '@/providers/entity-provider';
 import {
     Dialog,
     DialogContent,
@@ -78,6 +79,7 @@ const iconStyles = {
 
 export function AddAccountModal({ open, onOpenChange, entities }: AddAccountModalProps) {
     const router = useRouter();
+    const { selectedEntityId } = useEntity();
     const [formOpen, setFormOpen] = useState(false);
     const [view, setView] = useState<ModalView>('choose');
     const [connectionResult, setConnectionResult] = useState<BankConnectionResult | null>(null);
@@ -103,8 +105,8 @@ export function AddAccountModal({ open, onOpenChange, entities }: AddAccountModa
         onOpenChange(isOpen);
     }
 
-    // Use the first entity as default for Flinks connection
-    const defaultEntityId = entities[0]?.id ?? '';
+    // Use globally selected entity, fall back to first entity
+    const defaultEntityId = selectedEntityId ?? entities[0]?.id ?? '';
 
     return (
         <>

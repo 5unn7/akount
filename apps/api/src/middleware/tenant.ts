@@ -83,6 +83,16 @@ export function requireTenantId(request: FastifyRequest): string {
     return request.tenantId;
 }
 
+/**
+ * TenantContext — passed to service functions for tenant-scoped operations.
+ * Constructed from Fastify request after tenant middleware runs.
+ */
+export interface TenantContext {
+    tenantId: string;
+    userId: string;
+    role: string;
+}
+
 // Extend FastifyRequest interface to include tenant properties
 declare module 'fastify' {
     interface FastifyRequest {

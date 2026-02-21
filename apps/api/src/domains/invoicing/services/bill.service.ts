@@ -1,5 +1,5 @@
 import { prisma, Prisma, type BillStatus } from '@akount/db';
-import type { TenantContext } from '@/lib/middleware/tenant';
+import type { TenantContext } from '../../../middleware/tenant.js';
 import type {
   CreateBillInput,
   UpdateBillInput,

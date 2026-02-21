@@ -2,6 +2,7 @@
 
 import { useTransition, useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useEntity } from '@/providers/entity-provider';
 import {
     Sheet,
     SheetContent,
@@ -65,11 +66,12 @@ export function AccountFormSheet({
     entities,
 }: AccountFormSheetProps) {
     const isEdit = !!account;
+    const { selectedEntityId } = useEntity();
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
     const [name, setName] = useState(account?.name ?? '');
     const [type, setType] = useState<AccountType>(account?.type ?? 'BANK');
-    const [entityId, setEntityId] = useState(account?.entity.id ?? entities[0]?.id ?? '');
+    const [entityId, setEntityId] = useState(account?.entity.id ?? selectedEntityId ?? entities[0]?.id ?? '');
     const [institution, setInstitution] = useState(account?.institution ?? '');
     const [currency, setCurrency] = useState(account?.currency ?? 'CAD');
     const [country, setCountry] = useState(account?.country ?? 'CA');
@@ -90,7 +92,7 @@ export function AccountFormSheet({
     useEffect(() => {
         setName(account?.name ?? '');
         setType(account?.type ?? 'BANK');
-        setEntityId(account?.entity.id ?? entities[0]?.id ?? '');
+        setEntityId(account?.entity.id ?? selectedEntityId ?? entities[0]?.id ?? '');
         setInstitution(account?.institution ?? '');
         setCurrency(account?.currency ?? 'CAD');
         setCountry(account?.country ?? 'CA');
