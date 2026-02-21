@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-21
 **Current Phase:** Phase 6 — Launch MVP
 
-> **256 tasks** · 🔴 1 critical · 🟠 52 high · 🟡 138 medium · ⚪ 28 low · ✅ 66 done
-> 🟢 75 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **256 tasks** · 🔴 0 critical · 🟠 49 high · 🟡 137 medium · ⚪ 28 low · ✅ 70 done
+> 🟢 72 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -35,7 +35,7 @@
 | ~~INFRA-14~~ | ~~Add timeout to Clerk auth verification (3-second Promise.race wrapper in auth middleware)~~ | 4h | 🟠 High | ✅ | | audit:2026-02-20 |
 | ~~SEC-23~~ | ~~Replace console.log in webhook route with structured logging (apps/web/src/app/api/webhooks/clerk/route.ts — 7 occurrences)~~ | 30m | 🟠 High | ✅ | | audit:2026-02-20 |
 | ~~DRY-1~~ | ~~Report types: move shared types to `packages/types` (eliminate duplication)~~ | 1h | 🟠 High | ✅ | | review:typescript |
-| UX-1 | Entity selector: replace 7+ hardcoded `entities[0]` with real selector (Accounting JE/COA, AccountFormSheet, Navbar, Invoicing, Vendors — all domains affected) | 2-3h | 🟠 High | 🟢 | | review:nextjs, audit:acct-fe-be, audit:app-ux |
+| ~~UX-1~~ | ~~Entity selector: replace 7+ hardcoded `entities[0]` with real selector (Accounting JE/COA, AccountFormSheet, Navbar, Invoicing, Vendors — all domains affected)~~ | 2-3h | 🟠 High | ✅ | 1b338f8 | review:nextjs, audit:acct-fe-be, audit:app-ux |
 | ~~UX-2~~ | ~~GL Account ID: replace raw CUID input with searchable dropdown (also: JE form uses plain Select)~~ | 1h | 🟠 High | ✅ | | review:nextjs, audit:acct-fe-be |
 | TEST-1 | Service tests for 4 remaining reports (BS, CF, TB, GL) + route tests | 3-4h | 🟠 High | 🟢 | | review:typescript |
 | TEST-2 | E2E tests for critical user flows (onboarding, import, posting, reports) | 4h | 🟠 High | 🟢 | | roadmap |
@@ -92,7 +92,7 @@
 | ~~UX-66~~ | ~~Rename "AI Advisor" → "Insights" across entire codebase (~29 files): frontend routes/dir rename/nav/components, RBAC comment, CLAUDE.md docs, design system docs, config/meta. Backend `domains/ai/`, API paths, permission keys, Prisma models stay as-is.~~ | 2-3h | 🟠 High | ✅ | | audit:ai-advisor |
 | DEV-112 | Insights: Create API client (`apps/web/src/lib/api/ai.ts`) for 5 existing AI endpoints | 30m | 🟠 High | 🟢 | | audit:ai-advisor |
 | DEV-113 | Insights: Build AI Chat interface on Insights page (wire to existing `POST /api/ai/chat`) | 2-3h | 🟠 High | 📦 | [needs: UX-66, DEV-112] | audit:ai-advisor |
-| UX-72 | Dashboard: Implement cash flow projection endpoint + wire chart (CashFlowChart expects time-series data, endpoint returns static snapshot only) | 3-4h | 🟠 High | 🟢 | | manual:bug-fix |
+| ~~UX-72~~ | ~~Dashboard: Implement cash flow projection endpoint + wire chart (CashFlowChart expects time-series data, endpoint returns static snapshot only)~~ | 3-4h | 🟠 High | ✅ | 5c6d170 | manual:bug-fix |
 
 ### Medium / Low
 
@@ -125,7 +125,7 @@
 | ~~UX-23~~ | ~~Accounting JE: Replace GL account Select with searchable Combobox (31+ accounts hard to scroll)~~ | 1h | 🟡 Medium | ✅ | | audit:acct-fe-be |
 | UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
 | UX-25 | Accounting Reports: Add quick-generate buttons (Last Month / This Quarter / YTD) on report hub cards | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
-| UX-26 | Accounting JE: Add source cross-links (click source type navigates to source transaction/invoice/bill) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| ~~UX-26~~ | ~~Accounting JE: Add source cross-links (click source type navigates to source transaction/invoice/bill)~~ | 1h | 🟡 Medium | ✅ | 8106fcb | audit:acct-fe-be |
 | UX-27 | Accounting COA: Replace `window.location.reload()` after seed with state update (jarring full reload) | 30m | 🟡 Medium | 🟢 | | audit:acct-fe-be |
 | ~~UX-28~~ | ~~Sidebar: Add "Coming Soon" badge or hide unimplemented pages~~ (merged into UX-35) | 15m | 🟡 Medium | ✅ | | audit:acct-fe-be |
 | DEV-61 | Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
@@ -286,7 +286,7 @@
 | INFRA-11 | Database migration testing in CI pipeline | 2h | 🟡 Medium | 📦 | | review:smooth-floating-mountain §2.4.4 |
 | INFRA-12 | Usage analytics (companies, transactions, reports generated) | 2h | ⚪ Low | 📦 | | review:smooth-floating-mountain §2.4.5 |
 | FIN-6 | Cash Flow: document hardcoded account code ranges for categorization | doc | ⚪ Low | 📦 | | review:financial |
-| DEV-121 | Accounting: Add journal entry detail page `/accounting/journal-entries/[id]` — view entry with debit/credit lines, approve/void actions, source document link (API `GET /:id` exists, no frontend) | 3-4h | 🔴 Critical | 🟢 | | sitemap:audit |
+| DEV-121 | Accounting: Add journal entry detail page `/accounting/journal-entries/[id]` — view entry with debit/credit lines, approve/void actions, source document link (API `GET /:id` exists, no frontend) | 3-4h | 🔴 Critical | ✅ | 8106fcb | sitemap:audit |
 | UX-77 | Routing: Move `/business/invoices/bills/[id]` → `/business/bills/[id]` — bills aren't children of invoices, fix domain nesting + update all internal links | 30m | 🟠 High | 🟢 | | sitemap:audit |
 | UX-78 | Routing: Rename `/insights/insights` → `/insights` — move page.tsx up one level, eliminate stuttering URL segment, update nav config | 30m | 🟠 High | 🟢 | | sitemap:audit |
 | DEV-122 | Business: Add client detail page `/business/clients/[id]` — contact info, stats summary, invoice history tab, edit capability (API `GET /clients/:id` + `PUT` exist). Absorbs DEV-95 + UX-37 (client portion) | 3-4h | 🟡 Medium | 🟢 | | sitemap:audit |
