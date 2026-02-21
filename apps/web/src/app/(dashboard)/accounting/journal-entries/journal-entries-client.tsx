@@ -25,6 +25,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { toast } from 'sonner';
 import {
     fetchJournalEntries,
     approveEntryAction,
@@ -94,6 +95,9 @@ export function JournalEntriesClient({
             setEntries((prev) =>
                 prev.map((e) => (e.id === updated.id ? updated : e))
             );
+            toast.success('Entry approved & posted');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to approve entry');
         } finally {
             setIsActing(false);
         }
@@ -108,6 +112,9 @@ export function JournalEntriesClient({
             );
             // Add reversal to the list
             setEntries((prev) => [result.reversal, ...prev]);
+            toast.success('Entry voided — reversal created');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to void entry');
         } finally {
             setIsActing(false);
         }
@@ -119,6 +126,9 @@ export function JournalEntriesClient({
             await deleteEntryAction(id);
             setEntries((prev) => prev.filter((e) => e.id !== id));
             setExpandedId(null);
+            toast.success('Draft entry deleted');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to delete entry');
         } finally {
             setIsActing(false);
         }

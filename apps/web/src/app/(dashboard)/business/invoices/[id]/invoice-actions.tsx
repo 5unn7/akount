@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import type { Invoice } from '@/lib/api/invoices';
 import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction } from './actions';
 import { Send, BookOpen, Download, XCircle, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface InvoiceActionsProps {
     invoice: Invoice;
@@ -15,6 +16,12 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
     const router = useRouter();
     const [loading, setLoading] = useState<string | null>(null);
 
+    const ACTION_LABELS: Record<string, string> = {
+        send: 'Invoice sent',
+        post: 'Invoice posted to GL',
+        cancel: 'Invoice cancelled',
+    };
+
     const handleAction = async (
         action: string,
         apiCall: () => Promise<unknown>
@@ -22,10 +29,11 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
         setLoading(action);
         try {
             await apiCall();
+            toast.success(ACTION_LABELS[action] ?? 'Action completed');
             router.refresh();
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Action failed';
-            alert(message);
+            toast.error(message);
         } finally {
             setLoading(null);
         }

@@ -1,5 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
+import { Toaster } from 'sonner'
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { OnboardingOverlay } from "@/components/onboarding/OnboardingOverlay";
@@ -128,6 +129,13 @@ export default async function DashboardLayout({
                     </main>
                     {showOnboardingOverlay && <OnboardingOverlay />}
                     <KeyboardShortcutsModal />
+                    <Toaster
+                        theme="dark"
+                        position="bottom-right"
+                        toastOptions={{
+                            className: 'glass border-ak-border text-foreground',
+                        }}
+                    />
                 </div>
             </EntityProvider>
         </ReactQueryProvider>

@@ -25,6 +25,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { toast } from 'sonner';
 import {
     createGLAccountAction,
     updateGLAccountAction,
@@ -117,6 +118,7 @@ export function ChartOfAccountsClient({
                 setAccounts((prev) =>
                     prev.map((a) => (a.id === updated.id ? updated : a))
                 );
+                toast.success('Account updated');
             } else {
                 const input: CreateGLAccountInput = {
                     entityId,
@@ -129,11 +131,14 @@ export function ChartOfAccountsClient({
                 };
                 const created = await createGLAccountAction(input);
                 setAccounts((prev) => [...prev, created]);
+                toast.success('Account created');
             }
             setSheetOpen(false);
             setActionError(null);
         } catch (error) {
-            setActionError(error instanceof Error ? error.message : 'Failed to save GL account');
+            const msg = error instanceof Error ? error.message : 'Failed to save GL account';
+            toast.error(msg);
+            setActionError(msg);
         } finally {
             setIsSubmitting(false);
         }
@@ -145,8 +150,11 @@ export function ChartOfAccountsClient({
             setAccounts((prev) =>
                 prev.map((a) => (a.id === updated.id ? updated : a))
             );
+            toast.success('Account deactivated');
         } catch (error) {
-            setActionError(error instanceof Error ? error.message : 'Failed to deactivate account');
+            const msg = error instanceof Error ? error.message : 'Failed to deactivate account';
+            toast.error(msg);
+            setActionError(msg);
         }
     }
 
@@ -157,13 +165,17 @@ export function ChartOfAccountsClient({
             const result = await seedDefaultCOAAction(entityId);
             if (result.skipped) {
                 setSeedMessage('COA already exists — seed skipped.');
+                toast.info('Chart of accounts already exists');
             } else {
                 setSeedMessage(`Created ${result.created} accounts.`);
+                toast.success(`Created ${result.created} accounts`);
                 // Refresh — refetch via server action
                 window.location.reload();
             }
         } catch (error) {
-            setActionError(error instanceof Error ? error.message : 'Failed to seed chart of accounts');
+            const msg = error instanceof Error ? error.message : 'Failed to seed chart of accounts';
+            toast.error(msg);
+            setActionError(msg);
         } finally {
             setIsSeeding(false);
         }

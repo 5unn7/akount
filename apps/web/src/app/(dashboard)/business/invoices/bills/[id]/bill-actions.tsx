@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import type { Bill } from '@/lib/api/bills';
 import { approveBillAction, postBillAction, cancelBillAction } from './actions';
 import { CheckCircle, BookOpen, XCircle, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface BillActionsProps {
     bill: Bill;
@@ -15,6 +16,12 @@ export function BillActions({ bill }: BillActionsProps) {
     const router = useRouter();
     const [loading, setLoading] = useState<string | null>(null);
 
+    const ACTION_LABELS: Record<string, string> = {
+        approve: 'Bill approved',
+        post: 'Bill posted to GL',
+        cancel: 'Bill cancelled',
+    };
+
     const handleAction = async (
         action: string,
         apiCall: () => Promise<unknown>
@@ -22,10 +29,11 @@ export function BillActions({ bill }: BillActionsProps) {
         setLoading(action);
         try {
             await apiCall();
+            toast.success(ACTION_LABELS[action] ?? 'Action completed');
             router.refresh();
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Action failed';
-            alert(message);
+            toast.error(message);
         } finally {
             setLoading(null);
         }

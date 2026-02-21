@@ -30,6 +30,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 import { approveEntryAction, voidEntryAction, deleteEntryAction } from '../actions';
 
 // ============================================================================
@@ -95,8 +96,9 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
         try {
             const updated = await approveEntryAction(entry.id);
             setEntry(updated);
-        } catch {
-            // Error handled by error boundary
+            toast.success('Entry approved & posted');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to approve entry');
         } finally {
             setIsActing(false);
         }
@@ -106,9 +108,10 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
         setIsActing(true);
         try {
             await voidEntryAction(entry.id);
+            toast.success('Entry voided — reversal created');
             router.refresh();
-        } catch {
-            // Error handled by error boundary
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to void entry');
         } finally {
             setIsActing(false);
         }
@@ -118,9 +121,10 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
         setIsActing(true);
         try {
             await deleteEntryAction(entry.id);
+            toast.success('Draft entry deleted');
             router.push('/accounting/journal-entries');
-        } catch {
-            // Error handled by error boundary
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to delete entry');
         } finally {
             setIsActing(false);
         }

@@ -20,6 +20,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { AlertCircle, Loader2, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { createTransactionAction } from '@/app/(dashboard)/banking/transactions/actions';
 
 interface Account {
@@ -131,10 +132,13 @@ function CreateTransactionForm({
                 categoryId: categoryId || undefined,
                 notes: notes.trim() || undefined,
             });
+            toast.success('Transaction created');
             router.refresh();
             onSuccess();
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'Failed to create transaction');
+            const msg = err instanceof Error ? err.message : 'Failed to create transaction';
+            toast.error(msg);
+            setError(msg);
         } finally {
             setSubmitting(false);
         }

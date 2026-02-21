@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Plus, Trash2, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import type { GLAccount, CreateJournalEntryInput } from '@/lib/api/accounting';
 import { formatAmount } from '@/lib/api/transactions.types';
+import { toast } from 'sonner';
 import { createEntryAction } from './actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -123,9 +124,12 @@ export function JournalEntryForm({
             };
 
             await createEntryAction(input);
+            toast.success('Journal entry created as draft');
             router.push('/accounting/journal-entries');
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to create entry');
+            const msg = err instanceof Error ? err.message : 'Failed to create entry';
+            toast.error(msg);
+            setError(msg);
         } finally {
             setIsSubmitting(false);
         }

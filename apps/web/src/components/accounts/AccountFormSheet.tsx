@@ -2,6 +2,7 @@
 
 import { useTransition, useState, useEffect } from 'react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useEntity } from '@/providers/entity-provider';
 import {
     Sheet,
@@ -127,12 +128,15 @@ export function AccountFormSheet({
 
             if (!result.success) {
                 setError(result.error);
+                toast.error(result.error);
                 return;
             }
             if (!isEdit) {
                 setCreatedAccount(result.data);
+                toast.success('Account created');
                 return;
             }
+            toast.success('Account updated');
             onOpenChange(false);
         });
     }
@@ -144,8 +148,10 @@ export function AccountFormSheet({
             const result = await deleteAccountAction(account.id);
             if (!result.success) {
                 setError(result.error);
+                toast.error(result.error);
                 return;
             }
+            toast.success('Account deactivated');
             onOpenChange(false);
         });
     }
