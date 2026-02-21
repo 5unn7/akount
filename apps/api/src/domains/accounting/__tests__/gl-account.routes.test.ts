@@ -51,7 +51,7 @@ const mockGetAccountTree = vi.fn();
 const mockGetAccountBalances = vi.fn();
 
 vi.mock('../services/gl-account.service', () => ({
-  GLAccountService: function () {
+  GLAccountService: function (this: any) {
     this.listAccounts = mockListAccounts;
     this.getAccount = mockGetAccount;
     this.createAccount = mockCreateAccount;

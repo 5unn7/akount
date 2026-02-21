@@ -262,7 +262,7 @@ export class EntityService {
       where: {
         entityId: id,
         deletedAt: null,
-        status: { notIn: ['PAID', 'VOID'] },
+        status: { notIn: ['PAID', 'CANCELLED'] },
       },
     });
     if (unpaidInvoices > 0) {
@@ -276,7 +276,7 @@ export class EntityService {
       where: {
         entityId: id,
         deletedAt: null,
-        status: { notIn: ['PAID', 'VOID'] },
+        status: { notIn: ['PAID', 'CANCELLED'] },
       },
     });
     if (openBills > 0) {

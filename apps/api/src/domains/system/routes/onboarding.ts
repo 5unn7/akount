@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
-import { prisma } from '@akount/db';
+import { prisma, Prisma } from '@akount/db';
 import { createClerkClient } from '@clerk/backend';
 import { seedDefaultCOA } from '../../accounting/services/coa-template';
 
@@ -541,7 +541,7 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
    * Keyed by clerkUserId (pre-tenant). Implements optimistic locking via version.
    */
   fastify.post('/save-step', {
-    config: { bodyLimit: 51200 }, // 50KB max to prevent DoS
+    bodyLimit: 51200, // 50KB max to prevent DoS
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body = saveStepSchema.parse(request.body);
@@ -568,12 +568,12 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         create: {
           clerkUserId,
           currentStep: body.step,
-          stepData: body.data,
+          stepData: body.data as Prisma.InputJsonValue,
           version: newVersion,
         },
         update: {
           currentStep: body.step,
-          stepData: body.data,
+          stepData: body.data as Prisma.InputJsonValue,
           version: newVersion,
         },
       });

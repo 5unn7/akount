@@ -69,6 +69,7 @@ const MOCK_GL_ACCOUNT = {
   name: 'Expenses',
 };
 
+// @ts-expect-error vitest supports top-level await
 const { PostingService } = await import('../services/posting.service');
 
 describe('PostingService', () => {

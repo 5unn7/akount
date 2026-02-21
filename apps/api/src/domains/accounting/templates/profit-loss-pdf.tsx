@@ -22,7 +22,7 @@ import {
  * - User-supplied strings truncated
  */
 export async function generateProfitLossPdf(report: ProfitLossReport): Promise<Buffer> {
-  const allItems = [...(report.revenue?.items || []), ...(report.expenses?.items || [])];
+  const allItems = [...(report.revenue?.sections || []), ...(report.expenses?.sections || [])];
   const lineItemCount = countLineItems(allItems);
 
   if (lineItemCount > PDF_MAX_ENTRIES) {
@@ -54,7 +54,7 @@ export async function generateProfitLossPdf(report: ProfitLossReport): Promise<B
         {/* Revenue Section */}
         <View>
           <Text style={s.sectionHeader}>Revenue</Text>
-          <LineItems items={report.revenue?.items || []} currency={report.currency} />
+          <LineItems items={report.revenue?.sections || []} currency={report.currency} />
           <View style={s.totalRow}>
             <Text style={s.totalLabel}>Total Revenue</Text>
             <Text style={s.totalValue}>{formatCentsForPdf(report.revenue?.total || 0, report.currency)}</Text>
@@ -64,7 +64,7 @@ export async function generateProfitLossPdf(report: ProfitLossReport): Promise<B
         {/* Expenses Section */}
         <View>
           <Text style={s.sectionHeader}>Expenses</Text>
-          <LineItems items={report.expenses?.items || []} currency={report.currency} />
+          <LineItems items={report.expenses?.sections || []} currency={report.currency} />
           <View style={s.totalRow}>
             <Text style={s.totalLabel}>Total Expenses</Text>
             <Text style={s.totalValue}>{formatCentsForPdf(report.expenses?.total || 0, report.currency)}</Text>

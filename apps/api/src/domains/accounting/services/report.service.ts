@@ -855,8 +855,8 @@ export class ReportService {
     );
 
     // Convert BigInt and calculate totals
-    const accounts = results.map((row) => ({
-      accountId: row.glAccountId,
+    const accounts: TrialBalanceReport['accounts'] = results.map((row) => ({
+      id: row.glAccountId,
       code: row.code,
       name: row.name,
       debit: this.convertBigInt(row.totalDebit),

@@ -69,6 +69,7 @@ const MOCK_ENTRY = {
 };
 
 // Dynamic import to apply mocks
+// @ts-expect-error vitest supports top-level await
 const { JournalEntryService } = await import('../services/journal-entry.service');
 
 describe('JournalEntryService', () => {

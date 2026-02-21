@@ -41,7 +41,7 @@ const mockUnmatch = vi.fn();
 const mockGetReconciliationStatus = vi.fn();
 
 vi.mock('../../services/reconciliation.service', () => ({
-  ReconciliationService: function () {
+  ReconciliationService: function (this: any) {
     this.suggestMatches = mockSuggestMatches;
     this.createMatch = mockCreateMatch;
     this.unmatch = mockUnmatch;

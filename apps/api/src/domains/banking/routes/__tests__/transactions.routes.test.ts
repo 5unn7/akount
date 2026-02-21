@@ -42,7 +42,7 @@ const mockUpdateTransaction = vi.fn();
 const mockSoftDeleteTransaction = vi.fn();
 
 vi.mock('../../services/transaction.service', () => ({
-  TransactionService: function () {
+  TransactionService: function (this: any) {
     this.listTransactions = mockListTransactions;
     this.getTransaction = mockGetTransaction;
     this.createTransaction = mockCreateTransaction;

@@ -90,7 +90,6 @@ export async function planningRoutes(fastify: FastifyInstance) {
               include: {
                 entities: {
                   take: 1,
-                  where: { deletedAt: null },
                 },
               },
             },
@@ -104,27 +103,8 @@ export async function planningRoutes(fastify: FastifyInstance) {
           });
         }
 
-        const entity = tenantUser.tenant.entities[0];
-
-        // Create goal record
         // TODO: Add Goal model to Prisma schema in Phase 6
-        // For now, we'll store as JSON in entity metadata
-        const updatedEntity = await prisma.entity.update({
-          where: { id: entity.id },
-          data: {
-            // Store goals as metadata for now
-            metadata: {
-              ...(entity.metadata as object || {}),
-              financialGoals: {
-                revenueTarget: data.revenueTarget,
-                expenseTarget: data.expenseTarget,
-                savingsTarget: data.savingsTarget,
-                timeframe: data.timeframe,
-                createdAt: new Date().toISOString(),
-              },
-            },
-          },
-        });
+        // For now, return the data without persisting (no storage model yet)
 
         return reply.status(201).send({
           success: true,

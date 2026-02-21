@@ -1,9 +1,9 @@
 import {
   prisma,
+  Prisma,
   type AccountType,
   type BankConnectionStatus,
   type BankFeedStatus,
-  type Prisma,
 } from '@akount/db';
 import { env } from '../../../lib/env';
 import { logger } from '../../../lib/logger';
@@ -227,7 +227,7 @@ export class FlinksService {
       // 1. Verify entity belongs to tenant
       const entity = await tx.entity.findFirst({
         where: { id: entityId, tenantId: this.tenantId },
-        select: { id: true, name: true, currency: true },
+        select: { id: true, name: true, functionalCurrency: true },
       });
       if (!entity) {
         throw new FlinksError('Entity not found or access denied', 'ENTITY_NOT_FOUND', 404);
@@ -282,9 +282,9 @@ export class FlinksService {
         const glAccountId = await getDefaultGLAccountForType(tx, entityId, accountType);
 
         // Currency mismatch warning
-        if (entity.currency && flinksAccount.Currency !== entity.currency) {
+        if (entity.functionalCurrency && flinksAccount.Currency !== entity.functionalCurrency) {
           logger.warn(
-            { entityId, entityCurrency: entity.currency, accountCurrency: flinksAccount.Currency, accountName: flinksAccount.Title },
+            { entityId, entityCurrency: entity.functionalCurrency, accountCurrency: flinksAccount.Currency, accountName: flinksAccount.Title },
             'Flinks account currency differs from entity functional currency — skipping auto-JE posting'
           );
         }
@@ -331,7 +331,7 @@ export class FlinksService {
               amount: amountCents,
               currency: flinksAccount.Currency,
               balance: flinksTxn.Balance != null ? toCents(flinksTxn.Balance) : null,
-              rawData: scrubPII(flinksTxn as unknown as Record<string, unknown>),
+              rawData: scrubPII(flinksTxn as unknown as Record<string, unknown>) as Prisma.InputJsonValue,
               status: 'PENDING',
               statusHistory: [{ status: 'PENDING', timestamp: new Date().toISOString() }],
             },

@@ -110,8 +110,9 @@ export async function listInvoices(
   if (filters.clientId) where.clientId = filters.clientId;
   if (filters.dateFrom) where.issueDate = { gte: new Date(filters.dateFrom) };
   if (filters.dateTo) {
+    const existing = where.issueDate && typeof where.issueDate === 'object' ? where.issueDate as Record<string, unknown> : {};
     where.issueDate = {
-      ...(where.issueDate || {}),
+      ...existing,
       lte: new Date(filters.dateTo),
     };
   }

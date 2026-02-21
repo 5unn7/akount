@@ -14,7 +14,7 @@ vi.mock('@akount/db', () => ({
 const mockGetRateBatchFn = vi.fn().mockResolvedValue(new Map());
 vi.mock('../../../banking/services/fx-rate.service', () => {
   return {
-    FxRateService: function () {
+    FxRateService: function (this: any) {
       this.getRateBatch = mockGetRateBatchFn;
     },
   };

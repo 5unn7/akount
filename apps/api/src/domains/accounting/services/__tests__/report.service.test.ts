@@ -35,9 +35,12 @@ vi.mock('../report-cache', () => ({
   },
 }));
 
-const mockPrisma = vi.mocked(prisma);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockPrisma = vi.mocked(prisma) as any;
+// @ts-expect-error vitest supports top-level await
 const { tenantScopedQuery } = await import('../../../../lib/tenant-scoped-query');
 const mockTenantScopedQuery = vi.mocked(tenantScopedQuery);
+// @ts-expect-error vitest supports top-level await
 const { reportCache } = await import('../report-cache');
 const mockReportCache = vi.mocked(reportCache);
 
@@ -53,28 +56,52 @@ describe('ReportService', () => {
     id: ENTITY_ID,
     tenantId: TENANT_ID,
     name: 'Test Entity Ltd',
-    type: 'COMPANY',
+    type: 'CORPORATION',
+    status: 'ACTIVE',
+    country: 'CA',
+    taxId: null,
     functionalCurrency: 'CAD',
+    reportingCurrency: 'CAD',
     fiscalYearStart: 1, // January
-    taxIdNumber: null,
+    entitySubType: null,
+    registrationDate: null,
+    industryCode: null,
+    coaTemplateUsed: null,
+    setupCompletedAt: null,
+    address: null,
+    city: null,
+    state: null,
+    postalCode: null,
+    industry: null,
+    businessSize: null,
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
-    countryCode: 'CA',
-    region: 'North America',
   };
 
   const mockEntity2: Entity = {
     id: 'entity_test790',
     tenantId: TENANT_ID,
     name: 'Test Entity 2 Ltd',
-    type: 'COMPANY',
+    type: 'CORPORATION',
+    status: 'ACTIVE',
+    country: 'CA',
+    taxId: null,
     functionalCurrency: 'CAD', // Same currency for multi-entity consolidation
+    reportingCurrency: 'CAD',
     fiscalYearStart: 1,
-    taxIdNumber: null,
+    entitySubType: null,
+    registrationDate: null,
+    industryCode: null,
+    coaTemplateUsed: null,
+    setupCompletedAt: null,
+    address: null,
+    city: null,
+    state: null,
+    postalCode: null,
+    industry: null,
+    businessSize: null,
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
-    countryCode: 'CA',
-    region: 'North America',
   };
 
   beforeEach(() => {

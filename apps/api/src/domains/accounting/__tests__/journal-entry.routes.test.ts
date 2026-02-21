@@ -50,7 +50,7 @@ const mockVoidEntry = vi.fn();
 const mockDeleteEntry = vi.fn();
 
 vi.mock('../services/journal-entry.service', () => ({
-  JournalEntryService: function () {
+  JournalEntryService: function (this: any) {
     this.listEntries = mockListEntries;
     this.getEntry = mockGetEntry;
     this.createEntry = mockCreateEntry;
@@ -66,7 +66,7 @@ const mockPostBulkTransactions = vi.fn();
 const mockPostSplitTransaction = vi.fn();
 
 vi.mock('../services/posting.service', () => ({
-  PostingService: function () {
+  PostingService: function (this: any) {
     this.postTransaction = mockPostTransaction;
     this.postBulkTransactions = mockPostBulkTransactions;
     this.postSplitTransaction = mockPostSplitTransaction;

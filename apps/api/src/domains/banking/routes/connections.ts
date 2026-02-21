@@ -46,13 +46,13 @@ export async function connectionRoutes(fastify: FastifyInstance) {
     preValidation: validateBody(createConnectionBodySchema),
     handler: async (request: FastifyRequest<{ Body: CreateConnectionBody }>, reply: FastifyReply) => {
       const { loginId, entityId } = request.body;
-      const service = new FlinksService(request.tenantId);
+      const service = new FlinksService(request.tenantId!);
 
       try {
         const result = await service.processConnection(loginId, entityId, {
-          tenantId: request.tenantId,
-          userId: request.userId,
-          role: request.tenantRole,
+          tenantId: request.tenantId!,
+          userId: request.userId!,
+          role: request.tenantRole!,
         });
 
         request.log.info(
@@ -86,7 +86,7 @@ export async function connectionRoutes(fastify: FastifyInstance) {
    * GET /api/banking/connections?entityId=xxx
    *
    * List bank connections for an entity.
-   * RBAC: transacting access (OWNER, ADMIN, ACCOUNTANT, BOOKKEEPER).
+   * RBAC: transacting access (OWNER, ADMIN, ACCOUNTANT).
    */
   fastify.get<{ Querystring: ListConnectionsQuery }>('/', {
     ...transactingAccess,
@@ -97,7 +97,7 @@ export async function connectionRoutes(fastify: FastifyInstance) {
         return reply.status(400).send({ error: 'entityId query parameter is required' });
       }
 
-      const service = new FlinksService(request.tenantId);
+      const service = new FlinksService(request.tenantId!);
       const connections = await service.listConnections(entityId);
 
       // Strip providerItemId from all connections
@@ -120,13 +120,13 @@ export async function connectionRoutes(fastify: FastifyInstance) {
     preValidation: validateParams(connectionParamsSchema),
     handler: async (request: FastifyRequest<{ Params: ConnectionParams }>, reply: FastifyReply) => {
       const { id } = request.params;
-      const service = new FlinksService(request.tenantId);
+      const service = new FlinksService(request.tenantId!);
 
       try {
         const result = await service.refreshConnection(id, {
-          tenantId: request.tenantId,
-          userId: request.userId,
-          role: request.tenantRole,
+          tenantId: request.tenantId!,
+          userId: request.userId!,
+          role: request.tenantRole!,
         });
 
         if (!result) {
@@ -158,7 +158,7 @@ export async function connectionRoutes(fastify: FastifyInstance) {
     preValidation: validateParams(connectionParamsSchema),
     handler: async (request: FastifyRequest<{ Params: ConnectionParams }>, reply: FastifyReply) => {
       const { id } = request.params;
-      const service = new FlinksService(request.tenantId);
+      const service = new FlinksService(request.tenantId!);
 
       const result = await service.disconnectConnection(id);
 

@@ -61,7 +61,7 @@ describe('AIService', () => {
     it('should call provider chat with messages', async () => {
       const mockResponse: AIChatResponse = {
         content: 'AI response',
-        citations: [],
+        model: 'perplexity-test',
       };
 
       mockChat.mockResolvedValueOnce(mockResponse);
@@ -75,7 +75,7 @@ describe('AIService', () => {
     it('should use default provider when not specified', async () => {
       const mockResponse: AIChatResponse = {
         content: 'Response',
-        citations: [],
+        model: 'perplexity-test',
       };
 
       mockChat.mockResolvedValueOnce(mockResponse);
@@ -88,7 +88,7 @@ describe('AIService', () => {
     it('should use specified provider when provided', async () => {
       const mockResponse: AIChatResponse = {
         content: 'Response',
-        citations: [],
+        model: 'perplexity-test',
       };
 
       mockChat.mockResolvedValueOnce(mockResponse);
@@ -113,7 +113,7 @@ describe('AIService', () => {
     it('should pass options to provider', async () => {
       const mockResponse: AIChatResponse = {
         content: 'Response',
-        citations: [],
+        model: 'perplexity-test',
       };
 
       mockChat.mockResolvedValueOnce(mockResponse);
@@ -131,9 +131,8 @@ describe('AIService', () => {
     it('should forward provider response', async () => {
       const mockResponse: AIChatResponse = {
         content: 'Detailed AI response',
-        citations: [
-          { url: 'https://example.com', title: 'Example', text: 'Source text' },
-        ],
+        model: 'perplexity-test',
+        usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
       };
 
       mockChat.mockResolvedValueOnce(mockResponse);
@@ -141,7 +140,8 @@ describe('AIService', () => {
       const result = await service.chat(mockMessages);
 
       expect(result).toEqual(mockResponse);
-      expect(result.citations).toHaveLength(1);
+      expect(result.usage).toBeDefined();
+      expect(result.usage?.totalTokens).toBe(30);
     });
 
     it('should handle provider errors gracefully', async () => {

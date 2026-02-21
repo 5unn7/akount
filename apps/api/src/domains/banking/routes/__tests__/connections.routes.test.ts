@@ -46,7 +46,7 @@ const mockRefreshConnection = vi.fn();
 const mockDisconnectConnection = vi.fn();
 
 vi.mock('../../services/flinks.service', () => ({
-  FlinksService: function () {
+  FlinksService: function (this: any) {
     this.processConnection = mockProcessConnection;
     this.listConnections = mockListConnections;
     this.refreshConnection = mockRefreshConnection;
@@ -160,6 +160,7 @@ describe('Connection Routes', () => {
     });
 
     it('should return FlinksError status code on service error', async () => {
+      // @ts-expect-error vitest resolves module paths without .js extension
       const { FlinksError } = await import('../../services/flinks.service');
       mockProcessConnection.mockRejectedValueOnce(
         new FlinksError('Entity not found', 'ENTITY_NOT_FOUND', 404)
@@ -254,6 +255,7 @@ describe('Connection Routes', () => {
     });
 
     it('should return 429 when rate limited', async () => {
+      // @ts-expect-error vitest resolves module paths without .js extension
       const { FlinksError } = await import('../../services/flinks.service');
       mockRefreshConnection.mockRejectedValueOnce(
         new FlinksError('Connection was refreshed less than an hour ago', 'RATE_LIMIT_EXCEEDED', 429)

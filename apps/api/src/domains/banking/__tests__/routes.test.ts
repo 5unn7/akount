@@ -67,7 +67,7 @@ const mockCreateAccount = vi.fn();
 const mockUpdateAccount = vi.fn();
 const mockSoftDeleteAccount = vi.fn();
 vi.mock('../services/account.service', () => ({
-  AccountService: function () {
+  AccountService: function (this: any) {
     this.listAccounts = mockListAccounts;
     this.getAccount = mockGetAccount;
     this.createAccount = mockCreateAccount;

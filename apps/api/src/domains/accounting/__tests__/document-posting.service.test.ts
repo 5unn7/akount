@@ -119,6 +119,7 @@ function setupGLAccountLookups(accounts: Array<{ code: string; id: string }>) {
   });
 }
 
+// @ts-expect-error vitest supports top-level await
 const { DocumentPostingService } = await import('../services/document-posting.service');
 
 describe('DocumentPostingService', () => {

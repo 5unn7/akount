@@ -140,7 +140,7 @@ export async function importsRoutes(fastify: FastifyInstance) {
         await createAuditLog({
           tenantId: request.tenantId as string,
           userId: request.userId as string,
-          entityId: result.entityId,
+          entityId: result.entityId ?? undefined,
           model: 'ImportBatch',
           recordId: result.id,
           action: 'CREATE',
@@ -397,7 +397,7 @@ export async function importsRoutes(fastify: FastifyInstance) {
         await createAuditLog({
           tenantId: request.tenantId as string,
           userId: request.userId as string,
-          entityId: result.entityId,
+          entityId: result.entityId ?? undefined,
           model: 'ImportBatch',
           recordId: result.id,
           action: 'CREATE',

@@ -76,7 +76,7 @@ export async function createBill(data: CreateBillInput, ctx: TenantContext) {
       subtotal: data.subtotal,
       taxAmount: data.taxAmount,
       total: data.total,
-      status: data.status,
+      status: data.status as BillStatus,
       paidAmount: 0,
       notes: data.notes,
       billLines: {
@@ -100,12 +100,12 @@ export async function listBills(filters: ListBillsInput, ctx: TenantContext) {
     deletedAt: null,
   };
 
-  if (filters.status) where.status = filters.status;
+  if (filters.status) where.status = filters.status as BillStatus;
   if (filters.vendorId) where.vendorId = filters.vendorId;
   if (filters.dateFrom) where.issueDate = { gte: new Date(filters.dateFrom) };
   if (filters.dateTo) {
     where.issueDate = {
-      ...(where.issueDate || {}),
+      ...(typeof where.issueDate === 'object' && where.issueDate !== null ? where.issueDate : {}),
       lte: new Date(filters.dateTo),
     };
   }
@@ -160,7 +160,7 @@ export async function updateBill(
       ...(data.subtotal !== undefined && { subtotal: data.subtotal }),
       ...(data.taxAmount !== undefined && { taxAmount: data.taxAmount }),
       ...(data.total !== undefined && { total: data.total }),
-      ...(data.status && { status: data.status }),
+      ...(data.status && { status: data.status as BillStatus }),
       ...(data.notes !== undefined && { notes: data.notes }),
     },
     include: { vendor: true, entity: true, billLines: true },
@@ -184,7 +184,7 @@ export async function getBillStats(ctx: TenantContext) {
       where: {
         entity: { tenantId: ctx.tenantId },
         deletedAt: null,
-        status: { in: ['RECEIVED', 'OVERDUE'] },
+        status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
       },
       _sum: { total: true, paidAmount: true },
     }),
@@ -214,7 +214,7 @@ export async function getBillStats(ctx: TenantContext) {
       where: {
         entity: { tenantId: ctx.tenantId },
         deletedAt: null,
-        status: { in: ['RECEIVED', 'OVERDUE'] },
+        status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
         dueDate: { gte: now },
       },
       _sum: { total: true, paidAmount: true },
@@ -257,57 +257,57 @@ export async function getBillStats(ctx: TenantContext) {
     }),
   ]);
 
-  const outstandingAP = (total._sum.total || 0) - (total._sum.paidAmount || 0);
+  const outstandingAP = (total._sum?.total || 0) - (total._sum?.paidAmount || 0);
   const totalAging = aging.reduce(
     (sum, bucket) =>
-      sum + (bucket._sum.total || 0) - (bucket._sum.paidAmount || 0),
+      sum + (bucket._sum?.total || 0) - (bucket._sum?.paidAmount || 0),
     0
   );
 
   return {
     outstandingAP,
-    paidThisMonth: paid._sum.total || 0,
-    overdue: overdue._sum.total || 0,
+    paidThisMonth: paid._sum?.total || 0,
+    overdue: overdue._sum?.total || 0,
     aging: {
       current: {
-        amount: (aging[0]._sum.total || 0) - (aging[0]._sum.paidAmount || 0),
+        amount: (aging[0]._sum?.total || 0) - (aging[0]._sum?.paidAmount || 0),
         percentage:
           totalAging > 0
             ? Math.round(
-                (((aging[0]._sum.total || 0) - (aging[0]._sum.paidAmount || 0)) /
+                (((aging[0]._sum?.total || 0) - (aging[0]._sum?.paidAmount || 0)) /
                   totalAging) *
                   100
               )
             : 0,
       },
       '1-30': {
-        amount: (aging[1]._sum.total || 0) - (aging[1]._sum.paidAmount || 0),
+        amount: (aging[1]._sum?.total || 0) - (aging[1]._sum?.paidAmount || 0),
         percentage:
           totalAging > 0
             ? Math.round(
-                (((aging[1]._sum.total || 0) - (aging[1]._sum.paidAmount || 0)) /
+                (((aging[1]._sum?.total || 0) - (aging[1]._sum?.paidAmount || 0)) /
                   totalAging) *
                   100
               )
             : 0,
       },
       '31-60': {
-        amount: (aging[2]._sum.total || 0) - (aging[2]._sum.paidAmount || 0),
+        amount: (aging[2]._sum?.total || 0) - (aging[2]._sum?.paidAmount || 0),
         percentage:
           totalAging > 0
             ? Math.round(
-                (((aging[2]._sum.total || 0) - (aging[2]._sum.paidAmount || 0)) /
+                (((aging[2]._sum?.total || 0) - (aging[2]._sum?.paidAmount || 0)) /
                   totalAging) *
                   100
               )
             : 0,
       },
       '60+': {
-        amount: (aging[3]._sum.total || 0) - (aging[3]._sum.paidAmount || 0),
+        amount: (aging[3]._sum?.total || 0) - (aging[3]._sum?.paidAmount || 0),
         percentage:
           totalAging > 0
             ? Math.round(
-                (((aging[3]._sum.total || 0) - (aging[3]._sum.paidAmount || 0)) /
+                (((aging[3]._sum?.total || 0) - (aging[3]._sum?.paidAmount || 0)) /
                   totalAging) *
                   100
               )

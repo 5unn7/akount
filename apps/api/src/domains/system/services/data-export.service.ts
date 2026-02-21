@@ -209,7 +209,7 @@ export async function streamDataBackup(
       };
 
       // Use dynamic model access
-      const modelDelegate = (prisma as Record<string, unknown>)[table.model] as {
+      const modelDelegate = (prisma as unknown as Record<string, unknown>)[table.model] as {
         findMany: (args: Record<string, unknown>) => Promise<Record<string, unknown>[]>;
       };
 

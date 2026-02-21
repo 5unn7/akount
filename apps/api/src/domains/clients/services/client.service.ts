@@ -24,7 +24,6 @@ export async function createClient(
     where: {
       id: data.entityId,
       tenantId: ctx.tenantId,
-      deletedAt: null,
     },
   });
 

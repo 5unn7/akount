@@ -824,17 +824,15 @@ describe('CategoryService', () => {
         new Error('Unique constraint failed on the fields: (`tenantId`,`name`,`type`)')
       );
 
-      const service = new CategoryService();
+      const service = new CategoryService(TENANT_ID, USER_ID);
 
       // Simulate concurrent calls
       const result1Promise = service.createCategory(
-        { ...categoryData, description: null, parentId: null, isActive: true },
-        { userId: 'user-1', tenantId: TENANT_ID, role: 'OWNER' }
+        { ...categoryData, description: null, parentId: null, isActive: true } as any
       );
 
       const result2Promise = service.createCategory(
-        { ...categoryData, description: null, parentId: null, isActive: true },
-        { userId: 'user-2', tenantId: TENANT_ID, role: 'OWNER' }
+        { ...categoryData, description: null, parentId: null, isActive: true } as any
       );
 
       // One should succeed, one should fail
@@ -858,7 +856,7 @@ describe('CategoryService', () => {
       mockUpdateMany.mockResolvedValue({ count: 5 }); // Mock reassigning transactions
       mockUpdate.mockResolvedValue(duplicates[1]); // Mock soft delete of duplicate
 
-      const service = new CategoryService(TENANT_ID);
+      const service = new CategoryService(TENANT_ID, USER_ID);
 
       // Run deduplication concurrently (simulates two cron jobs or manual triggers)
       const [result1, result2] = await Promise.all([
@@ -891,7 +889,7 @@ describe('CategoryService', () => {
         }),
       ]);
 
-      const service = new CategoryService(TENANT_ID);
+      const service = new CategoryService(TENANT_ID, USER_ID);
 
       // No duplicates found, so deduplication completes with 0 removed
       const result = await service.deduplicateCategories();
@@ -907,7 +905,7 @@ describe('CategoryService', () => {
         new Error('Foreign key constraint failed on the field: `parentId`')
       );
 
-      const service = new CategoryService();
+      const service = new CategoryService(TENANT_ID, USER_ID);
 
       await expect(
         service.createCategory(
@@ -918,8 +916,7 @@ describe('CategoryService', () => {
             description: null,
             isActive: true,
             tenantId: TENANT_ID,
-          },
-          { userId: 'user-1', tenantId: TENANT_ID, role: 'OWNER' }
+          } as any
         )
       ).rejects.toThrow('Foreign key constraint failed');
 

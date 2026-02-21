@@ -94,7 +94,7 @@ const MOCK_BILL = {
   subtotal: 12500, // $125.00
   taxAmount: 1625, // $16.25
   total: 14125, // $141.25
-  status: 'RECEIVED',
+  status: 'PENDING',
   paidAmount: 0,
   notes: null,
   deletedAt: null,

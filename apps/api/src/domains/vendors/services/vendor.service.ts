@@ -26,7 +26,6 @@ export async function createVendor(
     where: {
       id: data.entityId,
       tenantId: ctx.tenantId,
-      deletedAt: null,
     },
   });
 
@@ -103,7 +102,7 @@ export async function getVendor(id: string, ctx: TenantContext) {
       where: {
         vendorId: id,
         entity: { tenantId: ctx.tenantId },
-        status: { in: ['RECEIVED', 'OVERDUE'] },
+        status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
         deletedAt: null,
       },
     }),
@@ -111,14 +110,14 @@ export async function getVendor(id: string, ctx: TenantContext) {
       where: {
         vendorId: id,
         entity: { tenantId: ctx.tenantId },
-        status: { in: ['RECEIVED', 'OVERDUE'] },
+        status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
         deletedAt: null,
       },
       _sum: { total: true, paidAmount: true },
     }),
   ]);
 
-  const balanceDue = (balance._sum.total || 0) - (balance._sum.paidAmount || 0);
+  const balanceDue = (balance._sum?.total || 0) - (balance._sum?.paidAmount || 0);
 
   return {
     ...vendor,

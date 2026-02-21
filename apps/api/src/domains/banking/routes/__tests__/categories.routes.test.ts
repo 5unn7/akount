@@ -42,7 +42,7 @@ const mockSoftDeleteCategory = vi.fn();
 const mockSeedDefaults = vi.fn();
 
 vi.mock('../../services/category.service', () => ({
-  CategoryService: function () {
+  CategoryService: function (this: any) {
     this.listCategories = mockListCategories;
     this.getCategory = mockGetCategory;
     this.createCategory = mockCreateCategory;

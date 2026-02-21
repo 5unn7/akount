@@ -26,8 +26,10 @@ import { PerformanceService } from '../performance.service';
 import { prisma } from '@akount/db';
 
 // Get typed mock references
-const mockFindMany = vi.mocked(prisma.transaction.findMany);
-const mockGroupBy = vi.mocked(prisma.account.groupBy);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockFindMany = vi.mocked(prisma.transaction.findMany) as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockGroupBy = vi.mocked(prisma.account.groupBy) as any;
 
 const TENANT_ID = 'tenant-abc-123';
 const ENTITY_ID = 'entity-xyz-456';

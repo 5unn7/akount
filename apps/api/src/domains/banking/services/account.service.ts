@@ -194,7 +194,7 @@ export class AccountService {
       if (hasOpeningBalance && glAccountId) {
         // Import lazily to avoid circular dependency
         const { DocumentPostingService } = await import(
-          '../../accounting/services/document-posting.service'
+          '../../accounting/services/document-posting.service.js'
         );
         const postingService = new DocumentPostingService(this.tenantId, userId);
         journalEntry = await postingService.postOpeningBalance(tx, {

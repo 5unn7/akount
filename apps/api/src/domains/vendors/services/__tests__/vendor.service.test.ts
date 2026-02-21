@@ -40,7 +40,7 @@ function mockVendor(overrides: Record<string, unknown> = {}) {
     phone: '555-1234',
     address: '123 Main St',
     paymentTerms: 'NET_30',
-    status: 'ACTIVE',
+    status: 'active',
     entityId: ENTITY_ID,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
@@ -69,7 +69,7 @@ describe('VendorService', () => {
           phone: '555-9999',
           address: '456 Oak Ave',
           paymentTerms: 'NET_30',
-          status: 'ACTIVE',
+          status: 'active',
         },
         mockTenantContext
       );
@@ -78,7 +78,6 @@ describe('VendorService', () => {
         where: {
           id: ENTITY_ID,
           tenantId: TENANT_ID,
-          deletedAt: null,
         },
       });
     });
@@ -95,7 +94,7 @@ describe('VendorService', () => {
             phone: '555-0000',
             address: '789 Elm St',
             paymentTerms: 'NET_30',
-            status: 'ACTIVE',
+            status: 'active',
           },
           mockTenantContext
         )
@@ -115,7 +114,7 @@ describe('VendorService', () => {
           phone: '555-1111',
           address: '321 Pine St',
           paymentTerms: 'NET_15',
-          status: 'ACTIVE',
+          status: 'active',
         },
         mockTenantContext
       );
@@ -128,7 +127,7 @@ describe('VendorService', () => {
         phone: '555-1111',
         address: '321 Pine St',
         paymentTerms: 'NET_15',
-        status: 'ACTIVE',
+        status: 'active',
       });
       expect(createArgs.include).toEqual({ entity: true });
     });
@@ -156,10 +155,10 @@ describe('VendorService', () => {
     it('should support status filter', async () => {
       vi.mocked(prisma.vendor.findMany).mockResolvedValueOnce([] as never);
 
-      await vendorService.listVendors({ limit: 10, status: 'ACTIVE' }, mockTenantContext);
+      await vendorService.listVendors({ limit: 10, status: 'active' }, mockTenantContext);
 
       const callArgs = vi.mocked(prisma.vendor.findMany).mock.calls[0][0]!;
-      expect(callArgs.where).toHaveProperty('status', 'ACTIVE');
+      expect(callArgs.where).toHaveProperty('status', 'active');
     });
 
     it('should support search filter (name and email)', async () => {
@@ -301,7 +300,7 @@ describe('VendorService', () => {
       assertIntegerCents(result.balanceDue, 'balanceDue');
     });
 
-    it('should only query RECEIVED and OVERDUE bills for balance', async () => {
+    it('should only query PENDING, PARTIALLY_PAID and OVERDUE bills for balance', async () => {
       const vendor = mockVendor({ id: 'vendor-1' });
       vi.mocked(prisma.vendor.findFirst).mockResolvedValueOnce(vendor as never);
       vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
@@ -314,7 +313,7 @@ describe('VendorService', () => {
       expect(prisma.bill.count).toHaveBeenCalledWith({
         where: {
           vendorId: 'vendor-1',
-          status: { in: ['RECEIVED', 'OVERDUE'] },
+          status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
           deletedAt: null,
           entity: { tenantId: 'tenant-test-123' },
         },
@@ -323,7 +322,7 @@ describe('VendorService', () => {
       expect(prisma.bill.aggregate).toHaveBeenCalledWith({
         where: {
           vendorId: 'vendor-1',
-          status: { in: ['RECEIVED', 'OVERDUE'] },
+          status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
           deletedAt: null,
           entity: { tenantId: 'tenant-test-123' },
         },
@@ -392,7 +391,7 @@ describe('VendorService', () => {
 
       await vendorService.updateVendor(
         'vendor-1',
-        { phone: null, address: null },
+        { phone: null, address: null } as any,
         mockTenantContext
       );
 

@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { z } from 'zod';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
@@ -87,7 +88,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
     '/:id',
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
-      preValidation: [validateParams({ id: { type: 'string' } })],
+      preValidation: [validateParams(z.object({ id: z.string() }))],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {
@@ -115,7 +116,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       preValidation: [
-        validateParams({ id: { type: 'string' } }),
+        validateParams(z.object({ id: z.string() })),
         validateBody(UpdatePaymentSchema),
       ],
     },
@@ -146,7 +147,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       preValidation: [
-        validateParams({ id: { type: 'string' } }),
+        validateParams(z.object({ id: z.string() })),
         validateBody(AllocatePaymentSchema),
       ],
     },
@@ -185,7 +186,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       preValidation: [
-        validateParams({ id: { type: 'string' }, allocationId: { type: 'string' } }),
+        validateParams(z.object({ id: z.string(), allocationId: z.string() })),
       ],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -214,7 +215,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       preValidation: [
-        validateParams({ id: { type: 'string' }, allocationId: { type: 'string' } }),
+        validateParams(z.object({ id: z.string(), allocationId: z.string() })),
         validateBody(PostPaymentAllocationSchema),
       ],
     },
@@ -248,7 +249,7 @@ export async function paymentRoutes(fastify: FastifyInstance) {
     '/:id',
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN']),
-      preValidation: [validateParams({ id: { type: 'string' } })],
+      preValidation: [validateParams(z.object({ id: z.string() }))],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {

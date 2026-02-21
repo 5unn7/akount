@@ -39,7 +39,7 @@ vi.mock('../../../middleware/validation', () => ({
 // Mock DashboardService - use function constructor so `new` works
 const mockGetMetrics = vi.fn();
 vi.mock('../services/dashboard.service', () => ({
-  DashboardService: function () {
+  DashboardService: function (this: any) {
     this.getMetrics = mockGetMetrics;
   },
 }));

@@ -82,7 +82,7 @@ describe('InvoiceService', () => {
           taxAmount: 10000,
           total: 110000,
           status: 'DRAFT',
-          notes: null,
+          notes: undefined,
           lines: [
             {
               description: 'Service',
@@ -122,7 +122,7 @@ describe('InvoiceService', () => {
             taxAmount: 0,
             total: 50000,
             status: 'DRAFT',
-            notes: null,
+            notes: undefined,
             lines: [],
           },
           mockTenantContext
@@ -195,7 +195,7 @@ describe('InvoiceService', () => {
           taxAmount: 0,
           total: 50000,
           status: 'DRAFT',
-          notes: null,
+          notes: undefined,
           lines: [
             {
               description: 'Product',
@@ -257,7 +257,7 @@ describe('InvoiceService', () => {
           taxAmount: 6000,
           total: 66000,
           status: 'DRAFT',
-          notes: null,
+          notes: undefined,
           lines,
         },
         mockTenantContext
@@ -572,7 +572,7 @@ describe('InvoiceService', () => {
       await invoiceService.getInvoiceStats(mockTenantContext);
 
       const calls = vi.mocked(prisma.invoice.aggregate).mock.calls;
-      expect(calls[0][0].where.status).toEqual({ in: ['SENT', 'OVERDUE'] });
+      expect(calls[0]![0].where!.status).toEqual({ in: ['SENT', 'OVERDUE'] });
     });
 
     it('should filter by tenantId for all aggregations', async () => {
@@ -589,8 +589,8 @@ describe('InvoiceService', () => {
 
       const calls = vi.mocked(prisma.invoice.aggregate).mock.calls;
       calls.forEach((call) => {
-        expect(call[0].where.entity).toEqual({ tenantId: TENANT_ID });
-        expect(call[0].where.deletedAt).toBeNull();
+        expect(call[0]!.where!.entity).toEqual({ tenantId: TENANT_ID });
+        expect(call[0]!.where!.deletedAt).toBeNull();
       });
     });
   });

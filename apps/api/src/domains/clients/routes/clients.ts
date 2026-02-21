@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { z } from 'zod';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
@@ -82,7 +83,7 @@ export async function clientRoutes(fastify: FastifyInstance) {
     '/:id',
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
-      preValidation: [validateParams({ id: { type: 'string' } })],
+      preValidation: [validateParams(z.object({ id: z.string().cuid() }))],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {
@@ -110,7 +111,7 @@ export async function clientRoutes(fastify: FastifyInstance) {
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       preValidation: [
-        validateParams({ id: { type: 'string' } }),
+        validateParams(z.object({ id: z.string().cuid() })),
         validateBody(UpdateClientSchema),
       ],
     },
@@ -140,7 +141,7 @@ export async function clientRoutes(fastify: FastifyInstance) {
     '/:id',
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN']),
-      preValidation: [validateParams({ id: { type: 'string' } })],
+      preValidation: [validateParams(z.object({ id: z.string().cuid() }))],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId || !request.userId) {

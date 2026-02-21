@@ -32,7 +32,7 @@ const CreateBillBaseSchema = z.object({
   subtotal: z.number().int().min(0).max(100_000_000_000), // SECURITY FIX M-1: Max $1B
   taxAmount: z.number().int().min(0).max(100_000_000_000),
   total: z.number().int().min(0).max(100_000_000_000),
-  status: z.enum(['DRAFT', 'RECEIVED', 'PAID', 'OVERDUE', 'CANCELLED']),
+  status: z.enum(['DRAFT', 'PENDING', 'PAID', 'OVERDUE', 'CANCELLED']),
   notes: z.string().max(1000).optional(),
   lines: z.array(BillLineSchema).min(1),
 });
@@ -49,7 +49,7 @@ export const UpdateBillSchema = CreateBillBaseSchema.partial();
 
 export const ListBillsSchema = z.object({
   entityId: z.string().cuid().optional(),
-  status: z.enum(['DRAFT', 'RECEIVED', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),
+  status: z.enum(['DRAFT', 'PENDING', 'PAID', 'OVERDUE', 'CANCELLED']).optional(),
   vendorId: z.string().cuid().optional(),
   dateFrom: z.string().datetime().optional(),
   dateTo: z.string().datetime().optional(),

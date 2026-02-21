@@ -1,5 +1,6 @@
 import type { RouteShorthandOptions } from 'fastify';
-import type { PermissionLevel, Role } from '@akount/types';
+import type { PermissionLevel } from '@akount/types';
+import type { TenantUserRole } from '@akount/db';
 import { requirePermission, requireRole } from './rbac';
 
 /**
@@ -44,7 +45,7 @@ export function withPermission(
  * ```
  */
 export function withRole(
-  allowedRoles: Role[]
+  allowedRoles: TenantUserRole[]
 ): Pick<RouteShorthandOptions, 'preHandler'> {
   return {
     preHandler: requireRole(allowedRoles),
@@ -89,9 +90,9 @@ export const accountingAccess = withRole(['OWNER', 'ADMIN', 'ACCOUNTANT']);
 /**
  * Preset for transaction routes (includes bookkeeper).
  */
-export const transactingAccess = withRole(['OWNER', 'ADMIN', 'ACCOUNTANT', 'BOOKKEEPER']);
+export const transactingAccess = withRole(['OWNER', 'ADMIN', 'ACCOUNTANT']);
 
 /**
  * Preset for report viewing.
  */
-export const reportViewAccess = withRole(['OWNER', 'ADMIN', 'ACCOUNTANT', 'INVESTOR', 'ADVISOR']);
+export const reportViewAccess = withRole(['OWNER', 'ADMIN', 'ACCOUNTANT', 'VIEWER']);

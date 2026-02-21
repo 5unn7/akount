@@ -40,7 +40,7 @@ function mockClient(overrides: Record<string, unknown> = {}) {
     phone: '555-1234',
     address: '123 Main St',
     paymentTerms: 'NET_30',
-    status: 'ACTIVE',
+    status: 'active',
     entityId: ENTITY_ID,
     createdAt: new Date('2024-01-01'),
     updatedAt: new Date('2024-01-01'),
@@ -69,7 +69,7 @@ describe('ClientService', () => {
           phone: '555-9999',
           address: '456 Oak Ave',
           paymentTerms: 'NET_30',
-          status: 'ACTIVE',
+          status: 'active',
         },
         mockTenantContext
       );
@@ -78,7 +78,6 @@ describe('ClientService', () => {
         where: {
           id: ENTITY_ID,
           tenantId: TENANT_ID,
-          deletedAt: null,
         },
       });
     });
@@ -95,7 +94,7 @@ describe('ClientService', () => {
             phone: '555-0000',
             address: '789 Elm St',
             paymentTerms: 'NET_30',
-            status: 'ACTIVE',
+            status: 'active',
           },
           mockTenantContext
         )
@@ -115,7 +114,7 @@ describe('ClientService', () => {
           phone: '555-1111',
           address: '321 Pine St',
           paymentTerms: 'NET_15',
-          status: 'ACTIVE',
+          status: 'active',
         },
         mockTenantContext
       );
@@ -128,7 +127,7 @@ describe('ClientService', () => {
         phone: '555-1111',
         address: '321 Pine St',
         paymentTerms: 'NET_15',
-        status: 'ACTIVE',
+        status: 'active',
       });
       expect(createArgs.include).toEqual({ entity: true });
     });
@@ -156,10 +155,10 @@ describe('ClientService', () => {
     it('should support status filter', async () => {
       vi.mocked(prisma.client.findMany).mockResolvedValueOnce([] as never);
 
-      await clientService.listClients({ limit: 10, status: 'ACTIVE' }, mockTenantContext);
+      await clientService.listClients({ limit: 10, status: 'active' }, mockTenantContext);
 
       const callArgs = vi.mocked(prisma.client.findMany).mock.calls[0][0]!;
-      expect(callArgs.where).toHaveProperty('status', 'ACTIVE');
+      expect(callArgs.where).toHaveProperty('status', 'active');
     });
 
     it('should support search filter (name and email)', async () => {
@@ -392,7 +391,7 @@ describe('ClientService', () => {
 
       await clientService.updateClient(
         'client-1',
-        { phone: null, address: null },
+        { phone: null, address: null } as any,
         mockTenantContext
       );
 

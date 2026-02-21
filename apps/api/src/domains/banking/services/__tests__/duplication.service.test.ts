@@ -29,7 +29,7 @@ function mockParsedTransaction(overrides: Partial<ParsedTransaction> = {}): Pars
     description: 'STARBUCKS COFFEE',
     amount: 550, // $5.50
     balance: 10000,
-    category: null,
+    isDuplicate: false,
     ...overrides,
   };
 }

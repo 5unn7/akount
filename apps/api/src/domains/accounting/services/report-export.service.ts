@@ -105,7 +105,7 @@ export class ReportExportService {
 
     // Revenue items
     rows.push(this.buildRow(['', '--- Revenue ---', '', '']));
-    for (const item of this.flattenItems(report.revenue?.items || [])) {
+    for (const item of this.flattenItems(report.revenue?.sections || [])) {
       rows.push(this.buildRow([
         this.sanitizeCsvCell(item.code),
         this.sanitizeCsvCell(item.name),
@@ -117,7 +117,7 @@ export class ReportExportService {
 
     // Expenses items
     rows.push(this.buildRow(['', '--- Expenses ---', '', '']));
-    for (const item of this.flattenItems(report.expenses?.items || [])) {
+    for (const item of this.flattenItems(report.expenses?.sections || [])) {
       rows.push(this.buildRow([
         this.sanitizeCsvCell(item.code),
         this.sanitizeCsvCell(item.name),

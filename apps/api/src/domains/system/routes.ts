@@ -219,7 +219,7 @@ export async function systemRoutes(fastify: FastifyInstance) {
           entityId: entityId || undefined,
           model: 'DataExport',
           recordId: 'full-backup',
-          action: 'EXPORT',
+          action: 'VIEW',
           after: { format: 'zip', entityScope: entityId || 'all' },
         });
 

@@ -82,7 +82,7 @@ describe('BillService', () => {
           taxAmount: 10000,
           total: 110000,
           status: 'DRAFT',
-          notes: null,
+          notes: undefined,
           lines: [
             {
               description: 'Service',
@@ -122,7 +122,7 @@ describe('BillService', () => {
             taxAmount: 0,
             total: 50000,
             status: 'DRAFT',
-            notes: null,
+            notes: undefined,
             lines: [],
           },
           mockTenantContext
@@ -195,7 +195,7 @@ describe('BillService', () => {
           taxAmount: 0,
           total: 50000,
           status: 'DRAFT',
-          notes: null,
+          notes: undefined,
           lines: [
             {
               description: 'Product',
@@ -257,7 +257,7 @@ describe('BillService', () => {
           taxAmount: 6000,
           total: 66000,
           status: 'DRAFT',
-          notes: null,
+          notes: undefined,
           lines,
         },
         mockTenantContext
@@ -290,10 +290,10 @@ describe('BillService', () => {
     it('should support status filter', async () => {
       vi.mocked(prisma.bill.findMany).mockResolvedValueOnce([] as never);
 
-      await billService.listBills({ limit: 10, status: 'RECEIVED' }, mockTenantContext);
+      await billService.listBills({ limit: 10, status: 'PENDING' }, mockTenantContext);
 
       const callArgs = vi.mocked(prisma.bill.findMany).mock.calls[0][0]!;
-      expect(callArgs.where).toHaveProperty('status', 'RECEIVED');
+      expect(callArgs.where).toHaveProperty('status', 'PENDING');
     });
 
     it('should support vendorId filter', async () => {
@@ -439,7 +439,7 @@ describe('BillService', () => {
       vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(
-        billService.updateBill('nonexistent', { status: 'RECEIVED' }, mockTenantContext)
+        billService.updateBill('nonexistent', { status: 'PENDING' }, mockTenantContext)
       ).rejects.toThrow('Bill not found');
 
       expect(prisma.bill.update).not.toHaveBeenCalled();
@@ -449,7 +449,7 @@ describe('BillService', () => {
       vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(null as never);
 
       await expect(
-        billService.updateBill('bill-other-tenant', { status: 'RECEIVED' }, mockTenantContext)
+        billService.updateBill('bill-other-tenant', { status: 'PENDING' }, mockTenantContext)
       ).rejects.toThrow('Bill not found');
     });
 
@@ -460,13 +460,13 @@ describe('BillService', () => {
 
       await billService.updateBill(
         'bill-1',
-        { status: 'RECEIVED', notes: 'Updated notes' },
+        { status: 'PENDING', notes: 'Updated notes' },
         mockTenantContext
       );
 
       const updateArgs = vi.mocked(prisma.bill.update).mock.calls[0][0]!;
       expect(updateArgs.data).toEqual({
-        status: 'RECEIVED',
+        status: 'PENDING',
         notes: 'Updated notes',
       });
     });
@@ -559,7 +559,7 @@ describe('BillService', () => {
       assertIntegerCents(result.outstandingAP, 'outstandingAP');
     });
 
-    it('should filter by RECEIVED and OVERDUE status for outstanding AP', async () => {
+    it('should filter by PENDING, PARTIALLY_PAID, and OVERDUE status for outstanding AP', async () => {
       vi.mocked(prisma.bill.aggregate)
         .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
         .mockResolvedValueOnce({ _sum: { total: 0 } } as never)
@@ -572,7 +572,7 @@ describe('BillService', () => {
       await billService.getBillStats(mockTenantContext);
 
       const calls = vi.mocked(prisma.bill.aggregate).mock.calls;
-      expect(calls[0][0].where.status).toEqual({ in: ['RECEIVED', 'OVERDUE'] });
+      expect(calls[0]![0].where!.status).toEqual({ in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] });
     });
 
     it('should filter by tenantId for all aggregations', async () => {
@@ -589,8 +589,8 @@ describe('BillService', () => {
 
       const calls = vi.mocked(prisma.bill.aggregate).mock.calls;
       calls.forEach((call) => {
-        expect(call[0].where.entity).toEqual({ tenantId: TENANT_ID });
-        expect(call[0].where.deletedAt).toBeNull();
+        expect(call[0]!.where!.entity).toEqual({ tenantId: TENANT_ID });
+        expect(call[0]!.where!.deletedAt).toBeNull();
       });
     });
   });

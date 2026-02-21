@@ -96,8 +96,8 @@ export async function createAuditLog(
       model: params.model,
       recordId: params.recordId,
       action: params.action,
-      before: params.before ? JSON.parse(JSON.stringify(params.before)) : null,
-      after: params.after ? JSON.parse(JSON.stringify(params.after)) : null,
+      before: params.before ? (JSON.parse(JSON.stringify(params.before)) as Prisma.InputJsonValue) : Prisma.JsonNull,
+      after: params.after ? (JSON.parse(JSON.stringify(params.after)) as Prisma.InputJsonValue) : Prisma.JsonNull,
     };
 
     // ARCH-7: The read (findFirst) + write (create) must be atomic to prevent
@@ -152,6 +152,8 @@ async function writeAuditEntry(
   await client.auditLog.create({
     data: {
       ...entryData,
+      before: entryData.before as Prisma.InputJsonValue ?? Prisma.JsonNull,
+      after: entryData.after as Prisma.InputJsonValue ?? Prisma.JsonNull,
       integrityHash,
       previousHash,
       sequenceNumber,

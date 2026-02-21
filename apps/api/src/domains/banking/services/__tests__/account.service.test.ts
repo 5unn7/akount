@@ -60,7 +60,7 @@ describe('AccountService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Re-wire $transaction mock after clearAllMocks
-    vi.mocked(prisma.$transaction).mockImplementation(
+    (vi.mocked(prisma.$transaction) as any).mockImplementation(
       (fn: (tx: typeof mockTxClient) => Promise<unknown>) => fn(mockTxClient) as never
     );
     service = new AccountService(TENANT_ID);
