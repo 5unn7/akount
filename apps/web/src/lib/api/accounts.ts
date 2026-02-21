@@ -226,3 +226,37 @@ export async function listAccountTransactions(
 
     return apiClient<ListAccountTransactionsResponse>(endpoint);
 }
+
+// ─── Bank Connections ────────────────────────────────────────────────
+
+export interface ConnectionAccount {
+    id: string;
+    name: string;
+    currentBalance: number; // cents
+    currency: string;
+}
+
+export interface BankConnectionResult {
+    id: string;
+    entityId: string;
+    provider: string;
+    institutionName: string;
+    status: string;
+    accounts: ConnectionAccount[];
+    accountCount: number;
+    transactionCount: number;
+    isExisting: boolean;
+}
+
+/**
+ * Create a bank connection from Flinks Connect loginId.
+ */
+export async function createBankConnection(
+    loginId: string,
+    entityId: string,
+): Promise<BankConnectionResult> {
+    return apiClient<BankConnectionResult>('/api/banking/connections', {
+        method: 'POST',
+        body: JSON.stringify({ loginId, entityId }),
+    });
+}

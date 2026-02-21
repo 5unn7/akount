@@ -27,6 +27,8 @@ vi.mock('../../../middleware/withPermission', () => ({
   withPermission: vi.fn(() => ({
     preHandler: async () => {},
   })),
+  adminOnly: { preHandler: async () => {} },
+  transactingAccess: { preHandler: async () => {} },
 }));
 
 // Mock validation middleware
@@ -36,9 +38,26 @@ vi.mock('../../../middleware/validation', () => ({
   validateBody: vi.fn(() => async () => {}),
 }));
 
-// Mock import routes to avoid pulling in parser dependencies
-vi.mock('../routes/import', () => ({
-  importRoutes: vi.fn(async () => {}),
+// Mock sub-routes to avoid pulling in their dependencies
+vi.mock('../routes/imports', () => ({
+  importsRoutes: vi.fn(async () => {}),
+}));
+vi.mock('../routes/transactions', () => ({
+  transactionRoutes: vi.fn(async () => {}),
+}));
+vi.mock('../routes/reconciliation', () => ({
+  reconciliationRoutes: vi.fn(async () => {}),
+}));
+vi.mock('../routes/categories', () => ({
+  categoryRoutes: vi.fn(async () => {}),
+}));
+vi.mock('../routes/connections', () => ({
+  connectionRoutes: vi.fn(async () => {}),
+}));
+
+// Mock rate-limit middleware
+vi.mock('../../../middleware/rate-limit', () => ({
+  strictRateLimitConfig: vi.fn(() => ({})),
 }));
 
 // Mock AccountService - use function constructor so `new` works

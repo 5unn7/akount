@@ -5,9 +5,11 @@ import {
     createAccount,
     updateAccount,
     deleteAccount,
+    createBankConnection,
     type CreateAccountInput,
     type UpdateAccountInput,
     type Account,
+    type BankConnectionResult,
 } from '@/lib/api/accounts';
 
 export type ActionResult<T = void> =
@@ -56,6 +58,27 @@ export async function deleteAccountAction(
         return {
             success: false,
             error: err instanceof Error ? err.message : 'Failed to delete account',
+        };
+    }
+}
+
+export async function createBankConnectionAction(
+    loginId: string,
+    entityId: string,
+): Promise<ActionResult<BankConnectionResult>> {
+    try {
+        const result = await createBankConnection(loginId, entityId);
+        // Revalidate all affected routes
+        revalidatePath('/banking/accounts');
+        revalidatePath('/banking/transactions');
+        revalidatePath('/overview');
+        revalidatePath('/banking');
+        revalidatePath('/accounting');
+        return { success: true, data: result };
+    } catch (err) {
+        return {
+            success: false,
+            error: err instanceof Error ? err.message : 'Failed to connect bank',
         };
     }
 }

@@ -29,6 +29,11 @@ const nextConfig = {
                         key: 'Permissions-Policy',
                         value: 'camera=(), microphone=(), geolocation=()', // Restrict browser features
                     },
+                    {
+                        // CSP: Allow Flinks Connect iframe while blocking all other external frames
+                        key: 'Content-Security-Policy',
+                        value: "frame-src 'self' https://toolbox-iframe.private.fin.ag https://*.private.fin.ag;",
+                    },
                 ],
             },
             {

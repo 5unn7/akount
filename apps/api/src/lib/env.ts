@@ -39,6 +39,13 @@ const envSchema = z.object({
     // File Scanning (optional — ClamAV daemon for virus scanning)
     CLAMAV_HOST: z.string().optional(),
     CLAMAV_PORT: z.coerce.number().positive().int().optional().default(3310),
+
+    // Flinks Bank Connection — required in production, optional in dev (demo mode)
+    FLINKS_INSTANCE: z.string().optional(),       // e.g. "toolbox"
+    FLINKS_CUSTOMER_ID: z.string().optional(),     // Customer ID from Flinks dashboard
+    FLINKS_SECRET: z.string().optional(),          // API secret (NEVER expose client-side)
+    FLINKS_CONNECT_URL: z.string().url().optional(), // e.g. "https://toolbox-iframe.private.fin.ag"
+    FLINKS_API_URL: z.string().url().optional(),     // e.g. "https://toolbox-api.private.fin.ag"
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -110,6 +117,11 @@ if (env.NODE_ENV === 'production') {
     // DATABASE_URL should not point to localhost in production
     if (env.DATABASE_URL.includes('localhost') || env.DATABASE_URL.includes('127.0.0.1')) {
         warnings.push('DATABASE_URL points to localhost — use a production database URL');
+    }
+
+    // Flinks credentials required in production
+    if (!env.FLINKS_INSTANCE || !env.FLINKS_CUSTOMER_ID || !env.FLINKS_SECRET || !env.FLINKS_CONNECT_URL || !env.FLINKS_API_URL) {
+        warnings.push('FLINKS_* env vars missing — bank connection feature disabled. Set all 5 Flinks vars for production.');
     }
 
     if (warnings.length > 0) {
