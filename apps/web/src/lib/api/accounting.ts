@@ -302,6 +302,102 @@ export async function postBulkTransactions(
 }
 
 // ============================================================================
+// Tax Rate types
+// ============================================================================
+
+export interface TaxRate {
+    id: string;
+    entityId: string | null;
+    code: string;
+    name: string;
+    rate: number; // 0-1 decimal (0.13 = 13%)
+    jurisdiction: string;
+    isInclusive: boolean;
+    glAccountId: string | null;
+    isActive: boolean;
+    effectiveFrom: string;
+    effectiveTo: string | null;
+}
+
+export interface ListTaxRatesParams {
+    entityId?: string;
+    jurisdiction?: string;
+    isActive?: boolean;
+    search?: string;
+}
+
+export interface CreateTaxRateInput {
+    entityId?: string;
+    code: string;
+    name: string;
+    rate: number;
+    jurisdiction: string;
+    isInclusive?: boolean;
+    glAccountId?: string;
+    effectiveFrom: string;
+    effectiveTo?: string;
+}
+
+export interface UpdateTaxRateInput {
+    name?: string;
+    rate?: number;
+    jurisdiction?: string;
+    isInclusive?: boolean;
+    glAccountId?: string | null;
+    isActive?: boolean;
+    effectiveFrom?: string;
+    effectiveTo?: string | null;
+}
+
+// ============================================================================
+// Tax Rate API functions
+// ============================================================================
+
+export async function listTaxRates(
+    params: ListTaxRatesParams = {}
+): Promise<TaxRate[]> {
+    const searchParams = new URLSearchParams();
+    if (params.entityId) searchParams.append('entityId', params.entityId);
+    if (params.jurisdiction) searchParams.append('jurisdiction', params.jurisdiction);
+    if (params.isActive !== undefined) searchParams.append('isActive', String(params.isActive));
+    if (params.search) searchParams.append('search', params.search);
+
+    const query = searchParams.toString();
+    return apiClient<TaxRate[]>(
+        `/api/accounting/tax-rates${query ? `?${query}` : ''}`
+    );
+}
+
+export async function getTaxRate(id: string): Promise<TaxRate> {
+    return apiClient<TaxRate>(`/api/accounting/tax-rates/${id}`);
+}
+
+export async function createTaxRate(
+    input: CreateTaxRateInput
+): Promise<TaxRate> {
+    return apiClient<TaxRate>('/api/accounting/tax-rates', {
+        method: 'POST',
+        body: JSON.stringify(input),
+    });
+}
+
+export async function updateTaxRate(
+    id: string,
+    input: UpdateTaxRateInput
+): Promise<TaxRate> {
+    return apiClient<TaxRate>(`/api/accounting/tax-rates/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(input),
+    });
+}
+
+export async function deactivateTaxRate(id: string): Promise<TaxRate> {
+    return apiClient<TaxRate>(`/api/accounting/tax-rates/${id}`, {
+        method: 'DELETE',
+    });
+}
+
+// ============================================================================
 // Formatting helpers
 // ============================================================================
 

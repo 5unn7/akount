@@ -1,42 +1,46 @@
-import type { Metadata } from "next";
-import { Percent } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Metadata } from 'next';
+import { listTaxRates } from '@/lib/api/accounting';
+import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
+import { TaxRatesClient } from './tax-rates-client';
+import { TaxRatesEmpty } from './tax-rates-empty';
 
 export const metadata: Metadata = {
-    title: "Tax Rates | Akount",
-    description: "Manage tax rates and GST/HST settings",
+    title: 'Tax Rates | Akount',
+    description: 'Manage tax rates and GST/HST settings',
 };
 
-export default function TaxRatesPage() {
+export default async function TaxRatesPage() {
+    const [{ entityId: rawEntityId }, allEntities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, allEntities) ?? undefined;
+
+    const taxRates = await listTaxRates({ entityId });
+
+    if (taxRates.length === 0) {
+        return (
+            <div className="flex-1 space-y-4 p-8 pt-6">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-3xl font-bold tracking-tight font-heading">Tax Rates</h2>
+                </div>
+                <TaxRatesEmpty entityId={entityId} />
+            </div>
+        );
+    }
+
     return (
         <div className="flex-1 space-y-4 p-8 pt-6">
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                <div>
                     <h2 className="text-3xl font-bold tracking-tight font-heading">Tax Rates</h2>
-                    <Badge variant="outline" className="text-xs glass text-muted-foreground border-ak-border">
-                        Coming Soon
-                    </Badge>
+                    <p className="text-sm text-muted-foreground mt-1">
+                        Manage sales tax, GST/HST, and provincial tax rates
+                    </p>
                 </div>
             </div>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Percent className="h-5 w-5" />
-                        Coming Soon
-                    </CardTitle>
-                    <CardDescription>
-                        Configure tax rates for Canadian GST/HST and provincial taxes.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        This feature is under development. It will provide tax rate management,
-                        compound tax support, and multi-jurisdiction handling.
-                    </p>
-                </CardContent>
-            </Card>
+            <TaxRatesClient initialTaxRates={taxRates} entityId={entityId} />
         </div>
     );
 }
