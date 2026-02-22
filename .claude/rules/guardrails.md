@@ -170,6 +170,10 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ❌ **NEVER ignore design spec** — if spec says "glass", use glass variant
 - ❌ **NEVER use arbitrary font sizes** — `text-[10px]` → `text-micro`, `text-[11px]` → `text-xs`
 
+### Client Data & State Management
+- ❌ **NEVER mix `useState(initialData)` with `router.refresh()`** — `router.refresh()` re-runs the Server Component but `useState` ignores new initial values after mount, making refresh a no-op. Choose Strategy 1 (optimistic state, no refresh) or Strategy 2 (no useState, refresh from props). See `frontend-conventions.md`.
+- ❌ **NEVER reuse a Sheet/Form for create/edit without a `key` prop** — internal `useState` initializers only run on mount. Without `key={record?.id ?? 'create'}`, form fields show stale data when switching between records.
+
 ### Component Reuse (CRITICAL — No Inline Quick Fixes)
 - ❌ **NEVER inline-reimplement an existing component** — always search first
   - Search: `Grep "ComponentName" packages/ui/src/ apps/web/src/components/`
@@ -228,6 +232,8 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ❌ **NEVER accept FK references without ownership check** — validate glAccountId, categoryId etc. belong to tenant (IDOR prevention)
 - ❌ **NEVER add P2002 error handler without @@unique constraint** — verify Prisma schema first, dead handlers = false confidence
 - ❌ **NEVER chain `.optional()` on validation middleware** — `validateBody()` returns a function, not a Zod schema
+- ❌ **NEVER inline JE entry number generation** — use `generateEntryNumber()` from `domains/accounting/utils/entry-number.ts`. Inline `parseInt(str.replace('JE-', ''))` produces NaN on unexpected formats.
+- ❌ **NEVER duplicate private methods across services** — if 3+ services need the same function, extract to `domains/<domain>/utils/`
 
 ### Code Quality
 - ❌ **NEVER use mock data in implementation** — mocks are for tests

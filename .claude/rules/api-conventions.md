@@ -221,6 +221,39 @@ catch (error) {
 
 **Pattern:** Define `handleXxxError(error, reply)` in `domains/<domain>/errors.ts`, import in all route files for that domain.
 
+## Shared Domain Utilities
+
+When 3+ services need the same function, extract it to `domains/<domain>/utils/`. This prevents duplication drift and ensures consistent behavior.
+
+### Canonical Utility Locations
+
+| Utility | Location | Import |
+|---------|----------|--------|
+| `generateEntryNumber` | `domains/accounting/utils/entry-number.ts` | JE sequential numbering (JE-001, JE-002) |
+
+### JE Entry Number Generation
+
+**ALWAYS** use the shared utility. NEVER inline JE number generation or create private methods.
+
+```typescript
+// ✅ CORRECT — import shared utility
+import { generateEntryNumber } from '../utils/entry-number';
+
+// Inside a $transaction:
+const entryNumber = await generateEntryNumber(tx, entityId);
+
+// ❌ WRONG — inline generation (NaN risk if format unexpected)
+const nextNum = `JE-${parseInt(lastEntry.entryNumber.replace('JE-', '')) + 1}`;
+
+// ❌ WRONG — duplicated private method
+private async generateEntryNumber(tx, entityId) { /* same code as utility */ }
+```
+
+**Key rules:**
+- MUST be called within a Prisma `$transaction` (prevents race conditions)
+- Uses regex `/JE-(\d+)/` extraction (safe against unexpected formats)
+- Returns `JE-001` if no prior entries exist
+
 ## Single Responsibility Principle (SRP)
 
 **Every file should have ONE clear purpose.** Can you describe it without using "and"?

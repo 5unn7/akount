@@ -41,6 +41,115 @@ export function InteractiveForm() {
 }
 ```
 
+## Client Data & Mutation Patterns
+
+When a Server Component passes data to a Client Component, choose ONE strategy per component. **Never mix strategies.**
+
+### The `useState(initialData)` + `router.refresh()` Trap
+
+`useState(initialData)` only uses `initialData` on first mount. Calling `router.refresh()` re-runs the Server Component and passes new props, but React does NOT re-initialize `useState` — it keeps the stale state. So `router.refresh()` is a **no-op** for any data held in `useState`.
+
+### Strategy 1: Optimistic State (for interactive lists/details)
+
+**Use when:** The component needs to reflect mutations immediately.
+
+```typescript
+'use client'
+function ListClient({ initialData }: { initialData: Item[] }) {
+  const [items, setItems] = useState(initialData);
+
+  async function handleDelete(id: string) {
+    await deleteItem(id);
+    setItems(prev => prev.filter(i => i.id !== id)); // Optimistic update
+    // NO router.refresh() — useState ignores new props anyway
+  }
+
+  async function handleCreate(input: CreateInput) {
+    const created = await createItem(input);
+    setItems(prev => [...prev, created]); // Optimistic add
+  }
+}
+```
+
+**Rules:**
+- After mutations, ALWAYS update local state via `setState`
+- NEVER call `router.refresh()` — it has no effect on useState-managed data
+- Next page navigation will re-fetch fresh server data
+- If mutation response doesn't return the full updated object, do a targeted re-fetch via API client
+
+### Strategy 2: Server Refresh (for read-heavy displays)
+
+**Use when:** The component displays server data without local mutations, OR mutations are rare.
+
+```typescript
+'use client'
+function StatusDisplay({ data }: { data: Status }) {
+  const router = useRouter();
+  // Read from props directly — DO NOT wrap in useState
+
+  async function handleAction() {
+    await performAction();
+    router.refresh(); // Works because component reads props, not state
+  }
+
+  return <div>{data.status}</div>;
+}
+```
+
+**Rules:**
+- Do NOT wrap server props in `useState` — read directly from props
+- `router.refresh()` works correctly because new props flow into render
+- Accept a brief loading flash during refresh (loading.tsx handles this)
+
+### Anti-Patterns
+
+```typescript
+// ❌ WRONG — useState + router.refresh = no-op (refresh has zero effect on state)
+const [items, setItems] = useState(initialItems);
+async function handleDelete(id: string) {
+  await deleteItem(id);
+  setItems(prev => prev.filter(i => i.id !== id));
+  router.refresh(); // WASTED — useState ignores new initial props
+}
+
+// ✅ CORRECT (Strategy 1) — optimistic state only, no refresh
+const [items, setItems] = useState(initialItems);
+async function handleDelete(id: string) {
+  await deleteItem(id);
+  setItems(prev => prev.filter(i => i.id !== id));
+}
+
+// ✅ CORRECT (Strategy 2) — no useState, refresh only
+// Component reads `items` from props, not local state
+async function handleDelete(id: string) {
+  await deleteItem(id);
+  router.refresh(); // Works — new props flow into next render
+}
+```
+
+### Sheet/Form State Reset
+
+When a Sheet/Dialog uses internal `useState` for form fields AND is reused for create/edit/switching records, the parent MUST pass a `key` prop that changes when form identity changes.
+
+```typescript
+// ✅ CORRECT — key changes when switching between create and edit
+<AssetSheet
+  key={editingAsset?.id ?? 'create'}
+  open={sheetOpen}
+  onOpenChange={setSheetOpen}
+  editingAsset={editingAsset}
+/>
+
+// ❌ WRONG — no key, form fields stay stale when switching records
+<AssetSheet
+  open={sheetOpen}
+  onOpenChange={setSheetOpen}
+  editingAsset={editingAsset}
+/>
+```
+
+**When NOT needed:** Sheets only used for create (no edit mode), or sheets using lifted state (parent manages fields via setter props).
+
 ## Design System Stack
 
 **Base:** shadcn/ui components (headless, accessible)
@@ -331,7 +440,7 @@ const data = await fetchData(entityId) // now guaranteed string
 |---------|----------|-------------|
 | `formatCurrency` | `apps/web/src/lib/utils/currency.ts` | `@/lib/utils/currency` |
 | `formatCompactNumber` | `apps/web/src/lib/utils/currency.ts` | `@/lib/utils/currency` |
-| Date formatting | `apps/web/src/lib/utils/date.ts` | `@/lib/utils/date` (TODO: create) |
+| Date formatting | `apps/web/src/lib/utils/date.ts` | `@/lib/utils/date` |
 | Validation helpers | `apps/api/src/lib/validators/` | Server-side only |
 
 **Before creating ANY helper function:**
