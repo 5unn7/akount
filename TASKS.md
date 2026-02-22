@@ -1,10 +1,10 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-21 21:49
+**Last Updated:** 2026-02-22
 **Current Phase:** Phase 6 — Launch MVP
 
-> **371 tasks** · 🔴 2 critical · 🟠 39 high · 🟡 149 medium · ⚪ 31 low · ✅ 128 done
-> 🟢 115 ready · 📦 119 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **355 tasks** · 🔴 7 critical · 🟠 49 high · 🟡 131 medium · ⚪ 26 low · ✅ 125 done
+> 209 active · 37% overall progress
 
 ---
 
