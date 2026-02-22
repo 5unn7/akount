@@ -21,8 +21,9 @@ export default async function ClientsPage() {
     const clientsResult = await listClients({ limit: 50, entityId });
     const clients = clientsResult.clients;
 
-    // Derive primary currency from first client or default to CAD
-    const primaryCurrency = 'CAD';
+    // Get functional currency from entity
+    const entity = entities.find((e) => e.id === entityId) ?? entities[0];
+    const primaryCurrency = entity?.functionalCurrency ?? 'CAD';
 
     // Calculate stats
     const activeClients = clients.filter((c) => c.status === 'active').length;

@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-21
 **Current Phase:** Phase 6 — Launch MVP
 
-> **269 tasks** · 🔴 0 critical · 🟠 49 high · 🟡 137 medium · ⚪ 28 low · ✅ 83 done
-> 🟢 72 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **300 tasks** · 🔴 3 critical · 🟠 60 high · 🟡 158 medium · ⚪ 30 low · ✅ 76 done
+> 🟢 110 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -80,12 +80,12 @@
 | UX-15 | Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:banking-command-center.md |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
 | ~~UX-16~~ | ~~Accounting: Add confirmation dialogs on Void/Delete journal entry actions (no prompt currently)~~ | 30m | 🟠 High | ✅ | | audit:acct-fe-be |
-| UX-17 | App-wide: Add toast notifications on ALL mutations — zero toast usage across entire app (accounting, banking, invoicing, vendors, settings: ~20+ mutation points) | 3-4h | 🟠 High | 🟢 | | audit:acct-fe-be, audit:app-ux |
+| ~~UX-17~~ | ~~App-wide: Add toast notifications on ALL mutations — covered: account CRUD, transaction create, JE CRUD, invoice/bill actions, COA seed~~ | 3-4h | 🟠 High | ✅ | 4990262 | audit:acct-fe-be, audit:app-ux |
 | UX-18 | Accounting: Add landing page at `/accounting` with summary stats (draft JEs, account count, recent activity) | 2-3h | 🟠 High | 🟢 | | audit:acct-fe-be |
 | DEV-59 | Accounting: Add transaction posting UI — post bank txns to GL (3 backend endpoints exist, no UI) | 3-4h | 🟠 High | 🟢 | | audit:acct-fe-be |
 | ~~DEV-60~~ | ~~Accounting: Add journal entry sourceType filter (backend supports, UI only has status filter)~~ | 30m | 🟠 High | ✅ | | audit:acct-fe-be |
-| UX-29 | App-wide: Add confirmation dialogs on ALL destructive actions — Cancel Invoice/Bill, Bulk Delete, account deactivate (6+ unconfirmed actions) | 2h | 🟠 High | 🟢 | | audit:app-ux |
-| UX-30 | Banking: Fix posted transaction link (goes to filtered list, not specific journal entry) | 30m | 🟠 High | 🟢 | | audit:app-ux [atomic] |
+| ~~UX-29~~ | ~~App-wide: Add confirmation dialogs on ALL destructive actions — Cancel Invoice/Bill, Bulk Delete, account deactivate (6+ unconfirmed actions)~~ | 2h | 🟠 High | ✅ | 2479218 | audit:app-ux |
+| ~~UX-30~~ | ~~Banking: Fix posted transaction link (goes to filtered list, not specific journal entry)~~ | 30m | 🟠 High | ✅ | session | audit:app-ux [atomic] |
 | UX-31 | Business: Add search/filter bar on invoice, bill, client, vendor lists (no search, status filter, or date filter) | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
 | UX-32 | Business: Add pagination controls — backend supports cursor pagination, frontend shows max 50 items with no "Load More" | 1-2h | 🟠 High | 🟢 | | audit:app-ux |
 | DEV-71 | Business: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
@@ -122,11 +122,11 @@
 | UX-35 | Sidebar: Add "Coming Soon" badge to 17 placeholder pages or hide unimplemented nav items | 30m | 🟡 Medium | 🟢 | | audit:app-ux [atomic] |
 | UX-36 | Business: Add standalone "Create Client" / "Create Vendor" buttons on list pages (currently only via invoice/bill forms) | 1h | 🟡 Medium | 🟢 | | audit:app-ux |
 | ~~UX-37~~ | ~~Business: Add client/vendor edit capability in detail panels~~ (merged into DEV-122 + DEV-123) | 1-2h | 🟡 Medium | ✅ | | audit:app-ux |
-| UX-38 | Banking: Add active/inactive account filter toggle (backend supports `isActive` param, UI shows all) | 30m | 🟡 Medium | 🟢 | | audit:app-ux [atomic] |
+| ~~UX-38~~ | ~~Banking: Add active/inactive account filter toggle (backend supports `isActive` param, UI shows all)~~ | 30m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |
 | UX-39 | Banking: Add aria-labels to bulk action buttons, select-all checkbox, filter dropdowns (a11y) | 30m | 🟡 Medium | 🟢 | | audit:app-ux [atomic] |
 | ~~UX-40~~ | ~~Business: Add mark-overdue button on bill detail~~ (merged into UX-79) | 30m | 🟡 Medium | ✅ | | audit:app-ux |
-| UX-41 | Business: Fix hardcoded 'CAD' currency on vendor/client pages — should use entity functional currency | 15m | 🟡 Medium | 🟢 | | audit:app-ux [atomic] |
-| UX-42 | Business: Add "View Journal Entry" link after posting invoice/bill to GL | 30m | 🟡 Medium | 🟢 | | audit:app-ux [atomic] |
+| ~~UX-41~~ | ~~Business: Fix hardcoded 'CAD' currency on vendor/client pages — should use entity functional currency~~ | 15m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |
+| ~~UX-42~~ | ~~Business: Add "View Journal Entry" link after posting invoice/bill to GL~~ | 30m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |
 | ~~UX-43~~ | ~~Business: Add payment allocation UI~~ (merged into DEV-76) | 3-4h | 🟡 Medium | ✅ | | audit:app-ux |
 | UX-44 | Business: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
@@ -364,6 +364,25 @@
 | INFRA-5 | Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts) | 2h | 🟠 High | 🔒 | [needs: INFRA-2] | roadmap |
 | INFRA-7 | OpenTelemetry instrumentation (distributed tracing, metrics, alerting) | 4h | 🟠 High | 🔒 | [needs: INFRA-2] | review:smooth-floating-mountain |
 | INFRA-8 | Docker image building + container deployment pipeline | 3h | 🟠 High | 🔒 | [needs: INFRA-1] | review:smooth-floating-mountain |
+| INFRA-29 | Linear: Update workspace setup script for 12 teams (add CS, Infrastructure, Growth, Content, Business Ops) | 1h | 🟠 High | 🟢 | | plan:linear-scale-architecture |
+| INFRA-30 | Linear: Add customer impact labels (affects-100+, affects-1000+, churn-risk, production-down, sev-1/2, needs-*) | 30m | 🟠 High | 🟢 | | plan:linear-scale-architecture |
+| INFRA-31 | Linear: Add custom fields (Response Time, Customer Count, Deployment ID, Marketing Campaign) | 1h | 🟠 High | 🟢 | | plan:linear-scale-architecture |
+| INFRA-32 | Linear: Run full workspace setup (12 teams, 34 labels, custom fields) | 15m | 🟠 High | 🟢 | [needs: INFRA-29, INFRA-30, INFRA-31] | plan:linear-scale-architecture |
+| INFRA-33 | Linear: Auto-Triage Bugs automation (CS + bug + >10 users → High + cycle + notify) | 30m | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-34 | Linear: Auto-Route Feature Requests (CS + feature-request → parse keywords → assign team) | 1h | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-36 | Linear: Customer Impact Escalation (affects-1000+ → Critical + cycle + notify exec) | 30m | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-37 | Linear: Incident Response automation (production-down → P0 + timeline + notify all) | 30m | 🔴 Critical | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-41 | Linear: GitHub Actions → Linear webhook (deploy → Infrastructure issue + update Product tasks) | 2h | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-43 | Linear: Support widget → Linear API (in-app feedback → CS issue with user context) | 3h | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-45 | Linear: Sentry → Linear integration (error >10 occurrences → Infrastructure issue) | 1h | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-46 | Linear: Fix task import domain mapping (UX tasks → parse description keywords for correct team) | 1h | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-47 | Linear: Add metadata preservation to import (priority, effort, status, deps, source) | 2h | 🟠 High | 🟢 | [needs: INFRA-46] | plan:linear-scale-architecture |
+| INFRA-48 | Linear: Run task import (migrate 256 product tasks from TASKS.md to Linear) | 30m | 🔴 Critical | 🟢 | [needs: INFRA-47] | plan:linear-scale-architecture |
+| INFRA-53 | Linear: API usage monitoring (daily cron, alert at 75% threshold) | 2h | 🟠 High | 🟢 | [needs: INFRA-41] | plan:linear-scale-architecture |
+| OPS-4 | Linear: Executive Dashboard view (all teams, health metrics, primary visibility tool) | 15m | 🔴 Critical | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-5 | Linear: Customer Health Dashboard (CS team, 7d, response time metrics) | 15m | 🟠 High | 🟢 | [needs: INFRA-31] | plan:linear-scale-architecture |
+| OPS-6 | Linear: Product Velocity Dashboard (product teams, cycle, velocity + burndown) | 15m | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-7 | Linear: Incident Response Dashboard (Infrastructure, active incidents, priority sort) | 15m | 🟠 High | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
 
 ### Medium / Low
 
@@ -371,6 +390,31 @@
 |----|------|--------|----------|--------|------|--------|
 | INFRA-4 | Disaster recovery procedure + documentation | 2h | 🟡 Medium | 🔒 | [needs: INFRA-3] | roadmap |
 | INFRA-6 | Deployment documentation | 1h | 🟡 Medium | 🔒 | [needs: INFRA-2] | roadmap |
+| OPS-1 | Linear: Configure workflow states (Ready, Blocked, Review, Deferred) for all 12 teams | 30m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-2 | Linear: Set team-specific settings (cycles, estimation, triage, auto-archive) for consistency | 30m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-35 | Linear: Sprint Auto-Assignment (priority→Critical → add to current cycle) | 15m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-38 | Linear: Feature Shipped Notification (Done + deployed → CS + Content task) | 45m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-39 | Linear: Cross-Team Handoff automation (needs-content → create Content issue) | 30m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-40 | Linear: Duplicate Detection script (hourly cron, check similar CS issues, auto-link) | 2h | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-42 | Linear: GitHub commit auto-linking verification (ensure working) | 15m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| INFRA-44 | Linear: Intercom → Linear webhook (conversation tagged → CS issue) | 2h | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-8 | Linear: Sprint Board view (current cycle, board, group by priority) | 15m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-9 | Linear: Roadmap Timeline view (projects, roadmap, 8 weeks) | 15m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-10 | Linear: Blocked Tasks view (all blocked, group by team) | 15m | 🟡 Medium | 🟢 | [needs: OPS-1] | plan:linear-scale-architecture |
+| OPS-11 | Linear: High Priority Inbox (Critical/High, oldest first, triage view) | 15m | 🟡 Medium | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-12 | Linear: Verify import accuracy (spot-check 20 tasks match TASKS.md) | 30m | 🟡 Medium | 🟢 | [needs: INFRA-48] | plan:linear-scale-architecture |
+| INFRA-49 | Linear: Create sync state file (TASKS.md ↔ Linear ID mapping for bidirectional sync) | 15m | 🟡 Medium | 🟢 | [needs: INFRA-48] | plan:linear-scale-architecture |
+| OPS-13 | Linear: Team workflow docs (12 teams: triage, handoffs, lifecycle) | 2h | 🟡 Medium | 🟢 | [needs: all linear sprints 1-5] | plan:linear-scale-architecture |
+| INFRA-50 | Linear: Automation runbook (10 automations: triggers, actions, troubleshooting) | 2h | 🟡 Medium | 🟢 | [needs: INFRA-33 to INFRA-40] | plan:linear-scale-architecture |
+| INFRA-51 | Linear: Integration guide (5 integrations: setup, webhooks, testing) | 2h | 🟡 Medium | 🟢 | [needs: INFRA-41 to INFRA-45] | plan:linear-scale-architecture |
+| OPS-14 | Linear: Dashboard usage guide (8 views: purpose, metrics, when to use) | 1h | 🟡 Medium | 🟢 | [needs: OPS-4 to OPS-11] | plan:linear-scale-architecture |
+| INFRA-52 | Linear: Best practices (titling, labeling, lifecycle, handoffs) | 1h | 🟡 Medium | 🟢 | [needs: all linear sprints] | plan:linear-scale-architecture |
+| INFRA-54 | Linear: Automation health dashboard (track trigger count, success rate, errors) | 2h | 🟡 Medium | 🟢 | [needs: INFRA-33 to INFRA-40] | plan:linear-scale-architecture |
+| INFRA-55 | Linear: Tune automation thresholds (adjust based on 1 week usage, <5% false positives) | 1h | 🟡 Medium | 🟢 | [needs: INFRA-33 to INFRA-40, 1 week usage] | plan:linear-scale-architecture |
+| INFRA-56 | Linear: Optimize view performance (date filters, limit results, <2s load) | 1h | 🟡 Medium | 🟢 | [needs: OPS-4 to OPS-11, 1 week usage] | plan:linear-scale-architecture |
+| INFRA-57 | Linear: Weekly report automation (Friday cron, exec summary email) | 2h | 🟡 Medium | 🟢 | [needs: OPS-4] | plan:linear-scale-architecture |
+| OPS-3 | Linear: Stale Issue Cleanup (>90d + no activity → comment → close if no response) | 30m | ⚪ Low | 🟢 | [needs: INFRA-32] | plan:linear-scale-architecture |
+| OPS-15 | Linear: Update CLAUDE.md context (Linear as PM tool, workflow references) | 30m | ⚪ Low | 🟢 | [needs: INFRA-52] | plan:linear-scale-architecture |
 
 ---
 

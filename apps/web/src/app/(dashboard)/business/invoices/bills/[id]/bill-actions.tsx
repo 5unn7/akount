@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
     AlertDialog,
@@ -16,7 +17,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { Bill } from '@/lib/api/bills';
 import { approveBillAction, postBillAction, cancelBillAction } from './actions';
-import { CheckCircle, BookOpen, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, BookOpen, XCircle, Loader2, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface BillActionsProps {
@@ -26,6 +27,7 @@ interface BillActionsProps {
 export function BillActions({ bill }: BillActionsProps) {
     const router = useRouter();
     const [loading, setLoading] = useState<string | null>(null);
+    const [journalEntryId, setJournalEntryId] = useState<string | null>(null);
 
     const ACTION_LABELS: Record<string, string> = {
         approve: 'Bill approved',
@@ -39,8 +41,14 @@ export function BillActions({ bill }: BillActionsProps) {
     ) => {
         setLoading(action);
         try {
-            await apiCall();
+            const result = await apiCall();
             toast.success(ACTION_LABELS[action] ?? 'Action completed');
+
+            // If posting to GL, capture journal entry ID
+            if (action === 'post' && result && typeof result === 'object' && 'id' in result) {
+                setJournalEntryId(result.id as string);
+            }
+
             router.refresh();
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Action failed';
@@ -80,7 +88,7 @@ export function BillActions({ bill }: BillActionsProps) {
                     Approve
                 </Button>
             )}
-            {canPost && (
+            {canPost && !journalEntryId && (
                 <Button
                     size="sm"
                     variant="ghost"
@@ -94,6 +102,19 @@ export function BillActions({ bill }: BillActionsProps) {
                         <BookOpen className="h-4 w-4" />
                     )}
                     Post to GL
+                </Button>
+            )}
+            {journalEntryId && (
+                <Button
+                    size="sm"
+                    variant="ghost"
+                    asChild
+                    className="gap-1.5 text-emerald-400 hover:text-emerald-300"
+                >
+                    <Link href={`/accounting/journal-entries/${journalEntryId}`}>
+                        <ExternalLink className="h-4 w-4" />
+                        View Journal Entry
+                    </Link>
                 </Button>
             )}
             {canCancel && (

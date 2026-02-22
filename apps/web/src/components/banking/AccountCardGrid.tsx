@@ -27,9 +27,10 @@ const typeFilterTabs: Array<{ value: AccountType | 'ALL'; label: string }> = [
 
 interface AccountCardGridProps {
     accounts: Account[];
+    showInactive?: boolean;
 }
 
-export function AccountCardGrid({ accounts }: AccountCardGridProps) {
+export function AccountCardGrid({ accounts, showInactive = false }: AccountCardGridProps) {
     const router = useRouter();
     const [activeFilter, setActiveFilter] = useState<AccountType | 'ALL'>(
         'ALL'
@@ -46,34 +47,65 @@ export function AccountCardGrid({ accounts }: AccountCardGridProps) {
         (t) => t.value === 'ALL' || availableTypes.has(t.value as AccountType)
     );
 
+    const activeCount = accounts.filter((a) => a.isActive).length;
+    const inactiveCount = accounts.filter((a) => !a.isActive).length;
+
+    function toggleInactive() {
+        const params = new URLSearchParams(window.location.search);
+        if (showInactive) {
+            params.delete('showInactive');
+        } else {
+            params.set('showInactive', 'true');
+        }
+        router.push(`/banking/accounts${params.toString() ? `?${params}` : ''}`);
+    }
+
     return (
         <div className="space-y-4">
-            {/* Type filter tabs */}
-            {visibleTabs.length > 2 && (
-                <div className="flex items-center gap-1.5 flex-wrap">
-                    {visibleTabs.map((tab) => (
-                        <button
-                            key={tab.value}
-                            onClick={() => setActiveFilter(tab.value)}
-                            className={cn(
-                                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-                                activeFilter === tab.value
-                                    ? 'bg-primary text-black'
-                                    : 'glass text-muted-foreground hover:text-foreground hover:border-ak-border-2'
-                            )}
-                        >
-                            {tab.label}
-                            {tab.value !== 'ALL' && (
-                                <span className="ml-1.5 text-[10px] opacity-70">
-                                    {accounts.filter(
-                                        (a) => a.type === tab.value
-                                    ).length}
-                                </span>
-                            )}
-                        </button>
-                    ))}
-                </div>
-            )}
+            {/* Type filter tabs + Active/Inactive toggle */}
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+                {visibleTabs.length > 2 && (
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                        {visibleTabs.map((tab) => (
+                            <button
+                                key={tab.value}
+                                onClick={() => setActiveFilter(tab.value)}
+                                className={cn(
+                                    'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                                    activeFilter === tab.value
+                                        ? 'bg-primary text-black'
+                                        : 'glass text-muted-foreground hover:text-foreground hover:border-ak-border-2'
+                                )}
+                            >
+                                {tab.label}
+                                {tab.value !== 'ALL' && (
+                                    <span className="ml-1.5 text-[10px] opacity-70">
+                                        {accounts.filter(
+                                            (a) => a.type === tab.value
+                                        ).length}
+                                    </span>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                )}
+                {inactiveCount > 0 && (
+                    <button
+                        onClick={toggleInactive}
+                        className={cn(
+                            'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                            showInactive
+                                ? 'bg-ak-red/15 text-ak-red border border-ak-red/20'
+                                : 'glass text-muted-foreground hover:text-foreground hover:border-ak-border-2'
+                        )}
+                    >
+                        {showInactive ? 'Hide' : 'Show'} Inactive
+                        <span className="ml-1.5 text-[10px] opacity-70">
+                            {inactiveCount}
+                        </span>
+                    </button>
+                )}
+            </div>
 
             {/* Account cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">

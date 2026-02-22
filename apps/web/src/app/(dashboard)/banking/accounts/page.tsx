@@ -18,7 +18,14 @@ export const metadata: Metadata = {
     description: 'Manage your bank accounts, credit cards, investments, and loans',
 };
 
-export default async function AccountsPage() {
+export default async function AccountsPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ showInactive?: string }>;
+}) {
+    const params = await searchParams;
+    const showInactive = params.showInactive === 'true';
+
     // Read entity selection from cookie
     const [{ entityId: rawEntityId }, allEntities] = await Promise.all([
         getEntitySelection(),
@@ -34,7 +41,7 @@ export default async function AccountsPage() {
     // Parallel data fetching — filtered by entity
     const [entities, accountsResult, txnResult] = await Promise.all([
         Promise.resolve(allEntities),
-        listAccounts({ isActive: true, entityId }),
+        listAccounts({ isActive: showInactive ? undefined : true, entityId }),
         listTransactions({
             startDate: monthStart.toISOString(),
             endDate: monthEnd.toISOString(),
@@ -127,7 +134,7 @@ export default async function AccountsPage() {
                     </div>
                 </div>
             ) : (
-                <AccountCardGrid accounts={allAccounts} />
+                <AccountCardGrid accounts={allAccounts} showInactive={showInactive} />
             )}
         </div>
     );

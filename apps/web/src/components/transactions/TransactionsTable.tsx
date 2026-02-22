@@ -46,7 +46,7 @@ function PostingStatusBadge({
     if (journalEntryId) {
         return (
             <Link
-                href={`/accounting/journal-entries?status=POSTED`}
+                href={`/accounting/journal-entries/${journalEntryId}`}
                 className="inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/25 transition-colors"
                 onClick={(e) => e.stopPropagation()}
             >
