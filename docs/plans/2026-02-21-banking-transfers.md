@@ -444,8 +444,8 @@ Task 11, 12 (polish - parallel)
 - [x] Task 2: Transfer service ⚠️
 - [x] Task 3: Transfer routes
 - [x] Task 4: Register routes
-- [ ] Task 5: Service tests (DEFERRED - needs follow-up)
-- [ ] Task 6: Route tests (DEFERRED - needs follow-up)
+- [x] Task 5: Service tests (13 tests, all passing)
+- [x] Task 6: Route tests (11 tests, all passing)
 - [x] Task 7: API client
 - [x] Task 8: Transfer form
 - [x] Task 9: Transfers page
@@ -453,6 +453,10 @@ Task 11, 12 (polish - parallel)
 - [x] Task 11: Update loading
 - [x] Task 12: Remove stub badge (completed via page replacement)
 
+**Status:** ✅ COMPLETE (12/12 tasks done)
+**Tests:** 24 new tests, all passing (1,157 total suite)
+**Commits:** 3 (backend, frontend, tests)
+
 ---
 
-_Plan ready for execution via `/processes:work`_
+_Plan executed and complete — 2026-02-21_
