@@ -11,6 +11,7 @@ import { transactionRoutes } from './routes/transactions';
 import { reconciliationRoutes } from './routes/reconciliation';
 import { categoryRoutes } from './routes/categories';
 import { connectionRoutes } from './routes/connections';
+import { transferRoutes } from './routes/transfers';
 
 // Validation schemas
 const accountsQuerySchema = z.object({
@@ -77,6 +78,7 @@ export async function bankingRoutes(fastify: FastifyInstance) {
   await fastify.register(reconciliationRoutes, { prefix: '/reconciliation' });
   await fastify.register(categoryRoutes, { prefix: '/categories' });
   await fastify.register(connectionRoutes, { prefix: '/connections' });
+  await fastify.register(transferRoutes, { prefix: '/transfers' });
 
   // ============================================================================
   // ACCOUNTS
