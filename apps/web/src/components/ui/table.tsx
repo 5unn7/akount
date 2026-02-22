@@ -66,19 +66,31 @@ const TableRow = React.forwardRef<
 ))
 TableRow.displayName = "TableRow"
 
+interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableCellElement> {
+  variant?: 'default' | 'label';
+}
+
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
-  React.ThHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <th
-    ref={ref}
-    className={cn(
-      "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
-      className
-    )}
-    {...props}
-  />
-))
+  TableHeadProps
+>(({ className, variant = 'default', ...props }, ref) => {
+  const variantStyles = {
+    default: "h-10 px-2 text-left align-middle font-medium text-muted-foreground",
+    label: "py-3 px-4 text-xs uppercase tracking-wider text-muted-foreground text-left",
+  };
+
+  return (
+    <th
+      ref={ref}
+      className={cn(
+        variantStyles[variant],
+        "[&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        className
+      )}
+      {...props}
+    />
+  );
+})
 TableHead.displayName = "TableHead"
 
 const TableCell = React.forwardRef<

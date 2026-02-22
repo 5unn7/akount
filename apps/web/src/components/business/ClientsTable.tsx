@@ -51,16 +51,16 @@ export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
                     <Table>
                         <TableHeader>
                             <TableRow className="border-b border-ak-border hover:bg-transparent">
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Name
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Contact
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Payment Terms
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Status
                                 </TableHead>
                                 <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">

@@ -3,7 +3,7 @@ import { withPermission } from '../../../middleware/withPermission';
 import { validateBody, validateQuery, validateParams } from '../../../middleware/validation';
 import { GLAccountService } from '../services/gl-account.service';
 import { seedDefaultCOA } from '../services/coa-template';
-import { AccountingError } from '../errors';
+import { handleAccountingError } from '../errors';
 import {
   CreateGLAccountSchema,
   UpdateGLAccountSchema,
@@ -195,18 +195,4 @@ export async function glAccountRoutes(fastify: FastifyInstance) {
       }
     }
   );
-}
-
-/**
- * Map AccountingError to HTTP response. Re-throw unknown errors.
- */
-function handleAccountingError(error: unknown, reply: FastifyReply) {
-  if (error instanceof AccountingError) {
-    return reply.status(error.statusCode).send({
-      error: error.code,
-      message: error.message,
-      details: error.details,
-    });
-  }
-  throw error;
 }

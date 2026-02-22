@@ -1,18 +1,12 @@
 'use server';
 
 import {
-    listTaxRates,
     createTaxRate,
     updateTaxRate,
     deactivateTaxRate,
-    type ListTaxRatesParams,
     type CreateTaxRateInput,
     type UpdateTaxRateInput,
 } from '@/lib/api/accounting';
-
-export async function listTaxRatesAction(params: ListTaxRatesParams = {}) {
-    return listTaxRates(params);
-}
 
 export async function createTaxRateAction(input: CreateTaxRateInput) {
     return createTaxRate(input);

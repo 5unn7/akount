@@ -11,6 +11,8 @@
     "./feedback": "./src/feedback/index.ts",
     "./financial": "./src/financial/index.ts",
     "./ai": "./src/ai/index.ts",
+    "./business": "./src/business/index.ts",
+    "./patterns": "./src/patterns/index.ts",
     "./patterns/navigation": "./src/patterns/navigation/index.ts",
     "./patterns/tables": "./src/patterns/tables/index.ts",
     "./patterns/forms": "./src/patterns/forms/index.ts"

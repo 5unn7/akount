@@ -7,6 +7,7 @@ import { TENANT_ID, USER_ID, ENTITY_ID, mockEntity } from './helpers';
 vi.mock('@akount/db', () => ({
     prisma: {
         entity: { findFirst: vi.fn() },
+        gLAccount: { findFirst: vi.fn() },
         taxRate: {
             findMany: vi.fn(),
             findFirst: vi.fn(),
@@ -81,12 +82,16 @@ describe('TaxRateService', () => {
             expect(result).toEqual(rates);
             expect(mockFindMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: expect.objectContaining({
-                        OR: expect.arrayContaining([
-                            { entityId: ENTITY_ID, entity: { tenantId: TENANT_ID } },
-                            { entityId: null },
+                    where: {
+                        AND: expect.arrayContaining([
+                            {
+                                OR: expect.arrayContaining([
+                                    { entityId: ENTITY_ID, entity: { tenantId: TENANT_ID } },
+                                    { entityId: null },
+                                ]),
+                            },
                         ]),
-                    }),
+                    },
                 })
             );
         });
@@ -98,9 +103,11 @@ describe('TaxRateService', () => {
 
             expect(mockFindMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: expect.objectContaining({
-                        jurisdiction: { contains: 'Ontario', mode: 'insensitive' },
-                    }),
+                    where: {
+                        AND: expect.arrayContaining([
+                            { jurisdiction: { contains: 'Ontario', mode: 'insensitive' } },
+                        ]),
+                    },
                 })
             );
         });
@@ -112,9 +119,11 @@ describe('TaxRateService', () => {
 
             expect(mockFindMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: expect.objectContaining({
-                        isActive: true,
-                    }),
+                    where: {
+                        AND: expect.arrayContaining([
+                            { isActive: true },
+                        ]),
+                    },
                 })
             );
         });
@@ -384,8 +393,12 @@ describe('TaxRateService', () => {
             await service.listTaxRates({ entityId: ENTITY_ID });
 
             const call = mockFindMany.mock.calls[0][0];
-            const orClause = call.where.OR;
-            expect(orClause).toContainEqual(
+            // Query now uses AND structure with tenant-scoping OR nested inside
+            const andConditions = call.where.AND;
+            const tenantCondition = andConditions.find(
+                (c: Record<string, unknown>) => c.OR !== undefined
+            );
+            expect(tenantCondition.OR).toContainEqual(
                 expect.objectContaining({
                     entity: { tenantId: TENANT_ID },
                 })

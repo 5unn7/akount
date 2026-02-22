@@ -20,6 +20,8 @@ const TAX_RATE_SELECT = {
     isActive: true,
     effectiveFrom: true,
     effectiveTo: true,
+    createdAt: true,
+    updatedAt: true,
 } as const;
 
 export class TaxRateService {
@@ -33,34 +35,37 @@ export class TaxRateService {
      * Returns both entity-specific and global rates (entityId: null).
      */
     async listTaxRates(params: ListTaxRatesQuery) {
-        // Build where clause
-        const where: Prisma.TaxRateWhereInput = {
-            OR: [
-                // Entity-specific rates
-                ...(params.entityId
-                    ? [{ entityId: params.entityId, entity: { tenantId: this.tenantId } }]
-                    : []),
-                // Global rates (no entityId)
-                { entityId: null },
-            ],
-        };
+        // Build AND conditions to avoid overwriting tenant-scoping OR
+        const conditions: Prisma.TaxRateWhereInput[] = [
+            // Tenant scoping: entity-specific + global rates
+            {
+                OR: [
+                    ...(params.entityId
+                        ? [{ entityId: params.entityId, entity: { tenantId: this.tenantId } }]
+                        : []),
+                    { entityId: null },
+                ],
+            },
+        ];
 
-        // Apply filters
+        // Apply filters as additional AND conditions
         if (params.jurisdiction) {
-            where.jurisdiction = { contains: params.jurisdiction, mode: 'insensitive' };
+            conditions.push({ jurisdiction: { contains: params.jurisdiction, mode: 'insensitive' } });
         }
         if (params.isActive !== undefined) {
-            where.isActive = params.isActive;
+            conditions.push({ isActive: params.isActive });
         }
         if (params.search) {
-            where.OR = [
-                { name: { contains: params.search, mode: 'insensitive' } },
-                { code: { contains: params.search, mode: 'insensitive' } },
-            ];
+            conditions.push({
+                OR: [
+                    { name: { contains: params.search, mode: 'insensitive' } },
+                    { code: { contains: params.search, mode: 'insensitive' } },
+                ],
+            });
         }
 
         const taxRates = await prisma.taxRate.findMany({
-            where,
+            where: { AND: conditions },
             select: TAX_RATE_SELECT,
             orderBy: [{ isActive: 'desc' }, { jurisdiction: 'asc' }, { code: 'asc' }],
         });
@@ -102,6 +107,11 @@ export class TaxRateService {
         // Validate entity ownership if entityId provided
         if (data.entityId) {
             await this.validateEntityOwnership(data.entityId);
+        }
+
+        // Validate GL account ownership if provided
+        if (data.glAccountId) {
+            await this.validateGLAccountOwnership(data.glAccountId);
         }
 
         // Validate date range
@@ -164,13 +174,12 @@ export class TaxRateService {
      * Update a tax rate.
      */
     async updateTaxRate(id: string, data: UpdateTaxRateInput) {
+        // Only allow updating entity-specific rates owned by this tenant
         const existing = await prisma.taxRate.findFirst({
             where: {
                 id,
-                OR: [
-                    { entity: { tenantId: this.tenantId } },
-                    { entityId: null }, // Can update global rates
-                ],
+                entityId: { not: null },
+                entity: { tenantId: this.tenantId },
             },
             select: {
                 id: true,
@@ -179,6 +188,8 @@ export class TaxRateService {
                 name: true,
                 rate: true,
                 isActive: true,
+                effectiveFrom: true,
+                effectiveTo: true,
             },
         });
 
@@ -186,11 +197,16 @@ export class TaxRateService {
             throw new AccountingError('Tax rate not found', 'TAX_RATE_NOT_FOUND', 404);
         }
 
-        // Validate date range if both dates provided
-        if (data.effectiveFrom && data.effectiveTo) {
-            const from = new Date(data.effectiveFrom);
-            const to = new Date(data.effectiveTo);
-            if (to <= from) {
+        // Validate GL account ownership if provided
+        if (data.glAccountId) {
+            await this.validateGLAccountOwnership(data.glAccountId);
+        }
+
+        // Validate date range — check partial updates against existing record
+        if (data.effectiveFrom || data.effectiveTo) {
+            const from = new Date(data.effectiveFrom ?? existing.effectiveFrom);
+            const to = data.effectiveTo ? new Date(data.effectiveTo) : existing.effectiveTo;
+            if (to && to <= from) {
                 throw new AccountingError(
                     'effectiveTo must be after effectiveFrom',
                     'INVALID_DATE_RANGE',
@@ -222,7 +238,11 @@ export class TaxRateService {
             recordId: id,
             action: 'UPDATE',
             before: { name: existing.name, rate: existing.rate, isActive: existing.isActive },
-            after: { name: data.name, rate: data.rate, isActive: data.isActive },
+            after: {
+                ...(data.name !== undefined && { name: data.name }),
+                ...(data.rate !== undefined && { rate: data.rate }),
+                ...(data.isActive !== undefined && { isActive: data.isActive }),
+            },
         });
 
         return taxRate;
@@ -232,13 +252,12 @@ export class TaxRateService {
      * Deactivate a tax rate (soft delete - sets isActive: false and effectiveTo).
      */
     async deactivateTaxRate(id: string, data?: DeactivateTaxRateInput) {
+        // Only allow deactivating entity-specific rates owned by this tenant
         const existing = await prisma.taxRate.findFirst({
             where: {
                 id,
-                OR: [
-                    { entity: { tenantId: this.tenantId } },
-                    { entityId: null },
-                ],
+                entityId: { not: null },
+                entity: { tenantId: this.tenantId },
             },
             select: { id: true, entityId: true, code: true, name: true },
         });
@@ -284,5 +303,21 @@ export class TaxRateService {
         }
 
         return entity;
+    }
+
+    /**
+     * Validate that a GL account belongs to an entity owned by the current tenant.
+     */
+    private async validateGLAccountOwnership(glAccountId: string) {
+        const glAccount = await prisma.gLAccount.findFirst({
+            where: { id: glAccountId, entity: { tenantId: this.tenantId } },
+            select: { id: true },
+        });
+
+        if (!glAccount) {
+            throw new AccountingError('GL account not found', 'GL_ACCOUNT_NOT_FOUND', 403);
+        }
+
+        return glAccount;
     }
 }

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw } from 'lucide-react';
+import { reportError } from '@/lib/error-tracking';
 
 interface ErrorProps {
     error: Error & { digest?: string };
@@ -16,7 +17,11 @@ interface ErrorProps {
  */
 export default function JournalEntriesError({ error, reset }: ErrorProps) {
     useEffect(() => {
-        console.error('Journal entries page error:', error);
+        reportError(error, {
+            context: 'journal-entries-page',
+            severity: 'high',
+            digest: error.digest,
+        });
     }, [error]);
 
     return (

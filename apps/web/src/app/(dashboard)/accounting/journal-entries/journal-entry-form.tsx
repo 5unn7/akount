@@ -189,7 +189,7 @@ export function JournalEntryForm({
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
-                                <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b border-ak-border">
+                                <tr className="text-micro uppercase tracking-wider text-muted-foreground border-b border-ak-border">
                                     <th className="text-left pb-2 font-medium">GL Account</th>
                                     <th className="text-right pb-2 font-medium w-32">Debit</th>
                                     <th className="text-right pb-2 font-medium w-32">Credit</th>

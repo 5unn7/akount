@@ -2,18 +2,16 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { withPermission } from '../../../middleware/withPermission';
 import { validateBody, validateQuery, validateParams } from '../../../middleware/validation';
 import { TaxRateService } from '../services/tax-rate.service';
-import { AccountingError } from '../errors';
+import { handleAccountingError } from '../errors';
 import {
     CreateTaxRateSchema,
     UpdateTaxRateSchema,
     ListTaxRatesSchema,
     TaxRateParamsSchema,
-    DeactivateTaxRateSchema,
     type CreateTaxRateInput,
     type UpdateTaxRateInput,
     type ListTaxRatesQuery,
     type TaxRateParams,
-    type DeactivateTaxRateInput,
 } from '../schemas/tax-rate.schema';
 
 /**
@@ -40,6 +38,7 @@ export async function taxRateRoutes(fastify: FastifyInstance) {
 
             try {
                 const taxRates = await service.listTaxRates(query);
+                request.log.info({ count: taxRates.length }, 'Listed tax rates');
                 return reply.send(taxRates);
             } catch (error) {
                 return handleAccountingError(error, reply);
@@ -64,6 +63,7 @@ export async function taxRateRoutes(fastify: FastifyInstance) {
 
             try {
                 const taxRate = await service.getTaxRate(params.id);
+                request.log.info({ taxRateId: params.id }, 'Retrieved tax rate');
                 return reply.send(taxRate);
             } catch (error) {
                 return handleAccountingError(error, reply);
@@ -88,6 +88,7 @@ export async function taxRateRoutes(fastify: FastifyInstance) {
 
             try {
                 const taxRate = await service.createTaxRate(body);
+                request.log.info({ taxRateId: taxRate.id, code: body.code }, 'Created tax rate');
                 return reply.status(201).send(taxRate);
             } catch (error) {
                 return handleAccountingError(error, reply);
@@ -116,6 +117,7 @@ export async function taxRateRoutes(fastify: FastifyInstance) {
 
             try {
                 const taxRate = await service.updateTaxRate(params.id, body);
+                request.log.info({ taxRateId: params.id }, 'Updated tax rate');
                 return reply.send(taxRate);
             } catch (error) {
                 return handleAccountingError(error, reply);
@@ -130,7 +132,6 @@ export async function taxRateRoutes(fastify: FastifyInstance) {
             ...withPermission('accounting', 'tax-rates', 'ACT'),
             preValidation: [
                 validateParams(TaxRateParamsSchema),
-                validateBody(DeactivateTaxRateSchema).optional(),
             ],
         },
         async (request: FastifyRequest, reply: FastifyReply) => {
@@ -139,29 +140,15 @@ export async function taxRateRoutes(fastify: FastifyInstance) {
             }
 
             const params = request.params as TaxRateParams;
-            const body = request.body as DeactivateTaxRateInput | undefined;
             const service = new TaxRateService(request.tenantId, request.userId);
 
             try {
-                const taxRate = await service.deactivateTaxRate(params.id, body);
+                const taxRate = await service.deactivateTaxRate(params.id);
+                request.log.info({ taxRateId: params.id }, 'Deactivated tax rate');
                 return reply.send(taxRate);
             } catch (error) {
                 return handleAccountingError(error, reply);
             }
         }
     );
-}
-
-/**
- * Map AccountingError to HTTP response. Re-throw unknown errors.
- */
-function handleAccountingError(error: unknown, reply: FastifyReply) {
-    if (error instanceof AccountingError) {
-        return reply.status(error.statusCode).send({
-            error: error.code,
-            message: error.message,
-            details: error.details,
-        });
-    }
-    throw error;
 }

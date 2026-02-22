@@ -2,7 +2,7 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { withPermission } from '../../../middleware/withPermission';
 import { validateBody, validateQuery, validateParams } from '../../../middleware/validation';
 import { FiscalPeriodService } from '../services/fiscal-period.service';
-import { AccountingError } from '../errors';
+import { handleAccountingError } from '../errors';
 import {
     CalendarParamsSchema,
     PeriodParamsSchema,
@@ -164,18 +164,4 @@ export async function fiscalPeriodRoutes(fastify: FastifyInstance) {
             }
         }
     );
-}
-
-/**
- * Map AccountingError to HTTP response. Re-throw unknown errors.
- */
-function handleAccountingError(error: unknown, reply: FastifyReply) {
-    if (error instanceof AccountingError) {
-        return reply.status(error.statusCode).send({
-            error: error.code,
-            message: error.message,
-            details: error.details,
-        });
-    }
-    throw error;
 }

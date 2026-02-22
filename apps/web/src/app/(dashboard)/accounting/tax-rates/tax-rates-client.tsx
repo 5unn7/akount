@@ -136,36 +136,34 @@ export function TaxRatesClient({ initialTaxRates, entityId }: TaxRatesClientProp
                 </div>
             </div>
 
-            {/* Tax flow visualization */}
+            {/* Tax flow example — illustrative only */}
             {activeRates.length > 0 && (
                 <div className="glass rounded-xl p-5">
-                    <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
-                        Tax Collection Flow
-                    </h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                            Example: Tax on $1,000 Sale
+                        </h3>
+                        <span className="text-micro text-muted-foreground/60">
+                            Illustrative only
+                        </span>
+                    </div>
                     <div className="flex items-center gap-3 flex-wrap">
                         <div className="glass-2 rounded-lg px-4 py-2 text-center">
-                            <p className="text-xs text-muted-foreground">Revenue</p>
-                            <p className="text-sm font-mono font-medium">$1,000</p>
+                            <p className="text-xs text-muted-foreground">Sale</p>
+                            <p className="text-sm font-mono font-medium">$1,000.00</p>
                         </div>
                         <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div className="glass-2 rounded-lg px-4 py-2 text-center border border-ak-green/20">
                             <p className="text-xs text-ak-green">Tax Collected</p>
                             <p className="text-sm font-mono font-medium text-ak-green">
-                                ${(1000 * totalCombinedRate).toFixed(2)}
-                            </p>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <div className="glass-2 rounded-lg px-4 py-2 text-center border border-ak-red/20">
-                            <p className="text-xs text-ak-red">ITCs (est.)</p>
-                            <p className="text-sm font-mono font-medium text-ak-red">
-                                -${(500 * totalCombinedRate).toFixed(2)}
+                                +${(1000 * totalCombinedRate).toFixed(2)}
                             </p>
                         </div>
                         <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
                         <div className="glass-2 rounded-lg px-4 py-2 text-center border border-ak-blue/20">
-                            <p className="text-xs text-ak-blue">Net Owing</p>
+                            <p className="text-xs text-ak-blue">Customer Pays</p>
                             <p className="text-sm font-mono font-medium text-ak-blue">
-                                ${(500 * totalCombinedRate).toFixed(2)}
+                                ${(1000 + 1000 * totalCombinedRate).toFixed(2)}
                             </p>
                         </div>
                     </div>

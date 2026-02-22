@@ -45,7 +45,10 @@ export type AccountingErrorCode =
   | 'PERIOD_NOT_LOCKED'
   | 'PERIOD_NOT_CLOSED'
   | 'CANNOT_LOCK_CLOSED_PERIOD'
-  | 'PREVIOUS_PERIODS_NOT_CLOSED';
+  | 'PREVIOUS_PERIODS_NOT_CLOSED'
+  | 'ASSET_NOT_FOUND'
+  | 'ASSET_DISPOSED'
+  | 'ASSET_ALREADY_DISPOSED';
 
 export class AccountingError extends Error {
   constructor(
@@ -57,4 +60,19 @@ export class AccountingError extends Error {
     super(message);
     this.name = 'AccountingError';
   }
+}
+
+/**
+ * Map AccountingError to HTTP response. Re-throw unknown errors.
+ * Shared by all accounting route files.
+ */
+export function handleAccountingError(error: unknown, reply: import('fastify').FastifyReply) {
+  if (error instanceof AccountingError) {
+    return reply.status(error.statusCode).send({
+      error: error.code,
+      message: error.message,
+      details: error.details,
+    });
+  }
+  throw error;
 }

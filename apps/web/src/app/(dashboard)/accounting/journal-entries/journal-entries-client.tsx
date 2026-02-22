@@ -188,21 +188,21 @@ export function JournalEntriesClient({
             {/* Stats Row */}
             <div className="grid grid-cols-4 gap-3">
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Total Entries</p>
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">Total Entries</p>
                     <p className="text-xl font-mono font-semibold">{totalEntries}</p>
                 </div>
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Auto-Posted</p>
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">Auto-Posted</p>
                     <p className="text-xl font-mono font-semibold">
                         {autoPercent}<span className="text-sm text-muted-foreground">%</span>
                     </p>
                 </div>
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Manual</p>
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">Manual</p>
                     <p className="text-xl font-mono font-semibold">{manualCount}</p>
                 </div>
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Total Volume</p>
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">Total Volume</p>
                     <p className="text-xl font-mono font-semibold">{formatAmount(totalVolume)}</p>
                 </div>
             </div>
@@ -270,7 +270,7 @@ export function JournalEntriesClient({
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-ak-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <tr className="border-b border-ak-border text-left text-micro uppercase tracking-wider text-muted-foreground">
                                 <th className="px-4 py-3 font-medium w-8" />
                                 <th className="px-4 py-3 font-medium">Date</th>
                                 <th className="px-4 py-3 font-medium">Entry #</th>
@@ -334,7 +334,7 @@ export function JournalEntriesClient({
                                                 {entry.memo}
                                             </td>
                                             <td className="px-4 py-3">
-                                                <span className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${sourceConfig.className}`}>
+                                                <span className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider ${sourceConfig.className}`}>
                                                     {sourceConfig.label}
                                                 </span>
                                             </td>

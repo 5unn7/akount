@@ -8,6 +8,7 @@ import { GLAccountSelector } from './GLAccountSelector';
 import { Button } from '@/components/ui/button';
 import { Check, Pencil } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface AccountDetailsPanelProps {
     account: Account;
@@ -49,7 +50,7 @@ export function AccountDetailsPanel({
             setIsEditingGL(false);
             router.refresh(); // Refresh to show updated data
         } catch (error) {
-            console.error('Failed to update GL account:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to update GL account');
         } finally {
             setSaving(false);
         }

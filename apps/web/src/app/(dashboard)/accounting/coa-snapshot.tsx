@@ -1,4 +1,5 @@
 import type { GLAccountBalance, GLAccountType } from '@/lib/api/accounting';
+import { formatCurrency } from '@/lib/utils/currency';
 import Link from 'next/link';
 import { ListTree, Package, Shield, TrendingUp, TrendingDown } from 'lucide-react';
 
@@ -23,14 +24,6 @@ const typeColors: Record<GLAccountType, string> = {
 };
 
 export function COASnapshot({ balances }: COASnapshotProps) {
-    const formatAmount = (cents: number): string => {
-        return (cents / 100).toLocaleString('en-CA', {
-            style: 'currency',
-            currency: 'CAD',
-            minimumFractionDigits: 2,
-        });
-    };
-
     // Group balances by type
     const typeGroups: Array<{
         type: GLAccountType;
@@ -90,7 +83,7 @@ export function COASnapshot({ balances }: COASnapshotProps) {
                             <span
                                 className={`text-sm font-mono font-semibold ${typeColors[group.type]}`}
                             >
-                                {formatAmount(group.total)}
+                                {formatCurrency(group.total)}
                             </span>
                         </div>
                     );

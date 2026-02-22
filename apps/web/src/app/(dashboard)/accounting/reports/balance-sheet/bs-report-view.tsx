@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { EntitySelector } from '@akount/ui/business';
 import { formatReportDate, downloadReport, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports-client';
 import { formatCurrency } from '@/lib/utils/currency';
+import { listEntities } from '@/lib/api/entities';
 
 interface BSReportViewProps {
     initialData: BalanceSheetReport | null;
@@ -56,15 +57,18 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                 <div className="grid gap-4 md:grid-cols-3">
                     <div className="space-y-2">
                         <Label htmlFor="entityId">Entity (optional)</Label>
-                        <Select value={entityId} onValueChange={setEntityId}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="All Entities" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="">All Entities</SelectItem>
-                                {/* TODO: Load entities from API */}
-                            </SelectContent>
-                        </Select>
+                        <EntitySelector
+                            value={entityId}
+                            onChange={setEntityId}
+                            placeholder="All Entities"
+                            onFetchEntities={async () => {
+                                const entities = await listEntities('ACTIVE');
+                                return [
+                                    { id: '', name: 'All Entities' },
+                                    ...entities.map((e) => ({ id: e.id, name: e.name })),
+                                ];
+                            }}
+                        />
                     </div>
 
                     <div className="space-y-2">

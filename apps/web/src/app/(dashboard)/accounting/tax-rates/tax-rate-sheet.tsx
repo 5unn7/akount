@@ -26,7 +26,7 @@ interface TaxRateSheetProps {
     onOpenChange: (open: boolean) => void;
     editingRate: TaxRate | null;
     isSubmitting: boolean;
-    onSave: (data: CreateTaxRateInput | UpdateTaxRateInput) => void;
+    onSave: (data: CreateTaxRateInput | UpdateTaxRateInput) => void | Promise<void>;
 }
 
 const JURISDICTIONS = [

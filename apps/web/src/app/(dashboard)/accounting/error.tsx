@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw } from 'lucide-react';
+import { reportError } from '@/lib/error-tracking';
 
 export default function AccountingOverviewError({
     error,
@@ -13,7 +14,11 @@ export default function AccountingOverviewError({
     reset: () => void;
 }) {
     useEffect(() => {
-        console.error(error);
+        reportError(error, {
+            context: 'accounting-overview',
+            severity: 'high',
+            digest: error.digest,
+        });
     }, [error]);
 
     return (

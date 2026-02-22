@@ -55,19 +55,19 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                     <Table>
                         <TableHeader>
                             <TableRow className="border-b border-ak-border hover:bg-transparent">
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Invoice #
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Client
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Issue Date
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Due Date
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Status
                                 </TableHead>
                                 <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">

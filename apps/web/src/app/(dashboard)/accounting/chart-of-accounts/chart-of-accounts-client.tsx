@@ -301,7 +301,7 @@ export function ChartOfAccountsClient({
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-ak-border text-left text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <tr className="border-b border-ak-border text-left text-micro uppercase tracking-wider text-muted-foreground">
                                 <th className="px-4 py-3 font-medium">Code</th>
                                 <th className="px-4 py-3 font-medium">Name</th>
                                 <th className="px-4 py-3 font-medium">Type</th>

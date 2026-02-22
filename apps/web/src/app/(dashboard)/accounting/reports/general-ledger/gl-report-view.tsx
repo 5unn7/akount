@@ -6,7 +6,7 @@ import { Calendar, Download, BookOpen, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { EntitySelector } from '@akount/ui/business';
 import {
     formatReportDate,
     downloadReport,
@@ -14,6 +14,7 @@ import {
     type GLLedgerEntry,
 } from '@/lib/api/reports-client';
 import { formatCurrency } from '@/lib/utils/currency';
+import { listEntities } from '@/lib/api/entities';
 import { loadMoreGLEntries } from './actions';
 
 interface GLReportViewProps {
@@ -82,14 +83,14 @@ export function GLReportView({ initialData, initialParams, error }: GLReportView
                 <div className="grid gap-4 md:grid-cols-5">
                     <div className="space-y-2">
                         <Label htmlFor="entityId">Entity (required)</Label>
-                        <Select value={entityId} onValueChange={setEntityId}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select Entity" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {/* TODO: Load entities from API */}
-                            </SelectContent>
-                        </Select>
+                        <EntitySelector
+                            value={entityId}
+                            onChange={setEntityId}
+                            onFetchEntities={async () => {
+                                const entities = await listEntities('ACTIVE');
+                                return entities.map((e) => ({ id: e.id, name: e.name }));
+                            }}
+                        />
                     </div>
 
                     <div className="space-y-2">

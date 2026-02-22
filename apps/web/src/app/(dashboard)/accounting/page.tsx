@@ -1,6 +1,7 @@
 import { getAccountBalances, listJournalEntries } from '@/lib/api/accounting';
 import { listEntities } from '@/lib/api/entities';
 import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
+import { formatCurrency } from '@/lib/utils/currency';
 import { BalanceEquation } from './balance-equation';
 import { IncomeSummary } from './income-summary';
 import { COASnapshot } from './coa-snapshot';
@@ -18,9 +19,14 @@ export default async function AccountingOverviewPage() {
     ]);
     const entityId = validateEntityId(rawEntityId, allEntities) ?? undefined;
 
+    // Need a valid entity to fetch accounting data
+    if (!entityId) {
+        return <AccountingEmptyState />;
+    }
+
     // Fetch data in parallel
     const [balances, journalEntries] = await Promise.all([
-        getAccountBalances({ entityId }),
+        getAccountBalances(entityId),
         listJournalEntries({ entityId, limit: 5 }),
     ]);
 
@@ -40,10 +46,10 @@ export default async function AccountingOverviewPage() {
                         Total Assets
                     </div>
                     <div className="text-2xl font-mono font-semibold">
-                        ${(balances
+                        {formatCurrency(balances
                             .filter((b) => b.type === 'ASSET')
-                            .reduce((sum, b) => sum + b.balance, 0) / 100
-                        ).toFixed(2)}
+                            .reduce((sum, b) => sum + b.balance, 0)
+                        )}
                     </div>
                 </div>
                 <div className="glass rounded-xl p-6">
@@ -51,10 +57,10 @@ export default async function AccountingOverviewPage() {
                         Total Liabilities
                     </div>
                     <div className="text-2xl font-mono font-semibold">
-                        ${(balances
+                        {formatCurrency(balances
                             .filter((b) => b.type === 'LIABILITY')
-                            .reduce((sum, b) => sum + b.balance, 0) / 100
-                        ).toFixed(2)}
+                            .reduce((sum, b) => sum + b.balance, 0)
+                        )}
                     </div>
                 </div>
                 <div className="glass rounded-xl p-6">
@@ -62,10 +68,10 @@ export default async function AccountingOverviewPage() {
                         Total Equity
                     </div>
                     <div className="text-2xl font-mono font-semibold">
-                        ${(balances
+                        {formatCurrency(balances
                             .filter((b) => b.type === 'EQUITY')
-                            .reduce((sum, b) => sum + b.balance, 0) / 100
-                        ).toFixed(2)}
+                            .reduce((sum, b) => sum + b.balance, 0)
+                        )}
                     </div>
                 </div>
             </div>

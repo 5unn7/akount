@@ -32,10 +32,10 @@
 | DEV-2 | Service tests for client/invoice/bill/vendor services | 3h | 🟠 High | 🟢 | | audit:smooth-floating-mountain |
 | ~~UX-8~~ | ~~Add loading/error states to remaining dashboard pages (~30 pages)~~ | 2h | 🟠 High | ✅ done | | plan:phase-6-tasks, plan:entity-selector-global.md (364ea9b) |
 | ~~DEV-46~~ | ~~Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (10/12 tasks complete, tests deferred)~~ | 4-6h | 🟠 High | ✅ | session | audit:fe-be-parity, sitemap:audit, plan:2026-02-21-banking-transfers.md |
-| UX-15 | Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:banking-command-center.md |
+| ~~UX-15~~ | ~~Banking: Add GL account linking UI on account detail~~ | 1-2h | 🟠 High | ✅ done | | audit:fe-be-parity, plan:banking-command-center.md |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
 | UX-18 | Accounting: Add landing page at `/accounting` with summary stats (draft JEs, account count, recent activity) | 2-3h | 🟠 High | 🟢 | | audit:acct-fe-be |
-| DEV-59 | Accounting: Add transaction posting UI — post bank txns to GL (3 backend endpoints exist, no UI) | 3-4h | 🟠 High | 🟢 | | audit:acct-fe-be |
+| ~~DEV-59~~ | ~~Accounting: Add transaction posting UI — post bank txns to GL~~ | 3-4h | 🟠 High | ✅ done | | audit:acct-fe-be |
 | UX-31 | Business: Add search/filter bar on invoice, bill, client, vendor lists (no search, status filter, or date filter) | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
 | UX-32 | Business: Add pagination controls — backend supports cursor pagination, frontend shows max 50 items with no "Load More" | 1-2h | 🟠 High | 🟢 | | audit:app-ux |
 | DEV-71 | Business: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |

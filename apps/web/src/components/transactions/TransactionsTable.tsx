@@ -117,22 +117,22 @@ export function TransactionsTable({
                                     />
                                 </TableHead>
                             )}
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Date
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Description
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Account
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Category
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Source
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 GL Status
                             </TableHead>
                             <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">

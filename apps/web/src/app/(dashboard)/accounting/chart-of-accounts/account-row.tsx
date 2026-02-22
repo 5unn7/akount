@@ -125,7 +125,7 @@ export function AccountRow({
 
                 <td className="px-4 py-3">
                     <span
-                        className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                        className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider ${
                             ACCOUNT_TYPE_COLORS[node.type]
                         }`}
                     >
@@ -143,9 +143,9 @@ export function AccountRow({
 
                 <td className="px-4 py-3">
                     {node.isActive ? (
-                        <Badge variant="success" className="text-[10px]">Active</Badge>
+                        <Badge variant="success" className="text-micro">Active</Badge>
                     ) : (
-                        <Badge variant="secondary" className="text-[10px]">Inactive</Badge>
+                        <Badge variant="secondary" className="text-micro">Inactive</Badge>
                     )}
                 </td>
 

@@ -39,6 +39,7 @@ export * from './data-display';
 export * from './feedback';
 export * from './ai';
 export * from './patterns/navigation';
+export * from './patterns';
 
 // Placeholder exports for future pattern categories
 // export * from './patterns/tables';

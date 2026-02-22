@@ -7,16 +7,24 @@ import { Badge } from '@/components/ui/badge';
 import { Percent, Plus, Sparkles, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { createTaxRateAction } from './actions';
+import { TaxRateSheet } from './tax-rate-sheet';
 import type { CreateTaxRateInput } from '@/lib/api/accounting';
 
 interface TaxRatesEmptyProps {
     entityId?: string;
 }
 
+interface PresetRate {
+    code: string;
+    name: string;
+    rate: number;
+    jurisdiction: string;
+}
+
 interface PresetGroup {
     label: string;
     description: string;
-    presets: Omit<CreateTaxRateInput, 'entityId'>[];
+    presets: PresetRate[];
 }
 
 const CANADIAN_PRESETS: PresetGroup = {
@@ -28,70 +36,70 @@ const CANADIAN_PRESETS: PresetGroup = {
             name: 'Goods and Services Tax',
             rate: 0.05,
             jurisdiction: 'Federal (Canada)',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'HST-ON',
             name: 'Harmonized Sales Tax (Ontario)',
             rate: 0.13,
             jurisdiction: 'Ontario',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'HST-NS',
             name: 'Harmonized Sales Tax (Nova Scotia)',
             rate: 0.15,
             jurisdiction: 'Nova Scotia',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'HST-NB',
             name: 'Harmonized Sales Tax (New Brunswick)',
             rate: 0.15,
             jurisdiction: 'New Brunswick',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'HST-NL',
             name: 'Harmonized Sales Tax (NL)',
             rate: 0.15,
             jurisdiction: 'Newfoundland and Labrador',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'HST-PE',
             name: 'Harmonized Sales Tax (PEI)',
             rate: 0.15,
             jurisdiction: 'Prince Edward Island',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'PST-BC',
             name: 'Provincial Sales Tax (BC)',
             rate: 0.07,
             jurisdiction: 'British Columbia',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'PST-SK',
             name: 'Provincial Sales Tax (SK)',
             rate: 0.06,
             jurisdiction: 'Saskatchewan',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'PST-MB',
             name: 'Retail Sales Tax (MB)',
             rate: 0.07,
             jurisdiction: 'Manitoba',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'QST',
             name: 'Quebec Sales Tax',
             rate: 0.09975,
             jurisdiction: 'Quebec',
-            effectiveFrom: new Date().toISOString(),
+
         },
     ],
 };
@@ -105,21 +113,21 @@ const US_PRESETS: PresetGroup = {
             name: 'California Sales Tax',
             rate: 0.0725,
             jurisdiction: 'United States - Federal',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'TX-NY',
             name: 'New York Sales Tax',
             rate: 0.08,
             jurisdiction: 'United States - Federal',
-            effectiveFrom: new Date().toISOString(),
+
         },
         {
             code: 'TX-TX',
             name: 'Texas Sales Tax',
             rate: 0.0625,
             jurisdiction: 'United States - Federal',
-            effectiveFrom: new Date().toISOString(),
+
         },
     ],
 };
@@ -130,6 +138,8 @@ export function TaxRatesEmpty({ entityId }: TaxRatesEmptyProps) {
     const router = useRouter();
     const [selectedPresets, setSelectedPresets] = useState<Set<string>>(new Set());
     const [isApplying, setIsApplying] = useState(false);
+    const [sheetOpen, setSheetOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     function togglePreset(code: string) {
         setSelectedPresets((prev) => {
@@ -166,7 +176,7 @@ export function TaxRatesEmpty({ entityId }: TaxRatesEmptyProps) {
         try {
             for (const preset of allPresets) {
                 if (selectedPresets.has(preset.code)) {
-                    await createTaxRateAction({ ...preset, entityId });
+                    await createTaxRateAction({ ...preset, effectiveFrom: new Date().toISOString(), entityId });
                     created++;
                 }
             }
@@ -284,11 +294,31 @@ export function TaxRatesEmpty({ entityId }: TaxRatesEmptyProps) {
                         : `Apply ${selectedPresets.size} Preset${selectedPresets.size !== 1 ? 's' : ''}`}
                 </Button>
                 <span className="text-xs text-muted-foreground">or</span>
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2" onClick={() => setSheetOpen(true)}>
                     <Plus className="h-4 w-4" />
                     Create Custom Rate
                 </Button>
             </div>
+
+            <TaxRateSheet
+                open={sheetOpen}
+                onOpenChange={setSheetOpen}
+                editingRate={null}
+                isSubmitting={isSubmitting}
+                onSave={async (data) => {
+                    setIsSubmitting(true);
+                    try {
+                        await createTaxRateAction({ ...data as CreateTaxRateInput, entityId });
+                        toast.success('Tax rate created');
+                        setSheetOpen(false);
+                        router.refresh();
+                    } catch (err) {
+                        toast.error(err instanceof Error ? err.message : 'Failed to create tax rate');
+                    } finally {
+                        setIsSubmitting(false);
+                    }
+                }}
+            />
         </div>
     );
 }

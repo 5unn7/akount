@@ -1,4 +1,5 @@
 import { getProfitLossReport } from '@/lib/api/reports';
+import { formatCurrency } from '@/lib/utils/currency';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
@@ -34,14 +35,6 @@ export async function IncomeSummary({ entityId }: IncomeSummaryProps) {
         );
     }
 
-    const formatAmount = (cents: number): string => {
-        return (cents / 100).toLocaleString('en-CA', {
-            style: 'currency',
-            currency: report.currency,
-            minimumFractionDigits: 2,
-        });
-    };
-
     const revenue = report.revenue.total;
     const expenses = report.expenses.total;
     const netIncome = report.netIncome;
@@ -68,7 +61,7 @@ export async function IncomeSummary({ entityId }: IncomeSummaryProps) {
                         </span>
                     </div>
                     <span className="text-sm font-mono font-semibold text-ak-green">
-                        {formatAmount(revenue)}
+                        {formatCurrency(revenue)}
                     </span>
                 </div>
 
@@ -81,7 +74,7 @@ export async function IncomeSummary({ entityId }: IncomeSummaryProps) {
                         </span>
                     </div>
                     <span className="text-sm font-mono font-semibold text-ak-red">
-                        -{formatAmount(Math.abs(expenses))}
+                        -{formatCurrency(Math.abs(expenses))}
                     </span>
                 </div>
 
@@ -93,7 +86,7 @@ export async function IncomeSummary({ entityId }: IncomeSummaryProps) {
                     <span
                         className={`text-lg font-mono font-bold ${netIncome >= 0 ? 'text-ak-green' : 'text-ak-red'}`}
                     >
-                        {formatAmount(netIncome)}
+                        {formatCurrency(netIncome)}
                     </span>
                 </div>
             </div>

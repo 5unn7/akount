@@ -104,6 +104,7 @@ model Entity {
   payments           Payment[]
   projects           Project[]
   rules              Rule[]
+  fixedAssets         FixedAsset[]
   taxRates           TaxRate[]
   vendors            Vendor[]
 
@@ -134,7 +135,10 @@ model GLAccount {
   childAccounts        GLAccount[]        @relation("AccountHierarchy")
   invoiceLines         InvoiceLine[]
   journalLines         JournalLine[]
-  transactionSplits    TransactionSplit[]
+  transactionSplits                  TransactionSplit[]
+  fixedAssetsAsAsset                 FixedAsset[]       @relation("AssetGLAccount")
+  fixedAssetsAsDepreciationExpense   FixedAsset[]       @relation("DepreciationExpenseGLAccount")
+  fixedAssetsAsAccumulatedDepr       FixedAsset[]       @relation("AccumulatedDepreciationGLAccount")
 
   @@unique([entityId, code])
   @@index([entityId, type])
@@ -160,8 +164,9 @@ model JournalEntry {
   entity         Entity                  @relation(fields: [entityId], references: [id])
   linkedEntry    JournalEntry?           @relation("TransferPair", fields: [linkedEntryId], references: [id])
   linkedFrom     JournalEntry[]          @relation("TransferPair")
-  journalLines   JournalLine[]
-  transactions   Transaction[]
+  journalLines        JournalLine[]
+  transactions        Transaction[]
+  depreciationEntries DepreciationEntry[]
 
   @@index([entityId, date])
   @@index([entityId, status])
@@ -208,6 +213,7 @@ model TaxRate {
   effectiveTo   DateTime?
   entity        Entity?   @relation(fields: [entityId], references: [id])
 
+  @@unique([entityId, code])
   @@index([entityId, isActive])
   @@index([jurisdiction])
 }
@@ -899,6 +905,55 @@ model RuleSuggestion {
   @@index([status])
 }
 
+model FixedAsset {
+  id                                String               @id @default(cuid())
+  entityId                          String
+  name                              String
+  description                       String?
+  category                          AssetCategory
+  acquiredDate                      DateTime
+  cost                              Int // Integer cents (e.g., 150000 = $1,500.00)
+  salvageValue                      Int // Integer cents — residual value at end of useful life
+  usefulLifeMonths                  Int
+  depreciationMethod                DepreciationMethod
+  accumulatedDepreciation           Int                  @default(0) // Integer cents — running total
+  status                            AssetStatus          @default(ACTIVE)
+  disposedDate                      DateTime?
+  disposalAmount                    Int? // Integer cents — proceeds from disposal
+  assetGLAccountId                  String? // GL account for the asset itself
+  depreciationExpenseGLAccountId    String? // GL account for depreciation expense
+  accumulatedDepreciationGLAccountId String? // GL account for accumulated depreciation (contra-asset)
+  createdAt                         DateTime             @default(now())
+  updatedAt                         DateTime             @updatedAt
+  deletedAt                         DateTime? // Soft delete — financial data never hard deleted
+  entity                            Entity               @relation(fields: [entityId], references: [id])
+  assetGLAccount                    GLAccount?           @relation("AssetGLAccount", fields: [assetGLAccountId], references: [id])
+  depreciationExpenseGLAccount      GLAccount?           @relation("DepreciationExpenseGLAccount", fields: [depreciationExpenseGLAccountId], references: [id])
+  accumulatedDepreciationGLAccount  GLAccount?           @relation("AccumulatedDepreciationGLAccount", fields: [accumulatedDepreciationGLAccountId], references: [id])
+  depreciationEntries               DepreciationEntry[]
+
+  @@index([entityId])
+  @@index([entityId, status])
+  @@index([entityId, category])
+  @@index([entityId, deletedAt])
+}
+
+model DepreciationEntry {
+  id             String           @id @default(cuid())
+  fixedAssetId   String
+  periodDate     DateTime // The period this depreciation applies to
+  amount         Int // Integer cents — depreciation amount for this period
+  method         DepreciationMethod
+  journalEntryId String? // Link to the JE created for this depreciation
+  createdAt      DateTime         @default(now())
+  fixedAsset     FixedAsset       @relation(fields: [fixedAssetId], references: [id])
+  journalEntry   JournalEntry?    @relation(fields: [journalEntryId], references: [id])
+
+  @@unique([fixedAssetId, periodDate]) // Idempotency guard — one entry per asset per period
+  @@index([fixedAssetId])
+  @@index([journalEntryId])
+}
+
 enum OnboardingStatus {
   NEW
   IN_PROGRESS
@@ -963,6 +1018,7 @@ enum JournalEntrySourceType {
   TRANSFER
   ADJUSTMENT
   OPENING_BALANCE
+  DEPRECIATION
 }
 
 enum InvoiceStatus {
@@ -1091,4 +1147,27 @@ enum FiscalPeriodStatus {
   OPEN
   LOCKED
   CLOSED
+}
+
+enum AssetCategory {
+  BUILDING
+  VEHICLE
+  EQUIPMENT
+  FURNITURE
+  COMPUTER
+  SOFTWARE
+  LEASEHOLD
+  OTHER
+}
+
+enum DepreciationMethod {
+  STRAIGHT_LINE
+  DECLINING_BALANCE
+  UNITS_OF_PRODUCTION
+}
+
+enum AssetStatus {
+  ACTIVE
+  FULLY_DEPRECIATED
+  DISPOSED
 }

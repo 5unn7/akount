@@ -244,7 +244,7 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
             {/* Metadata Cards */}
             <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
+                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                         Date
                     </p>
                     <p className="text-sm font-mono">
@@ -252,7 +252,7 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
                     </p>
                 </div>
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
+                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                         Total Amount
                     </p>
                     <p className="text-sm font-mono">
@@ -260,7 +260,7 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
                     </p>
                 </div>
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
+                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                         Source
                     </p>
                     <div className="flex items-center gap-1.5">
@@ -271,7 +271,7 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
                     </div>
                 </div>
                 <div className="glass rounded-xl p-4">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
+                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                         Created
                     </p>
                     <p className="text-sm font-mono">
@@ -304,7 +304,7 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="text-[10px] uppercase tracking-wider text-muted-foreground border-b border-ak-border">
+                            <tr className="text-micro uppercase tracking-wider text-muted-foreground border-b border-ak-border">
                                 <th className="text-left px-6 py-3 font-medium">Account</th>
                                 <th className="text-left px-4 py-3 font-medium">Type</th>
                                 <th className="text-right px-6 py-3 font-medium">Debit</th>
@@ -415,7 +415,7 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
 
             {/* Audit Trail */}
             <div className="glass rounded-xl px-6 py-4">
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                     Audit Trail
                 </h3>
                 <div className="grid gap-x-8 gap-y-2 grid-cols-1 sm:grid-cols-2 text-sm">

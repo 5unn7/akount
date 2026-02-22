@@ -9,7 +9,7 @@
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
 | agent-atomic-batch | 2026-02-22 13:00 | 12 atomic tasks (DEV-84, PERF-2/3, FIN-14, DRY-2/7, DS-4, UX-77, DEV-114, DOC-2/7, UX-54) | completed | main |
-| agent-banking-gl | 2026-02-22 12:30 | UX-15, DEV-59: GL account linking UI + Transaction posting UI | expired | main |
+| agent-banking-gl | 2026-02-22 12:30 | UX-15, DEV-59: GL account linking UI + Transaction posting UI (already implemented) | completed | main |
 | agent-ai-chat | 2026-02-22 10:15 | DEV-113: Build AI Chat interface on Insights page | completed | main |
 | agent-routing-fix | 2026-02-22 10:05 | UX-78: Fix /insights/insights → /insights routing | completed | main |
 | agent-ux-693 | 2026-02-22 09:54 | UX-8: Add loading/error states to remaining dashboard pages | completed | main |

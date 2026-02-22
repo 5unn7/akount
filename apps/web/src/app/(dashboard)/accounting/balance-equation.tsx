@@ -1,4 +1,5 @@
 import type { GLAccountBalance } from '@/lib/api/accounting';
+import { formatCurrency } from '@/lib/utils/currency';
 
 interface BalanceEquationProps {
     balances: GLAccountBalance[];
@@ -18,14 +19,6 @@ export function BalanceEquation({ balances }: BalanceEquationProps) {
         .filter((b) => b.type === 'EQUITY')
         .reduce((sum, b) => sum + b.balance, 0);
 
-    const formatAmount = (cents: number): string => {
-        return (cents / 100).toLocaleString('en-CA', {
-            style: 'currency',
-            currency: 'CAD',
-            minimumFractionDigits: 2,
-        });
-    };
-
     return (
         <div className="glass rounded-xl p-6 space-y-4">
             <div className="flex items-center justify-between">
@@ -38,11 +31,11 @@ export function BalanceEquation({ balances }: BalanceEquationProps) {
             <div className="grid gap-4 md:grid-cols-3">
                 {/* Assets */}
                 <div className="glass-2 rounded-lg p-4 space-y-2 border-ak-green/10">
-                    <div className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <div className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Assets
                     </div>
                     <div className="text-2xl font-mono font-bold text-ak-green">
-                        {formatAmount(assets)}
+                        {formatCurrency(assets)}
                     </div>
                     <div className="text-xs text-muted-foreground">
                         {balances.filter((b) => b.type === 'ASSET').length} accounts
@@ -51,11 +44,11 @@ export function BalanceEquation({ balances }: BalanceEquationProps) {
 
                 {/* Liabilities */}
                 <div className="glass-2 rounded-lg p-4 space-y-2 border-ak-red/10">
-                    <div className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <div className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Liabilities
                     </div>
                     <div className="text-2xl font-mono font-bold text-ak-red">
-                        {formatAmount(liabilities)}
+                        {formatCurrency(liabilities)}
                     </div>
                     <div className="text-xs text-muted-foreground">
                         {balances.filter((b) => b.type === 'LIABILITY').length} accounts
@@ -64,11 +57,11 @@ export function BalanceEquation({ balances }: BalanceEquationProps) {
 
                 {/* Equity */}
                 <div className="glass-2 rounded-lg p-4 space-y-2 border-ak-blue/10">
-                    <div className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <div className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Equity
                     </div>
                     <div className="text-2xl font-mono font-bold text-ak-blue">
-                        {formatAmount(equity)}
+                        {formatCurrency(equity)}
                     </div>
                     <div className="text-xs text-muted-foreground">
                         {balances.filter((b) => b.type === 'EQUITY').length} accounts
@@ -87,7 +80,7 @@ export function BalanceEquation({ balances }: BalanceEquationProps) {
                     </span>
                 ) : (
                     <span className="text-xs text-ak-red font-mono">
-                        ⚠ Out of balance by {formatAmount(assets - (liabilities + equity))}
+                        ⚠ Out of balance by {formatCurrency(assets - (liabilities + equity))}
                     </span>
                 )}
             </div>

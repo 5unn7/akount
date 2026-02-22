@@ -255,7 +255,7 @@ export function ReconciliationDashboard({
                                 <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground w-[100px]">
                                     Date
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Description
                                 </TableHead>
                                 <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">

@@ -1,8 +1,9 @@
 import type { ListJournalEntriesResponse } from '@/lib/api/accounting';
-import Link from 'next/link';
-import { BadgeGlass } from '@akount/ui';
-import { BookOpen, CheckCircle2, XCircle, Archive } from 'lucide-react';
 import { formatDate } from '@/lib/api/accounting';
+import { formatCurrency } from '@/lib/utils/currency';
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { BookOpen, CheckCircle2, XCircle, Archive } from 'lucide-react';
 
 interface RecentEntriesProps {
     journalEntries: ListJournalEntriesResponse;
@@ -81,24 +82,24 @@ export function RecentEntries({ journalEntries }: RecentEntriesProps) {
                                         <span className="text-sm font-medium">
                                             JE-{entry.entryNumber}
                                         </span>
-                                        <BadgeGlass
+                                        <Badge
                                             variant={config.variant}
-                                            className="text-[10px] px-1.5 py-0"
+                                            className="text-micro px-1.5 py-0"
                                         >
                                             {config.label}
-                                        </BadgeGlass>
+                                        </Badge>
                                     </div>
                                     <p className="text-xs text-muted-foreground truncate mt-0.5">
                                         {entry.memo || 'No description'}
                                     </p>
-                                    <p className="text-[10px] text-muted-foreground mt-1">
+                                    <p className="text-micro text-muted-foreground mt-1">
                                         {formatDate(entry.date)} • {entry.lines.length} lines
                                     </p>
                                 </div>
                             </div>
                             <div className="text-right">
                                 <div className="text-sm font-mono font-semibold">
-                                    ${(totalDebits / 100).toFixed(2)}
+                                    {formatCurrency(totalDebits)}
                                 </div>
                             </div>
                         </Link>

@@ -54,19 +54,19 @@ export function BillsTable({ bills, currency = 'CAD' }: BillsTableProps) {
                 <Table>
                     <TableHeader>
                         <TableRow className="border-b border-ak-border hover:bg-transparent">
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Bill #
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Vendor
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Issue Date
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Due Date
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead variant="label">
                                 Status
                             </TableHead>
                             <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">

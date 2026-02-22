@@ -3,7 +3,7 @@ import { withPermission } from '../../../middleware/withPermission';
 import { validateBody, validateQuery, validateParams } from '../../../middleware/validation';
 import { JournalEntryService } from '../services/journal-entry.service';
 import { PostingService } from '../services/posting.service';
-import { AccountingError } from '../errors';
+import { handleAccountingError } from '../errors';
 import {
   CreateJournalEntrySchema,
   ListJournalEntriesSchema,
@@ -261,18 +261,4 @@ export async function journalEntryRoutes(fastify: FastifyInstance) {
       }
     }
   );
-}
-
-/**
- * Map AccountingError to HTTP response. Re-throw unknown errors.
- */
-function handleAccountingError(error: unknown, reply: FastifyReply) {
-  if (error instanceof AccountingError) {
-    return reply.status(error.statusCode).send({
-      error: error.code,
-      message: error.message,
-      details: error.details,
-    });
-  }
-  throw error;
 }

@@ -47,7 +47,7 @@ export function StatusBadge({ status }: { status: JournalEntryStatus }) {
     const config = STATUS_CONFIG[status];
     return (
         <span
-            className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${config.className}`}
+            className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider ${config.className}`}
         >
             {config.label}
         </span>
@@ -80,7 +80,7 @@ export function EntryDetail({
                 <div className="space-y-3">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <tr className="text-micro uppercase tracking-wider text-muted-foreground">
                                 <th className="text-left pb-2 font-medium">Account</th>
                                 <th className="text-right pb-2 font-medium">Debit</th>
                                 <th className="text-right pb-2 font-medium">Credit</th>

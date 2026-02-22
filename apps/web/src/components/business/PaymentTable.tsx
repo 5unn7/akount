@@ -67,19 +67,19 @@ export function PaymentTable({ payments }: PaymentTableProps) {
                     <Table>
                         <TableHeader>
                             <TableRow className="border-b border-ak-border hover:bg-transparent">
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Date
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Type
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Client / Vendor
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Method
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead variant="label">
                                     Reference
                                 </TableHead>
                                 <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground text-center">
