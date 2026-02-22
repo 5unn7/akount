@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-21
 **Current Phase:** Phase 6 — Launch MVP
 
-> **300 tasks** · 🔴 3 critical · 🟠 59 high · 🟡 156 medium · ⚪ 30 low · ✅ 79 done
-> 🟢 107 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **300 tasks** · 🔴 3 critical · 🟠 59 high · 🟡 153 medium · ⚪ 30 low · ✅ 82 done
+> 🟢 104 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -139,7 +139,7 @@
 | UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
 | UX-25 | Accounting Reports: Add quick-generate buttons (Last Month / This Quarter / YTD) on report hub cards | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
 | ~~UX-26~~ | ~~Accounting JE: Add source cross-links (click source type navigates to source transaction/invoice/bill)~~ | 1h | 🟡 Medium | ✅ | 8106fcb | audit:acct-fe-be |
-| UX-27 | Accounting COA: Replace `window.location.reload()` after seed with state update (jarring full reload) | 30m | 🟡 Medium | 🟢 | | audit:acct-fe-be [atomic] |
+| ~~UX-27~~ | ~~Accounting COA: Replace `window.location.reload()` after seed with state update (jarring full reload)~~ | 30m | 🟡 Medium | ✅ | 2360780 | audit:acct-fe-be [atomic] |
 | ~~UX-28~~ | ~~Sidebar: Add "Coming Soon" badge or hide unimplemented pages~~ (merged into UX-35) | 15m | 🟡 Medium | ✅ | | audit:acct-fe-be |
 | DEV-61 | Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-62 | Accounting JE: Add batch approve (select multiple drafts → approve all, needs new backend endpoint) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
@@ -183,7 +183,7 @@
 | ~~DRY-6~~ | ~~Dashboard: deduplicate SparkCards/DashboardLeftRail (shared types, constants, MiniSparkline)~~ | 45m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | DRY-7 | Dashboard page.tsx: extract 120+ lines of data transformation to `lib/dashboard/transformers.ts` | 30m | 🟡 Medium | 🟢 | | review:dashboard-overview [atomic] |
 | ~~UX-9~~ | ~~Dashboard: fix SVG gradient ID collision (use `React.useId()`)~~ | 15m | 🟡 Medium | ✅ | | review:dashboard-overview |
-| UX-10 | Navbar: add live sync status indicator with refresh button | 30m | 🟡 Medium | 🟢 | | ad-hoc:user-request [atomic] |
+| ~~UX-10~~ | ~~Navbar: add live sync status indicator with refresh button~~ | 30m | 🟡 Medium | ✅ | existing | ad-hoc:user-request [atomic] |
 | ~~DEV-3~~ | ~~Dashboard: delete dead `handleSkipStep` in OnboardingHeroCard + dead SparkCardsSkeleton~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | ~~DEV-4~~ | ~~Dashboard: type entity maps as `Record<EntityType, ...>` for exhaustive checking~~ | 15m | 🟡 Medium | ✅ | | review:dashboard-overview |
 | ~~DS-3~~ | ~~Dashboard: replace `hover:glass-3` with proper hover pattern~~ | 10m | 🟡 Medium | ✅ | | review:dashboard-overview |
@@ -305,7 +305,7 @@
 | DEV-122 | Business: Add client detail page `/business/clients/[id]` — contact info, stats summary, invoice history tab, edit capability (API `GET /clients/:id` + `PUT` exist). Absorbs DEV-95 + UX-37 (client portion) | 3-4h | 🟡 Medium | 🟢 | | sitemap:audit |
 | DEV-123 | Business: Add vendor detail page `/business/vendors/[id]` — contact info, stats summary, bill history tab, edit capability (API `GET /vendors/:id` + `PUT` exist). Absorbs DEV-96 + UX-37 (vendor portion) | 3-4h | 🟡 Medium | 🟢 | | sitemap:audit |
 | UX-79 | Business: Add bill detail page at `/business/bills/[id]` — view bill, approve/cancel actions, payment progress bar, mark-overdue button (API `GET /bills/:id` exists). Absorbs UX-56 + UX-40. Depends on UX-77 (route fix) | 2-3h | 🟡 Medium | 🟢 | [needs: UX-77] | sitemap:audit, plan:phase-4-bill-and-get-paid.md |
-| UX-80 | Sidebar: Add top 3 report shortcuts (Balance Sheet, P&L, Trial Balance) as sub-items under "Reports" in Accounting nav section | 30m | 🟡 Medium | 🟢 | | sitemap:audit [atomic] |
+| ~~UX-80~~ | ~~Sidebar: Add top 3 report shortcuts (Balance Sheet, P&L, Trial Balance) as sub-items under "Reports" in Accounting nav section~~ | 30m | 🟡 Medium | ✅ | existing | sitemap:audit [atomic] |
 | UX-81 | Business: Add payment detail page `/business/payments/[id]` — view payment with allocation breakdown across invoices/bills and GL posting status | 2-3h | ⚪ Low | 🟢 | | sitemap:audit |
 
 ---
