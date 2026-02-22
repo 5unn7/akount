@@ -31,6 +31,8 @@ import {
     updateGLAccountAction,
     deactivateGLAccountAction,
     seedDefaultCOAAction,
+    fetchGLAccounts,
+    fetchAccountBalances,
 } from './actions';
 import { AccountRow, buildTree } from './account-row';
 import { GLAccountSheet } from './gl-account-sheet';
@@ -169,8 +171,13 @@ export function ChartOfAccountsClient({
             } else {
                 setSeedMessage(`Created ${result.created} accounts.`);
                 toast.success(`Created ${result.created} accounts`);
-                // Refresh — refetch via server action
-                window.location.reload();
+                // Refetch accounts and balances to update UI without page reload
+                const [newAccounts, newBalances] = await Promise.all([
+                    fetchGLAccounts({ entityId }),
+                    fetchAccountBalances(entityId).catch(() => []),
+                ]);
+                setAccounts(newAccounts);
+                setBalances(newBalances);
             }
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Failed to seed chart of accounts';
