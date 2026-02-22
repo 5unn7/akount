@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { CheckCircle2, ListTree, BookOpen, BarChart3 } from 'lucide-react';
+import { CheckCircle2, ListTree, BookOpen, BarChart3, Package } from 'lucide-react';
 import Link from 'next/link';
 
 export function AccountingEmptyState() {
@@ -13,7 +13,7 @@ export function AccountingEmptyState() {
                 <div className="text-center space-y-2 mb-8">
                     <h1 className="text-3xl font-heading">Set Up Your Books</h1>
                     <p className="text-muted-foreground font-heading italic">
-                        Get started with professional accounting in 3 easy steps
+                        Get started with professional accounting in a few easy steps
                     </p>
                 </div>
 
@@ -117,6 +117,42 @@ export function AccountingEmptyState() {
                                 >
                                     <Link href="/accounting/tax-rates">
                                         Configure Tax Rates
+                                    </Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* Step 4: Optional - Capitalize Assets */}
+                    <Card className="glass border-ak-border-2 p-6">
+                        <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-full glass-2 flex items-center justify-center border border-ak-border-2">
+                                <span className="text-sm font-semibold text-muted-foreground">
+                                    4
+                                </span>
+                            </div>
+                            <div className="flex-1 space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <Package className="h-5 w-5 text-ak-teal" />
+                                    <h3 className="text-lg font-heading">
+                                        Capitalize Assets
+                                        <span className="text-xs text-muted-foreground ml-2">
+                                            (Optional)
+                                        </span>
+                                    </h3>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                    Track fixed assets like equipment, vehicles, and buildings.
+                                    Automatically calculate depreciation and generate journal entries.
+                                </p>
+                                <Button
+                                    asChild
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                >
+                                    <Link href="/accounting/assets">
+                                        Capitalize Your First Asset
                                     </Link>
                                 </Button>
                             </div>

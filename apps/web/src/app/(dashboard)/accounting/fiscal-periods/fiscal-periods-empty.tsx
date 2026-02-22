@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Calendar, Sparkles } from 'lucide-react';
+import { Calendar, Sparkles, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 import { createCalendarAction } from './actions';
 
 interface FiscalPeriodsEmptyProps {
@@ -105,6 +106,14 @@ export function FiscalPeriodsEmpty({ entityId }: FiscalPeriodsEmptyProps) {
                     {isCreating ? 'Creating...' : `Create Fiscal Year ${currentYear}`}
                 </Button>
             </div>
+
+            <Link
+                href="/accounting"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+                <ArrowLeft className="h-3 w-3" />
+                Back to Accounting Setup
+            </Link>
         </div>
     );
 }

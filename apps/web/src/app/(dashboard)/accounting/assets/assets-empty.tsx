@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Package, Plus } from 'lucide-react';
+import { Package, Plus, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { AssetSheet } from './asset-sheet';
 
 interface AssetsEmptyProps {
@@ -35,6 +36,14 @@ export function AssetsEmpty({ entityId }: AssetsEmptyProps) {
                 onOpenChange={setSheetOpen}
                 entityId={entityId}
             />
+
+            <Link
+                href="/accounting"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+                <ArrowLeft className="h-3 w-3" />
+                Back to Accounting Setup
+            </Link>
         </div>
     );
 }

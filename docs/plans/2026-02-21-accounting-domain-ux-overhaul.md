@@ -256,14 +256,14 @@ The Overview hub is composed of focused sub-components (~100-150 lines each) ins
 
 ---
 
-### Phase 6: New User Onboarding (3 tasks, ~1-2h)
+### Phase 6: New User Onboarding (3 tasks, ~1-2h) ✅ COMPLETE
 > **Risk:** Low | **Deps:** Phases 1-4
 
-| # | Task | Files |
-|---|------|-------|
-| 66 | Setup wizard: Seed COA → Set Fiscal Year → Configure Tax Rates → Optional: Capitalize Assets | `accounting/accounting-setup-wizard.tsx` |
-| 67 | Detect setup state in page.tsx | `accounting/page.tsx` |
-| 68 | Progressive disclosure: sub-page empty states link back to wizard | All stub page files |
+| # | Task | Files | Status |
+|---|------|-------|--------|
+| 66 | Setup wizard: Seed COA → Set Fiscal Year → Configure Tax Rates → Optional: Capitalize Assets | `accounting/accounting-empty.tsx` | ✅ Done (4-step wizard) |
+| 67 | Detect setup state in page.tsx | `accounting/page.tsx` | ✅ Done (balances.length === 0) |
+| 68 | Progressive disclosure: sub-page empty states link back to wizard | All stub page files | ✅ Done (back-links added) |
 
 ---
 

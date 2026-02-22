@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Percent, Plus, Sparkles, Check } from 'lucide-react';
+import { Percent, Plus, Sparkles, Check, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 import { createTaxRateAction } from './actions';
 import { TaxRateSheet } from './tax-rate-sheet';
 import type { CreateTaxRateInput } from '@/lib/api/accounting';
@@ -298,6 +299,16 @@ export function TaxRatesEmpty({ entityId }: TaxRatesEmptyProps) {
                     <Plus className="h-4 w-4" />
                     Create Custom Rate
                 </Button>
+            </div>
+
+            <div className="text-center">
+                <Link
+                    href="/accounting"
+                    className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                    <ArrowLeft className="h-3 w-3" />
+                    Back to Accounting Setup
+                </Link>
             </div>
 
             <TaxRateSheet
