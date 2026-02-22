@@ -1,28 +1,28 @@
 {
   "$schema": "./tasks.schema.json",
   "version": "2.0",
-  "generated": "2026-02-22T03:50:19.115Z",
+  "generated": "2026-02-22T17:17:59.934Z",
   "generatedBy": "regenerate-task-index.js",
   "summary": {
-    "total": 240,
-    "active": 239,
-    "done": 1,
+    "total": 206,
+    "active": 195,
+    "done": 11,
     "stale": 0,
     "riskDistribution": {
-      "low": 205,
-      "medium": 34,
+      "low": 158,
+      "medium": 37,
       "high": 0
     },
     "byPriority": {
-      "critical": 3,
-      "high": 56,
-      "medium": 147,
+      "critical": 1,
+      "high": 34,
+      "medium": 127,
       "low": 33
     },
     "byStatus": {
-      "ready": 112,
+      "ready": 69,
       "blocked": 7,
-      "backlog": 119
+      "backlog": 118
     }
   },
   "agentInstructions": {
@@ -43,7 +43,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-20",
-      "line": 25,
+      "line": 28,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -92,7 +92,7 @@
       "domain": "testing",
       "source": "review:typescript",
       "created": "2026-02-18",
-      "line": 26,
+      "line": 29,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -138,7 +138,7 @@
       "domain": "testing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 27,
+      "line": 30,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -185,7 +185,7 @@
       "domain": "testing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 28,
+      "line": 31,
       "files": [
         "apps/api/src/domains/",
         "apps/api/src/__tests__/"
@@ -231,7 +231,7 @@
       "domain": "development",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 29,
+      "line": 32,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -268,101 +268,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "UX-8": {
-      "id": "UX-8",
-      "title": "Add loading/error states to remaining dashboard pages (~30 pages)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "plan:phase-6-tasks, plan:entity-selector-global.md",
-      "created": "2026-02-21",
-      "line": 30,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-46": {
-      "id": "DEV-46",
-      "title": "Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (sidebar links to dead page, needs backend routes + frontend wiring)",
-      "effort": "4-6h",
-      "effortMinutes": 300,
-      "effortCategory": "long",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity, sitemap:audit, plan:banking-command-center.md",
-      "created": "2026-02-21",
-      "line": 31,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [
-        "Banking: Implement transfers backend API + wire transfers page",
-        "inter-account transfers with journal entry creation (sidebar links to dead page",
-        "needs backend routes + frontend wiring)",
-        "Debits equal credits (double-entry validation)",
-        "Source document preserved"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 5,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "UX-15": {
       "id": "UX-15",
       "title": "Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI)",
@@ -375,7 +280,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity, plan:banking-command-center.md",
       "created": "2026-02-21",
-      "line": 32,
+      "line": 35,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -420,7 +325,7 @@
       "domain": "infrastructure",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 33,
+      "line": 36,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -468,7 +373,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 34,
+      "line": 37,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -516,7 +421,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 35,
+      "line": 38,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -565,7 +470,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 36,
+      "line": 39,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -613,7 +518,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 37,
+      "line": 40,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [
@@ -655,7 +560,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 38,
+      "line": 41,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -703,7 +608,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 39,
+      "line": 42,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -751,7 +656,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 40,
+      "line": 43,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -797,7 +702,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 41,
+      "line": 44,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -833,54 +738,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-75": {
-      "id": "DEV-75",
-      "title": "Business: Replace bills \"Coming Soon\" stub with real bill list page (API ready, `/business/bills` is placeholder)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
-      "created": "2026-02-21",
-      "line": 42,
-      "files": [
-        "apps/api/src/domains/vendors/services/vendor.service.ts",
-        "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
-        "apps/api/src/domains/vendors/services/__tests__/vendor.service.test.ts",
-        "apps/api/src/domains/vendors/services/bill.service.ts",
-        "apps/api/src/domains/vendors/routes/__tests__/vendors.routes.test.ts"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [
-        "Business: Replace bills \"Coming Soon\" stub with real bill list page (API ready",
-        "`/business/bills` is placeholder)",
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)",
-        "Page renders without errors"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "vendors",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
     "DEV-76": {
       "id": "DEV-76",
       "title": "Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + endpoints exist)",
@@ -893,7 +750,7 @@
       "domain": "development",
       "source": "audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 43,
+      "line": 46,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -942,7 +799,7 @@
       "domain": "development",
       "source": "audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 44,
+      "line": 47,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -989,7 +846,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 45,
+      "line": 48,
       "files": [],
       "verification": "Run: cd apps/api && npm test -- [domain]",
       "acceptanceCriteria": [
@@ -1030,7 +887,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 46,
+      "line": 49,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1077,7 +934,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 47,
+      "line": 50,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1126,7 +983,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 48,
+      "line": 51,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1175,7 +1032,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 49,
+      "line": 52,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1227,7 +1084,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 50,
+      "line": 53,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1277,7 +1134,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 51,
+      "line": 54,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1313,95 +1170,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-112": {
-      "id": "DEV-112",
-      "title": "Insights: Create API client (`apps/web/src/lib/api/ai.ts`) for 5 existing AI endpoints",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:ai-advisor [atomic]",
-      "created": "2026-02-21",
-      "line": 52,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-113": {
-      "id": "DEV-113",
-      "title": "Insights: Build AI Chat interface on Insights page (wire to existing `POST /api/ai/chat`)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:ai-advisor",
-      "created": "2026-02-19",
-      "line": 53,
-      "files": [
-        "apps/api/src/domains/ai/services/categorization.service.ts",
-        "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
-        "apps/api/src/domains/ai/services/ai.service.ts",
-        "apps/web/src/app/(dashboard)/insights/history/error.tsx",
-        "apps/web/src/app/(dashboard)/insights/history/loading.tsx"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "insights",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
     "UX-33": {
       "id": "UX-33",
       "title": "App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill (isolated views currently)",
@@ -1414,7 +1182,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 59,
+      "line": 62,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1462,7 +1230,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 60,
+      "line": 63,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1512,7 +1280,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 61,
+      "line": 64,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1559,7 +1327,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 62,
+      "line": 65,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1604,7 +1372,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 63,
+      "line": 66,
       "files": [],
       "verification": "Run: cd apps/api && npm test -- [domain]",
       "acceptanceCriteria": [
@@ -1648,7 +1416,7 @@
       "domain": "development",
       "source": "audit:app-ux [atomic]",
       "created": "2026-02-21",
-      "line": 64,
+      "line": 67,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -1696,7 +1464,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 65,
+      "line": 68,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1743,7 +1511,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 66,
+      "line": 69,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1788,7 +1556,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 67,
+      "line": 70,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1835,7 +1603,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 68,
+      "line": 71,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1880,7 +1648,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 69,
+      "line": 72,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1924,7 +1692,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 70,
+      "line": 73,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1969,7 +1737,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 71,
+      "line": 74,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2014,7 +1782,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 72,
+      "line": 75,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2059,7 +1827,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 73,
+      "line": 76,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2106,7 +1874,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 74,
+      "line": 77,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2153,7 +1921,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 75,
+      "line": 78,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2200,7 +1968,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 76,
+      "line": 79,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2245,7 +2013,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 77,
+      "line": 80,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2290,7 +2058,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 78,
+      "line": 81,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2335,7 +2103,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 79,
+      "line": 82,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2379,7 +2147,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 80,
+      "line": 83,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2423,7 +2191,7 @@
       "domain": "performance",
       "source": "review:performance [atomic]",
       "created": "2026-02-21",
-      "line": 81,
+      "line": 84,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -2468,7 +2236,7 @@
       "domain": "performance",
       "source": "review:performance [atomic]",
       "created": "2026-02-21",
-      "line": 82,
+      "line": 85,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -2512,7 +2280,7 @@
       "domain": "performance",
       "source": "roadmap [atomic]",
       "created": "2026-02-21",
-      "line": 83,
+      "line": 86,
       "files": [
         "apps/web/src/app/(dashboard)/",
         "apps/web/src/components/"
@@ -2557,7 +2325,7 @@
       "domain": "code-quality",
       "source": "review:simplicity [atomic]",
       "created": "2026-02-21",
-      "line": 84,
+      "line": 87,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -2597,7 +2365,7 @@
       "domain": "code-quality",
       "source": "review:simplicity [atomic]",
       "created": "2026-02-21",
-      "line": 85,
+      "line": 88,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -2624,6 +2392,258 @@
       "claimed": false,
       "claimedBy": null
     },
+    "DRY-9": {
+      "id": "DRY-9",
+      "title": "Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency`",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit [atomic]",
+      "created": "2026-02-22",
+      "line": 90,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-10": {
+      "id": "DRY-10",
+      "title": "Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations",
+      "effort": "1.5h",
+      "effortMinutes": null,
+      "effortCategory": "long",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit [atomic]",
+      "created": "2026-02-22",
+      "line": 91,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 5,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-11": {
+      "id": "DRY-11",
+      "title": "Extract StatusBadge components to `packages/ui` — create InvoiceStatusBadge, BillStatusBadge, AccountStatusBadge",
+      "effort": "2h",
+      "effortMinutes": 120,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit",
+      "created": "2026-02-22",
+      "line": 92,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-12": {
+      "id": "DRY-12",
+      "title": "Create `<EmptyState>` component — consolidate 11+ inline empty state patterns",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit [atomic]",
+      "created": "2026-02-22",
+      "line": 93,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-13": {
+      "id": "DRY-13",
+      "title": "Create `<EntitySelector>` component — wire API integration for 7 report views",
+      "effort": "2h",
+      "effortMinutes": 120,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit",
+      "created": "2026-02-22",
+      "line": 94,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-14": {
+      "id": "DRY-14",
+      "title": "Create global error tracking util — integrate Sentry in 3+ error.tsx files",
+      "effort": "1.5h",
+      "effortMinutes": null,
+      "effortCategory": "long",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit",
+      "created": "2026-02-22",
+      "line": 95,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 5,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-15": {
+      "id": "DRY-15",
+      "title": "Standardize table header styling — create `<TableHead variant=\"label\">` with `text-micro` utility",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit [atomic]",
+      "created": "2026-02-22",
+      "line": 96,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
     "UX-3": {
       "id": "UX-3",
       "title": "Report tables: add `aria-*` attributes, caption, scope, role=\"progressbar\"",
@@ -2636,7 +2656,7 @@
       "domain": "ux",
       "source": "review:nextjs [atomic]",
       "created": "2026-02-21",
-      "line": 86,
+      "line": 98,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [
@@ -2677,7 +2697,7 @@
       "domain": "ux",
       "source": "review:nextjs [atomic]",
       "created": "2026-02-21",
-      "line": 87,
+      "line": 99,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [],
@@ -2716,7 +2736,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain [atomic]",
       "created": "2026-02-21",
-      "line": 88,
+      "line": 100,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [
@@ -2757,7 +2777,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain [atomic]",
       "created": "2026-02-21",
-      "line": 89,
+      "line": 101,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -2796,7 +2816,7 @@
       "domain": "documentation",
       "source": "audit:2026-02-20 [atomic]",
       "created": "2026-02-21",
-      "line": 90,
+      "line": 102,
       "files": [],
       "verification": "Run: npm test",
       "acceptanceCriteria": [
@@ -2840,7 +2860,7 @@
       "domain": "documentation",
       "source": "audit:2026-02-20 [atomic]",
       "created": "2026-02-21",
-      "line": 91,
+      "line": 103,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [
@@ -2881,7 +2901,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 92,
+      "line": 104,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -2927,7 +2947,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 93,
+      "line": 105,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [],
@@ -2969,7 +2989,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 94,
+      "line": 106,
       "files": [
         "apps/web/src/components/help/",
         "apps/web/src/app/(dashboard)/layout.tsx"
@@ -3016,7 +3036,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3 [atomic]",
       "created": "2026-02-21",
-      "line": 95,
+      "line": 107,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -3060,7 +3080,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.4 [atomic]",
       "created": "2026-02-21",
-      "line": 96,
+      "line": 108,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -3105,7 +3125,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.1",
       "created": "2026-02-18",
-      "line": 97,
+      "line": 109,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -3150,7 +3170,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.3",
       "created": "2026-02-18",
-      "line": 98,
+      "line": 110,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -3194,7 +3214,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.2",
       "created": "2026-02-18",
-      "line": 99,
+      "line": 111,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3241,7 +3261,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.2",
       "created": "2026-02-18",
-      "line": 100,
+      "line": 112,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3290,7 +3310,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.1",
       "created": "2026-02-18",
-      "line": 101,
+      "line": 113,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3335,7 +3355,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.4",
       "created": "2026-02-18",
-      "line": 102,
+      "line": 114,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3384,7 +3404,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain §2.2.2",
       "created": "2026-02-18",
-      "line": 103,
+      "line": 115,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [
@@ -3429,7 +3449,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 104,
+      "line": 116,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -3469,7 +3489,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 105,
+      "line": 117,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -3509,7 +3529,7 @@
       "domain": "testing",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 106,
+      "line": 118,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -3553,7 +3573,7 @@
       "domain": "code-quality",
       "source": "review:dashboard-overview [atomic]",
       "created": "2026-02-21",
-      "line": 107,
+      "line": 119,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3598,7 +3618,7 @@
       "domain": "design-system",
       "source": "review:dashboard-overview [atomic]",
       "created": "2026-02-21",
-      "line": 108,
+      "line": 120,
       "files": [
         "packages/ui/package.json",
         "packages/ui/src/ai/AIPanel.tsx",
@@ -3642,7 +3662,7 @@
       "domain": "financial",
       "source": "review:dashboard-overview [atomic]",
       "created": "2026-02-21",
-      "line": 109,
+      "line": 121,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3686,7 +3706,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 110,
+      "line": 122,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3731,7 +3751,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 111,
+      "line": 123,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3781,7 +3801,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 112,
+      "line": 124,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3827,7 +3847,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 113,
+      "line": 125,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3871,7 +3891,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 114,
+      "line": 126,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3915,7 +3935,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 115,
+      "line": 127,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3960,7 +3980,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 116,
+      "line": 128,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4004,7 +4024,7 @@
       "domain": "financial",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 117,
+      "line": 129,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4052,7 +4072,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 118,
+      "line": 130,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4096,7 +4116,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 119,
+      "line": 131,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4144,7 +4164,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 120,
+      "line": 132,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4191,7 +4211,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 121,
+      "line": 133,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4236,7 +4256,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 122,
+      "line": 134,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -4281,7 +4301,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 123,
+      "line": 135,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -4328,7 +4348,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 124,
+      "line": 136,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -4372,7 +4392,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 125,
+      "line": 137,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4416,7 +4436,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 126,
+      "line": 138,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4463,7 +4483,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 127,
+      "line": 139,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4507,7 +4527,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 128,
+      "line": 140,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4551,7 +4571,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 129,
+      "line": 141,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -4599,7 +4619,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 130,
+      "line": 142,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -4645,7 +4665,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 131,
+      "line": 143,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4691,7 +4711,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 132,
+      "line": 144,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4737,7 +4757,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 133,
+      "line": 145,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4785,7 +4805,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 134,
+      "line": 146,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4829,7 +4849,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 135,
+      "line": 147,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4875,7 +4895,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 136,
+      "line": 148,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4919,7 +4939,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 137,
+      "line": 149,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4965,7 +4985,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 138,
+      "line": 150,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5009,7 +5029,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 139,
+      "line": 151,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5055,7 +5075,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 140,
+      "line": 152,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5101,7 +5121,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 141,
+      "line": 153,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5145,7 +5165,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 142,
+      "line": 154,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5194,7 +5214,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 143,
+      "line": 155,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5238,7 +5258,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 144,
+      "line": 156,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5282,7 +5302,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 145,
+      "line": 157,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5328,7 +5348,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 146,
+      "line": 158,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5376,7 +5396,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 147,
+      "line": 159,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5421,7 +5441,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 148,
+      "line": 160,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5465,7 +5485,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 149,
+      "line": 161,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5513,7 +5533,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 150,
+      "line": 162,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5560,7 +5580,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 151,
+      "line": 163,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5607,7 +5627,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 152,
+      "line": 164,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5651,7 +5671,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 153,
+      "line": 165,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5696,7 +5716,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 154,
+      "line": 166,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5743,7 +5763,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 155,
+      "line": 167,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5788,7 +5808,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 156,
+      "line": 168,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5833,7 +5853,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 157,
+      "line": 169,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5880,7 +5900,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 158,
+      "line": 170,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5927,7 +5947,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity [atomic]",
       "created": "2026-02-21",
-      "line": 159,
+      "line": 171,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5972,7 +5992,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 160,
+      "line": 172,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -6017,7 +6037,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 161,
+      "line": 173,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -6063,7 +6083,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 162,
+      "line": 174,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -6108,7 +6128,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 163,
+      "line": 175,
       "files": [],
       "verification": "Grep for related code: Grep \"dev\" apps/",
       "acceptanceCriteria": [],
@@ -6148,7 +6168,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 164,
+      "line": 176,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -6195,7 +6215,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 165,
+      "line": 177,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -6242,7 +6262,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 166,
+      "line": 178,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6290,7 +6310,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 167,
+      "line": 179,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6338,7 +6358,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 168,
+      "line": 180,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6383,7 +6403,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 169,
+      "line": 181,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6430,7 +6450,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 170,
+      "line": 182,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6477,7 +6497,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 171,
+      "line": 183,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6523,7 +6543,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 172,
+      "line": 184,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6567,7 +6587,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 173,
+      "line": 185,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6613,7 +6633,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 174,
+      "line": 186,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6661,7 +6681,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 175,
+      "line": 187,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6709,7 +6729,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 176,
+      "line": 188,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6753,7 +6773,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity [atomic]",
       "created": "2026-02-21",
-      "line": 177,
+      "line": 189,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6799,7 +6819,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 178,
+      "line": 190,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6847,7 +6867,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 179,
+      "line": 191,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6895,7 +6915,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 180,
+      "line": 192,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6941,7 +6961,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 181,
+      "line": 193,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6987,7 +7007,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 182,
+      "line": 194,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7035,7 +7055,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 183,
+      "line": 195,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7079,7 +7099,7 @@
       "domain": "development",
       "source": "audit:ai-advisor [atomic]",
       "created": "2026-02-21",
-      "line": 184,
+      "line": 196,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7123,7 +7143,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 185,
+      "line": 197,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7168,7 +7188,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 186,
+      "line": 198,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7215,7 +7235,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 187,
+      "line": 199,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7259,7 +7279,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 188,
+      "line": 200,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7306,7 +7326,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 189,
+      "line": 201,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7356,7 +7376,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 190,
+      "line": 202,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7402,7 +7422,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2 [atomic]",
       "created": "2026-02-21",
-      "line": 191,
+      "line": 203,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -7441,7 +7461,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 192,
+      "line": 204,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7485,7 +7505,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 193,
+      "line": 205,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7529,7 +7549,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 194,
+      "line": 206,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -7573,7 +7593,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.4",
       "created": "2026-02-18",
-      "line": 195,
+      "line": 207,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -7617,7 +7637,7 @@
       "domain": "code-quality",
       "source": "review:typescript [atomic]",
       "created": "2026-02-21",
-      "line": 196,
+      "line": 208,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -7656,7 +7676,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2 [atomic]",
       "created": "2026-02-21",
-      "line": 197,
+      "line": 209,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -7695,7 +7715,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2 [atomic]",
       "created": "2026-02-21",
-      "line": 198,
+      "line": 210,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -7734,7 +7754,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.1",
       "created": "2026-02-18",
-      "line": 199,
+      "line": 211,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7779,7 +7799,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.3",
       "created": "2026-02-18",
-      "line": 200,
+      "line": 212,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -7824,7 +7844,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3",
       "created": "2026-02-18",
-      "line": 201,
+      "line": 213,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -7869,7 +7889,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3",
       "created": "2026-02-18",
-      "line": 202,
+      "line": 214,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -7913,7 +7933,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain §2.4.4",
       "created": "2026-02-18",
-      "line": 203,
+      "line": 215,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -7956,7 +7976,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain §2.4.5",
       "created": "2026-02-18",
-      "line": 204,
+      "line": 216,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -8002,7 +8022,7 @@
       "domain": "financial",
       "source": "review:financial",
       "created": "2026-02-18",
-      "line": 205,
+      "line": 217,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -8046,7 +8066,7 @@
       "domain": "ux",
       "source": "sitemap:audit [atomic]",
       "created": "2026-02-21",
-      "line": 207,
+      "line": 219,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -8082,104 +8102,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "UX-78": {
-      "id": "UX-78",
-      "title": "Routing: Rename `/insights/insights` → `/insights` — move page.tsx up one level, eliminate stuttering URL segment, update nav config",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "sitemap:audit [atomic]",
-      "created": "2026-02-21",
-      "line": 208,
-      "files": [
-        "apps/api/src/domains/ai/services/categorization.service.ts",
-        "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
-        "apps/api/src/domains/ai/services/ai.service.ts",
-        "apps/web/src/app/(dashboard)/insights/history/error.tsx",
-        "apps/web/src/app/(dashboard)/insights/history/loading.tsx"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Routing: Rename `/insights/insights` → `/insights`",
-        "move page.tsx up one level",
-        "eliminate stuttering URL segment",
-        "update nav config",
-        "Page renders without errors"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "insights",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-122": {
-      "id": "DEV-122",
-      "title": "Business: Add client detail page `/business/clients/[id]` — contact info, stats summary, invoice history tab, edit capability (API `GET /clients/:id` + `PUT` exist). Absorbs DEV-95 + UX-37 (client portion)",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "sitemap:audit",
-      "created": "2026-02-21",
-      "line": 209,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [
-        "Business: Add client detail page `/business/clients/[id]`",
-        "contact info",
-        "stats summary",
-        "invoice history tab",
-        "edit capability (API `GET /clients/:id` + `PUT` exist). Absorbs DEV-95 + UX-37 (client portion)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "UX-79": {
       "id": "UX-79",
       "title": "Business: Add bill detail page at `/business/bills/[id]` — view bill, approve/cancel actions, payment progress bar, mark-overdue button (API `GET /bills/:id` exists). Absorbs UX-56 + UX-40. Depends on UX-77 (route fix)",
@@ -8194,7 +8116,7 @@
       "domain": "ux",
       "source": "sitemap:audit, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 210,
+      "line": 222,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -8242,7 +8164,7 @@
       "domain": "ux",
       "source": "sitemap:audit",
       "created": "2026-02-21",
-      "line": 211,
+      "line": 223,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -8289,7 +8211,7 @@
       "domain": "design-system",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 229,
+      "line": 241,
       "files": [
         "packages/ui/package.json",
         "packages/ui/src/ai/AIPanel.tsx",
@@ -8334,7 +8256,7 @@
       "domain": "design-system",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 235,
+      "line": 247,
       "files": [
         "packages/ui/",
         "packages/ui/.storybook/",
@@ -8382,7 +8304,7 @@
       "domain": "marketing",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 245,
+      "line": 257,
       "files": [
         "apps/web/src/app/(marketing)/",
         "apps/web/src/app/page.tsx"
@@ -8429,7 +8351,7 @@
       "domain": "marketing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 251,
+      "line": 263,
       "files": [],
       "verification": "Grep for related code: Grep \"mkt\" apps/",
       "acceptanceCriteria": [
@@ -8471,7 +8393,7 @@
       "domain": "content",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 252,
+      "line": 264,
       "files": [
         "brand/competitive-analysis.md"
       ],
@@ -8516,7 +8438,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 262,
+      "line": 274,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8558,7 +8480,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 263,
+      "line": 275,
       "files": [
         "docker-compose.yml",
         "Dockerfile",
@@ -8607,7 +8529,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 264,
+      "line": 276,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8648,7 +8570,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 265,
+      "line": 277,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -8690,7 +8612,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 266,
+      "line": 278,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8736,7 +8658,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 267,
+      "line": 279,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8779,7 +8701,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 268,
+      "line": 280,
       "files": [
         "Dockerfile",
         "docker-compose.yml",
@@ -8815,828 +8737,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "INFRA-29": {
-      "id": "INFRA-29",
-      "title": "Linear: Update workspace setup script for 12 teams (add CS, Infrastructure, Growth, Content, Business Ops)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 269,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Update workspace setup script for 12 teams (add CS",
-        "Infrastructure",
-        "Business Ops)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-30": {
-      "id": "INFRA-30",
-      "title": "Linear: Add customer impact labels (affects-100+, affects-1000+, churn-risk, production-down, sev-1/2, needs-*)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 270,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Add customer impact labels (affects-100+",
-        "affects-1000+",
-        "production-down"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-31": {
-      "id": "INFRA-31",
-      "title": "Linear: Add custom fields (Response Time, Customer Count, Deployment ID, Marketing Campaign)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 271,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Add custom fields (Response Time",
-        "Customer Count",
-        "Deployment ID",
-        "Marketing Campaign)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-32": {
-      "id": "INFRA-32",
-      "title": "Linear: Run full workspace setup (12 teams, 34 labels, custom fields)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 272,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Run full workspace setup (12 teams",
-        "custom fields)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-33": {
-      "id": "INFRA-33",
-      "title": "Linear: Auto-Triage Bugs automation (CS + bug + >10 users → High + cycle + notify)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 273,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-34": {
-      "id": "INFRA-34",
-      "title": "Linear: Auto-Route Feature Requests (CS + feature-request → parse keywords → assign team)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 274,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-36": {
-      "id": "INFRA-36",
-      "title": "Linear: Customer Impact Escalation (affects-1000+ → Critical + cycle + notify exec)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 275,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-37": {
-      "id": "INFRA-37",
-      "title": "Linear: Incident Response automation (production-down → P0 + timeline + notify all)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "critical",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 276,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Check: .github/workflows/ exists and runs successfully",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-41": {
-      "id": "INFRA-41",
-      "title": "Linear: GitHub Actions → Linear webhook (deploy → Infrastructure issue + update Product tasks)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 277,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-43": {
-      "id": "INFRA-43",
-      "title": "Linear: Support widget → Linear API (in-app feedback → CS issue with user context)",
-      "effort": "3h",
-      "effortMinutes": 180,
-      "effortCategory": "medium",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 278,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-45": {
-      "id": "INFRA-45",
-      "title": "Linear: Sentry → Linear integration (error >10 occurrences → Infrastructure issue)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 279,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-46": {
-      "id": "INFRA-46",
-      "title": "Linear: Fix task import domain mapping (UX tasks → parse description keywords for correct team)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 280,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-47": {
-      "id": "INFRA-47",
-      "title": "Linear: Add metadata preservation to import (priority, effort, status, deps, source)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-46"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 281,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-48": {
-      "id": "INFRA-48",
-      "title": "Linear: Run task import (migrate 256 product tasks from TASKS.md to Linear)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "critical",
-      "status": "ready",
-      "deps": [
-        "INFRA-47"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 282,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-53": {
-      "id": "INFRA-53",
-      "title": "Linear: API usage monitoring (daily cron, alert at 75% threshold)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-41"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 283,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: API usage monitoring (daily cron",
-        "alert at 75% threshold)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-4": {
-      "id": "OPS-4",
-      "title": "Linear: Executive Dashboard view (all teams, health metrics, primary visibility tool)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "critical",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 284,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Executive Dashboard view (all teams",
-        "health metrics",
-        "primary visibility tool)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-5": {
-      "id": "OPS-5",
-      "title": "Linear: Customer Health Dashboard (CS team, 7d, response time metrics)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-31"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 285,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Customer Health Dashboard (CS team",
-        "response time metrics)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-6": {
-      "id": "OPS-6",
-      "title": "Linear: Product Velocity Dashboard (product teams, cycle, velocity + burndown)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 286,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Product Velocity Dashboard (product teams",
-        "velocity + burndown)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-7": {
-      "id": "OPS-7",
-      "title": "Linear: Incident Response Dashboard (Infrastructure, active incidents, priority sort)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 287,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Incident Response Dashboard (Infrastructure",
-        "active incidents",
-        "priority sort)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
     "INFRA-4": {
       "id": "INFRA-4",
       "title": "Disaster recovery procedure + documentation",
@@ -9651,7 +8751,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 293,
+      "line": 288,
       "files": [
         "docs/operations/disaster-recovery.md",
         "packages/db/prisma/"
@@ -9700,7 +8800,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 294,
+      "line": 289,
       "files": [
         "docs/operations/deployment.md",
         "Dockerfile",
@@ -9735,1069 +8835,92 @@
       ],
       "claimed": false,
       "claimedBy": null
-    },
-    "OPS-1": {
-      "id": "OPS-1",
-      "title": "Linear: Configure workflow states (Ready, Blocked, Review, Deferred) for all 12 teams",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 295,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Configure workflow states (Ready",
-        "Deferred) for all 12 teams"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-2": {
-      "id": "OPS-2",
-      "title": "Linear: Set team-specific settings (cycles, estimation, triage, auto-archive) for consistency",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 296,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Set team-specific settings (cycles",
-        "auto-archive) for consistency"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-35": {
-      "id": "INFRA-35",
-      "title": "Linear: Sprint Auto-Assignment (priority→Critical → add to current cycle)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 297,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-38": {
-      "id": "INFRA-38",
-      "title": "Linear: Feature Shipped Notification (Done + deployed → CS + Content task)",
-      "effort": "45m",
-      "effortMinutes": 45,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 298,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-39": {
-      "id": "INFRA-39",
-      "title": "Linear: Cross-Team Handoff automation (needs-content → create Content issue)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 299,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-40": {
-      "id": "INFRA-40",
-      "title": "Linear: Duplicate Detection script (hourly cron, check similar CS issues, auto-link)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 300,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Duplicate Detection script (hourly cron",
-        "check similar CS issues"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-42": {
-      "id": "INFRA-42",
-      "title": "Linear: GitHub commit auto-linking verification (ensure working)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 301,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-44": {
-      "id": "INFRA-44",
-      "title": "Linear: Intercom → Linear webhook (conversation tagged → CS issue)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 302,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-8": {
-      "id": "OPS-8",
-      "title": "Linear: Sprint Board view (current cycle, board, group by priority)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 303,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Sprint Board view (current cycle",
-        "group by priority)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-9": {
-      "id": "OPS-9",
-      "title": "Linear: Roadmap Timeline view (projects, roadmap, 8 weeks)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 304,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-10": {
-      "id": "OPS-10",
-      "title": "Linear: Blocked Tasks view (all blocked, group by team)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "OPS-1"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 305,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Blocked Tasks view (all blocked",
-        "group by team)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-11": {
-      "id": "OPS-11",
-      "title": "Linear: High Priority Inbox (Critical/High, oldest first, triage view)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 306,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: High Priority Inbox (Critical/High",
-        "oldest first",
-        "triage view)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-12": {
-      "id": "OPS-12",
-      "title": "Linear: Verify import accuracy (spot-check 20 tasks match TASKS.md)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-48"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 307,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-49": {
-      "id": "INFRA-49",
-      "title": "Linear: Create sync state file (TASKS.md ↔ Linear ID mapping for bidirectional sync)",
-      "effort": "15m",
-      "effortMinutes": 15,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "INFRA-48"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 308,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-13": {
-      "id": "OPS-13",
-      "title": "Linear: Team workflow docs (12 teams: triage, handoffs, lifecycle)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 309,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-50": {
-      "id": "INFRA-50",
-      "title": "Linear: Automation runbook (10 automations: triggers, actions, troubleshooting)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 310,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Automation runbook (10 automations: triggers",
-        "troubleshooting)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-51": {
-      "id": "INFRA-51",
-      "title": "Linear: Integration guide (5 integrations: setup, webhooks, testing)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 311,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Run: npm test -- --testPathPattern=integration",
-      "acceptanceCriteria": [
-        "All test assertions pass",
-        "Coverage maintained or improved",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-14": {
-      "id": "OPS-14",
-      "title": "Linear: Dashboard usage guide (8 views: purpose, metrics, when to use)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 312,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Dashboard usage guide (8 views: purpose",
-        "when to use)",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-52": {
-      "id": "INFRA-52",
-      "title": "Linear: Best practices (titling, labeling, lifecycle, handoffs)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 313,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-54": {
-      "id": "INFRA-54",
-      "title": "Linear: Automation health dashboard (track trigger count, success rate, errors)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 314,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Automation health dashboard (track trigger count",
-        "success rate"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-55": {
-      "id": "INFRA-55",
-      "title": "Linear: Tune automation thresholds (adjust based on 1 week usage, <5% false positives)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 315,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Tune automation thresholds (adjust based on 1 week usage",
-        "<5% false positives)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-56": {
-      "id": "INFRA-56",
-      "title": "Linear: Optimize view performance (date filters, limit results, <2s load)",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 316,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Optimize view performance (date filters",
-        "limit results"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "INFRA-57": {
-      "id": "INFRA-57",
-      "title": "Linear: Weekly report automation (Friday cron, exec summary email)",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "OPS-4"
-      ],
-      "domain": "infrastructure",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 317,
-      "files": [
-        ".github/workflows/ci.yml"
-      ],
-      "verification": "Verify infrastructure configuration",
-      "acceptanceCriteria": [
-        "Linear: Weekly report automation (Friday cron",
-        "exec summary email)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "infrastructure",
-        "infra"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-3": {
-      "id": "OPS-3",
-      "title": "Linear: Stale Issue Cleanup (>90d + no activity → comment → close if no response)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "low",
-      "status": "ready",
-      "deps": [
-        "INFRA-32"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 318,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "OPS-15": {
-      "id": "OPS-15",
-      "title": "Linear: Update CLAUDE.md context (Linear as PM tool, workflow references)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "low",
-      "status": "ready",
-      "deps": [
-        "INFRA-52"
-      ],
-      "domain": "operations",
-      "source": "plan:linear-scale-architecture",
-      "created": "2026-02-22",
-      "line": 319,
-      "files": [],
-      "verification": "Grep for related code: Grep \"ops\" apps/",
-      "acceptanceCriteria": [
-        "Linear: Update CLAUDE.md context (Linear as PM tool",
-        "workflow references)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "operations",
-        "ops"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
-      ],
-      "claimed": false,
-      "claimedBy": null
     }
   },
   "done": {
+    "FIN-23": {
+      "id": "FIN-23",
+      "title": "Fix `voidTransfer` balance reversal — voiding a transfer marks JEs as VOIDED but does NOT reverse account balances (financial integrity bug)",
+      "domain": "financial",
+      "source": "review:transfer-service",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-8": {
+      "id": "UX-8",
+      "title": "Add loading/error states to remaining dashboard pages (~30 pages)",
+      "domain": "ux",
+      "source": "plan:phase-6-tasks, plan:entity-selector-global.md (364ea9b)",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-46": {
+      "id": "DEV-46",
+      "title": "Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (10/12 tasks complete, tests deferred)",
+      "domain": "development",
+      "source": "audit:fe-be-parity, sitemap:audit, plan:2026-02-21-banking-transfers.md",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-75": {
+      "id": "DEV-75",
+      "title": "Business: Replace bills \"Coming Soon\" stub with real bill list page (API ready, `/business/bills` is placeholder)",
+      "domain": "development",
+      "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-112": {
+      "id": "DEV-112",
+      "title": "Insights: Create API client (`apps/web/src/lib/api/ai.ts`) for 5 existing AI endpoints",
+      "domain": "development",
+      "source": "audit:ai-advisor [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-113": {
+      "id": "DEV-113",
+      "title": "Insights: Build AI Chat interface on Insights page (wire to existing `POST /api/ai/chat`)",
+      "domain": "development",
+      "source": "audit:ai-advisor",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DRY-8": {
+      "id": "DRY-8",
+      "title": "Transfer routes: refactor string-matching error handling to use `AccountingError.statusCode` pattern (consistent with all other routes)",
+      "domain": "code-quality",
+      "source": "review:transfer-service [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "FIN-24": {
+      "id": "FIN-24",
+      "title": "Transfer service: extract overdraft-allowed account types constant + add multi-currency limitation doc comment",
+      "domain": "financial",
+      "source": "review:transfer-service [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
     "DEV-121": {
       "id": "DEV-121",
       "title": "Accounting: Add journal entry detail page `/accounting/journal-entries/[id]` — view entry with debit/credit lines, approve/void actions, source document link (API `GET /:id` exists, no frontend)",
+      "domain": "development",
+      "source": "sitemap:audit",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-78": {
+      "id": "UX-78",
+      "title": "Routing: Rename `/insights/insights` → `/insights` — move page.tsx up one level, eliminate stuttering URL segment, update nav config",
+      "domain": "ux",
+      "source": "sitemap:audit [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-122": {
+      "id": "DEV-122",
+      "title": "Business: Add client detail page `/business/clients/[id]` — contact info, stats summary, invoice history tab, edit capability (API `GET /clients/:id` + `PUT` exist). Absorbs DEV-95 + UX-37 (client portion)",
       "domain": "development",
       "source": "sitemap:audit",
       "completedAt": null,
@@ -10822,20 +8945,16 @@
       ],
       "development": [
         "DEV-2",
-        "DEV-46",
         "DEV-59",
         "DEV-71",
         "DEV-72",
         "DEV-73",
         "DEV-74",
-        "DEV-75",
         "DEV-76",
         "DEV-77",
         "DEV-78",
         "DEV-97",
         "DEV-98",
-        "DEV-112",
-        "DEV-113",
         "DEV-83",
         "DEV-84",
         "DEV-61",
@@ -10920,11 +9039,9 @@
         "DEV-119",
         "DEV-120",
         "DEV-15",
-        "DEV-16",
-        "DEV-122"
+        "DEV-16"
       ],
       "ux": [
-        "UX-8",
         "UX-15",
         "UX-18",
         "UX-31",
@@ -10957,7 +9074,6 @@
         "UX-64",
         "UX-65",
         "UX-77",
-        "UX-78",
         "UX-79",
         "UX-81"
       ],
@@ -10971,37 +9087,8 @@
         "INFRA-5",
         "INFRA-7",
         "INFRA-8",
-        "INFRA-29",
-        "INFRA-30",
-        "INFRA-31",
-        "INFRA-32",
-        "INFRA-33",
-        "INFRA-34",
-        "INFRA-36",
-        "INFRA-37",
-        "INFRA-41",
-        "INFRA-43",
-        "INFRA-45",
-        "INFRA-46",
-        "INFRA-47",
-        "INFRA-48",
-        "INFRA-53",
         "INFRA-4",
-        "INFRA-6",
-        "INFRA-35",
-        "INFRA-38",
-        "INFRA-39",
-        "INFRA-40",
-        "INFRA-42",
-        "INFRA-44",
-        "INFRA-49",
-        "INFRA-50",
-        "INFRA-51",
-        "INFRA-52",
-        "INFRA-54",
-        "INFRA-55",
-        "INFRA-56",
-        "INFRA-57"
+        "INFRA-6"
       ],
       "performance": [
         "PERF-2",
@@ -11015,6 +9102,13 @@
       "code-quality": [
         "DRY-2",
         "DRY-3",
+        "DRY-9",
+        "DRY-10",
+        "DRY-11",
+        "DRY-12",
+        "DRY-13",
+        "DRY-14",
+        "DRY-15",
         "DRY-7",
         "DRY-5"
       ],
@@ -11055,30 +9149,11 @@
       ],
       "content": [
         "CNT-1"
-      ],
-      "operations": [
-        "OPS-4",
-        "OPS-5",
-        "OPS-6",
-        "OPS-7",
-        "OPS-1",
-        "OPS-2",
-        "OPS-8",
-        "OPS-9",
-        "OPS-10",
-        "OPS-11",
-        "OPS-12",
-        "OPS-13",
-        "OPS-14",
-        "OPS-3",
-        "OPS-15"
       ]
     },
     "byPriority": {
       "critical": [
-        "INFRA-37",
-        "INFRA-48",
-        "OPS-4"
+        "DRY-9"
       ],
       "high": [
         "SEC-8",
@@ -11086,8 +9161,6 @@
         "TEST-2",
         "TEST-3",
         "DEV-2",
-        "UX-8",
-        "DEV-46",
         "UX-15",
         "INFRA-13",
         "UX-18",
@@ -11098,7 +9171,6 @@
         "DEV-72",
         "DEV-73",
         "DEV-74",
-        "DEV-75",
         "DEV-76",
         "DEV-77",
         "DEV-78",
@@ -11108,10 +9180,7 @@
         "UX-58",
         "UX-59",
         "UX-60",
-        "DEV-112",
-        "DEV-113",
         "UX-77",
-        "UX-78",
         "DS-1",
         "MKT-1",
         "INFRA-1",
@@ -11120,23 +9189,7 @@
         "ARCH-3",
         "INFRA-5",
         "INFRA-7",
-        "INFRA-8",
-        "INFRA-29",
-        "INFRA-30",
-        "INFRA-31",
-        "INFRA-32",
-        "INFRA-33",
-        "INFRA-34",
-        "INFRA-36",
-        "INFRA-41",
-        "INFRA-43",
-        "INFRA-45",
-        "INFRA-46",
-        "INFRA-47",
-        "INFRA-53",
-        "OPS-5",
-        "OPS-6",
-        "OPS-7"
+        "INFRA-8"
       ],
       "medium": [
         "UX-33",
@@ -11165,6 +9218,10 @@
         "PERF-7",
         "DRY-2",
         "DRY-3",
+        "DRY-10",
+        "DRY-11",
+        "DRY-13",
+        "DRY-14",
         "UX-3",
         "UX-4",
         "DOC-2",
@@ -11256,39 +9313,17 @@
         "DOC-4",
         "SEC-16",
         "INFRA-11",
-        "DEV-122",
         "UX-79",
         "DS-2",
         "MKT-2",
         "CNT-1",
         "INFRA-4",
-        "INFRA-6",
-        "OPS-1",
-        "OPS-2",
-        "INFRA-35",
-        "INFRA-38",
-        "INFRA-39",
-        "INFRA-40",
-        "INFRA-42",
-        "INFRA-44",
-        "OPS-8",
-        "OPS-9",
-        "OPS-10",
-        "OPS-11",
-        "OPS-12",
-        "INFRA-49",
-        "OPS-13",
-        "INFRA-50",
-        "INFRA-51",
-        "OPS-14",
-        "INFRA-52",
-        "INFRA-54",
-        "INFRA-55",
-        "INFRA-56",
-        "INFRA-57"
+        "INFRA-6"
       ],
       "low": [
         "DEV-70",
+        "DRY-12",
+        "DRY-15",
         "DOC-7",
         "DOC-8",
         "DEV-40",
@@ -11318,9 +9353,7 @@
         "SEC-15",
         "INFRA-12",
         "FIN-6",
-        "UX-81",
-        "OPS-3",
-        "OPS-15"
+        "UX-81"
       ]
     },
     "byEffort": {
@@ -11332,29 +9365,15 @@
         "DEV-114",
         "DOC-4",
         "DOC-5",
-        "DOC-6",
-        "INFRA-32",
-        "OPS-4",
-        "OPS-5",
-        "OPS-6",
-        "OPS-7",
-        "INFRA-35",
-        "INFRA-42",
-        "OPS-8",
-        "OPS-9",
-        "OPS-10",
-        "OPS-11",
-        "INFRA-49"
+        "DOC-6"
       ],
       "short": [
         "TEST-3",
-        "UX-8",
         "UX-15",
         "UX-32",
         "DEV-72",
         "DEV-78",
         "UX-45",
-        "DEV-112",
         "UX-36",
         "DEV-84",
         "UX-19",
@@ -11368,6 +9387,11 @@
         "PERF-7",
         "DRY-2",
         "DRY-3",
+        "DRY-9",
+        "DRY-11",
+        "DRY-12",
+        "DRY-13",
+        "DRY-15",
         "UX-3",
         "DOC-2",
         "DOC-7",
@@ -11410,46 +9434,14 @@
         "INFRA-11",
         "INFRA-12",
         "UX-77",
-        "UX-78",
         "DS-1",
         "MKT-2",
         "CNT-1",
         "INFRA-2",
         "INFRA-3",
         "INFRA-5",
-        "INFRA-29",
-        "INFRA-30",
-        "INFRA-31",
-        "INFRA-33",
-        "INFRA-34",
-        "INFRA-36",
-        "INFRA-37",
-        "INFRA-41",
-        "INFRA-45",
-        "INFRA-46",
-        "INFRA-47",
-        "INFRA-48",
-        "INFRA-53",
         "INFRA-4",
-        "INFRA-6",
-        "OPS-1",
-        "OPS-2",
-        "INFRA-38",
-        "INFRA-39",
-        "INFRA-40",
-        "INFRA-44",
-        "OPS-12",
-        "OPS-13",
-        "INFRA-50",
-        "INFRA-51",
-        "OPS-14",
-        "INFRA-52",
-        "INFRA-54",
-        "INFRA-55",
-        "INFRA-56",
-        "INFRA-57",
-        "OPS-3",
-        "OPS-15"
+        "INFRA-6"
       ],
       "medium": [
         "SEC-8",
@@ -11491,22 +9483,21 @@
         "DEV-104",
         "DEV-118",
         "DEV-119",
-        "DEV-122",
         "DS-2",
         "MKT-1",
         "INFRA-1",
         "ARCH-3",
         "INFRA-7",
-        "INFRA-8",
-        "INFRA-43"
+        "INFRA-8"
       ],
       "long": [
-        "DEV-46",
         "INFRA-13",
         "DEV-97",
         "DEV-98",
         "DEV-83",
         "DEV-65",
+        "DRY-10",
+        "DRY-14",
         "DEV-41",
         "DEV-42",
         "DEV-89",
@@ -11522,8 +9513,6 @@
         "TEST-1",
         "TEST-2",
         "DEV-2",
-        "UX-8",
-        "DEV-46",
         "UX-15",
         "UX-18",
         "DEV-59",
@@ -11533,12 +9522,10 @@
         "DEV-72",
         "DEV-73",
         "DEV-74",
-        "DEV-75",
         "DEV-76",
         "DEV-77",
         "DEV-78",
         "UX-45",
-        "DEV-112",
         "UX-33",
         "UX-36",
         "DEV-84",
@@ -11553,6 +9540,13 @@
         "PERF-7",
         "DRY-2",
         "DRY-3",
+        "DRY-9",
+        "DRY-10",
+        "DRY-11",
+        "DRY-12",
+        "DRY-13",
+        "DRY-14",
+        "DRY-15",
         "UX-3",
         "UX-4",
         "DOC-2",
@@ -11578,59 +9572,13 @@
         "DOC-5",
         "DOC-6",
         "UX-77",
-        "UX-78",
-        "DEV-122",
         "UX-79",
         "UX-81",
         "DS-1",
         "INFRA-1",
         "INFRA-2",
         "INFRA-3",
-        "ARCH-3",
-        "INFRA-29",
-        "INFRA-30",
-        "INFRA-31",
-        "INFRA-32",
-        "INFRA-33",
-        "INFRA-34",
-        "INFRA-36",
-        "INFRA-37",
-        "INFRA-41",
-        "INFRA-43",
-        "INFRA-45",
-        "INFRA-46",
-        "INFRA-47",
-        "INFRA-48",
-        "INFRA-53",
-        "OPS-4",
-        "OPS-5",
-        "OPS-6",
-        "OPS-7",
-        "OPS-1",
-        "OPS-2",
-        "INFRA-35",
-        "INFRA-38",
-        "INFRA-39",
-        "INFRA-40",
-        "INFRA-42",
-        "INFRA-44",
-        "OPS-8",
-        "OPS-9",
-        "OPS-10",
-        "OPS-11",
-        "OPS-12",
-        "INFRA-49",
-        "OPS-13",
-        "INFRA-50",
-        "INFRA-51",
-        "OPS-14",
-        "INFRA-52",
-        "INFRA-54",
-        "INFRA-55",
-        "INFRA-56",
-        "INFRA-57",
-        "OPS-3",
-        "OPS-15"
+        "ARCH-3"
       ],
       "blocked": [
         "TEST-3",
@@ -11648,7 +9596,6 @@
         "UX-58",
         "UX-59",
         "UX-60",
-        "DEV-113",
         "UX-34",
         "UX-44",
         "DEV-83",
@@ -11764,36 +9711,16 @@
       ]
     },
     "quickWins": [
-      "UX-8",
       "UX-15",
       "UX-32",
       "DEV-72",
       "DEV-78",
       "UX-45",
-      "DEV-112",
+      "DRY-9",
       "UX-77",
-      "UX-78",
       "DS-1",
       "INFRA-2",
-      "INFRA-3",
-      "INFRA-29",
-      "INFRA-30",
-      "INFRA-31",
-      "INFRA-32",
-      "INFRA-33",
-      "INFRA-34",
-      "INFRA-36",
-      "INFRA-37",
-      "INFRA-41",
-      "INFRA-45",
-      "INFRA-46",
-      "INFRA-47",
-      "INFRA-48",
-      "INFRA-53",
-      "OPS-4",
-      "OPS-5",
-      "OPS-6",
-      "OPS-7"
+      "INFRA-3"
     ],
     "stale": [],
     "highRisk": []
