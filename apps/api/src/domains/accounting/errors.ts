@@ -33,7 +33,10 @@ export type AccountingErrorCode =
   | 'MISSING_EXCHANGE_RATE'
   | 'INSUFFICIENT_BALANCE'
   | 'TRANSFER_NOT_FOUND'
-  | 'INVALID_SOURCE_DOCUMENT';
+  | 'INVALID_SOURCE_DOCUMENT'
+  | 'TAX_RATE_NOT_FOUND'
+  | 'DUPLICATE_TAX_CODE'
+  | 'INVALID_DATE_RANGE';
 
 export class AccountingError extends Error {
   constructor(
