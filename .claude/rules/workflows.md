@@ -46,6 +46,30 @@
 | Design system enforcement | `/quality:design-system-enforce` |
 | Test coverage gaps | `/quality:test-coverage-analyze` |
 
+## Review Agent Guidelines
+
+### Import Verification (ALL Agents)
+
+Review agents MUST verify that imported components and functions actually exist in the package they're imported from. Common issues:
+- `BadgeGlass` doesn't exist in `@akount/ui` — only `Badge` is exported
+- Glass variants (`ButtonGlass`, `InputGlass`) are separate from base shadcn components
+- Check `packages/ui/src/index.ts` for the actual export list before using any `@akount/ui` import
+
+**When reviewing imports:**
+1. Verify the symbol exists: `Grep "export.*ComponentName" packages/ui/src/`
+2. Check the barrel file: `Read packages/ui/src/index.ts`
+3. Flag any import that references a non-existent export
+
+### Component Reuse Enforcement (ALL Agents)
+
+Review agents MUST flag inline reimplementations of existing components. Before accepting any new component or inline pattern, verify no existing component serves the same purpose.
+
+**Check locations:**
+- `packages/ui/src/` — shared UI components
+- `packages/ui/src/business/` — domain-specific shared components (StatusBadge, etc.)
+- `packages/ui/src/patterns/` — reusable patterns (EmptyState, etc.)
+- `apps/web/src/components/` — app-level shared components
+
 ## Model Selection (Cost Optimization)
 
 **Use /fast (Haiku) for:**

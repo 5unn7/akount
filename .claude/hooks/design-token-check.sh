@@ -1,6 +1,7 @@
 #!/bin/bash
 # Design Token Validation Hook
 # Blocks commits with hardcoded colors (text-[#hex], bg-[rgba()], etc.)
+# and arbitrary font sizes (text-[10px], text-[11px], etc.)
 # Run manually: .claude/hooks/design-token-check.sh
 
 set -euo pipefail
@@ -14,7 +15,7 @@ NC='\033[0m' # No Color
 # Only check web app files (UI components)
 SEARCH_PATHS="apps/web/src packages/ui/src"
 
-echo "🎨 Checking for hardcoded colors..."
+echo "🎨 Checking for hardcoded colors and arbitrary sizes..."
 
 # Patterns to detect
 PATTERNS=(
@@ -24,6 +25,7 @@ PATTERNS=(
   'text-\[rgba\('           # text-[rgba(255,255,255,0.06)]
   'bg-\[rgba\('             # bg-[rgba(52,211,153,0.18)]
   'border-\[rgba\('         # border-[rgba(255,255,255,0.09)]
+  'text-\[[0-9]+px\]'       # text-[10px], text-[11px] — use text-micro or Tailwind classes
 )
 
 # Token suggestions mapping
@@ -57,10 +59,11 @@ done
 
 if [ $VIOLATIONS_FOUND -eq 1 ]; then
   echo ""
-  echo -e "${RED}❌ COMMIT BLOCKED: Hardcoded colors detected!${NC}"
+  echo -e "${RED}❌ COMMIT BLOCKED: Hardcoded colors or arbitrary sizes detected!${NC}"
   echo ""
   echo -e "${YELLOW}Akount Design System Rule:${NC}"
   echo "  NEVER use arbitrary color values like text-[#34D399] or bg-[rgba(255,255,255,0.06)]"
+  echo "  NEVER use arbitrary font sizes like text-[10px] or text-[11px]"
   echo "  ALWAYS use semantic tokens from globals.css"
   echo ""
   echo -e "${YELLOW}Common Token Mappings:${NC}"
@@ -72,17 +75,22 @@ if [ $VIOLATIONS_FOUND -eq 1 ]; then
   echo "  bg-[rgba(255,255,255,0.04)]  → glass-2"
   echo "  border-[rgba(255,255,255,0.06)] → border-ak-border"
   echo ""
+  echo -e "${YELLOW}Font Size Mappings:${NC}"
+  echo "  text-[10px]                 → text-micro (custom utility in globals.css)"
+  echo "  text-[11px]                 → text-xs (Tailwind default, 12px)"
+  echo "  text-[9px]                  → text-micro with smaller variant or define new utility"
+  echo ""
   echo -e "${YELLOW}Full token reference:${NC}"
-  echo "  .claude/rules/design-aesthetic.md (Color Token Mapping table)"
+  echo "  .claude/rules/design-aesthetic.md (Color Token Mapping + Typography Rules)"
   echo "  apps/web/src/app/globals.css (token definitions)"
   echo ""
   echo -e "${YELLOW}How to fix:${NC}"
   echo "  1. Replace hardcoded values with tokens from the mapping above"
-  echo "  2. If you need a new color, add it to globals.css first"
+  echo "  2. If you need a new color or size, add it to globals.css first"
   echo "  3. Re-run: git commit"
   echo ""
   exit 1
 fi
 
-echo -e "${GREEN}✅ No hardcoded colors detected${NC}"
+echo -e "${GREEN}✅ No hardcoded colors or arbitrary sizes detected${NC}"
 exit 0

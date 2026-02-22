@@ -130,3 +130,29 @@ Journal entries created from documents (invoices, bills) MUST store:
 ```
 
 Enables GL rebuild if accounting logic changes.
+
+## Audit Log Pattern for Partial Updates
+
+When logging partial updates (PATCH), use conditional spread to only include fields that were actually changed. Never log `undefined` values in the `after` field.
+
+```typescript
+// ✅ CORRECT — only log changed fields
+await this.auditLog({
+  action: 'TAX_RATE_UPDATED',
+  before: { name: existing.name, rate: existing.rate },
+  after: {
+    ...(data.name !== undefined && { name: data.name }),
+    ...(data.rate !== undefined && { rate: data.rate }),
+    ...(data.isActive !== undefined && { isActive: data.isActive }),
+  },
+});
+
+// ❌ WRONG — logs undefined for unchanged fields
+await this.auditLog({
+  action: 'TAX_RATE_UPDATED',
+  before: { name: existing.name, rate: existing.rate },
+  after: { name: data.name, rate: data.rate }, // name/rate could be undefined
+});
+```
+
+**Why:** Audit logs with `undefined` values create noise and make it impossible to distinguish "field was changed to empty" from "field was not in the update payload".

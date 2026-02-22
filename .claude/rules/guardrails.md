@@ -132,7 +132,9 @@ The following rules are **BLOCKED** by hooks and will fail commits:
    - Answering questions without code changes
 
 1. ✅ **Classify the change** — Bug fix, feature, refactor, or config? (see `product-thinking.md`)
-2. ✅ **Read existing files first** — never edit blindly
+2. ✅ **Read existing files first** — ALWAYS Read before Edit (never edit blindly)
+   - **For multi-file refactoring:** Read ONE file completely, verify pattern, THEN replicate
+   - **Copy exact strings:** Use actual file content for Edit old_string (not grep snippets)
 3. ✅ **Search for patterns** — `Grep "similar-feature" apps/`
 4. ✅ **Search for existing utilities** — BEFORE creating helper functions:
    - Currency/money: `Grep "formatCurrency|cents.*100" apps/web/src/lib/utils/`
@@ -166,6 +168,27 @@ The following rules are **BLOCKED** by hooks and will fail commits:
   - RIGHT: `text-ak-green`, `glass`
 - ❌ **NEVER create duplicate components** — search existing first
 - ❌ **NEVER ignore design spec** — if spec says "glass", use glass variant
+- ❌ **NEVER use arbitrary font sizes** — `text-[10px]` → `text-micro`, `text-[11px]` → `text-xs`
+
+### Component Reuse (CRITICAL — No Inline Quick Fixes)
+- ❌ **NEVER inline-reimplement an existing component** — always search first
+  - Search: `Grep "ComponentName" packages/ui/src/ apps/web/src/components/`
+  - Check: `packages/ui/src/index.ts` for full export list
+- ❌ **NEVER create ad-hoc inline UI patterns** when a shared component exists
+  - WRONG: Inline status badge logic (`const STATUS_MAP = { DRAFT: ... }`) in each page
+  - RIGHT: `import { InvoiceStatusBadge } from '@akount/ui'`
+  - WRONG: Inline empty state markup repeated across pages
+  - RIGHT: `import { EmptyState } from '@akount/ui'`
+- ✅ **DO create new shared components** when the pattern appears in 2+ screens
+  - New components go in `packages/ui/src/` (shared) or `apps/web/src/components/` (app-specific)
+  - Extract when: same markup/logic appears in multiple pages (DRY principle)
+  - Don't extract when: it's a one-off layout specific to a single page
+- ✅ **Reuse hierarchy** (check in order):
+  1. `packages/ui/src/` — shared UI primitives and business components
+  2. `packages/ui/src/business/` — domain-specific shared (StatusBadge, etc.)
+  3. `packages/ui/src/patterns/` — reusable patterns (EmptyState, etc.)
+  4. `apps/web/src/components/` — app-level shared components
+  5. Create new ONLY if nothing matches above
 
 ### Shared Utilities (CRITICAL - Prevents Duplication)
 - ❌ **NEVER create inline utility functions** — search for existing first
@@ -211,6 +234,24 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ❌ **NEVER create files without checking existing** — search first
 - ❌ **NEVER ignore SRP** — one file = one responsibility
 - ❌ **NEVER batch status updates** — update immediately when task completes
+- ❌ **NEVER leave dead exports** — every exported function/type MUST be imported somewhere
+  - After removing usage, remove the export. After adding exports, verify callers exist.
+  - Check: `Grep "functionName" apps/ packages/` — if zero imports, remove the export
+- ❌ **NEVER type async callbacks as `() => void`** — use `() => void | Promise<void>`
+  - WRONG: `onSave: (data: Input) => void` (drops the Promise, hides errors)
+  - RIGHT: `onSave: (data: Input) => void | Promise<void>` (allows await in caller)
+
+### Refactoring Best Practices (Multi-File Changes)
+- ❌ **NEVER use bash sed/awk for file editing on Windows** — shell escaping issues, use Edit tool
+- ❌ **NEVER batch-edit files without verifying ONE first** — prove pattern works before scaling
+- ❌ **NEVER assume file structure from grep** — Read the full file, copy exact strings
+- ✅ **DO delegate bulk refactoring to Task agent** — after pattern proven in 1-2 files
+- ✅ **DO verify TypeScript compilation after each file** — catch errors early
+- ✅ **Pattern for multi-file refactoring:**
+  1. Read & fix ONE file completely
+  2. Verify it compiles (`npx tsc --noEmit`)
+  3. Document the exact pattern
+  4. Use Edit tool (not bash) for remaining files OR delegate to Task agent
 
 ### Page Loading & Error States (Invariant #6)
 - ❌ **NEVER create page.tsx without loading.tsx** — blank screens = terrible UX

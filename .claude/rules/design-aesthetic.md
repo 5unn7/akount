@@ -109,6 +109,7 @@ Dark backgrounds need lighter semantic colors than light mode:
 - **Body text:** `font-sans` (Manrope), clean and readable
 - **All numbers/amounts:** `font-mono` (JetBrains Mono) — tabular, precise
 - **Labels/badges:** Manrope uppercase, 0.05em letter-spacing, 10-11px
+- **Micro text (10px):** Use `text-micro` utility (defined in `globals.css`), NEVER `text-[10px]`
 
 ## Component Patterns
 
@@ -152,6 +153,10 @@ A `::after` pseudo-element renders a `radial-gradient` positioned at CSS vars `-
 
 - **No hardcoded hex colors** — use semantic tokens from the mapping table above. `text-[#F59E0B]` = WRONG, `text-primary` = RIGHT
 - **No hardcoded rgba values** — use glass utilities (`glass`, `glass-2`, `glass-3`) and border tokens (`border-ak-border`)
+- **No arbitrary font sizes** — NEVER `text-[10px]`, `text-[11px]`, etc. Use Tailwind size classes or custom utilities:
+  - `text-[10px]` → `text-micro` (defined in `globals.css` as `@utility text-micro`)
+  - `text-[11px]` → `text-xs` (Tailwind default, 12px — close enough, or define `text-micro-lg` if needed)
+  - **Why:** Arbitrary values bypass the type scale, create inconsistency, and drift from design tokens
 - No heavy drop shadows — prefer subtle border + glow
 - No solid white backgrounds in dark mode — always use glass tiers
 - No flat gray borders — use border token tiers (`border-ak-border`, `-2`, `-3`)

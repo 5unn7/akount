@@ -100,10 +100,23 @@ Status codes:
 - `request.log.info/error()` — in route handlers (request-scoped, includes request ID)
 - `server.log.info/error()` — in services and startup code
 
+### Every Route Handler MUST Log
+
+Every route handler that performs a mutation (POST, PATCH, DELETE) MUST include `request.log.info()` with relevant context. GET endpoints SHOULD log at minimum for list operations (with result count).
+
 ```typescript
-// ✅ CORRECT — structured logging with context
-request.log.info({ entityId, transactionId }, 'Transaction created')
-request.log.error({ err, invoiceId }, 'Failed to post invoice')
+// ✅ CORRECT — every handler logs with structured context
+request.log.info({ count: results.length }, 'Listed tax rates');
+request.log.info({ taxRateId: params.id }, 'Retrieved tax rate');
+request.log.info({ taxRateId: taxRate.id, code: body.code }, 'Created tax rate');
+request.log.info({ taxRateId: params.id }, 'Updated tax rate');
+request.log.info({ taxRateId: params.id }, 'Deactivated tax rate');
+
+// ❌ WRONG — route handler with no logging (invisible operations)
+async (request, reply) => {
+  const result = await service.create(body);
+  return reply.status(201).send(result); // No log = no observability
+}
 
 // ❌ WRONG — console.log in production
 console.log('Transaction created:', transactionId)
@@ -168,6 +181,45 @@ const fromDate = data.effectiveFrom ?? existing.effectiveFrom;
 const toDate = data.effectiveTo ?? existing.effectiveTo;
 if (fromDate && toDate && fromDate >= toDate) throw new Error('Invalid range');
 ```
+
+## Prisma SELECT Constants (REQUIRED)
+
+When using `select` constants to limit returned fields, ALWAYS include `createdAt` and `updatedAt`. Omitting timestamps prevents the frontend from displaying "last updated" info and makes debugging harder.
+
+```typescript
+// ✅ CORRECT — timestamps included
+const TAX_RATE_SELECT = {
+  id: true, entityId: true, code: true, name: true, rate: true,
+  createdAt: true, updatedAt: true,
+} as const;
+
+// ❌ WRONG — timestamps omitted
+const TAX_RATE_SELECT = {
+  id: true, entityId: true, code: true, name: true, rate: true,
+} as const;
+```
+
+## DRY Error Handlers (Domain-Level)
+
+Each domain MUST have a shared error handler in its `errors.ts` file. Route files import this handler instead of defining their own.
+
+```typescript
+// ✅ CORRECT — shared handler in domain errors.ts
+import { handleAccountingError } from '../errors';
+
+// In route handler:
+catch (error) { return handleAccountingError(error, reply); }
+
+// ❌ WRONG — inline error handler duplicated across route files
+catch (error) {
+  if (error instanceof AccountingError) {
+    return reply.status(error.statusCode).send({ error: error.code, message: error.message });
+  }
+  throw error;
+}
+```
+
+**Pattern:** Define `handleXxxError(error, reply)` in `domains/<domain>/errors.ts`, import in all route files for that domain.
 
 ## Single Responsibility Principle (SRP)
 

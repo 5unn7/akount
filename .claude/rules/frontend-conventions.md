@@ -81,6 +81,55 @@ Tailwind v4 uses CSS variables, NOT JavaScript config:
 
 Dark mode: Automatic — tokens switch values between `:root` and `.dark`.
 
+## Component Reuse (REQUIRED — Search Before Creating)
+
+**ALWAYS use existing components instead of inline reimplementations.** Agents MUST NOT create quick-fix inline patterns when a shared component already exists.
+
+### Search Order (Check Before Creating)
+
+1. **`packages/ui/src/`** — Shared UI primitives (Button, Badge, Card, Input, etc.)
+2. **`packages/ui/src/business/`** — Domain-specific shared components (StatusBadge, etc.)
+3. **`packages/ui/src/patterns/`** — Reusable patterns (EmptyState, etc.)
+4. **`apps/web/src/components/`** — App-level shared components (DomainTabs, Sidebar, etc.)
+5. **Create new** — ONLY if nothing above matches
+
+```bash
+# Before creating any component, search first:
+Grep "ComponentName" packages/ui/src/ apps/web/src/components/
+Read packages/ui/src/index.ts  # Check full export list
+```
+
+### When to Create vs Reuse
+
+| Scenario | Action |
+|----------|--------|
+| Pattern used in 1 page only | Inline is OK (page-specific) |
+| Pattern used in 2+ pages | Extract to shared component |
+| Existing shared component covers 80%+ | Use it, extend if needed |
+| Completely novel UI pattern | Create new in appropriate location |
+
+### Anti-Patterns
+
+```typescript
+// ❌ WRONG — inline status badge logic (exists in packages/ui)
+const statusMap = { DRAFT: { label: 'Draft', variant: 'secondary' }, ... };
+<Badge variant={statusMap[status].variant}>{statusMap[status].label}</Badge>
+
+// ✅ RIGHT — use shared component
+import { InvoiceStatusBadge } from '@akount/ui';
+<InvoiceStatusBadge status={invoice.status} />
+
+// ❌ WRONG — inline empty state (exists in packages/ui)
+<div className="flex flex-col items-center">
+  <Icon className="h-8 w-8 text-muted-foreground/20" />
+  <p>No items found</p>
+</div>
+
+// ✅ RIGHT — use shared pattern
+import { EmptyState } from '@akount/ui';
+<EmptyState icon={Icon} title="No items found" />
+```
+
 ## Component File Structure
 
 ```
@@ -388,3 +437,41 @@ export function AccountList({ accounts }) { }
 - **Split when**: File has multiple distinct sections or concerns
 
 **Rule of thumb**: If you're scrolling a lot, consider splitting.
+
+## Interactive Buttons (REQUIRED)
+
+Every `<Button>` in a client component MUST have either an `onClick` handler or `type="submit"` (inside a form). A Button without interaction is dead UI.
+
+```typescript
+// ✅ CORRECT — Button with onClick
+<Button onClick={() => setSheetOpen(true)}>Create Custom Rate</Button>
+
+// ✅ CORRECT — Submit button inside form
+<Button type="submit">Save</Button>
+
+// ❌ WRONG — Button with no handler (non-functional)
+<Button>Create Custom Rate</Button>
+```
+
+**Exception:** Buttons wrapped in `<Link>` components (navigation) or used as `asChild` triggers.
+
+## No Module-Level Side Effects (REQUIRED)
+
+NEVER evaluate `new Date()`, `Math.random()`, `crypto.randomUUID()`, or any other side-effecting call at module scope in component files. These execute once at import time and produce stale values.
+
+```typescript
+// ❌ WRONG — evaluates once when module is imported, never updates
+const PRESETS = [
+  { code: 'GST', effectiveFrom: new Date().toISOString() }, // Stale!
+];
+
+// ✅ CORRECT — evaluate at call time
+const PRESETS = [
+  { code: 'GST', name: 'Goods and Services Tax', rate: 0.05 },
+];
+
+// When creating: add dynamic values at call time
+await createTaxRate({ ...preset, effectiveFrom: new Date().toISOString() });
+```
+
+**Rule of thumb:** Module-level constants should be truly constant (strings, numbers, static objects). Anything time-dependent or random belongs inside a function.

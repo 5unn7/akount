@@ -272,6 +272,35 @@ validate_code_quality() {
         warn ": any type detected — prefer specific types or unknown (see .claude/rules/guardrails.md)"
     fi
 
+    # Check for arbitrary font sizes in frontend files (text-[10px], text-[11px], etc.)
+    if [[ "$filepath" =~ apps/web/.*\.(tsx|ts)$ ]] || [[ "$filepath" =~ packages/ui/.*\.(tsx|ts)$ ]]; then
+        if echo "$content" | grep -qE 'text-\[[0-9]+px\]'; then
+            warn "Arbitrary font size text-[Npx] detected — use text-micro (10px) or Tailwind classes (see .claude/rules/design-aesthetic.md)"
+        fi
+    fi
+
+    return 0
+}
+
+# =============================================================================
+# VALIDATION 8: Route Handler Logging
+# =============================================================================
+validate_route_logging() {
+    local content="$1"
+    local filepath="$2"
+
+    # Only check route files in API
+    if [[ ! "$filepath" =~ apps/api/src/domains/.*/routes/.*\.ts$ ]]; then
+        return 0
+    fi
+
+    # Check if file has route handlers (fastify.post/patch/delete) but no request.log
+    if echo "$content" | grep -qE 'fastify\.(post|patch|put|delete)\('; then
+        if ! echo "$content" | grep -q 'request.log'; then
+            warn "Route file with mutation handlers but no request.log — every POST/PATCH/DELETE handler MUST log (see .claude/rules/api-conventions.md)"
+        fi
+    fi
+
     return 0
 }
 
@@ -299,6 +328,7 @@ if [ -n "$CONTENT_TO_CHECK" ]; then
     validate_api_patterns "$CONTENT_TO_CHECK" "$FILE_PATH"
     validate_schema_patterns "$CONTENT_TO_CHECK" "$FILE_PATH"
     validate_code_quality "$CONTENT_TO_CHECK" "$FILE_PATH"
+    validate_route_logging "$CONTENT_TO_CHECK" "$FILE_PATH"
 fi
 
 # All validations passed
