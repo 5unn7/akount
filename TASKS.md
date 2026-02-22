@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-22
 **Current Phase:** Phase 6 — Launch MVP
 
-> **312 tasks** · 🔴 4 critical · 🟠 33 high · 🟡 108 medium · ⚪ 24 low · ✅ 125 done
-> 187 active · 40% overall progress
+> **199 product tasks** · 🔴 2 critical · 🟠 33 high · 🟡 106 medium · ⚪ 23 low · ✅ 112 done
+> 192 active · 56% progress
 >
 > _Note: 43 Linear PM infrastructure tasks moved to [LINEAR-TASKS.md](LINEAR-TASKS.md)_
 
@@ -30,7 +30,7 @@
 | TEST-2 | E2E tests for critical user flows (onboarding, import, posting, reports) | 4h | 🟠 High | 🟢 | | roadmap |
 | TEST-3 | 80%+ API test coverage target | 2h | 🟠 High | 🔒 | [needs: TEST-1] | roadmap |
 | DEV-2 | Service tests for client/invoice/bill/vendor services | 3h | 🟠 High | 🟢 | | audit:smooth-floating-mountain |
-| UX-8 | Add loading/error states to remaining dashboard pages (~30 pages) | 2h | 🟠 High | 🟢 | | plan:phase-6-tasks, plan:entity-selector-global.md |
+| ~~UX-8~~ | ~~Add loading/error states to remaining dashboard pages (~30 pages)~~ | 2h | 🟠 High | ✅ done | | plan:phase-6-tasks, plan:entity-selector-global.md (364ea9b) |
 | ~~DEV-46~~ | ~~Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (10/12 tasks complete, tests deferred)~~ | 4-6h | 🟠 High | ✅ | session | audit:fe-be-parity, sitemap:audit, plan:2026-02-21-banking-transfers.md |
 | UX-15 | Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:banking-command-center.md |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
@@ -210,7 +210,7 @@
 | FIN-6 | Cash Flow: document hardcoded account code ranges for categorization | doc | ⚪ Low | 📦 | | review:financial |
 | DEV-121 | Accounting: Add journal entry detail page `/accounting/journal-entries/[id]` — view entry with debit/credit lines, approve/void actions, source document link (API `GET /:id` exists, no frontend) | 3-4h | 🔴 Critical | ✅ | 8106fcb | sitemap:audit |
 | UX-77 | Routing: Move `/business/invoices/bills/[id]` → `/business/bills/[id]` — bills aren't children of invoices, fix domain nesting + update all internal links | 30m | 🟠 High | 🟢 | | sitemap:audit [atomic] |
-| UX-78 | Routing: Rename `/insights/insights` → `/insights` — move page.tsx up one level, eliminate stuttering URL segment, update nav config | 30m | 🟠 High | 🟢 | | sitemap:audit [atomic] |
+| UX-78 | Routing: Rename `/insights/insights` → `/insights` — move page.tsx up one level, eliminate stuttering URL segment, update nav config | 30m | 🟠 High | ✅ | commit a799d81 | sitemap:audit [atomic] |
 | ~~DEV-122~~ | ~~Business: Add client detail page `/business/clients/[id]` — contact info, stats summary, invoice history tab, edit capability (API `GET /clients/:id` + `PUT` exist). Absorbs DEV-95 + UX-37 (client portion)~~ | 3-4h | 🟡 Medium | ✅ | 1e987ed | sitemap:audit |
 | UX-79 | Business: Add bill detail page at `/business/bills/[id]` — view bill, approve/cancel actions, payment progress bar, mark-overdue button (API `GET /bills/:id` exists). Absorbs UX-56 + UX-40. Depends on UX-77 (route fix) | 2-3h | 🟡 Medium | 🟢 | [needs: UX-77] | sitemap:audit, plan:phase-4-bill-and-get-paid.md |
 | UX-81 | Business: Add payment detail page `/business/payments/[id]` — view payment with allocation breakdown across invoices/bills and GL posting status | 2-3h | ⚪ Low | 🟢 | | sitemap:audit |
@@ -461,16 +461,17 @@
 
 
 
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-22T15:59:26.881Z",
+  "generated": "2026-02-22T16:03:32.077Z",
   "summary": {
     "total": 199,
-    "ready": 65,
+    "ready": 63,
     "blocked": 7,
     "backlog": 119,
-    "done": 7
+    "done": 9
   },
   "byPriority": {
     "critical": [
@@ -1064,7 +1065,6 @@
     "TEST-1",
     "TEST-2",
     "DEV-2",
-    "UX-8",
     "UX-15",
     "UX-18",
     "DEV-59",
@@ -1078,7 +1078,6 @@
     "DEV-77",
     "DEV-78",
     "UX-45",
-    "DEV-112",
     "UX-33",
     "UX-36",
     "DEV-84",
@@ -1128,13 +1127,11 @@
     "ARCH-3"
   ],
   "quickWins": [
-    "UX-8",
     "UX-15",
     "UX-32",
     "DEV-72",
     "DEV-78",
     "UX-45",
-    "DEV-112",
     "UX-77",
     "UX-78",
     "DS-1",
@@ -1204,7 +1201,7 @@
       "title": "Add loading/error states to remaining dashboard pages (~30 pages)",
       "effort": "2h",
       "priority": "high",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "ux"
     },
@@ -1406,7 +1403,7 @@
       "title": "Insights: Create API client (`apps/web/src/lib/api/ai.ts`) for 5 existing AI endpoints",
       "effort": "30m",
       "priority": "high",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "development"
     },

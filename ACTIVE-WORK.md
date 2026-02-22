@@ -1,6 +1,6 @@
 # Active Work Tracker
 
-**Last Updated:** 2026-02-22 09:58
+**Last Updated:** 2026-02-22 10:12
 
 ---
 
@@ -8,7 +8,8 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
-| agent-ux-693 | 2026-02-22 09:54 | UX-8: Add loading/error states to remaining dashboard pages | in_progress | main |
+| agent-routing-fix | 2026-02-22 10:05 | UX-78: Fix /insights/insights → /insights routing | completed | main |
+| agent-ux-693 | 2026-02-22 09:54 | UX-8: Add loading/error states to remaining dashboard pages | completed | main |
 | agent-ai-client | 2026-02-22 09:47 | DEV-112: Create AI API client for 5 endpoints | completed | main |
 | agent-client-detail | 2026-02-21 18:52 | DEV-122, DEV-75: Client detail + Bills page | completed | main |
 | agent-banking-ui | 2026-02-20 20:15 | DEV-43, DEV-44, DEV-45: Banking transaction form, XLSX import, batch detail | completed | main |
@@ -24,7 +25,6 @@
 
 | Task ID | Type | Reserved By | Reserved Until |
 |---------|------|-------------|----------------|
-| UX-8 | ux | agent-ux-693 | 2026-02-22 11:54 |
 
 ---
 
@@ -32,6 +32,7 @@
 
 | Agent ID | Last Claimed Tasks | Last Domain | Last Session |
 |----------|-------------------|-------------|--------------|
+| agent-routing-fix | UX-78 | insights | 2026-02-22 10:05 |
 | agent-ux-693 | UX-8 | ux | 2026-02-22 09:54 |
 | agent-ai-client | DEV-112 | insights | 2026-02-22 09:47 |
 | agent-ux-atomic | UX-27, UX-10, UX-80 | ux | 2026-02-21 18:57 |
