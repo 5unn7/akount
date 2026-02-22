@@ -177,14 +177,19 @@ export const navigationDomains: NavDomain[] = [
     roles: ['OWNER', 'ADMIN', 'ACCOUNTANT'],
     items: [
       {
-        label: 'Journal Entries',
-        icon: BookOpen,
-        href: '/accounting/journal-entries',
+        label: 'Overview',
+        icon: LayoutDashboard,
+        href: '/accounting',
       },
       {
         label: 'Chart of Accounts',
         icon: ListTree,
         href: '/accounting/chart-of-accounts',
+      },
+      {
+        label: 'Journal Entries',
+        icon: BookOpen,
+        href: '/accounting/journal-entries',
       },
       {
         label: 'Reports',
@@ -269,7 +274,7 @@ export const navigationDomains: NavDomain[] = [
       {
         label: 'Insights',
         icon: Sparkles,
-        href: '/insights/insights',
+        href: '/insights',
       },
       {
         label: 'Policy Alerts',
