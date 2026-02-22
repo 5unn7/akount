@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "sessions": [
+    {
+      "id": "2026-02-21-134015-2i3i",
+      "date": "2026-02-21",
+      "startedAt": "2026-02-21T19:40:15.372Z",
+      "model": "opus",
+      "toolCalls": [
+        {
+          "timestamp": "2026-02-21T19:40:15.372Z",
+          "tool": "Read",
+          "tokens": 45000,
+          "description": "Read large Prisma schema"
+        }
+      ],
+      "totalTokens": 45000,
+      "estimatedCost": 1.2149999999999999
+    }
+  ]
+}

@@ -38,7 +38,19 @@ if [ -f "packages/db/prisma/schema.prisma" ]; then
   fi
 fi
 
-# 3. Multi-tenancy check (basic grep for tenantId in Prisma queries)
+# 3. Investigation protocol (verify proper investigation before code changes)
+echo "  → Checking investigation protocol..."
+if ! .claude/hooks/investigation-check.sh; then
+  VALIDATION_FAILED=1
+fi
+
+# 4. Design token validation (block hardcoded colors)
+echo "  → Checking design tokens..."
+if ! .claude/hooks/design-token-check.sh; then
+  VALIDATION_FAILED=1
+fi
+
+# 5. Multi-tenancy check (basic grep for tenantId in Prisma queries)
 echo "  → Checking multi-tenancy enforcement..."
 MISSING_TENANT_ID=0
 
@@ -69,7 +81,7 @@ else
   echo "  ✅ Multi-tenancy check passed"
 fi
 
-# 4. Optional: Linting (commented out - can be slow)
+# 6. Optional: Linting (commented out - can be slow)
 # echo "  → Running ESLint..."
 # if ! npx eslint . --ext .ts,.tsx 2>/dev/null; then
 #   echo "❌ ESLint errors found" >&2
@@ -78,7 +90,7 @@ fi
 #   echo "  ✅ ESLint passed"
 # fi
 
-# 5. Optional: Tests (commented out - can be very slow)
+# 7. Optional: Tests (commented out - can be very slow)
 # echo "  → Running tests..."
 # if ! npm test 2>/dev/null; then
 #   echo "❌ Tests failed" >&2
