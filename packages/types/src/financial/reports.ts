@@ -257,16 +257,7 @@ export interface RevenueReport {
 // ============================================================================
 // Formatting Helpers (universal — work in both server and client)
 // ============================================================================
-
-export function formatCurrency(cents: number, currency: string = 'CAD'): string {
-    const dollars = cents / 100;
-    return new Intl.NumberFormat('en-CA', {
-        style: 'currency',
-        currency,
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(dollars);
-}
+// Note: formatCurrency moved to apps/web/src/lib/utils/currency.ts (canonical location)
 
 export function formatPercentage(value: number, decimals: number = 1): string {
     return `${value.toFixed(decimals)}%`;

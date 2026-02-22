@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils/currency';
 
 /**
  * AgingBar Component
@@ -51,19 +52,6 @@ const dotClasses = {
   red: 'bg-ak-red',
   darkred: 'bg-destructive',
 } as const;
-
-/**
- * Format integer cents to currency string
- */
-function formatCurrency(cents: number, currency: string = 'CAD'): string {
-  const amount = cents / 100;
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
 
 export function AgingBar({
   buckets,

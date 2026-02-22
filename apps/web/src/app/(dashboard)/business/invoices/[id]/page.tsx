@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { formatDate } from '@/lib/utils/date';
 import { notFound } from 'next/navigation';
 import { getInvoice } from '@/lib/api/invoices';
 import { Badge } from '@/components/ui/badge';
@@ -34,14 +35,6 @@ const STATUS_BADGE_STYLES: Record<string, string> = {
     PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
 };
 
-function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-}
 
 export default async function InvoiceDetailPage({
     params,

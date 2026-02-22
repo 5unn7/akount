@@ -1,4 +1,5 @@
 'use client';
+import { formatDate } from '@/lib/utils/date';
 
 import { useRouter } from 'next/navigation';
 import type { Invoice } from '@/lib/api/invoices';
@@ -26,15 +27,6 @@ const STATUS_BADGE_STYLES: Record<Invoice['status'], string> = {
     CANCELLED: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
     PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
 };
-
-function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-}
 
 export function InvoiceTable({ invoices }: InvoiceTableProps) {
     const router = useRouter();

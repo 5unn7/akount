@@ -475,7 +475,7 @@ export class DashboardService {
     const rates = await this.fxService.getRateBatch(currencyPairs);
 
     // Group by month and category
-    const monthlyData = new Map<string, Map<string, { amount: number; color: string }>>();
+    const monthlyData = new Map<string, Map<string, { amount: number; color: string | null }>>();
 
     for (const txn of transactions) {
       const monthKey = new Date(txn.date).toLocaleDateString('en-US', {
@@ -486,11 +486,11 @@ export class DashboardService {
       const rateKey = `${txn.account.currency}_${baseCurrency}`;
       const rate = rates.get(rateKey) ?? 1.0;
 
-      // Convert to positive dollars for display
-      const convertedAmount = Math.abs(Math.round(txn.amount * rate)) / 100;
+      // Convert to positive cents (keep integer until final output)
+      const convertedCents = Math.abs(Math.round(txn.amount * rate));
 
       const categoryName = txn.category?.name || 'Uncategorized';
-      const categoryColor = txn.category?.color || '#71717A'; // muted-foreground
+      const categoryColor = txn.category?.color || null;
 
       if (!monthlyData.has(monthKey)) {
         monthlyData.set(monthKey, new Map());
@@ -500,18 +500,18 @@ export class DashboardService {
       const existing = categoryMap.get(categoryName);
 
       categoryMap.set(categoryName, {
-        amount: (existing?.amount || 0) + convertedAmount,
+        amount: (existing?.amount || 0) + convertedCents,
         color: existing?.color || categoryColor,
       });
     }
 
-    // Convert to array format for chart
+    // Convert to array format for chart (cents → whole dollars at output boundary)
     const result = Array.from(monthlyData.entries()).map(([label, categoryMap]) => ({
       label,
       categories: Array.from(categoryMap.entries()).map(([name, { amount, color }]) => ({
         name,
-        amount: Math.round(amount), // Round to whole dollars
-        color,
+        amount: Math.round(amount / 100),
+        color: color ?? '#71717A',
       })),
     }));
 

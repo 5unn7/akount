@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { getUpcomingPayments, type UpcomingPayment } from '@/lib/api/dashboard-client';
+import { formatCurrency } from '@/lib/utils/currency';
+import { formatDateSplit } from '@/lib/utils/date';
 
 interface UpcomingPaymentsProps {
     entityId?: string;
@@ -14,26 +16,6 @@ const colorMap = {
     green: 'text-ak-green',
     default: '',
 } as const;
-
-/**
- * Format cents to currency string
- * @param cents - Integer cents (e.g., 1050 = $10.50)
- */
-function formatCurrency(cents: number): string {
-    const dollars = cents / 100;
-    return `$${dollars.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-/**
- * Format date to { day, month } for display
- */
-function formatDate(dateStr: string): { day: string; month: string } {
-    const date = new Date(dateStr);
-    return {
-        day: date.getDate().toString(),
-        month: date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
-    };
-}
 
 export function UpcomingPayments({ entityId, limit = 10 }: UpcomingPaymentsProps) {
     const [payments, setPayments] = useState<UpcomingPayment[] | undefined>();
@@ -77,7 +59,7 @@ export function UpcomingPayments({ entityId, limit = 10 }: UpcomingPaymentsProps
             ) : (
                 <div className="space-y-2">
                     {payments.map((item) => {
-                        const date = formatDate(item.dueDate);
+                        const date = formatDateSplit(item.dueDate);
                         const color = item.type === 'BILL' ? 'red' : item.type === 'INVOICE' ? 'green' : 'default';
                         const meta = item.type === 'BILL' ? 'Bill due' : 'Invoice payment';
 

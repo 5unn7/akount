@@ -1,4 +1,5 @@
 'use client';
+import { formatDate, formatDateTime } from '@/lib/utils/date';
 
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -129,15 +130,6 @@ export function ImportHistoryClient({
         }
     }
 
-    function formatDateTime(isoDate: string): string {
-        return new Date(isoDate).toLocaleDateString('en-CA', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    }
 
     return (
         <div className="space-y-4">

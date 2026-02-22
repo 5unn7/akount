@@ -1,4 +1,5 @@
 'use client';
+import { formatDate, formatDateTime } from '@/lib/utils/date';
 
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,13 +43,6 @@ function formatAmount(cents: number, currency = 'CAD'): string {
   }).format(dollars);
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-CA', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 export function ImportConfirmation({ result, currency = 'CAD', onUploadAnother }: ImportConfirmationProps) {
   const isSuccess = result.status === 'PROCESSED' || result.processedRows > 0;

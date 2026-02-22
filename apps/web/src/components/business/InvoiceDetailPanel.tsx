@@ -1,4 +1,5 @@
 'use client';
+import { formatDate } from '@/lib/utils/date';
 
 import type { Invoice } from '@/lib/api/invoices';
 import {
@@ -28,14 +29,6 @@ const STATUS_BADGE_STYLES: Record<Invoice['status'], string> = {
     PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
 };
 
-function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-}
 
 export function InvoiceDetailPanel({
     invoice,

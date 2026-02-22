@@ -6,6 +6,7 @@ import type {
   GLLedgerEntry,
   ReportLineItem,
 } from './report.service';
+import { sanitizeCsvCell, formatCentsForCsv } from '../../../lib/csv';
 
 /**
  * Report Export Service
@@ -18,33 +19,7 @@ import type {
  * @see https://owasp.org/www-community/attacks/CSV_Injection
  */
 export class ReportExportService {
-  /**
-   * Sanitize CSV cell to prevent formula injection.
-   * Characters =+\-@\t\r at the start of a cell can trigger
-   * formula execution in Excel/Google Sheets.
-   */
-  private sanitizeCsvCell(value: string | null | undefined): string {
-    if (!value) return '';
-
-    // Prevent formula injection (starts with =+\-@\t\r)
-    if (/^[=+\-@\t\r]/.test(value)) {
-      return `"'${value.replace(/"/g, '""')}"`; // Prefix with ' AND wrap in quotes
-    }
-
-    // Escape quotes and wrap if contains comma, quote, or newline
-    if (/[",\n\r]/.test(value)) {
-      return `"${value.replace(/"/g, '""')}"`;
-    }
-
-    return value;
-  }
-
-  /**
-   * Format cents as dollars with exactly 2 decimal places.
-   */
-  private formatCentsForCsv(cents: number): string {
-    return (cents / 100).toFixed(2);
-  }
+  // sanitizeCsvCell and formatCentsForCsv imported from lib/csv.ts
 
   /**
    * Build a CSV row from an array of values.
@@ -107,28 +82,28 @@ export class ReportExportService {
     rows.push(this.buildRow(['', '--- Revenue ---', '', '']));
     for (const item of this.flattenItems(report.revenue?.sections || [])) {
       rows.push(this.buildRow([
-        this.sanitizeCsvCell(item.code),
-        this.sanitizeCsvCell(item.name),
-        this.sanitizeCsvCell(item.type),
-        this.formatCentsForCsv(item.balance),
+        sanitizeCsvCell(item.code),
+        sanitizeCsvCell(item.name),
+        sanitizeCsvCell(item.type),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['', 'Total Revenue', '', this.formatCentsForCsv(report.revenue?.total || 0)]));
+    rows.push(this.buildRow(['', 'Total Revenue', '', formatCentsForCsv(report.revenue?.total || 0)]));
 
     // Expenses items
     rows.push(this.buildRow(['', '--- Expenses ---', '', '']));
     for (const item of this.flattenItems(report.expenses?.sections || [])) {
       rows.push(this.buildRow([
-        this.sanitizeCsvCell(item.code),
-        this.sanitizeCsvCell(item.name),
-        this.sanitizeCsvCell(item.type),
-        this.formatCentsForCsv(item.balance),
+        sanitizeCsvCell(item.code),
+        sanitizeCsvCell(item.name),
+        sanitizeCsvCell(item.type),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['', 'Total Expenses', '', this.formatCentsForCsv(report.expenses?.total || 0)]));
+    rows.push(this.buildRow(['', 'Total Expenses', '', formatCentsForCsv(report.expenses?.total || 0)]));
 
     // Net Income
-    rows.push(this.buildRow(['', 'Net Income', '', this.formatCentsForCsv(report.netIncome)]));
+    rows.push(this.buildRow(['', 'Net Income', '', formatCentsForCsv(report.netIncome)]));
 
     return rows.join('\n');
   }
@@ -145,42 +120,42 @@ export class ReportExportService {
     rows.push(this.buildRow(['', '--- Assets ---', '', '']));
     for (const item of this.flattenItems(report.assets?.items || [])) {
       rows.push(this.buildRow([
-        this.sanitizeCsvCell(item.code),
-        this.sanitizeCsvCell(item.name),
+        sanitizeCsvCell(item.code),
+        sanitizeCsvCell(item.name),
         'ASSET',
-        this.formatCentsForCsv(item.balance),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['', 'Total Assets', '', this.formatCentsForCsv(report.totalAssets)]));
+    rows.push(this.buildRow(['', 'Total Assets', '', formatCentsForCsv(report.totalAssets)]));
 
     // Liabilities
     rows.push(this.buildRow(['', '--- Liabilities ---', '', '']));
     for (const item of this.flattenItems(report.liabilities?.items || [])) {
       rows.push(this.buildRow([
-        this.sanitizeCsvCell(item.code),
-        this.sanitizeCsvCell(item.name),
+        sanitizeCsvCell(item.code),
+        sanitizeCsvCell(item.name),
         'LIABILITY',
-        this.formatCentsForCsv(item.balance),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['', 'Total Liabilities', '', this.formatCentsForCsv(report.liabilities?.total || 0)]));
+    rows.push(this.buildRow(['', 'Total Liabilities', '', formatCentsForCsv(report.liabilities?.total || 0)]));
 
     // Equity
     rows.push(this.buildRow(['', '--- Equity ---', '', '']));
     for (const item of this.flattenItems(report.equity?.items || [])) {
       rows.push(this.buildRow([
-        this.sanitizeCsvCell(item.code),
-        this.sanitizeCsvCell(item.name),
+        sanitizeCsvCell(item.code),
+        sanitizeCsvCell(item.name),
         'EQUITY',
-        this.formatCentsForCsv(item.balance),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['3100', 'Retained Earnings (Prior Years)', 'EQUITY', this.formatCentsForCsv(report.retainedEarnings.priorYears)]));
-    rows.push(this.buildRow(['', 'Net Income (Current Year)', 'EQUITY', this.formatCentsForCsv(report.retainedEarnings.currentYear)]));
-    rows.push(this.buildRow(['', 'Total Equity', '', this.formatCentsForCsv(report.equity?.total || 0)]));
+    rows.push(this.buildRow(['3100', 'Retained Earnings (Prior Years)', 'EQUITY', formatCentsForCsv(report.retainedEarnings.priorYears)]));
+    rows.push(this.buildRow(['', 'Net Income (Current Year)', 'EQUITY', formatCentsForCsv(report.retainedEarnings.currentYear)]));
+    rows.push(this.buildRow(['', 'Total Equity', '', formatCentsForCsv(report.equity?.total || 0)]));
 
     // Grand total
-    rows.push(this.buildRow(['', 'Total Liabilities & Equity', '', this.formatCentsForCsv(report.totalLiabilitiesAndEquity)]));
+    rows.push(this.buildRow(['', 'Total Liabilities & Equity', '', formatCentsForCsv(report.totalLiabilitiesAndEquity)]));
 
     return rows.join('\n');
   }
@@ -194,40 +169,40 @@ export class ReportExportService {
     rows.push(this.buildRow(['Category', 'Item', 'Amount']));
 
     // Operating
-    rows.push(this.buildRow(['Operating', 'Net Income', this.formatCentsForCsv(report.netIncome)]));
+    rows.push(this.buildRow(['Operating', 'Net Income', formatCentsForCsv(report.netIncome)]));
     for (const item of report.operating?.items || []) {
       rows.push(this.buildRow([
         'Operating',
-        this.sanitizeCsvCell(item.name),
-        this.formatCentsForCsv(item.balance),
+        sanitizeCsvCell(item.name),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['Operating', 'Total', this.formatCentsForCsv(report.operating?.total || 0)]));
+    rows.push(this.buildRow(['Operating', 'Total', formatCentsForCsv(report.operating?.total || 0)]));
 
     // Investing
     for (const item of report.investing?.items || []) {
       rows.push(this.buildRow([
         'Investing',
-        this.sanitizeCsvCell(item.name),
-        this.formatCentsForCsv(item.balance),
+        sanitizeCsvCell(item.name),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['Investing', 'Total', this.formatCentsForCsv(report.investing?.total || 0)]));
+    rows.push(this.buildRow(['Investing', 'Total', formatCentsForCsv(report.investing?.total || 0)]));
 
     // Financing
     for (const item of report.financing?.items || []) {
       rows.push(this.buildRow([
         'Financing',
-        this.sanitizeCsvCell(item.name),
-        this.formatCentsForCsv(item.balance),
+        sanitizeCsvCell(item.name),
+        formatCentsForCsv(item.balance),
       ]));
     }
-    rows.push(this.buildRow(['Financing', 'Total', this.formatCentsForCsv(report.financing?.total || 0)]));
+    rows.push(this.buildRow(['Financing', 'Total', formatCentsForCsv(report.financing?.total || 0)]));
 
     // Summary
-    rows.push(this.buildRow(['', 'Opening Cash Balance', this.formatCentsForCsv(report.openingCash)]));
-    rows.push(this.buildRow(['', 'Net Cash Change', this.formatCentsForCsv(report.netCashChange)]));
-    rows.push(this.buildRow(['', 'Closing Cash Balance', this.formatCentsForCsv(report.closingCash)]));
+    rows.push(this.buildRow(['', 'Opening Cash Balance', formatCentsForCsv(report.openingCash)]));
+    rows.push(this.buildRow(['', 'Net Cash Change', formatCentsForCsv(report.netCashChange)]));
+    rows.push(this.buildRow(['', 'Closing Cash Balance', formatCentsForCsv(report.closingCash)]));
 
     return rows.join('\n');
   }
@@ -242,14 +217,14 @@ export class ReportExportService {
 
     for (const account of report.accounts) {
       rows.push(this.buildRow([
-        this.sanitizeCsvCell(account.code),
-        this.sanitizeCsvCell(account.name),
-        account.debit > 0 ? this.formatCentsForCsv(account.debit) : '',
-        account.credit > 0 ? this.formatCentsForCsv(account.credit) : '',
+        sanitizeCsvCell(account.code),
+        sanitizeCsvCell(account.name),
+        account.debit > 0 ? formatCentsForCsv(account.debit) : '',
+        account.credit > 0 ? formatCentsForCsv(account.credit) : '',
       ]));
     }
 
-    rows.push(this.buildRow(['', 'Totals', this.formatCentsForCsv(report.totalDebits), this.formatCentsForCsv(report.totalCredits)]));
+    rows.push(this.buildRow(['', 'Totals', formatCentsForCsv(report.totalDebits), formatCentsForCsv(report.totalCredits)]));
 
     return rows.join('\n');
   }
@@ -272,10 +247,10 @@ export class ReportExportService {
       rows.push(this.buildRow([
         date,
         String(entry.entryNumber),
-        this.sanitizeCsvCell(entry.memo),
-        entry.debitAmount > 0 ? this.formatCentsForCsv(entry.debitAmount) : '',
-        entry.creditAmount > 0 ? this.formatCentsForCsv(entry.creditAmount) : '',
-        this.formatCentsForCsv(entry.runningBalance),
+        sanitizeCsvCell(entry.memo),
+        entry.debitAmount > 0 ? formatCentsForCsv(entry.debitAmount) : '',
+        entry.creditAmount > 0 ? formatCentsForCsv(entry.creditAmount) : '',
+        formatCentsForCsv(entry.runningBalance),
       ]));
     }
 

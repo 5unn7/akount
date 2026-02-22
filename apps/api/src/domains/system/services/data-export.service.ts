@@ -2,6 +2,7 @@ import { PassThrough } from 'stream';
 import archiver from 'archiver';
 import { prisma } from '@akount/db';
 import type { FastifyReply } from 'fastify';
+import { sanitizeCsvCell } from '../../../lib/csv';
 
 /**
  * Data Export Service
@@ -124,25 +125,6 @@ function maskSensitiveValue(value: unknown): string {
 /** Columns that contain sensitive PII and should be masked in exports */
 const SENSITIVE_COLUMNS = new Set(['accountNumber']);
 
-function sanitizeCsvCell(value: unknown): string {
-  if (value === null || value === undefined) return '';
-
-  const str = value instanceof Date
-    ? value.toISOString()
-    : String(value);
-
-  // Prevent formula injection
-  if (/^[=+\-@\t\r]/.test(str)) {
-    return `"'${str.replace(/"/g, '""')}"`;
-  }
-
-  // Escape if contains comma, quote, or newline
-  if (/[",\n\r]/.test(str)) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-
-  return str;
-}
 
 /**
  * Stream a full data backup as a ZIP archive.

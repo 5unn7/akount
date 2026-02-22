@@ -1,4 +1,5 @@
 'use client';
+import { formatDate } from '@/lib/utils/date';
 
 import { useState } from 'react';
 import type { Payment } from '@/lib/api/payments';
@@ -27,14 +28,6 @@ interface PaymentTableProps {
     payments: Payment[];
 }
 
-function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-}
 
 const METHOD_LABELS: Record<string, string> = {
     CARD: 'Card',

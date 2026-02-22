@@ -1,17 +1,11 @@
 import Link from 'next/link';
+import { formatDate, formatDateTime } from '@/lib/utils/date';
 import { ArrowUpRight, ArrowDownRight, ArrowRight, Receipt } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import type { Transaction } from '@/lib/api/transactions';
 
 interface RecentTransactionsProps {
     transactions: Transaction[];
-}
-
-function formatDate(isoDate: string) {
-    return new Date(isoDate).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-    });
 }
 
 function getStyle(amount: number) {

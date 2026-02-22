@@ -23,6 +23,7 @@ import {
     ArrowLeft,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { formatDate, formatDateTime } from '@/lib/utils/date';
 
 export const metadata: Metadata = {
     title: 'Import Details | Akount',
@@ -66,24 +67,6 @@ function formatAmount(cents: number, currency: string = 'CAD'): string {
         style: 'currency',
         currency,
     }).format(dollars);
-}
-
-function formatDateTime(isoDate: string): string {
-    return new Date(isoDate).toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-}
-
-function formatDate(isoDate: string): string {
-    return new Date(isoDate).toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
 }
 
 export default async function ImportDetailPage({ params }: ImportDetailPageProps) {

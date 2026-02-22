@@ -1,4 +1,5 @@
 'use client';
+import { formatDate } from '@/lib/utils/date';
 
 import type { Bill } from '@/lib/api/bills';
 import {
@@ -28,14 +29,6 @@ const STATUS_BADGE_STYLES: Record<Bill['status'], string> = {
     PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
 };
 
-function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-}
 
 export function BillDetailPanel({ bill, open, onOpenChange }: BillDetailPanelProps) {
     if (!bill) return null;
