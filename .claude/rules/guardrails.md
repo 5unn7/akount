@@ -134,17 +134,22 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 1. ✅ **Classify the change** — Bug fix, feature, refactor, or config? (see `product-thinking.md`)
 2. ✅ **Read existing files first** — never edit blindly
 3. ✅ **Search for patterns** — `Grep "similar-feature" apps/`
-4. ✅ **Search MEMORY for prior learnings** — `Grep "[concept]" memory/`
-5. ✅ **Trace the impact** — what imports/calls this code? What could break?
-6. ✅ **Apply review lens** — will this pass security, financial integrity, type safety?
-7. ✅ **Verify schema** — check Prisma models match intent
-8. ✅ **Check tokens** — design tokens exist before using
-9. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
-10. ✅ **Verify labels/paths** — search before creating new
-11. ✅ **Validate test vs production** — mocks stay in `__tests__/`
-12. ✅ **For UI changes: minimal first** — change ONE visual thing, verify, then expand (see `frontend-conventions.md`)
-13. ✅ **Check loading/error states** — every new page.tsx needs loading.tsx + error.tsx (Invariant #6)
-14. ✅ **Check server/client separation** — no mixing `'use client'` with server-only imports (Invariant #7)
+4. ✅ **Search for existing utilities** — BEFORE creating helper functions:
+   - Currency/money: `Grep "formatCurrency|cents.*100" apps/web/src/lib/utils/`
+   - Dates: `Grep "formatDate|toLocaleString.*Date" apps/web/src/lib/utils/`
+   - Status badges: `Grep "StatusBadge|STATUS_CONFIG" packages/ui/`
+   - Empty states: `Grep "EmptyState|No.*found" packages/ui/`
+5. ✅ **Search MEMORY for prior learnings** — `Grep "[concept]" memory/`
+6. ✅ **Trace the impact** — what imports/calls this code? What could break?
+7. ✅ **Apply review lens** — will this pass security, financial integrity, type safety?
+8. ✅ **Verify schema** — check Prisma models match intent
+9. ✅ **Check tokens** — design tokens exist before using
+10. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
+11. ✅ **Verify labels/paths** — search before creating new
+12. ✅ **Validate test vs production** — mocks stay in `__tests__/`
+13. ✅ **For UI changes: minimal first** — change ONE visual thing, verify, then expand (see `frontend-conventions.md`)
+14. ✅ **Check loading/error states** — every new page.tsx needs loading.tsx + error.tsx (Invariant #6)
+15. ✅ **Check server/client separation** — no mixing `'use client'` with server-only imports (Invariant #7)
 
 **For bug fixes:** Follow Investigation Protocol in `product-thinking.md`, or run `/processes:diagnose` for complex bugs.
 
@@ -161,6 +166,28 @@ The following rules are **BLOCKED** by hooks and will fail commits:
   - RIGHT: `text-ak-green`, `glass`
 - ❌ **NEVER create duplicate components** — search existing first
 - ❌ **NEVER ignore design spec** — if spec says "glass", use glass variant
+
+### Shared Utilities (CRITICAL - Prevents Duplication)
+- ❌ **NEVER create inline utility functions** — search for existing first
+  - WRONG: `function formatCurrency(cents) { return ... }` inline in component
+  - RIGHT: `import { formatCurrency } from '@/lib/utils/currency'`
+- ❌ **NEVER duplicate formatting logic** — causes locale drift and inconsistency
+  - Check: `Grep "formatCurrency|formatDate" apps/web/src/lib/utils/` BEFORE creating
+- ❌ **NEVER use `cents / 100` inline** — use formatCurrency utility
+  - WRONG: `const dollars = cents / 100; return ${dollars.toFixed(2)}`
+  - RIGHT: `return formatCurrency(cents, currency)`
+- ❌ **NEVER hardcode locale in toLocaleString** — use utility defaults
+  - WRONG: `.toLocaleString('en-US', ...)` (causes locale drift)
+  - RIGHT: `formatCurrency(cents)` (handles locale correctly)
+- ❌ **NEVER duplicate status badge logic** — use shared components
+  - WRONG: `const STATUS_CONFIG = { DRAFT: { ... }, PAID: { ... } }` inline
+  - RIGHT: `<InvoiceStatusBadge status={invoice.status} />` from packages/ui
+- ✅ **Canonical utility locations:**
+  - Currency: `apps/web/src/lib/utils/currency.ts`
+  - Dates: `apps/web/src/lib/utils/date.ts`
+  - Status badges: `packages/ui/src/business/` (StatusBadge components)
+  - Empty states: `packages/ui/src/patterns/` (EmptyState component)
+  - Validation: `apps/api/src/lib/validators/`
 
 ### Logging
 - ❌ **NEVER use `console.log`** in production code (API/services)

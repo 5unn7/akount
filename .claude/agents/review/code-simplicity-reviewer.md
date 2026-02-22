@@ -348,6 +348,11 @@ List concepts that can be removed:
 - [ ] Can derived state be computed on demand?
 - [ ] Are there unused parameters or imports?
 - [ ] Could this be half as many lines?
+- [ ] **Are there inline utility functions duplicating shared utilities?**
+  - Check: `function formatCurrency`, `function formatDate`, `cents / 100`, `.toLocaleString('en-US')`
+  - Should use: `@/lib/utils/currency`, `@/lib/utils/date`
+- [ ] **Are there repeated UI patterns that should be shared components?**
+  - Status badges, empty states, table headers → extract to `packages/ui`
 
 ## Review Output Format
 

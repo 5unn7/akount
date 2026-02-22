@@ -23,33 +23,38 @@ src/app/
 
 ---
 
-## Built Pages (50 pages across 8 domains)
+## Built Pages (55 dashboard pages across 8 domains)
 
 ### Overview (3 pages)
 - `/overview` — Dashboard home
 - `/overview/cash-flow` — Cash flow analysis
 - `/overview/net-worth` — Net worth breakdown
 
-### Banking (8 pages)
+### Banking (9 pages)
 - `/banking/accounts` — Account list
 - `/banking/accounts/[id]` — Account detail with transactions
 - `/banking/transactions` — All transactions
+- `/banking/categories` — Category management
 - `/banking/import` — Import upload form
 - `/banking/imports` — Import history/batches
 - `/banking/imports/[id]` — Import batch detail
 - `/banking/reconciliation` — Bank feed matching
 - `/banking/transfers` — Transfer management
 
-### Business (7 pages)
+### Business (10 pages)
+- `/business` — Business hub
 - `/business/invoices` — Invoice list
 - `/business/invoices/[id]` — Invoice detail
 - `/business/bills` — Bill list
-- `/business/invoices/bills/[id]` — Bill detail (legacy route)
+- `/business/bills/[id]` — Bill detail
 - `/business/clients` — Client directory
+- `/business/clients/[id]` — Client detail
 - `/business/vendors` — Vendor directory
+- `/business/vendors/[id]` — Vendor detail
 - `/business/payments` — Payment tracking
 
-### Accounting (15 pages)
+### Accounting (16 pages)
+- `/accounting` — Accounting hub
 - `/accounting/chart-of-accounts` — GL accounts
 - `/accounting/journal-entries` — Journal entry list
 - `/accounting/journal-entries/[id]` — Journal entry detail
@@ -101,15 +106,15 @@ src/app/
 | Domain | Label | Items | Status |
 |--------|-------|-------|--------|
 | **overview** | Overview | Dashboard, Net Worth, Cash Flow | ✅ Built (3 pages) |
-| **banking** | Banking | Accounts, Transactions, Reconciliation, Imports, Transfers | ✅ Built (8 pages) |
-| **business** | Business | Clients, Vendors, Invoices, Bills, Payments | ✅ Built (7 pages) |
-| **accounting** | Accounting | Journal Entries, Chart of Accounts, Reports (×7), Assets, Tax Rates, Fiscal Periods | ✅ Built (15 pages) |
+| **banking** | Banking | Accounts, Transactions, Categories, Reconciliation, Imports, Transfers | ✅ Built (9 pages) |
+| **business** | Business | Clients, Vendors, Invoices, Bills, Payments (with detail pages) | ✅ Built (10 pages) |
+| **accounting** | Accounting | Journal Entries, Chart of Accounts, Reports (×7), Assets, Tax Rates, Fiscal Periods | ✅ Built (16 pages) |
 | **planning** | Planning | Budgets, Goals, Forecasts | ✅ Built (3 pages) |
 | **insights** | Insights | Insights, Policy Alerts, History | ✅ Built (3 pages) |
 | **services** | Services | Accountant, Bookkeeping, Documents | ✅ Built (3 pages) |
 | **system** | System | Entities, Integrations, Rules, Users, Audit Log, Security, Settings | ✅ Built (8 pages) |
 
-**Total Pages:** 50 (all domains built, some with stub content pending backend completion)
+**Total Pages:** 55 dashboard + 7 system (auth, onboarding, brand) = 62 total
 
 ---
 

@@ -161,7 +161,7 @@ The Overview hub is composed of focused sub-components (~100-150 lines each) ins
 | 20 | Tax Rate form sheet (create/edit) | `tax-rates/tax-rate-sheet.tsx` |
 | 21 | Component registry section (GST, PST, QST, HST individual items) | Part of `tax-rates-client.tsx` |
 | 22 | Tax collection summary (Revenue → Tax Collected → ITCs → Net Owing) | Part of `tax-rates-client.tsx` |
-| 23 | Empty state with Canadian presets (HST-ON 13%, GST 5%, etc.) | `tax-rates/tax-rates-empty.tsx` |
+| 23 | Empty state with appropriate tax rates for the user's country | `tax-rates/tax-rates-empty.tsx` |
 | 24 | Update `loading.tsx` skeleton | `tax-rates/loading.tsx` |
 
 ---
