@@ -8,12 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
-    formatCurrency,
     formatReportDate,
     downloadReport,
     type GLLedgerReport,
     type GLLedgerEntry,
 } from '@/lib/api/reports-client';
+import { formatCurrency } from '@/lib/utils/currency';
 import { loadMoreGLEntries } from './actions';
 
 interface GLReportViewProps {

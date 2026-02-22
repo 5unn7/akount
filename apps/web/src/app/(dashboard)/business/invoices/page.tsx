@@ -130,8 +130,8 @@ export default async function InvoicingPage() {
                     </p>
                 </div>
                 <InvoicingActions
-                    clients={clientsResult.clients.map(c => ({ id: c.id, name: c.name }))}
-                    vendors={vendorsResult.vendors.map(v => ({ id: v.id, name: v.name }))}
+                    clients={clientsResult.clients.map(c => ({ id: c.id, name: c.name, paymentTerms: c.paymentTerms }))}
+                    vendors={vendorsResult.vendors.map(v => ({ id: v.id, name: v.name, paymentTerms: v.paymentTerms }))}
                 />
             </div>
 

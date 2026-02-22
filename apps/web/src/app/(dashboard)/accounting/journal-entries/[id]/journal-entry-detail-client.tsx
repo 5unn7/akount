@@ -62,7 +62,7 @@ const STATUS_CONFIG: Record<JournalEntryStatus, { label: string; className: stri
 
 const SOURCE_CONFIG: Record<string, { label: string; icon: typeof FileText; href?: (id: string) => string }> = {
     INVOICE: { label: 'Invoice', icon: FileText, href: (id) => `/business/invoices/${id}` },
-    BILL: { label: 'Bill', icon: Receipt, href: (id) => `/business/invoices/bills/${id}` },
+    BILL: { label: 'Bill', icon: Receipt, href: (id) => `/business/bills/${id}` },
     PAYMENT: { label: 'Payment', icon: CreditCard },
     BANK_FEED: { label: 'Bank Feed', icon: Building },
     MANUAL: { label: 'Manual Entry', icon: Pencil },

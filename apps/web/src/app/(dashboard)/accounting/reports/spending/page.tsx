@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { getSpendingReport } from "@/lib/api/reports";
 import { listEntities } from "@/lib/api/entities";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
-import { SpendingReportView } from "./spending-report-view";
+
+const SpendingReportView = dynamic(() => import("./spending-report-view").then(m => ({ default: m.SpendingReportView })), { ssr: false });
 
 export const metadata: Metadata = {
     title: "Spending Report | Akount",

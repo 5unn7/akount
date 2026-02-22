@@ -13,8 +13,20 @@ import { Loader2 } from 'lucide-react';
 interface InvoiceFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  clients: Array<{ id: string; name: string }>;
+  clients: Array<{ id: string; name: string; paymentTerms?: string | null }>;
   onSuccess?: () => void;
+}
+
+function parseDaysFromTerms(terms: string | null | undefined): number | null {
+  if (!terms) return null;
+  const match = terms.match(/(\d+)/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function addDays(dateStr: string, days: number): string {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
 }
 
 const INITIAL_LINE: LineItem = {
@@ -35,6 +47,14 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceF
   const [lines, setLines] = useState<LineItem[]>([{ ...INITIAL_LINE }]);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  const autoFillDueDate = (date: string, cId: string) => {
+    const client = clients.find(c => c.id === cId);
+    const days = parseDaysFromTerms(client?.paymentTerms);
+    if (days && date) {
+      setDueDate(addDays(date, days));
+    }
+  };
 
   const totals = computeLineTotals(lines);
 
@@ -106,7 +126,7 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceF
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Client</Label>
-              <Select value={clientId} onValueChange={setClientId}>
+              <Select value={clientId} onValueChange={(v) => { setClientId(v); autoFillDueDate(issueDate, v); }}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select client" />
                 </SelectTrigger>
@@ -133,7 +153,7 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceF
               <Input
                 type="date"
                 value={issueDate}
-                onChange={e => setIssueDate(e.target.value)}
+                onChange={e => { setIssueDate(e.target.value); autoFillDueDate(e.target.value, clientId); }}
               />
             </div>
             <div className="space-y-2">

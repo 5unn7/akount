@@ -458,7 +458,7 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
                                                 >
                                                     <TableCell className="font-mono text-sm">
                                                         <Link
-                                                            href={`/business/invoices/bills/${bill.id}`}
+                                                            href={`/business/bills/${bill.id}`}
                                                             className="text-primary hover:text-ak-pri-hover flex items-center gap-1"
                                                         >
                                                             {bill.billNumber}

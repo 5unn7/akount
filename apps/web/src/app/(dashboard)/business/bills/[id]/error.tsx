@@ -19,11 +19,11 @@ export default function BillDetailError({ error, reset }: ErrorProps) {
     return (
         <div className="flex-1 space-y-4">
             <Link
-                href="/business/invoices"
+                href="/business/bills"
                 className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Invoicing
+                Back to Bills
             </Link>
 
             <Card className="border-destructive">

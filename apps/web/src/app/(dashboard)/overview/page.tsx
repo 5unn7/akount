@@ -17,6 +17,7 @@ import { getPerformanceMetrics } from "@/lib/api/performance";
 import { listTransactions } from "@/lib/api/transactions";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
 import { getDashboardConfig } from "@/lib/dashboard-personalization";
+import { buildQuickStats, orderStats } from "@/lib/dashboard/transformers";
 import { Building2, Landmark, Upload, PenLine } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -119,101 +120,15 @@ export default async function OverviewPage() {
     // Derive net worth data from API metrics
     const netWorthAmount = metrics?.netWorth.amount ?? 0;
     const baseCurrency = metrics?.netWorth.currency ?? currency;
-
-    const formatTrend = (percentChange: number): { direction: 'up' | 'down' | 'flat'; text: string } => {
-        if (percentChange === 0) return { direction: 'flat', text: 'No change' };
-        const direction = percentChange > 0 ? 'up' : 'down';
-        const sign = percentChange > 0 ? '+' : '';
-        return { direction, text: `${sign}${percentChange.toFixed(1)}% vs last mo` };
-    };
-
-    const formatCurrencyValue = (cents: number) => {
-        if (cents === 0) return '—';
-        const dollars = cents / 100;
-        return `$${dollars.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-    };
-
-    const convertSparkline = (centsArray: number[]) => centsArray.map(c => c / 100);
-
-    // Cash, debt, runway
     const cash = metrics?.cashPosition.cash ?? 0;
     const debt = metrics?.cashPosition.debt ?? 0;
     const monthlyBurn = performance?.expenses.current ?? 0;
     const runwayMonths = monthlyBurn > 0 ? Math.floor((cash / monthlyBurn) * 100) / 100 : 0;
     const runwayValue = runwayMonths > 0 ? `${runwayMonths.toFixed(1)}mo` : undefined;
 
-    // Cash burn trend
-    const cashBurnTrend = performance ? formatTrend(-performance.expenses.percentChange) : undefined;
-
-    // Quick Stats (7 cards for the stat row)
-    const quickStats = [
-        {
-            label: 'Revenue',
-            value: performance ? formatCurrencyValue(performance.revenue.current) : '—',
-            trend: performance ? formatTrend(performance.revenue.percentChange) : undefined,
-            sparkline: performance ? convertSparkline(performance.revenue.sparkline) : [],
-            color: 'green' as const,
-            href: '/accounting/reports/revenue',
-        },
-        {
-            label: 'Expenses',
-            value: performance ? formatCurrencyValue(performance.expenses.current) : '—',
-            trend: performance ? formatTrend(-performance.expenses.percentChange) : undefined,
-            sparkline: performance ? convertSparkline(performance.expenses.sparkline) : [],
-            color: 'red' as const,
-            href: '/accounting/reports/spending',
-        },
-        {
-            label: 'Profit',
-            value: performance ? formatCurrencyValue(performance.profit.current) : '—',
-            trend: performance ? formatTrend(performance.profit.percentChange) : undefined,
-            sparkline: performance ? convertSparkline(performance.profit.sparkline) : [],
-            color: 'primary' as const,
-            href: '/accounting/reports/profit-loss',
-        },
-        {
-            label: 'Receivables',
-            value: performance ? formatCurrencyValue(performance.receivables.outstanding) : '—',
-            trend: (performance?.receivables.sparkline.length ?? 0) > 0 ? { direction: 'flat' as const, text: `${formatCurrencyValue(performance!.receivables.overdue)} overdue` } : undefined,
-            sparkline: performance ? convertSparkline(performance.receivables.sparkline) : [],
-            color: 'blue' as const,
-            href: '/invoicing/invoices?status=outstanding',
-        },
-        {
-            label: 'Payables',
-            value: metrics?.payables ? formatCurrencyValue(metrics.payables.outstanding) : '—',
-            trend: metrics?.payables?.overdue ? { direction: 'flat' as const, text: `${formatCurrencyValue(metrics.payables.overdue)} overdue` } : undefined,
-            sparkline: [],
-            color: 'purple' as const,
-            href: '/vendors/bills?status=outstanding',
-        },
-        {
-            label: 'Runway',
-            value: runwayValue ?? '—',
-            trend: runwayMonths > 0 ? {
-                direction: runwayMonths >= 6 ? ('up' as const) : runwayMonths >= 3 ? ('flat' as const) : ('down' as const),
-                text: runwayMonths >= 6 ? 'Healthy' : runwayMonths >= 3 ? 'Monitor' : 'Critical'
-            } : undefined,
-            sparkline: [],
-            color: runwayMonths >= 6 ? ('teal' as const) : runwayMonths >= 3 ? ('primary' as const) : ('red' as const),
-            href: '/overview/cash-flow',
-        },
-        {
-            label: 'Cash Burn',
-            value: performance ? formatCurrencyValue(performance.expenses.current) : '—',
-            trend: cashBurnTrend,
-            sparkline: performance ? convertSparkline(performance.expenses.sparkline) : [],
-            color: 'red' as const,
-            href: '/overview/cash-flow',
-        },
-    ];
-
-    // Reorder stats based on user's onboarding intents
-    const orderedStats = dashboardConfig.statOrder.length > 0
-        ? dashboardConfig.statOrder
-            .map(label => quickStats.find(s => s.label === label))
-            .filter((s): s is typeof quickStats[number] => s !== undefined)
-        : quickStats;
+    // Build and order stat cards (transformation logic in lib/dashboard/transformers.ts)
+    const quickStats = buildQuickStats(metrics, performance);
+    const orderedStats = orderStats(quickStats, dashboardConfig.statOrder);
 
     return (
         <div className="space-y-4">

@@ -9,8 +9,8 @@ import { PaymentForm } from './PaymentForm';
 import { Plus, FileText, Receipt, CreditCard } from 'lucide-react';
 
 interface InvoicingActionsProps {
-  clients: Array<{ id: string; name: string }>;
-  vendors: Array<{ id: string; name: string }>;
+  clients: Array<{ id: string; name: string; paymentTerms?: string | null }>;
+  vendors: Array<{ id: string; name: string; paymentTerms?: string | null }>;
 }
 
 export function InvoicingActions({ clients, vendors }: InvoicingActionsProps) {

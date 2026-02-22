@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { formatDate } from '@/lib/utils/date';
 import { notFound } from 'next/navigation';
 import { getBill } from '@/lib/api/bills';
 import { Badge } from '@/components/ui/badge';
@@ -34,14 +35,6 @@ const STATUS_BADGE_STYLES: Record<string, string> = {
     PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
 };
 
-function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-}
 
 export default async function BillDetailPage({
     params,
@@ -64,11 +57,11 @@ export default async function BillDetailPage({
         <div className="flex-1 space-y-6">
             {/* Back Link */}
             <Link
-                href="/business/invoices"
+                href="/business/bills"
                 className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
                 <ArrowLeft className="h-4 w-4" />
-                Back to Invoicing
+                Back to Bills
             </Link>
 
             {/* Header */}

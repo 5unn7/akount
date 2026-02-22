@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatReportDate, downloadReport, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports-client';
+import { formatReportDate, downloadReport, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports-client';
+import { formatCurrency } from '@/lib/utils/currency';
 
 interface BSReportViewProps {
     initialData: BalanceSheetReport | null;
