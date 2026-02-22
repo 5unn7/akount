@@ -89,7 +89,7 @@
 | ~~DRY-8~~ | ~~Transfer routes: refactor string-matching error handling to use `AccountingError.statusCode` pattern (consistent with all other routes)~~ | 15-20m | 🟡 Medium | ✅ done | | review:transfer-service [atomic] |
 | DRY-9 | Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency` | 1h | 🔴 High | 🟢 | | inline-bandaid-audit [atomic] |
 | DRY-10 | Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit [atomic] |
-| DRY-11 | Extract StatusBadge components to `packages/ui` — create InvoiceStatusBadge, BillStatusBadge, AccountStatusBadge | 2h | 🟡 Medium | 🟢 | | inline-bandaid-audit |
+| DRY-11 | ~~Extract StatusBadge components to `packages/ui` — create InvoiceStatusBadge, BillStatusBadge, AccountStatusBadge~~ | 2h | 🟡 Medium | ✅ done | 7640e1f | inline-bandaid-audit |
 | DRY-12 | Create `<EmptyState>` component — consolidate 11+ inline empty state patterns | 1h | 🟢 Low | 🟢 | | inline-bandaid-audit [atomic] |
 | DRY-13 | Create `<EntitySelector>` component — wire API integration for 7 report views | 2h | 🟡 Medium | 🟢 | | inline-bandaid-audit |
 | DRY-14 | Create global error tracking util — integrate Sentry in 3+ error.tsx files | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit |

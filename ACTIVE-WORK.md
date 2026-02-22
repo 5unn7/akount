@@ -1,6 +1,6 @@
 # Active Work Tracker
 
-**Last Updated:** 2026-02-22 14:00
+**Last Updated:** 2026-02-22 19:00
 
 ---
 
@@ -8,6 +8,7 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
+| agent-dry11-badges | 2026-02-22 17:00 | DRY-11: Consolidate StatusBadge components to packages/ui (6 components, 22 files) | completed | main |
 | agent-atomic-batch | 2026-02-22 13:00 | 12 atomic tasks (DEV-84, PERF-2/3, FIN-14, DRY-2/7, DS-4, UX-77, DEV-114, DOC-2/7, UX-54) | completed | main |
 | agent-banking-gl | 2026-02-22 12:30 | UX-15, DEV-59: GL account linking UI + Transaction posting UI (already implemented) | completed | main |
 | agent-ai-chat | 2026-02-22 10:15 | DEV-113: Build AI Chat interface on Insights page | completed | main |
@@ -28,7 +29,8 @@
 
 | Task ID | Type | Reserved By | Reserved Until |
 |---------|------|-------------|----------------|
-| *(none active)* | | | |
+| ~~DRY-11~~ | ~~code-quality~~ | ~~agent-dry11-badges~~ | ~~completed 7640e1f~~ |
+| DRY-12 | code-quality | agent-dry12-empty | 2026-02-22 20:30 |
 
 ---
 
@@ -36,6 +38,8 @@
 
 | Agent ID | Last Claimed Tasks | Last Domain | Last Session |
 |----------|-------------------|-------------|--------------|
+| agent-dry11-badges | DRY-11 | code-quality | 2026-02-22 19:00 |
+| agent-dry12-empty | DRY-12 | code-quality | 2026-02-22 18:30 |
 | agent-atomic-batch | DEV-84, PERF-2/3, DRY-2/7, UX-54/77, DEV-114 | multi-domain | 2026-02-22 14:00 |
 | agent-banking-gl | UX-15, DEV-59 | banking/accounting | 2026-02-22 12:30 |
 | agent-ai-chat | DEV-113 | insights | 2026-02-22 10:15 |
