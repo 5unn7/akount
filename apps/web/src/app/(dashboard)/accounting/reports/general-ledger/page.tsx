@@ -44,5 +44,5 @@ export default async function GeneralLedgerPage({ searchParams }: PageProps) {
         }
     }
 
-    return <GLReportView initialData={report} initialParams={{ ...params, entityId }} error={error} />;
+    return <GLReportView entities={entities} initialData={report} initialParams={{ ...params, entityId }} error={error} />;
 }

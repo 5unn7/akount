@@ -11,7 +11,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { EntitySelector } from '@akount/ui/business';
 import { formatReportDate, downloadReport, type ProfitLossReport, type ReportLineItem } from '@/lib/api/reports-client';
 import { formatCurrency } from '@/lib/utils/currency';
-import { listEntities } from '@/lib/api/entities';
 
 interface PLReportViewProps {
     initialData: ProfitLossReport | null;

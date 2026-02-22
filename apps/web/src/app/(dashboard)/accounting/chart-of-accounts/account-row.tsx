@@ -14,7 +14,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import type { GLAccount, GLAccountType, GLAccountBalance } from '@/lib/api/accounting';
-import { formatAmount } from '@/lib/api/transactions.types';
+import { formatCurrency } from '@/lib/utils/currency';
 import { Badge } from '@/components/ui/badge';
 
 // ============================================================================
@@ -31,6 +31,14 @@ export interface AccountNode extends GLAccount {
 // ============================================================================
 
 const ACCOUNT_TYPE_LABELS: Record<GLAccountType, string> = {
+    ASSET: 'Assets',
+    LIABILITY: 'Liabilities',
+    EQUITY: 'Equity',
+    REVENUE: 'Revenue',
+    EXPENSE: 'Expenses',
+};
+
+const ACCOUNT_TYPE_BADGE_LABELS: Record<GLAccountType, string> = {
     ASSET: 'Asset',
     LIABILITY: 'Liability',
     EQUITY: 'Equity',
@@ -39,12 +47,37 @@ const ACCOUNT_TYPE_LABELS: Record<GLAccountType, string> = {
 };
 
 const ACCOUNT_TYPE_COLORS: Record<GLAccountType, string> = {
-    ASSET: 'bg-ak-blue-dim text-ak-blue border-ak-blue/20',
+    ASSET: 'bg-ak-green-dim text-ak-green border-ak-green/20',
     LIABILITY: 'bg-ak-red-dim text-ak-red border-ak-red/20',
-    EQUITY: 'bg-ak-purple-dim text-ak-purple border-ak-purple/20',
-    REVENUE: 'bg-ak-green-dim text-ak-green border-ak-green/20',
+    EQUITY: 'bg-ak-blue-dim text-ak-blue border-ak-blue/20',
+    REVENUE: 'bg-ak-teal-dim text-ak-teal border-ak-teal/20',
     EXPENSE: 'bg-ak-pri-dim text-primary border-primary/20',
 };
+
+const GROUP_HEADER_COLORS: Record<GLAccountType, string> = {
+    ASSET: 'text-ak-green',
+    LIABILITY: 'text-ak-red',
+    EQUITY: 'text-ak-blue',
+    REVENUE: 'text-ak-teal',
+    EXPENSE: 'text-primary',
+};
+
+const GROUP_HEADER_BORDER: Record<GLAccountType, string> = {
+    ASSET: 'border-ak-green/20',
+    LIABILITY: 'border-ak-red/20',
+    EQUITY: 'border-ak-blue/20',
+    REVENUE: 'border-ak-teal/20',
+    EXPENSE: 'border-primary/20',
+};
+
+/** Group order for display — standard accounting order */
+const TYPE_ORDER: GLAccountType[] = ['ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE'];
+
+export interface AccountGroup {
+    type: GLAccountType;
+    nodes: AccountNode[];
+    totalBalance: number;
+}
 
 export function buildTree(
     accounts: GLAccount[],
@@ -73,23 +106,81 @@ export function buildTree(
     return roots;
 }
 
+/** Build tree grouped by account type with subtotals */
+export function buildGroupedTree(
+    accounts: GLAccount[],
+    balances: GLAccountBalance[]
+): AccountGroup[] {
+    const allNodes = buildTree(accounts, balances);
+    const groups: AccountGroup[] = [];
+
+    for (const type of TYPE_ORDER) {
+        const nodes = allNodes.filter((n) => n.type === type);
+        if (nodes.length === 0) continue;
+
+        const sumBalance = (nodeList: AccountNode[]): number =>
+            nodeList.reduce(
+                (sum, n) => sum + (n.balance ?? 0) + sumBalance(n.children),
+                0
+            );
+
+        groups.push({
+            type,
+            nodes,
+            totalBalance: sumBalance(nodes),
+        });
+    }
+
+    return groups;
+}
+
 // ============================================================================
-// Account Row (recursive tree)
+// Group Header Row (colored by account type)
+// ============================================================================
+
+export function GroupHeaderRow({
+    type,
+    totalBalance,
+}: {
+    type: GLAccountType;
+    totalBalance: number;
+}) {
+    return (
+        <tr className={`border-b ${GROUP_HEADER_BORDER[type]} bg-ak-bg-3/50`}>
+            <td
+                colSpan={5}
+                className={`px-4 py-2.5 text-xs font-semibold uppercase tracking-wider ${GROUP_HEADER_COLORS[type]}`}
+            >
+                {ACCOUNT_TYPE_LABELS[type]}
+            </td>
+            <td className={`px-4 py-2.5 text-right font-mono text-xs font-semibold ${GROUP_HEADER_COLORS[type]}`}>
+                {formatCurrency(totalBalance)}
+            </td>
+            <td className="px-4 py-2.5" />
+        </tr>
+    );
+}
+
+// ============================================================================
+// Account Row (recursive tree with connector lines)
 // ============================================================================
 
 export function AccountRow({
     node,
     depth,
+    isLast,
     onEdit,
     onDeactivate,
 }: {
     node: AccountNode;
     depth: number;
+    isLast: boolean;
     onEdit: (account: GLAccount) => void;
     onDeactivate: (id: string) => void;
 }) {
     const [expanded, setExpanded] = useState(depth < 1);
     const hasChildren = node.children.length > 0;
+    const balance = node.balance ?? 0;
 
     return (
         <>
@@ -99,10 +190,19 @@ export function AccountRow({
                 }`}
             >
                 <td className="px-4 py-3 font-mono text-sm">
-                    <div
-                        className="flex items-center gap-1"
-                        style={{ paddingLeft: `${depth * 20}px` }}
-                    >
+                    <div className="flex items-center gap-1">
+                        {/* Tree connector lines */}
+                        {depth > 0 && (
+                            <span
+                                className="inline-flex items-center text-ak-border-3 select-none"
+                                style={{ width: `${depth * 20}px`, justifyContent: 'flex-end' }}
+                            >
+                                <span className="text-xs font-mono leading-none">
+                                    {isLast ? '└' : '├'}
+                                </span>
+                                <span className="text-xs font-mono leading-none">─</span>
+                            </span>
+                        )}
                         {hasChildren ? (
                             <button
                                 onClick={() => setExpanded(!expanded)}
@@ -129,7 +229,7 @@ export function AccountRow({
                             ACCOUNT_TYPE_COLORS[node.type]
                         }`}
                     >
-                        {ACCOUNT_TYPE_LABELS[node.type]}
+                        {ACCOUNT_TYPE_BADGE_LABELS[node.type]}
                     </span>
                 </td>
 
@@ -137,8 +237,10 @@ export function AccountRow({
                     {node.normalBalance}
                 </td>
 
-                <td className="px-4 py-3 text-right font-mono text-sm">
-                    {formatAmount(node.balance ?? 0)}
+                <td className={`px-4 py-3 text-right font-mono text-sm ${
+                    balance > 0 ? 'text-ak-green' : balance < 0 ? 'text-ak-red' : 'text-muted-foreground'
+                }`}>
+                    {formatCurrency(balance)}
                 </td>
 
                 <td className="px-4 py-3">
@@ -193,11 +295,12 @@ export function AccountRow({
             </tr>
 
             {expanded &&
-                node.children.map((child) => (
+                node.children.map((child, idx) => (
                     <AccountRow
                         key={child.id}
                         node={child}
                         depth={depth + 1}
+                        isLast={idx === node.children.length - 1}
                         onEdit={onEdit}
                         onDeactivate={onDeactivate}
                     />

@@ -34,7 +34,7 @@ import {
     fetchGLAccounts,
     fetchAccountBalances,
 } from './actions';
-import { AccountRow, buildTree } from './account-row';
+import { AccountRow, GroupHeaderRow, buildTree, buildGroupedTree, type AccountNode } from './account-row';
 import { GLAccountSheet } from './gl-account-sheet';
 
 // ============================================================================
@@ -85,6 +85,7 @@ export function ChartOfAccountsClient({
             : accounts.filter((a) => a.type === filterType);
 
     const tree = buildTree(filtered, balances);
+    const grouped = buildGroupedTree(filtered, balances);
 
     function openAddSheet() {
         setEditingAccount(null);
@@ -312,11 +313,12 @@ export function ChartOfAccountsClient({
                             </tr>
                         </thead>
                         <tbody>
-                            {tree.map((node) => (
-                                <AccountRow
-                                    key={node.id}
-                                    node={node}
-                                    depth={0}
+                            {grouped.map((group) => (
+                                <GroupedSection
+                                    key={group.type}
+                                    type={group.type}
+                                    nodes={group.nodes}
+                                    totalBalance={group.totalBalance}
                                     onEdit={openEditSheet}
                                     onDeactivate={handleDeactivate}
                                 />
@@ -348,5 +350,39 @@ export function ChartOfAccountsClient({
                 onSubmit={handleSubmit}
             />
         </div>
+    );
+}
+
+// ============================================================================
+// GroupedSection — renders a group header + account rows for one type
+// ============================================================================
+
+function GroupedSection({
+    type,
+    nodes,
+    totalBalance,
+    onEdit,
+    onDeactivate,
+}: {
+    type: GLAccountType;
+    nodes: AccountNode[];
+    totalBalance: number;
+    onEdit: (account: GLAccount) => void;
+    onDeactivate: (id: string) => void;
+}) {
+    return (
+        <>
+            <GroupHeaderRow type={type} totalBalance={totalBalance} />
+            {nodes.map((node, idx) => (
+                <AccountRow
+                    key={node.id}
+                    node={node}
+                    depth={0}
+                    isLast={idx === nodes.length - 1}
+                    onEdit={onEdit}
+                    onDeactivate={onDeactivate}
+                />
+            ))}
+        </>
     );
 }

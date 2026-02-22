@@ -11,7 +11,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { EntitySelector } from '@akount/ui/business';
 import { formatReportDate, downloadReport, type BalanceSheetReport, type ReportLineItem } from '@/lib/api/reports-client';
 import { formatCurrency } from '@/lib/utils/currency';
-import { listEntities } from '@/lib/api/entities';
 
 interface BSReportViewProps {
     initialData: BalanceSheetReport | null;

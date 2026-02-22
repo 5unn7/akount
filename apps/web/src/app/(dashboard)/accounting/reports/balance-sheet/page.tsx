@@ -43,5 +43,5 @@ export default async function BalanceSheetPage({ searchParams }: PageProps) {
         }
     }
 
-    return <BSReportView initialData={report} initialParams={{ ...params, entityId }} error={error} />;
+    return <BSReportView entities={entities} initialData={report} initialParams={{ ...params, entityId }} error={error} />;
 }

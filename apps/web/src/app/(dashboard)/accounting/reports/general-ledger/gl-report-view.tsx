@@ -14,7 +14,6 @@ import {
     type GLLedgerEntry,
 } from '@/lib/api/reports-client';
 import { formatCurrency } from '@/lib/utils/currency';
-import { listEntities } from '@/lib/api/entities';
 import { loadMoreGLEntries } from './actions';
 
 interface GLReportViewProps {

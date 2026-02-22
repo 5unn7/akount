@@ -6,12 +6,13 @@ import { journalEntryRoutes } from './journal-entry';
 import { reportRoutes } from './report';
 import { taxRateRoutes } from './tax-rate';
 import { fiscalPeriodRoutes } from './fiscal-period';
+import { assetRoutes } from './asset';
 
 /**
  * Accounting Domain Routes
  *
  * Registers sub-route modules for chart of accounts, journal entries,
- * reports, tax rates, and fiscal periods. Auth + tenant middleware applied to all routes.
+ * reports, tax rates, fiscal periods, and assets. Auth + tenant middleware applied to all routes.
  */
 export async function accountingRoutes(fastify: FastifyInstance) {
   // Apply auth and tenant middleware to all routes in this domain
@@ -24,4 +25,5 @@ export async function accountingRoutes(fastify: FastifyInstance) {
   await fastify.register(reportRoutes, { prefix: '/reports' });
   await fastify.register(taxRateRoutes, { prefix: '/tax-rates' });
   await fastify.register(fiscalPeriodRoutes, { prefix: '/fiscal-periods' });
+  await fastify.register(assetRoutes, { prefix: '/assets' });
 }

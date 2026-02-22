@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { EntitySelector } from '@akount/ui/business';
 import { formatReportDate, downloadReport, type TrialBalanceReport, type TrialBalanceAccount } from '@/lib/api/reports-client';
 import { formatCurrency } from '@/lib/utils/currency';
-import { listEntities } from '@/lib/api/entities';
 
 interface TBReportViewProps {
     initialData: TrialBalanceReport | null;

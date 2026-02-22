@@ -45,5 +45,5 @@ export default async function ProfitLossPage({ searchParams }: PageProps) {
         }
     }
 
-    return <PLReportView initialData={report} initialParams={{ ...params, entityId }} error={error} />;
+    return <PLReportView entities={entities} initialData={report} initialParams={{ ...params, entityId }} error={error} />;
 }

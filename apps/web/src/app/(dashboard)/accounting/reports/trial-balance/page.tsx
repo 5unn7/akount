@@ -39,5 +39,5 @@ export default async function TrialBalancePage({ searchParams }: PageProps) {
         }
     }
 
-    return <TBReportView initialData={report} initialParams={{ ...params, entityId }} error={error} />;
+    return <TBReportView entities={entities} initialData={report} initialParams={{ ...params, entityId }} error={error} />;
 }

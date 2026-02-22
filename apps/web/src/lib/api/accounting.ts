@@ -481,6 +481,168 @@ export async function reopenFiscalPeriod(
 }
 
 // ============================================================================
+// Fixed Asset types
+// ============================================================================
+
+export type AssetCategory =
+    | 'BUILDING'
+    | 'VEHICLE'
+    | 'EQUIPMENT'
+    | 'FURNITURE'
+    | 'COMPUTER'
+    | 'SOFTWARE'
+    | 'LEASEHOLD'
+    | 'OTHER';
+
+export type DepreciationMethod =
+    | 'STRAIGHT_LINE'
+    | 'DECLINING_BALANCE'
+    | 'UNITS_OF_PRODUCTION';
+
+export type AssetStatus = 'ACTIVE' | 'FULLY_DEPRECIATED' | 'DISPOSED';
+
+export interface FixedAsset {
+    id: string;
+    entityId: string;
+    name: string;
+    description: string | null;
+    category: AssetCategory;
+    acquiredDate: string;
+    cost: number; // Integer cents
+    salvageValue: number; // Integer cents
+    usefulLifeMonths: number;
+    depreciationMethod: DepreciationMethod;
+    accumulatedDepreciation: number; // Integer cents
+    status: AssetStatus;
+    disposedDate: string | null;
+    disposalAmount: number | null; // Integer cents
+    assetGLAccountId: string | null;
+    depreciationExpenseGLAccountId: string | null;
+    accumulatedDepreciationGLAccountId: string | null;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+}
+
+export interface DepreciationEntry {
+    id: string;
+    periodDate: string;
+    amount: number; // Integer cents
+    method: DepreciationMethod;
+    journalEntryId: string | null;
+    createdAt: string;
+}
+
+export interface FixedAssetWithEntries extends FixedAsset {
+    depreciationEntries: DepreciationEntry[];
+}
+
+export interface DepreciationResult {
+    processed: number;
+    skipped: number;
+    entries: Array<{
+        assetId: string;
+        assetName: string;
+        amount: number;
+        journalEntryId: string | null;
+    }>;
+}
+
+export interface DisposalResult extends FixedAsset {
+    netBookValue: number;
+    gainLoss: number;
+}
+
+// ============================================================================
+// Fixed Asset API functions
+// ============================================================================
+
+export async function listAssets(
+    entityId: string,
+    params?: { status?: AssetStatus; category?: AssetCategory; search?: string }
+): Promise<FixedAsset[]> {
+    const queryParams = new URLSearchParams({ entityId });
+    if (params?.status) queryParams.set('status', params.status);
+    if (params?.category) queryParams.set('category', params.category);
+    if (params?.search) queryParams.set('search', params.search);
+
+    return apiClient<FixedAsset[]>(
+        `/api/accounting/assets?${queryParams.toString()}`
+    );
+}
+
+export async function getAsset(id: string): Promise<FixedAssetWithEntries> {
+    return apiClient<FixedAssetWithEntries>(`/api/accounting/assets/${id}`);
+}
+
+export async function capitalizeAsset(data: {
+    entityId: string;
+    name: string;
+    description?: string;
+    category: AssetCategory;
+    acquiredDate: string;
+    cost: number;
+    salvageValue: number;
+    usefulLifeMonths: number;
+    depreciationMethod: DepreciationMethod;
+    assetGLAccountId?: string;
+    depreciationExpenseGLAccountId?: string;
+    accumulatedDepreciationGLAccountId?: string;
+}): Promise<FixedAsset> {
+    return apiClient<FixedAsset>('/api/accounting/assets', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+}
+
+export async function updateAsset(
+    id: string,
+    data: {
+        name?: string;
+        description?: string | null;
+        category?: AssetCategory;
+        salvageValue?: number;
+        usefulLifeMonths?: number;
+        depreciationMethod?: DepreciationMethod;
+        assetGLAccountId?: string | null;
+        depreciationExpenseGLAccountId?: string | null;
+        accumulatedDepreciationGLAccountId?: string | null;
+    }
+): Promise<FixedAsset> {
+    return apiClient<FixedAsset>(`/api/accounting/assets/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+    });
+}
+
+export async function disposeAsset(
+    id: string,
+    data: { disposedDate: string; disposalAmount: number }
+): Promise<DisposalResult> {
+    return apiClient<DisposalResult>(`/api/accounting/assets/${id}/dispose`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+}
+
+export async function deleteAsset(id: string): Promise<void> {
+    return apiClient<void>(`/api/accounting/assets/${id}`, {
+        method: 'DELETE',
+    });
+}
+
+export async function runDepreciation(data: {
+    entityId: string;
+    periodDate: string;
+    assetIds?: string[];
+}): Promise<DepreciationResult> {
+    return apiClient<DepreciationResult>('/api/accounting/assets/run-depreciation', {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+}
+
+// ============================================================================
 // Formatting helpers
 // ============================================================================
 
