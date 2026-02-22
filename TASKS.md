@@ -94,6 +94,7 @@
 | DRY-13 | Create `<EntitySelector>` component — wire API integration for 7 report views | 2h | 🟡 Medium | 🟢 | | inline-bandaid-audit |
 | DRY-14 | Create global error tracking util — integrate Sentry in 3+ error.tsx files | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit |
 | DRY-15 | Standardize table header styling — create `<TableHead variant="label">` with `text-micro` utility | 30m | 🟢 Low | 🟢 | | inline-bandaid-audit [atomic] |
+| DRY-17 | Refactor StatusBadges to use base Badge component + fix semantic token violations | 1-2h | 🟡 Medium | 🟢 | | ad-hoc:session |
 | ~~FIN-24~~ | ~~Transfer service: extract overdraft-allowed account types constant + add multi-currency limitation doc comment~~ | 10m | ⚪ Low | ✅ done | | review:transfer-service [atomic] |
 | UX-3 | Report tables: add `aria-*` attributes, caption, scope, role="progressbar" | 45m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |
 | UX-4 | Report views: replace array index React keys with stable identifiers | 15m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |

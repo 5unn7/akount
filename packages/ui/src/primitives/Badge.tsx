@@ -29,15 +29,15 @@ export interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: 'bg-slate-100 text-slate-700',
-  reconciled: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  ai: 'bg-violet-50 text-violet-700 border border-violet-200',
-  review: 'bg-amber-50 text-amber-700 border border-amber-200',
-  locked: 'bg-slate-100 text-slate-600 border border-slate-200',
-  error: 'bg-red-50 text-red-700 border border-red-200',
-  success: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  warning: 'bg-amber-50 text-amber-700 border border-amber-200',
-  info: 'bg-blue-50 text-blue-700 border border-blue-200',
+  default: 'bg-ak-bg-3 text-muted-foreground border border-ak-border',
+  reconciled: 'bg-ak-green/10 text-ak-green border border-ak-green/20',
+  ai: 'bg-ak-purple/10 text-ak-purple border border-ak-purple/20',
+  review: 'bg-primary/10 text-primary border border-primary/20',
+  locked: 'bg-ak-bg-3 text-muted-foreground border border-ak-border',
+  error: 'bg-ak-red/10 text-ak-red border border-ak-red/20',
+  success: 'bg-ak-green/10 text-ak-green border border-ak-green/20',
+  warning: 'bg-primary/10 text-primary border border-primary/20',
+  info: 'bg-ak-blue/10 text-ak-blue border border-ak-blue/20',
 };
 
 const variantIcons: Partial<Record<BadgeVariant, string>> = {

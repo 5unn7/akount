@@ -1,10 +1,11 @@
-const BADGE_BASE = 'inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold';
+import { Badge } from '../primitives/Badge';
+import type { BadgeVariant } from '../primitives/Badge';
 
-const JE_STATUS_CONFIG: Record<string, { label: string; className: string }> = {
-    DRAFT: { label: 'Draft', className: 'bg-ak-pri-dim text-primary border-primary/20' },
-    POSTED: { label: 'Posted', className: 'bg-ak-green-dim text-ak-green border-ak-green/20' },
-    VOIDED: { label: 'Voided', className: 'bg-ak-red-dim text-ak-red border-ak-red/20' },
-    ARCHIVED: { label: 'Archived', className: 'bg-muted/50 text-muted-foreground border-muted-foreground/20' },
+const JE_STATUS_CONFIG: Record<string, { label: string; variant: BadgeVariant }> = {
+    DRAFT: { label: 'Draft', variant: 'warning' },
+    POSTED: { label: 'Posted', variant: 'success' },
+    VOIDED: { label: 'Voided', variant: 'error' },
+    ARCHIVED: { label: 'Archived', variant: 'default' },
 };
 
 interface JournalEntryStatusBadgeProps {
@@ -14,8 +15,8 @@ interface JournalEntryStatusBadgeProps {
 export function JournalEntryStatusBadge({ status }: JournalEntryStatusBadgeProps) {
     const config = JE_STATUS_CONFIG[status] ?? JE_STATUS_CONFIG.DRAFT;
     return (
-        <span className={`${BADGE_BASE} ${config.className}`}>
+        <Badge variant={config.variant} size="sm" className="rounded-lg px-2.5 font-semibold">
             {config.label}
-        </span>
+        </Badge>
     );
 }
