@@ -1,9 +1,9 @@
 import { DomainTabs } from '@/components/shared/DomainTabs';
 
 const tabs = [
-  { label: 'Invoicing', href: '/business/invoices' },
   { label: 'Clients', href: '/business/clients' },
   { label: 'Vendors', href: '/business/vendors' },
+  { label: 'Invoices', href: '/business/invoices' },
   { label: 'Bills', href: '/business/bills' },
   { label: 'Payments', href: '/business/payments' },
 ];

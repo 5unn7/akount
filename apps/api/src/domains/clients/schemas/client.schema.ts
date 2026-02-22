@@ -27,7 +27,7 @@ export const ListClientsSchema = z.object({
   status: z.enum(['active', 'inactive']).optional(),
   search: z.string().max(100).optional(), // Search name or email
   cursor: z.string().cuid().optional(),
-  limit: z.number().int().min(1).max(100).default(20),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
 export type CreateClientInput = z.infer<typeof CreateClientSchema>;

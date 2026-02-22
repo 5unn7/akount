@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Client } from '@/lib/api/clients';
 import {
     Table,
@@ -13,7 +13,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils/currency';
-import { ClientDetailPanel } from './ClientDetailPanel';
 
 interface ClientsTableProps {
     clients: Client[];
@@ -26,12 +25,10 @@ const STATUS_BADGE_STYLES: Record<Client['status'], string> = {
 };
 
 export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
-    const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-    const [open, setOpen] = useState(false);
+    const router = useRouter();
 
     const handleRowClick = (client: Client) => {
-        setSelectedClient(client);
-        setOpen(true);
+        router.push(`/business/clients/${client.id}`);
     };
 
     if (clients.length === 0) {
@@ -145,8 +142,6 @@ export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
                     </Table>
                 </CardContent>
             </Card>
-
-            <ClientDetailPanel client={selectedClient} open={open} onOpenChange={setOpen} currency={currency} />
         </>
     );
 }

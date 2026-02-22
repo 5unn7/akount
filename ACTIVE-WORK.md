@@ -1,6 +1,6 @@
 # Active Work Tracker
 
-**Last Updated:** 2026-02-21 21:25
+**Last Updated:** 2026-02-21 21:49
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
-| agent-client-detail | 2026-02-21 18:52 | DEV-122: Business client detail page with invoice history | in_progress | main |
+| agent-client-detail | 2026-02-21 18:52 | DEV-122, DEV-75: Client detail + Bills page | completed | main |
 | agent-banking-ui | 2026-02-20 20:15 | DEV-43, DEV-44, DEV-45: Banking transaction form, XLSX import, batch detail | completed | main |
 | agent-infra-perf | 2026-02-20 12:54 | INFRA-14, PERF-8: Auth timeout + load testing | completed | main |
 | agent-sec23-logging | 2026-02-20 11:47 | SEC-23: Replace console.log with structured logging in webhook | completed | main |
@@ -22,7 +22,6 @@
 
 | Task ID | Type | Reserved By | Reserved Until |
 |---------|------|-------------|----------------|
-| DEV-122 | feature | agent-client-detail | 2026-02-21 20:52 |
 
 ---
 
@@ -31,7 +30,7 @@
 | Agent ID | Last Claimed Tasks | Last Domain | Last Session |
 |----------|-------------------|-------------|--------------|
 | agent-ux-atomic | UX-27, UX-10, UX-80 | ux | 2026-02-21 18:57 |
-| agent-client-detail | DEV-122 | business | 2026-02-21 18:52 |
+| agent-client-detail | DEV-122, DEV-75 | business | 2026-02-21 18:52 |
 | agent-infra-perf | INFRA-14, PERF-8 | infrastructure/performance | 2026-02-20 12:54 |
 | agent-sec23-logging | SEC-23 | security | 2026-02-20 11:47 |
 | opus-sec-batch | SEC-8, SEC-11, SEC-13, INFRA-9, INFRA-10 | security/infra | 2026-02-19 18:45 |

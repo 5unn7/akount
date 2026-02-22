@@ -51,7 +51,7 @@ export const ListInvoicesSchema = z.object({
   dateFrom: z.string().datetime().optional(),
   dateTo: z.string().datetime().optional(),
   cursor: z.string().cuid().optional(),
-  limit: z.number().int().min(1).max(100).default(20),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
 export type CreateInvoiceInput = z.infer<typeof CreateInvoiceSchema>;
