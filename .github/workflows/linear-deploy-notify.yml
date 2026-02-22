@@ -1,0 +1,72 @@
+name: Linear Deploy Notification
+
+# Notify Linear when deployments complete
+# Creates Infrastructure issue, updates linked Product issues
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Deployment version'
+        required: true
+      environment:
+        description: 'Environment (production, staging)'
+        required: true
+        default: 'production'
+
+jobs:
+  notify-linear:
+    runs-on: ubuntu-latest
+    if: github.event.deployment_status.state == 'success' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Get deployment info
+        id: deploy
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.event.deployment.ref }}" >> $GITHUB_OUTPUT
+            echo "environment=${{ github.event.deployment.environment }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Infrastructure issue in Linear
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: |
+          # Get Infrastructure team ID
+          TEAM_ID=$(curl -s -X POST https://api.linear.app/graphql \
+            -H "Authorization: $LINEAR_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"{ teams { nodes { id name key } } }"}' \
+            | jq -r '.data.teams.nodes[] | select(.key=="INFRA") | .id')
+
+          # Create deployment issue
+          curl -s -X POST https://api.linear.app/graphql \
+            -H "Authorization: $LINEAR_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"query\": \"mutation {
+                issueCreate(input: {
+                  teamId: \\\"$TEAM_ID\\\",
+                  title: \\\"Deploy ${{ steps.deploy.outputs.version }} to ${{ steps.deploy.outputs.environment }}\\\",
+                  description: \\\"**Deployment Details:**\\n- Version: \`${{ steps.deploy.outputs.version }}\`\\n- Environment: ${{ steps.deploy.outputs.environment }}\\n- Commit: ${{ github.sha }}\\n- Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\\n\\n**Status:** ✅ Deployed successfully\\\",
+                  priority: 3,
+                  labelIds: []
+                }) {
+                  issue { id identifier url }
+                }
+              }\"
+            }" | jq -r '.data.issueCreate.issue | "Created: \(.identifier) - \(.url)"'
+
+      - name: Update linked Product issues (if any)
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: |
+          echo "TODO: Parse commit messages for issue IDs, add 'Deployed ✅' comments"
+          echo "Example: git log --oneline -20 | grep -oP 'PLAT-\d+|BANK-\d+|BIZ-\d+' | sort -u"
+
+# Secrets required:
+# - LINEAR_API_KEY: Your Linear API key (Settings → API)

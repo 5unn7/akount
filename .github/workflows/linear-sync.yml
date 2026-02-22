@@ -1,0 +1,62 @@
+name: Linear Sync
+
+# Automatically sync TASKS.md ↔ Linear on every push to main
+# Ensures PM updates in Linear flow to TASKS.md and vice versa
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'TASKS.md'
+      - '.claude/scripts/linear-sync.ts'
+
+  schedule:
+    # Run twice daily at 9am and 5pm UTC (catch any missed updates)
+    - cron: '0 9,17 * * *'
+
+  workflow_dispatch:
+    # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for git log
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run bidirectional sync
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          LINEAR_TEAM_ID: ${{ secrets.LINEAR_TEAM_ID }}
+        run: npm run linear:sync
+
+      - name: Commit TASKS.md changes (if any)
+        run: |
+          git config user.name "Linear Sync Bot"
+          git config user.email "bot@akount.com"
+          git add TASKS.md .claude/linear-sync-state.json
+          git diff --staged --quiet || git commit -m "chore: sync TASKS.md from Linear [skip ci]"
+          git push || echo "No changes to push"
+
+      - name: Report sync status
+        if: always()
+        run: |
+          echo "✅ Sync completed at $(date)"
+          echo "📊 Check Linear for updated tasks: https://linear.app/akount"
+
+# Secrets required (add in GitHub repo settings):
+# - LINEAR_API_KEY: Your Linear API key (from https://linear.app/settings/api)
+# - LINEAR_TEAM_ID: Default team ID (optional, auto-detected if not set)

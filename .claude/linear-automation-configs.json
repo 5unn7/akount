@@ -1,0 +1,444 @@
+{
+  "generatedAt": "2026-02-22T00:20:03.316Z",
+  "linearUrl": "https://linear.app/akount",
+  "automationCount": 10,
+  "teams": [
+    {
+      "name": "Product",
+      "id": "61c7602e-ee8d-446c-bedf-96211e7ace9c",
+      "key": "PROD"
+    },
+    {
+      "name": "Business Ops",
+      "id": "41291ed8-8938-4533-92c7-d613991e4422",
+      "key": "BOPS"
+    },
+    {
+      "name": "Content",
+      "id": "a51d04e7-79d4-4b3f-9e0e-7cd29bab4490",
+      "key": "CONT"
+    },
+    {
+      "name": "Growth",
+      "id": "5268fa2a-b5cd-497b-8848-09492c9e43a0",
+      "key": "GROW"
+    },
+    {
+      "name": "Infrastructure",
+      "id": "28be307a-5a9b-41ff-a210-2240506d28d6",
+      "key": "INFRA"
+    },
+    {
+      "name": "Customer Success",
+      "id": "3d93cd04-fd60-4e04-9b4b-4c011cd531a6",
+      "key": "CS"
+    },
+    {
+      "name": "Operations",
+      "id": "0da71695-b7af-430b-85ab-918e21d49d30",
+      "key": "OPERA"
+    },
+    {
+      "name": "Marketing",
+      "id": "5b476ce1-0870-4b90-8707-f59babe2060b",
+      "key": "MARKE"
+    },
+    {
+      "name": "Design System",
+      "id": "3079c49e-b454-4ca4-a7b9-2f0a39eb549d",
+      "key": "DESIG"
+    },
+    {
+      "name": "Platform",
+      "id": "5447ae73-a07c-4b8b-8316-5ac8e7ba80e1",
+      "key": "PLAT"
+    },
+    {
+      "name": "Insights",
+      "id": "12ae3f58-d49b-42e5-bff2-46844851c1de",
+      "key": "AI"
+    },
+    {
+      "name": "Planning",
+      "id": "9852abc8-7eb2-4db7-b206-dd7c807fbfc9",
+      "key": "PLAN"
+    },
+    {
+      "name": "Accounting",
+      "id": "ee6aed6d-e128-4b71-9492-5f471a923b04",
+      "key": "ACCT"
+    },
+    {
+      "name": "Business",
+      "id": "99a6082a-3b4f-4711-9b37-c926f3d5606d",
+      "key": "BIZ"
+    },
+    {
+      "name": "Banking",
+      "id": "be51894f-6745-4403-9003-82e82c2e15f9",
+      "key": "BANK"
+    },
+    {
+      "name": "Overview",
+      "id": "f289ce38-ae20-43c2-b6b6-d7db7a1e6c07",
+      "key": "OVER"
+    }
+  ],
+  "automations": [
+    {
+      "number": 1,
+      "name": "Auto-Triage High-Impact Bugs",
+      "description": "Bugs affecting >10 customers auto-escalate to High priority",
+      "category": "triage",
+      "trigger": {
+        "type": "Issue created or updated",
+        "conditions": [
+          "Labels include \"bug\"",
+          "Custom field \"Customer Count\" > 10",
+          "Priority is not Critical or High"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Set priority",
+          "value": "High"
+        },
+        {
+          "type": "Add label",
+          "value": "affects-100+"
+        },
+        {
+          "type": "Add comment",
+          "value": "🚨 Auto-escalated: High customer impact (>10 affected)"
+        }
+      ],
+      "teams": [
+        "Customer Success",
+        "Platform"
+      ],
+      "priority": "critical",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 2,
+      "name": "Auto-Route Feature Requests",
+      "description": "Route feature requests to correct team based on keywords",
+      "category": "routing",
+      "trigger": {
+        "type": "Issue created",
+        "conditions": [
+          "Labels include \"feature-request\"",
+          "Team is Customer Success"
+        ]
+      },
+      "actions": [
+        {
+          "type": "If title/description contains \"invoice|bill|payment|client|vendor\"",
+          "value": "Move to Business team"
+        },
+        {
+          "type": "If title/description contains \"account|transaction|bank|import\"",
+          "value": "Move to Banking team"
+        },
+        {
+          "type": "If title/description contains \"report|journal|gl|accounting\"",
+          "value": "Move to Accounting team"
+        },
+        {
+          "type": "If title/description contains \"budget|forecast|plan\"",
+          "value": "Move to Planning team"
+        },
+        {
+          "type": "If title/description contains \"ai|chat|insight|categorization\"",
+          "value": "Move to Insights team"
+        },
+        {
+          "type": "If title/description contains \"dashboard|overview\"",
+          "value": "Move to Overview team"
+        },
+        {
+          "type": "Else",
+          "value": "Add comment: \"Please assign to correct product team\""
+        }
+      ],
+      "teams": [
+        "Customer Success"
+      ],
+      "priority": "high",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 3,
+      "name": "Critical Issue Exec Escalation",
+      "description": "Critical issues affecting >1000 users notify executives immediately",
+      "category": "escalation",
+      "trigger": {
+        "type": "Issue created or updated",
+        "conditions": [
+          "Priority is Critical",
+          "Custom field \"Customer Count\" > 1000"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Add label",
+          "value": "affects-1000+"
+        },
+        {
+          "type": "Add label",
+          "value": "production-down"
+        },
+        {
+          "type": "Send Slack notification",
+          "value": "#incidents channel"
+        },
+        {
+          "type": "Add comment",
+          "value": "🔴 CRITICAL: >1000 customers affected. Executive team notified."
+        },
+        {
+          "type": "Set cycle",
+          "value": "Current cycle"
+        }
+      ],
+      "teams": [
+        "All"
+      ],
+      "priority": "critical",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 4,
+      "name": "Stale Issue Cleanup",
+      "description": "Close issues with no activity for 90+ days",
+      "category": "maintenance",
+      "trigger": {
+        "type": "Scheduled (weekly)",
+        "conditions": [
+          "Last updated > 90 days ago",
+          "Status is not Done or Canceled",
+          "Priority is Low or None"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Add comment",
+          "value": "⏰ No activity for 90 days. Closing as stale. Comment to reopen."
+        },
+        {
+          "type": "Wait 7 days",
+          "value": ""
+        },
+        {
+          "type": "If still no activity",
+          "value": "Move to Canceled"
+        }
+      ],
+      "teams": [
+        "All"
+      ],
+      "priority": "low",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 5,
+      "name": "Auto-Create Docs Tasks",
+      "description": "When feature ships, create Content team task to document",
+      "category": "cross-team",
+      "trigger": {
+        "type": "Issue moved to Done",
+        "conditions": [
+          "Labels include \"feature\"",
+          "Team is product team (Overview, Banking, Business, etc.)"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Create issue in Content team",
+          "value": "Document: {issue.title}"
+        },
+        {
+          "type": "Link as \"Blocks\"",
+          "value": "New docs task blocks original issue"
+        },
+        {
+          "type": "Set priority",
+          "value": "Same as original"
+        },
+        {
+          "type": "Add label",
+          "value": "documentation"
+        }
+      ],
+      "teams": [
+        "All product teams"
+      ],
+      "priority": "medium",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 6,
+      "name": "Bug Fixed Notification",
+      "description": "When bug is fixed, notify Customer Success to update affected users",
+      "category": "cross-team",
+      "trigger": {
+        "type": "Issue moved to Done",
+        "conditions": [
+          "Labels include \"bug\"",
+          "Custom field \"Customer Count\" > 0"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Create issue in Customer Success team",
+          "value": "Notify customers: {issue.title} fixed"
+        },
+        {
+          "type": "Copy customer count",
+          "value": "From original issue"
+        },
+        {
+          "type": "Add label",
+          "value": "customer-communication"
+        },
+        {
+          "type": "Link as \"Related\"",
+          "value": "Link to original bug"
+        }
+      ],
+      "teams": [
+        "All product teams"
+      ],
+      "priority": "medium",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 7,
+      "name": "Long-Blocked Issue Alert",
+      "description": "Alert team when issue blocked for >7 days",
+      "category": "escalation",
+      "trigger": {
+        "type": "Scheduled (daily)",
+        "conditions": [
+          "Status is Blocked",
+          "Time in Blocked state > 7 days",
+          "Priority is High or Critical"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Add comment",
+          "value": "⚠️ Blocked for 7+ days. Please unblock or deprioritize."
+        },
+        {
+          "type": "Send Slack notification",
+          "value": "To issue assignee + team channel"
+        }
+      ],
+      "teams": [
+        "All"
+      ],
+      "priority": "high",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 8,
+      "name": "New Team Member Setup",
+      "description": "When user joins team, create onboarding checklist",
+      "category": "maintenance",
+      "trigger": {
+        "type": "User added to team",
+        "conditions": []
+      },
+      "actions": [
+        {
+          "type": "Create issue",
+          "value": "Onboarding: {user.name}"
+        },
+        {
+          "type": "Add description template",
+          "value": "Onboarding checklist (Linear access, repo access, docs, etc.)"
+        },
+        {
+          "type": "Assign to team lead",
+          "value": ""
+        },
+        {
+          "type": "Add label",
+          "value": "onboarding"
+        }
+      ],
+      "teams": [
+        "All"
+      ],
+      "priority": "low",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 9,
+      "name": "Security SLA Enforcement",
+      "description": "Security issues must be acknowledged within 4 hours",
+      "category": "escalation",
+      "trigger": {
+        "type": "Scheduled (hourly)",
+        "conditions": [
+          "Labels include \"security\"",
+          "Status is Backlog or Triage",
+          "Created > 4 hours ago",
+          "No assignee"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Add comment",
+          "value": "⏰ Security SLA breach: Not acknowledged in 4 hours"
+        },
+        {
+          "type": "Send Slack notification",
+          "value": "#security channel + @security-lead"
+        },
+        {
+          "type": "Set priority",
+          "value": "High (if not already higher)"
+        }
+      ],
+      "teams": [
+        "Platform",
+        "Infrastructure"
+      ],
+      "priority": "critical",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    },
+    {
+      "number": 10,
+      "name": "Potential Duplicate Detection",
+      "description": "Flag issues with similar titles for duplicate review",
+      "category": "triage",
+      "trigger": {
+        "type": "Issue created",
+        "conditions": [
+          "Title similarity > 80% to existing open issue"
+        ]
+      },
+      "actions": [
+        {
+          "type": "Add label",
+          "value": "potential-duplicate"
+        },
+        {
+          "type": "Add comment",
+          "value": "Potential duplicate of #{similar_issue}. Please review."
+        },
+        {
+          "type": "Link as \"Related\"",
+          "value": "Link to similar issue"
+        }
+      ],
+      "teams": [
+        "All"
+      ],
+      "priority": "medium",
+      "setupUrl": "https://linear.app/akount/settings/automations/new"
+    }
+  ]
+}
