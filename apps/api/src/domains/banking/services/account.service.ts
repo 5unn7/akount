@@ -135,6 +135,13 @@ export class AccountService {
       },
       include: {
         entity: true,
+        glAccount: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+          },
+        },
       },
     });
   }

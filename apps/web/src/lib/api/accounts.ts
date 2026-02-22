@@ -21,6 +21,15 @@ export interface AccountEntity {
 }
 
 /**
+ * GL Account reference
+ */
+export interface GLAccountRef {
+    id: string;
+    code: string;
+    name: string;
+}
+
+/**
  * Account from API
  */
 export interface Account {
@@ -32,6 +41,8 @@ export interface Account {
     institution?: string;
     currentBalance: number; // cents
     isActive: boolean;
+    glAccountId?: string | null;
+    glAccount?: GLAccountRef | null;
     entity: AccountEntity;
 }
 
@@ -57,6 +68,7 @@ export interface UpdateAccountInput {
     institution?: string | null;
     isActive?: boolean;
     type?: AccountType;
+    glAccountId?: string | null;
 }
 
 /**
