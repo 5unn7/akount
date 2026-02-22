@@ -263,4 +263,419 @@ export class DashboardService {
 
     return result;
   }
+
+  /**
+   * Get upcoming payments — bills due + expected invoice payments
+   *
+   * Returns the next 10 upcoming financial events (bill due dates and expected invoice payments)
+   * sorted by date ascending.
+   *
+   * @param entityId Optional entity ID filter
+   * @param limit Maximum number of items to return (default: 10)
+   * @returns Array of upcoming payment events
+   */
+  async getUpcomingPayments(
+    entityId?: string,
+    limit: number = 10
+  ): Promise<Array<{
+    id: string;
+    type: 'BILL' | 'INVOICE';
+    name: string;
+    dueDate: Date;
+    amount: number;
+    currency: string;
+    status: string;
+  }>> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Fetch upcoming bills (AP - money going out)
+    const upcomingBills = await prisma.bill.findMany({
+      where: {
+        entity: {
+          tenantId: this.tenantId,
+          ...(entityId && { id: entityId }),
+        },
+        dueDate: {
+          gte: today,
+        },
+        status: {
+          in: ['PENDING', 'APPROVED'],
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        billNumber: true,
+        dueDate: true,
+        totalAmount: true,
+        currency: true,
+        status: true,
+        vendor: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        dueDate: 'asc',
+      },
+      take: limit,
+    });
+
+    // Fetch upcoming invoice payments (AR - money coming in)
+    const upcomingInvoices = await prisma.invoice.findMany({
+      where: {
+        entity: {
+          tenantId: this.tenantId,
+          ...(entityId && { id: entityId }),
+        },
+        dueDate: {
+          gte: today,
+        },
+        status: {
+          in: ['SENT', 'VIEWED'],
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        invoiceNumber: true,
+        dueDate: true,
+        totalAmount: true,
+        currency: true,
+        status: true,
+        client: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        dueDate: 'asc',
+      },
+      take: limit,
+    });
+
+    // Combine and sort by due date
+    const combined = [
+      ...upcomingBills.map((bill) => ({
+        id: bill.id,
+        type: 'BILL' as const,
+        name: bill.vendor.name,
+        dueDate: bill.dueDate,
+        amount: bill.totalAmount,
+        currency: bill.currency,
+        status: bill.status,
+      })),
+      ...upcomingInvoices.map((invoice) => ({
+        id: invoice.id,
+        type: 'INVOICE' as const,
+        name: invoice.client.name,
+        dueDate: invoice.dueDate,
+        amount: invoice.totalAmount,
+        currency: invoice.currency,
+        status: invoice.status,
+      })),
+    ];
+
+    // Sort by due date and limit
+    combined.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+    return combined.slice(0, limit);
+  }
+
+  /**
+   * Get expense breakdown by category for charting
+   *
+   * Returns monthly expense totals grouped by category for the last N months.
+   * Used by ExpenseChart component.
+   *
+   * @param entityId Optional entity ID filter
+   * @param months Number of months to include (default: 6)
+   * @param currency Target currency for amounts
+   * @returns Array of monthly category breakdowns
+   */
+  async getExpenseBreakdown(
+    entityId?: string,
+    months: number = 6,
+    targetCurrency: string = 'USD'
+  ): Promise<Array<{
+    label: string;
+    categories: Array<{
+      name: string;
+      amount: number;
+      color: string;
+    }>;
+  }>> {
+    const baseCurrency = targetCurrency || 'USD';
+
+    // Calculate date range
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setMonth(startDate.getMonth() - months);
+
+    // Fetch expense transactions with categories
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        account: {
+          entity: {
+            tenantId: this.tenantId,
+            ...(entityId && { id: entityId }),
+          },
+        },
+        amount: {
+          lt: 0, // Expenses are negative
+        },
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+        deletedAt: null,
+      },
+      select: {
+        amount: true,
+        date: true,
+        categoryId: true,
+        account: {
+          select: {
+            currency: true,
+          },
+        },
+        category: {
+          select: {
+            name: true,
+            color: true,
+          },
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+
+    // Convert to base currency
+    const uniqueCurrencies = [...new Set(transactions.map((t) => t.account.currency))];
+    const currencyPairs = uniqueCurrencies.map((curr) => ({
+      from: curr,
+      to: baseCurrency,
+    }));
+
+    const rates = await this.fxService.getRateBatch(currencyPairs);
+
+    // Group by month and category
+    const monthlyData = new Map<string, Map<string, { amount: number; color: string }>>();
+
+    for (const txn of transactions) {
+      const monthKey = new Date(txn.date).toLocaleDateString('en-US', {
+        month: 'short',
+        year: '2-digit',
+      });
+
+      const rateKey = `${txn.account.currency}_${baseCurrency}`;
+      const rate = rates.get(rateKey) ?? 1.0;
+
+      // Convert to positive dollars for display
+      const convertedAmount = Math.abs(Math.round(txn.amount * rate)) / 100;
+
+      const categoryName = txn.category?.name || 'Uncategorized';
+      const categoryColor = txn.category?.color || '#71717A'; // muted-foreground
+
+      if (!monthlyData.has(monthKey)) {
+        monthlyData.set(monthKey, new Map());
+      }
+
+      const categoryMap = monthlyData.get(monthKey)!;
+      const existing = categoryMap.get(categoryName);
+
+      categoryMap.set(categoryName, {
+        amount: (existing?.amount || 0) + convertedAmount,
+        color: existing?.color || categoryColor,
+      });
+    }
+
+    // Convert to array format for chart
+    const result = Array.from(monthlyData.entries()).map(([label, categoryMap]) => ({
+      label,
+      categories: Array.from(categoryMap.entries()).map(([name, { amount, color }]) => ({
+        name,
+        amount: Math.round(amount), // Round to whole dollars
+        color,
+      })),
+    }));
+
+    return result;
+  }
+
+  /**
+   * Get action items — unreconciled transactions, overdue invoices, overdue bills
+   *
+   * Returns actionable items that need user attention, sorted by urgency.
+   *
+   * @param entityId Optional entity ID filter
+   * @param limit Maximum number of items to return (default: 10)
+   * @returns Array of action items
+   */
+  async getActionItems(
+    entityId?: string,
+    limit: number = 10
+  ): Promise<Array<{
+    id: string;
+    type: 'UNRECONCILED_TXN' | 'OVERDUE_INVOICE' | 'OVERDUE_BILL';
+    title: string;
+    meta: string;
+    urgencyScore: number;
+    href: string;
+  }>> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const actionItems: Array<{
+      id: string;
+      type: 'UNRECONCILED_TXN' | 'OVERDUE_INVOICE' | 'OVERDUE_BILL';
+      title: string;
+      meta: string;
+      urgencyScore: number;
+      href: string;
+    }> = [];
+
+    // 1. Unreconciled transactions (highest urgency)
+    const unreconciledTxns = await prisma.transaction.findMany({
+      where: {
+        account: {
+          entity: {
+            tenantId: this.tenantId,
+            ...(entityId && { id: entityId }),
+          },
+        },
+        reconciliationId: null,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        date: true,
+        description: true,
+        account: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        date: 'desc',
+      },
+      take: Math.ceil(limit / 3),
+    });
+
+    for (const txn of unreconciledTxns) {
+      const daysOld = Math.floor(
+        (today.getTime() - new Date(txn.date).getTime()) / (1000 * 60 * 60 * 24)
+      );
+      actionItems.push({
+        id: txn.id,
+        type: 'UNRECONCILED_TXN',
+        title: `Reconcile: ${txn.description || 'Transaction'}`,
+        meta: `${txn.account.name} • ${daysOld}d ago`,
+        urgencyScore: daysOld,
+        href: `/banking/reconciliation?accountId=${txn.account}`,
+      });
+    }
+
+    // 2. Overdue invoices (AR)
+    const overdueInvoices = await prisma.invoice.findMany({
+      where: {
+        entity: {
+          tenantId: this.tenantId,
+          ...(entityId && { id: entityId }),
+        },
+        dueDate: {
+          lt: today,
+        },
+        status: {
+          in: ['SENT', 'VIEWED'],
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        invoiceNumber: true,
+        dueDate: true,
+        totalAmount: true,
+        client: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        dueDate: 'asc',
+      },
+      take: Math.ceil(limit / 3),
+    });
+
+    for (const invoice of overdueInvoices) {
+      const daysOverdue = Math.floor(
+        (today.getTime() - new Date(invoice.dueDate).getTime()) / (1000 * 60 * 60 * 24)
+      );
+      const amountDollars = Math.round(invoice.totalAmount / 100);
+      actionItems.push({
+        id: invoice.id,
+        type: 'OVERDUE_INVOICE',
+        title: `Follow up: ${invoice.client.name}`,
+        meta: `$${amountDollars} • ${daysOverdue}d overdue`,
+        urgencyScore: daysOverdue + 100, // Higher base urgency
+        href: `/business/invoices/${invoice.id}`,
+      });
+    }
+
+    // 3. Overdue bills (AP)
+    const overdueBills = await prisma.bill.findMany({
+      where: {
+        entity: {
+          tenantId: this.tenantId,
+          ...(entityId && { id: entityId }),
+        },
+        dueDate: {
+          lt: today,
+        },
+        status: {
+          in: ['PENDING', 'APPROVED'],
+        },
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        billNumber: true,
+        dueDate: true,
+        totalAmount: true,
+        vendor: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        dueDate: 'asc',
+      },
+      take: Math.ceil(limit / 3),
+    });
+
+    for (const bill of overdueBills) {
+      const daysOverdue = Math.floor(
+        (today.getTime() - new Date(bill.dueDate).getTime()) / (1000 * 60 * 60 * 24)
+      );
+      const amountDollars = Math.round(bill.totalAmount / 100);
+      actionItems.push({
+        id: bill.id,
+        type: 'OVERDUE_BILL',
+        title: `Pay bill: ${bill.vendor.name}`,
+        meta: `$${amountDollars} • ${daysOverdue}d overdue`,
+        urgencyScore: daysOverdue + 50, // Medium urgency
+        href: `/business/bills/${bill.id}`,
+      });
+    }
+
+    // Sort by urgency score descending and limit
+    actionItems.sort((a, b) => b.urgencyScore - a.urgencyScore);
+    return actionItems.slice(0, limit);
+  }
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { getCashFlowProjection, type CashFlowProjectionPoint } from '@/lib/api/dashboard-client';
+import { getCashFlowProjection, getExpenseBreakdown, type CashFlowProjectionPoint, type ExpenseMonth } from '@/lib/api/dashboard-client';
 
 // Client-side only chart loading (avoids SSR chart rendering issues)
 const CashFlowChartInner = dynamic(
@@ -28,9 +28,17 @@ export function DashboardCashFlowChart() {
     return <CashFlowChartInner data={cashFlowData} />;
 }
 
-/** Expense breakdown chart */
+/** Expense breakdown chart with data fetching */
 export function DashboardExpenseChart() {
-    return <ExpenseChartInner />;
+    const [expenseData, setExpenseData] = useState<ExpenseMonth[] | undefined>();
+
+    useEffect(() => {
+        getExpenseBreakdown(undefined, 6)
+            .then((response) => setExpenseData(response.data))
+            .catch(() => setExpenseData(undefined));
+    }, []);
+
+    return <ExpenseChartInner data={expenseData} />;
 }
 
 /** Combined charts — kept for backward compatibility */
