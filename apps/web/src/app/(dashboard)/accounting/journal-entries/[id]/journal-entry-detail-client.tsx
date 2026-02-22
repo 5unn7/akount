@@ -86,7 +86,6 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
         try {
             await voidEntryAction(entry.id);
             toast.success('Entry voided — reversal created');
-            router.refresh();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Failed to void entry');
         } finally {

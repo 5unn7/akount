@@ -63,3 +63,21 @@ export function formatDateSplit(isoDate: string): { day: string; month: string }
         month: date.toLocaleDateString('en-CA', { month: 'short' }).toUpperCase(),
     };
 }
+
+/**
+ * Format ISO date string to month and year (e.g., "Jan 2024")
+ *
+ * @param isoDate - ISO 8601 date string
+ * @returns Formatted month and year string
+ *
+ * @example
+ * ```ts
+ * formatMonthYear('2024-01-15T10:30:00Z')  // "Jan 2024"
+ * ```
+ */
+export function formatMonthYear(isoDate: string): string {
+    return new Date(isoDate).toLocaleDateString('en-CA', {
+        year: 'numeric',
+        month: 'short',
+    });
+}

@@ -2,6 +2,7 @@ import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
 import { reportCache } from './report-cache';
+import { generateEntryNumber } from '../utils/entry-number';
 import type { CreateJournalEntryInput, ListJournalEntriesQuery } from '../schemas/journal-entry.schema';
 
 const JOURNAL_ENTRY_SELECT = {
@@ -201,7 +202,7 @@ export class JournalEntryService {
       }
 
       // 5. Generate sequential entry number
-      const entryNumber = await this.generateEntryNumber(tx, data.entityId);
+      const entryNumber = await generateEntryNumber(tx, data.entityId);
 
       // 6. Create the journal entry as DRAFT
       const entry = await tx.journalEntry.create({
@@ -400,7 +401,7 @@ export class JournalEntryService {
       }
 
       // Generate entry number for reversal
-      const reversalNumber = await this.generateEntryNumber(tx, entry.entityId);
+      const reversalNumber = await generateEntryNumber(tx, entry.entityId);
 
       // Create reversing entry (swap debit/credit)
       const reversal = await tx.journalEntry.create({
@@ -614,27 +615,4 @@ export class JournalEntryService {
     }
   }
 
-  /**
-   * Generate sequential entry number per entity (JE-001, JE-002, etc.).
-   */
-  private async generateEntryNumber(
-    tx: Prisma.TransactionClient,
-    entityId: string
-  ): Promise<string> {
-    const lastEntry = await tx.journalEntry.findFirst({
-      where: { entityId, entryNumber: { not: null } },
-      orderBy: { createdAt: 'desc' },
-      select: { entryNumber: true },
-    });
-
-    let nextNum = 1;
-    if (lastEntry?.entryNumber) {
-      const match = lastEntry.entryNumber.match(/JE-(\d+)/);
-      if (match) {
-        nextNum = parseInt(match[1], 10) + 1;
-      }
-    }
-
-    return `JE-${String(nextNum).padStart(3, '0')}`;
-  }
 }

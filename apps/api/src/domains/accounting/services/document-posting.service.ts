@@ -3,6 +3,7 @@ import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
 import { FxRateService } from '../../banking/services/fx-rate.service';
 import { reportCache } from './report-cache';
+import { generateEntryNumber } from '../utils/entry-number';
 
 /**
  * Document Posting Service
@@ -205,7 +206,7 @@ export class DocumentPostingService {
       }
 
       // 7. Generate entry number
-      const entryNumber = await this.generateEntryNumber(tx, entityId);
+      const entryNumber = await generateEntryNumber(tx, entityId);
 
       // 8. Source document snapshot
       const sourceDocument = {
@@ -450,7 +451,7 @@ export class DocumentPostingService {
       }
 
       // 7. Generate entry number
-      const entryNumber = await this.generateEntryNumber(tx, entityId);
+      const entryNumber = await generateEntryNumber(tx, entityId);
 
       // 8. Source document snapshot
       const sourceDocument = {
@@ -713,7 +714,7 @@ export class DocumentPostingService {
           ];
 
       // 8. Generate entry number
-      const entryNumber = await this.generateEntryNumber(tx, entityId);
+      const entryNumber = await generateEntryNumber(tx, entityId);
 
       // 9. Source document snapshot
       const sourceDocument = {
@@ -912,7 +913,7 @@ export class DocumentPostingService {
     }
 
     // 6. Generate entry number
-    const entryNumber = await this.generateEntryNumber(tx, entityId);
+    const entryNumber = await generateEntryNumber(tx, entityId);
 
     // 7. Source document snapshot
     const sourceDocument = {
@@ -1045,24 +1046,4 @@ export class DocumentPostingService {
     }
   }
 
-  private async generateEntryNumber(
-    tx: Prisma.TransactionClient,
-    entityId: string
-  ): Promise<string> {
-    const lastEntry = await tx.journalEntry.findFirst({
-      where: { entityId, entryNumber: { not: null } },
-      orderBy: { createdAt: 'desc' },
-      select: { entryNumber: true },
-    });
-
-    let nextNum = 1;
-    if (lastEntry?.entryNumber) {
-      const match = lastEntry.entryNumber.match(/JE-(\d+)/);
-      if (match) {
-        nextNum = parseInt(match[1], 10) + 1;
-      }
-    }
-
-    return `JE-${String(nextNum).padStart(3, '0')}`;
-  }
 }

@@ -1,6 +1,7 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
+import { generateEntryNumber } from '../utils/entry-number';
 import type {
     CreateAssetInput,
     UpdateAssetInput,
@@ -497,20 +498,17 @@ export class AssetService {
             }
 
             // Create depreciation entry + JE in transaction (Task 44b)
+            // NOTE: Sequential per-asset transactions (not one big transaction)
+            // Trade-off: Slower but idempotent — partial runs can be safely retried
+            // without double-posting. If asset #5 fails, assets #1-4 are already
+            // committed and won't be re-processed on retry.
             const result = await prisma.$transaction(async (tx) => {
                 let journalEntryId: string | null = null;
 
                 // Create JE if GL accounts are mapped
                 if (asset.depreciationExpenseGLAccountId && asset.accumulatedDepreciationGLAccountId) {
                     // Generate entry number
-                    const lastEntry = await tx.journalEntry.findFirst({
-                        where: { entityId: asset.entityId },
-                        orderBy: { createdAt: 'desc' },
-                        select: { entryNumber: true },
-                    });
-                    const nextNum = lastEntry?.entryNumber
-                        ? `JE-${String(parseInt(lastEntry.entryNumber.replace('JE-', '')) + 1).padStart(3, '0')}`
-                        : 'JE-001';
+                    const nextNum = await generateEntryNumber(tx, asset.entityId);
 
                     const je = await tx.journalEntry.create({
                         data: {

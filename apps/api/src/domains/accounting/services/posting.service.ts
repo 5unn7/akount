@@ -1,6 +1,7 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
+import { generateEntryNumber } from '../utils/entry-number';
 
 /**
  * Transaction Posting Service
@@ -195,7 +196,7 @@ export class PostingService {
       ];
 
       // 8. Generate entry number
-      const entryNumber = await this.generateEntryNumber(tx, entityId);
+      const entryNumber = await generateEntryNumber(tx, entityId);
 
       // 9. Source document (allowlisted fields)
       const sourceDocument = {
@@ -411,7 +412,7 @@ export class PostingService {
           ? Math.round(absAmount * fxRate)
           : null;
 
-        const entryNumber = await this.generateEntryNumber(tx, entityId);
+        const entryNumber = await generateEntryNumber(tx, entityId);
 
         const sourceDocument = {
           id: transaction.id,
@@ -703,7 +704,7 @@ export class PostingService {
       const allLines = [...splitLines, bankLine];
 
       // 7. Generate entry number
-      const entryNumber = await this.generateEntryNumber(tx, entityId);
+      const entryNumber = await generateEntryNumber(tx, entityId);
 
       // 8. Source document
       const sourceDocument = {
@@ -828,24 +829,4 @@ export class PostingService {
     }
   }
 
-  private async generateEntryNumber(
-    tx: Prisma.TransactionClient,
-    entityId: string
-  ): Promise<string> {
-    const lastEntry = await tx.journalEntry.findFirst({
-      where: { entityId, entryNumber: { not: null } },
-      orderBy: { createdAt: 'desc' },
-      select: { entryNumber: true },
-    });
-
-    let nextNum = 1;
-    if (lastEntry?.entryNumber) {
-      const match = lastEntry.entryNumber.match(/JE-(\d+)/);
-      if (match) {
-        nextNum = parseInt(match[1], 10) + 1;
-      }
-    }
-
-    return `JE-${String(nextNum).padStart(3, '0')}`;
-  }
 }

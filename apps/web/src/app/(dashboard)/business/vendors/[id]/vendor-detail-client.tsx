@@ -208,7 +208,6 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
 
     const handleUpdate = (updated: Vendor) => {
         setVendor(updated);
-        router.refresh();
     };
 
     return (
@@ -431,7 +430,7 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
                                                         </Link>
                                                     </TableCell>
                                                     <TableCell className="text-sm">
-                                                        {formatDate(bill.billDate)}
+                                                        {formatDate(bill.issueDate)}
                                                     </TableCell>
                                                     <TableCell className="text-sm">
                                                         {formatDate(bill.dueDate)}

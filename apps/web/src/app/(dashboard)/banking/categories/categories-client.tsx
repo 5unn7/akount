@@ -84,7 +84,7 @@ export function CategoriesClient({ initialCategories }: CategoriesClientProps) {
     const [categories, setCategories] = useState(initialCategories);
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({ name: '', type: 'EXPENSE' as const });
+    const [formData, setFormData] = useState<{ name: string; type: Category['type'] }>({ name: '', type: 'EXPENSE' });
 
     // Stats by type
     const incomeCount = categories.filter((c) => c.type === 'INCOME').length;
@@ -119,7 +119,6 @@ export function CategoriesClient({ initialCategories }: CategoriesClientProps) {
                 toast.success(`Category "${formData.name}" created`);
             }
             setIsEditing(false);
-            router.refresh();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Failed to save category');
         }
@@ -130,7 +129,6 @@ export function CategoriesClient({ initialCategories }: CategoriesClientProps) {
             await deleteCategoryAction(categoryId);
             setCategories((prev) => prev.filter((c) => c.id !== categoryId));
             toast.success(`Category "${categoryName}" deleted`);
-            router.refresh();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Failed to delete category');
         }

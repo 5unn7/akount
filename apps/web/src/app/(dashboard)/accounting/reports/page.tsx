@@ -231,30 +231,25 @@ export default async function ReportsHomePage() {
                                 </div>
                                 {/* Ratio bar */}
                                 <div className="h-2 rounded-full bg-ak-bg-3 overflow-hidden flex">
-                                    {stats.totalRevenue + stats.totalExpenses > 0 && (
-                                        <>
-                                            <div
-                                                className="h-full bg-ak-green transition-all"
-                                                style={{
-                                                    width: `${
-                                                        (stats.totalRevenue /
-                                                            (stats.totalRevenue + stats.totalExpenses)) *
-                                                        100
-                                                    }%`,
-                                                }}
-                                            />
-                                            <div
-                                                className="h-full bg-ak-red transition-all"
-                                                style={{
-                                                    width: `${
-                                                        (stats.totalExpenses /
-                                                            (stats.totalRevenue + stats.totalExpenses)) *
-                                                        100
-                                                    }%`,
-                                                }}
-                                            />
-                                        </>
-                                    )}
+                                    {stats.totalRevenue + stats.totalExpenses > 0 && (() => {
+                                        const absRevenue = Math.abs(stats.totalRevenue);
+                                        const absExpenses = Math.abs(stats.totalExpenses);
+                                        const total = absRevenue + absExpenses;
+                                        const revPct = total > 0 ? Math.min(100, Math.max(0, (absRevenue / total) * 100)) : 50;
+                                        const expPct = total > 0 ? Math.min(100, Math.max(0, (absExpenses / total) * 100)) : 50;
+                                        return (
+                                            <>
+                                                <div
+                                                    className="h-full bg-ak-green transition-all"
+                                                    style={{ width: `${revPct}%` }}
+                                                />
+                                                <div
+                                                    className="h-full bg-ak-red transition-all"
+                                                    style={{ width: `${expPct}%` }}
+                                                />
+                                            </>
+                                        );
+                                    })()}
                                 </div>
                             </div>
                         </div>

@@ -169,7 +169,14 @@ export function AssetSheet({ open, onOpenChange, entityId, editingAsset }: Asset
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label>Category</Label>
-                            <Select value={category} onValueChange={(v) => setCategory(v as AssetCategory)}>
+                            <Select
+                                value={category}
+                                onValueChange={(v) => {
+                                    if (CATEGORIES.some((c) => c.value === v)) {
+                                        setCategory(v as AssetCategory);
+                                    }
+                                }}
+                            >
                                 <SelectTrigger>
                                     <SelectValue />
                                 </SelectTrigger>
@@ -240,7 +247,14 @@ export function AssetSheet({ open, onOpenChange, entityId, editingAsset }: Asset
                         </div>
                         <div className="space-y-2">
                             <Label>Depreciation Method</Label>
-                            <Select value={method} onValueChange={(v) => setMethod(v as DepreciationMethod)}>
+                            <Select
+                                value={method}
+                                onValueChange={(v) => {
+                                    if (METHODS.some((m) => m.value === v)) {
+                                        setMethod(v as DepreciationMethod);
+                                    }
+                                }}
+                            >
                                 <SelectTrigger>
                                     <SelectValue />
                                 </SelectTrigger>

@@ -10,6 +10,7 @@ import type {
     DepreciationResult,
 } from '@/lib/api/accounting';
 import { formatCurrency } from '@/lib/utils/currency';
+import { formatMonthYear } from '@/lib/utils/date';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -75,7 +76,7 @@ const CATEGORY_CONFIG: Record<AssetCategory, { label: string; icon: typeof Packa
 const STATUS_CONFIG: Record<AssetStatus, { label: string; className: string }> = {
     ACTIVE: { label: 'Active', className: 'bg-ak-green-dim text-ak-green border-ak-green/20' },
     FULLY_DEPRECIATED: { label: 'Fully Depreciated', className: 'bg-ak-purple-dim text-ak-purple border-ak-purple/20' },
-    DISPOSED: { label: 'Disposed', className: 'text-muted-foreground border-ak-border' },
+    DISPOSED: { label: 'Disposed', className: 'text-muted-foreground border-ak-border bg-muted/50' },
 };
 
 const METHOD_LABELS: Record<DepreciationMethod, string> = {
@@ -151,7 +152,6 @@ export function AssetsClient({ initialAssets, entityId }: AssetsClientProps) {
             });
             toast.success(`"${disposeTarget.name}" disposed`);
             setDisposeTarget(null);
-            router.refresh();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Failed to dispose asset');
         } finally {
@@ -167,7 +167,6 @@ export function AssetsClient({ initialAssets, entityId }: AssetsClientProps) {
             setAssets((prev) => prev.filter((a) => a.id !== deleteTarget.id));
             toast.success(`"${deleteTarget.name}" deleted`);
             setDeleteTarget(null);
-            router.refresh();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Failed to delete asset');
         } finally {
@@ -186,7 +185,6 @@ export function AssetsClient({ initialAssets, entityId }: AssetsClientProps) {
             toast.success(
                 `Depreciation run: ${result.processed} processed, ${result.skipped} skipped`
             );
-            router.refresh();
         } catch (err) {
             toast.error(err instanceof Error ? err.message : 'Failed to run depreciation');
         } finally {
@@ -338,6 +336,11 @@ export function AssetsClient({ initialAssets, entityId }: AssetsClientProps) {
                                                 <span className="text-muted-foreground/60">
                                                     ({methodAssets.length})
                                                 </span>
+                                                {method === 'UNITS_OF_PRODUCTION' && (
+                                                    <span className="italic text-muted-foreground/50 ml-1">
+                                                        (calculated externally)
+                                                    </span>
+                                                )}
                                             </span>
                                             <span className="font-mono">
                                                 {formatCurrency(methodDepr)} / {formatCurrency(methodCost)}
@@ -359,6 +362,7 @@ export function AssetsClient({ initialAssets, entityId }: AssetsClientProps) {
 
             {/* ---- Create/Edit Sheet ---- */}
             <AssetSheet
+                key={editingAsset?.id ?? 'create'}
                 open={sheetOpen}
                 onOpenChange={(open) => {
                     setSheetOpen(open);
@@ -582,10 +586,7 @@ function AssetCard({ asset, onEdit, onDispose, onDelete }: AssetCardProps) {
                 ? 'from-primary to-ak-red'
                 : 'from-ak-green to-primary';
 
-    const acquiredFormatted = new Date(asset.acquiredDate).toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'short',
-    });
+    const acquiredFormatted = formatMonthYear(asset.acquiredDate);
 
     return (
         <div className="glass rounded-xl p-4 transition-all hover:border-ak-border-2 hover:-translate-y-px group">

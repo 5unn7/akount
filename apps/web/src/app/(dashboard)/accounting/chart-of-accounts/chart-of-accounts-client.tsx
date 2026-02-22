@@ -84,7 +84,6 @@ export function ChartOfAccountsClient({
             ? accounts
             : accounts.filter((a) => a.type === filterType);
 
-    const tree = buildTree(filtered, balances);
     const grouped = buildGroupedTree(filtered, balances);
 
     function openAddSheet() {

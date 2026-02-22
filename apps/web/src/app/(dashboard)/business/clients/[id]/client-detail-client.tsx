@@ -218,7 +218,6 @@ export function ClientDetailClient({ client: initialClient, invoices }: ClientDe
 
     const handleUpdate = (updated: Client) => {
         setClient(updated);
-        router.refresh();
     };
 
     return (
