@@ -27,19 +27,19 @@ const STATUS_CONFIG: Record<
 > = {
     DRAFT: {
         label: 'Draft',
-        className: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
+        className: 'bg-ak-pri-dim text-primary border-primary/20',
     },
     POSTED: {
         label: 'Posted',
-        className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
+        className: 'bg-ak-green-dim text-ak-green border-ak-green/20',
     },
     VOIDED: {
         label: 'Voided',
-        className: 'bg-red-500/15 text-red-400 border-red-500/20',
+        className: 'bg-ak-red-dim text-ak-red border-ak-red/20',
     },
     ARCHIVED: {
         label: 'Archived',
-        className: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/20',
+        className: 'bg-muted/50 text-muted-foreground border-muted-foreground/20',
     },
 };
 
@@ -100,14 +100,18 @@ export function EntryDetail({
                                         {line.glAccount.name}
                                     </td>
                                     <td className="py-2 text-right font-mono text-sm">
-                                        {line.debitAmount > 0
-                                            ? formatAmount(line.debitAmount)
-                                            : '\u2014'}
+                                        {line.debitAmount > 0 ? (
+                                            <span className="text-ak-green">{formatAmount(line.debitAmount)}</span>
+                                        ) : (
+                                            <span className="text-muted-foreground">{'\u2014'}</span>
+                                        )}
                                     </td>
                                     <td className="py-2 text-right font-mono text-sm">
-                                        {line.creditAmount > 0
-                                            ? formatAmount(line.creditAmount)
-                                            : '\u2014'}
+                                        {line.creditAmount > 0 ? (
+                                            <span className="text-ak-blue">{formatAmount(line.creditAmount)}</span>
+                                        ) : (
+                                            <span className="text-muted-foreground">{'\u2014'}</span>
+                                        )}
                                     </td>
                                     <td className="py-2 pl-4 text-sm text-muted-foreground">
                                         {line.description || '\u2014'}
@@ -116,19 +120,19 @@ export function EntryDetail({
                             ))}
                             <tr className="border-t border-ak-border-2 font-semibold">
                                 <td className="py-2 text-sm">Totals</td>
-                                <td className="py-2 text-right font-mono text-sm">
+                                <td className="py-2 text-right font-mono text-sm text-ak-green">
                                     {formatAmount(totalDebit)}
                                 </td>
-                                <td className="py-2 text-right font-mono text-sm">
+                                <td className="py-2 text-right font-mono text-sm text-ak-blue">
                                     {formatAmount(totalCredit)}
                                 </td>
                                 <td className="py-2 pl-4">
                                     {totalDebit === totalCredit ? (
-                                        <span className="text-emerald-400 text-xs">
+                                        <span className="text-ak-green text-xs">
                                             Balanced
                                         </span>
                                     ) : (
-                                        <span className="text-red-400 text-xs">
+                                        <span className="text-ak-red text-xs">
                                             Out of balance
                                         </span>
                                     )}

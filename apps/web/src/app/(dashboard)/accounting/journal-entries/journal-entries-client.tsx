@@ -8,7 +8,8 @@ import {
     ChevronRight,
     Plus,
     Loader2,
-    FileText,
+    CheckCircle2,
+    AlertTriangle,
 } from 'lucide-react';
 import type {
     JournalEntry,
@@ -45,6 +46,16 @@ interface JournalEntriesClientProps {
     entityId: string;
 }
 
+const SOURCE_TYPE_CONFIG: Record<string, { label: string; className: string }> = {
+    MANUAL: { label: 'Manual', className: 'bg-muted/50 text-muted-foreground border-muted-foreground/20' },
+    INVOICE: { label: 'Invoice', className: 'bg-ak-green-dim text-ak-green border-ak-green/20' },
+    BILL: { label: 'Bill', className: 'bg-ak-red-dim text-ak-red border-ak-red/20' },
+    PAYMENT: { label: 'Payment', className: 'bg-ak-blue-dim text-ak-blue border-ak-blue/20' },
+    BANK_FEED: { label: 'Bank Feed', className: 'bg-ak-teal/15 text-ak-teal border-ak-teal/20' },
+    TRANSFER: { label: 'Transfer', className: 'bg-ak-purple-dim text-ak-purple border-ak-purple/20' },
+    ADJUSTMENT: { label: 'Adj.', className: 'bg-ak-pri-dim text-primary border-primary/20' },
+};
+
 // ============================================================================
 // Main Component
 // ============================================================================
@@ -67,6 +78,16 @@ export function JournalEntriesClient({
     const [sourceTypeFilter, setSourceTypeFilter] = useState<string>('all');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+
+    // Stats
+    const totalEntries = entries.length;
+    const autoCount = entries.filter((e) => e.sourceType).length;
+    const manualCount = totalEntries - autoCount;
+    const autoPercent = totalEntries > 0 ? Math.round((autoCount / totalEntries) * 100) : 0;
+    const totalVolume = entries.reduce(
+        (sum, e) => sum + e.lines.reduce((s, l) => s + l.debitAmount, 0),
+        0
+    );
 
     async function loadMore() {
         if (!nextCursor || isLoadingMore) return;
@@ -164,6 +185,28 @@ export function JournalEntriesClient({
 
     return (
         <div className="space-y-4">
+            {/* Stats Row */}
+            <div className="grid grid-cols-4 gap-3">
+                <div className="glass rounded-xl p-4">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Total Entries</p>
+                    <p className="text-xl font-mono font-semibold">{totalEntries}</p>
+                </div>
+                <div className="glass rounded-xl p-4">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Auto-Posted</p>
+                    <p className="text-xl font-mono font-semibold">
+                        {autoPercent}<span className="text-sm text-muted-foreground">%</span>
+                    </p>
+                </div>
+                <div className="glass rounded-xl p-4">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Manual</p>
+                    <p className="text-xl font-mono font-semibold">{manualCount}</p>
+                </div>
+                <div className="glass rounded-xl p-4">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">Total Volume</p>
+                    <p className="text-xl font-mono font-semibold">{formatAmount(totalVolume)}</p>
+                </div>
+            </div>
+
             {/* Filters */}
             <div className="flex items-center gap-3">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -246,6 +289,13 @@ export function JournalEntriesClient({
                                     (s, l) => s + l.debitAmount,
                                     0
                                 );
+                                const totalCredit = entry.lines.reduce(
+                                    (s, l) => s + l.creditAmount,
+                                    0
+                                );
+                                const isBalanced = totalDebit === totalCredit;
+                                const sourceKey = entry.sourceType ?? 'MANUAL';
+                                const sourceConfig = SOURCE_TYPE_CONFIG[sourceKey] ?? SOURCE_TYPE_CONFIG.MANUAL;
 
                                 return (
                                     <React.Fragment key={entry.id}>
@@ -284,22 +334,22 @@ export function JournalEntriesClient({
                                                 {entry.memo}
                                             </td>
                                             <td className="px-4 py-3">
-                                                {entry.sourceType ? (
-                                                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                                                        <FileText className="h-3 w-3" />
-                                                        {entry.sourceType}
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-xs text-muted-foreground">
-                                                        Manual
-                                                    </span>
-                                                )}
+                                                <span className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${sourceConfig.className}`}>
+                                                    {sourceConfig.label}
+                                                </span>
                                             </td>
                                             <td className="px-4 py-3">
                                                 <StatusBadge status={entry.status} />
                                             </td>
                                             <td className="px-4 py-3 text-right font-mono text-sm">
-                                                {formatAmount(totalDebit)}
+                                                <span className="inline-flex items-center gap-1.5 justify-end">
+                                                    {formatAmount(totalDebit)}
+                                                    {isBalanced ? (
+                                                        <CheckCircle2 className="h-3 w-3 text-ak-green shrink-0" />
+                                                    ) : (
+                                                        <AlertTriangle className="h-3 w-3 text-primary shrink-0" />
+                                                    )}
+                                                </span>
                                             </td>
                                         </tr>
                                         {isExpanded && (

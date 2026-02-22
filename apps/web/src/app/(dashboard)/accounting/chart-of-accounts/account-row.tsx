@@ -39,11 +39,11 @@ const ACCOUNT_TYPE_LABELS: Record<GLAccountType, string> = {
 };
 
 const ACCOUNT_TYPE_COLORS: Record<GLAccountType, string> = {
-    ASSET: 'bg-blue-500/15 text-blue-400 border-blue-500/20',
-    LIABILITY: 'bg-red-500/15 text-red-400 border-red-500/20',
-    EQUITY: 'bg-purple-500/15 text-purple-400 border-purple-500/20',
-    REVENUE: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-    EXPENSE: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
+    ASSET: 'bg-ak-blue-dim text-ak-blue border-ak-blue/20',
+    LIABILITY: 'bg-ak-red-dim text-ak-red border-ak-red/20',
+    EQUITY: 'bg-ak-purple-dim text-ak-purple border-ak-purple/20',
+    REVENUE: 'bg-ak-green-dim text-ak-green border-ak-green/20',
+    EXPENSE: 'bg-ak-pri-dim text-primary border-primary/20',
 };
 
 export function buildTree(
