@@ -3,6 +3,7 @@ import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { withRolePermission } from '../../../middleware/rbac';
+import { AccountingError } from '../../accounting/errors';
 import { TransferService } from '../services/transfer.service';
 import {
   CreateTransferSchema,
@@ -12,6 +13,17 @@ import {
   type ListTransfersQuery,
   type TransferIdParam,
 } from '../schemas/transfer.schema';
+
+function handleAccountingError(error: unknown, reply: FastifyReply) {
+  if (error instanceof AccountingError) {
+    return reply.status(error.statusCode).send({
+      error: error.code,
+      message: error.message,
+      details: error.details,
+    });
+  }
+  throw error;
+}
 
 /**
  * Transfer routes
@@ -47,28 +59,7 @@ export async function transferRoutes(fastify: FastifyInstance) {
         const result = await service.createTransfer(body);
         return reply.status(201).send(result);
       } catch (error) {
-        // Handle known errors
-        if (error instanceof Error) {
-          const message = error.message.toLowerCase();
-          if (message.includes('not found')) {
-            return reply.status(404).send({ error: error.message });
-          }
-          if (
-            message.includes('insufficient balance') ||
-            message.includes('not linked') ||
-            message.includes('currency mismatch') ||
-            message.includes('exchange rate')
-          ) {
-            return reply.status(400).send({ error: error.message });
-          }
-          if (
-            message.includes('cross-entity') ||
-            message.includes('different entities')
-          ) {
-            return reply.status(403).send({ error: error.message });
-          }
-        }
-        throw error;
+        return handleAccountingError(error, reply);
       }
     }
   );
@@ -92,10 +83,7 @@ export async function transferRoutes(fastify: FastifyInstance) {
         const result = await service.listTransfers(query);
         return reply.status(200).send(result);
       } catch (error) {
-        if (error instanceof Error && error.message.includes('not found')) {
-          return reply.status(404).send({ error: error.message });
-        }
-        throw error;
+        return handleAccountingError(error, reply);
       }
     }
   );
@@ -119,10 +107,7 @@ export async function transferRoutes(fastify: FastifyInstance) {
         const transfer = await service.getTransfer(params.id);
         return reply.status(200).send(transfer);
       } catch (error) {
-        if (error instanceof Error && error.message.includes('not found')) {
-          return reply.status(404).send({ error: error.message });
-        }
-        throw error;
+        return handleAccountingError(error, reply);
       }
     }
   );

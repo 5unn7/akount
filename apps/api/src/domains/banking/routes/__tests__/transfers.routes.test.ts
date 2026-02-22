@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { transferRoutes } from '../transfers';
+import { AccountingError } from '../../../accounting/errors';
 
 // Mock auth middleware
 vi.mock('../../../../middleware/auth', () => ({
@@ -136,7 +137,9 @@ describe('Transfer Routes', () => {
     });
 
     it('should return 404 when account not found', async () => {
-      mockCreateTransfer.mockRejectedValueOnce(new Error('From account not found'));
+      mockCreateTransfer.mockRejectedValueOnce(
+        new AccountingError('From account not found', 'ACCOUNT_NOT_FOUND', 404)
+      );
 
       const response = await app.inject({
         method: 'POST',
@@ -151,11 +154,17 @@ describe('Transfer Routes', () => {
       });
 
       expect(response.statusCode).toBe(404);
+      const body = JSON.parse(response.body);
+      expect(body.error).toBe('ACCOUNT_NOT_FOUND');
     });
 
     it('should return 400 for insufficient balance', async () => {
       mockCreateTransfer.mockRejectedValueOnce(
-        new Error('Insufficient balance: account has 100 cents, transfer requires 50000 cents')
+        new AccountingError(
+          'Insufficient balance: account has 100 cents, transfer requires 50000 cents',
+          'INSUFFICIENT_BALANCE',
+          400
+        )
       );
 
       const response = await app.inject({
@@ -172,12 +181,16 @@ describe('Transfer Routes', () => {
 
       expect(response.statusCode).toBe(400);
       const body = JSON.parse(response.body);
-      expect(body.error).toContain('Insufficient balance');
+      expect(body.error).toBe('INSUFFICIENT_BALANCE');
     });
 
     it('should return 403 for cross-entity transfer', async () => {
       mockCreateTransfer.mockRejectedValueOnce(
-        new Error('Cannot transfer between accounts from different entities')
+        new AccountingError(
+          'Cannot transfer between accounts from different entities',
+          'CROSS_ENTITY_TRANSFER',
+          403
+        )
       );
 
       const response = await app.inject({
@@ -193,11 +206,17 @@ describe('Transfer Routes', () => {
       });
 
       expect(response.statusCode).toBe(403);
+      const body = JSON.parse(response.body);
+      expect(body.error).toBe('CROSS_ENTITY_TRANSFER');
     });
 
     it('should return 400 when GL account not linked', async () => {
       mockCreateTransfer.mockRejectedValueOnce(
-        new Error('Account "Checking" is not linked to a GL account — link it first')
+        new AccountingError(
+          'Account "Checking" is not linked to a GL account — link it first',
+          'GL_ACCOUNT_NOT_LINKED',
+          400
+        )
       );
 
       const response = await app.inject({
@@ -213,6 +232,8 @@ describe('Transfer Routes', () => {
       });
 
       expect(response.statusCode).toBe(400);
+      const body = JSON.parse(response.body);
+      expect(body.error).toBe('GL_ACCOUNT_NOT_LINKED');
     });
   });
 
@@ -235,7 +256,9 @@ describe('Transfer Routes', () => {
     });
 
     it('should return 404 when entity not found', async () => {
-      mockListTransfers.mockRejectedValueOnce(new Error('Entity not found'));
+      mockListTransfers.mockRejectedValueOnce(
+        new AccountingError('Entity not found', 'ENTITY_NOT_FOUND', 404)
+      );
 
       const response = await app.inject({
         method: 'GET',
@@ -244,6 +267,8 @@ describe('Transfer Routes', () => {
       });
 
       expect(response.statusCode).toBe(404);
+      const body = JSON.parse(response.body);
+      expect(body.error).toBe('ENTITY_NOT_FOUND');
     });
   });
 
@@ -263,7 +288,9 @@ describe('Transfer Routes', () => {
     });
 
     it('should return 404 when transfer not found', async () => {
-      mockGetTransfer.mockRejectedValueOnce(new Error('Transfer not found'));
+      mockGetTransfer.mockRejectedValueOnce(
+        new AccountingError('Transfer not found', 'TRANSFER_NOT_FOUND', 404)
+      );
 
       const response = await app.inject({
         method: 'GET',
@@ -272,6 +299,8 @@ describe('Transfer Routes', () => {
       });
 
       expect(response.statusCode).toBe(404);
+      const body = JSON.parse(response.body);
+      expect(body.error).toBe('TRANSFER_NOT_FOUND');
     });
 
     it('should return 401 without auth', async () => {

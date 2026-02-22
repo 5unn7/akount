@@ -401,4 +401,178 @@ describe('TransferService', () => {
       );
     });
   });
+
+  describe('voidTransfer', () => {
+    it('should void transfer and reverse account balances', async () => {
+      const mockAccountUpdate = vi.fn().mockResolvedValue({});
+      const mockUpdateMany = vi.fn().mockResolvedValue({ count: 2 });
+
+      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+        const tx = {
+          journalEntry: {
+            findFirst: vi.fn().mockResolvedValueOnce({
+              id: 'je-1',
+              linkedEntryId: 'je-2',
+              status: 'POSTED',
+              entityId: ENTITY_ID,
+              sourceDocument: {
+                fromAccountId: 'from-acc',
+                fromAccountName: 'Checking',
+                toAccountId: 'to-acc',
+                toAccountName: 'Savings',
+                amount: 50000,
+                currency: 'CAD',
+              },
+              journalLines: [
+                { glAccountId: 'gl-1020', debitAmount: 50000, creditAmount: 0 },
+                { glAccountId: 'gl-1010', debitAmount: 0, creditAmount: 50000 },
+              ],
+            }),
+            updateMany: mockUpdateMany,
+          },
+          account: {
+            update: mockAccountUpdate,
+          },
+        };
+        return callback(tx);
+      });
+
+      const result = await service.voidTransfer('je-1');
+
+      expect(result.voided).toBe(2);
+
+      // Verify entries were voided
+      expect(mockUpdateMany).toHaveBeenCalledWith({
+        where: { id: { in: ['je-1', 'je-2'] } },
+        data: { status: 'VOIDED', updatedBy: USER_ID },
+      });
+
+      // Verify balance reversal: from account gets money back (increment)
+      expect(mockAccountUpdate).toHaveBeenCalledWith({
+        where: { id: 'from-acc' },
+        data: { currentBalance: { increment: 50000 } },
+      });
+
+      // Verify balance reversal: to account loses money (decrement)
+      expect(mockAccountUpdate).toHaveBeenCalledWith({
+        where: { id: 'to-acc' },
+        data: { currentBalance: { decrement: 50000 } },
+      });
+
+      // Verify audit log was called with balance info
+      expect(createAuditLog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          action: 'UPDATE',
+          details: expect.objectContaining({
+            status: 'VOIDED',
+            balanceReversed: true,
+            fromAccountId: 'from-acc',
+            toAccountId: 'to-acc',
+            amount: 50000,
+          }),
+        }),
+        expect.anything()
+      );
+    });
+
+    it('should void multi-currency transfer with correct exchange rate', async () => {
+      const mockAccountUpdate = vi.fn().mockResolvedValue({});
+
+      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+        const tx = {
+          journalEntry: {
+            findFirst: vi.fn().mockResolvedValueOnce({
+              id: 'je-1',
+              linkedEntryId: 'je-2',
+              status: 'POSTED',
+              entityId: ENTITY_ID,
+              sourceDocument: {
+                fromAccountId: 'usd-acc',
+                toAccountId: 'cad-acc',
+                amount: 10000, // $100 USD
+                currency: 'USD',
+                exchangeRate: 1.35, // USD → CAD
+              },
+              journalLines: [],
+            }),
+            updateMany: vi.fn().mockResolvedValue({ count: 2 }),
+          },
+          account: {
+            update: mockAccountUpdate,
+          },
+        };
+        return callback(tx);
+      });
+
+      await service.voidTransfer('je-1');
+
+      // From account: gets back original USD amount
+      expect(mockAccountUpdate).toHaveBeenCalledWith({
+        where: { id: 'usd-acc' },
+        data: { currentBalance: { increment: 10000 } },
+      });
+
+      // To account: loses converted CAD amount (10000 * 1.35 = 13500)
+      expect(mockAccountUpdate).toHaveBeenCalledWith({
+        where: { id: 'cad-acc' },
+        data: { currentBalance: { decrement: 13500 } },
+      });
+    });
+
+    it('should reject void on already-voided transfer', async () => {
+      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+        const tx = {
+          journalEntry: {
+            findFirst: vi.fn().mockResolvedValueOnce({
+              id: 'je-1',
+              status: 'VOIDED',
+              entityId: ENTITY_ID,
+            }),
+          },
+        };
+        return callback(tx);
+      });
+
+      await expect(service.voidTransfer('je-1')).rejects.toThrow(
+        'Transfer is already voided'
+      );
+    });
+
+    it('should return 404 when transfer not found for void', async () => {
+      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+        const tx = {
+          journalEntry: {
+            findFirst: vi.fn().mockResolvedValueOnce(null),
+          },
+        };
+        return callback(tx);
+      });
+
+      await expect(service.voidTransfer('invalid')).rejects.toThrow(
+        'Transfer not found'
+      );
+    });
+
+    it('should reject void when sourceDocument is missing', async () => {
+      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+        const tx = {
+          journalEntry: {
+            findFirst: vi.fn().mockResolvedValueOnce({
+              id: 'je-1',
+              linkedEntryId: 'je-2',
+              status: 'POSTED',
+              entityId: ENTITY_ID,
+              sourceDocument: null,
+              journalLines: [],
+            }),
+          },
+        };
+        return callback(tx);
+      });
+
+      await expect(service.voidTransfer('je-1')).rejects.toThrow(
+        'source document is missing'
+      );
+    });
+  });
 });

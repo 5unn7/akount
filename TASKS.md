@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-21 21:49
 **Current Phase:** Phase 6 — Launch MVP
 
-> **368 tasks** · 🔴 1 critical · 🟠 39 high · 🟡 148 medium · ⚪ 30 low · ✅ 128 done
-> 🟢 112 ready · 📦 119 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **371 tasks** · 🔴 2 critical · 🟠 39 high · 🟡 149 medium · ⚪ 31 low · ✅ 128 done
+> 🟢 115 ready · 📦 119 backlog · 🔒 7 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -22,6 +22,7 @@
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
+| ~~FIN-23~~ | ~~Fix `voidTransfer` balance reversal — voiding a transfer marks JEs as VOIDED but does NOT reverse account balances (financial integrity bug)~~ | 30-45m | 🔴 Critical | ✅ done | | review:transfer-service |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | TEST-1 | Service tests for 4 remaining reports (BS, CF, TB, GL) + route tests | 3-4h | 🟠 High | 🟢 | | review:typescript |
 | TEST-2 | E2E tests for critical user flows (onboarding, import, posting, reports) | 4h | 🟠 High | 🟢 | | roadmap |
@@ -83,6 +84,8 @@
 | PERF-7 | Lazy-loading heavy frontend components | 1h | 🟡 Medium | 🟢 | | roadmap [atomic] |
 | DRY-2 | CSV sanitization: deduplicate between report-export and data-export | 30m | 🟡 Medium | 🟢 | | review:simplicity [atomic] |
 | DRY-3 | Report routes: extract shared 40-line handler pattern into helper | 1h | 🟡 Medium | 🟢 | | review:simplicity [atomic] |
+| ~~DRY-8~~ | ~~Transfer routes: refactor string-matching error handling to use `AccountingError.statusCode` pattern (consistent with all other routes)~~ | 15-20m | 🟡 Medium | ✅ done | | review:transfer-service [atomic] |
+| ~~FIN-24~~ | ~~Transfer service: extract overdraft-allowed account types constant + add multi-currency limitation doc comment~~ | 10m | ⚪ Low | ✅ done | | review:transfer-service [atomic] |
 | UX-3 | Report tables: add `aria-*` attributes, caption, scope, role="progressbar" | 45m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |
 | UX-4 | Report views: replace array index React keys with stable identifiers | 15m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |
 | DOC-2 | Consolidate logging rules (full version in api-conventions.md, update guardrails.md ref) | 30m | 🟡 Medium | 🟢 | | review:smooth-floating-mountain [atomic] |

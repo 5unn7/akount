@@ -3,6 +3,9 @@ import { AccountingError } from '../../accounting/errors';
 import { createAuditLog } from '../../../lib/audit';
 import type { CreateTransferInput, ListTransfersQuery } from '../schemas/transfer.schema';
 
+/** Account types that allow negative balance (overdraft). These represent liabilities where spending increases the balance owed. */
+const OVERDRAFT_ALLOWED_TYPES = ['CREDIT_CARD', 'LOAN', 'MORTGAGE'] as const;
+
 /**
  * Transfer Service
  *
@@ -138,7 +141,7 @@ export class TransferService {
         }
 
         // 6. Balance check (allow negative for credit cards and loans)
-        const allowNegativeBalance = ['CREDIT_CARD', 'LOAN', 'MORTGAGE'].includes(
+        const allowNegativeBalance = (OVERDRAFT_ALLOWED_TYPES as readonly string[]).includes(
           fromAccount.type
         );
         if (!allowNegativeBalance && fromAccount.currentBalance < data.amount) {
@@ -150,6 +153,11 @@ export class TransferService {
         }
 
         // 7. Calculate amounts for multi-currency
+        // @todo Multi-currency limitation: exchangeRate is used for both cross-account
+        // conversion AND entity base currency conversion. This works when one account
+        // matches the entity's functional currency, but may produce incorrect
+        // baseCurrencyAmount when NEITHER account matches. A proper fix requires
+        // separate exchange rates per currency pair or an exchange rate table.
         const fromAmount = data.amount;
         const toAmount = isMultiCurrency && data.exchangeRate
           ? Math.round(data.amount * data.exchangeRate)
@@ -467,12 +475,13 @@ export class TransferService {
   }
 
   /**
-   * Void a transfer by voiding both linked journal entries.
+   * Void a transfer by voiding both linked journal entries
+   * and reversing account balance changes.
    */
   async voidTransfer(id: string) {
     return await prisma.$transaction(
       async (tx) => {
-        // Load the transfer entry
+        // Load the transfer entry with sourceDocument for balance reversal
         const entry = await tx.journalEntry.findFirst({
           where: {
             id,
@@ -485,6 +494,7 @@ export class TransferService {
             linkedEntryId: true,
             status: true,
             entityId: true,
+            sourceDocument: true,
             journalLines: {
               where: { deletedAt: null },
               select: {
@@ -508,6 +518,31 @@ export class TransferService {
           );
         }
 
+        // Parse sourceDocument for balance reversal
+        const source = entry.sourceDocument as Record<string, unknown> | null;
+        if (
+          !source ||
+          typeof source.fromAccountId !== 'string' ||
+          typeof source.toAccountId !== 'string' ||
+          typeof source.amount !== 'number'
+        ) {
+          throw new AccountingError(
+            'Transfer source document is missing or malformed — cannot reverse balances',
+            'INVALID_SOURCE_DOCUMENT',
+            500
+          );
+        }
+
+        const fromAccountId = source.fromAccountId;
+        const toAccountId = source.toAccountId;
+        const originalAmount = source.amount;
+        const exchangeRate = typeof source.exchangeRate === 'number' ? source.exchangeRate : undefined;
+
+        // Calculate toAmount using same logic as createTransfer
+        const toAmount = exchangeRate
+          ? Math.round(originalAmount * exchangeRate)
+          : originalAmount;
+
         // Void both entries
         const entryIds = [entry.id, entry.linkedEntryId].filter(Boolean) as string[];
 
@@ -518,6 +553,18 @@ export class TransferService {
             updatedBy: this.userId,
           },
         });
+
+        // Reverse account balances (undo the transfer)
+        await Promise.all([
+          tx.account.update({
+            where: { id: fromAccountId },
+            data: { currentBalance: { increment: originalAmount } },
+          }),
+          tx.account.update({
+            where: { id: toAccountId },
+            data: { currentBalance: { decrement: toAmount } },
+          }),
+        ]);
 
         // Create audit logs
         await Promise.all(
@@ -531,7 +578,13 @@ export class TransferService {
                 userId: this.userId,
                 resourceType: 'JournalEntry',
                 resourceId: entryId,
-                details: { status: 'VOIDED' },
+                details: {
+                  status: 'VOIDED',
+                  balanceReversed: true,
+                  fromAccountId,
+                  toAccountId,
+                  amount: originalAmount,
+                },
               },
               tx
             )
