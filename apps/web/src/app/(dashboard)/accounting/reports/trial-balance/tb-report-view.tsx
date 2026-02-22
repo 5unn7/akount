@@ -14,9 +14,10 @@ interface TBReportViewProps {
     initialData: TrialBalanceReport | null;
     initialParams: Record<string, string | undefined>;
     error: string | null;
+    entities?: Array<{ id: string; name: string }>;
 }
 
-export function TBReportView({ initialData, initialParams, error }: TBReportViewProps) {
+export function TBReportView({ initialData, initialParams, error, entities = [] }: TBReportViewProps) {
     const router = useRouter();
     const [entityId, setEntityId] = useState(initialParams.entityId || '');
     const [asOfDate, setAsOfDate] = useState(initialParams.asOfDate || '');
@@ -47,10 +48,7 @@ export function TBReportView({ initialData, initialParams, error }: TBReportView
                         <EntitySelector
                             value={entityId}
                             onChange={setEntityId}
-                            onFetchEntities={async () => {
-                                const entities = await listEntities('ACTIVE');
-                                return entities.map((e) => ({ id: e.id, name: e.name }));
-                            }}
+                            entities={entities}
                         />
                     </div>
 

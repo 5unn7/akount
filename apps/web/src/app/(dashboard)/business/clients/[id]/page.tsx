@@ -34,11 +34,12 @@ export default async function ClientDetailPage({
     let invoices;
 
     try {
-        [client, { invoices: invoiceList }] = await Promise.all([
+        const [clientData, invoiceData] = await Promise.all([
             getClient(id),
             listInvoices({ clientId: id, limit: 50 }),
         ]);
-        invoices = invoiceList;
+        client = clientData;
+        invoices = invoiceData.invoices;
     } catch {
         notFound();
     }

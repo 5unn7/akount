@@ -23,6 +23,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
 import { CreditCard, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { EmptyState } from '@akount/ui';
 
 interface PaymentTableProps {
     payments: Payment[];
@@ -49,14 +50,10 @@ export function PaymentTable({ payments }: PaymentTableProps) {
 
     if (payments.length === 0) {
         return (
-            <Card className="glass rounded-[14px]">
-                <CardContent className="p-12 text-center">
-                    <p className="text-muted-foreground">No payments found</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Record your first payment to get started
-                    </p>
-                </CardContent>
-            </Card>
+            <EmptyState
+                title="No payments found"
+                description="Record your first payment to get started"
+            />
         );
     }
 

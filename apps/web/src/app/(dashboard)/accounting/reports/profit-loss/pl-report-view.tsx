@@ -16,9 +16,10 @@ interface PLReportViewProps {
     initialData: ProfitLossReport | null;
     initialParams: Record<string, string | undefined>;
     error: string | null;
+    entities?: Array<{ id: string; name: string }>;
 }
 
-export function PLReportView({ initialData, initialParams, error }: PLReportViewProps) {
+export function PLReportView({ initialData, initialParams, error, entities = [] }: PLReportViewProps) {
     const router = useRouter();
     const [entityId, setEntityId] = useState(initialParams.entityId || '');
     const [startDate, setStartDate] = useState(initialParams.startDate || '');
@@ -64,13 +65,7 @@ export function PLReportView({ initialData, initialParams, error }: PLReportView
                             value={entityId}
                             onChange={setEntityId}
                             placeholder="All Entities"
-                            onFetchEntities={async () => {
-                                const entities = await listEntities('ACTIVE');
-                                return [
-                                    { id: '', name: 'All Entities' },
-                                    ...entities.map((e) => ({ id: e.id, name: e.name })),
-                                ];
-                            }}
+                            entities={[{ id: '', name: 'All Entities' }, ...entities]}
                         />
                     </div>
 

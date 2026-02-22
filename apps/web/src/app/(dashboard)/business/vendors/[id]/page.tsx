@@ -34,11 +34,12 @@ export default async function VendorDetailPage({
     let bills;
 
     try {
-        [vendor, { bills: billList }] = await Promise.all([
+        const [vendorData, billData] = await Promise.all([
             getVendor(id),
             listBills({ vendorId: id, limit: 50 }),
         ]);
-        bills = billList;
+        vendor = vendorData;
+        bills = billData.bills;
     } catch {
         notFound();
     }

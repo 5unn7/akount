@@ -26,6 +26,7 @@ export interface Vendor {
   entity: {
     id: string;
     name: string;
+    functionalCurrency: string;
   };
   // Aggregated stats (only when fetching single vendor)
   openBills?: number;

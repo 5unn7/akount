@@ -1,60 +1,33 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { cn } from '../utils';
 
 interface EntitySelectorProps {
-    /**
-     * Selected entity ID
-     */
+    /** Selected entity ID */
     value: string;
-
-    /**
-     * Called when selection changes
-     */
+    /** Called when selection changes */
     onChange: (entityId: string) => void;
-
-    /**
-     * Optional placeholder text
-     */
+    /** Optional placeholder text */
     placeholder?: string;
-
-    /**
-     * Whether to auto-fetch entities on mount
-     */
+    /** Whether to auto-fetch entities on mount */
     autoFetch?: boolean;
-
-    /**
-     * Optional API function to fetch entities (if not provided, caller must populate options)
-     */
+    /** Optional API function to fetch entities */
     onFetchEntities?: () => Promise<Array<{ id: string; name: string }>>;
-
-    /**
-     * Disabled state
-     */
+    /** Disabled state */
     disabled?: boolean;
-
-    /**
-     * Pre-populated entity options
-     */
+    /** Pre-populated entity options */
     entities?: Array<{ id: string; name: string }>;
+    /** Additional classes */
+    className?: string;
 }
 
 /**
  * EntitySelector component for report filters.
- * Consolidates entity selection with optional API integration.
+ * Uses a native select element styled to match the design system.
  *
  * @example
  * ```tsx
- * // With API integration
- * <EntitySelector
- *   value={entityId}
- *   onChange={setEntityId}
- *   onFetchEntities={listEntities}
- *   placeholder="Select Entity"
- * />
- *
- * // With pre-populated entities
  * <EntitySelector
  *   value={entityId}
  *   onChange={setEntityId}
@@ -70,11 +43,11 @@ export function EntitySelector({
     onFetchEntities,
     disabled = false,
     entities: preloadedEntities = [],
+    className,
 }: EntitySelectorProps) {
     const [entities, setEntities] = useState<Array<{ id: string; name: string }>>(preloadedEntities);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Auto-fetch entities on mount if onFetchEntities provided
     useEffect(() => {
         if (!autoFetch || !onFetchEntities || preloadedEntities.length > 0) {
             return;
@@ -85,8 +58,8 @@ export function EntitySelector({
             try {
                 const data = await onFetchEntities();
                 setEntities(data);
-            } catch (error) {
-                console.error('Failed to fetch entities:', error);
+            } catch {
+                // Silently fail — entities list stays empty
             } finally {
                 setIsLoading(false);
             }
@@ -96,17 +69,24 @@ export function EntitySelector({
     }, [autoFetch, onFetchEntities, preloadedEntities.length]);
 
     return (
-        <Select value={value} onValueChange={onChange} disabled={disabled || isLoading}>
-            <SelectTrigger>
-                <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-                {entities.map((entity) => (
-                    <SelectItem key={entity.id} value={entity.id}>
-                        {entity.name}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
+        <select
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={disabled || isLoading}
+            className={cn(
+                'flex h-9 w-full items-center justify-between rounded-md border border-ak-border bg-transparent px-3 py-2 text-sm',
+                'focus:outline-none focus:ring-1 focus:ring-primary',
+                'disabled:cursor-not-allowed disabled:opacity-50',
+                '[&>option]:bg-ak-bg-2',
+                className,
+            )}
+        >
+            {!value && <option value="">{placeholder}</option>}
+            {entities.map((entity) => (
+                <option key={entity.id} value={entity.id}>
+                    {entity.name}
+                </option>
+            ))}
+        </select>
     );
 }

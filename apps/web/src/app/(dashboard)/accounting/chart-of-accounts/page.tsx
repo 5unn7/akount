@@ -4,6 +4,7 @@ import { listGLAccounts, getAccountBalances } from '@/lib/api/accounting';
 import { listEntities } from '@/lib/api/entities';
 import { ChartOfAccountsClient } from './chart-of-accounts-client';
 import { Card, CardContent } from '@/components/ui/card';
+import { EmptyState } from '@akount/ui';
 import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 
 export const metadata: Metadata = {
@@ -46,13 +47,7 @@ async function COAData({ entityId, entities }: { entityId: string | null; entiti
     try {
         if (entities.length === 0) {
             return (
-                <Card className="glass rounded-[14px]">
-                    <CardContent className="py-12 text-center">
-                        <p className="text-muted-foreground">
-                            No entities found. Create a business entity first.
-                        </p>
-                    </CardContent>
-                </Card>
+                <EmptyState title="No entities found. Create a business entity first." />
             );
         }
 

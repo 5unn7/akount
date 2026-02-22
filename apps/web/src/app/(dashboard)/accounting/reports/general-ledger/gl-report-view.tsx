@@ -20,9 +20,10 @@ interface GLReportViewProps {
     initialData: GLLedgerReport | null;
     initialParams: Record<string, string | undefined>;
     error: string | null;
+    entities?: Array<{ id: string; name: string }>;
 }
 
-export function GLReportView({ initialData, initialParams, error }: GLReportViewProps) {
+export function GLReportView({ initialData, initialParams, error, entities = [] }: GLReportViewProps) {
     const router = useRouter();
     const [entityId, setEntityId] = useState(initialParams.entityId || '');
     const [glAccountId, setGlAccountId] = useState(initialParams.glAccountId || '');
@@ -85,10 +86,7 @@ export function GLReportView({ initialData, initialParams, error }: GLReportView
                         <EntitySelector
                             value={entityId}
                             onChange={setEntityId}
-                            onFetchEntities={async () => {
-                                const entities = await listEntities('ACTIVE');
-                                return entities.map((e) => ({ id: e.id, name: e.name }));
-                            }}
+                            entities={entities}
                         />
                     </div>
 

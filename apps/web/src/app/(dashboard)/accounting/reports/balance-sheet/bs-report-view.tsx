@@ -16,9 +16,10 @@ interface BSReportViewProps {
     initialData: BalanceSheetReport | null;
     initialParams: Record<string, string | undefined>;
     error: string | null;
+    entities?: Array<{ id: string; name: string }>;
 }
 
-export function BSReportView({ initialData, initialParams, error }: BSReportViewProps) {
+export function BSReportView({ initialData, initialParams, error, entities = [] }: BSReportViewProps) {
     const router = useRouter();
     const [entityId, setEntityId] = useState(initialParams.entityId || '');
     const [asOfDate, setAsOfDate] = useState(initialParams.asOfDate || '');
@@ -60,13 +61,7 @@ export function BSReportView({ initialData, initialParams, error }: BSReportView
                             value={entityId}
                             onChange={setEntityId}
                             placeholder="All Entities"
-                            onFetchEntities={async () => {
-                                const entities = await listEntities('ACTIVE');
-                                return [
-                                    { id: '', name: 'All Entities' },
-                                    ...entities.map((e) => ({ id: e.id, name: e.name })),
-                                ];
-                            }}
+                            entities={[{ id: '', name: 'All Entities' }, ...entities]}
                         />
                     </div>
 
