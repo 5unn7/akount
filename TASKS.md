@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-21
 **Current Phase:** Phase 6 — Launch MVP
 
-> **300 tasks** · 🔴 3 critical · 🟠 60 high · 🟡 156 medium · ⚪ 30 low · ✅ 78 done
-> 🟢 108 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **300 tasks** · 🔴 3 critical · 🟠 59 high · 🟡 156 medium · ⚪ 30 low · ✅ 79 done
+> 🟢 107 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -73,7 +73,7 @@
 | ~~DEV-10~~ | ~~Overview: Add Accounts Payable summary to dashboard (query bills/vendor domain)~~ | 2-3h | 🟠 High | ✅ | | audit:fe-be-parity |
 | ~~DEV-43~~ | ~~Banking: Add manual transaction creation form (POST endpoint exists, no UI)~~ | 2-3h | 🟠 High | ✅ | | audit:fe-be-parity |
 | ~~DEV-44~~ | ~~Banking: Wire XLSX import support in import wizard (backend endpoint exists)~~ | 1-2h | 🟠 High | ✅ | | audit:fe-be-parity |
-| UX-13 | Banking: Add category management page — edit, delete, detail view (3 endpoints exist, no UI) | 2-3h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:banking-command-center.md |
+| ~~UX-13~~ | ~~Banking: Add category management page — edit, delete, detail view (3 endpoints exist, no UI)~~ | 2-3h | 🟠 High | ✅ | session | audit:fe-be-parity, plan:banking-command-center.md |
 | ~~UX-14~~ | ~~Banking: Add unmatch button to reconciliation (DELETE endpoint exists, no UI)~~ | 1h | 🟠 High | ✅ | | audit:fe-be-parity |
 | ~~DEV-45~~ | ~~Banking: Add import batch detail page — drill into imported transactions (GET endpoint exists)~~ | 1-2h | 🟠 High | ✅ | | audit:fe-be-parity |
 | DEV-46 | Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (sidebar links to dead page, needs backend routes + frontend wiring) | 4-6h | 🟠 High | 🟢 | | audit:fe-be-parity, sitemap:audit, plan:banking-command-center.md |
