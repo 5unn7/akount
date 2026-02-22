@@ -1,9 +1,10 @@
 <div class="page-hdr fi fi1">
     <div>
         <div class="page-title">Fiscal Periods</div>
-        <div class="page-sub">Open/Close Periods &middot; Year-End Processes</div>
+        <div class="page-sub">FY 2026 &middot; Period 2 of 12 &middot; Feb 1 – 28</div>
     </div>
     <div class="page-actions">
+        <button class="btn" onclick="showToast('Opening year-end wizard...')">&#128218; Year-End</button>
         <button class="btn pri" onclick="showToast('Lock period dialog')">&#128274; Lock Period</button>
     </div>
 </div>
@@ -16,90 +17,451 @@
     <button class="sec-tab on">Fiscal Periods</button>
 </div>
 
-<section class="sec fi fi3">
+<!-- ═══ THE FISCAL YEAR RING — Zen calendar ═══ -->
+<section class="sec fi fi2">
     <div class="sec-h">
-        <h2 class="sec-t">Fiscal Years</h2>
+        <h2 class="sec-t">Fiscal Year 2026</h2>
+        <span class="sec-m" style="font-style:italic;font-family:'Newsreader',serif;color:var(--t3)">the rhythm of your books</span>
     </div>
-    <div style="overflow-x:auto">
-        <table class="txn-table">
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Status</th>
-                    <th>Net Income</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="txn-row">
-                    <td style="font-weight:600">2026</td>
-                    <td>Jan 1, 2026</td>
-                    <td>Dec 31, 2026</td>
-                    <td><span class="inv-badge sent" style="font-size:10px">Open</span></td>
-                    <td>$16,380 (YTD)</td>
-                    <td><button class="btn-xs">Manage</button></td>
-                </tr>
-                <tr class="txn-row">
-                    <td style="font-weight:600">2025</td>
-                    <td>Jan 1, 2025</td>
-                    <td>Dec 31, 2025</td>
-                    <td><span class="inv-badge paid" style="font-size:10px">Closed</span></td>
-                    <td>$84,200</td>
-                    <td><button class="btn-xs">Report</button></td>
-                </tr>
-                <tr class="txn-row">
-                    <td style="font-weight:600">2024</td>
-                    <td>Jan 1, 2024</td>
-                    <td>Dec 31, 2024</td>
-                    <td><span class="inv-badge paid" style="font-size:10px">Closed</span></td>
-                    <td>$62,500</td>
-                    <td><button class="btn-xs">Report</button></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="fy-ring-w">
+        <svg viewBox="0 0 400 400" class="fy-ring-svg">
+            <defs>
+                <filter id="fyGlow">
+                    <feGaussianBlur stdDeviation="3" result="blur"/>
+                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+            </defs>
+            <!-- Outer guide ring -->
+            <circle cx="200" cy="200" r="165" fill="none" stroke="var(--border)" stroke-width=".5" opacity=".3"/>
+            <circle cx="200" cy="200" r="135" fill="none" stroke="var(--border)" stroke-width=".5" opacity=".2"/>
+
+            <!-- 12 month arcs — each 30 degrees -->
+            <!-- Jan (closed) — solid green -->
+            <path d="M200,35 A165,165 0 0,1 282.5,52.5" fill="none" stroke="var(--green)" stroke-width="18" stroke-linecap="round" opacity=".7">
+                <animate attributeName="opacity" from="0" to=".7" dur=".5s" fill="freeze"/>
+            </path>
+            <!-- Feb (open/current) — pulsing amber -->
+            <path d="M287,55 A165,165 0 0,1 348,117" fill="none" stroke="var(--pri)" stroke-width="18" stroke-linecap="round" opacity=".9">
+                <animate attributeName="opacity" values=".6;.95;.6" dur="3s" repeatCount="indefinite"/>
+            </path>
+            <!-- Mar-Dec (future) — dim glass -->
+            <path d="M352,122 A165,165 0 0,1 365,200" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".4"/>
+            <path d="M365,200 A165,165 0 0,1 348,283" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".35"/>
+            <path d="M345,288 A165,165 0 0,1 282.5,347.5" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".3"/>
+            <path d="M278,350 A165,165 0 0,1 200,365" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".28"/>
+            <path d="M195,365 A165,165 0 0,1 117,348" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".25"/>
+            <path d="M112,345 A165,165 0 0,1 52.5,282.5" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".22"/>
+            <path d="M50,278 A165,165 0 0,1 35,200" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".2"/>
+            <path d="M35,195 A165,165 0 0,1 52.5,117" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".18"/>
+            <path d="M55,112 A165,165 0 0,1 117,52.5" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".16"/>
+            <path d="M122,50 A165,165 0 0,1 195,35" fill="none" stroke="var(--glass-3)" stroke-width="18" stroke-linecap="round" opacity=".14"/>
+
+            <!-- Month labels around the ring -->
+            <text x="240" y="32" text-anchor="middle" fill="var(--green)" font-size="9" font-family="JetBrains Mono" font-weight="500">JAN</text>
+            <text x="318" y="70" text-anchor="middle" fill="var(--pri)" font-size="9" font-family="JetBrains Mono" font-weight="600">FEB</text>
+            <text x="372" y="145" text-anchor="start" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">MAR</text>
+            <text x="382" y="218" text-anchor="start" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">APR</text>
+            <text x="362" y="298" text-anchor="start" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">MAY</text>
+            <text x="300" y="368" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">JUN</text>
+            <text x="200" y="386" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">JUL</text>
+            <text x="100" y="368" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">AUG</text>
+            <text x="32" y="298" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">SEP</text>
+            <text x="18" y="218" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">OCT</text>
+            <text x="32" y="145" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">NOV</text>
+            <text x="100" y="32" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">DEC</text>
+
+            <!-- Center content -->
+            <text x="200" y="178" text-anchor="middle" fill="var(--t1)" font-family="Newsreader" font-size="32" font-weight="400">2026</text>
+            <text x="200" y="204" text-anchor="middle" fill="var(--t3)" font-size="10" font-family="Manrope">Fiscal Year</text>
+            <text x="200" y="226" text-anchor="middle" fill="var(--pri)" font-size="11" font-family="JetBrains Mono" font-weight="500">P2 — February</text>
+            <text x="200" y="244" text-anchor="middle" fill="var(--t4)" font-size="9" font-family="Manrope">8% complete</text>
+
+            <!-- Current month indicator dot -->
+            <circle cx="318" cy="80" r="4" fill="var(--pri)" filter="url(#fyGlow)">
+                <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+            </circle>
+        </svg>
+        <div class="fy-ring-legend">
+            <div class="aging-item"><div class="aging-dot" style="background:var(--green)"></div>Closed</div>
+            <div class="aging-item"><div class="aging-dot" style="background:var(--pri)"></div>Current (Open)</div>
+            <div class="aging-item"><div class="aging-dot" style="background:var(--glass-3);border:1px solid var(--border)"></div>Future</div>
+        </div>
     </div>
 </section>
 
-<section class="sec fi fi4" style="margin-top:20px">
+<!-- ═══ TWO-COLUMN: Fiscal Years + Current Period ═══ -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px" class="fi fi3">
+    <!-- Fiscal Years -->
+    <section class="sec" style="margin:0">
+        <div class="sec-h"><h2 class="sec-t">Fiscal Years</h2></div>
+        <div class="fy-years">
+            <div class="fy-year-card current">
+                <div class="fy-year-header">
+                    <span class="fy-year-label">2026</span>
+                    <span class="asset-card-badge" style="background:var(--pri-dim);color:var(--pri)">Open</span>
+                </div>
+                <div class="fy-year-dates">Jan 1 — Dec 31, 2026</div>
+                <div class="fy-year-metrics">
+                    <div class="fy-metric">
+                        <span class="fy-metric-label">Net Income (YTD)</span>
+                        <span class="fy-metric-val" style="color:var(--green)">$16,380</span>
+                    </div>
+                    <div class="fy-metric">
+                        <span class="fy-metric-label">Journal Entries</span>
+                        <span class="fy-metric-val">42</span>
+                    </div>
+                </div>
+                <div class="fy-year-progress">
+                    <div class="asset-life-bar">
+                        <div class="asset-life-fill" style="width:17%;background:linear-gradient(90deg,var(--pri),var(--pri-hover))"></div>
+                    </div>
+                    <span style="font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">2/12 periods</span>
+                </div>
+            </div>
+            <div class="fy-year-card">
+                <div class="fy-year-header">
+                    <span class="fy-year-label">2025</span>
+                    <span class="asset-card-badge active">Closed</span>
+                </div>
+                <div class="fy-year-dates">Jan 1 — Dec 31, 2025</div>
+                <div class="fy-year-metrics">
+                    <div class="fy-metric">
+                        <span class="fy-metric-label">Net Income</span>
+                        <span class="fy-metric-val" style="color:var(--green)">$84,200</span>
+                    </div>
+                    <div class="fy-metric">
+                        <span class="fy-metric-label">Journal Entries</span>
+                        <span class="fy-metric-val">386</span>
+                    </div>
+                </div>
+                <div class="fy-year-progress">
+                    <div class="asset-life-bar">
+                        <div class="asset-life-fill" style="width:100%;background:var(--green)"></div>
+                    </div>
+                    <span style="font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">12/12 periods</span>
+                </div>
+            </div>
+            <div class="fy-year-card">
+                <div class="fy-year-header">
+                    <span class="fy-year-label">2024</span>
+                    <span class="asset-card-badge active">Closed</span>
+                </div>
+                <div class="fy-year-dates">Jan 1 — Dec 31, 2024</div>
+                <div class="fy-year-metrics">
+                    <div class="fy-metric">
+                        <span class="fy-metric-label">Net Income</span>
+                        <span class="fy-metric-val" style="color:var(--green)">$62,500</span>
+                    </div>
+                    <div class="fy-metric">
+                        <span class="fy-metric-label">Journal Entries</span>
+                        <span class="fy-metric-val">312</span>
+                    </div>
+                </div>
+                <div class="fy-year-progress">
+                    <div class="asset-life-bar">
+                        <div class="asset-life-fill" style="width:100%;background:var(--green)"></div>
+                    </div>
+                    <span style="font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">12/12 periods</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Current Period Snapshot -->
+    <section class="sec" style="margin:0">
+        <div class="sec-h"><h2 class="sec-t">Current Period</h2></div>
+        <div class="fp-current">
+            <div class="fp-current-header">
+                <div class="fp-current-period">P2</div>
+                <div class="fp-current-info">
+                    <div class="fp-current-month">February 2026</div>
+                    <div class="fp-current-range">Feb 1 — Feb 28, 2026</div>
+                </div>
+                <div class="fp-current-status">
+                    <span class="asset-card-badge" style="background:var(--pri-dim);color:var(--pri)">Open</span>
+                </div>
+            </div>
+
+            <div class="fp-stat-grid">
+                <div class="fp-stat">
+                    <div class="fp-stat-label">Revenue</div>
+                    <div class="fp-stat-val" style="color:var(--green)">$31,400</div>
+                </div>
+                <div class="fp-stat">
+                    <div class="fp-stat-label">Expenses</div>
+                    <div class="fp-stat-val" style="color:var(--red)">$17,200</div>
+                </div>
+                <div class="fp-stat">
+                    <div class="fp-stat-label">Net Income</div>
+                    <div class="fp-stat-val" style="color:var(--green)">$14,200</div>
+                </div>
+                <div class="fp-stat">
+                    <div class="fp-stat-label">JE Count</div>
+                    <div class="fp-stat-val">38</div>
+                </div>
+            </div>
+
+            <div class="fp-checklist">
+                <div class="fp-check-title">Month-End Checklist</div>
+                <div class="fp-check-item done">
+                    <div class="fp-check-box done">&#10003;</div>
+                    <span>Bank reconciliation</span>
+                </div>
+                <div class="fp-check-item done">
+                    <div class="fp-check-box done">&#10003;</div>
+                    <span>Revenue recognition</span>
+                </div>
+                <div class="fp-check-item">
+                    <div class="fp-check-box"></div>
+                    <span>Accrued expenses</span>
+                </div>
+                <div class="fp-check-item">
+                    <div class="fp-check-box"></div>
+                    <span>Depreciation entries</span>
+                </div>
+                <div class="fp-check-item">
+                    <div class="fp-check-box"></div>
+                    <span>Review adjustments</span>
+                </div>
+                <div class="fp-check-item">
+                    <div class="fp-check-box"></div>
+                    <span>Lock period</span>
+                </div>
+                <div class="fp-check-progress">
+                    <div class="asset-life-bar">
+                        <div class="asset-life-fill" style="width:33%;background:linear-gradient(90deg,var(--green),var(--teal))"></div>
+                    </div>
+                    <span style="font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">2 / 6</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ═══ PERIOD TIMELINE — All 12 months ═══ -->
+<section class="sec fi fi4">
     <div class="sec-h">
-        <h2 class="sec-t">2026 Periods</h2>
+        <h2 class="sec-t">2026 Period Timeline</h2>
     </div>
-    <div style="overflow-x:auto">
-        <table class="txn-table">
-            <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Month</th>
-                    <th>Status</th>
-                    <th>Locked Date</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="txn-row">
-                    <td>P1</td>
-                    <td>January</td>
-                    <td><span class="inv-badge paid" style="font-size:10px">Closed</span></td>
-                    <td>Feb 5, 2026</td>
-                    <td style="font-size:11px;color:var(--t3)">Finalized</td>
-                </tr>
-                <tr class="txn-row">
-                    <td>P2</td>
-                    <td>February</td>
-                    <td><span class="inv-badge sent" style="font-size:10px">Open</span></td>
-                    <td>-</td>
-                    <td style="font-size:11px;color:var(--t3)">Current period</td>
-                </tr>
-                <tr class="txn-row" style="opacity:.5">
-                    <td>P3</td>
-                    <td>March</td>
-                    <td><span class="inv-badge" style="font-size:10px">Future</span></td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="fp-timeline">
+        <!-- P1 — Closed -->
+        <div class="fp-tl-item closed">
+            <div class="fp-tl-dot closed"></div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period">P1</span>
+                    <span class="fp-tl-month">January</span>
+                    <span class="asset-card-badge active" style="margin-left:auto">Closed</span>
+                </div>
+                <div class="fp-tl-meta">
+                    <span>Locked Feb 5, 2026</span>
+                    <span>Revenue $28,200</span>
+                    <span>Net $12,180</span>
+                    <span>34 JEs</span>
+                </div>
+            </div>
+        </div>
+        <!-- P2 — Current -->
+        <div class="fp-tl-item current">
+            <div class="fp-tl-dot current">
+                <div class="fp-tl-pulse"></div>
+            </div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period">P2</span>
+                    <span class="fp-tl-month">February</span>
+                    <span class="asset-card-badge" style="background:var(--pri-dim);color:var(--pri);margin-left:auto">Current</span>
+                </div>
+                <div class="fp-tl-meta">
+                    <span>7 days remaining</span>
+                    <span>Revenue $31,400</span>
+                    <span>Net $14,200</span>
+                    <span>38 JEs</span>
+                </div>
+            </div>
+        </div>
+        <!-- P3-P6 — Future -->
+        <div class="fp-tl-item future">
+            <div class="fp-tl-dot future"></div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period">P3</span>
+                    <span class="fp-tl-month" style="color:var(--t3)">March</span>
+                    <span class="asset-card-badge" style="background:var(--glass-2);color:var(--t4);margin-left:auto">Future</span>
+                </div>
+            </div>
+        </div>
+        <div class="fp-tl-item future">
+            <div class="fp-tl-dot future"></div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period">P4</span>
+                    <span class="fp-tl-month" style="color:var(--t3)">April</span>
+                </div>
+            </div>
+        </div>
+        <div class="fp-tl-item future">
+            <div class="fp-tl-dot future"></div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period">P5</span>
+                    <span class="fp-tl-month" style="color:var(--t3)">May</span>
+                </div>
+            </div>
+        </div>
+        <div class="fp-tl-item future">
+            <div class="fp-tl-dot future"></div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period">P6</span>
+                    <span class="fp-tl-month" style="color:var(--t3)">June</span>
+                    <span style="font-size:9px;color:var(--t4);margin-left:auto">&#189; year</span>
+                </div>
+            </div>
+        </div>
+        <div class="fp-tl-item future collapsed">
+            <div class="fp-tl-dot future"></div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period" style="color:var(--t4)">P7 – P11</span>
+                    <span class="fp-tl-month" style="color:var(--t4)">Jul — Nov</span>
+                </div>
+            </div>
+        </div>
+        <div class="fp-tl-item future">
+            <div class="fp-tl-dot future" style="border-color:var(--pri)"></div>
+            <div class="fp-tl-content">
+                <div class="fp-tl-header">
+                    <span class="fp-tl-period">P12</span>
+                    <span class="fp-tl-month" style="color:var(--t3)">December</span>
+                    <span style="font-size:9px;color:var(--pri);margin-left:auto">&#127942; Year-End</span>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- ═══ YEAR-END ACTIONS ═══ -->
+<section class="sec fi fi5">
+    <div class="sec-h">
+        <h2 class="sec-t">Year-End Processes</h2>
+        <span class="sec-m">available when all 12 periods are closed</span>
+    </div>
+    <div class="fp-yearend-grid">
+        <div class="fp-yearend-card disabled">
+            <div class="fp-ye-icon">&#128218;</div>
+            <div class="fp-ye-info">
+                <div class="fp-ye-name">Close Fiscal Year</div>
+                <div class="fp-ye-desc">Transfer net income to retained earnings. Zeros out P&L accounts.</div>
+            </div>
+            <div class="fp-ye-status">
+                <span style="font-size:9px;color:var(--t4)">10 periods remaining</span>
+            </div>
+        </div>
+        <div class="fp-yearend-card disabled">
+            <div class="fp-ye-icon">&#128200;</div>
+            <div class="fp-ye-info">
+                <div class="fp-ye-name">Generate Annual Reports</div>
+                <div class="fp-ye-desc">Full-year P&L, Balance Sheet, and Cash Flow statements.</div>
+            </div>
+            <div class="fp-ye-status">
+                <span style="font-size:9px;color:var(--t4)">Available after year close</span>
+            </div>
+        </div>
+        <div class="fp-yearend-card disabled">
+            <div class="fp-ye-icon">&#128274;</div>
+            <div class="fp-ye-info">
+                <div class="fp-ye-name">Lock Fiscal Year</div>
+                <div class="fp-ye-desc">Prevent any modifications to journal entries in the closed year.</div>
+            </div>
+            <div class="fp-ye-status">
+                <span style="font-size:9px;color:var(--t4)">Available after year close</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ═══ FISCAL YEAR RING ═══ */
+.fy-ring-w{display:flex;flex-direction:column;align-items:center;padding:12px 0}
+.fy-ring-svg{width:320px;height:320px}
+.fy-ring-legend{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap}
+
+/* ═══ FISCAL YEARS LIST ═══ */
+.fy-years{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.fy-year-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 18px;transition:border-color .2s}
+.fy-year-card:hover{border-color:var(--border-2)}
+.fy-year-card.current{border-left:2px solid var(--pri)}
+.fy-year-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.fy-year-label{font-family:'Newsreader',serif;font-size:18px;font-weight:400;color:var(--t1)}
+.fy-year-dates{font-size:10px;color:var(--t3);margin-bottom:10px}
+.fy-year-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.fy-metric{display:flex;flex-direction:column;gap:2px}
+.fy-metric-label{font-size:9px;color:var(--t4);text-transform:uppercase;letter-spacing:.04em}
+.fy-metric-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:var(--t1)}
+.fy-year-progress{display:flex;align-items:center;gap:8px}
+.fy-year-progress .asset-life-bar{flex:1}
+
+/* ═══ CURRENT PERIOD SNAPSHOT ═══ */
+.fp-current{margin-top:12px}
+.fp-current-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.fp-current-period{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;color:var(--pri);background:var(--pri-dim);width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-sm)}
+.fp-current-info{flex:1}
+.fp-current-month{font-size:14px;font-weight:500;color:var(--t1)}
+.fp-current-range{font-size:10px;color:var(--t3);margin-top:2px}
+.fp-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.fp-stat{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-xs);padding:10px 14px}
+.fp-stat-label{font-size:9px;color:var(--t4);text-transform:uppercase;letter-spacing:.04em}
+.fp-stat-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--t1);margin-top:2px}
+
+/* Checklist */
+.fp-checklist{border-top:1px solid var(--border);padding-top:12px}
+.fp-check-title{font-size:11px;font-weight:600;color:var(--t2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.fp-check-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;color:var(--t2)}
+.fp-check-item.done{color:var(--t3);text-decoration:line-through;text-decoration-color:var(--t4)}
+.fp-check-box{width:16px;height:16px;border-radius:4px;border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;flex-shrink:0}
+.fp-check-box.done{background:var(--green-dim);border-color:var(--green);color:var(--green)}
+.fp-check-progress{display:flex;align-items:center;gap:8px;margin-top:10px}
+.fp-check-progress .asset-life-bar{flex:1}
+
+/* ═══ PERIOD TIMELINE ═══ */
+.fp-timeline{position:relative;padding-left:24px;margin-top:12px}
+.fp-timeline::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:1px;background:var(--border)}
+.fp-tl-item{display:flex;align-items:flex-start;gap:16px;padding:10px 0;position:relative}
+.fp-tl-item.collapsed{opacity:.4}
+.fp-tl-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--border-2);background:var(--bg-1);flex-shrink:0;margin-top:4px;position:relative;left:-19px;z-index:1}
+.fp-tl-dot.closed{background:var(--green);border-color:var(--green)}
+.fp-tl-dot.current{background:var(--pri);border-color:var(--pri)}
+.fp-tl-dot.future{background:var(--bg-2);border-color:var(--border)}
+.fp-tl-pulse{position:absolute;inset:-5px;border-radius:50%;border:1px solid var(--pri);opacity:0;animation:fp-pulse 2s ease-out infinite}
+.fp-tl-content{flex:1;margin-left:-12px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 16px;transition:border-color .2s}
+.fp-tl-content:hover{border-color:var(--border-2)}
+.fp-tl-item.current .fp-tl-content{border-color:rgba(245,158,11,.2)}
+.fp-tl-header{display:flex;align-items:center;gap:10px}
+.fp-tl-period{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--t1)}
+.fp-tl-month{font-size:12px;color:var(--t2)}
+.fp-tl-meta{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+.fp-tl-meta span{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+
+@keyframes fp-pulse{
+    0%{opacity:.6;transform:scale(1)}
+    100%{opacity:0;transform:scale(2.5)}
+}
+
+/* ═══ YEAR-END ACTIONS ═══ */
+.fp-yearend-grid{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.fp-yearend-card{display:flex;align-items:center;gap:16px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 20px;transition:all .2s}
+.fp-yearend-card:hover{border-color:var(--border-2)}
+.fp-yearend-card.disabled{opacity:.45;pointer-events:none}
+.fp-ye-icon{font-size:24px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:var(--glass-2);border-radius:var(--r-xs);flex-shrink:0}
+.fp-ye-info{flex:1}
+.fp-ye-name{font-size:13px;font-weight:600;color:var(--t1)}
+.fp-ye-desc{font-size:10px;color:var(--t3);margin-top:2px;line-height:1.4}
+.fp-ye-status{flex-shrink:0}
+
+/* Responsive */
+@media(max-width:768px){
+    .fy-ring-svg{width:260px;height:260px}
+    div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important}
+}
+</style>

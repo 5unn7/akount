@@ -1,529 +1,626 @@
+<!-- ═══════════════════════════════════════════════════════
+     ACCOUNTING HUB — The Ledger Garden
+     Zen-inspired financial command center
+     ═══════════════════════════════════════════════════════ -->
+
 <div class="page-hdr fi fi1">
     <div>
         <div class="page-title">Accounting</div>
-        <div class="page-sub">Chart of accounts &middot; Journal entries &middot; Trial balance &middot; FY2026</div>
+        <div class="page-sub">Chart of accounts &middot; Journal entries &middot; Reports &middot; FY2026</div>
     </div>
     <div class="page-actions">
-        <button class="btn" onclick="showToast('Exporting trial balance...')">&#128200; Trial Balance</button>
-        <button class="btn" onclick="showToast('Generating P&amp;L report...')">&#128196; P&amp;L Report</button>
+        <button class="btn" onclick="showToast('Generating P&L report...')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Reports
+        </button>
+        <button class="btn" onclick="showToast('Exporting trial balance...')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+            Trial Balance
+        </button>
         <button class="btn pri" onclick="showToast('New journal entry created')">+ New Entry</button>
     </div>
 </div>
 
-<div class="sec-tabs fi fi2" style="margin-bottom:16px">
-    <button class="sec-tab on">Accounting</button>
-    <button class="sec-tab" onclick="window.location.hash='#/assets'">Assets</button>
+<!-- Navigation Tabs -->
+<div class="sec-tabs fi fi2" style="margin-bottom:20px">
+    <button class="sec-tab on">Overview</button>
     <button class="sec-tab" onclick="window.location.hash='#/journal-entries'">Journal Entries</button>
+    <button class="sec-tab" onclick="window.location.hash='#/assets'">Assets</button>
     <button class="sec-tab" onclick="window.location.hash='#/tax-rates'">Tax Rates</button>
     <button class="sec-tab" onclick="window.location.hash='#/fiscal-periods'">Fiscal Periods</button>
 </div>
 
-<!-- Stats Row -->
-<div class="stats stats-4 fi fi2">
-    <div class="st">
-        <div class="st-label">Total Assets</div>
-        <div class="st-val">$89,640</div>
-        <div class="st-trend up">+8.4%</div>
+<!-- ═══ THE BALANCE ORB — Visual heartbeat of the books ═══ -->
+<div class="fi fi2" style="text-align:center;padding:16px 0 28px;position:relative">
+    <!-- Zen Balance Visualization -->
+    <div style="position:relative;width:120px;height:120px;margin:0 auto 20px">
+        <!-- Outer ring: represents the fiscal year cycle -->
+        <svg width="120" height="120" viewBox="0 0 120 120" style="position:absolute;inset:0;animation:acct-rotate 60s linear infinite">
+            <circle cx="60" cy="60" r="55" fill="none" stroke="rgba(245,158,11,.06)" stroke-width="1"/>
+            <circle cx="60" cy="60" r="55" fill="none" stroke="var(--pri)" stroke-width="1.5" stroke-dasharray="28 318" stroke-dashoffset="-30" stroke-linecap="round" opacity=".5"/>
+            <!-- 12 month markers -->
+            <g opacity=".15">
+                <circle cx="60" cy="5" r="1.5" fill="var(--t2)"/>
+                <circle cx="87.5" cy="12.5" r="1.5" fill="var(--t2)"/>
+                <circle cx="107.5" cy="32.5" r="1.5" fill="var(--t2)"/>
+                <circle cx="115" cy="60" r="1.5" fill="var(--t2)"/>
+                <circle cx="107.5" cy="87.5" r="1.5" fill="var(--t2)"/>
+                <circle cx="87.5" cy="107.5" r="1.5" fill="var(--t2)"/>
+                <circle cx="60" cy="115" r="1.5" fill="var(--t2)"/>
+                <circle cx="32.5" cy="107.5" r="1.5" fill="var(--t2)"/>
+                <circle cx="12.5" cy="87.5" r="1.5" fill="var(--t2)"/>
+                <circle cx="5" cy="60" r="1.5" fill="var(--t2)"/>
+                <circle cx="12.5" cy="32.5" r="1.5" fill="var(--t2)"/>
+                <circle cx="32.5" cy="12.5" r="1.5" fill="var(--t2)"/>
+            </g>
+            <!-- Current month marker (Feb = position 2/12) -->
+            <circle cx="87.5" cy="12.5" r="3" fill="var(--pri)" opacity=".8">
+                <animate attributeName="r" values="3;4;3" dur="3s" repeatCount="indefinite"/>
+            </circle>
+        </svg>
+        <!-- Inner balance scale -->
+        <div style="position:absolute;inset:20px;border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(245,158,11,.08),transparent 70%);display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Books</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--green);font-weight:600;letter-spacing:-.02em">Balanced</div>
+            <div style="font-size:8px;color:var(--t4);margin-top:2px;font-family:'JetBrains Mono',monospace">$0.00 diff</div>
+        </div>
     </div>
-    <div class="st">
-        <div class="st-label">Total Liabilities</div>
-        <div class="st-val">$12,840</div>
-        <div class="st-trend up">-5.2%</div>
-    </div>
-    <div class="st">
-        <div class="st-label">Equity</div>
-        <div class="st-val">$76,800</div>
-        <div class="st-trend up">+12.1%</div>
-    </div>
-    <div class="st">
-        <div class="st-label">Journal Entries (Feb)</div>
-        <div class="st-val">42</div>
-        <div class="st-trend flat">12 auto</div>
+
+    <!-- AI Accounting Brief -->
+    <div style="max-width:520px;margin:0 auto">
+        <p style="font-family:'Newsreader',serif;font-style:italic;font-size:.88rem;line-height:1.7;color:var(--t2)">
+            Your books are <strong style="color:var(--green);font-weight:400">perfectly balanced</strong> across all entities.
+            February shows <strong style="color:var(--t1);font-weight:400">$24,800</strong> in revenue against
+            <strong style="color:var(--t1);font-weight:400">$3,880</strong> in expenses.
+            Net income is <strong style="color:var(--green);font-weight:400">up 18%</strong> vs last month.
+            <span style="color:var(--pri)">HST filing due Apr 30</span> — you're on track.
+        </p>
     </div>
 </div>
 
-<!-- Two Column Layout -->
-<div class="two-col">
-    <div>
-        <!-- Chart of Accounts -->
-        <section class="sec fi fi3">
-            <div class="sec-h">
-                <h2 class="sec-t">Chart of Accounts</h2>
-                <div class="sec-tabs">
-                    <button class="sec-tab on">All</button>
-                    <button class="sec-tab">Assets</button>
-                    <button class="sec-tab">Liabilities</button>
-                    <button class="sec-tab">Revenue</button>
-                    <button class="sec-tab">Expenses</button>
+<!-- ═══ BALANCE EQUATION BAR — The Accounting Identity ═══ -->
+<div class="fi fi3" style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">
+    <!-- Assets -->
+    <div style="flex:1;min-width:200px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;cursor:default;transition:all .2s var(--ease2)" onmouseover="this.style.borderColor='rgba(52,211,153,.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--green)"></div>
+        <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:6px">Total Assets</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--t1);letter-spacing:-.02em">$89,640</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);margin-top:4px">+8.4% <span style="color:var(--t4)">vs Jan</span></div>
+    </div>
+    <!-- Equals -->
+    <div style="display:flex;align-items:center;padding:0 4px;color:var(--t3);font-size:18px;font-weight:300">=</div>
+    <!-- Liabilities -->
+    <div style="flex:1;min-width:200px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;cursor:default;transition:all .2s var(--ease2)" onmouseover="this.style.borderColor='rgba(248,113,113,.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--red)"></div>
+        <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:6px">Total Liabilities</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--t1);letter-spacing:-.02em">$12,840</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);margin-top:4px">-5.2% <span style="color:var(--t4)">vs Jan</span></div>
+    </div>
+    <!-- Plus -->
+    <div style="display:flex;align-items:center;padding:0 4px;color:var(--t3);font-size:18px;font-weight:300">+</div>
+    <!-- Equity -->
+    <div style="flex:1;min-width:200px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;cursor:default;transition:all .2s var(--ease2)" onmouseover="this.style.borderColor='rgba(96,165,250,.3)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--blue)"></div>
+        <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:6px">Owner's Equity</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--t1);letter-spacing:-.02em">$76,800</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);margin-top:4px">+12.1% <span style="color:var(--t4)">vs Jan</span></div>
+    </div>
+</div>
+
+<!-- ═══ INCOME STATEMENT RIVER ═══ -->
+<div class="fi fi3" style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;margin-bottom:24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+            <div style="font-family:'Newsreader',serif;font-size:.95rem;color:var(--t2)">Income Statement</div>
+            <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:2px">Feb 1 — Feb 9, 2026</div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center">
+            <div style="text-align:right">
+                <div style="font-size:9px;color:var(--t4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">Net Income</div>
+                <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--green)">$20,920</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue vs Expenses Waterfall -->
+    <div style="display:flex;gap:16px;margin-bottom:12px">
+        <!-- Revenue bar -->
+        <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;font-weight:500">Revenue</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green)">$24,800</span>
+            </div>
+            <div style="height:32px;border-radius:6px;overflow:hidden;display:flex;gap:2px">
+                <div style="flex:78;background:rgba(52,211,153,.2);border-radius:6px 0 0 6px;position:relative;overflow:hidden" title="Consulting: $19,400">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 8px">
+                        <span style="font-size:9px;color:var(--green);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Consulting $19.4k</span>
+                    </div>
+                </div>
+                <div style="flex:22;background:rgba(96,165,250,.2);border-radius:0 6px 6px 0;position:relative;overflow:hidden" title="Design: $5,400">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 6px">
+                        <span style="font-size:9px;color:var(--blue);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Design</span>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div style="display:flex;gap:16px">
+        <!-- Expenses bar -->
+        <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;font-weight:500">Expenses</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t2)">$3,880</span>
+            </div>
+            <div style="height:32px;border-radius:6px;overflow:hidden;display:flex;gap:2px">
+                <div style="flex:46;background:rgba(245,158,11,.12);border-radius:6px 0 0 6px;position:relative;overflow:hidden" title="Rent: $1,800">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 8px">
+                        <span style="font-size:9px;color:var(--pri);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Rent $1.8k</span>
+                    </div>
+                </div>
+                <div style="flex:31;background:rgba(167,139,250,.12);position:relative;overflow:hidden" title="Professional: $1,200">
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;padding:0 6px">
+                        <span style="font-size:9px;color:var(--purple);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Prof.</span>
+                    </div>
+                </div>
+                <div style="flex:14;background:rgba(45,212,191,.12);position:relative;overflow:hidden" title="Travel: $540">
+                </div>
+                <div style="flex:9;background:rgba(248,113,113,.12);border-radius:0 6px 6px 0;position:relative;overflow:hidden" title="Software: $340">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Margin indicator -->
+    <div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+        <span style="font-size:10px;color:var(--t3)">Net margin</span>
+        <div style="flex:1;height:4px;border-radius:2px;background:var(--glass-2);overflow:hidden">
+            <div style="width:84%;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),rgba(52,211,153,.4))"></div>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:500">84.4%</span>
+    </div>
+</div>
+
+<!-- ═══ MAIN CONTENT GRID ═══ -->
+<div class="two-col">
+    <div>
+        <!-- ═══ CHART OF ACCOUNTS — Tree View ═══ -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Chart of Accounts</h2>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="sec-m">12 accounts</span>
+                    <div class="sec-tabs">
+                        <button class="sec-tab on">All</button>
+                        <button class="sec-tab">Assets</button>
+                        <button class="sec-tab">Liabilities</button>
+                        <button class="sec-tab">Revenue</button>
+                        <button class="sec-tab">Expenses</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Groups with Visual Hierarchy -->
             <div style="overflow-x:auto">
-                <table class="txn-table">
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Account Name</th>
-                            <th>Type</th>
-                            <th class="right">Debit</th>
-                            <th class="right">Credit</th>
-                            <th class="right">Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="txn-row" style="background:rgba(245,158,11,.04)">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">1000</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:var(--green);color:#fff;font-size:10px;font-weight:700">A
-                                    </div>
-                                    <div class="txn-desc">Cash &amp; Bank</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(52,211,153,.12);color:var(--green)">Asset</span></td>
-                            <td class="txn-amt in" style="text-align:right">$42,500.00</td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt in" style="text-align:right;font-weight:600">$42,500.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">1200</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:rgba(96,165,250,.15);color:var(--blue);font-size:10px;font-weight:700">
-                                        A</div>
-                                    <div class="txn-desc">Accounts Receivable</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(52,211,153,.12);color:var(--green)">Asset</span></td>
-                            <td class="txn-amt in" style="text-align:right">$42,800.00</td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt in" style="text-align:right">$42,800.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">1300</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:rgba(167,139,250,.12);color:var(--purple);font-size:10px;font-weight:700">
-                                        A</div>
-                                    <div class="txn-desc">Prepaid Expenses</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(52,211,153,.12);color:var(--green)">Asset</span></td>
-                            <td class="txn-amt in" style="text-align:right">$4,340.00</td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt in" style="text-align:right">$4,340.00</td>
-                        </tr>
-                        <tr class="txn-row" style="background:rgba(248,113,113,.03)">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">2000</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:rgba(248,113,113,.12);color:var(--red);font-size:10px;font-weight:700">
-                                        L</div>
-                                    <div class="txn-desc">Accounts Payable</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(248,113,113,.1);color:var(--red)">Liability</span></td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt out" style="text-align:right">$3,200.00</td>
-                            <td class="txn-amt out" style="text-align:right">$3,200.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">2100</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:rgba(248,113,113,.12);color:var(--red);font-size:10px;font-weight:700">
-                                        L</div>
-                                    <div class="txn-desc">Credit Card Payable</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(248,113,113,.1);color:var(--red)">Liability</span></td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt out" style="text-align:right">$2,840.00</td>
-                            <td class="txn-amt out" style="text-align:right">$2,840.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">2200</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:rgba(248,113,113,.12);color:var(--red);font-size:10px;font-weight:700">
-                                        L</div>
-                                    <div class="txn-desc">HST/GST Collected</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(248,113,113,.1);color:var(--red)">Liability</span></td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt out" style="text-align:right">$6,800.00</td>
-                            <td class="txn-amt out" style="text-align:right">$6,800.00</td>
-                        </tr>
-                        <tr class="txn-row" style="background:rgba(96,165,250,.03)">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">4000</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:rgba(96,165,250,.15);color:var(--blue);font-size:10px;font-weight:700">
-                                        R</div>
-                                    <div class="txn-desc">Consulting Revenue</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(96,165,250,.12);color:var(--blue)">Revenue</span></td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt in" style="text-align:right">$19,400.00</td>
-                            <td class="txn-amt in" style="text-align:right;font-weight:600">$19,400.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">4100</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:rgba(96,165,250,.15);color:var(--blue);font-size:10px;font-weight:700">
-                                        R</div>
-                                    <div class="txn-desc">Design Services Revenue</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:rgba(96,165,250,.12);color:var(--blue)">Revenue</span></td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt in" style="text-align:right">$5,400.00</td>
-                            <td class="txn-amt in" style="text-align:right">$5,400.00</td>
-                        </tr>
-                        <tr class="txn-row" style="background:rgba(245,158,11,.03)">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5000</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
-                                        E</div>
-                                    <div class="txn-desc">Rent &amp; Facilities</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
-                            <td class="txn-amt" style="text-align:right">$1,800.00</td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt" style="text-align:right">$1,800.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5100</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
-                                        E</div>
-                                    <div class="txn-desc">Software &amp; SaaS</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
-                            <td class="txn-amt" style="text-align:right">$340.00</td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt" style="text-align:right">$340.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5200</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
-                                        E</div>
-                                    <div class="txn-desc">Travel &amp; Transportation</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
-                            <td class="txn-amt" style="text-align:right">$540.00</td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt" style="text-align:right">$540.00</td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">5300</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico"
-                                        style="background:var(--pri-dim);color:var(--pri);font-size:10px;font-weight:700">
-                                        E</div>
-                                    <div class="txn-desc">Professional Services</div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag"
-                                    style="background:var(--pri-dim);color:var(--pri)">Expense</span></td>
-                            <td class="txn-amt" style="text-align:right">$1,200.00</td>
-                            <td class="txn-amt" style="text-align:right;color:var(--t3)">—</td>
-                            <td class="txn-amt" style="text-align:right">$1,200.00</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr style="border-top:2px solid var(--border)">
-                            <td></td>
-                            <td style="font-weight:600;color:var(--t1)">Totals</td>
-                            <td></td>
-                            <td class="txn-amt" style="text-align:right;font-weight:600;color:var(--t1)">$93,520.00</td>
-                            <td class="txn-amt" style="text-align:right;font-weight:600;color:var(--t1)">$37,640.00</td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <!-- ASSETS GROUP -->
+                <div style="margin-bottom:2px">
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(52,211,153,.03);border-radius:var(--r-sm) var(--r-sm) 0 0;border:1px solid var(--border);border-bottom:none;cursor:pointer" onclick="this.parentElement.querySelector('.acct-group-body').classList.toggle('collapsed')">
+                        <div style="width:28px;height:28px;border-radius:7px;background:var(--green-dim);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--green)">A</div>
+                        <div style="flex:1">
+                            <div style="font-size:12px;font-weight:600;color:var(--t1)">Assets</div>
+                            <div style="font-size:9px;color:var(--t4)">4 accounts</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--green)">$89,640.00</div>
+                        </div>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" style="transition:transform .2s"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="acct-group-body" style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm);overflow:hidden">
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">1000</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Cash & Bank</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green)">$42,500.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">1200</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Accounts Receivable</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green)">$42,800.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">1300</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Prepaid Expenses</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green)">$4,340.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">1500</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Fixed Assets (Net)</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3)">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIABILITIES GROUP -->
+                <div style="margin-bottom:2px;margin-top:6px">
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(248,113,113,.03);border-radius:var(--r-sm) var(--r-sm) 0 0;border:1px solid var(--border);border-bottom:none;cursor:pointer" onclick="this.parentElement.querySelector('.acct-group-body').classList.toggle('collapsed')">
+                        <div style="width:28px;height:28px;border-radius:7px;background:var(--red-dim);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--red)">L</div>
+                        <div style="flex:1">
+                            <div style="font-size:12px;font-weight:600;color:var(--t1)">Liabilities</div>
+                            <div style="font-size:9px;color:var(--t4)">3 accounts</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--red)">$12,840.00</div>
+                        </div>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" style="transition:transform .2s"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="acct-group-body" style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm);overflow:hidden">
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">2000</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Accounts Payable</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$3,200.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">2100</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Credit Card Payable</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$2,840.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">2200</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">HST/GST Collected</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$6,800.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVENUE GROUP -->
+                <div style="margin-bottom:2px;margin-top:6px">
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(96,165,250,.03);border-radius:var(--r-sm) var(--r-sm) 0 0;border:1px solid var(--border);border-bottom:none;cursor:pointer" onclick="this.parentElement.querySelector('.acct-group-body').classList.toggle('collapsed')">
+                        <div style="width:28px;height:28px;border-radius:7px;background:var(--blue-dim);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue)">R</div>
+                        <div style="flex:1">
+                            <div style="font-size:12px;font-weight:600;color:var(--t1)">Revenue</div>
+                            <div style="font-size:9px;color:var(--t4)">2 accounts</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--blue)">$24,800.00</div>
+                        </div>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" style="transition:transform .2s"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="acct-group-body" style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm);overflow:hidden">
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">4000</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Consulting Revenue</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blue)">$19,400.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">4100</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Design Services Revenue</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blue)">$5,400.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPENSES GROUP -->
+                <div style="margin-top:6px">
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(245,158,11,.03);border-radius:var(--r-sm) var(--r-sm) 0 0;border:1px solid var(--border);border-bottom:none;cursor:pointer" onclick="this.parentElement.querySelector('.acct-group-body').classList.toggle('collapsed')">
+                        <div style="width:28px;height:28px;border-radius:7px;background:var(--pri-dim);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--pri)">E</div>
+                        <div style="flex:1">
+                            <div style="font-size:12px;font-weight:600;color:var(--t1)">Expenses</div>
+                            <div style="font-size:9px;color:var(--t4)">4 accounts</div>
+                        </div>
+                        <div style="text-align:right">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--pri)">$3,880.00</div>
+                        </div>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" style="transition:transform .2s"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                    <div class="acct-group-body" style="border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm);overflow:hidden">
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">5000</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Rent & Facilities</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$1,800.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">5100</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Software & SaaS</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$340.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">5200</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Travel & Transportation</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$540.00</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px 10px 52px;cursor:pointer;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t4);width:36px">5300</span>
+                            <span style="font-size:12px;color:var(--t1);flex:1;font-weight:500">Professional Services</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$1,200.00</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Journal Entries -->
-        <section class="sec fi fi4">
+        <!-- ═══ RECENT JOURNAL ENTRIES — Timeline View ═══ -->
+        <section class="sec fi fi5">
             <div class="sec-h">
                 <h2 class="sec-t">Recent Journal Entries</h2>
-                <span class="sec-m">42 entries in Feb</span>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="sec-m">42 entries in Feb</span>
+                    <button class="btn" style="padding:5px 12px;font-size:11px" onclick="window.location.hash='#/journal-entries'">View All</button>
+                </div>
             </div>
-            <div style="overflow-x:auto">
-                <table class="txn-table">
-                    <thead>
-                        <tr>
-                            <th>Entry #</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Source</th>
-                            <th class="right">Amount</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0042</td>
-                            <td class="txn-date-cell">Feb 9</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128176;</div>
-                                    <div>
-                                        <div class="txn-desc">XYZ Ltd payment received</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot;
-                                            Cr 1200 AR</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
-                            <td class="txn-amt in" style="text-align:right">$8,200.00</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0041</td>
-                            <td class="txn-date-cell">Feb 7</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(96,165,250,.12)">&#128179;</div>
-                                    <div>
-                                        <div class="txn-desc">Wise FX transfer EUR→CAD</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot;
-                                            Cr 1000 Cash (EUR) &middot; Gain $34</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
-                            <td class="txn-amt in" style="text-align:right">$4,700.00</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0040</td>
-                            <td class="txn-date-cell">Feb 5</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(248,113,113,.1)">&#127968;</div>
-                                    <div>
-                                        <div class="txn-desc">WeWork monthly rent</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5000 Rent &middot;
-                                            Cr 1000 Cash</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
-                            <td class="txn-amt out" style="text-align:right">$1,800.00</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0039</td>
-                            <td class="txn-date-cell">Feb 4</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#128187;</div>
-                                    <div>
-                                        <div class="txn-desc">SaaS subscriptions — Vercel + Linear</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5100 Software
-                                            &middot; Cr 2100 CC Payable</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag matched">Auto — CC</span></td>
-                            <td class="txn-amt out" style="text-align:right">$68.00</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0038</td>
-                            <td class="txn-date-cell">Feb 3</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128176;</div>
-                                    <div>
-                                        <div class="txn-desc">DEF Consulting — retainer payment</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot;
-                                            Cr 1200 AR</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
-                            <td class="txn-amt in" style="text-align:right">$3,500.00</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0037</td>
-                            <td class="txn-date-cell">Feb 1</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(245,158,11,.1)">&#128196;</div>
-                                    <div>
-                                        <div class="txn-desc">Invoice #1047 — ABC Corp</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1200 AR &middot;
-                                            Cr 4000 Revenue &middot; Cr 2200 HST</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag">Manual</span></td>
-                            <td class="txn-amt in" style="text-align:right">$4,746.00</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0036</td>
-                            <td class="txn-date-cell">Jan 31</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#128197;</div>
-                                    <div>
-                                        <div class="txn-desc">January depreciation — equipment</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5400 Depreciation
-                                            &middot; Cr 1400 Accum. Depr.</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag">Auto — Recurring</span></td>
-                            <td class="txn-amt out" style="text-align:right">$416.67</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                        <tr class="txn-row">
-                            <td style="font-family:var(--mono);font-size:11px;color:var(--t3)">JE-2026-0035</td>
-                            <td class="txn-date-cell">Jan 31</td>
-                            <td>
-                                <div class="txn-desc-cell">
-                                    <div class="txn-ico" style="background:rgba(245,158,11,.1)">&#128197;</div>
-                                    <div>
-                                        <div class="txn-desc">January prepaid amortization</div>
-                                        <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 5500 Insurance
-                                            &middot; Cr 1300 Prepaid</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="txn-cat-tag">Auto — Recurring</span></td>
-                            <td class="txn-amt out" style="text-align:right">$350.00</td>
-                            <td>
-                                <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+            <!-- Timeline entries -->
+            <div style="position:relative;padding-left:20px">
+                <!-- Timeline line -->
+                <div style="position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--green),var(--pri),var(--border))"></div>
+
+                <!-- Entry 1 -->
+                <div style="position:relative;padding:10px 0 14px;cursor:pointer" onclick="showToast('Opening JE-2026-0042...')">
+                    <div style="position:absolute;left:-17px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--bg-1);border:2px solid var(--green);z-index:1"></div>
+                    <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;transition:all .15s" onmouseover="this.style.borderColor='var(--border-2)';this.style.transform='translateX(4px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pri)">JE-2026-0042</span>
+                                <span style="font-size:9px;color:var(--t4)">Feb 9</span>
+                                <span style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--green-dim);color:var(--green)">POSTED</span>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green)">$8,200.00</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--t1);font-weight:500;margin-bottom:3px">XYZ Ltd payment received</div>
+                        <div style="font-size:10px;color:var(--t3)">
+                            <span style="color:var(--green)">Dr</span> 1000 Cash &middot;
+                            <span style="color:var(--blue)">Cr</span> 1200 Accounts Receivable
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+                            <span style="padding:2px 6px;border-radius:3px;font-size:8px;background:var(--glass-2);color:var(--t3)">Auto — Bank Feed</span>
+                            <span style="padding:2px 6px;border-radius:3px;font-size:8px;background:rgba(167,139,250,.1);color:var(--purple)">AI Matched</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entry 2 -->
+                <div style="position:relative;padding:10px 0 14px;cursor:pointer" onclick="showToast('Opening JE-2026-0041...')">
+                    <div style="position:absolute;left:-17px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--bg-1);border:2px solid var(--blue);z-index:1"></div>
+                    <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;transition:all .15s" onmouseover="this.style.borderColor='var(--border-2)';this.style.transform='translateX(4px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pri)">JE-2026-0041</span>
+                                <span style="font-size:9px;color:var(--t4)">Feb 7</span>
+                                <span style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--green-dim);color:var(--green)">POSTED</span>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blue)">$4,700.00</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--t1);font-weight:500;margin-bottom:3px">Wise FX transfer EUR&rarr;CAD</div>
+                        <div style="font-size:10px;color:var(--t3)">
+                            <span style="color:var(--green)">Dr</span> 1000 Cash (CAD) &middot;
+                            <span style="color:var(--blue)">Cr</span> 1000 Cash (EUR) &middot;
+                            <span style="color:var(--green)">Gain $34</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+                            <span style="padding:2px 6px;border-radius:3px;font-size:8px;background:var(--glass-2);color:var(--t3)">Auto — Bank Feed</span>
+                            <span style="padding:2px 6px;border-radius:3px;font-size:8px;background:rgba(96,165,250,.1);color:var(--blue)">Multi-Currency</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entry 3 -->
+                <div style="position:relative;padding:10px 0 14px;cursor:pointer" onclick="showToast('Opening JE-2026-0040...')">
+                    <div style="position:absolute;left:-17px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--bg-1);border:2px solid var(--pri);z-index:1"></div>
+                    <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;transition:all .15s" onmouseover="this.style.borderColor='var(--border-2)';this.style.transform='translateX(4px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pri)">JE-2026-0040</span>
+                                <span style="font-size:9px;color:var(--t4)">Feb 5</span>
+                                <span style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--green-dim);color:var(--green)">POSTED</span>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)">$1,800.00</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--t1);font-weight:500;margin-bottom:3px">WeWork monthly rent</div>
+                        <div style="font-size:10px;color:var(--t3)">
+                            <span style="color:var(--green)">Dr</span> 5000 Rent &middot;
+                            <span style="color:var(--blue)">Cr</span> 1000 Cash
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+                            <span style="padding:2px 6px;border-radius:3px;font-size:8px;background:var(--glass-2);color:var(--t3)">Auto — Recurring</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entry 4 -->
+                <div style="position:relative;padding:10px 0;cursor:pointer" onclick="showToast('Opening JE-2026-0037...')">
+                    <div style="position:absolute;left:-17px;top:14px;width:10px;height:10px;border-radius:50%;background:var(--bg-1);border:2px solid var(--t4);z-index:1"></div>
+                    <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;transition:all .15s" onmouseover="this.style.borderColor='var(--border-2)';this.style.transform='translateX(4px)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none'">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <div style="display:flex;align-items:center;gap:8px">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pri)">JE-2026-0037</span>
+                                <span style="font-size:9px;color:var(--t4)">Feb 1</span>
+                                <span style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--green-dim);color:var(--green)">POSTED</span>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green)">$4,746.00</span>
+                        </div>
+                        <div style="font-size:12px;color:var(--t1);font-weight:500;margin-bottom:3px">Invoice #1047 — ABC Corp</div>
+                        <div style="font-size:10px;color:var(--t3)">
+                            <span style="color:var(--green)">Dr</span> 1200 AR &middot;
+                            <span style="color:var(--blue)">Cr</span> 4000 Revenue &middot;
+                            <span style="color:var(--blue)">Cr</span> 2200 HST
+                        </div>
+                        <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
+                            <span style="padding:2px 6px;border-radius:3px;font-size:8px;background:var(--glass-2);color:var(--t3)">Manual Entry</span>
+                            <span style="padding:2px 6px;border-radius:3px;font-size:8px;background:rgba(245,158,11,.1);color:var(--pri)">Invoice Source</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
 
-    <!-- Right Column -->
-    <div class="right-col fi fi5">
-        <!-- Trial Balance Summary -->
-        <div class="sec">
-            <div class="sec-h">
-                <h2 class="sec-t">Trial Balance</h2><span class="sec-m">Feb 9, 2026</span>
+    <!-- ═══ RIGHT COLUMN — Command Center Sidebar ═══ -->
+    <div class="right-col fi fi6">
+
+        <!-- Trial Balance Snapshot -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden">
+            <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,.04),transparent);pointer-events:none"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                <div style="font-family:'Newsreader',serif;font-size:.88rem;color:var(--t2)">Trial Balance</div>
+                <span class="sec-m">Feb 9, 2026</span>
             </div>
-            <div class="d-row"><span class="d-row-l">Total Debits</span><span class="d-row-v"
-                    style="color:var(--green)">$93,520</span></div>
-            <div class="d-row"><span class="d-row-l">Total Credits</span><span class="d-row-v"
-                    style="color:var(--blue)">$93,520</span></div>
-            <div class="d-row"><span class="d-row-l">Difference</span><span class="d-row-v"
-                    style="color:var(--green);font-weight:600">$0.00 &#10003;</span></div>
-            <div class="d-row"><span class="d-row-l">Net Income (YTD)</span><span class="d-row-v"
-                    style="font-weight:600">$16,380</span></div>
-            <div class="d-row" style="border:none"><span class="d-row-l">Retained Earnings</span><span
-                    class="d-row-v">$60,420</span></div>
+            <div class="d-row"><span class="d-row-l">Total Debits</span><span class="d-row-v" style="color:var(--green)">$93,520.00</span></div>
+            <div class="d-row"><span class="d-row-l">Total Credits</span><span class="d-row-v" style="color:var(--blue)">$93,520.00</span></div>
+            <div class="d-row">
+                <span class="d-row-l">Difference</span>
+                <span class="d-row-v" style="color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px">
+                    $0.00
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                </span>
+            </div>
+            <div class="d-row"><span class="d-row-l">Net Income (YTD)</span><span class="d-row-v" style="font-weight:600">$16,380.00</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Retained Earnings</span><span class="d-row-v">$60,420.00</span></div>
         </div>
 
-        <!-- Fiscal Period -->
-        <div class="sec">
-            <div class="sec-h">
-                <h2 class="sec-t">Fiscal Period</h2>
+        <!-- Fiscal Period Widget -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px">
+            <div style="font-family:'Newsreader',serif;font-size:.88rem;color:var(--t2);margin-bottom:14px">Fiscal Period</div>
+            <!-- Period Progress Arc -->
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+                <div style="position:relative;width:48px;height:48px;flex-shrink:0">
+                    <svg width="48" height="48" viewBox="0 0 48 48">
+                        <circle cx="24" cy="24" r="20" fill="none" stroke="var(--border)" stroke-width="3"/>
+                        <circle cx="24" cy="24" r="20" fill="none" stroke="var(--pri)" stroke-width="3" stroke-dasharray="125.6" stroke-dashoffset="112" stroke-linecap="round" transform="rotate(-90 24 24)"/>
+                    </svg>
+                    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pri);font-weight:600">P2</div>
+                </div>
+                <div>
+                    <div style="font-size:12px;font-weight:500;color:var(--t1)">February 2026</div>
+                    <div style="font-size:10px;color:var(--t3)">Jan 1 — Dec 31, 2026</div>
+                    <div style="display:flex;align-items:center;gap:4px;margin-top:3px">
+                        <span style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--blue-dim);color:var(--blue)">OPEN</span>
+                        <span style="font-size:9px;color:var(--t4)">19 days left</span>
+                    </div>
+                </div>
             </div>
-            <div class="d-row"><span class="d-row-l">Fiscal Year</span><span class="d-row-v">Jan 1 — Dec 31, 2026</span>
-            </div>
-            <div class="d-row"><span class="d-row-l">Current Period</span><span class="d-row-v"
-                    style="color:var(--pri)">P2 — February</span></div>
-            <div class="d-row"><span class="d-row-l">Period Status</span><span class="d-row-v"><span
-                        class="inv-badge sent" style="font-size:10px">Open</span></span></div>
-            <div class="d-row"><span class="d-row-l">P1 — January</span><span class="d-row-v"><span
-                        class="inv-badge paid" style="font-size:10px">Closed</span></span></div>
-            <div class="d-row" style="border:none"><span class="d-row-l">Year-End</span><span class="d-row-v">Dec 31,
-                    2026</span></div>
+            <div class="d-row"><span class="d-row-l">P1 — January</span><span class="d-row-v"><span style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--green-dim);color:var(--green)">CLOSED</span></span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Year-End</span><span class="d-row-v">Dec 31, 2026</span></div>
         </div>
 
         <!-- Tax Summary -->
-        <div class="sec">
-            <div class="sec-h">
-                <h2 class="sec-t">Tax Summary</h2><span class="sec-m">Q1 2026</span>
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                <div style="font-family:'Newsreader',serif;font-size:.88rem;color:var(--t2)">Tax Summary</div>
+                <span class="sec-m">Q1 2026</span>
             </div>
-            <div class="d-row"><span class="d-row-l">HST Collected</span><span class="d-row-v"
-                    style="color:var(--red)">$6,800</span></div>
-            <div class="d-row"><span class="d-row-l">ITC (Input Credits)</span><span class="d-row-v"
-                    style="color:var(--green)">$1,420</span></div>
-            <div class="d-row"><span class="d-row-l">Net HST Owing</span><span class="d-row-v"
-                    style="color:var(--red);font-weight:600">$5,380</span></div>
-            <div class="d-row"><span class="d-row-l">Filing Deadline</span><span class="d-row-v">Apr 30, 2026</span>
+            <div class="d-row"><span class="d-row-l">HST Collected</span><span class="d-row-v" style="color:var(--red)">$6,800</span></div>
+            <div class="d-row"><span class="d-row-l">ITC (Input Credits)</span><span class="d-row-v" style="color:var(--green)">$1,420</span></div>
+            <div class="d-row" style="padding:10px 0">
+                <span class="d-row-l" style="font-weight:500;color:var(--t2)">Net HST Owing</span>
+                <span class="d-row-v" style="color:var(--red);font-weight:600;font-size:13px">$5,380</span>
             </div>
-            <div class="d-row" style="border:none"><span class="d-row-l">Last Filed</span><span class="d-row-v">Q4 2025
-                    — Dec 15</span></div>
+            <div class="d-row"><span class="d-row-l">Filing Deadline</span><span class="d-row-v" style="color:var(--pri)">Apr 30, 2026</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Last Filed</span><span class="d-row-v">Q4 2025</span></div>
         </div>
 
-        <!-- Closing Checklist -->
-        <div class="sec">
-            <div class="sec-h">
-                <h2 class="sec-t">Month-End Checklist</h2><span class="sec-m">February</span>
+        <!-- Month-End Closing Checklist -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                <div style="font-family:'Newsreader',serif;font-size:.88rem;color:var(--t2)">Month-End Checklist</div>
+                <span class="sec-m">2 of 6</span>
             </div>
-            <div class="d-row"><span class="d-row-l">&#9745; Bank reconciliation</span><span class="d-row-v"
-                    style="color:var(--green)">78%</span></div>
-            <div class="d-row"><span class="d-row-l">&#9745; Revenue recognized</span><span class="d-row-v"
-                    style="color:var(--green)">Done</span></div>
-            <div class="d-row"><span class="d-row-l">&#9744; Depreciation posted</span><span class="d-row-v"
-                    style="color:var(--t3)">Pending</span></div>
-            <div class="d-row"><span class="d-row-l">&#9744; Prepaid amortization</span><span class="d-row-v"
-                    style="color:var(--t3)">Pending</span></div>
-            <div class="d-row"><span class="d-row-l">&#9744; FX revaluation</span><span class="d-row-v"
-                    style="color:var(--t3)">Pending</span></div>
-            <div class="d-row" style="border:none"><span class="d-row-l">&#9744; Review &amp; close period</span><span
-                    class="d-row-v" style="color:var(--t3)">Pending</span></div>
+
+            <!-- Progress bar -->
+            <div style="margin-bottom:14px">
+                <div style="height:4px;border-radius:2px;background:var(--glass-2);overflow:hidden">
+                    <div style="width:33%;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--pri),var(--green))"></div>
+                </div>
+            </div>
+
+            <!-- Checklist items -->
+            <div style="display:flex;flex-direction:column;gap:2px">
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:16px;height:16px;border-radius:4px;background:var(--green-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                    <span style="font-size:11px;color:var(--t2);text-decoration:line-through;opacity:.6">Bank reconciliation</span>
+                    <span style="margin-left:auto;font-size:9px;color:var(--green);font-family:'JetBrains Mono',monospace">78%</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;transition:background .1s" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:16px;height:16px;border-radius:4px;background:var(--green-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                    <span style="font-size:11px;color:var(--t2);text-decoration:line-through;opacity:.6">Revenue recognized</span>
+                    <span style="margin-left:auto;font-size:9px;color:var(--green);font-family:'JetBrains Mono',monospace">Done</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s" onclick="showToast('Running depreciation...')" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-2);flex-shrink:0"></div>
+                    <span style="font-size:11px;color:var(--t1)">Post depreciation</span>
+                    <span style="margin-left:auto;font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">Pending</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s" onclick="showToast('Amortizing prepaid...')" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-2);flex-shrink:0"></div>
+                    <span style="font-size:11px;color:var(--t1)">Prepaid amortization</span>
+                    <span style="margin-left:auto;font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">Pending</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s" onclick="showToast('FX revaluation...')" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-2);flex-shrink:0"></div>
+                    <span style="font-size:11px;color:var(--t1)">FX revaluation</span>
+                    <span style="margin-left:auto;font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">Pending</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background .1s" onclick="showToast('Period close wizard...')" onmouseover="this.style.background='var(--glass)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-2);flex-shrink:0"></div>
+                    <span style="font-size:11px;color:var(--t1)">Review & close period</span>
+                    <span style="margin-left:auto;font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace">Pending</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reports -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px">
+            <div style="font-family:'Newsreader',serif;font-size:.88rem;color:var(--t2);margin-bottom:14px">Quick Reports</div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-xs);cursor:pointer;transition:all .15s" onclick="showToast('Generating P&L...')" onmouseover="this.style.background='var(--glass-2)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:28px;height:28px;border-radius:7px;background:var(--green-dim);display:flex;align-items:center;justify-content:center">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 6-10"/></svg>
+                    </div>
+                    <div style="flex:1">
+                        <div style="font-size:12px;font-weight:500;color:var(--t1)">Profit & Loss</div>
+                        <div style="font-size:9px;color:var(--t4)">Income statement</div>
+                    </div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t4)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-xs);cursor:pointer;transition:all .15s" onclick="showToast('Generating Balance Sheet...')" onmouseover="this.style.background='var(--glass-2)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:28px;height:28px;border-radius:7px;background:var(--blue-dim);display:flex;align-items:center;justify-content:center">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+                    </div>
+                    <div style="flex:1">
+                        <div style="font-size:12px;font-weight:500;color:var(--t1)">Balance Sheet</div>
+                        <div style="font-size:9px;color:var(--t4)">Financial position</div>
+                    </div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t4)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-xs);cursor:pointer;transition:all .15s" onclick="showToast('Generating Cash Flow Statement...')" onmouseover="this.style.background='var(--glass-2)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:28px;height:28px;border-radius:7px;background:var(--pri-dim);display:flex;align-items:center;justify-content:center">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pri)" stroke-width="1.5"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div style="flex:1">
+                        <div style="font-size:12px;font-weight:500;color:var(--t1)">Cash Flow Statement</div>
+                        <div style="font-size:9px;color:var(--t4)">Operating, investing, financing</div>
+                    </div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t4)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-xs);cursor:pointer;transition:all .15s" onclick="showToast('Generating General Ledger...')" onmouseover="this.style.background='var(--glass-2)'" onmouseout="this.style.background='transparent'">
+                    <div style="width:28px;height:28px;border-radius:7px;background:var(--purple-dim);display:flex;align-items:center;justify-content:center">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8M16 17H8"/></svg>
+                    </div>
+                    <div style="flex:1">
+                        <div style="font-size:12px;font-weight:500;color:var(--t1)">General Ledger</div>
+                        <div style="font-size:9px;color:var(--t4)">Full transaction detail</div>
+                    </div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--t4)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<!-- Custom Styles for Accounting -->
+<style>
+    @keyframes acct-rotate { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+    .acct-group-body.collapsed { max-height:0 !important; overflow:hidden; border:none !important; }
+    .acct-group-body { transition: max-height .3s var(--ease); }
+</style>

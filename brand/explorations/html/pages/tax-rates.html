@@ -1,9 +1,10 @@
 <div class="page-hdr fi fi1">
     <div>
         <div class="page-title">Tax Rates</div>
-        <div class="page-sub">Sales Tax &middot; Components &middot; Jurisdictions</div>
+        <div class="page-sub">4 combined rates &middot; 3 components &middot; 2 jurisdictions</div>
     </div>
     <div class="page-actions">
+        <button class="btn" onclick="showToast('Opening tax calculator...')">&#128290; Calculator</button>
         <button class="btn pri" onclick="showToast('New tax rate dialog')">+ New Rate</button>
     </div>
 </div>
@@ -16,94 +17,395 @@
     <button class="sec-tab" onclick="window.location.hash='#/fiscal-periods'">Fiscal Periods</button>
 </div>
 
-<section class="sec fi fi3">
+<!-- ═══ TAX COLLECTION THIS PERIOD ═══ -->
+<section class="sec fi fi2">
     <div class="sec-h">
-        <h2 class="sec-t">Combined Rates</h2>
+        <h2 class="sec-t">Tax Collection — February 2026</h2>
+        <span class="sec-m" style="font-style:italic;font-family:'Newsreader',serif;color:var(--t3)">what you owe, at a glance</span>
     </div>
-    <div style="overflow-x:auto">
-        <table class="txn-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Code</th>
-                    <th>Total Rate</th>
-                    <th>Components</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="txn-row">
-                    <td style="font-weight:600">Ontario HST</td>
-                    <td style="font-family:var(--mono);color:var(--t3)">HST-ON</td>
-                    <td style="color:var(--pri);font-weight:600">13.00%</td>
-                    <td style="font-size:11px;color:var(--t3)">HST (13%)</td>
-                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
-                    <td><button class="btn-xs">Edit</button></td>
-                </tr>
-                <tr class="txn-row">
-                    <td style="font-weight:600">BC GST/PST</td>
-                    <td style="font-family:var(--mono);color:var(--t3)">GST-PST-BC</td>
-                    <td style="color:var(--pri);font-weight:600">12.00%</td>
-                    <td style="font-size:11px;color:var(--t3)">GST (5%) + PST (7%)</td>
-                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
-                    <td><button class="btn-xs">Edit</button></td>
-                </tr>
-                <tr class="txn-row">
-                    <td style="font-weight:600">Alberta GST</td>
-                    <td style="font-family:var(--mono);color:var(--t3)">GST-AB</td>
-                    <td style="color:var(--pri);font-weight:600">5.00%</td>
-                    <td style="font-size:11px;color:var(--t3)">GST (5%)</td>
-                    <td><span class="inv-badge paid" style="font-size:10px">Active</span></td>
-                    <td><button class="btn-xs">Edit</button></td>
-                </tr>
-                <tr class="txn-row">
-                    <td style="font-weight:600">Exempt</td>
-                    <td style="font-family:var(--mono);color:var(--t3)">EXE</td>
-                    <td style="color:var(--t3);font-weight:600">0.00%</td>
-                    <td style="font-size:11px;color:var(--t3)">-</td>
-                    <td><span class="inv-badge" style="font-size:10px">Active</span></td>
-                    <td><button class="btn-xs">Edit</button></td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="tax-flow-w">
+        <!-- Revenue flows in → Tax withheld → Net to you -->
+        <div class="tax-flow-node tax-flow-revenue">
+            <div class="tax-flow-label">Gross Revenue</div>
+            <div class="tax-flow-val">$31,400</div>
+        </div>
+        <div class="tax-flow-arrow">
+            <svg viewBox="0 0 60 24" style="width:60px;height:24px">
+                <line x1="0" y1="12" x2="48" y2="12" stroke="var(--border-2)" stroke-width="1.5"/>
+                <polygon points="48,6 60,12 48,18" fill="var(--border-2)"/>
+            </svg>
+        </div>
+        <div class="tax-flow-node tax-flow-tax">
+            <div class="tax-flow-label">Tax Collected</div>
+            <div class="tax-flow-val" style="color:var(--pri)">$3,420</div>
+            <div class="tax-flow-sub">HST/GST/PST</div>
+        </div>
+        <div class="tax-flow-arrow">
+            <svg viewBox="0 0 60 24" style="width:60px;height:24px">
+                <line x1="0" y1="12" x2="48" y2="12" stroke="var(--border-2)" stroke-width="1.5"/>
+                <polygon points="48,6 60,12 48,18" fill="var(--border-2)"/>
+            </svg>
+        </div>
+        <div class="tax-flow-node tax-flow-itc">
+            <div class="tax-flow-label">Input Tax Credits</div>
+            <div class="tax-flow-val" style="color:var(--green)">-$1,840</div>
+            <div class="tax-flow-sub">claimable</div>
+        </div>
+        <div class="tax-flow-arrow">
+            <svg viewBox="0 0 60 24" style="width:60px;height:24px">
+                <line x1="0" y1="12" x2="48" y2="12" stroke="var(--border-2)" stroke-width="1.5"/>
+                <polygon points="48,6 60,12 48,18" fill="var(--border-2)"/>
+            </svg>
+        </div>
+        <div class="tax-flow-node tax-flow-net">
+            <div class="tax-flow-label">Net Owing</div>
+            <div class="tax-flow-val" style="color:var(--red)">$1,580</div>
+            <div class="tax-flow-sub">due Mar 31</div>
+        </div>
     </div>
 </section>
 
-<section class="sec fi fi4" style="margin-top:20px">
+<!-- ═══ COMBINED RATES — Visual cards ═══ -->
+<section class="sec fi fi3">
     <div class="sec-h">
-        <h2 class="sec-t">Tax Components</h2>
+        <h2 class="sec-t">Combined Rates</h2>
+        <span class="sec-m">Tax profiles by jurisdiction</span>
     </div>
-    <div style="overflow-x:auto">
-        <table class="txn-table">
-            <thead>
-                <tr>
-                    <th>Component</th>
-                    <th>Agency</th>
-                    <th>Rate</th>
-                    <th>Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="txn-row">
-                    <td>GST</td>
-                    <td>Canada Revenue Agency</td>
-                    <td>5.00%</td>
-                    <td>Federal</td>
-                </tr>
-                <tr class="txn-row">
-                    <td>PST (BC)</td>
-                    <td>BC Ministry of Finance</td>
-                    <td>7.00%</td>
-                    <td>Provincial</td>
-                </tr>
-                <tr class="txn-row">
-                    <td>QST</td>
-                    <td>Revenu Québec</td>
-                    <td>9.975%</td>
-                    <td>Provincial</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="tax-rates-grid">
+        <!-- Ontario HST -->
+        <div class="tax-rate-card" onclick="showToast('Editing Ontario HST...')">
+            <div class="tax-rate-top">
+                <div class="tax-rate-flag">&#127464;&#127462;</div>
+                <div class="tax-rate-info">
+                    <div class="tax-rate-name">Ontario HST</div>
+                    <div class="tax-rate-code">HST-ON</div>
+                </div>
+                <div class="tax-rate-pct">
+                    <span class="tax-rate-big">13</span><span class="tax-rate-unit">%</span>
+                </div>
+            </div>
+            <div class="tax-rate-components">
+                <div class="tax-comp-bar-w">
+                    <div class="tax-comp-bar" style="width:100%;background:var(--pri)"></div>
+                </div>
+                <div class="tax-comp-list">
+                    <div class="tax-comp-item">
+                        <div class="aging-dot" style="background:var(--pri)"></div>
+                        <span>HST</span>
+                        <span class="tax-comp-val">13%</span>
+                        <span class="tax-comp-agency">CRA</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tax-rate-foot">
+                <span class="asset-card-badge active">Active</span>
+                <span>Used on 28 invoices</span>
+            </div>
+        </div>
+
+        <!-- BC GST/PST -->
+        <div class="tax-rate-card" onclick="showToast('Editing BC GST/PST...')">
+            <div class="tax-rate-top">
+                <div class="tax-rate-flag">&#127464;&#127462;</div>
+                <div class="tax-rate-info">
+                    <div class="tax-rate-name">BC GST/PST</div>
+                    <div class="tax-rate-code">GST-PST-BC</div>
+                </div>
+                <div class="tax-rate-pct">
+                    <span class="tax-rate-big">12</span><span class="tax-rate-unit">%</span>
+                </div>
+            </div>
+            <div class="tax-rate-components">
+                <div class="tax-comp-bar-w">
+                    <div class="tax-comp-bar" style="width:42%;background:var(--blue)"></div>
+                    <div class="tax-comp-bar" style="width:58%;background:var(--teal)"></div>
+                </div>
+                <div class="tax-comp-list">
+                    <div class="tax-comp-item">
+                        <div class="aging-dot" style="background:var(--blue)"></div>
+                        <span>GST</span>
+                        <span class="tax-comp-val">5%</span>
+                        <span class="tax-comp-agency">CRA</span>
+                    </div>
+                    <div class="tax-comp-item">
+                        <div class="aging-dot" style="background:var(--teal)"></div>
+                        <span>PST</span>
+                        <span class="tax-comp-val">7%</span>
+                        <span class="tax-comp-agency">BC MoF</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tax-rate-foot">
+                <span class="asset-card-badge active">Active</span>
+                <span>Used on 6 invoices</span>
+            </div>
+        </div>
+
+        <!-- Alberta GST -->
+        <div class="tax-rate-card" onclick="showToast('Editing Alberta GST...')">
+            <div class="tax-rate-top">
+                <div class="tax-rate-flag">&#127464;&#127462;</div>
+                <div class="tax-rate-info">
+                    <div class="tax-rate-name">Alberta GST</div>
+                    <div class="tax-rate-code">GST-AB</div>
+                </div>
+                <div class="tax-rate-pct">
+                    <span class="tax-rate-big">5</span><span class="tax-rate-unit">%</span>
+                </div>
+            </div>
+            <div class="tax-rate-components">
+                <div class="tax-comp-bar-w">
+                    <div class="tax-comp-bar" style="width:100%;background:var(--blue)"></div>
+                </div>
+                <div class="tax-comp-list">
+                    <div class="tax-comp-item">
+                        <div class="aging-dot" style="background:var(--blue)"></div>
+                        <span>GST</span>
+                        <span class="tax-comp-val">5%</span>
+                        <span class="tax-comp-agency">CRA</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tax-rate-foot">
+                <span class="asset-card-badge active">Active</span>
+                <span>Used on 3 invoices</span>
+            </div>
+        </div>
+
+        <!-- Exempt -->
+        <div class="tax-rate-card" onclick="showToast('Editing Exempt rate...')">
+            <div class="tax-rate-top">
+                <div class="tax-rate-flag" style="opacity:.4">&#128683;</div>
+                <div class="tax-rate-info">
+                    <div class="tax-rate-name">Exempt</div>
+                    <div class="tax-rate-code">EXE</div>
+                </div>
+                <div class="tax-rate-pct">
+                    <span class="tax-rate-big" style="color:var(--t3)">0</span><span class="tax-rate-unit" style="color:var(--t4)">%</span>
+                </div>
+            </div>
+            <div class="tax-rate-components">
+                <div class="tax-comp-bar-w">
+                    <div class="tax-comp-bar" style="width:100%;background:var(--glass-2)"></div>
+                </div>
+                <div class="tax-comp-list">
+                    <div class="tax-comp-item" style="color:var(--t4)">
+                        <span>No tax components</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tax-rate-foot">
+                <span class="asset-card-badge active">Active</span>
+                <span>Used on 5 invoices</span>
+            </div>
+        </div>
+
+        <!-- Quebec QST+GST -->
+        <div class="tax-rate-card" onclick="showToast('Editing Quebec GST/QST...')">
+            <div class="tax-rate-top">
+                <div class="tax-rate-flag">&#127464;&#127462;</div>
+                <div class="tax-rate-info">
+                    <div class="tax-rate-name">Quebec GST/QST</div>
+                    <div class="tax-rate-code">GST-QST-QC</div>
+                </div>
+                <div class="tax-rate-pct">
+                    <span class="tax-rate-big">14.975</span><span class="tax-rate-unit">%</span>
+                </div>
+            </div>
+            <div class="tax-rate-components">
+                <div class="tax-comp-bar-w">
+                    <div class="tax-comp-bar" style="width:33%;background:var(--blue)"></div>
+                    <div class="tax-comp-bar" style="width:67%;background:var(--purple)"></div>
+                </div>
+                <div class="tax-comp-list">
+                    <div class="tax-comp-item">
+                        <div class="aging-dot" style="background:var(--blue)"></div>
+                        <span>GST</span>
+                        <span class="tax-comp-val">5%</span>
+                        <span class="tax-comp-agency">CRA</span>
+                    </div>
+                    <div class="tax-comp-item">
+                        <div class="aging-dot" style="background:var(--purple)"></div>
+                        <span>QST</span>
+                        <span class="tax-comp-val">9.975%</span>
+                        <span class="tax-comp-agency">Revenu QC</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tax-rate-foot">
+                <span class="asset-card-badge active">Active</span>
+                <span>Not yet used</span>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- ═══ TAX COMPONENTS REGISTRY ═══ -->
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">Component Registry</h2>
+        <span class="sec-m">Individual tax components used in combined rates</span>
+    </div>
+    <div class="tax-comp-registry">
+        <div class="tax-registry-item">
+            <div class="tax-reg-left">
+                <div class="tax-reg-dot" style="background:var(--blue)"></div>
+                <div>
+                    <div class="tax-reg-name">GST — Goods & Services Tax</div>
+                    <div class="tax-reg-agency">Canada Revenue Agency (CRA)</div>
+                </div>
+            </div>
+            <div class="tax-reg-right">
+                <div class="tax-reg-rate">5.000%</div>
+                <div class="tax-reg-type">Federal</div>
+            </div>
+        </div>
+        <div class="tax-registry-item">
+            <div class="tax-reg-left">
+                <div class="tax-reg-dot" style="background:var(--teal)"></div>
+                <div>
+                    <div class="tax-reg-name">PST — Provincial Sales Tax (BC)</div>
+                    <div class="tax-reg-agency">BC Ministry of Finance</div>
+                </div>
+            </div>
+            <div class="tax-reg-right">
+                <div class="tax-reg-rate">7.000%</div>
+                <div class="tax-reg-type">Provincial</div>
+            </div>
+        </div>
+        <div class="tax-registry-item">
+            <div class="tax-reg-left">
+                <div class="tax-reg-dot" style="background:var(--purple)"></div>
+                <div>
+                    <div class="tax-reg-name">QST — Quebec Sales Tax</div>
+                    <div class="tax-reg-agency">Revenu Qu&eacute;bec</div>
+                </div>
+            </div>
+            <div class="tax-reg-right">
+                <div class="tax-reg-rate">9.975%</div>
+                <div class="tax-reg-type">Provincial</div>
+            </div>
+        </div>
+        <div class="tax-registry-item">
+            <div class="tax-reg-left">
+                <div class="tax-reg-dot" style="background:var(--pri)"></div>
+                <div>
+                    <div class="tax-reg-name">HST — Harmonized Sales Tax (ON)</div>
+                    <div class="tax-reg-agency">Canada Revenue Agency (CRA)</div>
+                </div>
+            </div>
+            <div class="tax-reg-right">
+                <div class="tax-reg-rate">13.000%</div>
+                <div class="tax-reg-type">Harmonized</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FILING DEADLINES ═══ -->
+<section class="sec fi fi5">
+    <div class="sec-h">
+        <h2 class="sec-t">Filing Deadlines</h2>
+    </div>
+    <div class="tax-deadlines">
+        <div class="tax-dl-item upcoming">
+            <div class="tax-dl-date">
+                <div class="tax-dl-day">31</div>
+                <div class="tax-dl-mon">MAR</div>
+            </div>
+            <div class="tax-dl-info">
+                <div class="tax-dl-name">HST/GST Filing — Q1 2026</div>
+                <div class="tax-dl-meta">Form RC-7 &middot; Canada Revenue Agency</div>
+            </div>
+            <div class="tax-dl-amount" style="color:var(--red)">$1,580</div>
+            <div class="tax-dl-status">
+                <span class="asset-card-badge" style="background:var(--pri-dim);color:var(--pri)">38 days</span>
+            </div>
+        </div>
+        <div class="tax-dl-item">
+            <div class="tax-dl-date">
+                <div class="tax-dl-day">30</div>
+                <div class="tax-dl-mon">JUN</div>
+            </div>
+            <div class="tax-dl-info">
+                <div class="tax-dl-name">HST/GST Filing — Q2 2026</div>
+                <div class="tax-dl-meta">Form RC-7 &middot; Canada Revenue Agency</div>
+            </div>
+            <div class="tax-dl-amount" style="color:var(--t3)">TBD</div>
+            <div class="tax-dl-status">
+                <span class="asset-card-badge" style="background:var(--glass-2);color:var(--t3)">129 days</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ═══ TAX FLOW VISUALIZATION ═══ */
+.tax-flow-w{display:flex;align-items:center;justify-content:center;gap:0;padding:24px 0;flex-wrap:wrap}
+.tax-flow-node{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;text-align:center;min-width:120px;transition:all .2s var(--ease2)}
+.tax-flow-node:hover{border-color:var(--border-2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.tax-flow-label{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;font-weight:500}
+.tax-flow-val{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:500;color:var(--t1);margin:4px 0}
+.tax-flow-sub{font-size:9px;color:var(--t4)}
+.tax-flow-arrow{padding:0 4px;flex-shrink:0}
+.tax-flow-revenue{border-bottom:2px solid var(--green)}
+.tax-flow-tax{border-bottom:2px solid var(--pri)}
+.tax-flow-itc{border-bottom:2px solid var(--green)}
+.tax-flow-net{border-bottom:2px solid var(--red)}
+
+/* ═══ TAX RATE CARDS ═══ */
+.tax-rates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+.tax-rate-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;cursor:pointer;transition:all .2s var(--ease2)}
+.tax-rate-card:hover{border-color:var(--border-2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.tax-rate-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.tax-rate-flag{font-size:24px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--glass-2);border-radius:var(--r-xs);flex-shrink:0}
+.tax-rate-info{flex:1}
+.tax-rate-name{font-size:13px;font-weight:600;color:var(--t1)}
+.tax-rate-code{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);margin-top:1px}
+.tax-rate-pct{text-align:right;flex-shrink:0}
+.tax-rate-big{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:500;color:var(--pri)}
+.tax-rate-unit{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--t3);margin-left:1px}
+
+/* Component bars & list */
+.tax-rate-components{margin-bottom:12px}
+.tax-comp-bar-w{display:flex;height:5px;border-radius:3px;overflow:hidden;gap:2px;margin-bottom:8px}
+.tax-comp-bar{border-radius:2px}
+.tax-comp-list{display:flex;flex-direction:column;gap:4px}
+.tax-comp-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2)}
+.tax-comp-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t1);margin-left:auto}
+.tax-comp-agency{font-size:9px;color:var(--t4);min-width:40px;text-align:right}
+.tax-rate-foot{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);font-size:10px;color:var(--t3)}
+
+/* ═══ COMPONENT REGISTRY ═══ */
+.tax-comp-registry{display:flex;flex-direction:column;gap:2px;margin-top:12px}
+.tax-registry-item{display:flex;align-items:center;justify-content:space-between;background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 18px;transition:border-color .2s}
+.tax-registry-item:hover{border-color:var(--border-2)}
+.tax-reg-left{display:flex;align-items:center;gap:12px}
+.tax-reg-dot{width:8px;height:8px;border-radius:4px;flex-shrink:0}
+.tax-reg-name{font-size:12px;font-weight:500;color:var(--t1)}
+.tax-reg-agency{font-size:10px;color:var(--t3);margin-top:2px}
+.tax-reg-right{text-align:right;flex-shrink:0}
+.tax-reg-rate{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--t1)}
+.tax-reg-type{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
+/* ═══ FILING DEADLINES ═══ */
+.tax-deadlines{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.tax-dl-item{display:flex;align-items:center;gap:16px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 18px;transition:all .2s}
+.tax-dl-item:hover{border-color:var(--border-2)}
+.tax-dl-item.upcoming{border-left:2px solid var(--pri)}
+.tax-dl-date{width:44px;height:44px;background:var(--glass-2);border-radius:var(--r-xs);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.tax-dl-day{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:var(--t1);line-height:1}
+.tax-dl-mon{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.tax-dl-info{flex:1}
+.tax-dl-name{font-size:12px;font-weight:500;color:var(--t1)}
+.tax-dl-meta{font-size:10px;color:var(--t3);margin-top:2px}
+.tax-dl-amount{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;flex-shrink:0}
+.tax-dl-status{flex-shrink:0}
+
+/* Responsive */
+@media(max-width:768px){
+    .tax-flow-w{flex-direction:column;gap:8px}
+    .tax-flow-arrow{transform:rotate(90deg)}
+    .tax-rates-grid{grid-template-columns:1fr}
+}
+</style>

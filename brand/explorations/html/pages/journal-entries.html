@@ -1,48 +1,140 @@
+<!-- ═══════════════════════════════════════════════════════
+     JOURNAL ENTRIES — The Living Ledger
+     A timeline-first view of your double-entry bookkeeping
+     ═══════════════════════════════════════════════════════ -->
+
 <div class="page-hdr fi fi1">
     <div>
         <div class="page-title">Journal Entries</div>
-        <div class="page-sub">General Ledger &middot; Adjustments &middot; Audit Trail</div>
+        <div class="page-sub">General Ledger &middot; 42 entries in February &middot; All balanced</div>
     </div>
     <div class="page-actions">
-        <button class="btn" onclick="showToast('Importing entries...')">Import</button>
-        <button class="btn pri" onclick="showToast('New journal entry dialog')">+ New Entry</button>
+        <button class="btn" onclick="showToast('Exporting to CSV...')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Export
+        </button>
+        <button class="btn" onclick="showToast('Importing entries...')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>
+            Import
+        </button>
+        <button class="btn pri" onclick="showToast('New journal entry form opening...')">+ New Entry</button>
     </div>
 </div>
 
-<div class="sec-tabs fi fi2" style="margin-bottom:16px">
-    <button class="sec-tab" onclick="window.location.hash='#/accounting'">Accounting</button>
-    <button class="sec-tab" onclick="window.location.hash='#/assets'">Assets</button>
+<!-- Navigation Tabs -->
+<div class="sec-tabs fi fi2" style="margin-bottom:20px">
+    <button class="sec-tab" onclick="window.location.hash='#/accounting'">Overview</button>
     <button class="sec-tab on">Journal Entries</button>
+    <button class="sec-tab" onclick="window.location.hash='#/assets'">Assets</button>
     <button class="sec-tab" onclick="window.location.hash='#/tax-rates'">Tax Rates</button>
     <button class="sec-tab" onclick="window.location.hash='#/fiscal-periods'">Fiscal Periods</button>
 </div>
 
-<div class="stats stats-3 fi fi2">
+<!-- ═══ STATS ROW ═══ -->
+<div class="stats stats-4 fi fi2">
     <div class="st">
-        <div class="st-label">Total Entries (Feb)</div>
+        <div class="st-label">Total Entries</div>
         <div class="st-val">42</div>
         <div class="st-trend up">+4 vs Jan</div>
     </div>
     <div class="st">
         <div class="st-label">Auto-Generated</div>
         <div class="st-val">38</div>
-        <div class="st-trend flat">90% of total</div>
+        <div class="st-trend flat" style="display:flex;align-items:center;gap:4px">
+            <span style="display:inline-block;width:40px;height:3px;border-radius:2px;background:var(--glass-2);overflow:hidden"><span style="display:block;width:90%;height:100%;border-radius:2px;background:var(--green)"></span></span>
+            90%
+        </div>
     </div>
     <div class="st">
         <div class="st-label">Manual Adjustments</div>
-        <div class="st-val" style="color:var(--t2)">4</div>
+        <div class="st-val" style="color:var(--pri)">4</div>
         <div class="st-trend flat">Review needed</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Total Volume</div>
+        <div class="st-val">$128,460</div>
+        <div class="st-trend up">+22% vs Jan</div>
     </div>
 </div>
 
-<section class="sec fi fi3">
+<!-- ═══ DEBIT/CREDIT FLOW VISUALIZATION ═══ -->
+<div class="fi fi3" style="background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;margin-bottom:24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-family:'Newsreader',serif;font-size:.88rem;color:var(--t2)">Debit & Credit Flow</div>
+        <div class="sec-tabs" style="background:transparent">
+            <button class="sec-tab on">7D</button>
+            <button class="sec-tab">30D</button>
+            <button class="sec-tab">90D</button>
+            <button class="sec-tab">YTD</button>
+        </div>
+    </div>
+
+    <!-- Flow bars for each day -->
+    <div style="display:flex;gap:4px;align-items:center;height:80px;padding:0 4px">
+        <!-- Day bars -->
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:center">
+            <div style="width:100%;background:rgba(52,211,153,.15);border-radius:4px 4px 0 0;height:20px" title="Debit: $1,200"></div>
+            <div style="width:100%;background:rgba(96,165,250,.15);border-radius:0 0 4px 4px;height:18px" title="Credit: $1,080"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:center">
+            <div style="width:100%;background:rgba(52,211,153,.15);border-radius:4px 4px 0 0;height:8px"></div>
+            <div style="width:100%;background:rgba(96,165,250,.15);border-radius:0 0 4px 4px;height:8px"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:center">
+            <div style="width:100%;background:rgba(52,211,153,.15);border-radius:4px 4px 0 0;height:48px"></div>
+            <div style="width:100%;background:rgba(96,165,250,.15);border-radius:0 0 4px 4px;height:48px"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:center">
+            <div style="width:100%;background:rgba(52,211,153,.15);border-radius:4px 4px 0 0;height:14px"></div>
+            <div style="width:100%;background:rgba(96,165,250,.15);border-radius:0 0 4px 4px;height:14px"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:center">
+            <div style="width:100%;background:rgba(52,211,153,.25);border-radius:4px 4px 0 0;height:60px"></div>
+            <div style="width:100%;background:rgba(96,165,250,.25);border-radius:0 0 4px 4px;height:56px"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:center">
+            <div style="width:100%;background:rgba(52,211,153,.15);border-radius:4px 4px 0 0;height:32px"></div>
+            <div style="width:100%;background:rgba(96,165,250,.15);border-radius:0 0 4px 4px;height:32px"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:center;box-shadow:inset 0 -2px 0 var(--pri);border-radius:0 0 4px 4px">
+            <div style="width:100%;background:rgba(52,211,153,.3);border-radius:4px 4px 0 0;height:40px"></div>
+            <div style="width:100%;background:rgba(96,165,250,.3);border-radius:0 0 4px 4px;height:40px"></div>
+        </div>
+    </div>
+    <div style="display:flex;gap:4px;margin-top:4px;padding:0 4px">
+        <span style="flex:1;text-align:center;font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace">Feb 3</span>
+        <span style="flex:1;text-align:center;font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace">4</span>
+        <span style="flex:1;text-align:center;font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace">5</span>
+        <span style="flex:1;text-align:center;font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace">6</span>
+        <span style="flex:1;text-align:center;font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace">7</span>
+        <span style="flex:1;text-align:center;font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace">8</span>
+        <span style="flex:1;text-align:center;font-size:8px;color:var(--pri);font-family:'JetBrains Mono',monospace;font-weight:600">Today</span>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t3)">
+            <div style="width:8px;height:8px;border-radius:2px;background:rgba(52,211,153,.3)"></div>Debits
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t3)">
+            <div style="width:8px;height:8px;border-radius:2px;background:rgba(96,165,250,.3)"></div>Credits
+        </div>
+        <div style="margin-left:auto;font-size:10px;color:var(--t3)">
+            Balanced: <span style="color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:500">all 7 days</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ ENTRIES REGISTER ═══ -->
+<section class="sec fi fi4">
     <div class="sec-h">
         <h2 class="sec-t">Entries Register</h2>
-        <div class="sec-tabs">
-            <button class="sec-tab on">All</button>
-            <button class="sec-tab">Posted</button>
-            <button class="sec-tab">Draft</button>
-            <button class="sec-tab">Recurring</button>
+        <div style="display:flex;align-items:center;gap:8px">
+            <div class="txn-filters">
+                <button class="txn-filter on">All</button>
+                <button class="txn-filter">Posted</button>
+                <button class="txn-filter">Draft</button>
+                <button class="txn-filter">Recurring</button>
+                <button class="txn-filter">Manual</button>
+            </div>
         </div>
     </div>
     <div style="overflow-x:auto">
@@ -52,14 +144,14 @@
                     <th>Entry #</th>
                     <th>Date</th>
                     <th>Description</th>
-                    <th>Type</th>
+                    <th>Source</th>
                     <th class="right">Debit</th>
                     <th class="right">Credit</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <tr class="txn-row" onclick="showToast('View Entry JE-2026-0042')">
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0042 detail...')">
                     <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0042</td>
                     <td class="txn-date-cell">Feb 9</td>
                     <td>
@@ -67,28 +159,121 @@
                             <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128176;</div>
                             <div>
                                 <div class="txn-desc">XYZ Ltd payment received</div>
-                                <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1000 Cash &middot; Cr 1200
-                                    AR</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 1000 Cash &middot;
+                                    <span style="color:var(--blue)">Cr</span> 1200 AR
+                                </div>
                             </div>
                         </div>
                     </td>
-                    <td><span class="txn-cat-tag matched">System</span></td>
+                    <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
                     <td class="txn-amt in" style="text-align:right">$8,200.00</td>
                     <td class="txn-amt in" style="text-align:right">$8,200.00</td>
                     <td>
                         <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
                     </td>
                 </tr>
-                <tr class="txn-row" onclick="showToast('View Entry JE-2026-0037')">
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0041 detail...')">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0041</td>
+                    <td class="txn-date-cell">Feb 7</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(96,165,250,.12)">&#128179;</div>
+                            <div>
+                                <div class="txn-desc">Wise FX transfer EUR&rarr;CAD</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 1000 Cash &middot;
+                                    <span style="color:var(--blue)">Cr</span> 1000 Cash (EUR) &middot; Gain $34
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
+                    <td class="txn-amt in" style="text-align:right">$4,700.00</td>
+                    <td class="txn-amt in" style="text-align:right">$4,700.00</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0040 detail...')">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0040</td>
+                    <td class="txn-date-cell">Feb 5</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(248,113,113,.1)">&#127968;</div>
+                            <div>
+                                <div class="txn-desc">WeWork monthly rent</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 5000 Rent &middot;
+                                    <span style="color:var(--blue)">Cr</span> 1000 Cash
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
+                    <td class="txn-amt" style="text-align:right">$1,800.00</td>
+                    <td class="txn-amt" style="text-align:right">$1,800.00</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0039 detail...')">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0039</td>
+                    <td class="txn-date-cell">Feb 4</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#128187;</div>
+                            <div>
+                                <div class="txn-desc">SaaS subscriptions — Vercel + Linear</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 5100 Software &middot;
+                                    <span style="color:var(--blue)">Cr</span> 2100 CC Payable
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">Auto — CC</span></td>
+                    <td class="txn-amt" style="text-align:right">$68.00</td>
+                    <td class="txn-amt" style="text-align:right">$68.00</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0038 detail...')">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0038</td>
+                    <td class="txn-date-cell">Feb 3</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128176;</div>
+                            <div>
+                                <div class="txn-desc">DEF Consulting — retainer payment</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 1000 Cash &middot;
+                                    <span style="color:var(--blue)">Cr</span> 1200 AR
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag matched">Auto — Bank</span></td>
+                    <td class="txn-amt in" style="text-align:right">$3,500.00</td>
+                    <td class="txn-amt in" style="text-align:right">$3,500.00</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0037 detail...')">
                     <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0037</td>
                     <td class="txn-date-cell">Feb 1</td>
                     <td>
                         <div class="txn-desc-cell">
                             <div class="txn-ico" style="background:rgba(245,158,11,.1)">&#128196;</div>
                             <div>
-                                <div class="txn-desc">Invoice #1047 Revenue Rec</div>
-                                <div style="font-size:10px;color:var(--t3);margin-top:2px">Dr 1200 AR &middot; Cr 4000
-                                    Rev</div>
+                                <div class="txn-desc">Invoice #1047 — ABC Corp</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 1200 AR &middot;
+                                    <span style="color:var(--blue)">Cr</span> 4000 Revenue &middot;
+                                    <span style="color:var(--blue)">Cr</span> 2200 HST
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -99,7 +284,81 @@
                         <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
                     </td>
                 </tr>
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0036 detail...')" style="opacity:.7">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0036</td>
+                    <td class="txn-date-cell">Jan 31</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#128197;</div>
+                            <div>
+                                <div class="txn-desc">January depreciation — equipment</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 5400 Depreciation &middot;
+                                    <span style="color:var(--blue)">Cr</span> 1400 Accum. Depr.
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">Recurring</span></td>
+                    <td class="txn-amt" style="text-align:right">$416.67</td>
+                    <td class="txn-amt" style="text-align:right">$416.67</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
+                <tr class="txn-row" onclick="showToast('Opening JE-2026-0035 detail...')" style="opacity:.7">
+                    <td style="font-family:var(--mono);font-size:11px;color:var(--pri)">JE-2026-0035</td>
+                    <td class="txn-date-cell">Jan 31</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(245,158,11,.1)">&#128197;</div>
+                            <div>
+                                <div class="txn-desc">January prepaid amortization</div>
+                                <div style="font-size:10px;color:var(--t3);margin-top:2px">
+                                    <span style="color:var(--green)">Dr</span> 5500 Insurance &middot;
+                                    <span style="color:var(--blue)">Cr</span> 1300 Prepaid
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="txn-cat-tag">Recurring</span></td>
+                    <td class="txn-amt" style="text-align:right">$350.00</td>
+                    <td class="txn-amt" style="text-align:right">$350.00</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Posted</div>
+                    </td>
+                </tr>
             </tbody>
+            <tfoot>
+                <tr style="border-top:2px solid var(--border)">
+                    <td></td>
+                    <td></td>
+                    <td style="font-weight:600;color:var(--t1);font-size:12px">Page Totals</td>
+                    <td></td>
+                    <td class="txn-amt" style="text-align:right;font-weight:600;color:var(--t1)">$23,780.67</td>
+                    <td class="txn-amt" style="text-align:right;font-weight:600;color:var(--t1)">$23,780.67</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--green)">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                            Balanced
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
+    </div>
+
+    <!-- Pagination -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+        <span style="font-size:10px;color:var(--t3)">Showing 1-8 of 42 entries</span>
+        <div style="display:flex;gap:4px">
+            <button class="btn" style="padding:4px 10px;font-size:10px;opacity:.4" disabled>&larr; Previous</button>
+            <button class="btn" style="padding:4px 8px;font-size:10px;background:var(--pri-dim);color:var(--pri);border-color:rgba(245,158,11,.2)">1</button>
+            <button class="btn" style="padding:4px 8px;font-size:10px">2</button>
+            <button class="btn" style="padding:4px 8px;font-size:10px">3</button>
+            <button class="btn" style="padding:4px 8px;font-size:10px">...</button>
+            <button class="btn" style="padding:4px 8px;font-size:10px">6</button>
+            <button class="btn" style="padding:4px 10px;font-size:10px">Next &rarr;</button>
+        </div>
     </div>
 </section>
