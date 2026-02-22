@@ -1,6 +1,6 @@
 # Active Work Tracker
 
-**Last Updated:** 2026-02-22 10:12
+**Last Updated:** 2026-02-22 10:25
 
 ---
 
@@ -8,6 +8,7 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
+| agent-ai-chat | 2026-02-22 10:15 | DEV-113: Build AI Chat interface on Insights page | completed | main |
 | agent-routing-fix | 2026-02-22 10:05 | UX-78: Fix /insights/insights → /insights routing | completed | main |
 | agent-ux-693 | 2026-02-22 09:54 | UX-8: Add loading/error states to remaining dashboard pages | completed | main |
 | agent-ai-client | 2026-02-22 09:47 | DEV-112: Create AI API client for 5 endpoints | completed | main |
@@ -32,6 +33,7 @@
 
 | Agent ID | Last Claimed Tasks | Last Domain | Last Session |
 |----------|-------------------|-------------|--------------|
+| agent-ai-chat | DEV-113 | insights | 2026-02-22 10:15 |
 | agent-routing-fix | UX-78 | insights | 2026-02-22 10:05 |
 | agent-ux-693 | UX-8 | ux | 2026-02-22 09:54 |
 | agent-ai-client | DEV-112 | insights | 2026-02-22 09:47 |
