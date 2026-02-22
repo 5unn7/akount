@@ -68,7 +68,7 @@ export async function transferRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/',
     {
-      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT', 'BOOKKEEPER']),
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       preValidation: [validateQuery(ListTransfersQuerySchema)],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
@@ -92,7 +92,7 @@ export async function transferRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/:id',
     {
-      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT', 'BOOKKEEPER']),
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
       preValidation: [validateParams(TransferIdParamSchema)],
     },
     async (request: FastifyRequest, reply: FastifyReply) => {

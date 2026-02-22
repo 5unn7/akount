@@ -338,7 +338,7 @@ describe('TransferService', () => {
 
   describe('listTransfers', () => {
     it('should list transfers for entity with tenant filter', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce({ id: ENTITY_ID });
+      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce({ id: ENTITY_ID } as never);
       vi.mocked(prisma.journalEntry.findMany).mockResolvedValueOnce([
         {
           id: 'je-1',

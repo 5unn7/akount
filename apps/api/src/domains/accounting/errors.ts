@@ -25,7 +25,15 @@ export type AccountingErrorCode =
   | 'NO_ENTITIES_FOUND'
   | 'PDF_TOO_LARGE'
   | 'PDF_TIMEOUT'
-  | 'EXPORT_FAILED';
+  | 'EXPORT_FAILED'
+  | 'ACCOUNT_NOT_FOUND'
+  | 'GL_ACCOUNT_NOT_LINKED'
+  | 'CROSS_ENTITY_TRANSFER'
+  | 'CURRENCY_MISMATCH'
+  | 'MISSING_EXCHANGE_RATE'
+  | 'INSUFFICIENT_BALANCE'
+  | 'TRANSFER_NOT_FOUND'
+  | 'INVALID_SOURCE_DOCUMENT';
 
 export class AccountingError extends Error {
   constructor(

@@ -22,11 +22,19 @@ export interface AuditLogParams {
   tenantId: string;
   userId: string;
   entityId?: string;
-  model: string;
-  recordId: string;
+  model?: string;
+  recordId?: string;
   action: AuditAction;
   before?: Record<string, unknown>;
   after?: Record<string, unknown>;
+  /** Optional category for grouping (e.g., 'TRANSACTION') */
+  category?: string;
+  /** Alternative to model (e.g., 'JournalEntry') */
+  resourceType?: string;
+  /** Alternative to recordId */
+  resourceId?: string;
+  /** Structured details for the audit entry */
+  details?: Record<string, unknown>;
 }
 
 /**
@@ -93,8 +101,8 @@ export async function createAuditLog(
       tenantId: params.tenantId,
       userId: params.userId,
       entityId,
-      model: params.model,
-      recordId: params.recordId,
+      model: params.model ?? params.resourceType ?? 'unknown',
+      recordId: params.recordId ?? params.resourceId ?? 'unknown',
       action: params.action,
       before: params.before ? (JSON.parse(JSON.stringify(params.before)) as Prisma.InputJsonValue) : Prisma.JsonNull,
       after: params.after ? (JSON.parse(JSON.stringify(params.after)) as Prisma.InputJsonValue) : Prisma.JsonNull,

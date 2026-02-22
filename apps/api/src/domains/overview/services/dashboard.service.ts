@@ -300,7 +300,7 @@ export class DashboardService {
           gte: today,
         },
         status: {
-          in: ['PENDING', 'APPROVED'],
+          in: ['PENDING', 'PARTIALLY_PAID'],
         },
         deletedAt: null,
       },
@@ -308,20 +308,26 @@ export class DashboardService {
         id: true,
         billNumber: true,
         dueDate: true,
-        totalAmount: true,
+        total: true,
         currency: true,
         status: true,
-        vendor: {
-          select: {
-            name: true,
-          },
-        },
+        vendorId: true,
       },
       orderBy: {
         dueDate: 'asc',
       },
       take: limit,
     });
+
+    // Batch-fetch vendor names for bills
+    const vendorIds = [...new Set(upcomingBills.map((b) => b.vendorId))];
+    const vendors = vendorIds.length > 0
+      ? await prisma.vendor.findMany({
+          where: { id: { in: vendorIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const vendorMap = new Map(vendors.map((v) => [v.id, v.name]));
 
     // Fetch upcoming invoice payments (AR - money coming in)
     const upcomingInvoices = await prisma.invoice.findMany({
@@ -334,7 +340,7 @@ export class DashboardService {
           gte: today,
         },
         status: {
-          in: ['SENT', 'VIEWED'],
+          in: ['SENT', 'PARTIALLY_PAID'],
         },
         deletedAt: null,
       },
@@ -342,14 +348,10 @@ export class DashboardService {
         id: true,
         invoiceNumber: true,
         dueDate: true,
-        totalAmount: true,
+        total: true,
         currency: true,
         status: true,
-        client: {
-          select: {
-            name: true,
-          },
-        },
+        clientId: true,
       },
       orderBy: {
         dueDate: 'asc',
@@ -357,23 +359,33 @@ export class DashboardService {
       take: limit,
     });
 
+    // Batch-fetch client names for invoices
+    const clientIds = [...new Set(upcomingInvoices.map((i) => i.clientId))];
+    const clients = clientIds.length > 0
+      ? await prisma.client.findMany({
+          where: { id: { in: clientIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const clientMap = new Map(clients.map((c) => [c.id, c.name]));
+
     // Combine and sort by due date
     const combined = [
       ...upcomingBills.map((bill) => ({
         id: bill.id,
         type: 'BILL' as const,
-        name: bill.vendor.name,
+        name: vendorMap.get(bill.vendorId) ?? 'Unknown Vendor',
         dueDate: bill.dueDate,
-        amount: bill.totalAmount,
+        amount: bill.total,
         currency: bill.currency,
         status: bill.status,
       })),
       ...upcomingInvoices.map((invoice) => ({
         id: invoice.id,
         type: 'INVOICE' as const,
-        name: invoice.client.name,
+        name: clientMap.get(invoice.clientId) ?? 'Unknown Client',
         dueDate: invoice.dueDate,
-        amount: invoice.totalAmount,
+        amount: invoice.total,
         currency: invoice.currency,
         status: invoice.status,
       })),
@@ -538,7 +550,7 @@ export class DashboardService {
       href: string;
     }> = [];
 
-    // 1. Unreconciled transactions (highest urgency)
+    // 1. Unreconciled transactions (not yet posted to GL)
     const unreconciledTxns = await prisma.transaction.findMany({
       where: {
         account: {
@@ -547,18 +559,14 @@ export class DashboardService {
             ...(entityId && { id: entityId }),
           },
         },
-        reconciliationId: null,
+        journalEntryId: null,
         deletedAt: null,
       },
       select: {
         id: true,
         date: true,
         description: true,
-        account: {
-          select: {
-            name: true,
-          },
-        },
+        accountId: true,
       },
       orderBy: {
         date: 'desc',
@@ -566,17 +574,28 @@ export class DashboardService {
       take: Math.ceil(limit / 3),
     });
 
+    // Batch-fetch account names for transactions
+    const txnAccountIds = [...new Set(unreconciledTxns.map((t) => t.accountId))];
+    const txnAccounts = txnAccountIds.length > 0
+      ? await prisma.account.findMany({
+          where: { id: { in: txnAccountIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const txnAccountMap = new Map(txnAccounts.map((a) => [a.id, a.name]));
+
     for (const txn of unreconciledTxns) {
       const daysOld = Math.floor(
         (today.getTime() - new Date(txn.date).getTime()) / (1000 * 60 * 60 * 24)
       );
+      const accountName = txnAccountMap.get(txn.accountId) ?? 'Unknown Account';
       actionItems.push({
         id: txn.id,
         type: 'UNRECONCILED_TXN',
         title: `Reconcile: ${txn.description || 'Transaction'}`,
-        meta: `${txn.account.name} • ${daysOld}d ago`,
+        meta: `${accountName} • ${daysOld}d ago`,
         urgencyScore: daysOld,
-        href: `/banking/reconciliation?accountId=${txn.account}`,
+        href: `/banking/reconciliation?accountId=${txn.accountId}`,
       });
     }
 
@@ -591,7 +610,7 @@ export class DashboardService {
           lt: today,
         },
         status: {
-          in: ['SENT', 'VIEWED'],
+          in: ['SENT', 'PARTIALLY_PAID'],
         },
         deletedAt: null,
       },
@@ -599,12 +618,8 @@ export class DashboardService {
         id: true,
         invoiceNumber: true,
         dueDate: true,
-        totalAmount: true,
-        client: {
-          select: {
-            name: true,
-          },
-        },
+        total: true,
+        clientId: true,
       },
       orderBy: {
         dueDate: 'asc',
@@ -612,15 +627,25 @@ export class DashboardService {
       take: Math.ceil(limit / 3),
     });
 
+    // Batch-fetch client names for overdue invoices
+    const overdueClientIds = [...new Set(overdueInvoices.map((i) => i.clientId))];
+    const overdueClients = overdueClientIds.length > 0
+      ? await prisma.client.findMany({
+          where: { id: { in: overdueClientIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const overdueClientMap = new Map(overdueClients.map((c) => [c.id, c.name]));
+
     for (const invoice of overdueInvoices) {
       const daysOverdue = Math.floor(
         (today.getTime() - new Date(invoice.dueDate).getTime()) / (1000 * 60 * 60 * 24)
       );
-      const amountDollars = Math.round(invoice.totalAmount / 100);
+      const amountDollars = Math.round(invoice.total / 100);
       actionItems.push({
         id: invoice.id,
         type: 'OVERDUE_INVOICE',
-        title: `Follow up: ${invoice.client.name}`,
+        title: `Follow up: ${overdueClientMap.get(invoice.clientId) ?? 'Unknown Client'}`,
         meta: `$${amountDollars} • ${daysOverdue}d overdue`,
         urgencyScore: daysOverdue + 100, // Higher base urgency
         href: `/business/invoices/${invoice.id}`,
@@ -638,7 +663,7 @@ export class DashboardService {
           lt: today,
         },
         status: {
-          in: ['PENDING', 'APPROVED'],
+          in: ['PENDING', 'PARTIALLY_PAID'],
         },
         deletedAt: null,
       },
@@ -646,12 +671,8 @@ export class DashboardService {
         id: true,
         billNumber: true,
         dueDate: true,
-        totalAmount: true,
-        vendor: {
-          select: {
-            name: true,
-          },
-        },
+        total: true,
+        vendorId: true,
       },
       orderBy: {
         dueDate: 'asc',
@@ -659,15 +680,25 @@ export class DashboardService {
       take: Math.ceil(limit / 3),
     });
 
+    // Batch-fetch vendor names for overdue bills
+    const overdueVendorIds = [...new Set(overdueBills.map((b) => b.vendorId))];
+    const overdueVendors = overdueVendorIds.length > 0
+      ? await prisma.vendor.findMany({
+          where: { id: { in: overdueVendorIds } },
+          select: { id: true, name: true },
+        })
+      : [];
+    const overdueVendorMap = new Map(overdueVendors.map((v) => [v.id, v.name]));
+
     for (const bill of overdueBills) {
       const daysOverdue = Math.floor(
         (today.getTime() - new Date(bill.dueDate).getTime()) / (1000 * 60 * 60 * 24)
       );
-      const amountDollars = Math.round(bill.totalAmount / 100);
+      const amountDollars = Math.round(bill.total / 100);
       actionItems.push({
         id: bill.id,
         type: 'OVERDUE_BILL',
-        title: `Pay bill: ${bill.vendor.name}`,
+        title: `Pay bill: ${overdueVendorMap.get(bill.vendorId) ?? 'Unknown Vendor'}`,
         meta: `$${amountDollars} • ${daysOverdue}d overdue`,
         urgencyScore: daysOverdue + 50, // Medium urgency
         href: `/business/bills/${bill.id}`,
