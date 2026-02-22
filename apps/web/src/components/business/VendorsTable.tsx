@@ -10,20 +10,16 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils/currency';
+import { VendorStatusBadge } from '@akount/ui/business';
+import { EmptyState } from '@akount/ui';
 import { VendorDetailPanel } from './VendorDetailPanel';
 
 interface VendorsTableProps {
     vendors: Vendor[];
     currency?: string;
 }
-
-const STATUS_BADGE_STYLES: Record<Vendor['status'], string> = {
-    active: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    inactive: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-};
 
 export function VendorsTable({ vendors, currency = 'CAD' }: VendorsTableProps) {
     const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
@@ -36,14 +32,10 @@ export function VendorsTable({ vendors, currency = 'CAD' }: VendorsTableProps) {
 
     if (vendors.length === 0) {
         return (
-            <Card className="glass rounded-[14px]">
-                <CardContent className="p-12 text-center">
-                    <p className="text-muted-foreground">No vendors found</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Add your first vendor to get started
-                    </p>
-                </CardContent>
-            </Card>
+            <EmptyState
+                title="No vendors found"
+                description="Add your first vendor to get started"
+            />
         );
     }
 
@@ -76,7 +68,6 @@ export function VendorsTable({ vendors, currency = 'CAD' }: VendorsTableProps) {
                         </TableHeader>
                         <TableBody>
                             {vendors.map((vendor) => {
-                                const statusStyle = STATUS_BADGE_STYLES[vendor.status];
                                 const balanceDue = vendor.balanceDue ?? 0;
 
                                 return (
@@ -120,9 +111,7 @@ export function VendorsTable({ vendors, currency = 'CAD' }: VendorsTableProps) {
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge className={`text-xs ${statusStyle}`}>
-                                                {vendor.status.toUpperCase()}
-                                            </Badge>
+                                            <VendorStatusBadge status={vendor.status} />
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <span className="font-mono text-sm">

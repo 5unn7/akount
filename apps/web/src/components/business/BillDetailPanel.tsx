@@ -9,9 +9,9 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/components/ui/sheet';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
+import { BillStatusBadge } from '@akount/ui/business';
 import { FileText, Building2, Calendar } from 'lucide-react';
 
 interface BillDetailPanelProps {
@@ -20,21 +20,10 @@ interface BillDetailPanelProps {
     onOpenChange: (open: boolean) => void;
 }
 
-const STATUS_BADGE_STYLES: Record<Bill['status'], string> = {
-    DRAFT: 'bg-ak-bg-3 text-muted-foreground border-ak-border',
-    PENDING: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
-    PAID: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    OVERDUE: 'bg-ak-red/10 text-ak-red border-ak-red/20',
-    CANCELLED: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-    PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
-};
-
-
 export function BillDetailPanel({ bill, open, onOpenChange }: BillDetailPanelProps) {
     if (!bill) return null;
 
     const balanceDue = bill.total - bill.paidAmount;
-    const statusStyle = STATUS_BADGE_STYLES[bill.status];
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -50,9 +39,7 @@ export function BillDetailPanel({ bill, open, onOpenChange }: BillDetailPanelPro
                                 Issued on {formatDate(bill.issueDate)}
                             </SheetDescription>
                         </div>
-                        <Badge className={`text-xs ${statusStyle}`}>
-                            {bill.status}
-                        </Badge>
+                        <BillStatusBadge status={bill.status} />
                     </div>
                 </SheetHeader>
 

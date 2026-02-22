@@ -10,19 +10,15 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils/currency';
+import { ClientStatusBadge } from '@akount/ui/business';
+import { EmptyState } from '@akount/ui';
 
 interface ClientsTableProps {
     clients: Client[];
     currency?: string;
 }
-
-const STATUS_BADGE_STYLES: Record<Client['status'], string> = {
-    active: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    inactive: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-};
 
 export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
     const router = useRouter();
@@ -33,14 +29,10 @@ export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
 
     if (clients.length === 0) {
         return (
-            <Card className="glass rounded-[14px]">
-                <CardContent className="p-12 text-center">
-                    <p className="text-muted-foreground">No clients found</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Add your first client to get started
-                    </p>
-                </CardContent>
-            </Card>
+            <EmptyState
+                title="No clients found"
+                description="Add your first client to get started"
+            />
         );
     }
 
@@ -73,7 +65,6 @@ export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
                         </TableHeader>
                         <TableBody>
                             {clients.map((client) => {
-                                const statusStyle = STATUS_BADGE_STYLES[client.status];
                                 const balanceDue = client.balanceDue ?? 0;
 
                                 return (
@@ -117,9 +108,7 @@ export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge className={`text-xs ${statusStyle}`}>
-                                                {client.status.toUpperCase()}
-                                            </Badge>
+                                            <ClientStatusBadge status={client.status} />
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <span className="font-mono text-sm">

@@ -9,9 +9,9 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/components/ui/sheet';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
+import { InvoiceStatusBadge } from '@akount/ui/business';
 import { FileText, User, Calendar, DollarSign } from 'lucide-react';
 
 interface InvoiceDetailPanelProps {
@@ -19,16 +19,6 @@ interface InvoiceDetailPanelProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }
-
-const STATUS_BADGE_STYLES: Record<Invoice['status'], string> = {
-    DRAFT: 'bg-ak-bg-3 text-muted-foreground border-ak-border',
-    SENT: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
-    PAID: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    OVERDUE: 'bg-ak-red/10 text-ak-red border-ak-red/20',
-    CANCELLED: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-    PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
-};
-
 
 export function InvoiceDetailPanel({
     invoice,
@@ -38,7 +28,6 @@ export function InvoiceDetailPanel({
     if (!invoice) return null;
 
     const balanceDue = invoice.total - invoice.paidAmount;
-    const statusStyle = STATUS_BADGE_STYLES[invoice.status];
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -54,9 +43,7 @@ export function InvoiceDetailPanel({
                                 Issued on {formatDate(invoice.issueDate)}
                             </SheetDescription>
                         </div>
-                        <Badge className={`text-xs ${statusStyle}`}>
-                            {invoice.status}
-                        </Badge>
+                        <InvoiceStatusBadge status={invoice.status} />
                     </div>
                 </SheetHeader>
 

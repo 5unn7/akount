@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { Check, Ban, Trash2, Loader2, ExternalLink } from 'lucide-react';
-import type { JournalEntry, JournalEntryStatus } from '@/lib/api/accounting';
+import type { JournalEntry } from '@/lib/api/accounting';
 import { formatAmount } from '@/lib/api/transactions.types';
 import { Button } from '@/components/ui/button';
+import { JournalEntryStatusBadge } from '@akount/ui/business';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,42 +18,8 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-// ============================================================================
-// Status Badge
-// ============================================================================
-
-const STATUS_CONFIG: Record<
-    JournalEntryStatus,
-    { label: string; className: string }
-> = {
-    DRAFT: {
-        label: 'Draft',
-        className: 'bg-ak-pri-dim text-primary border-primary/20',
-    },
-    POSTED: {
-        label: 'Posted',
-        className: 'bg-ak-green-dim text-ak-green border-ak-green/20',
-    },
-    VOIDED: {
-        label: 'Voided',
-        className: 'bg-ak-red-dim text-ak-red border-ak-red/20',
-    },
-    ARCHIVED: {
-        label: 'Archived',
-        className: 'bg-muted/50 text-muted-foreground border-muted-foreground/20',
-    },
-};
-
-export function StatusBadge({ status }: { status: JournalEntryStatus }) {
-    const config = STATUS_CONFIG[status];
-    return (
-        <span
-            className={`inline-flex items-center rounded-lg border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider ${config.className}`}
-        >
-            {config.label}
-        </span>
-    );
-}
+// Re-export shared badge for backward compatibility
+export { JournalEntryStatusBadge as StatusBadge } from '@akount/ui/business';
 
 // ============================================================================
 // Entry Detail (expandable row)

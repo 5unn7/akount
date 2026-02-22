@@ -8,9 +8,9 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/components/ui/sheet';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
+import { ClientStatusBadge } from '@akount/ui/business';
 import { User, Mail, Phone, MapPin, FileText, DollarSign } from 'lucide-react';
 
 interface ClientDetailPanelProps {
@@ -19,11 +19,6 @@ interface ClientDetailPanelProps {
     onOpenChange: (open: boolean) => void;
     currency?: string;
 }
-
-const STATUS_BADGE_STYLES: Record<Client['status'], string> = {
-    active: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    inactive: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-};
 
 export function ClientDetailPanel({
     client,
@@ -34,7 +29,6 @@ export function ClientDetailPanel({
     if (!client) return null;
 
     const balanceDue = client.balanceDue ?? 0;
-    const statusStyle = STATUS_BADGE_STYLES[client.status];
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -50,9 +44,7 @@ export function ClientDetailPanel({
                                 Client for {client.entity.name}
                             </SheetDescription>
                         </div>
-                        <Badge className={`text-xs ${statusStyle}`}>
-                            {client.status.toUpperCase()}
-                        </Badge>
+                        <ClientStatusBadge status={client.status} />
                     </div>
                 </SheetHeader>
 

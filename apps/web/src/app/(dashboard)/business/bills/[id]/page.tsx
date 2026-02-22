@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { formatDate } from '@/lib/utils/date';
 import { notFound } from 'next/navigation';
 import { getBill } from '@/lib/api/bills';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
+import { BillStatusBadge } from '@akount/ui/business';
 import { FileText, Building2, Calendar, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { BillActions } from './bill-actions';
@@ -26,16 +26,6 @@ export async function generateMetadata({
     }
 }
 
-const STATUS_BADGE_STYLES: Record<string, string> = {
-    DRAFT: 'bg-ak-bg-3 text-muted-foreground border-ak-border',
-    PENDING: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
-    PAID: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    OVERDUE: 'bg-ak-red/10 text-ak-red border-ak-red/20',
-    CANCELLED: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-    PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
-};
-
-
 export default async function BillDetailPage({
     params,
 }: {
@@ -51,7 +41,6 @@ export default async function BillDetailPage({
     }
 
     const balanceDue = bill.total - bill.paidAmount;
-    const statusStyle = STATUS_BADGE_STYLES[bill.status] ?? '';
 
     return (
         <div className="flex-1 space-y-6">
@@ -72,9 +61,7 @@ export default async function BillDetailPage({
                         <h1 className="text-2xl font-heading font-normal">
                             Bill {bill.billNumber}
                         </h1>
-                        <Badge className={`text-xs ${statusStyle}`}>
-                            {bill.status.replace('_', ' ')}
-                        </Badge>
+                        <BillStatusBadge status={bill.status} />
                     </div>
                     <p className="text-sm text-muted-foreground">
                         Issued on {formatDate(bill.issueDate)} &middot;{' '}

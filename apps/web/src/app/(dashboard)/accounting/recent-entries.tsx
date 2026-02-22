@@ -2,34 +2,18 @@ import type { ListJournalEntriesResponse } from '@/lib/api/accounting';
 import { formatDate } from '@/lib/api/accounting';
 import { formatCurrency } from '@/lib/utils/currency';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
+import { JournalEntryStatusBadge } from '@akount/ui/business';
 import { BookOpen, CheckCircle2, XCircle, Archive } from 'lucide-react';
 
 interface RecentEntriesProps {
     journalEntries: ListJournalEntriesResponse;
 }
 
-const statusConfig = {
-    DRAFT: {
-        label: 'Draft',
-        variant: 'secondary' as const,
-        icon: BookOpen,
-    },
-    POSTED: {
-        label: 'Posted',
-        variant: 'success' as const,
-        icon: CheckCircle2,
-    },
-    VOIDED: {
-        label: 'Voided',
-        variant: 'destructive' as const,
-        icon: XCircle,
-    },
-    ARCHIVED: {
-        label: 'Archived',
-        variant: 'outline' as const,
-        icon: Archive,
-    },
+const STATUS_ICONS = {
+    DRAFT: BookOpen,
+    POSTED: CheckCircle2,
+    VOIDED: XCircle,
+    ARCHIVED: Archive,
 };
 
 export function RecentEntries({ journalEntries }: RecentEntriesProps) {
@@ -60,8 +44,7 @@ export function RecentEntries({ journalEntries }: RecentEntriesProps) {
 
             <div className="space-y-2">
                 {entries.map((entry) => {
-                    const config = statusConfig[entry.status];
-                    const Icon = config.icon;
+                    const Icon = STATUS_ICONS[entry.status] ?? BookOpen;
 
                     // Calculate total debits/credits
                     const totalDebits = entry.lines.reduce(
@@ -82,12 +65,7 @@ export function RecentEntries({ journalEntries }: RecentEntriesProps) {
                                         <span className="text-sm font-medium">
                                             JE-{entry.entryNumber}
                                         </span>
-                                        <Badge
-                                            variant={config.variant}
-                                            className="text-micro px-1.5 py-0"
-                                        >
-                                            {config.label}
-                                        </Badge>
+                                        <JournalEntryStatusBadge status={entry.status} />
                                     </div>
                                     <p className="text-xs text-muted-foreground truncate mt-0.5">
                                         {entry.memo || 'No description'}

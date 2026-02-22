@@ -19,7 +19,6 @@ import { formatCurrency } from '@/lib/utils/currency';
 import { formatDate } from '@/lib/api/transactions.types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
     Dialog,
     DialogContent,
@@ -32,7 +31,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { InvoiceStatusBadge, AccountStatusBadge } from '@akount/ui/business';
+import { InvoiceStatusBadge, ClientStatusBadge } from '@akount/ui/business';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { updateClient } from '@/lib/api/clients';
@@ -229,7 +228,7 @@ export function ClientDetailClient({ client: initialClient, invoices }: ClientDe
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-heading font-normal">{client.name}</h1>
-                        <StatusBadge status={client.status} />
+                        <ClientStatusBadge status={client.status} />
                     </div>
                     <p className="text-sm text-muted-foreground">
                         Client since {formatDate(client.createdAt)}

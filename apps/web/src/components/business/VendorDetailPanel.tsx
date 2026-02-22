@@ -8,9 +8,9 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/components/ui/sheet';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
+import { VendorStatusBadge } from '@akount/ui/business';
 import { Building2, Mail, Phone, MapPin, FileText, DollarSign } from 'lucide-react';
 
 interface VendorDetailPanelProps {
@@ -19,11 +19,6 @@ interface VendorDetailPanelProps {
     onOpenChange: (open: boolean) => void;
     currency?: string;
 }
-
-const STATUS_BADGE_STYLES: Record<Vendor['status'], string> = {
-    active: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    inactive: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-};
 
 export function VendorDetailPanel({
     vendor,
@@ -34,7 +29,6 @@ export function VendorDetailPanel({
     if (!vendor) return null;
 
     const balanceDue = vendor.balanceDue ?? 0;
-    const statusStyle = STATUS_BADGE_STYLES[vendor.status];
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -50,9 +44,7 @@ export function VendorDetailPanel({
                                 Vendor for {vendor.entity.name}
                             </SheetDescription>
                         </div>
-                        <Badge className={`text-xs ${statusStyle}`}>
-                            {vendor.status.toUpperCase()}
-                        </Badge>
+                        <VendorStatusBadge status={vendor.status} />
                     </div>
                 </SheetHeader>
 

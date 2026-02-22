@@ -21,7 +21,6 @@ import { formatCurrency } from '@/lib/utils/currency';
 import { formatDate } from '@/lib/api/transactions.types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
     Dialog,
     DialogContent,
@@ -35,7 +34,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { BillStatusBadge, AccountStatusBadge } from '@akount/ui/business';
+import { BillStatusBadge, VendorStatusBadge } from '@akount/ui/business';
 import {
     Table,
     TableBody,
@@ -219,7 +218,7 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-heading font-normal">{vendor.name}</h1>
-                        <StatusBadge status={vendor.status} />
+                        <VendorStatusBadge status={vendor.status} />
                     </div>
                     <p className="text-sm text-muted-foreground">
                         Vendor since {formatDate(vendor.createdAt)}

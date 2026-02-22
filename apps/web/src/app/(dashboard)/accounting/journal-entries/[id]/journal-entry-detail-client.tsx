@@ -16,9 +16,10 @@ import {
     Building,
     ExternalLink,
 } from 'lucide-react';
-import type { JournalEntry, JournalEntryStatus } from '@/lib/api/accounting';
+import type { JournalEntry } from '@/lib/api/accounting';
 import { formatAmount, formatDate } from '@/lib/api/transactions.types';
 import { Button } from '@/components/ui/button';
+import { JournalEntryStatusBadge } from '@akount/ui/business';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -32,29 +33,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
 import { approveEntryAction, voidEntryAction, deleteEntryAction } from '../actions';
-
-// ============================================================================
-// Status Badge (reused pattern from inline detail)
-// ============================================================================
-
-const STATUS_CONFIG: Record<JournalEntryStatus, { label: string; className: string }> = {
-    DRAFT: {
-        label: 'Draft',
-        className: 'bg-amber-500/15 text-amber-400 border-amber-500/20',
-    },
-    POSTED: {
-        label: 'Posted',
-        className: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
-    },
-    VOIDED: {
-        label: 'Voided',
-        className: 'bg-red-500/15 text-red-400 border-red-500/20',
-    },
-    ARCHIVED: {
-        label: 'Archived',
-        className: 'bg-zinc-500/15 text-zinc-400 border-zinc-500/20',
-    },
-};
 
 // ============================================================================
 // Source type config
@@ -87,7 +65,6 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
     const totalCredit = entry.lines.reduce((s, l) => s + l.creditAmount, 0);
     const isBalanced = totalDebit === totalCredit;
 
-    const statusConfig = STATUS_CONFIG[entry.status];
     const sourceConfig = entry.sourceType ? SOURCE_CONFIG[entry.sourceType] : null;
     const SourceIcon = sourceConfig?.icon ?? FileText;
 
@@ -139,11 +116,7 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
                         <h1 className="text-2xl sm:text-3xl font-heading font-normal">
                             {entryLabel}
                         </h1>
-                        <span
-                            className={`inline-flex items-center rounded-lg border px-2.5 py-1 text-xs font-semibold uppercase tracking-wider ${statusConfig.className}`}
-                        >
-                            {statusConfig.label}
-                        </span>
+                        <JournalEntryStatusBadge status={entry.status} />
                     </div>
                     <p className="text-sm text-muted-foreground">
                         {entry.memo}

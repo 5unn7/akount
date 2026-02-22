@@ -11,22 +11,14 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/utils/currency';
+import { InvoiceStatusBadge } from '@akount/ui/business';
+import { EmptyState } from '@akount/ui';
 
 interface InvoiceTableProps {
     invoices: Invoice[];
 }
-
-const STATUS_BADGE_STYLES: Record<Invoice['status'], string> = {
-    DRAFT: 'bg-ak-bg-3 text-muted-foreground border-ak-border',
-    SENT: 'bg-ak-blue/10 text-ak-blue border-ak-blue/20',
-    PAID: 'bg-ak-green/10 text-ak-green border-ak-green/20',
-    OVERDUE: 'bg-ak-red/10 text-ak-red border-ak-red/20',
-    CANCELLED: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
-    PARTIALLY_PAID: 'bg-primary/10 text-primary border-primary/20',
-};
 
 export function InvoiceTable({ invoices }: InvoiceTableProps) {
     const router = useRouter();
@@ -37,14 +29,10 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
 
     if (invoices.length === 0) {
         return (
-            <Card className="glass rounded-[14px]">
-                <CardContent className="p-12 text-center">
-                    <p className="text-muted-foreground">No invoices found</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Create your first invoice to get started
-                    </p>
-                </CardContent>
-            </Card>
+            <EmptyState
+                title="No invoices found"
+                description="Create your first invoice to get started"
+            />
         );
     }
 
@@ -81,7 +69,6 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                         <TableBody>
                             {invoices.map((invoice) => {
                                 const balanceDue = invoice.total - invoice.paidAmount;
-                                const statusStyle = STATUS_BADGE_STYLES[invoice.status];
 
                                 return (
                                     <TableRow
@@ -111,9 +98,7 @@ export function InvoiceTable({ invoices }: InvoiceTableProps) {
                                             {formatDate(invoice.dueDate)}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge className={`text-xs ${statusStyle}`}>
-                                                {invoice.status}
-                                            </Badge>
+                                            <InvoiceStatusBadge status={invoice.status} />
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <span className="font-mono font-medium">
