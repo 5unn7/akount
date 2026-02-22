@@ -370,6 +370,34 @@ export const navigationDomains: NavDomain[] = [
 ];
 
 /**
+ * Extract domain tabs for DomainTabs component.
+ * Derives tabs from navigationDomains — single source of truth.
+ * Filters out sub-pages (e.g., /accounting/reports/balance-sheet)
+ * so only top-level domain pages appear as tabs.
+ */
+export function getDomainTabs(
+  domainId: string
+): { label: string; href: string }[] {
+  const domain = navigationDomains.find((d) => d.id === domainId);
+  if (!domain) return [];
+
+  // Domain prefix, e.g. "/banking", "/accounting"
+  const prefix = `/${domainId}`;
+
+  return domain.items.filter((item) => {
+    // Keep the domain root (e.g. /accounting)
+    if (item.href === prefix) return true;
+    // Keep direct children (e.g. /accounting/reports) but not
+    // deeper sub-pages (e.g. /accounting/reports/balance-sheet)
+    const afterPrefix = item.href.slice(prefix.length + 1); // strip "/domain/"
+    return !afterPrefix.includes('/');
+  }).map((item) => ({
+    label: item.label,
+    href: item.href,
+  }));
+}
+
+/**
  * Filter navigation domains based on user role.
  */
 export function getNavigationForRole(role: Role): NavDomain[] {

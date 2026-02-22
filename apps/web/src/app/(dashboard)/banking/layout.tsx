@@ -1,12 +1,5 @@
 import { DomainTabs } from '@/components/shared/DomainTabs';
-
-const bankingTabs = [
-    { label: 'Accounts', href: '/banking/accounts' },
-    { label: 'Transactions', href: '/banking/transactions' },
-    { label: 'Reconciliation', href: '/banking/reconciliation' },
-    { label: 'Imports', href: '/banking/imports' },
-    { label: 'Transfers', href: '/banking/transfers' },
-];
+import { getDomainTabs } from '@/lib/navigation';
 
 export default function BankingLayout({
     children,
@@ -15,7 +8,7 @@ export default function BankingLayout({
 }) {
     return (
         <div className="space-y-4">
-            <DomainTabs tabs={bankingTabs} />
+            <DomainTabs tabs={getDomainTabs('banking')} />
             {children}
         </div>
     );

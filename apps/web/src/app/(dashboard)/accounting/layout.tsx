@@ -1,5 +1,5 @@
 import { DomainTabs } from '@/components/shared/DomainTabs';
-import { accountingTabs } from './tabs';
+import { getDomainTabs } from '@/lib/navigation';
 
 export default function AccountingLayout({
     children,
@@ -8,7 +8,7 @@ export default function AccountingLayout({
 }) {
     return (
         <div className="space-y-4">
-            <DomainTabs tabs={accountingTabs} />
+            <DomainTabs tabs={getDomainTabs('accounting')} />
             {children}
         </div>
     );

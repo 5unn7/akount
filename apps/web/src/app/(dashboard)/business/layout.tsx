@@ -1,12 +1,5 @@
 import { DomainTabs } from '@/components/shared/DomainTabs';
-
-const tabs = [
-  { label: 'Clients', href: '/business/clients' },
-  { label: 'Vendors', href: '/business/vendors' },
-  { label: 'Invoices', href: '/business/invoices' },
-  { label: 'Bills', href: '/business/bills' },
-  { label: 'Payments', href: '/business/payments' },
-];
+import { getDomainTabs } from '@/lib/navigation';
 
 export default function BusinessLayout({
   children,
@@ -15,7 +8,7 @@ export default function BusinessLayout({
 }) {
   return (
     <div className="space-y-4">
-      <DomainTabs tabs={tabs} />
+      <DomainTabs tabs={getDomainTabs('business')} />
       {children}
     </div>
   );

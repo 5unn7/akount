@@ -3,8 +3,9 @@
 > **Loaded automatically** when Claude accesses files in `apps/web/`
 > **Last verified:** 2026-02-21
 
-**Conventions:** See `.claude/rules/frontend-conventions.md` (Server/Client components, design system, Tailwind v4, SRP).
+**Conventions:** See `.claude/rules/frontend-conventions.md` (Server/Client components, design system, Tailwind v4, SRP, **shared utilities**).
 **Design aesthetic:** See `.claude/rules/design-aesthetic.md` (Financial Clarity theme, glass morphism, colors).
+**Shared utilities:** `@/lib/utils/currency` (formatCurrency), `@/lib/utils/date` (formatDate), status badges in `packages/ui`.
 
 ---
 
@@ -95,6 +96,7 @@ src/app/
 ## Sidebar Navigation (8 Domains)
 
 **Navigation Definition:** `src/lib/navigation.ts` — defines 8 domains with role-based filtering
+**Domain Tabs:** `getDomainTabs(domainId)` in `navigation.ts` — derives tabs from the same structure (single source of truth). **NEVER** define tab arrays inline in layout files. See `.claude/rules/frontend-conventions.md` § Domain Layout Pattern.
 
 | Domain | Label | Items | Status |
 |--------|-------|-------|--------|

@@ -92,6 +92,50 @@ apps/web/src/app/(dashboard)/<domain>/<resource>/
 └── <resource>-form.tsx   # Client Component (form)
 ```
 
+## Domain Layout Pattern (REQUIRED)
+
+Each domain under `(dashboard)/` uses a `layout.tsx` with `DomainTabs` for sub-page navigation. **Tabs are derived from `navigation.ts` — the single source of truth.**
+
+**NEVER define tab arrays inline in layout files.** Use `getDomainTabs()` from `@/lib/navigation`.
+
+```typescript
+// ✅ CORRECT — derive tabs from navigation.ts
+import { DomainTabs } from '@/components/shared/DomainTabs';
+import { getDomainTabs } from '@/lib/navigation';
+
+export default function BankingLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="space-y-4">
+            <DomainTabs tabs={getDomainTabs('banking')} />
+            {children}
+        </div>
+    );
+}
+```
+
+```typescript
+// ❌ WRONG — inline tab definition (duplicates navigation.ts)
+const bankingTabs = [
+    { label: 'Accounts', href: '/banking/accounts' },
+    { label: 'Transactions', href: '/banking/transactions' },
+];
+```
+
+**How it works:**
+- `getDomainTabs(domainId)` reads from `navigationDomains` in `navigation.ts`
+- Automatically filters out sub-pages (e.g., `/accounting/reports/balance-sheet`)
+- Only top-level domain pages appear as tabs
+- Tab order matches sidebar navigation order
+
+**When adding a new domain layout:**
+1. Add navigation items to `navigationDomains` in `src/lib/navigation.ts`
+2. Create `(dashboard)/<domain>/layout.tsx` using the pattern above
+3. That's it — tabs are derived automatically
+
 ## Loading and Error States (REQUIRED)
 
 Every `page.tsx` MUST have sibling `loading.tsx` and `error.tsx` files. No exceptions for dashboard pages.
@@ -208,6 +252,59 @@ const invoices = await apiClient<Invoice[]>({
 ```
 
 Auth tokens automatically included via Clerk.
+
+## Shared Utilities (REQUIRED - NO Inline Duplication)
+
+**NEVER create inline helper functions for common operations.** Search for existing utilities first.
+
+### Canonical Utility Locations
+
+| Utility | Location | Import Path |
+|---------|----------|-------------|
+| `formatCurrency` | `apps/web/src/lib/utils/currency.ts` | `@/lib/utils/currency` |
+| `formatCompactNumber` | `apps/web/src/lib/utils/currency.ts` | `@/lib/utils/currency` |
+| Date formatting | `apps/web/src/lib/utils/date.ts` | `@/lib/utils/date` (TODO: create) |
+| Validation helpers | `apps/api/src/lib/validators/` | Server-side only |
+
+**Before creating ANY helper function:**
+
+1. ✅ **Search existing utilities** — `Grep "functionName" apps/web/src/lib/`
+2. ✅ **Check if pattern exists** — `Grep "similar logic" apps/`
+3. ✅ **Import, don't duplicate** — If found, import from canonical location
+
+### ❌ Anti-Pattern: Inline Utility Duplication
+
+```typescript
+// ❌ WRONG - Creating inline formatCurrency
+function formatCurrency(cents: number): string {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+// ✅ CORRECT - Import from canonical location
+import { formatCurrency } from '@/lib/utils/currency';
+```
+
+**Why this matters:**
+- **Locale drift** — Inline implementations use different locales (`en-US` vs `en-CA`)
+- **Inconsistent formatting** — Some show decimals, others don't
+- **Maintenance debt** — Bug fixes require updating 10+ files instead of 1
+
+### Exception: Context-Specific Formatting
+
+Inline helpers are ONLY acceptable when:
+- The formatting is **unique to that component's UX** (e.g., no decimals in summary view)
+- The logic is **too specific** to be reusable (e.g., custom date split for calendar UI)
+- You add a comment explaining WHY it's not using the shared utility
+
+```typescript
+// ✅ ACCEPTABLE - Unique UX requirement
+// Note: Summary view uses no decimals for cleaner display (different from standard formatCurrency)
+const formatCurrencyValue = (cents: number) => {
+  if (cents === 0) return '—';
+  const dollars = cents / 100;
+  return `$${dollars.toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
+};
+```
 
 ## Single Responsibility Principle (SRP)
 
