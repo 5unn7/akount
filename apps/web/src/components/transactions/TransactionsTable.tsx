@@ -113,6 +113,7 @@ export function TransactionsTable({
                                         ref={(el) => { if (el) el.indeterminate = !!someSelected; }}
                                         onChange={toggleAll}
                                         className="h-4 w-4 rounded border-ak-border-3 bg-transparent accent-primary cursor-pointer"
+                                        aria-label="Select all transactions"
                                     />
                                 </TableHead>
                             )}
@@ -171,6 +172,7 @@ export function TransactionsTable({
                                                 checked={!!isSelected}
                                                 onChange={() => toggleOne(transaction.id)}
                                                 className="h-4 w-4 rounded border-ak-border-3 bg-transparent accent-primary cursor-pointer"
+                                                aria-label={`Select transaction ${transaction.description}`}
                                             />
                                         </TableCell>
                                     )}

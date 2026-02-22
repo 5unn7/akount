@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-21
 **Current Phase:** Phase 6 — Launch MVP
 
-> **300 tasks** · 🔴 3 critical · 🟠 60 high · 🟡 158 medium · ⚪ 30 low · ✅ 76 done
-> 🟢 110 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
+> **300 tasks** · 🔴 3 critical · 🟠 60 high · 🟡 156 medium · ⚪ 30 low · ✅ 78 done
+> 🟢 108 ready · 📦 97 backlog · 🔒 11 blocked · ⚠️ 0 stale · 🎯 0 high-risk
 
 ---
 
@@ -119,11 +119,11 @@
 | ~~FIN-20~~ | ~~Add audit log tests for FK validation (5 new tests)~~ | 30m | ⚪ Low | ✅ | | diagnose:audit-fk-bug |
 | UX-33 | App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill (isolated views currently) | 2-3h | 🟡 Medium | 🟢 | | audit:app-ux |
 | UX-34 | App-wide: Add bulk operations to list pages — Business (batch send/approve invoices, batch approve bills), Banking (batch deactivate accounts) | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
-| UX-35 | Sidebar: Add "Coming Soon" badge to 17 placeholder pages or hide unimplemented nav items | 30m | 🟡 Medium | 🟢 | | audit:app-ux [atomic] |
+| ~~UX-35~~ | ~~Sidebar: Add "Coming Soon" badge to 17 placeholder pages or hide unimplemented nav items~~ | 30m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |
 | UX-36 | Business: Add standalone "Create Client" / "Create Vendor" buttons on list pages (currently only via invoice/bill forms) | 1h | 🟡 Medium | 🟢 | | audit:app-ux |
 | ~~UX-37~~ | ~~Business: Add client/vendor edit capability in detail panels~~ (merged into DEV-122 + DEV-123) | 1-2h | 🟡 Medium | ✅ | | audit:app-ux |
 | ~~UX-38~~ | ~~Banking: Add active/inactive account filter toggle (backend supports `isActive` param, UI shows all)~~ | 30m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |
-| UX-39 | Banking: Add aria-labels to bulk action buttons, select-all checkbox, filter dropdowns (a11y) | 30m | 🟡 Medium | 🟢 | | audit:app-ux [atomic] |
+| ~~UX-39~~ | ~~Banking: Add aria-labels to bulk action buttons, select-all checkbox, filter dropdowns (a11y)~~ | 30m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |
 | ~~UX-40~~ | ~~Business: Add mark-overdue button on bill detail~~ (merged into UX-79) | 30m | 🟡 Medium | ✅ | | audit:app-ux |
 | ~~UX-41~~ | ~~Business: Fix hardcoded 'CAD' currency on vendor/client pages — should use entity functional currency~~ | 15m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |
 | ~~UX-42~~ | ~~Business: Add "View Journal Entry" link after posting invoice/bill to GL~~ | 30m | 🟡 Medium | ✅ | session | audit:app-ux [atomic] |

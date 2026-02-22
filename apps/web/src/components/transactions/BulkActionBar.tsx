@@ -103,7 +103,10 @@ export function BulkActionBar({
                             </Button>
                         ) : (
                             <Select onValueChange={handleCategorize} disabled={busy}>
-                                <SelectTrigger className="h-8 w-[140px] text-xs glass-2 rounded-lg border-ak-border">
+                                <SelectTrigger
+                                    className="h-8 w-[140px] text-xs glass-2 rounded-lg border-ak-border"
+                                    aria-label="Select category for bulk categorization"
+                                >
                                     <Tags className="h-3.5 w-3.5 mr-1.5" />
                                     <SelectValue placeholder="Categorize" />
                                 </SelectTrigger>
@@ -126,6 +129,7 @@ export function BulkActionBar({
                     className="h-8 rounded-lg text-xs hover:bg-ak-bg-3"
                     onClick={handleUncategorize}
                     disabled={busy}
+                    aria-label={`Remove category from ${selectedCount} selected transactions`}
                 >
                     {isUncategorizing ? (
                         <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
@@ -143,6 +147,7 @@ export function BulkActionBar({
                             size="sm"
                             className="h-8 rounded-lg text-xs text-ak-red hover:bg-ak-red/10 hover:text-ak-red"
                             disabled={busy}
+                            aria-label={`Delete ${selectedCount} selected transactions`}
                         >
                             {isDeleting ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
@@ -188,6 +193,7 @@ export function BulkActionBar({
                     className="h-8 w-8 p-0 rounded-lg hover:bg-ak-bg-3"
                     onClick={onClearSelection}
                     disabled={busy}
+                    aria-label="Clear selection"
                 >
                     <X className="h-3.5 w-3.5" />
                 </Button>
