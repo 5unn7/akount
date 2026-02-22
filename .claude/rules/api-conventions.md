@@ -123,6 +123,52 @@ Requests flow through:
 3. **Validation** (Fastify Zod) — Validate request schema
 4. **Route Handler** — Execute business logic
 
+### Validation Middleware Anti-Patterns
+
+`validateBody()`, `validateParams()`, `validateQuery()` return **Fastify preValidation functions**, NOT Zod schemas. NEVER chain Zod methods on them:
+
+```typescript
+// ❌ WRONG — .optional() is a Zod method, not a function method
+preValidation: [validateBody(Schema).optional()]
+
+// ✅ CORRECT — omit validation if body is optional for the endpoint
+preValidation: [validateParams(ParamsSchema)]
+// (no body validation needed for DELETE)
+```
+
+## Prisma Schema Consistency
+
+### Verify Constraints Before Error Handlers
+
+Before catching `P2002` (unique constraint violation), verify the `@@unique` constraint actually exists in the Prisma schema. Dead error handlers create false confidence.
+
+```typescript
+// ❌ BAD — catch P2002 but no @@unique exists → dead code, duplicates slip through
+catch (error) {
+  if (error.code === 'P2002') return reply.status(409).send({ error: 'Duplicate' });
+}
+
+// ✅ GOOD — verify constraint exists first
+// schema.prisma: @@unique([entityId, code])
+// THEN add the catch handler
+```
+
+### Partial Update Date Validation
+
+When validating date ranges on partial updates (PATCH), fetch the existing record first and validate against its current values for any field NOT in the update payload:
+
+```typescript
+// ❌ WRONG — only validates when BOTH dates in payload
+if (data.effectiveFrom && data.effectiveTo) {
+  if (data.effectiveFrom >= data.effectiveTo) throw new Error('Invalid range');
+}
+
+// ✅ CORRECT — check against existing record for partial updates
+const fromDate = data.effectiveFrom ?? existing.effectiveFrom;
+const toDate = data.effectiveTo ?? existing.effectiveTo;
+if (fromDate && toDate && fromDate >= toDate) throw new Error('Invalid range');
+```
+
 ## Single Responsibility Principle (SRP)
 
 **Every file should have ONE clear purpose.** Can you describe it without using "and"?

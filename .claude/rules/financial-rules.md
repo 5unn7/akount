@@ -77,6 +77,46 @@ const invoices = await prisma.invoice.findMany({
 })
 ```
 
+### AND-Based Query Composition (CRITICAL)
+
+When adding search/filter to a query that already has tenant scoping via `OR`, NEVER overwrite `where.OR`. Use `AND` to combine:
+
+```typescript
+// ❌ WRONG — search overwrites tenant OR, exposing all tenants
+const where = { OR: [{ entity: { tenantId } }, { entityId: null }] };
+if (search) { where.OR = [{ name: { contains: search } }]; } // DESTROYS tenant filter!
+
+// ✅ CORRECT — AND preserves tenant scoping alongside search
+const conditions = [{ OR: [{ entity: { tenantId } }, { entityId: null }] }];
+if (search) { conditions.push({ OR: [{ name: { contains: search } }] }); }
+const where = { AND: conditions };
+```
+
+### Immutable Global/Shared Records
+
+Records with `entityId: null` are global/shared. Mutations MUST exclude them:
+
+```typescript
+// ✅ READ — include global records
+where: { OR: [{ entity: { tenantId } }, { entityId: null }] }
+
+// ✅ WRITE — exclude global records (tenant can only mutate their own)
+where: { entityId: { not: null }, entity: { tenantId } }
+```
+
+### Foreign Key Ownership Validation (IDOR Prevention)
+
+When accepting FK references (glAccountId, categoryId, accountId), ALWAYS validate ownership:
+
+```typescript
+if (data.glAccountId) {
+  const gl = await prisma.gLAccount.findFirst({
+    where: { id: data.glAccountId, entity: { tenantId: this.tenantId } },
+  });
+  if (!gl) throw new Error('GL account not found or access denied');
+}
+```
+
 ## Source Document Preservation
 
 Journal entries created from documents (invoices, bills) MUST store:

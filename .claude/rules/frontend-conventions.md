@@ -253,6 +253,25 @@ const invoices = await apiClient<Invoice[]>({
 
 Auth tokens automatically included via Clerk.
 
+### Verify Function Signatures Before Calling
+
+When calling API client functions from `@/lib/api/*`, ALWAYS check the TypeScript signature. Don't assume parameter shape:
+
+```typescript
+// ❌ WRONG — passing object when function expects string
+const balances = await getAccountBalances({ entityId })
+
+// ✅ CORRECT — read the function definition first
+const balances = await getAccountBalances(entityId)
+```
+
+**Also guard against `undefined`:** If a value might be `undefined` (like `entityId` from search params), add an early return before calling:
+
+```typescript
+if (!entityId) return <EmptyState message="Select an entity" />
+const data = await fetchData(entityId) // now guaranteed string
+```
+
 ## Shared Utilities (REQUIRED - NO Inline Duplication)
 
 **NEVER create inline helper functions for common operations.** Search for existing utilities first.

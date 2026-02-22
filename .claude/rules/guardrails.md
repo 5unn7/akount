@@ -195,11 +195,16 @@ The following rules are **BLOCKED** by hooks and will fail commits:
   - Exception: `apps/api/src/lib/env.ts` (pre-boot validation)
 - ❌ **NEVER log sensitive data** — no tokens, passwords, PII
 
-### Database
+### Database & Query Safety
 - ❌ **NEVER use floats for money** — integer cents only
 - ❌ **NEVER hard delete financial records** — use soft delete
 - ❌ **NEVER skip tenantId filter** — every query needs it
 - ❌ **NEVER use wrong DB** — production uses `@akount/db` Prisma client
+- ❌ **NEVER overwrite `where.OR` with search filters** — use `AND` to combine tenant scoping with search (see `financial-rules.md`)
+- ❌ **NEVER allow tenants to mutate global records** — `entityId: null` records are read-only; mutations must use `entityId: { not: null }`
+- ❌ **NEVER accept FK references without ownership check** — validate glAccountId, categoryId etc. belong to tenant (IDOR prevention)
+- ❌ **NEVER add P2002 error handler without @@unique constraint** — verify Prisma schema first, dead handlers = false confidence
+- ❌ **NEVER chain `.optional()` on validation middleware** — `validateBody()` returns a function, not a Zod schema
 
 ### Code Quality
 - ❌ **NEVER use mock data in implementation** — mocks are for tests
