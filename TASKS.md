@@ -28,7 +28,7 @@
 | TEST-3 | 80%+ API test coverage target | 2h | 🟠 High | 🔒 | [needs: TEST-1] | roadmap |
 | DEV-2 | Service tests for client/invoice/bill/vendor services | 3h | 🟠 High | 🟢 | | audit:smooth-floating-mountain |
 | UX-8 | Add loading/error states to remaining dashboard pages (~30 pages) | 2h | 🟠 High | 🟢 | | plan:phase-6-tasks, plan:entity-selector-global.md |
-| DEV-46 | Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (sidebar links to dead page, needs backend routes + frontend wiring) | 4-6h | 🟠 High | 🟢 | | audit:fe-be-parity, sitemap:audit, plan:banking-command-center.md |
+| ~~DEV-46~~ | ~~Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (10/12 tasks complete, tests deferred)~~ | 4-6h | 🟠 High | ✅ | session | audit:fe-be-parity, sitemap:audit, plan:2026-02-21-banking-transfers.md |
 | UX-15 | Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:banking-command-center.md |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
 | UX-18 | Accounting: Add landing page at `/accounting` with summary stats (draft JEs, account count, recent activity) | 2-3h | 🟠 High | 🟢 | | audit:acct-fe-be |

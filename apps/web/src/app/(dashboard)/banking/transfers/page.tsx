@@ -1,42 +1,45 @@
-import type { Metadata } from "next";
-import { ArrowRightLeft } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Metadata } from 'next';
+import { TransfersClient } from './transfers-client';
+import { listAccounts } from '@/lib/api/accounts';
+import { listTransfers } from '@/lib/api/transfers';
+import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 
 export const metadata: Metadata = {
-    title: "Transfers | Akount",
-    description: "Manage transfers between your accounts",
+  title: 'Transfers | Akount',
+  description: 'Transfer money between your accounts',
 };
 
-export default function TransfersPage() {
-    return (
-        <div className="flex-1 space-y-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <h2 className="text-3xl font-bold tracking-tight font-heading">Transfers</h2>
-                    <Badge variant="outline" className="text-xs glass text-muted-foreground border-ak-border">
-                        Coming Soon
-                    </Badge>
-                </div>
-            </div>
+export default async function TransfersPage() {
+  const [{ entityId: rawEntityId }, allEntities] = await Promise.all([
+    getEntitySelection(),
+    listEntities(),
+  ]);
+  const entityId = validateEntityId(rawEntityId, allEntities) ?? allEntities[0]?.id;
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <ArrowRightLeft className="h-5 w-5" />
-                        Coming Soon
-                    </CardTitle>
-                    <CardDescription>
-                        Record and track transfers between your accounts.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        This feature is under development. It will support inter-account transfers,
-                        multi-currency conversions, and automatic journal entry creation.
-                    </p>
-                </CardContent>
-            </Card>
-        </div>
+  if (!entityId) {
+    return (
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <p className="text-sm text-muted-foreground">No entity found</p>
+      </div>
     );
+  }
+
+  // Fetch accounts and transfers
+  const [accountsResult, transfersResult] = await Promise.all([
+    listAccounts({ entityId, isActive: true }),
+    listTransfers({ entityId, limit: 50 }),
+  ]);
+
+  return (
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <TransfersClient
+        accounts={accountsResult.accounts}
+        initialTransfers={transfersResult.transfers}
+        entityId={entityId}
+        hasMore={transfersResult.hasMore}
+        nextCursor={transfersResult.nextCursor}
+      />
+    </div>
+  );
 }

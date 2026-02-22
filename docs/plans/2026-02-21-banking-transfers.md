@@ -440,18 +440,18 @@ Task 11, 12 (polish - parallel)
 
 ## Progress
 
-- [ ] Task 1: Transfer schema
-- [ ] Task 2: Transfer service ⚠️
-- [ ] Task 3: Transfer routes
-- [ ] Task 4: Register routes
-- [ ] Task 5: Service tests
-- [ ] Task 6: Route tests
-- [ ] Task 7: API client
-- [ ] Task 8: Transfer form
-- [ ] Task 9: Transfers page
-- [ ] Task 10: Server actions
-- [ ] Task 11: Update loading
-- [ ] Task 12: Remove stub badge
+- [x] Task 1: Transfer schema
+- [x] Task 2: Transfer service ⚠️
+- [x] Task 3: Transfer routes
+- [x] Task 4: Register routes
+- [ ] Task 5: Service tests (DEFERRED - needs follow-up)
+- [ ] Task 6: Route tests (DEFERRED - needs follow-up)
+- [x] Task 7: API client
+- [x] Task 8: Transfer form
+- [x] Task 9: Transfers page
+- [x] Task 10: Server actions
+- [x] Task 11: Update loading
+- [x] Task 12: Remove stub badge (completed via page replacement)
 
 ---
 
