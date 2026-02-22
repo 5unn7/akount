@@ -398,6 +398,89 @@ export async function deactivateTaxRate(id: string): Promise<TaxRate> {
 }
 
 // ============================================================================
+// Fiscal Period types
+// ============================================================================
+
+export type FiscalPeriodStatus = 'OPEN' | 'LOCKED' | 'CLOSED';
+
+export interface FiscalPeriod {
+    id: string;
+    fiscalCalendarId: string;
+    periodNumber: number;
+    name: string;
+    startDate: string;
+    endDate: string;
+    status: FiscalPeriodStatus;
+}
+
+export interface FiscalCalendar {
+    id: string;
+    entityId: string;
+    year: number;
+    startDate: string;
+    endDate: string;
+    periods: FiscalPeriod[];
+}
+
+export interface CreateCalendarInput {
+    entityId: string;
+    year: number;
+    startMonth: number;
+}
+
+// ============================================================================
+// Fiscal Period API functions
+// ============================================================================
+
+export async function listFiscalCalendars(
+    entityId: string
+): Promise<FiscalCalendar[]> {
+    return apiClient<FiscalCalendar[]>(
+        `/api/accounting/fiscal-periods?entityId=${entityId}`
+    );
+}
+
+export async function getFiscalCalendar(id: string): Promise<FiscalCalendar> {
+    return apiClient<FiscalCalendar>(`/api/accounting/fiscal-periods/${id}`);
+}
+
+export async function createFiscalCalendar(
+    input: CreateCalendarInput
+): Promise<FiscalCalendar> {
+    return apiClient<FiscalCalendar>('/api/accounting/fiscal-periods', {
+        method: 'POST',
+        body: JSON.stringify(input),
+    });
+}
+
+export async function lockFiscalPeriod(
+    periodId: string
+): Promise<FiscalPeriod> {
+    return apiClient<FiscalPeriod>(
+        `/api/accounting/fiscal-periods/periods/${periodId}/lock`,
+        { method: 'POST' }
+    );
+}
+
+export async function closeFiscalPeriod(
+    periodId: string
+): Promise<FiscalPeriod> {
+    return apiClient<FiscalPeriod>(
+        `/api/accounting/fiscal-periods/periods/${periodId}/close`,
+        { method: 'POST' }
+    );
+}
+
+export async function reopenFiscalPeriod(
+    periodId: string
+): Promise<FiscalPeriod> {
+    return apiClient<FiscalPeriod>(
+        `/api/accounting/fiscal-periods/periods/${periodId}/reopen`,
+        { method: 'POST' }
+    );
+}
+
+// ============================================================================
 // Formatting helpers
 // ============================================================================
 
