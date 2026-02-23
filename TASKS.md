@@ -1,6 +1,6 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-23
+**Last Updated:** 2026-02-23 14:30
 **Current Phase:** Phase 6 — Launch MVP
 
 > **209 product tasks** · 🔴 2 critical · 🟠 43 high · 🟡 104 medium · ⚪ 23 low · ✅ 114 done
@@ -36,8 +36,8 @@
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
 | UX-18 | Accounting: Add landing page at `/accounting` with summary stats (draft JEs, account count, recent activity) | 2-3h | 🟠 High | 🟢 | | audit:acct-fe-be |
 | ~~DEV-59~~ | ~~Accounting: Add transaction posting UI — post bank txns to GL~~ | 3-4h | 🟠 High | ✅ done | | audit:acct-fe-be |
-| UX-31 | Business: Add search/filter bar on invoice, bill, client, vendor lists (no search, status filter, or date filter) | 2-3h | 🟠 High | 🟢 | | audit:app-ux |
-| UX-32 | Business: Add pagination controls — backend supports cursor pagination, frontend shows max 50 items with no "Load More" | 1-2h | 🟠 High | 🟢 | | audit:app-ux |
+| ~~UX-31~~ | ~~Business: Add search/filter bar on invoice, bill, client, vendor lists~~ | 2-3h | 🟠 High | ✅ done | cc6c96c | audit:app-ux |
+| ~~UX-32~~ | ~~Business: Add pagination controls — cursor pagination + Load More~~ | 1-2h | 🟠 High | ✅ done | cc6c96c | audit:app-ux |
 | DEV-71 | Business: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | DEV-72 | Business: Add void invoice action (POST /business/invoices/:id/void exists, no UI button) | 1h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | DEV-73 | Business: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
@@ -87,7 +87,7 @@
 | DRY-2 | CSV sanitization: deduplicate between report-export and data-export | 30m | 🟡 Medium | ✅ done | | review:simplicity [atomic] |
 | DRY-3 | Report routes: extract shared 40-line handler pattern into helper | 1h | 🟡 Medium | 🟢 | | review:simplicity [atomic] |
 | ~~DRY-8~~ | ~~Transfer routes: refactor string-matching error handling to use `AccountingError.statusCode` pattern (consistent with all other routes)~~ | 15-20m | 🟡 Medium | ✅ done | | review:transfer-service [atomic] |
-| DRY-9 | Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency` | 1h | 🔴 High | 🟢 | | inline-bandaid-audit [atomic] |
+| ~~DRY-9~~ | ~~Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency`~~ | 1h | 🔴 High | ✅ done | 3860bf0 | inline-bandaid-audit [atomic] |
 | DRY-10 | Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit [atomic] |
 | DRY-11 | ~~Extract StatusBadge components to `packages/ui` — create InvoiceStatusBadge, BillStatusBadge, AccountStatusBadge~~ | 2h | 🟡 Medium | ✅ done | 7640e1f | inline-bandaid-audit |
 | DRY-12 | ~~Create `<EmptyState>` component — consolidate 11+ inline empty state patterns~~ | 1h | 🟢 Low | ✅ done | 913fa60 | inline-bandaid-audit [atomic] |
