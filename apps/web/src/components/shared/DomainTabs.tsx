@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { getDomainTabs } from '@/lib/navigation';
 
 interface Tab {
     label: string;
@@ -10,12 +11,18 @@ interface Tab {
 }
 
 interface DomainTabsProps {
-    tabs: Tab[];
+    /** Pass explicit tabs, or omit to auto-detect from URL path. */
+    tabs?: Tab[];
     className?: string;
 }
 
 export function DomainTabs({ tabs, className }: DomainTabsProps) {
     const pathname = usePathname();
+
+    // Auto-detect domain from pathname if no tabs passed
+    const resolvedTabs = tabs ?? getDomainTabs(pathname.split('/')[1] ?? '');
+
+    if (resolvedTabs.length === 0) return null;
 
     return (
         <div
@@ -24,10 +31,10 @@ export function DomainTabs({ tabs, className }: DomainTabsProps) {
                 className
             )}
         >
-            {tabs.map((tab) => {
+            {resolvedTabs.map((tab) => {
                 const isActive =
                     pathname === tab.href ||
-                    (tab.href !== tabs[0]?.href && pathname.startsWith(tab.href + '/'));
+                    (tab.href !== resolvedTabs[0]?.href && pathname.startsWith(tab.href + '/'));
 
                 return (
                     <Link

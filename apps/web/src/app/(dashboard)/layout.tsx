@@ -4,6 +4,8 @@ import { Toaster } from 'sonner'
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { OnboardingOverlay } from "@/components/onboarding/OnboardingOverlay";
+import { ContentPanel } from "@/components/shared/ContentPanel";
+import { DomainTabs } from "@/components/shared/DomainTabs";
 import { KeyboardShortcutsModal } from "@/components/shared/KeyboardShortcutsModal";
 import { ReactQueryProvider } from '@/providers/query-provider';
 import { EntityProvider } from '@/providers/entity-provider';
@@ -123,8 +125,9 @@ export default async function DashboardLayout({
                     <Sidebar role={role} />
                     <main className="md:pl-16">
                         <Navbar entities={entities} />
-                        <div className="px-4 md:px-6 py-4">
-                            {children}
+                        <div className="px-4 md:px-6 py-4 space-y-4">
+                            <DomainTabs />
+                            <ContentPanel>{children}</ContentPanel>
                         </div>
                     </main>
                     {showOnboardingOverlay && <OnboardingOverlay />}
