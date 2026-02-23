@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle, Tag, CheckCircle } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils/currency';
 
 /**
  * Import Preview Table
@@ -60,15 +61,6 @@ export function ImportPreviewTable({
   columnMappings,
   preview,
 }: ImportPreviewTableProps) {
-  // Format amount to display (cents to dollars)
-  const formatAmount = (cents: number): string => {
-    const dollars = cents / 100;
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(dollars);
-  };
-
   // Format date
   const formatDate = (dateStr: string): string => {
     const date = new Date(dateStr);
@@ -201,7 +193,7 @@ export function ImportPreviewTable({
                     {/* Amount */}
                     <td className="py-3 px-4 text-sm text-right">
                       <span className={`font-mono font-medium ${transaction.amount < 0 ? 'text-ak-red' : 'text-ak-green'}`}>
-                        {formatAmount(transaction.amount)}
+                        {formatCurrency(transaction.amount, 'USD')}
                       </span>
                     </td>
 

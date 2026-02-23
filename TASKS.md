@@ -1,10 +1,10 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-22
+**Last Updated:** 2026-02-23
 **Current Phase:** Phase 6 — Launch MVP
 
-> **199 product tasks** · 🔴 2 critical · 🟠 33 high · 🟡 104 medium · ⚪ 23 low · ✅ 114 done
-> 192 active · 57% progress
+> **209 product tasks** · 🔴 2 critical · 🟠 43 high · 🟡 104 medium · ⚪ 23 low · ✅ 114 done
+> 202 active · 55% progress
 >
 > _Note: 43 Linear PM infrastructure tasks moved to [LINEAR-TASKS.md](LINEAR-TASKS.md)_
 
@@ -256,6 +256,16 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | MKT-1 | Landing page copy and design | 3h | 🟠 High | 📦 | | manual |
+| MKT-3 | Install 3D dependencies (`@react-three/fiber`, `@react-three/drei`, `three`) | 15m | 🟠 High | 🟢 | | plan:2026-02-23-marketing-landing-page.md |
+| MKT-4 | Create hero section with 3D orb and parallax effect | 2-3h | 🟠 High | 🟢 | [needs: MKT-3] | plan:2026-02-23-marketing-landing-page.md |
+| MKT-5 | Create problem statement section (3 pain point cards) | 1-2h | 🟠 High | 🟢 | | plan:2026-02-23-marketing-landing-page.md |
+| MKT-6 | Create solution pillars section (3 GlowCard components) | 2h | 🟠 High | 🟢 | | plan:2026-02-23-marketing-landing-page.md |
+| MKT-7 | Create 3D feature showcase (interactive card grid) | 3-4h | 🟠 High | 🟢 | [needs: MKT-3] | plan:2026-02-23-marketing-landing-page.md |
+| MKT-8 | Create stats/social proof section (animated counters) | 1-2h | 🟠 High | 🟢 | | plan:2026-02-23-marketing-landing-page.md |
+| MKT-9 | Create final CTA section (gradient background, glass container) | 1h | 🟠 High | 🟢 | | plan:2026-02-23-marketing-landing-page.md |
+| MKT-10 | Create landing page layout (minimal nav + footer) | 1-2h | 🟠 High | 🟢 | | plan:2026-02-23-marketing-landing-page.md |
+| MKT-11 | Replace root page with landing (remove redirect) | 30m | 🟠 High | 🟢 | [needs: MKT-4, MKT-5, MKT-6, MKT-7, MKT-8, MKT-9, MKT-10] | plan:2026-02-23-marketing-landing-page.md |
+| MKT-12 | Add scroll animations and performance optimization (Lighthouse >90) | 2-3h | 🟠 High | 🟢 | [needs: MKT-11] | plan:2026-02-23-marketing-landing-page.md |
 
 ### Medium / Low
 

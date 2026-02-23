@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatDate, formatDateTime } from '@/lib/utils/date';
+import { formatCurrency } from '@/lib/utils/currency';
 
 export const metadata: Metadata = {
     title: 'Import Details | Akount',
@@ -60,14 +61,6 @@ const STATUS_CONFIG: Record<string, {
         label: 'Failed',
     },
 };
-
-function formatAmount(cents: number, currency: string = 'CAD'): string {
-    const dollars = cents / 100;
-    return new Intl.NumberFormat('en-CA', {
-        style: 'currency',
-        currency,
-    }).format(dollars);
-}
 
 export default async function ImportDetailPage({ params }: ImportDetailPageProps) {
     const { id } = await params;
@@ -227,7 +220,7 @@ export default async function ImportDetailPage({ params }: ImportDetailPageProps
                                                     txn.amount >= 0 ? 'text-ak-green' : 'text-ak-red'
                                                 }`}
                                             >
-                                                {formatAmount(txn.amount, txn.currency)}
+                                                {formatCurrency(txn.amount, txn.currency)}
                                             </span>
                                         </TableCell>
                                     </TableRow>
