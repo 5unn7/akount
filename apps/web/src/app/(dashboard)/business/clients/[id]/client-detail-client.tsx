@@ -15,8 +15,9 @@ import {
 } from 'lucide-react';
 import type { Client } from '@/lib/api/clients';
 import type { Invoice } from '@/lib/api/invoices';
+import { apiFetch } from '@/lib/api/client-browser';
 import { formatCurrency } from '@/lib/utils/currency';
-import { formatDate } from '@/lib/api/transactions.types';
+import { formatDate } from '@/lib/utils/date';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,9 +33,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { InvoiceStatusBadge, ClientStatusBadge } from '@akount/ui/business';
+import { EmptyState } from '@akount/ui';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { updateClient } from '@/lib/api/clients';
 
 // ============================================================================
 // Types
@@ -85,13 +86,16 @@ function EditClientDialog({
         setIsSubmitting(true);
 
         try {
-            const updated = await updateClient(client.id, {
-                name: formData.name,
-                email: formData.email || null,
-                phone: formData.phone || null,
-                address: formData.address || null,
-                paymentTerms: formData.paymentTerms || null,
-                status: formData.status,
+            const updated = await apiFetch<Client>(`/api/business/clients/${client.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email || null,
+                    phone: formData.phone || null,
+                    address: formData.address || null,
+                    paymentTerms: formData.paymentTerms || null,
+                    status: formData.status,
+                }),
             });
             onUpdate(updated);
             toast.success('Client updated successfully');
@@ -388,12 +392,12 @@ export function ClientDetailClient({ client: initialClient, invoices }: ClientDe
                         </CardHeader>
                         <CardContent>
                             {invoices.length === 0 ? (
-                                <div className="text-center py-12">
-                                    <FileText className="h-8 w-8 text-muted-foreground/20 mx-auto mb-3" />
-                                    <p className="text-sm text-muted-foreground">
-                                        No invoices yet for this client
-                                    </p>
-                                </div>
+                                <EmptyState
+                                    variant="inline"
+                                    size="sm"
+                                    icon={FileText}
+                                    title="No invoices yet for this client"
+                                />
                             ) : (
                                 <div className="space-y-3">
                                     {invoices.map((invoice) => (

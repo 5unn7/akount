@@ -6,7 +6,7 @@ import { BalanceEquation } from './balance-equation';
 import { IncomeSummary } from './income-summary';
 import { COASnapshot } from './coa-snapshot';
 import { RecentEntries } from './recent-entries';
-import { AccountingEmptyState } from './accounting-empty';
+import { AccountingSetupCards } from './accounting-empty';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Plus, FileText, Calendar, Percent } from 'lucide-react';
@@ -21,7 +21,11 @@ export default async function AccountingOverviewPage() {
 
     // Need a valid entity to fetch accounting data
     if (!entityId) {
-        return <AccountingEmptyState />;
+        return (
+            <div className="flex-1 space-y-6 p-8 pt-6">
+                <AccountingSetupCards />
+            </div>
+        );
     }
 
     // Fetch data in parallel
@@ -30,15 +34,13 @@ export default async function AccountingOverviewPage() {
         listJournalEntries({ entityId, limit: 5 }),
     ]);
 
-    // Check for new user (no GL accounts)
     const isNewUser = balances.length === 0;
-
-    if (isNewUser) {
-        return <AccountingEmptyState />;
-    }
 
     return (
         <div className="flex-1 space-y-6 p-8 pt-6">
+            {/* Setup cards for new users */}
+            {isNewUser && <AccountingSetupCards />}
+
             {/* Quick Stats */}
             <div className="grid gap-4 md:grid-cols-3">
                 <div className="glass rounded-xl p-6">

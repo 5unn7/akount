@@ -17,8 +17,9 @@ import {
 } from 'lucide-react';
 import type { Vendor } from '@/lib/api/vendors';
 import type { Bill } from '@/lib/api/bills';
+import { apiFetch } from '@/lib/api/client-browser';
 import { formatCurrency } from '@/lib/utils/currency';
-import { formatDate } from '@/lib/api/transactions.types';
+import { formatDate } from '@/lib/utils/date';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -44,7 +45,6 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { toast } from 'sonner';
-import { updateVendor } from '@/lib/api/vendors';
 
 interface VendorDetailClientProps {
     vendor: Vendor;
@@ -78,13 +78,16 @@ function EditVendorDialog({
         setIsSubmitting(true);
 
         try {
-            const updated = await updateVendor(vendor.id, {
-                name: formData.name,
-                email: formData.email || null,
-                phone: formData.phone || null,
-                address: formData.address || null,
-                paymentTerms: formData.paymentTerms || null,
-                status: formData.status,
+            const updated = await apiFetch<Vendor>(`/api/business/vendors/${vendor.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email || null,
+                    phone: formData.phone || null,
+                    address: formData.address || null,
+                    paymentTerms: formData.paymentTerms || null,
+                    status: formData.status,
+                }),
             });
             onUpdate(updated);
             toast.success('Vendor updated successfully');

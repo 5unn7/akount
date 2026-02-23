@@ -15,6 +15,12 @@ export interface EmptyStateProps {
     size?: 'sm' | 'md' | 'lg';
     /** Action content (buttons, links, forms) rendered below description */
     children?: ReactNode;
+    /** Progress indicator (e.g., setup completion) */
+    progress?: {
+        current: number;
+        total: number;
+        label: string;
+    };
     /** Additional classes on the outermost element */
     className?: string;
 }
@@ -26,6 +32,7 @@ const sizeConfig = {
         iconClass: 'h-8 w-8 text-muted-foreground/20',
         title: 'text-xs text-muted-foreground',
         description: 'text-xs text-muted-foreground mt-1',
+        actionsMargin: 'mt-3',
         gap: 'gap-2',
     },
     md: {
@@ -33,8 +40,9 @@ const sizeConfig = {
         iconWrapper: 'h-12 w-12 rounded-full bg-ak-bg-3 flex items-center justify-center mb-4',
         iconClass: 'h-6 w-6 text-muted-foreground',
         title: 'text-muted-foreground font-medium',
-        description: 'text-sm text-muted-foreground mt-1',
-        gap: 'gap-2',
+        description: 'text-sm text-muted-foreground mt-1 max-w-md',
+        actionsMargin: 'mt-5',
+        gap: 'gap-3',
     },
     lg: {
         padding: 'py-16',
@@ -42,6 +50,7 @@ const sizeConfig = {
         iconClass: 'h-8 w-8 text-primary',
         title: 'text-lg font-heading font-normal mb-2',
         description: 'text-sm text-muted-foreground mb-6 max-w-sm',
+        actionsMargin: '',
         gap: 'gap-3',
     },
 } as const;
@@ -78,6 +87,16 @@ const sizeConfig = {
  *   <Button onClick={handleCreate}>New Entry</Button>
  * </EmptyState>
  * ```
+ *
+ * @example With progress bar
+ * ```tsx
+ * <EmptyState
+ *   icon={Settings}
+ *   title="Setup in progress"
+ *   description="Complete the remaining steps to finish onboarding."
+ *   progress={{ current: 2, total: 4, label: "Setup progress" }}
+ * />
+ * ```
  */
 export function EmptyState({
     title,
@@ -86,6 +105,7 @@ export function EmptyState({
     variant = 'card',
     size = 'md',
     children,
+    progress,
     className,
 }: EmptyStateProps) {
     const config = sizeConfig[size];
@@ -111,8 +131,22 @@ export function EmptyState({
             {description && (
                 <p className={config.description}>{description}</p>
             )}
+            {progress && (
+                <div className="w-full max-w-xs mt-4">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                        <span>{progress.label}</span>
+                        <span className="font-mono">{progress.current}/{progress.total}</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-ak-bg-3 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
+                            style={{ width: `${progress.total > 0 ? (progress.current / progress.total) * 100 : 0}%` }}
+                        />
+                    </div>
+                </div>
+            )}
             {children && (
-                <div className={cn('flex items-center', config.gap)}>
+                <div className={cn('flex items-center', config.actionsMargin, config.gap)}>
                     {children}
                 </div>
             )}

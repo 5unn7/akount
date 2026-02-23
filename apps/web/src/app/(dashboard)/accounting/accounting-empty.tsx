@@ -1,177 +1,137 @@
 'use client';
 
+import { GlowCard } from '@/components/ui/glow-card';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { CheckCircle2, ListTree, BookOpen, BarChart3, Package } from 'lucide-react';
+import {
+    ListTree,
+    BookOpen,
+    BarChart3,
+    Package,
+    ArrowRight,
+    Sparkles,
+} from 'lucide-react';
 import Link from 'next/link';
 
-export function AccountingEmptyState() {
+const SETUP_STEPS = [
+    {
+        title: 'Chart of Accounts',
+        description: 'Seed your financial foundation',
+        icon: ListTree,
+        color: 'text-ak-green',
+        dimBg: 'bg-ak-green-dim',
+        glowColor: 'rgba(52, 211, 153, 0.04)',
+        href: '/accounting/chart-of-accounts',
+        cta: 'Set Up',
+        primary: true,
+    },
+    {
+        title: 'Fiscal Year',
+        description: '12 monthly reporting periods',
+        icon: BookOpen,
+        color: 'text-ak-blue',
+        dimBg: 'bg-ak-blue-dim',
+        glowColor: 'rgba(96, 165, 250, 0.04)',
+        href: '/accounting/fiscal-periods',
+        cta: 'Create',
+        primary: false,
+    },
+    {
+        title: 'Tax Rates',
+        description: 'GST, HST, PST presets',
+        icon: BarChart3,
+        color: 'text-ak-purple',
+        dimBg: 'bg-ak-purple-dim',
+        glowColor: 'rgba(167, 139, 250, 0.04)',
+        href: '/accounting/tax-rates',
+        cta: 'Configure',
+        primary: false,
+    },
+    {
+        title: 'Fixed Assets',
+        description: 'Equipment & depreciation',
+        icon: Package,
+        color: 'text-ak-teal',
+        dimBg: 'bg-ak-teal-dim',
+        glowColor: 'rgba(45, 212, 191, 0.04)',
+        href: '/accounting/assets',
+        cta: 'Add',
+        primary: false,
+    },
+] as const;
+
+/**
+ * Setup action cards shown at the top of the accounting overview
+ * for new users who haven't configured their books yet.
+ */
+export function AccountingSetupCards() {
     return (
-        <div className="flex-1 space-y-6 p-8 pt-6">
-            <div className="max-w-3xl mx-auto">
-                {/* Header */}
-                <div className="text-center space-y-2 mb-8">
-                    <h1 className="text-3xl font-heading">Set Up Your Books</h1>
-                    <p className="text-muted-foreground font-heading italic">
-                        Get started with professional accounting in a few easy steps
-                    </p>
+        <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center gap-3">
+                <div className="relative">
+                    <div className="h-9 w-9 rounded-full bg-ak-pri-dim flex items-center justify-center">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="absolute -inset-2 rounded-full bg-ak-pri-glow blur-xl glow-animate pointer-events-none" />
                 </div>
-
-                {/* Setup Steps */}
-                <div className="space-y-4">
-                    {/* Step 1: Seed COA */}
-                    <Card className="glass border-ak-border-2 p-6">
-                        <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-10 h-10 rounded-full glass-2 flex items-center justify-center border border-ak-border-2">
-                                <span className="text-sm font-semibold text-primary">
-                                    1
-                                </span>
-                            </div>
-                            <div className="flex-1 space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <ListTree className="h-5 w-5 text-ak-green" />
-                                    <h3 className="text-lg font-heading">
-                                        Set Up Chart of Accounts
-                                    </h3>
-                                </div>
-                                <p className="text-sm text-muted-foreground">
-                                    Start with a standard Canadian chart of accounts, pre-configured
-                                    with common business account types (Assets, Liabilities, Equity,
-                                    Revenue, Expenses).
-                                </p>
-                                <Button
-                                    asChild
-                                    size="sm"
-                                    className="gap-2 bg-primary hover:bg-ak-pri-hover text-black font-medium"
-                                >
-                                    <Link href="/accounting/chart-of-accounts">
-                                        <CheckCircle2 className="h-4 w-4" />
-                                        Seed Default COA
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    </Card>
-
-                    {/* Step 2: Configure Fiscal Year */}
-                    <Card className="glass border-ak-border-2 p-6">
-                        <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-10 h-10 rounded-full glass-2 flex items-center justify-center border border-ak-border-2">
-                                <span className="text-sm font-semibold text-primary">
-                                    2
-                                </span>
-                            </div>
-                            <div className="flex-1 space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-5 w-5 text-ak-blue" />
-                                    <h3 className="text-lg font-heading">
-                                        Set Fiscal Year
-                                    </h3>
-                                </div>
-                                <p className="text-sm text-muted-foreground">
-                                    Define your fiscal year start date and create 12 monthly periods.
-                                    This structure enables period-based reporting and fiscal period
-                                    locking.
-                                </p>
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    size="sm"
-                                    className="gap-2"
-                                >
-                                    <Link href="/accounting/fiscal-periods">
-                                        Create Fiscal Year
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    </Card>
-
-                    {/* Step 3: Optional - Configure Tax Rates */}
-                    <Card className="glass border-ak-border-2 p-6">
-                        <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-10 h-10 rounded-full glass-2 flex items-center justify-center border border-ak-border-2">
-                                <span className="text-sm font-semibold text-muted-foreground">
-                                    3
-                                </span>
-                            </div>
-                            <div className="flex-1 space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <BarChart3 className="h-5 w-5 text-ak-purple" />
-                                    <h3 className="text-lg font-heading">
-                                        Configure Tax Rates
-                                        <span className="text-xs text-muted-foreground ml-2">
-                                            (Optional)
-                                        </span>
-                                    </h3>
-                                </div>
-                                <p className="text-sm text-muted-foreground">
-                                    Set up GST/HST/PST/QST rates for your jurisdiction. Canadian
-                                    presets available (13% HST-ON, 5% GST, 9.975% QST, etc.).
-                                </p>
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    size="sm"
-                                    className="gap-2"
-                                >
-                                    <Link href="/accounting/tax-rates">
-                                        Configure Tax Rates
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    </Card>
-
-                    {/* Step 4: Optional - Capitalize Assets */}
-                    <Card className="glass border-ak-border-2 p-6">
-                        <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-10 h-10 rounded-full glass-2 flex items-center justify-center border border-ak-border-2">
-                                <span className="text-sm font-semibold text-muted-foreground">
-                                    4
-                                </span>
-                            </div>
-                            <div className="flex-1 space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <Package className="h-5 w-5 text-ak-teal" />
-                                    <h3 className="text-lg font-heading">
-                                        Capitalize Assets
-                                        <span className="text-xs text-muted-foreground ml-2">
-                                            (Optional)
-                                        </span>
-                                    </h3>
-                                </div>
-                                <p className="text-sm text-muted-foreground">
-                                    Track fixed assets like equipment, vehicles, and buildings.
-                                    Automatically calculate depreciation and generate journal entries.
-                                </p>
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    size="sm"
-                                    className="gap-2"
-                                >
-                                    <Link href="/accounting/assets">
-                                        Capitalize Your First Asset
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    </Card>
-                </div>
-
-                {/* Help Text */}
-                <div className="mt-8 text-center">
+                <div>
+                    <h2 className="text-lg font-heading font-normal">
+                        Set Up Your Books
+                    </h2>
                     <p className="text-xs text-muted-foreground">
-                        Need help? Check out our{' '}
-                        <Link
-                            href="/help/accounting"
-                            className="text-primary hover:underline"
-                        >
-                            Accounting Guide
-                        </Link>
+                        Complete these steps to unlock your accounting dashboard
                     </p>
                 </div>
+            </div>
+
+            {/* 4-card grid */}
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {SETUP_STEPS.map((step) => {
+                    const Icon = step.icon;
+                    return (
+                        <GlowCard
+                            key={step.title}
+                            variant="glass"
+                            glowColor={step.glowColor}
+                            className="p-5 hover:-translate-y-px hover:border-ak-border-2 transition-all"
+                        >
+                            <div className="space-y-3">
+                                <div
+                                    className={`h-10 w-10 rounded-lg ${step.dimBg} flex items-center justify-center`}
+                                >
+                                    <Icon
+                                        className={`h-5 w-5 ${step.color}`}
+                                    />
+                                </div>
+                                <div>
+                                    <h3 className="font-heading font-normal text-sm">
+                                        {step.title}
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        {step.description}
+                                    </p>
+                                </div>
+                                <Button
+                                    asChild
+                                    size="sm"
+                                    className={
+                                        step.primary
+                                            ? 'gap-1.5 bg-primary hover:bg-ak-pri-hover text-black font-medium w-full'
+                                            : 'gap-1.5 w-full'
+                                    }
+                                    variant={
+                                        step.primary ? 'default' : 'outline'
+                                    }
+                                >
+                                    <Link href={step.href}>
+                                        {step.cta}
+                                        <ArrowRight className="h-3.5 w-3.5" />
+                                    </Link>
+                                </Button>
+                            </div>
+                        </GlowCard>
+                    );
+                })}
             </div>
         </div>
     );

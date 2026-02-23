@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { listGLAccounts, type GLAccount } from '@/lib/api/accounting';
+import type { GLAccount } from '@/lib/api/accounting';
+import { apiFetch } from '@/lib/api/client-browser';
 import {
     Select,
     SelectContent,
@@ -27,7 +28,7 @@ export function GLAccountSelector({
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        listGLAccounts({ entityId, isActive: true })
+        apiFetch<GLAccount[]>(`/api/accounting/chart-of-accounts?entityId=${entityId}&isActive=true`)
             .then((accounts) => {
                 setGlAccounts(accounts);
                 setLoading(false);

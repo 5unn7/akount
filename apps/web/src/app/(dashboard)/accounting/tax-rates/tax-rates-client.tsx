@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { TaxRate, CreateTaxRateInput, UpdateTaxRateInput } from '@/lib/api/accounting';
-import { formatDate } from '@/lib/api/accounting';
+import { formatDate } from '@/lib/utils/date';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';

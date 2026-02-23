@@ -45,6 +45,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { EmptyState } from '@akount/ui';
 import {
     createCategoryAction,
     updateCategoryAction,
@@ -266,16 +267,16 @@ export function CategoriesClient({ initialCategories }: CategoriesClientProps) {
             </div>
 
             {categories.length === 0 && (
-                <Card className="glass">
-                    <CardContent className="flex flex-col items-center justify-center py-12">
-                        <Tag className="h-12 w-12 text-muted-foreground/20 mb-4" />
-                        <p className="text-sm text-muted-foreground">No categories yet</p>
-                        <Button onClick={openCreateSheet} variant="outline" className="mt-4 gap-2">
-                            <Plus className="h-4 w-4" />
-                            Create First Category
-                        </Button>
-                    </CardContent>
-                </Card>
+                <EmptyState
+                    icon={Tag}
+                    title="No categories yet"
+                    description="Organize your transactions with custom categories."
+                >
+                    <Button onClick={openCreateSheet} variant="outline" className="gap-2">
+                        <Plus className="h-4 w-4" />
+                        Create First Category
+                    </Button>
+                </EmptyState>
             )}
 
             {/* Edit/Create Sheet */}

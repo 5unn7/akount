@@ -5,6 +5,7 @@ import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { JournalEntryForm } from '../journal-entry-form';
 import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@akount/ui';
+import { Building2 } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'New Journal Entry | Akount',
@@ -21,7 +22,11 @@ export default async function NewJournalEntryPage() {
         if (entities.length === 0) {
             return (
                 <div className="flex-1 space-y-4 p-8 pt-6">
-                    <EmptyState title="No entities found. Create a business entity first." />
+                    <EmptyState
+                        icon={Building2}
+                        title="No entities yet"
+                        description="Create a business entity in Settings to start recording journal entries."
+                    />
                 </div>
             );
         }

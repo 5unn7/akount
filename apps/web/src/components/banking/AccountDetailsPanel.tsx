@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { Account } from '@/lib/api/accounts';
-import { updateAccount } from '@/lib/api/accounts';
+import { apiFetch } from '@/lib/api/client-browser';
 import { accountTypeLabels } from '@/lib/utils/account-helpers';
 import { GLAccountSelector } from './GLAccountSelector';
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,10 @@ export function AccountDetailsPanel({
     const handleSave = async () => {
         setSaving(true);
         try {
-            await updateAccount(account.id, { glAccountId });
+            await apiFetch(`/api/banking/accounts/${account.id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({ glAccountId }),
+            });
             setIsEditingGL(false);
             router.refresh(); // Refresh to show updated data
         } catch (error) {

@@ -642,22 +642,3 @@ export async function runDepreciation(data: {
     });
 }
 
-// ============================================================================
-// Formatting helpers
-// ============================================================================
-
-export function formatAmount(cents: number, currency: string = 'CAD'): string {
-    const dollars = cents / 100;
-    return new Intl.NumberFormat('en-CA', {
-        style: 'currency',
-        currency,
-    }).format(dollars);
-}
-
-export function formatDate(isoDate: string): string {
-    return new Date(isoDate).toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-}

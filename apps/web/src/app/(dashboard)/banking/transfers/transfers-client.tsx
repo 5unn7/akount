@@ -24,6 +24,7 @@ import { Plus, ArrowRightLeft, Loader2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { formatDate } from '@/lib/api/transactions.types';
 import { TransferForm } from '@/components/banking/TransferForm';
+import { EmptyState } from '@akount/ui';
 import { listTransfersAction } from './actions';
 
 interface TransfersClientProps {
@@ -97,16 +98,16 @@ export function TransfersClient({
 
       {/* Transfer List */}
       {transfers.length === 0 ? (
-        <Card className="glass">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <ArrowRightLeft className="h-12 w-12 text-muted-foreground/20 mb-4" />
-            <p className="text-sm text-muted-foreground mb-4">No transfers yet</p>
-            <Button onClick={() => setSheetOpen(true)} variant="outline" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Create First Transfer
-            </Button>
-          </CardContent>
-        </Card>
+        <EmptyState
+          icon={ArrowRightLeft}
+          title="No transfers yet"
+          description="Move money between your accounts."
+        >
+          <Button onClick={() => setSheetOpen(true)} variant="outline" className="gap-2">
+            <Plus className="h-4 w-4" />
+            Create First Transfer
+          </Button>
+        </EmptyState>
       ) : (
         <Card className="glass">
           <CardContent className="p-0">

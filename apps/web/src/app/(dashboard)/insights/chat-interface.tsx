@@ -5,7 +5,22 @@ import { Send, Sparkles, User, Bot, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { chatWithAI, type AIMessage } from '@/lib/api/ai';
+import { apiFetch } from '@/lib/api/client-browser';
+
+interface AIMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+interface AIChatResponse {
+  content: string;
+  model: string;
+  usage?: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
+}
 
 interface Message {
   role: 'user' | 'assistant';
@@ -53,12 +68,15 @@ export function ChatInterface() {
       });
 
       // Call AI API
-      const response = await chatWithAI({
-        messages: aiMessages,
-        options: {
-          systemPrompt:
-            'You are a helpful financial assistant for Akount, an AI-powered financial command center. Provide concise, accurate financial guidance and insights.',
-        },
+      const response = await apiFetch<AIChatResponse>('/api/ai/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          messages: aiMessages,
+          options: {
+            systemPrompt:
+              'You are a helpful financial assistant for Akount, an AI-powered financial command center. Provide concise, accurate financial guidance and insights.',
+          },
+        }),
       });
 
       // Add assistant response

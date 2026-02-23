@@ -7,7 +7,8 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { InsightCards } from "@/components/dashboard/InsightCards";
 import { CommandCenterRightPanel } from "@/components/dashboard/CommandCenterRightPanel";
 import { RecentTransactions } from "@/components/dashboard/RecentTransactions";
-import { EmptyState } from "@/components/shared/EmptyState";
+import { EmptyState } from "@akount/ui";
+import { Button } from "@/components/ui/button";
 import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
 import { GlowCard } from "@/components/ui/glow-card";
 import { CardContent } from "@/components/ui/card";
@@ -197,17 +198,14 @@ export default async function OverviewPage() {
                             icon={Building2}
                             title="Set up your first entity"
                             description="Create a business entity to track finances, manage accounts, and separate operations across countries and currencies."
-                            action={{
-                                label: "Create Entity",
-                                href: "/system/entities",
-                                variant: "default"
-                            }}
-                            secondaryAction={{
-                                label: "Learn more",
-                                href: "/docs/entities"
-                            }}
-                            variant="compact"
-                        />
+                        >
+                            <Button asChild>
+                                <Link href="/system/entities">Create Entity</Link>
+                            </Button>
+                            <Button asChild variant="ghost" size="sm">
+                                <Link href="/docs/entities">Learn more</Link>
+                            </Button>
+                        </EmptyState>
                     ) : (
                         <EntitiesSection entities={entities} />
                     )}

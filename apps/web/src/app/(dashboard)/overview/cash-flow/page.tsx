@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Wallet, TrendingUp, CreditCard, Landmark } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { EmptyState } from "@/components/shared/EmptyState";
+import { EmptyState } from "@akount/ui";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { getCashFlow } from "@/lib/api/dashboard";
 import { formatCurrency } from "@/lib/utils/currency";
 
@@ -24,13 +26,11 @@ export default async function CashFlowPage() {
                     icon={Wallet}
                     title="No accounts connected"
                     description="Connect your bank accounts, credit cards, and other financial accounts to track your cash flow."
-                    action={{
-                        label: "Add Account",
-                        href: "/banking/accounts",
-                        variant: "default"
-                    }}
-                    variant="compact"
-                />
+                >
+                    <Button asChild>
+                        <Link href="/banking/accounts">Add Account</Link>
+                    </Button>
+                </EmptyState>
             </div>
         );
     }

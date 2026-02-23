@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { TrendingUp, TrendingDown, DollarSign, Wallet } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { EmptyState } from "@/components/shared/EmptyState";
+import { EmptyState } from "@akount/ui";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { getNetWorth } from "@/lib/api/dashboard";
 import { formatCurrency } from "@/lib/utils/currency";
 
@@ -26,17 +28,14 @@ export default async function NetWorthPage() {
                     icon={Wallet}
                     title="No financial data yet"
                     description="Add accounts with balances or import transactions to start tracking your net worth."
-                    action={{
-                        label: "Add Account",
-                        href: "/banking/accounts",
-                        variant: "default"
-                    }}
-                    secondaryAction={{
-                        label: "Import Transactions",
-                        href: "/banking/import"
-                    }}
-                    variant="compact"
-                />
+                >
+                    <Button asChild>
+                        <Link href="/banking/accounts">Add Account</Link>
+                    </Button>
+                    <Button asChild variant="ghost" size="sm">
+                        <Link href="/banking/import">Import Transactions</Link>
+                    </Button>
+                </EmptyState>
             </div>
         );
     }

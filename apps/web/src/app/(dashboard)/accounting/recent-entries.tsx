@@ -1,5 +1,5 @@
 import type { ListJournalEntriesResponse } from '@/lib/api/accounting';
-import { formatDate } from '@/lib/api/accounting';
+import { formatDate } from '@/lib/utils/date';
 import { formatCurrency } from '@/lib/utils/currency';
 import Link from 'next/link';
 import { JournalEntryStatusBadge } from '@akount/ui/business';

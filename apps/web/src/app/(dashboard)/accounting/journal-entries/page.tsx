@@ -5,6 +5,7 @@ import { listEntities } from '@/lib/api/entities';
 import { JournalEntriesClient } from './journal-entries-client';
 import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@akount/ui';
+import { Building2 } from 'lucide-react';
 import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 
 export const metadata: Metadata = {
@@ -77,7 +78,11 @@ async function JournalEntriesData({
     try {
         if (entities.length === 0) {
             return (
-                <EmptyState title="No entities found. Create a business entity first." />
+                <EmptyState
+                    icon={Building2}
+                    title="No entities yet"
+                    description="Create a business entity in Settings to start recording journal entries."
+                />
             );
         }
 
