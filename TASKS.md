@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-22
 **Current Phase:** Phase 6 — Launch MVP
 
-> **199 product tasks** · 🔴 2 critical · 🟠 33 high · 🟡 106 medium · ⚪ 23 low · ✅ 112 done
-> 192 active · 56% progress
+> **199 product tasks** · 🔴 2 critical · 🟠 33 high · 🟡 104 medium · ⚪ 23 low · ✅ 114 done
+> 192 active · 57% progress
 >
 > _Note: 43 Linear PM infrastructure tasks moved to [LINEAR-TASKS.md](LINEAR-TASKS.md)_
 
@@ -90,11 +90,11 @@
 | DRY-9 | Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency` | 1h | 🔴 High | 🟢 | | inline-bandaid-audit [atomic] |
 | DRY-10 | Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit [atomic] |
 | DRY-11 | ~~Extract StatusBadge components to `packages/ui` — create InvoiceStatusBadge, BillStatusBadge, AccountStatusBadge~~ | 2h | 🟡 Medium | ✅ done | 7640e1f | inline-bandaid-audit |
-| DRY-12 | Create `<EmptyState>` component — consolidate 11+ inline empty state patterns | 1h | 🟢 Low | 🟢 | | inline-bandaid-audit [atomic] |
+| DRY-12 | ~~Create `<EmptyState>` component — consolidate 11+ inline empty state patterns~~ | 1h | 🟢 Low | ✅ done | 913fa60 | inline-bandaid-audit [atomic] |
 | DRY-13 | Create `<EntitySelector>` component — wire API integration for 7 report views | 2h | 🟡 Medium | 🟢 | | inline-bandaid-audit |
 | DRY-14 | Create global error tracking util — integrate Sentry in 3+ error.tsx files | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit |
 | DRY-15 | Standardize table header styling — create `<TableHead variant="label">` with `text-micro` utility | 30m | 🟢 Low | 🟢 | | inline-bandaid-audit [atomic] |
-| DRY-17 | Refactor StatusBadges to use base Badge component + fix semantic token violations | 1-2h | 🟡 Medium | 🟢 | | ad-hoc:session |
+| ~~DRY-17~~ | ~~Refactor StatusBadges to use base Badge component + fix semantic token violations~~ | 1-2h | 🟡 Medium | ✅ done | 4ce91e4 | ad-hoc:session |
 | ~~FIN-24~~ | ~~Transfer service: extract overdraft-allowed account types constant + add multi-currency limitation doc comment~~ | 10m | ⚪ Low | ✅ done | | review:transfer-service [atomic] |
 | UX-3 | Report tables: add `aria-*` attributes, caption, scope, role="progressbar" | 45m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |
 | UX-4 | Report views: replace array index React keys with stable identifiers | 15m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |
