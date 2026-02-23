@@ -12,7 +12,6 @@ import {
     FileText,
     DollarSign,
     Pencil,
-    Loader2,
     ExternalLink,
 } from 'lucide-react';
 import type { Vendor } from '@/lib/api/vendors';
@@ -22,19 +21,7 @@ import { formatCurrency } from '@/lib/utils/currency';
 import { formatDate } from '@/lib/utils/date';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { VendorForm } from '@/components/business/VendorForm';
 import { BillStatusBadge, VendorStatusBadge } from '@akount/ui/business';
 import {
     Table,
@@ -44,7 +31,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { toast } from 'sonner';
 
 interface VendorDetailClientProps {
     vendor: Vendor;
@@ -53,152 +39,12 @@ interface VendorDetailClientProps {
 
 type Tab = 'overview' | 'bills';
 
-
-// Edit Vendor Dialog
-function EditVendorDialog({
-    vendor,
-    onUpdate,
-}: {
-    vendor: Vendor;
-    onUpdate: (updated: Vendor) => void;
-}) {
-    const [open, setOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formData, setFormData] = useState({
-        name: vendor.name,
-        email: vendor.email ?? '',
-        phone: vendor.phone ?? '',
-        address: vendor.address ?? '',
-        paymentTerms: vendor.paymentTerms ?? '',
-        status: vendor.status,
-    });
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const updated = await apiFetch<Vendor>(`/api/business/vendors/${vendor.id}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email || null,
-                    phone: formData.phone || null,
-                    address: formData.address || null,
-                    paymentTerms: formData.paymentTerms || null,
-                    status: formData.status,
-                }),
-            });
-            onUpdate(updated);
-            toast.success('Vendor updated successfully');
-            setOpen(false);
-        } catch (err) {
-            const error = err as Error;
-            toast.error(error.message || 'Failed to update vendor');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                    <Pencil className="h-3.5 w-3.5" />
-                    Edit Vendor
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
-                <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Edit Vendor</DialogTitle>
-                        <DialogDescription>
-                            Update vendor information and contact details
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Vendor Name *</Label>
-                            <Input
-                                id="name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="phone">Phone</Label>
-                            <Input
-                                id="phone"
-                                value={formData.phone}
-                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="address">Address</Label>
-                            <Textarea
-                                id="address"
-                                value={formData.address}
-                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                rows={2}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="paymentTerms">Payment Terms</Label>
-                            <Input
-                                id="paymentTerms"
-                                placeholder="e.g., Net 30"
-                                value={formData.paymentTerms}
-                                onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="status">Status</Label>
-                            <Select
-                                value={formData.status}
-                                onValueChange={(value: 'active' | 'inactive') =>
-                                    setFormData({ ...formData, status: value })
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="active">Active</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Save Changes
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
 // Main Component
 export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetailClientProps) {
     const router = useRouter();
     const [vendor, setVendor] = useState(initialVendor);
     const [activeTab, setActiveTab] = useState<Tab>('overview');
+    const [editOpen, setEditOpen] = useState(false);
 
     // Calculate stats
     const totalBills = bills.length;
@@ -209,8 +55,13 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
     // Get currency from entity
     const currency = vendor.entity?.functionalCurrency ?? 'CAD';
 
-    const handleUpdate = (updated: Vendor) => {
-        setVendor(updated);
+    const handleEditSuccess = async () => {
+        try {
+            const updated = await apiFetch<Vendor>(`/api/business/vendors/${vendor.id}`);
+            setVendor(updated);
+        } catch {
+            router.refresh();
+        }
     };
 
     return (
@@ -226,8 +77,20 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
                         Vendor since {formatDate(vendor.createdAt)}
                     </p>
                 </div>
-                <EditVendorDialog vendor={vendor} onUpdate={handleUpdate} />
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => setEditOpen(true)}>
+                    <Pencil className="h-3.5 w-3.5" />
+                    Edit Vendor
+                </Button>
             </div>
+
+            <VendorForm
+                key={vendor.id}
+                open={editOpen}
+                onOpenChange={setEditOpen}
+                entityId={vendor.entityId}
+                editVendor={vendor}
+                onSuccess={handleEditSuccess}
+            />
 
             {/* Stats Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

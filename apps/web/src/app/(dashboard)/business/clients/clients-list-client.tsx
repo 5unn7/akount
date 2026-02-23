@@ -14,8 +14,9 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Filter, X, Loader2 } from 'lucide-react';
+import { Search, Filter, X, Loader2, Plus } from 'lucide-react';
 import { fetchMoreClients } from '../actions';
+import { ClientForm } from '@/components/business/ClientForm';
 
 interface ClientsListClientProps {
     initialClients: Client[];
@@ -33,6 +34,7 @@ export function ClientsListClient({
     const [clients, setClients] = useState(initialClients);
     const [nextCursor, setNextCursor] = useState(initialNextCursor);
     const [isLoading, setIsLoading] = useState(false);
+    const [formOpen, setFormOpen] = useState(false);
 
     // Filter state
     const [searchQuery, setSearchQuery] = useState('');
@@ -110,11 +112,23 @@ export function ClientsListClient({
             {/* Filter Bar */}
             <Card className="glass rounded-[14px]">
                 <CardContent className="pt-6">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Filter className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
-                            Search &amp; Filter
-                        </h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                            <h3 className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
+                                Search &amp; Filter
+                            </h3>
+                        </div>
+                        {entityId && (
+                            <Button
+                                size="sm"
+                                onClick={() => setFormOpen(true)}
+                                className="gap-1.5"
+                            >
+                                <Plus className="h-4 w-4" />
+                                New Client
+                            </Button>
+                        )}
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-3">
@@ -201,6 +215,16 @@ export function ClientsListClient({
                 <p className="text-center text-xs text-muted-foreground pt-2">
                     Showing all {clients.length} clients
                 </p>
+            )}
+
+            {entityId && (
+                <ClientForm
+                    key="create"
+                    open={formOpen}
+                    onOpenChange={setFormOpen}
+                    entityId={entityId}
+                    onSuccess={() => fetchWithFilters()}
+                />
             )}
         </div>
     );

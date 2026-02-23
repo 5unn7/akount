@@ -11,7 +11,6 @@ import {
     FileText,
     DollarSign,
     Pencil,
-    Loader2,
 } from 'lucide-react';
 import type { Client } from '@/lib/api/clients';
 import type { Invoice } from '@/lib/api/invoices';
@@ -20,22 +19,9 @@ import { formatCurrency } from '@/lib/utils/currency';
 import { formatDate } from '@/lib/utils/date';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ClientForm } from '@/components/business/ClientForm';
 import { InvoiceStatusBadge, ClientStatusBadge } from '@akount/ui/business';
 import { EmptyState } from '@akount/ui';
-import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
 
 // ============================================================================
 // Types
@@ -49,160 +35,6 @@ interface ClientDetailClientProps {
 type Tab = 'overview' | 'invoices';
 
 // ============================================================================
-// Status Badge
-// ============================================================================
-
-
-// ============================================================================
-// Invoice Status Badge
-// ============================================================================
-
-
-
-// ============================================================================
-// Edit Client Dialog
-// ============================================================================
-
-function EditClientDialog({
-    client,
-    onUpdate,
-}: {
-    client: Client;
-    onUpdate: (updated: Client) => void;
-}) {
-    const [open, setOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formData, setFormData] = useState({
-        name: client.name,
-        email: client.email ?? '',
-        phone: client.phone ?? '',
-        address: client.address ?? '',
-        paymentTerms: client.paymentTerms ?? '',
-        status: client.status,
-    });
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        try {
-            const updated = await apiFetch<Client>(`/api/business/clients/${client.id}`, {
-                method: 'PUT',
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email || null,
-                    phone: formData.phone || null,
-                    address: formData.address || null,
-                    paymentTerms: formData.paymentTerms || null,
-                    status: formData.status,
-                }),
-            });
-            onUpdate(updated);
-            toast.success('Client updated successfully');
-            setOpen(false);
-        } catch (err) {
-            const error = err as Error;
-            toast.error(error.message || 'Failed to update client');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                    <Pencil className="h-3.5 w-3.5" />
-                    Edit Client
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
-                <form onSubmit={handleSubmit}>
-                    <DialogHeader>
-                        <DialogTitle>Edit Client</DialogTitle>
-                        <DialogDescription>
-                            Update client information and contact details
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Client Name *</Label>
-                            <Input
-                                id="name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="phone">Phone</Label>
-                            <Input
-                                id="phone"
-                                value={formData.phone}
-                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="address">Address</Label>
-                            <Textarea
-                                id="address"
-                                value={formData.address}
-                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                rows={2}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="paymentTerms">Payment Terms</Label>
-                            <Input
-                                id="paymentTerms"
-                                placeholder="e.g., Net 30"
-                                value={formData.paymentTerms}
-                                onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="status">Status</Label>
-                            <Select
-                                value={formData.status}
-                                onValueChange={(value: 'active' | 'inactive') =>
-                                    setFormData({ ...formData, status: value })
-                                }
-                            >
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="active">Active</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            Save Changes
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -210,6 +42,7 @@ export function ClientDetailClient({ client: initialClient, invoices }: ClientDe
     const router = useRouter();
     const [client, setClient] = useState(initialClient);
     const [activeTab, setActiveTab] = useState<Tab>('overview');
+    const [editOpen, setEditOpen] = useState(false);
 
     // Calculate stats
     const totalInvoices = invoices.length;
@@ -220,8 +53,13 @@ export function ClientDetailClient({ client: initialClient, invoices }: ClientDe
     // Get currency from entity context (client doesn't have currency field)
     const currency = 'CAD'; // TODO: Get from entity context when available
 
-    const handleUpdate = (updated: Client) => {
-        setClient(updated);
+    const handleEditSuccess = async () => {
+        try {
+            const updated = await apiFetch<Client>(`/api/business/clients/${client.id}`);
+            setClient(updated);
+        } catch {
+            router.refresh();
+        }
     };
 
     return (
@@ -237,8 +75,20 @@ export function ClientDetailClient({ client: initialClient, invoices }: ClientDe
                         Client since {formatDate(client.createdAt)}
                     </p>
                 </div>
-                <EditClientDialog client={client} onUpdate={handleUpdate} />
+                <Button variant="outline" size="sm" className="gap-2" onClick={() => setEditOpen(true)}>
+                    <Pencil className="h-3.5 w-3.5" />
+                    Edit Client
+                </Button>
             </div>
+
+            <ClientForm
+                key={client.id}
+                open={editOpen}
+                onOpenChange={setEditOpen}
+                entityId={client.entityId}
+                editClient={client}
+                onSuccess={handleEditSuccess}
+            />
 
             {/* Stats Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
