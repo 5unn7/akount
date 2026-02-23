@@ -7,7 +7,7 @@ import {
   useDismissCard,
   shouldShowOnboardingCard,
 } from '@/lib/api/onboarding'
-import { X } from 'lucide-react'
+import { X, Loader2 } from 'lucide-react'
 
 /**
  * Onboarding Unlock Card
@@ -135,10 +135,15 @@ export function OnboardingHeroCard() {
           )}
           <button
             onClick={() => dismissCard.mutate()}
-            className="p-1.5 text-[var(--ak-t4)] hover:text-muted-foreground rounded-md transition-colors"
+            disabled={dismissCard.isPending}
+            className="p-1.5 text-[var(--ak-t4)] hover:text-muted-foreground rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Dismiss"
           >
-            <X className="w-3.5 h-3.5" />
+            {dismissCard.isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <X className="w-3.5 h-3.5" />
+            )}
           </button>
         </div>
       </div>

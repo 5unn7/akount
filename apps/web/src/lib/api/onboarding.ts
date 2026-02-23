@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { apiFetch } from './client-browser'
 
 /**
@@ -72,6 +73,10 @@ export function useUpdateProgress() {
     onSuccess: () => {
       // Invalidate progress query to trigger refetch
       queryClient.invalidateQueries({ queryKey: ['onboarding', 'progress'] })
+      toast.success('Progress updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update progress: ${error.message}`)
     },
   })
 }
@@ -95,8 +100,12 @@ export function useSkipStep() {
         body: JSON.stringify(data),
       })
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['onboarding', 'progress'] })
+      toast.success(`Step skipped for ${variables.skipDays || 7} days`)
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to skip step: ${error.message}`)
     },
   })
 }
@@ -122,6 +131,10 @@ export function useDismissCard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['onboarding', 'progress'] })
+      toast.success('Card dismissed for 24 hours')
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to dismiss card: ${error.message}`)
     },
   })
 }

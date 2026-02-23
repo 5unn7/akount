@@ -161,36 +161,58 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // Fetch onboarding progress
-      const progress = await prisma.onboardingProgress.findUnique({
-        where: { tenantId: request.tenantId },
-      });
+      // Fetch onboarding progress and actual data in parallel
+      const [progress, entityCount, accountCount, goalCount] = await Promise.all([
+        prisma.onboardingProgress.findUnique({
+          where: { tenantId: request.tenantId },
+        }),
+        prisma.entity.count({
+          where: { tenantId: request.tenantId, status: 'ACTIVE' },
+        }),
+        prisma.account.count({
+          where: { entity: { tenantId: request.tenantId }, isActive: true },
+        }),
+        prisma.goal.count({
+          where: { entity: { tenantId: request.tenantId }, status: 'ACTIVE' },
+        }),
+      ]);
 
-      if (!progress) {
-        // Return default state (no progress created yet)
-        return reply.status(200).send({
-          completionPercentage: 0,
-          completedSteps: [],
-          basicInfoComplete: false,
-          entitySetupComplete: false,
-          businessDetailsComplete: false,
-          bankConnectionComplete: false,
-          goalsSetupComplete: false,
-          dashboardCardDismissedAt: null,
-          skippedSteps: [],
-        });
-      }
+      // Auto-detect completed steps based on actual data
+      // If user manually marked something complete, respect that (OR logic)
+      const entitySetupComplete = (progress?.entitySetupComplete ?? false) || entityCount > 0;
+      const businessDetailsComplete = (progress?.businessDetailsComplete ?? false) || entityCount > 0;
+      const bankConnectionComplete = (progress?.bankConnectionComplete ?? false) || accountCount > 0;
+      const goalsSetupComplete = (progress?.goalsSetupComplete ?? false) || goalCount > 0;
+      const basicInfoComplete = progress?.basicInfoComplete ?? false; // Can't auto-detect
+
+      // Recalculate percentage based on merged flags
+      const mergedProgress = {
+        basicInfoComplete,
+        entitySetupComplete,
+        businessDetailsComplete,
+        bankConnectionComplete,
+        goalsSetupComplete,
+      };
+      const actualPercentage = calculateCompletionPercentage(mergedProgress);
+
+      // Build completedSteps array from merged flags
+      const completedSteps: string[] = [];
+      if (basicInfoComplete) completedSteps.push('basic_info');
+      if (entitySetupComplete) completedSteps.push('entity_setup');
+      if (businessDetailsComplete) completedSteps.push('business_details');
+      if (bankConnectionComplete) completedSteps.push('bank_connection');
+      if (goalsSetupComplete) completedSteps.push('goals_setup');
 
       return reply.status(200).send({
-        completionPercentage: progress.completionPercentage,
-        completedSteps: progress.completedSteps,
-        basicInfoComplete: progress.basicInfoComplete,
-        entitySetupComplete: progress.entitySetupComplete,
-        businessDetailsComplete: progress.businessDetailsComplete,
-        bankConnectionComplete: progress.bankConnectionComplete,
-        goalsSetupComplete: progress.goalsSetupComplete,
-        dashboardCardDismissedAt: progress.dashboardCardDismissedAt?.toISOString() || null,
-        skippedSteps: progress.skippedSteps,
+        completionPercentage: actualPercentage,
+        completedSteps,
+        basicInfoComplete,
+        entitySetupComplete,
+        businessDetailsComplete,
+        bankConnectionComplete,
+        goalsSetupComplete,
+        dashboardCardDismissedAt: progress?.dashboardCardDismissedAt?.toISOString() || null,
+        skippedSteps: progress?.skippedSteps || [],
       });
     } catch (error) {
       request.log.error({ error }, 'Error fetching onboarding progress');
