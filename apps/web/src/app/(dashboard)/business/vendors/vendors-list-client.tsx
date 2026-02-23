@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Filter, X, Loader2, Plus } from 'lucide-react';
+import { Search, Filter, X, Loader2, Plus, Info } from 'lucide-react';
 import { fetchMoreVendors } from '../actions';
 import { VendorForm } from '@/components/business/VendorForm';
 
@@ -119,7 +119,7 @@ export function VendorsListClient({
                                 Search &amp; Filter
                             </h3>
                         </div>
-                        {entityId && (
+                        {entityId ? (
                             <Button
                                 size="sm"
                                 onClick={() => setFormOpen(true)}
@@ -128,6 +128,11 @@ export function VendorsListClient({
                                 <Plus className="h-4 w-4" />
                                 New Vendor
                             </Button>
+                        ) : (
+                            <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                <Info className="h-3.5 w-3.5" />
+                                Select an entity to add vendors
+                            </p>
                         )}
                     </div>
 
