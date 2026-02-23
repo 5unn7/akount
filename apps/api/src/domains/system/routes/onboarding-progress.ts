@@ -428,7 +428,7 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
    * POST /dismiss-card
    *
    * Dismiss the onboarding hero card until a specified date (or indefinitely).
-   * ✅ SECURITY: OWNER-only access
+   * ✅ SECURITY: Any authenticated tenant user can dismiss (UI preference)
    */
   fastify.post<{
     Body: z.infer<typeof DismissCardSchema>;
@@ -442,7 +442,7 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // ✅ SECURITY: RBAC check
+      // ✅ SECURITY: Verify user belongs to tenant (but allow any role)
       const tenantUser = await prisma.tenantUser.findFirst({
         where: {
           tenantId: request.tenantId,
@@ -450,10 +450,10 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
         },
       });
 
-      if (!tenantUser || tenantUser.role !== 'OWNER') {
+      if (!tenantUser) {
         return reply.status(403).send({
           error: 'Forbidden',
-          message: 'Only account owners can dismiss onboarding card',
+          message: 'Access denied',
         });
       }
 
