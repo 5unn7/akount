@@ -65,7 +65,7 @@ function mockInvoice(overrides: Record<string, unknown> = {}) {
         quantity: 10,
         unitPrice: 10000,
         taxAmount: 13000,
-        amount: 113000,
+        amount: 100000, // qty * unitPrice (pre-tax): 10 * 10000
         glAccountId: GL_REVENUE,
         deletedAt: null,
       },
@@ -97,7 +97,7 @@ function mockBillData(overrides: Record<string, unknown> = {}) {
         quantity: 5,
         unitPrice: 10000,
         taxAmount: 6500,
-        amount: 56500,
+        amount: 50000, // qty * unitPrice (pre-tax): 5 * 10000
         glAccountId: GL_EXPENSE,
         deletedAt: null,
       },

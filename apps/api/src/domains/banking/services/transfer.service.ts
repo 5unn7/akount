@@ -153,21 +153,27 @@ export class TransferService {
         }
 
         // 7. Calculate amounts for multi-currency
-        // @todo Multi-currency limitation: exchangeRate is used for both cross-account
-        // conversion AND entity base currency conversion. This works when one account
-        // matches the entity's functional currency, but may produce incorrect
-        // baseCurrencyAmount when NEITHER account matches. A proper fix requires
-        // separate exchange rates per currency pair or an exchange rate table.
         const fromAmount = data.amount;
         const toAmount = isMultiCurrency && data.exchangeRate
           ? Math.round(data.amount * data.exchangeRate)
           : data.amount;
-        const baseCurrencyFromAmount = fromAccount.currency !== entityCurrency && data.exchangeRate
-          ? Math.round(fromAmount * data.exchangeRate)
-          : fromAmount;
-        const baseCurrencyToAmount = toAccount.currency !== entityCurrency && data.exchangeRate
-          ? Math.round(toAmount * data.exchangeRate)
-          : toAmount;
+
+        // Base currency amounts: both sides of a transfer have the SAME value
+        // in entity currency (conservation of value). Calculate once, use for both.
+        let baseCurrencyAmount: number;
+        if (fromAccount.currency === entityCurrency) {
+          // From account IS in entity currency — fromAmount is the base value
+          baseCurrencyAmount = fromAmount;
+        } else if (toAccount.currency === entityCurrency) {
+          // To account IS in entity currency — toAmount is the base value
+          baseCurrencyAmount = toAmount;
+        } else {
+          // Neither account in entity currency — use exchangeRate as best approximation
+          // @todo: requires separate from→entity rate for full accuracy
+          baseCurrencyAmount = Math.round(fromAmount * (data.exchangeRate ?? 1));
+        }
+        const baseCurrencyFromAmount = baseCurrencyAmount;
+        const baseCurrencyToAmount = baseCurrencyAmount;
 
         const transferDate = data.date ? new Date(data.date) : new Date();
 

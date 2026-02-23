@@ -89,7 +89,7 @@ describe('BillService', () => {
               quantity: 1,
               unitPrice: 100000,
               taxAmount: 10000,
-              amount: 110000,
+              amount: 100000, // qty * unitPrice (pre-tax)
               glAccountId: undefined,
               categoryId: undefined,
             },
@@ -158,7 +158,7 @@ describe('BillService', () => {
               quantity: 1,
               unitPrice: 150000,
               taxAmount: 15000,
-              amount: 165000,
+              amount: 150000, // qty * unitPrice (pre-tax)
               glAccountId: undefined,
               categoryId: undefined,
             },
@@ -231,7 +231,7 @@ describe('BillService', () => {
           quantity: 2,
           unitPrice: 25000,
           taxAmount: 5000,
-          amount: 55000,
+          amount: 50000, // 2 * 25000 (pre-tax)
           glAccountId: undefined,
           categoryId: undefined,
         },
@@ -240,7 +240,7 @@ describe('BillService', () => {
           quantity: 1,
           unitPrice: 10000,
           taxAmount: 1000,
-          amount: 11000,
+          amount: 10000, // 1 * 10000 (pre-tax)
           glAccountId: undefined,
           categoryId: undefined,
         },

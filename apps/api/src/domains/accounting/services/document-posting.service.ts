@@ -158,9 +158,9 @@ export class DocumentPostingService {
         }),
       });
 
-      // CR Revenue per line (net of tax)
+      // CR Revenue per line (line.amount is pre-tax: qty * unitPrice)
       for (const line of invoice.invoiceLines) {
-        const netAmount = line.amount - line.taxAmount;
+        const netAmount = line.amount;
         if (netAmount > 0) {
           lines.push({
             glAccountId: line.glAccountId ?? defaultRevenueAccount.id,
@@ -389,9 +389,9 @@ export class DocumentPostingService {
         );
       }
 
-      // DR Expense per line (net of tax)
+      // DR Expense per line (line.amount is pre-tax: qty * unitPrice)
       for (const line of bill.billLines) {
-        const netAmount = line.amount - line.taxAmount;
+        const netAmount = line.amount;
         if (netAmount > 0) {
           lines.push({
             glAccountId: line.glAccountId ?? defaultExpenseAccount.id,
