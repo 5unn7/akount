@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { StatsGrid } from '@/components/shared/StatsGrid';
-import { BillsTable } from '@/components/business/BillsTable';
 import { listBills } from '@/lib/api/bills';
+import { BillsListClient } from './bills-list-client';
 import { listEntities } from '@/lib/api/entities';
 import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { formatCurrency } from '@/lib/utils/currency';
@@ -18,18 +18,18 @@ export default async function BillsPage() {
     ]);
     const entityId = validateEntityId(rawEntityId, entities) ?? undefined;
 
-    const billsResult = await listBills({ limit: 50, entityId });
-    const bills = billsResult.bills;
+    const billsResult = await listBills({ limit: 20, entityId });
 
     // Get functional currency from entity
     const entity = entities.find((e) => e.id === entityId) ?? entities[0];
     const primaryCurrency = entity?.functionalCurrency ?? 'CAD';
 
+    const bills = billsResult.bills;
+
     // Calculate stats
     const pendingBills = bills.filter((b) => b.status === 'PENDING').length;
     const overdueBills = bills.filter((b) => b.status === 'OVERDUE').length;
     const totalOutstanding = bills.reduce((sum, b) => sum + (b.total - b.paidAmount), 0);
-    const totalPaid = bills.reduce((sum, b) => sum + b.paidAmount, 0);
 
     const stats = [
         {
@@ -71,13 +71,13 @@ export default async function BillsPage() {
 
             {/* Bills Table */}
             <div className="space-y-3 fi fi3">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-heading font-normal">Bill List</h2>
-                    <p className="text-xs text-muted-foreground">
-                        {bills.length} bill{bills.length !== 1 ? 's' : ''}
-                    </p>
-                </div>
-                <BillsTable bills={bills} currency={primaryCurrency} />
+                <h2 className="text-lg font-heading font-normal">Bills</h2>
+                <BillsListClient
+                    initialBills={billsResult.bills}
+                    initialNextCursor={billsResult.nextCursor}
+                    entityId={entityId}
+                    currency={primaryCurrency}
+                />
             </div>
         </div>
     );

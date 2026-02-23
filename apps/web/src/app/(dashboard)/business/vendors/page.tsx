@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { StatsGrid } from '@/components/shared/StatsGrid';
-import { VendorsTable } from '@/components/business/VendorsTable';
 import { listVendors } from '@/lib/api/vendors';
+import { VendorsListClient } from './vendors-list-client';
 import { listEntities } from '@/lib/api/entities';
 import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { formatCurrency } from '@/lib/utils/currency';
@@ -18,7 +18,7 @@ export default async function VendorsPage() {
     ]);
     const entityId = validateEntityId(rawEntityId, entities) ?? undefined;
 
-    const vendorsResult = await listVendors({ limit: 50, entityId });
+    const vendorsResult = await listVendors({ limit: 20, entityId });
     const vendors = vendorsResult.vendors;
 
     // Get functional currency from entity
@@ -70,13 +70,13 @@ export default async function VendorsPage() {
 
             {/* Vendors Table */}
             <div className="space-y-3 fi fi3">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-heading font-normal">Vendor Directory</h2>
-                    <p className="text-xs text-muted-foreground">
-                        {vendors.length} vendor{vendors.length !== 1 ? 's' : ''}
-                    </p>
-                </div>
-                <VendorsTable vendors={vendors} currency={primaryCurrency} />
+                <h2 className="text-lg font-heading font-normal">Vendor Directory</h2>
+                <VendorsListClient
+                    initialVendors={vendorsResult.vendors}
+                    initialNextCursor={vendorsResult.nextCursor}
+                    entityId={entityId}
+                    currency={primaryCurrency}
+                />
             </div>
         </div>
     );

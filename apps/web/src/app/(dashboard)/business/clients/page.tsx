@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { StatsGrid } from '@/components/shared/StatsGrid';
-import { ClientsTable } from '@/components/business/ClientsTable';
 import { listClients } from '@/lib/api/clients';
+import { ClientsListClient } from './clients-list-client';
 import { listEntities } from '@/lib/api/entities';
 import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { formatCurrency } from '@/lib/utils/currency';
@@ -18,7 +18,7 @@ export default async function ClientsPage() {
     ]);
     const entityId = validateEntityId(rawEntityId, entities) ?? undefined;
 
-    const clientsResult = await listClients({ limit: 50, entityId });
+    const clientsResult = await listClients({ limit: 20, entityId });
     const clients = clientsResult.clients;
 
     // Get functional currency from entity
@@ -70,13 +70,13 @@ export default async function ClientsPage() {
 
             {/* Clients Table */}
             <div className="space-y-3 fi fi3">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-heading font-normal">Client Directory</h2>
-                    <p className="text-xs text-muted-foreground">
-                        {clients.length} client{clients.length !== 1 ? 's' : ''}
-                    </p>
-                </div>
-                <ClientsTable clients={clients} currency={primaryCurrency} />
+                <h2 className="text-lg font-heading font-normal">Client Directory</h2>
+                <ClientsListClient
+                    initialClients={clientsResult.clients}
+                    initialNextCursor={clientsResult.nextCursor}
+                    entityId={entityId}
+                    currency={primaryCurrency}
+                />
             </div>
         </div>
     );

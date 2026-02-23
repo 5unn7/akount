@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { StatsGrid } from '@/components/shared/StatsGrid';
 import { AgingBar } from '@/components/shared/AgingBar';
-import { InvoiceTable } from '@/components/business/InvoiceTable';
 import { BillsTable } from '@/components/business/BillsTable';
+import { InvoicesListClient } from './invoices-list-client';
 import { InvoicingActions } from '@/components/business/InvoicingActions';
 import { getInvoiceStats, listInvoices } from '@/lib/api/invoices';
 import { getBillStats, listBills } from '@/lib/api/bills';
@@ -162,13 +162,12 @@ export default async function InvoicingPage() {
 
             {/* Invoices Section */}
             <div className="space-y-3 fi fi5">
-                <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-heading font-normal">Recent Invoices</h2>
-                    <p className="text-xs text-muted-foreground">
-                        {invoicesResult.invoices.length} of {invoicesResult.invoices.length} shown
-                    </p>
-                </div>
-                <InvoiceTable invoices={invoicesResult.invoices} />
+                <h2 className="text-lg font-heading font-normal">Invoices</h2>
+                <InvoicesListClient
+                    initialInvoices={invoicesResult.invoices}
+                    initialNextCursor={invoicesResult.nextCursor}
+                    entityId={entityId}
+                />
             </div>
 
             {/* Bills Section */}
