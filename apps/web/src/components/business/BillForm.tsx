@@ -9,12 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LineItemBuilder, computeLineTotals, type LineItem } from '@/components/line-item-builder';
 import { apiFetch } from '@/lib/api/client-browser';
 import { Loader2 } from 'lucide-react';
+import type { Bill } from '@/lib/api/bills';
 
 interface BillFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   vendors: Array<{ id: string; name: string; paymentTerms?: string | null }>;
   onSuccess?: () => void;
+  editBill?: Bill;
 }
 
 function parseDaysFromTerms(terms: string | null | undefined): number | null {
@@ -29,6 +31,21 @@ function addDays(dateStr: string, days: number): string {
   return d.toISOString().split('T')[0];
 }
 
+function toDateInput(dateStr: string): string {
+  return new Date(dateStr).toISOString().split('T')[0];
+}
+
+function billLinesToLineItems(bill: Bill): LineItem[] {
+  if (!bill.billLines?.length) return [{ description: '', quantity: 1, unitPrice: 0, taxAmount: 0, amount: 0 }];
+  return bill.billLines.map(l => ({
+    description: l.description,
+    quantity: l.quantity,
+    unitPrice: l.unitPrice,
+    taxAmount: l.taxAmount,
+    amount: l.amount,
+  }));
+}
+
 const INITIAL_LINE: LineItem = {
   description: '',
   quantity: 1,
@@ -37,14 +54,22 @@ const INITIAL_LINE: LineItem = {
   amount: 0,
 };
 
-export function BillForm({ open, onOpenChange, vendors, onSuccess }: BillFormProps) {
-  const [vendorId, setVendorId] = useState('');
-  const [billNumber, setBillNumber] = useState('');
-  const [issueDate, setIssueDate] = useState(new Date().toISOString().split('T')[0]);
-  const [dueDate, setDueDate] = useState('');
-  const [currency, setCurrency] = useState('CAD');
-  const [notes, setNotes] = useState('');
-  const [lines, setLines] = useState<LineItem[]>([{ ...INITIAL_LINE }]);
+export function BillForm({ open, onOpenChange, vendors, onSuccess, editBill }: BillFormProps) {
+  const isEdit = !!editBill;
+
+  const [vendorId, setVendorId] = useState(editBill?.vendorId ?? '');
+  const [billNumber, setBillNumber] = useState(editBill?.billNumber ?? '');
+  const [issueDate, setIssueDate] = useState(
+    editBill ? toDateInput(editBill.issueDate) : new Date().toISOString().split('T')[0]
+  );
+  const [dueDate, setDueDate] = useState(
+    editBill ? toDateInput(editBill.dueDate) : ''
+  );
+  const [currency, setCurrency] = useState(editBill?.currency ?? 'CAD');
+  const [notes, setNotes] = useState(editBill?.notes ?? '');
+  const [lines, setLines] = useState<LineItem[]>(
+    editBill ? billLinesToLineItems(editBill) : [{ ...INITIAL_LINE }]
+  );
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -81,34 +106,43 @@ export function BillForm({ open, onOpenChange, vendors, onSuccess }: BillFormPro
 
     setSubmitting(true);
     try {
-      await apiFetch('/api/business/bills', {
-        method: 'POST',
-        body: JSON.stringify({
-          vendorId,
-          billNumber,
-          issueDate: new Date(issueDate).toISOString(),
-          dueDate: new Date(dueDate).toISOString(),
-          currency,
-          subtotal: totals.subtotal,
-          taxAmount: totals.taxAmount,
-          total: totals.total,
-          status: 'DRAFT',
-          notes: notes || undefined,
-          lines: lines.map(l => ({
-            description: l.description,
-            quantity: l.quantity,
-            unitPrice: l.unitPrice,
-            taxAmount: l.taxAmount,
-            amount: l.amount,
-          })),
-        }),
-      });
+      const payload = {
+        vendorId,
+        billNumber,
+        issueDate: new Date(issueDate).toISOString(),
+        dueDate: new Date(dueDate).toISOString(),
+        currency,
+        subtotal: totals.subtotal,
+        taxAmount: totals.taxAmount,
+        total: totals.total,
+        ...(isEdit ? {} : { status: 'DRAFT' }),
+        notes: notes || undefined,
+        lines: lines.map(l => ({
+          description: l.description,
+          quantity: l.quantity,
+          unitPrice: l.unitPrice,
+          taxAmount: l.taxAmount,
+          amount: l.amount,
+        })),
+      };
 
-      resetForm();
+      if (isEdit) {
+        await apiFetch(`/api/business/bills/${editBill.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await apiFetch('/api/business/bills', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (!isEdit) resetForm();
       onOpenChange(false);
       onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create bill');
+      setError(err instanceof Error ? err.message : `Failed to ${isEdit ? 'update' : 'create'} bill`);
     } finally {
       setSubmitting(false);
     }
@@ -118,14 +152,20 @@ export function BillForm({ open, onOpenChange, vendors, onSuccess }: BillFormPro
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-2xl overflow-y-auto">
         <SheetHeader>
-          <SheetTitle className="font-heading">New Bill</SheetTitle>
+          <SheetTitle className="font-heading">
+            {isEdit ? 'Edit Bill' : 'New Bill'}
+          </SheetTitle>
         </SheetHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Vendor</Label>
-              <Select value={vendorId} onValueChange={(v) => { setVendorId(v); autoFillDueDate(issueDate, v); }}>
+              <Select
+                value={vendorId}
+                onValueChange={(v) => { setVendorId(v); autoFillDueDate(issueDate, v); }}
+                disabled={isEdit}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select vendor" />
                 </SelectTrigger>
@@ -207,7 +247,7 @@ export function BillForm({ open, onOpenChange, vendors, onSuccess }: BillFormPro
             </Button>
             <Button type="submit" disabled={submitting}>
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create Bill
+              {isEdit ? 'Save Changes' : 'Create Bill'}
             </Button>
           </div>
         </form>

@@ -183,7 +183,7 @@ export function InvoicesListClient({
             </Card>
 
             {/* Invoice Table */}
-            <InvoiceTable invoices={invoices} />
+            <InvoiceTable invoices={invoices} onCancelSuccess={() => fetchWithFilters()} />
 
             {/* Load More */}
             {nextCursor && (

@@ -9,12 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LineItemBuilder, computeLineTotals, type LineItem } from '@/components/line-item-builder';
 import { apiFetch } from '@/lib/api/client-browser';
 import { Loader2 } from 'lucide-react';
+import type { Invoice } from '@/lib/api/invoices';
 
 interface InvoiceFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   clients: Array<{ id: string; name: string; paymentTerms?: string | null }>;
   onSuccess?: () => void;
+  editInvoice?: Invoice;
 }
 
 function parseDaysFromTerms(terms: string | null | undefined): number | null {
@@ -29,6 +31,21 @@ function addDays(dateStr: string, days: number): string {
   return d.toISOString().split('T')[0];
 }
 
+function toDateInput(dateStr: string): string {
+  return new Date(dateStr).toISOString().split('T')[0];
+}
+
+function invoiceLinesToLineItems(invoice: Invoice): LineItem[] {
+  if (!invoice.invoiceLines?.length) return [{ description: '', quantity: 1, unitPrice: 0, taxAmount: 0, amount: 0 }];
+  return invoice.invoiceLines.map(l => ({
+    description: l.description,
+    quantity: l.quantity,
+    unitPrice: l.unitPrice,
+    taxAmount: l.taxAmount,
+    amount: l.amount,
+  }));
+}
+
 const INITIAL_LINE: LineItem = {
   description: '',
   quantity: 1,
@@ -37,14 +54,22 @@ const INITIAL_LINE: LineItem = {
   amount: 0,
 };
 
-export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceFormProps) {
-  const [clientId, setClientId] = useState('');
-  const [invoiceNumber, setInvoiceNumber] = useState('');
-  const [issueDate, setIssueDate] = useState(new Date().toISOString().split('T')[0]);
-  const [dueDate, setDueDate] = useState('');
-  const [currency, setCurrency] = useState('CAD');
-  const [notes, setNotes] = useState('');
-  const [lines, setLines] = useState<LineItem[]>([{ ...INITIAL_LINE }]);
+export function InvoiceForm({ open, onOpenChange, clients, onSuccess, editInvoice }: InvoiceFormProps) {
+  const isEdit = !!editInvoice;
+
+  const [clientId, setClientId] = useState(editInvoice?.clientId ?? '');
+  const [invoiceNumber, setInvoiceNumber] = useState(editInvoice?.invoiceNumber ?? '');
+  const [issueDate, setIssueDate] = useState(
+    editInvoice ? toDateInput(editInvoice.issueDate) : new Date().toISOString().split('T')[0]
+  );
+  const [dueDate, setDueDate] = useState(
+    editInvoice ? toDateInput(editInvoice.dueDate) : ''
+  );
+  const [currency, setCurrency] = useState(editInvoice?.currency ?? 'CAD');
+  const [notes, setNotes] = useState(editInvoice?.notes ?? '');
+  const [lines, setLines] = useState<LineItem[]>(
+    editInvoice ? invoiceLinesToLineItems(editInvoice) : [{ ...INITIAL_LINE }]
+  );
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -81,34 +106,43 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceF
 
     setSubmitting(true);
     try {
-      await apiFetch('/api/business/invoices', {
-        method: 'POST',
-        body: JSON.stringify({
-          clientId,
-          invoiceNumber,
-          issueDate: new Date(issueDate).toISOString(),
-          dueDate: new Date(dueDate).toISOString(),
-          currency,
-          subtotal: totals.subtotal,
-          taxAmount: totals.taxAmount,
-          total: totals.total,
-          status: 'DRAFT',
-          notes: notes || undefined,
-          lines: lines.map(l => ({
-            description: l.description,
-            quantity: l.quantity,
-            unitPrice: l.unitPrice,
-            taxAmount: l.taxAmount,
-            amount: l.amount,
-          })),
-        }),
-      });
+      const payload = {
+        clientId,
+        invoiceNumber,
+        issueDate: new Date(issueDate).toISOString(),
+        dueDate: new Date(dueDate).toISOString(),
+        currency,
+        subtotal: totals.subtotal,
+        taxAmount: totals.taxAmount,
+        total: totals.total,
+        ...(isEdit ? {} : { status: 'DRAFT' }),
+        notes: notes || undefined,
+        lines: lines.map(l => ({
+          description: l.description,
+          quantity: l.quantity,
+          unitPrice: l.unitPrice,
+          taxAmount: l.taxAmount,
+          amount: l.amount,
+        })),
+      };
 
-      resetForm();
+      if (isEdit) {
+        await apiFetch(`/api/business/invoices/${editInvoice.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await apiFetch('/api/business/invoices', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+      }
+
+      if (!isEdit) resetForm();
       onOpenChange(false);
       onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create invoice');
+      setError(err instanceof Error ? err.message : `Failed to ${isEdit ? 'update' : 'create'} invoice`);
     } finally {
       setSubmitting(false);
     }
@@ -118,7 +152,9 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceF
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-2xl overflow-y-auto">
         <SheetHeader>
-          <SheetTitle className="font-heading">New Invoice</SheetTitle>
+          <SheetTitle className="font-heading">
+            {isEdit ? 'Edit Invoice' : 'New Invoice'}
+          </SheetTitle>
         </SheetHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-6">
@@ -126,7 +162,11 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceF
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Client</Label>
-              <Select value={clientId} onValueChange={(v) => { setClientId(v); autoFillDueDate(issueDate, v); }}>
+              <Select
+                value={clientId}
+                onValueChange={(v) => { setClientId(v); autoFillDueDate(issueDate, v); }}
+                disabled={isEdit}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select client" />
                 </SelectTrigger>
@@ -212,7 +252,7 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess }: InvoiceF
             </Button>
             <Button type="submit" disabled={submitting}>
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create Invoice
+              {isEdit ? 'Save Changes' : 'Create Invoice'}
             </Button>
           </div>
         </form>

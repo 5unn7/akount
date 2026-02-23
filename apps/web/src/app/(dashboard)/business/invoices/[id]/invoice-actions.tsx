@@ -17,17 +17,20 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { Invoice } from '@/lib/api/invoices';
 import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction } from './actions';
-import { Send, BookOpen, Download, XCircle, Loader2, ExternalLink } from 'lucide-react';
+import { Send, BookOpen, Download, XCircle, Loader2, ExternalLink, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
+import { InvoiceForm } from '@/components/business/InvoiceForm';
 
 interface InvoiceActionsProps {
     invoice: Invoice;
+    clients: Array<{ id: string; name: string; paymentTerms?: string | null }>;
 }
 
-export function InvoiceActions({ invoice }: InvoiceActionsProps) {
+export function InvoiceActions({ invoice, clients }: InvoiceActionsProps) {
     const router = useRouter();
     const [loading, setLoading] = useState<string | null>(null);
     const [journalEntryId, setJournalEntryId] = useState<string | null>(null);
+    const [editOpen, setEditOpen] = useState(false);
 
     const ACTION_LABELS: Record<string, string> = {
         send: 'Invoice sent',
@@ -71,12 +74,25 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
         window.open(`/api/business/invoices/${invoice.id}/pdf`, '_blank');
     };
 
+    const canEdit = invoice.status === 'DRAFT';
     const canSend = invoice.status === 'DRAFT';
     const canPost = !['CANCELLED', 'DRAFT'].includes(invoice.status);
     const canCancel = ['DRAFT', 'SENT'].includes(invoice.status);
 
     return (
         <div className="flex gap-2">
+            {canEdit && (
+                <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setEditOpen(true)}
+                    disabled={loading !== null}
+                    className="gap-1.5"
+                >
+                    <Pencil className="h-4 w-4" />
+                    Edit
+                </Button>
+            )}
             {canSend && (
                 <Button
                     size="sm"
@@ -167,6 +183,17 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+            )}
+
+            {canEdit && (
+                <InvoiceForm
+                    key={invoice.id}
+                    open={editOpen}
+                    onOpenChange={setEditOpen}
+                    clients={clients}
+                    editInvoice={invoice}
+                    onSuccess={() => router.refresh()}
+                />
             )}
         </div>
     );

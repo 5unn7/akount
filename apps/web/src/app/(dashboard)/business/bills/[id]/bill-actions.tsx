@@ -17,17 +17,20 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { Bill } from '@/lib/api/bills';
 import { approveBillAction, postBillAction, cancelBillAction } from './actions';
-import { CheckCircle, BookOpen, XCircle, Loader2, ExternalLink } from 'lucide-react';
+import { CheckCircle, BookOpen, XCircle, Loader2, ExternalLink, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
+import { BillForm } from '@/components/business/BillForm';
 
 interface BillActionsProps {
     bill: Bill;
+    vendors: Array<{ id: string; name: string; paymentTerms?: string | null }>;
 }
 
-export function BillActions({ bill }: BillActionsProps) {
+export function BillActions({ bill, vendors }: BillActionsProps) {
     const router = useRouter();
     const [loading, setLoading] = useState<string | null>(null);
     const [journalEntryId, setJournalEntryId] = useState<string | null>(null);
+    const [editOpen, setEditOpen] = useState(false);
 
     const ACTION_LABELS: Record<string, string> = {
         approve: 'Bill approved',
@@ -67,12 +70,25 @@ export function BillActions({ bill }: BillActionsProps) {
     const handleCancel = () =>
         handleAction('cancel', () => cancelBillAction(bill.id));
 
+    const canEdit = bill.status === 'DRAFT';
     const canApprove = bill.status === 'DRAFT';
     const canPost = !['CANCELLED', 'DRAFT'].includes(bill.status);
     const canCancel = ['DRAFT', 'PENDING'].includes(bill.status);
 
     return (
         <div className="flex gap-2">
+            {canEdit && (
+                <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setEditOpen(true)}
+                    disabled={loading !== null}
+                    className="gap-1.5"
+                >
+                    <Pencil className="h-4 w-4" />
+                    Edit
+                </Button>
+            )}
             {canApprove && (
                 <Button
                     size="sm"
@@ -153,6 +169,17 @@ export function BillActions({ bill }: BillActionsProps) {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+            )}
+
+            {canEdit && (
+                <BillForm
+                    key={bill.id}
+                    open={editOpen}
+                    onOpenChange={setEditOpen}
+                    vendors={vendors}
+                    editBill={bill}
+                    onSuccess={() => router.refresh()}
+                />
             )}
         </div>
     );

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { formatDate } from '@/lib/utils/date';
 import { notFound } from 'next/navigation';
 import { getInvoice } from '@/lib/api/invoices';
+import { listClients } from '@/lib/api/clients';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
 import { InvoiceStatusBadge } from '@akount/ui/business';
@@ -40,6 +41,13 @@ export default async function InvoiceDetailPage({
         notFound();
     }
 
+    const clientsResult = await listClients({ limit: 100 });
+    const clients = clientsResult.clients.map(c => ({
+        id: c.id,
+        name: c.name,
+        paymentTerms: c.paymentTerms ?? null,
+    }));
+
     const balanceDue = invoice.total - invoice.paidAmount;
 
     return (
@@ -68,7 +76,7 @@ export default async function InvoiceDetailPage({
                         Due {formatDate(invoice.dueDate)}
                     </p>
                 </div>
-                <InvoiceActions invoice={invoice} />
+                <InvoiceActions invoice={invoice} clients={clients} />
             </div>
 
             {/* Info Cards Row */}

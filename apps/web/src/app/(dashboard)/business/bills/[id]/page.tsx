@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { formatDate } from '@/lib/utils/date';
 import { notFound } from 'next/navigation';
 import { getBill } from '@/lib/api/bills';
+import { listVendors } from '@/lib/api/vendors';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
 import { BillStatusBadge } from '@akount/ui/business';
@@ -40,6 +41,13 @@ export default async function BillDetailPage({
         notFound();
     }
 
+    const vendorsResult = await listVendors({ limit: 100 });
+    const vendors = vendorsResult.vendors.map(v => ({
+        id: v.id,
+        name: v.name,
+        paymentTerms: v.paymentTerms ?? null,
+    }));
+
     const balanceDue = bill.total - bill.paidAmount;
 
     return (
@@ -68,7 +76,7 @@ export default async function BillDetailPage({
                         Due {formatDate(bill.dueDate)}
                     </p>
                 </div>
-                <BillActions bill={bill} />
+                <BillActions bill={bill} vendors={vendors} />
             </div>
 
             {/* Info Cards Row */}
