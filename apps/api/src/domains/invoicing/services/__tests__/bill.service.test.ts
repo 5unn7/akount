@@ -15,6 +15,9 @@ vi.mock('@akount/db', () => ({
     vendor: {
       findFirst: vi.fn(),
     },
+    taxRate: {
+      findMany: vi.fn(),
+    },
   },
 }));
 
@@ -266,6 +269,142 @@ describe('BillService', () => {
       const createArgs = vi.mocked(prisma.bill.create).mock.calls[0][0]!;
       expect(createArgs.data.billLines).toEqual({ create: lines });
     });
+
+    it('should validate taxRateId ownership (IDOR prevention)', async () => {
+      const vendor = {
+        id: VENDOR_ID,
+        entityId: ENTITY_ID,
+        entity: { tenantId: TENANT_ID },
+        deletedAt: null,
+      };
+      vi.mocked(prisma.vendor.findFirst).mockResolvedValueOnce(vendor as never);
+      vi.mocked(prisma.taxRate.findMany).mockResolvedValueOnce([] as never);
+
+      await expect(
+        billService.createBill(
+          {
+            vendorId: VENDOR_ID,
+            billNumber: 'BILL-500',
+            issueDate: '2024-06-01',
+            dueDate: '2024-06-30',
+            currency: 'USD',
+            subtotal: 100000,
+            taxAmount: 5000,
+            total: 105000,
+            status: 'DRAFT',
+            notes: undefined,
+            lines: [
+              {
+                description: 'Taxed item',
+                quantity: 1,
+                unitPrice: 100000,
+                taxRateId: 'taxrate-other-tenant',
+                taxAmount: 5000,
+                amount: 100000,
+                glAccountId: undefined,
+                categoryId: undefined,
+              },
+            ],
+          },
+          mockTenantContext
+        )
+      ).rejects.toThrow('Tax rate not found or access denied');
+    });
+
+    it('should accept valid taxRateId belonging to tenant', async () => {
+      const vendor = {
+        id: VENDOR_ID,
+        entityId: ENTITY_ID,
+        entity: { tenantId: TENANT_ID },
+        deletedAt: null,
+      };
+      vi.mocked(prisma.vendor.findFirst).mockResolvedValueOnce(vendor as never);
+      vi.mocked(prisma.taxRate.findMany).mockResolvedValueOnce([
+        { id: 'taxrate-valid' },
+      ] as never);
+      vi.mocked(prisma.bill.create).mockResolvedValueOnce(mockBill() as never);
+
+      await billService.createBill(
+        {
+          vendorId: VENDOR_ID,
+          billNumber: 'BILL-501',
+          issueDate: '2024-06-01',
+          dueDate: '2024-06-30',
+          currency: 'USD',
+          subtotal: 100000,
+          taxAmount: 5000,
+          total: 105000,
+          status: 'DRAFT',
+          notes: undefined,
+          lines: [
+            {
+              description: 'Taxed item',
+              quantity: 1,
+              unitPrice: 100000,
+              taxRateId: 'taxrate-valid',
+              taxAmount: 5000,
+              amount: 100000,
+              glAccountId: undefined,
+              categoryId: undefined,
+            },
+          ],
+        },
+        mockTenantContext
+      );
+
+      expect(prisma.taxRate.findMany).toHaveBeenCalledWith({
+        where: {
+          id: { in: ['taxrate-valid'] },
+          OR: [
+            { entity: { tenantId: TENANT_ID } },
+            { entityId: null },
+          ],
+        },
+        select: { id: true },
+      });
+      expect(prisma.bill.create).toHaveBeenCalled();
+    });
+
+    it('should skip taxRateId validation when no lines have taxRateId', async () => {
+      const vendor = {
+        id: VENDOR_ID,
+        entityId: ENTITY_ID,
+        entity: { tenantId: TENANT_ID },
+        deletedAt: null,
+      };
+      vi.mocked(prisma.vendor.findFirst).mockResolvedValueOnce(vendor as never);
+      vi.mocked(prisma.bill.create).mockResolvedValueOnce(mockBill() as never);
+
+      await billService.createBill(
+        {
+          vendorId: VENDOR_ID,
+          billNumber: 'BILL-502',
+          issueDate: '2024-06-01',
+          dueDate: '2024-06-30',
+          currency: 'USD',
+          subtotal: 50000,
+          taxAmount: 0,
+          total: 50000,
+          status: 'DRAFT',
+          notes: undefined,
+          lines: [
+            {
+              description: 'No tax item',
+              quantity: 1,
+              unitPrice: 50000,
+              taxAmount: 0,
+              amount: 50000,
+              glAccountId: undefined,
+              categoryId: undefined,
+            },
+          ],
+        },
+        mockTenantContext
+      );
+
+      expect(prisma.taxRate.findMany).not.toHaveBeenCalled();
+      expect(prisma.bill.create).toHaveBeenCalled();
+    });
   });
 
   describe('listBills', () => {
@@ -374,7 +513,7 @@ describe('BillService', () => {
         include: {
           vendor: true,
           entity: true,
-          billLines: true,
+          billLines: { include: { taxRate: true } },
         },
       });
     });
@@ -431,7 +570,7 @@ describe('BillService', () => {
           entity: { tenantId: TENANT_ID },
           deletedAt: null,
         },
-        include: { vendor: true, entity: true, billLines: true },
+        include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
       });
     });
 
@@ -612,7 +751,7 @@ describe('BillService', () => {
       expect(prisma.bill.update).toHaveBeenCalledWith({
         where: { id: 'bill-1' },
         data: { status: 'PENDING' },
-        include: { vendor: true, entity: true, billLines: true },
+        include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
       });
     });
 
@@ -700,7 +839,7 @@ describe('BillService', () => {
       expect(prisma.bill.update).toHaveBeenCalledWith({
         where: { id: 'bill-1' },
         data: { paidAmount: 50000, status: 'PARTIALLY_PAID' },
-        include: { vendor: true, entity: true, billLines: true },
+        include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
       });
     });
 

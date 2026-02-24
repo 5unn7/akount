@@ -53,6 +53,31 @@ export async function createInvoice(
     throw new Error('Client not found');
   }
 
+  // FIN-26: Validate taxRateId ownership (IDOR prevention)
+  const taxRateIds = data.lines
+    .map((line) => line.taxRateId)
+    .filter((id): id is string => id != null);
+
+  if (taxRateIds.length > 0) {
+    const uniqueIds = [...new Set(taxRateIds)];
+    const validRates = await prisma.taxRate.findMany({
+      where: {
+        id: { in: uniqueIds },
+        OR: [
+          { entity: { tenantId: ctx.tenantId } },
+          { entityId: null },
+        ],
+      },
+      select: { id: true },
+    });
+    const validIds = new Set(validRates.map((r) => r.id));
+    for (const id of uniqueIds) {
+      if (!validIds.has(id)) {
+        throw new Error('Tax rate not found or access denied');
+      }
+    }
+  }
+
   // SECURITY FIX M-2: Validate totals match line items to prevent amount manipulation
   const calculatedSubtotal = data.lines.reduce((sum, line) => sum + line.amount, 0);
   const calculatedTaxAmount = data.lines.reduce((sum, line) => sum + line.taxAmount, 0);
@@ -87,7 +112,7 @@ export async function createInvoice(
       },
     },
     include: {
-      invoiceLines: true,
+      invoiceLines: { include: { taxRate: true } },
       client: true,
       entity: true,
     },
@@ -120,7 +145,7 @@ export async function listInvoices(
 
   const invoices = await prisma.invoice.findMany({
     where,
-    include: { client: true, entity: true, invoiceLines: true },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
     orderBy: { createdAt: 'desc' },
     take: filters.limit,
   });
@@ -143,7 +168,7 @@ export async function getInvoice(id: string, ctx: TenantContext) {
     include: {
       client: true,
       entity: true,
-      invoiceLines: true,
+      invoiceLines: { include: { taxRate: true } },
     },
   });
 
@@ -172,7 +197,7 @@ export async function updateInvoice(
       ...(data.status && { status: data.status }),
       ...(data.notes !== undefined && { notes: data.notes }),
     },
-    include: { client: true, entity: true, invoiceLines: true },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
 }
 
@@ -380,7 +405,7 @@ export async function sendInvoice(
   return prisma.invoice.update({
     where: { id },
     data: { status: 'SENT' },
-    include: { client: true, entity: true, invoiceLines: true },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
 }
 
@@ -466,7 +491,7 @@ export async function cancelInvoice(id: string, ctx: TenantContext) {
   return prisma.invoice.update({
     where: { id },
     data: { status: 'CANCELLED' },
-    include: { client: true, entity: true, invoiceLines: true },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
 }
 
@@ -481,7 +506,7 @@ export async function markInvoiceOverdue(id: string, ctx: TenantContext) {
   return prisma.invoice.update({
     where: { id },
     data: { status: 'OVERDUE' },
-    include: { client: true, entity: true, invoiceLines: true },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
 }
 
@@ -515,7 +540,7 @@ export async function applyPaymentToInvoice(
   return prisma.invoice.update({
     where: { id },
     data: { paidAmount: newPaidAmount, status: newStatus },
-    include: { client: true, entity: true, invoiceLines: true },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
 }
 
@@ -542,6 +567,6 @@ export async function reversePaymentFromInvoice(
   return prisma.invoice.update({
     where: { id },
     data: { paidAmount: newPaidAmount, status: newStatus },
-    include: { client: true, entity: true, invoiceLines: true },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
 }

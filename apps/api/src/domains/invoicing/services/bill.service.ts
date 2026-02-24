@@ -50,6 +50,31 @@ export async function createBill(data: CreateBillInput, ctx: TenantContext) {
     throw new Error('Vendor not found');
   }
 
+  // FIN-26: Validate taxRateId ownership (IDOR prevention)
+  const taxRateIds = data.lines
+    .map((line) => line.taxRateId)
+    .filter((id): id is string => id != null);
+
+  if (taxRateIds.length > 0) {
+    const uniqueIds = [...new Set(taxRateIds)];
+    const validRates = await prisma.taxRate.findMany({
+      where: {
+        id: { in: uniqueIds },
+        OR: [
+          { entity: { tenantId: ctx.tenantId } },
+          { entityId: null },
+        ],
+      },
+      select: { id: true },
+    });
+    const validIds = new Set(validRates.map((r) => r.id));
+    for (const id of uniqueIds) {
+      if (!validIds.has(id)) {
+        throw new Error('Tax rate not found or access denied');
+      }
+    }
+  }
+
   // SECURITY FIX M-2: Validate totals match line items to prevent amount manipulation
   const calculatedSubtotal = data.lines.reduce((sum, line) => sum + line.amount, 0);
   const calculatedTaxAmount = data.lines.reduce((sum, line) => sum + line.taxAmount, 0);
@@ -84,7 +109,7 @@ export async function createBill(data: CreateBillInput, ctx: TenantContext) {
       },
     },
     include: {
-      billLines: true,
+      billLines: { include: { taxRate: true } },
       vendor: true,
       entity: true,
     },
@@ -113,7 +138,7 @@ export async function listBills(filters: ListBillsInput, ctx: TenantContext) {
 
   const bills = await prisma.bill.findMany({
     where,
-    include: { vendor: true, entity: true, billLines: true },
+    include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
     orderBy: { createdAt: 'desc' },
     take: filters.limit,
   });
@@ -134,7 +159,7 @@ export async function getBill(id: string, ctx: TenantContext) {
     include: {
       vendor: true,
       entity: true,
-      billLines: true,
+      billLines: { include: { taxRate: true } },
     },
   });
 
@@ -163,7 +188,7 @@ export async function updateBill(
       ...(data.status && { status: data.status as BillStatus }),
       ...(data.notes !== undefined && { notes: data.notes }),
     },
-    include: { vendor: true, entity: true, billLines: true },
+    include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
   });
 }
 
@@ -330,7 +355,7 @@ export async function approveBill(id: string, ctx: TenantContext) {
   return prisma.bill.update({
     where: { id },
     data: { status: 'PENDING' },
-    include: { vendor: true, entity: true, billLines: true },
+    include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
   });
 }
 
@@ -349,7 +374,7 @@ export async function cancelBill(id: string, ctx: TenantContext) {
   return prisma.bill.update({
     where: { id },
     data: { status: 'CANCELLED' },
-    include: { vendor: true, entity: true, billLines: true },
+    include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
   });
 }
 
@@ -364,7 +389,7 @@ export async function markBillOverdue(id: string, ctx: TenantContext) {
   return prisma.bill.update({
     where: { id },
     data: { status: 'OVERDUE' },
-    include: { vendor: true, entity: true, billLines: true },
+    include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
   });
 }
 
@@ -396,7 +421,7 @@ export async function applyPaymentToBill(
   return prisma.bill.update({
     where: { id },
     data: { paidAmount: newPaidAmount, status: newStatus },
-    include: { vendor: true, entity: true, billLines: true },
+    include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
   });
 }
 
@@ -423,6 +448,6 @@ export async function reversePaymentFromBill(
   return prisma.bill.update({
     where: { id },
     data: { paidAmount: newPaidAmount, status: newStatus },
-    include: { vendor: true, entity: true, billLines: true },
+    include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
   });
 }

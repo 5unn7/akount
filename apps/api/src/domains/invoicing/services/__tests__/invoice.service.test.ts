@@ -15,6 +15,9 @@ vi.mock('@akount/db', () => ({
     client: {
       findFirst: vi.fn(),
     },
+    taxRate: {
+      findMany: vi.fn(),
+    },
   },
 }));
 
@@ -266,6 +269,143 @@ describe('InvoiceService', () => {
       const createArgs = vi.mocked(prisma.invoice.create).mock.calls[0][0]!;
       expect(createArgs.data.invoiceLines).toEqual({ create: lines });
     });
+
+    it('should validate taxRateId ownership (IDOR prevention)', async () => {
+      const client = {
+        id: CLIENT_ID,
+        entityId: ENTITY_ID,
+        entity: { tenantId: TENANT_ID },
+        deletedAt: null,
+      };
+      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
+      // Return empty array — taxRateId not found for this tenant
+      vi.mocked(prisma.taxRate.findMany).mockResolvedValueOnce([] as never);
+
+      await expect(
+        invoiceService.createInvoice(
+          {
+            clientId: CLIENT_ID,
+            invoiceNumber: 'INV-500',
+            issueDate: '2024-06-01',
+            dueDate: '2024-06-30',
+            currency: 'USD',
+            subtotal: 100000,
+            taxAmount: 5000,
+            total: 105000,
+            status: 'DRAFT',
+            notes: undefined,
+            lines: [
+              {
+                description: 'Taxed item',
+                quantity: 1,
+                unitPrice: 100000,
+                taxRateId: 'taxrate-other-tenant',
+                taxAmount: 5000,
+                amount: 100000,
+                glAccountId: undefined,
+                categoryId: undefined,
+              },
+            ],
+          },
+          mockTenantContext
+        )
+      ).rejects.toThrow('Tax rate not found or access denied');
+    });
+
+    it('should accept valid taxRateId belonging to tenant', async () => {
+      const client = {
+        id: CLIENT_ID,
+        entityId: ENTITY_ID,
+        entity: { tenantId: TENANT_ID },
+        deletedAt: null,
+      };
+      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
+      vi.mocked(prisma.taxRate.findMany).mockResolvedValueOnce([
+        { id: 'taxrate-valid' },
+      ] as never);
+      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+
+      await invoiceService.createInvoice(
+        {
+          clientId: CLIENT_ID,
+          invoiceNumber: 'INV-501',
+          issueDate: '2024-06-01',
+          dueDate: '2024-06-30',
+          currency: 'USD',
+          subtotal: 100000,
+          taxAmount: 5000,
+          total: 105000,
+          status: 'DRAFT',
+          notes: undefined,
+          lines: [
+            {
+              description: 'Taxed item',
+              quantity: 1,
+              unitPrice: 100000,
+              taxRateId: 'taxrate-valid',
+              taxAmount: 5000,
+              amount: 100000,
+              glAccountId: undefined,
+              categoryId: undefined,
+            },
+          ],
+        },
+        mockTenantContext
+      );
+
+      expect(prisma.taxRate.findMany).toHaveBeenCalledWith({
+        where: {
+          id: { in: ['taxrate-valid'] },
+          OR: [
+            { entity: { tenantId: TENANT_ID } },
+            { entityId: null },
+          ],
+        },
+        select: { id: true },
+      });
+      expect(prisma.invoice.create).toHaveBeenCalled();
+    });
+
+    it('should skip taxRateId validation when no lines have taxRateId', async () => {
+      const client = {
+        id: CLIENT_ID,
+        entityId: ENTITY_ID,
+        entity: { tenantId: TENANT_ID },
+        deletedAt: null,
+      };
+      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
+      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+
+      await invoiceService.createInvoice(
+        {
+          clientId: CLIENT_ID,
+          invoiceNumber: 'INV-502',
+          issueDate: '2024-06-01',
+          dueDate: '2024-06-30',
+          currency: 'USD',
+          subtotal: 50000,
+          taxAmount: 0,
+          total: 50000,
+          status: 'DRAFT',
+          notes: undefined,
+          lines: [
+            {
+              description: 'No tax item',
+              quantity: 1,
+              unitPrice: 50000,
+              taxAmount: 0,
+              amount: 50000,
+              glAccountId: undefined,
+              categoryId: undefined,
+            },
+          ],
+        },
+        mockTenantContext
+      );
+
+      expect(prisma.taxRate.findMany).not.toHaveBeenCalled();
+      expect(prisma.invoice.create).toHaveBeenCalled();
+    });
   });
 
   describe('listInvoices', () => {
@@ -374,7 +514,7 @@ describe('InvoiceService', () => {
         include: {
           client: true,
           entity: true,
-          invoiceLines: true,
+          invoiceLines: { include: { taxRate: true } },
         },
       });
     });
@@ -431,7 +571,7 @@ describe('InvoiceService', () => {
           entity: { tenantId: TENANT_ID },
           deletedAt: null,
         },
-        include: { client: true, entity: true, invoiceLines: true },
+        include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
       });
     });
 

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LineItemBuilder, computeLineTotals, type LineItem } from '@/components/line-item-builder';
+import { LineItemBuilder, computeLineTotals, type LineItem, type TaxRateOption } from '@/components/line-item-builder';
 import { apiFetch } from '@/lib/api/client-browser';
 import { Loader2 } from 'lucide-react';
 import type { Invoice } from '@/lib/api/invoices';
@@ -41,6 +41,7 @@ function invoiceLinesToLineItems(invoice: Invoice): LineItem[] {
     description: l.description,
     quantity: l.quantity,
     unitPrice: l.unitPrice,
+    taxRateId: l.taxRateId ?? undefined,
     taxAmount: l.taxAmount,
     amount: l.amount,
   }));
@@ -72,6 +73,19 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess, editInvoic
   );
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [taxRates, setTaxRates] = useState<TaxRateOption[]>([]);
+
+  // Fetch active tax rates when form opens (browser-side)
+  useEffect(() => {
+    if (!open) return;
+    apiFetch<Array<{ id: string; code: string; name: string; rate: number }>>(
+      '/api/accounting/tax-rates?isActive=true'
+    )
+      .then((rates) =>
+        setTaxRates(rates.map((r) => ({ id: r.id, code: r.code, name: r.name, rate: r.rate })))
+      )
+      .catch(() => setTaxRates([])); // Graceful fallback — manual tax entry
+  }, [open]);
 
   const autoFillDueDate = (date: string, cId: string) => {
     const client = clients.find(c => c.id === cId);
@@ -121,6 +135,7 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess, editInvoic
           description: l.description,
           quantity: l.quantity,
           unitPrice: l.unitPrice,
+          taxRateId: l.taxRateId || undefined,
           taxAmount: l.taxAmount,
           amount: l.amount,
         })),
@@ -227,6 +242,7 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess, editInvoic
               lines={lines}
               onChange={setLines}
               currency={currency}
+              taxRates={taxRates}
             />
           </div>
 
