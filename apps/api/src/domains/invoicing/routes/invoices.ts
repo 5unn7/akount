@@ -216,9 +216,13 @@ export async function invoiceRoutes(fastify: FastifyInstance) {
         // Get invoice number for filename
         const invoice = await invoiceService.getInvoice(params.id, tenant);
 
+        // DRY-18: Sanitize invoice number to prevent HTTP response splitting
+        // Remove control characters (newlines, carriage returns, null bytes, etc.)
+        const sanitizedInvoiceNumber = invoice.invoiceNumber.replace(/[\r\n\x00-\x1f\x7f]/g, '');
+
         return reply
           .header('Content-Type', 'application/pdf')
-          .header('Content-Disposition', `attachment; filename="${invoice.invoiceNumber}.pdf"`)
+          .header('Content-Disposition', `attachment; filename="${sanitizedInvoiceNumber}.pdf"`)
           .send(pdfBuffer);
       } catch (error) {
         if (error instanceof Error && error.message.includes('not found')) {
