@@ -1,3 +1,4 @@
+import { Prisma } from '@akount/db';
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { prisma, Prisma } from '@akount/db';
@@ -26,7 +27,7 @@ const initializeOnboardingSchema = z.object({
   country: z.string().length(2).toUpperCase(),
   currency: z.string().length(3).toUpperCase(),
   // New personal-first fields (optional for backward compat)
-  intents: z.array(z.string()).optional(),
+  intents: z.array(z.string().max(100)).max(20).optional(),
   employmentStatus: z.string().optional(),
   streetAddress: z.string().optional(),
   city: z.string().optional(),
@@ -57,9 +58,44 @@ const completeOnboardingSchema = z.object({
 });
 
 // Wizard state schemas
+// DRY-19: Explicit schema to prevent stored XSS/prototype pollution
+const wizardDataSchema = z.object({
+  // Step 1: Account type
+  accountType: z.enum(['personal', 'business', 'accountant']).optional(),
+  // Step 2: Entity details
+  entityName: z.string().max(255).optional(),
+  entityType: z.enum(['PERSONAL', 'CORPORATION', 'SOLE_PROPRIETORSHIP', 'PARTNERSHIP', 'LLC']).optional(),
+  phoneNumber: z.string().max(50).optional(),
+  timezone: z.string().max(100).optional(),
+  country: z.string().length(2).optional(),
+  currency: z.string().length(3).optional(),
+  // Step 3: Personal details
+  intents: z.array(z.string()).max(10).optional(), // Bounded array
+  employmentStatus: z.string().max(100).optional(),
+  streetAddress: z.string().max(255).optional(),
+  city: z.string().max(100).optional(),
+  province: z.string().max(100).optional(),
+  postalCode: z.string().max(20).optional(),
+  taxId: z.string().max(50).optional(),
+  // Step 4: Business entity (optional)
+  businessEntity: z.object({
+    name: z.string().max(255),
+    entityType: z.enum(['CORPORATION', 'SOLE_PROPRIETORSHIP', 'PARTNERSHIP', 'LLC']),
+    country: z.string().length(2),
+    currency: z.string().length(3),
+    industry: z.string().max(100).optional(),
+    streetAddress: z.string().max(255).optional(),
+    city: z.string().max(100).optional(),
+    province: z.string().max(100).optional(),
+    postalCode: z.string().max(20).optional(),
+  }).optional(),
+  // Step 5: Fiscal settings
+  fiscalYearStart: z.number().int().min(1).max(12).optional(),
+});
+
 const saveStepSchema = z.object({
   step: z.number().int().min(0).max(10),
-  data: z.record(z.unknown()),
+  data: wizardDataSchema, // Typed schema instead of z.record(z.unknown())
   version: z.number().int().min(0),
 });
 
@@ -148,9 +184,9 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
             { clerkUserId: request.userId, userId: user.id, email: user.email },
             'Created new user from Clerk authentication'
           );
-        } catch (error: any) {
+        } catch (error) {
           // Handle race condition: another request created the user simultaneously
-          if (error.code === 'P2002') {
+          if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
             // Re-query user by clerkUserId (unique key guaranteed by Clerk)
             user = await prisma.user.findUnique({
               where: { clerkUserId: request.userId as string },

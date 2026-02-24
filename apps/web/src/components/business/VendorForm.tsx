@@ -1,4 +1,5 @@
 'use client';
+// Intentionally separate from ClientForm despite structural similarity.// Forms are expected to diverge as domain-specific fields are added:// - Vendors: bank details, 1099 tracking, AP payment methods// - Clients: billing address, payment terms, AR aging preferences// Current similarity (~170 lines) is transitional.
 
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -16,7 +17,7 @@ interface VendorFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   entityId: string;
-  onSuccess?: () => void;
+  onSuccess?: () => void | Promise<void>;
   editVendor?: Vendor;
 }
 
@@ -81,7 +82,7 @@ export function VendorForm({ open, onOpenChange, entityId, onSuccess, editVendor
 
       if (!isEdit) resetForm();
       onOpenChange(false);
-      onSuccess?.();
+      await onSuccess?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : `Failed to ${isEdit ? 'update' : 'create'} vendor`);
     } finally {

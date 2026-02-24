@@ -1,5 +1,6 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
+import { validateEntityOwnership, validateGLAccountOwnership } from '../utils/validate-ownership';
 import { createAuditLog } from '../../../lib/audit';
 import { generateEntryNumber } from '../utils/entry-number';
 import type {
@@ -117,17 +118,17 @@ export class AssetService {
      * Capitalize (create) a new fixed asset.
      */
     async capitalizeAsset(data: CreateAssetInput) {
-        await this.validateEntityOwnership(data.entityId);
+        await validateEntityOwnership(data.entityId, this.tenantId);
 
         // Validate GL accounts if provided
         if (data.assetGLAccountId) {
-            await this.validateGLAccountOwnership(data.assetGLAccountId, data.entityId);
+            await validateGLAccountOwnership(data.assetGLAccountId, data.entityId, this.tenantId);
         }
         if (data.depreciationExpenseGLAccountId) {
-            await this.validateGLAccountOwnership(data.depreciationExpenseGLAccountId, data.entityId);
+            await validateGLAccountOwnership(data.depreciationExpenseGLAccountId, data.entityId, this.tenantId);
         }
         if (data.accumulatedDepreciationGLAccountId) {
-            await this.validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, data.entityId);
+            await validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, data.entityId, this.tenantId);
         }
 
         const asset = await prisma.fixedAsset.create({
@@ -187,13 +188,13 @@ export class AssetService {
 
         // Validate GL accounts if provided
         if (data.assetGLAccountId) {
-            await this.validateGLAccountOwnership(data.assetGLAccountId, existing.entityId);
+            await validateGLAccountOwnership(data.assetGLAccountId, existing.entityId, this.tenantId);
         }
         if (data.depreciationExpenseGLAccountId) {
-            await this.validateGLAccountOwnership(data.depreciationExpenseGLAccountId, existing.entityId);
+            await validateGLAccountOwnership(data.depreciationExpenseGLAccountId, existing.entityId, this.tenantId);
         }
         if (data.accumulatedDepreciationGLAccountId) {
-            await this.validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, existing.entityId);
+            await validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, existing.entityId, this.tenantId);
         }
 
         const asset = await prisma.fixedAsset.update({
@@ -406,7 +407,7 @@ export class AssetService {
      * Idempotency: checks @@unique([fixedAssetId, periodDate]) before creating.
      */
     async runDepreciation(data: RunDepreciationInput) {
-        await this.validateEntityOwnership(data.entityId);
+        await validateEntityOwnership(data.entityId, this.tenantId);
 
         const periodDate = new Date(data.periodDate);
         // Normalize to first of month for idempotency key
@@ -610,31 +611,7 @@ export class AssetService {
     // Validation Helpers
     // ========================================================================
 
-    private async validateEntityOwnership(entityId: string) {
-        const entity = await prisma.entity.findFirst({
-            where: { id: entityId, tenantId: this.tenantId },
-            select: { id: true },
-        });
 
-        if (!entity) {
-            throw new AccountingError('Entity not found', 'ENTITY_NOT_FOUND', 403);
-        }
-
-        return entity;
-    }
-
-    private async validateGLAccountOwnership(glAccountId: string, entityId: string) {
-        const glAccount = await prisma.gLAccount.findFirst({
-            where: {
-                id: glAccountId,
-                entityId,
-                entity: { tenantId: this.tenantId },
-            },
-            select: { id: true },
-        });
-
-        if (!glAccount) {
-            throw new AccountingError('GL account not found', 'GL_ACCOUNT_NOT_FOUND', 403);
         }
 
         return glAccount;

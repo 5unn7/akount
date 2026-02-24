@@ -1,5 +1,6 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
+import { validateEntityOwnership, validateGLAccountOwnership } from '../utils/validate-ownership';
 import { createAuditLog } from '../../../lib/audit';
 import type {
     CreateCalendarInput,
@@ -89,7 +90,7 @@ export class FiscalPeriodService {
      * creates April YYYY through March YYYY+1.
      */
     async createCalendar(data: CreateCalendarInput) {
-        await this.validateEntityOwnership(data.entityId);
+        await validateEntityOwnership(data.entityId, this.tenantId);
 
         // Calculate fiscal year dates
         const startMonth = data.startMonth ?? 1;
@@ -317,23 +318,15 @@ export class FiscalPeriodService {
         return period;
     }
 
-    private async validateEntityOwnership(entityId: string) {
-        const entity = await prisma.entity.findFirst({
-            where: { id: entityId, tenantId: this.tenantId },
-            select: { id: true },
-        });
 
-        if (!entity) {
-            throw new AccountingError('Entity not found', 'ENTITY_NOT_FOUND', 403);
-        }
-
-        return entity;
-    }
+    // Type definitions for period actions and statuses
+    type PeriodAction = 'LOCK' | 'CLOSE' | 'REOPEN';
+    type PeriodStatus = 'OPEN' | 'LOCKED' | 'CLOSED';
 
     private async auditPeriodAction(
-        period: { id: string; status: string; fiscalCalendar: { entityId: string } },
-        action: string,
-        newStatus: string
+        period: { id: string; status: PeriodStatus; fiscalCalendar: { entityId: string } },
+        action: PeriodAction,
+        newStatus: PeriodStatus
     ) {
         await createAuditLog({
             tenantId: this.tenantId,

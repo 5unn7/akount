@@ -265,6 +265,9 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
         });
       }
 
+      // TODO(security): Wrap the read-modify-write sequence (lines 269-301) in prisma.$transaction()
+      // to prevent TOCTOU race condition where concurrent updates can overwrite each other's
+      // completedSteps array changes. See LOW-TOCTOU finding from 2026-02-24 review.
       // ✅ CORRECT: Read-modify-write pattern for array updates
       const currentProgress = await prisma.onboardingProgress.findUnique({
         where: { tenantId: request.tenantId },
