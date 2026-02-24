@@ -1,4 +1,5 @@
 import { apiFetch } from './client-browser';
+import type { ProfitLossReport, TrialBalanceReport, RevenueReport } from '@akount/types/financial';
 
 /**
  * Cash flow projection data point
@@ -187,4 +188,96 @@ export async function getActionItems(
     const endpoint = `/api/overview/action-items?${params.toString()}`;
 
     return apiFetch<ActionItemsData>(endpoint);
+}
+
+/**
+ * Fetch Profit & Loss summary report
+ *
+ * NOTE: This is a CLIENT-ONLY function using apiFetch (browser client).
+ * Called from client component (ProfitLossSummaryWidget).
+ *
+ * @param entityId - Optional entity ID filter
+ * @param startDate - Report start date (ISO string)
+ * @param endDate - Report end date (ISO string)
+ * @returns P&L report with revenue, expenses, and net income
+ */
+export async function getProfitLossSummary(
+    entityId: string | undefined,
+    startDate: string,
+    endDate: string
+): Promise<ProfitLossReport> {
+    const params = new URLSearchParams();
+
+    if (entityId) {
+        params.append('entityId', entityId);
+    }
+
+    params.append('startDate', startDate);
+    params.append('endDate', endDate);
+
+    const endpoint = `/api/accounting/reports/profit-loss?${params.toString()}`;
+
+    return apiFetch<ProfitLossReport>(endpoint);
+}
+
+/**
+ * Fetch Trial Balance status
+ *
+ * NOTE: This is a CLIENT-ONLY function using apiFetch (browser client).
+ * Called from client component (TrialBalanceStatusWidget).
+ *
+ * @param entityId - Optional entity ID filter
+ * @param asOfDate - Optional as-of date (ISO string, defaults to today on backend)
+ * @returns Trial Balance report with balanced status and account breakdown
+ */
+export async function getTrialBalanceStatus(
+    entityId?: string,
+    asOfDate?: string
+): Promise<TrialBalanceReport> {
+    const params = new URLSearchParams();
+
+    if (entityId) {
+        params.append('entityId', entityId);
+    }
+
+    if (asOfDate) {
+        params.append('asOfDate', asOfDate);
+    }
+
+    const endpoint = `/api/accounting/reports/trial-balance?${params.toString()}`;
+
+    return apiFetch<TrialBalanceReport>(endpoint);
+}
+
+/**
+ * Fetch top revenue clients
+ *
+ * NOTE: This is a CLIENT-ONLY function using apiFetch (browser client).
+ * Called from client component (TopRevenueClientsWidget).
+ *
+ * @param entityId - Optional entity ID filter
+ * @param startDate - Report start date (ISO string)
+ * @param endDate - Report end date (ISO string)
+ * @param limit - Maximum number of clients to return (default: 5)
+ * @returns Revenue report with top clients by revenue
+ */
+export async function getTopRevenueClients(
+    entityId: string | undefined,
+    startDate: string,
+    endDate: string,
+    limit: number = 5
+): Promise<RevenueReport> {
+    const params = new URLSearchParams();
+
+    if (entityId) {
+        params.append('entityId', entityId);
+    }
+
+    params.append('startDate', startDate);
+    params.append('endDate', endDate);
+    params.append('limit', limit.toString());
+
+    const endpoint = `/api/accounting/reports/revenue-by-client?${params.toString()}`;
+
+    return apiFetch<RevenueReport>(endpoint);
 }
