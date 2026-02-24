@@ -64,7 +64,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
 
             {/* Scrollable feed with fade edges */}
             <div className="relative flex-1 min-h-0">
-                <div className="overflow-y-auto h-full -mx-1 px-1 space-y-2 scrollbar-hide">
+                <div className="overflow-y-auto h-full -mx-0.5 px-0.5 space-y-2 scrollbar-thin-glass">
                     {Array.from(grouped.entries()).map(([date, txs]) => (
                         <div key={date}>
                             {/* Date label — no sticky/blur to avoid glass artifacts */}

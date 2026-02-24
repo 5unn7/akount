@@ -32,7 +32,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
 
     if (!data || data.length === 0) {
         return (
-            <div className={cn('glass rounded-sm p-5', className)}>
+            <div className={cn('glass rounded-sm p-5 h-full', className)}>
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-heading font-normal">Expense Breakdown</h3>
                     <div className="flex gap-1 glass-2 rounded-sm p-0.5">
@@ -84,7 +84,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
     const topCategory = Array.from(categoryTotals.entries()).sort((a, b) => b[1].amount - a[1].amount)[0];
 
     return (
-        <div className={cn('glass rounded-sm p-5', className)}>
+        <div className={cn('glass rounded-sm p-5 h-full', className)}>
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <div>

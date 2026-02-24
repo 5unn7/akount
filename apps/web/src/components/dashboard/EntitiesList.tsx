@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Building2, User, ArrowRight, Plus, MapPin, Wallet } from 'lucide-react';
+import { Building2, User, ArrowRight, Plus } from 'lucide-react';
 import { GlowCard } from '@/components/ui/glow-card';
 import type { Entity, EntityType } from '@/lib/api/entities';
 import { EntityFormSheet } from './EntityFormSheet';
@@ -16,12 +16,32 @@ const TYPE_LABELS: Record<EntityType, string> = {
     LLC: 'LLC',
 };
 
-const TYPE_COLORS: Record<EntityType, { icon: string; border: string }> = {
-    PERSONAL: { icon: 'text-ak-green', border: 'border-l-[color:var(--ak-green)]' },
-    CORPORATION: { icon: 'text-ak-blue', border: 'border-l-[color:var(--ak-blue)]' },
-    SOLE_PROPRIETORSHIP: { icon: 'text-ak-purple', border: 'border-l-[color:var(--ak-purple)]' },
-    PARTNERSHIP: { icon: 'text-ak-teal', border: 'border-l-[color:var(--ak-teal)]' },
-    LLC: { icon: 'text-primary', border: 'border-l-primary' },
+const TYPE_COLORS: Record<EntityType, { icon: string; bg: string; glow: string }> = {
+    PERSONAL: {
+        icon: 'text-ak-green',
+        bg: 'bg-ak-green-dim',
+        glow: 'rgba(52,211,153,0.06)',
+    },
+    CORPORATION: {
+        icon: 'text-ak-blue',
+        bg: 'bg-ak-blue-dim',
+        glow: 'rgba(96,165,250,0.06)',
+    },
+    SOLE_PROPRIETORSHIP: {
+        icon: 'text-ak-purple',
+        bg: 'bg-ak-purple-dim',
+        glow: 'rgba(167,139,250,0.06)',
+    },
+    PARTNERSHIP: {
+        icon: 'text-ak-teal',
+        bg: 'bg-ak-teal-dim',
+        glow: 'rgba(45,212,191,0.06)',
+    },
+    LLC: {
+        icon: 'text-primary',
+        bg: 'bg-ak-pri-dim',
+        glow: 'rgba(245,158,11,0.06)',
+    },
 };
 
 export function EntitiesList({ entities }: EntitiesListProps): React.ReactElement {
@@ -45,54 +65,48 @@ export function EntitiesList({ entities }: EntitiesListProps): React.ReactElemen
             {entities.map((entity) => {
                 const colors = TYPE_COLORS[entity.type] || TYPE_COLORS.CORPORATION;
                 const Icon = entity.type === 'PERSONAL' ? User : Building2;
+                const accountCount = entity._count?.accounts ?? 0;
 
                 return (
                     <GlowCard
                         key={entity.id}
                         variant="glass"
-                        className={`p-4 border-l-2 ${colors.border}`}
+                        glowColor={colors.glow}
+                        className="p-3 group hover:border-ak-border-2 hover:-translate-y-px"
                     >
-                        <div className="flex items-start gap-3">
-                            <div className="shrink-0">
-                                <Icon className={`h-5 w-5 ${colors.icon}`} />
+                        {/* Header: icon badge + name + type/meta */}
+                        <div className="flex items-center gap-2.5">
+                            <div className={`shrink-0 h-7 w-7 rounded-md ${colors.bg} flex items-center justify-center`}>
+                                <Icon className={`h-3.5 w-3.5 ${colors.icon}`} />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium leading-tight truncate">
                                     {entity.name}
                                 </p>
-                                <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground mt-0.5">
-                                    {TYPE_LABELS[entity.type] || entity.type}
+                                <p className="text-micro text-muted-foreground mt-0.5 truncate">
+                                    <span className="uppercase tracking-[0.05em]">{TYPE_LABELS[entity.type] || entity.type}</span>
+                                    <span className="mx-1.5 opacity-30">·</span>
+                                    {entity.country || '—'}
+                                    <span className="mx-1.5 opacity-30">·</span>
+                                    <span className="font-mono">{entity.functionalCurrency}</span>
                                 </p>
                             </div>
                         </div>
 
-                        {/* Entity metadata grid */}
-                        <div className="grid grid-cols-2 gap-2 mt-3">
-                            <div className="flex items-center gap-1.5">
-                                <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
-                                <span className="text-[10px] text-muted-foreground truncate">
-                                    {entity.country || 'Not set'}
+                        {/* Footer: account count + view link */}
+                        <div className="mt-2 pt-2 border-t border-ak-border flex items-center justify-between">
+                            <span className="text-micro text-muted-foreground">
+                                Accounts{' '}
+                                <span className="text-foreground font-mono font-medium">
+                                    {accountCount}
                                 </span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <Wallet className="h-3 w-3 text-muted-foreground shrink-0" />
-                                <span className="text-[10px] font-mono text-muted-foreground">
-                                    {entity.functionalCurrency}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Account count placeholder */}
-                        <div className="mt-3 pt-3 border-t border-ak-border flex items-center justify-between">
-                            <span className="text-[10px] text-muted-foreground">
-                                Accounts: <span className="text-foreground font-medium">—</span>
                             </span>
                             <Link
                                 href={`/banking/accounts?entityId=${entity.id}`}
-                                className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+                                className="inline-flex items-center gap-1 text-micro text-muted-foreground hover:text-foreground transition-colors group-hover:text-foreground"
                             >
                                 View
-                                <ArrowRight className="h-3 w-3" />
+                                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                             </Link>
                         </div>
                     </GlowCard>
@@ -100,9 +114,12 @@ export function EntitiesList({ entities }: EntitiesListProps): React.ReactElemen
             })}
 
             {/* Add Entity card */}
-            <div className="glass rounded-xl p-4 flex items-center justify-center min-h-[100px] border-dashed">
+            <GlowCard
+                variant="glass"
+                className="p-3 flex items-center justify-center border-dashed hover:border-ak-border-2 hover:-translate-y-px"
+            >
                 <EntityFormSheet />
-            </div>
+            </GlowCard>
         </div>
     );
 }

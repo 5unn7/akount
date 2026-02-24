@@ -26,24 +26,26 @@ export function EntitiesSection({ entities }: EntitiesSectionProps) {
     ]);
 
     return (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-3">
-            <CollapsibleTrigger className="w-full group">
-                <div className="flex items-center justify-between">
+        <div className="glass rounded-sm p-5">
+            <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-3">
+                <CollapsibleTrigger className="w-full group">
                     <SectionHeader
                         title="Entities"
                         meta={`${entities.length} entit${entities.length === 1 ? 'y' : 'ies'}`}
+                        actions={
+                            <ChevronDown
+                                className={cn(
+                                    'h-4 w-4 text-muted-foreground transition-transform duration-200',
+                                    isOpen && 'transform rotate-180'
+                                )}
+                            />
+                        }
                     />
-                    <ChevronDown
-                        className={cn(
-                            'h-4 w-4 text-muted-foreground transition-transform duration-200',
-                            isOpen && 'transform rotate-180'
-                        )}
-                    />
-                </div>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="space-y-3">
-                <EntitiesList entities={entities} />
-            </CollapsibleContent>
-        </Collapsible>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-3">
+                    <EntitiesList entities={entities} />
+                </CollapsibleContent>
+            </Collapsible>
+        </div>
     );
 }
