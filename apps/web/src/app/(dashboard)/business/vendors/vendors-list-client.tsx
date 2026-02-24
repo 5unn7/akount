@@ -35,6 +35,8 @@ export function VendorsListClient({
     const [nextCursor, setNextCursor] = useState(initialNextCursor);
     const [isLoading, setIsLoading] = useState(false);
     const [formOpen, setFormOpen] = useState(false);
+    // UX-104: Prepare for edit mode - prevents stale data when switching records
+    const [editingVendor, setEditingVendor] = useState<Vendor | null>(null);
 
     // Filter state
     const [searchQuery, setSearchQuery] = useState('');
@@ -224,10 +226,11 @@ export function VendorsListClient({
 
             {entityId && (
                 <VendorForm
-                    key="create"
+                    key={editingVendor?.id ?? 'create'}
                     open={formOpen}
                     onOpenChange={setFormOpen}
                     entityId={entityId}
+                    editVendor={editingVendor ?? undefined}
                     onSuccess={() => fetchWithFilters()}
                 />
             )}

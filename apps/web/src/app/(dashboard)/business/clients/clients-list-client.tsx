@@ -35,6 +35,8 @@ export function ClientsListClient({
     const [nextCursor, setNextCursor] = useState(initialNextCursor);
     const [isLoading, setIsLoading] = useState(false);
     const [formOpen, setFormOpen] = useState(false);
+    // UX-104: Prepare for edit mode - prevents stale data when switching records
+    const [editingClient, setEditingClient] = useState<Client | null>(null);
 
     // Filter state
     const [searchQuery, setSearchQuery] = useState('');
@@ -224,10 +226,11 @@ export function ClientsListClient({
 
             {entityId && (
                 <ClientForm
-                    key="create"
+                    key={editingClient?.id ?? 'create'}
                     open={formOpen}
                     onOpenChange={setFormOpen}
                     entityId={entityId}
+                    editClient={editingClient ?? undefined}
                     onSuccess={() => fetchWithFilters()}
                 />
             )}
