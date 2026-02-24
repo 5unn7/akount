@@ -63,6 +63,7 @@ export interface ListGLAccountsParams {
     type?: GLAccountType;
     isActive?: boolean;
     parentAccountId?: string | null;
+    search?: string;
 }
 
 // ============================================================================
