@@ -183,7 +183,31 @@ export async function updateInvoice(
   ctx: TenantContext
 ) {
   // Verify exists and tenant owns
-  await getInvoice(id, ctx);
+  const existing = await prisma.invoice.findFirst({
+    where: { id, entity: { tenantId: ctx.tenantId }, deletedAt: null },
+    include: { invoiceLines: true },
+  });
+
+  if (!existing) {
+    throw new Error('Invoice not found');
+  }
+
+  // FIN-29: Validate PATCH totals against line items (only for DRAFT)
+  if (existing.status === 'DRAFT' && (data.subtotal !== undefined || data.taxAmount !== undefined || data.total !== undefined)) {
+    const calculatedSubtotal = existing.invoiceLines.reduce((sum, line) => sum + line.amount, 0);
+    const calculatedTaxAmount = existing.invoiceLines.reduce((sum, line) => sum + line.taxAmount, 0);
+    const calculatedTotal = calculatedSubtotal + calculatedTaxAmount;
+
+    if (data.subtotal !== undefined && data.subtotal !== calculatedSubtotal) {
+      throw new Error(`Subtotal mismatch: provided ${data.subtotal}, calculated ${calculatedSubtotal} from line items`);
+    }
+    if (data.taxAmount !== undefined && data.taxAmount !== calculatedTaxAmount) {
+      throw new Error(`Tax amount mismatch: provided ${data.taxAmount}, calculated ${calculatedTaxAmount} from line items`);
+    }
+    if (data.total !== undefined && data.total !== calculatedTotal) {
+      throw new Error(`Total mismatch: provided ${data.total}, calculated ${calculatedTotal} from line items`);
+    }
+  }
 
   return prisma.invoice.update({
     where: { id },
