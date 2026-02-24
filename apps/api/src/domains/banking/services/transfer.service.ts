@@ -168,12 +168,18 @@ export class TransferService {
           // To account IS in entity currency — toAmount is the base value
           baseCurrencyAmount = toAmount;
         } else {
-          // Neither account in entity currency — use exchangeRate as best approximation
-          // @todo: requires separate from→entity rate for full accuracy
-          baseCurrencyAmount = Math.round(fromAmount * (data.exchangeRate ?? 1));
+          // Neither account in entity currency — exchangeRate is from->to, not from->base.
+          // Use fromAmount as-is (best approximation without a separate baseCurrencyRate).
+          // @todo: add baseCurrencyRate to CreateTransferSchema for 3-currency scenarios
+          baseCurrencyAmount = fromAmount;
         }
-        const baseCurrencyFromAmount = baseCurrencyAmount;
-        const baseCurrencyToAmount = baseCurrencyAmount;
+        // Exchange rates per line: from line currency to entity currency
+        const fromExchangeRate = fromAccount.currency === entityCurrency
+          ? 1
+          : (data.exchangeRate ?? 1);
+        const toExchangeRate = toAccount.currency === entityCurrency
+          ? 1
+          : (data.exchangeRate ?? 1);
 
         const transferDate = data.date ? new Date(data.date) : new Date();
 
@@ -193,6 +199,8 @@ export class TransferService {
               amount: data.amount,
               currency: data.currency,
               exchangeRate: data.exchangeRate,
+              toAmount: isMultiCurrency ? toAmount : undefined,
+              toCurrency: isMultiCurrency ? toAccount.currency : undefined,
             },
             status: 'POSTED',
             createdBy: this.userId,
@@ -201,11 +209,11 @@ export class TransferService {
                 // DR to account (money arrives)
                 {
                   glAccountId: toAccount.glAccountId,
-                  debitAmount: toAmount,
+                  debitAmount: baseCurrencyAmount,
                   creditAmount: 0,
                   currency: toAccount.currency,
-                  exchangeRate: data.exchangeRate ?? 1,
-                  baseCurrencyDebit: baseCurrencyToAmount,
+                  exchangeRate: toExchangeRate,
+                  baseCurrencyDebit: baseCurrencyAmount,
                   baseCurrencyCredit: 0,
                   memo: `Transfer from ${fromAccount.name}`,
                 },
@@ -213,11 +221,11 @@ export class TransferService {
                 {
                   glAccountId: fromAccount.glAccountId,
                   debitAmount: 0,
-                  creditAmount: fromAmount,
+                  creditAmount: baseCurrencyAmount,
                   currency: fromAccount.currency,
-                  exchangeRate: data.exchangeRate ?? 1,
+                  exchangeRate: fromExchangeRate,
                   baseCurrencyDebit: 0,
-                  baseCurrencyCredit: baseCurrencyFromAmount,
+                  baseCurrencyCredit: baseCurrencyAmount,
                   memo: `Transfer to ${toAccount.name}`,
                 },
               ],
@@ -242,6 +250,8 @@ export class TransferService {
               amount: data.amount,
               currency: data.currency,
               exchangeRate: data.exchangeRate,
+              toAmount: isMultiCurrency ? toAmount : undefined,
+              toCurrency: isMultiCurrency ? toAccount.currency : undefined,
             },
             linkedEntryId: entry1.id, // Link back to first entry
             status: 'POSTED',
@@ -251,11 +261,11 @@ export class TransferService {
                 // DR to account
                 {
                   glAccountId: toAccount.glAccountId,
-                  debitAmount: toAmount,
+                  debitAmount: baseCurrencyAmount,
                   creditAmount: 0,
                   currency: toAccount.currency,
-                  exchangeRate: data.exchangeRate ?? 1,
-                  baseCurrencyDebit: baseCurrencyToAmount,
+                  exchangeRate: toExchangeRate,
+                  baseCurrencyDebit: baseCurrencyAmount,
                   baseCurrencyCredit: 0,
                   memo: `Transfer from ${fromAccount.name}`,
                 },
@@ -263,11 +273,11 @@ export class TransferService {
                 {
                   glAccountId: fromAccount.glAccountId,
                   debitAmount: 0,
-                  creditAmount: fromAmount,
+                  creditAmount: baseCurrencyAmount,
                   currency: fromAccount.currency,
-                  exchangeRate: data.exchangeRate ?? 1,
+                  exchangeRate: fromExchangeRate,
                   baseCurrencyDebit: 0,
-                  baseCurrencyCredit: baseCurrencyFromAmount,
+                  baseCurrencyCredit: baseCurrencyAmount,
                   memo: `Transfer to ${toAccount.name}`,
                 },
               ],
@@ -414,9 +424,13 @@ export class TransferService {
         sourceDocument: entry.sourceDocument as Record<string, unknown>,
         linkedEntryId: entry.linkedEntryId,
         amount:
-          entry.journalLines.find((l) => l.debitAmount > 0)?.debitAmount ?? 0,
+          typeof (entry.sourceDocument as Record<string, unknown> | null)?.amount === 'number'
+            ? (entry.sourceDocument as Record<string, unknown>).amount as number
+            : entry.journalLines.find((l) => l.debitAmount > 0)?.debitAmount ?? 0,
         currency:
-          entry.journalLines[0]?.currency ?? 'CAD',
+          typeof (entry.sourceDocument as Record<string, unknown> | null)?.currency === 'string'
+            ? (entry.sourceDocument as Record<string, unknown>).currency as string
+            : entry.journalLines[0]?.currency ?? 'CAD',
         createdAt: entry.createdAt.toISOString(),
       })),
       hasMore,

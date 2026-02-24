@@ -334,6 +334,143 @@ describe('TransferService', () => {
         })
       ).rejects.toThrow('must match from account currency');
     });
+
+    it('should create multi-currency transfer with balanced JE lines', async () => {
+      const usdAccount = mockAccount({
+        id: 'usd-acc',
+        name: 'USD Checking',
+        currency: 'USD',
+        glAccountId: 'gl-usd',
+        currentBalance: 100000,
+        entity: { id: ENTITY_ID, functionalCurrency: 'CAD' }, // entity is CAD
+      });
+      const cadAccount = mockAccount({
+        id: 'cad-acc',
+        name: 'CAD Savings',
+        currency: 'CAD',
+        glAccountId: 'gl-cad',
+      });
+
+      const mockJECreate = vi.fn()
+        .mockResolvedValueOnce({ id: 'je-1', entityId: ENTITY_ID })
+        .mockResolvedValueOnce({ id: 'je-2' });
+
+      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+        const tx = {
+          account: {
+            findFirst: vi.fn()
+              .mockResolvedValueOnce(usdAccount)
+              .mockResolvedValueOnce(cadAccount),
+            update: vi.fn().mockResolvedValue({}),
+          },
+          journalEntry: {
+            create: mockJECreate,
+            update: vi.fn().mockResolvedValue({ id: 'je-1' }),
+          },
+        };
+        return callback(tx);
+      });
+
+      await service.createTransfer({
+        fromAccountId: 'usd-acc',
+        toAccountId: 'cad-acc',
+        amount: 10000, // 00 USD
+        currency: 'USD',
+        exchangeRate: 1.35, // USD -> CAD = 1.35
+      });
+
+      // Verify JE lines balance: SUM(debit) === SUM(credit)
+      const je1Args = mockJECreate.mock.calls[0][0]; // first create call
+      const je1Lines = je1Args.data.journalLines.create;
+
+      const totalDebits = je1Lines.reduce((s: number, l: { debitAmount: number }) => s + l.debitAmount, 0);
+      const totalCredits = je1Lines.reduce((s: number, l: { creditAmount: number }) => s + l.creditAmount, 0);
+      expect(totalDebits).toBe(totalCredits); // Double-entry invariant
+
+      // Verify base currency amounts also balance
+      const totalBaseCurrencyDebits = je1Lines.reduce(
+        (s: number, l: { baseCurrencyDebit: number }) => s + l.baseCurrencyDebit, 0
+      );
+      const totalBaseCurrencyCredits = je1Lines.reduce(
+        (s: number, l: { baseCurrencyCredit: number }) => s + l.baseCurrencyCredit, 0
+      );
+      expect(totalBaseCurrencyDebits).toBe(totalBaseCurrencyCredits);
+
+      // In this case, toAccount (CAD) IS entity currency, so baseCurrencyAmount = toAmount
+      // toAmount = Math.round(10000 * 1.35) = 13500
+      const expectedBaseCurrency = 13500;
+      expect(totalDebits).toBe(expectedBaseCurrency);
+      expect(totalCredits).toBe(expectedBaseCurrency);
+
+      // Verify all amounts are integer cents
+      je1Lines.forEach((line: { debitAmount: number; creditAmount: number; baseCurrencyDebit: number; baseCurrencyCredit: number }) => {
+        expect(Number.isInteger(line.debitAmount)).toBe(true);
+        expect(Number.isInteger(line.creditAmount)).toBe(true);
+        expect(Number.isInteger(line.baseCurrencyDebit)).toBe(true);
+        expect(Number.isInteger(line.baseCurrencyCredit)).toBe(true);
+      });
+
+      // Verify sourceDocument preserves original amount
+      expect(je1Args.data.sourceDocument.amount).toBe(10000);
+      expect(je1Args.data.sourceDocument.currency).toBe('USD');
+      expect(je1Args.data.sourceDocument.toAmount).toBe(13500);
+      expect(je1Args.data.sourceDocument.toCurrency).toBe('CAD');
+    });
+
+    it('should balance JEs when from-account is entity currency', async () => {
+      const cadAccount = mockAccount({
+        id: 'cad-acc',
+        name: 'CAD Checking',
+        currency: 'CAD',
+        glAccountId: 'gl-cad',
+        currentBalance: 100000,
+        entity: { id: ENTITY_ID, functionalCurrency: 'CAD' },
+      });
+      const eurAccount = mockAccount({
+        id: 'eur-acc',
+        name: 'EUR Savings',
+        currency: 'EUR',
+        glAccountId: 'gl-eur',
+      });
+
+      const mockJECreate = vi.fn()
+        .mockResolvedValueOnce({ id: 'je-1', entityId: ENTITY_ID })
+        .mockResolvedValueOnce({ id: 'je-2' });
+
+      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+        const tx = {
+          account: {
+            findFirst: vi.fn()
+              .mockResolvedValueOnce(cadAccount)
+              .mockResolvedValueOnce(eurAccount),
+            update: vi.fn().mockResolvedValue({}),
+          },
+          journalEntry: {
+            create: mockJECreate,
+            update: vi.fn().mockResolvedValue({ id: 'je-1' }),
+          },
+        };
+        return callback(tx);
+      });
+
+      await service.createTransfer({
+        fromAccountId: 'cad-acc',
+        toAccountId: 'eur-acc',
+        amount: 10000, // 00 CAD
+        currency: 'CAD',
+        exchangeRate: 0.68, // CAD -> EUR
+      });
+
+      // Verify JE lines balance
+      const je1Lines = mockJECreate.mock.calls[0][0].data.journalLines.create;
+      const totalDebits = je1Lines.reduce((s: number, l: { debitAmount: number }) => s + l.debitAmount, 0);
+      const totalCredits = je1Lines.reduce((s: number, l: { creditAmount: number }) => s + l.creditAmount, 0);
+      expect(totalDebits).toBe(totalCredits);
+
+      // From account IS entity currency, so baseCurrencyAmount = fromAmount = 10000
+      expect(totalDebits).toBe(10000);
+      expect(totalCredits).toBe(10000);
+    });
   });
 
   describe('listTransfers', () => {
