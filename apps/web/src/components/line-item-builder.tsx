@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
+import { formatCents, parseCentsInput } from '@/lib/utils/currency';
 
 /**
  * Line Item Builder — Reusable component for invoice/bill line items.
@@ -47,15 +48,7 @@ interface LineItemBuilderProps {
   taxRates?: TaxRateOption[];
 }
 
-function formatCents(cents: number): string {
-  return (cents / 100).toFixed(2);
-}
-
-function parseCentsInput(value: string): number {
-  const num = parseFloat(value);
-  if (isNaN(num)) return 0;
-  return Math.round(num * 100);
-}
+// DRY-21: formatCents and parseCentsInput now imported from @/lib/utils/currency
 
 function calcTaxAmount(amount: number, rate: number): number {
   return Math.round(amount * rate);
