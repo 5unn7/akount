@@ -1,6 +1,6 @@
 # Active Work Tracker
 
-**Last Updated:** 2026-02-23 15:30
+**Last Updated:** 2026-02-24 16:12
 
 ---
 
@@ -8,6 +8,8 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
+| agent-widgets-c24 | 2026-02-24 15:51 | DEV-179: Overview Widgets — Add client-side API functions for P&L, Trial Balance, and Revenue reports | completed | main |
+| agent-flinks-244 | 2026-02-24 15:48 | INFRA-59: Flinks API production readiness — verify env vars, test demo mode, create deployment checklist | completed | main |
 | agent-e2e-tests | 2026-02-23 15:30 | TEST-2: E2E tests for critical user flows (onboarding, import, posting, reports) | in_progress | main |
 | agent-ux-search-filter | 2026-02-23 10:30 | UX-31, UX-32: Search/filter + pagination on business list pages | completed | main |
 | agent-dry9-currency-641 | 2026-02-23 10:15 | DRY-9: Remove formatCurrency duplicates — consolidate 5+ inline implementations to @/lib/utils/currency | completed | main |
@@ -32,6 +34,8 @@
 
 | Task ID | Type | Reserved By | Reserved Until |
 |---------|------|-------------|----------------|
+| ~~DEV-179~~ | ~~development~~ | ~~agent-widgets-c24~~ | ~~completed b6b09b1~~ |
+| ~~INFRA-59~~ | ~~infrastructure~~ | ~~agent-flinks-244~~ | ~~completed (docs only)~~ |
 | ~~DRY-9~~ | ~~code-quality~~ | ~~agent-dry9-currency-641~~ | ~~completed 3860bf0~~ |
 | ~~DRY-11~~ | ~~code-quality~~ | ~~agent-dry11-badges~~ | ~~completed 7640e1f~~ |
 | DRY-12 | code-quality | agent-dry12-empty | 2026-02-22 20:30 |
@@ -42,6 +46,8 @@
 
 | Agent ID | Last Claimed Tasks | Last Domain | Last Session |
 |----------|-------------------|-------------|--------------|
+| agent-widgets-c24 | DEV-179 | overview/dashboard | 2026-02-24 15:51 |
+| agent-flinks-244 | INFRA-59 | infrastructure | 2026-02-24 15:48 |
 | agent-dry9-currency-641 | DRY-9 | code-quality | 2026-02-23 10:15 |
 | agent-dry11-badges | DRY-11 | code-quality | 2026-02-22 19:00 |
 | agent-dry12-empty | DRY-12 | code-quality | 2026-02-22 18:30 |
