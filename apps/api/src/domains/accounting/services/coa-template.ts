@@ -93,36 +93,45 @@ export async function seedDefaultCOA(
       return { seeded: false, accountCount: existingCount };
     }
 
-    // Create all accounts (without parent references first)
-    const codeToId = new Map<string, string>();
+    // Batch create all accounts (without parent references first)
+    // Use createMany for 33x faster insertion (1 operation vs 33)
+    await tx.gLAccount.createMany({
+      data: DEFAULT_COA_TEMPLATE.map((template) => ({
+        entityId,
+        code: template.code,
+        name: template.name,
+        type: template.type,
+        normalBalance: template.normalBalance,
+      })),
+    });
 
-    for (const template of DEFAULT_COA_TEMPLATE) {
-      const account = await tx.gLAccount.create({
-        data: {
-          entityId,
-          code: template.code,
-          name: template.name,
-          type: template.type,
-          normalBalance: template.normalBalance,
-        },
-        select: { id: true },
-      });
-      codeToId.set(template.code, account.id);
+    // Query back created accounts to build code → ID map for parent relationships
+    const createdAccounts = await tx.gLAccount.findMany({
+      where: { entityId },
+      select: { id: true, code: true },
+    });
+
+    const codeToId = new Map<string, string>();
+    for (const account of createdAccounts) {
+      codeToId.set(account.code, account.id);
     }
 
-    // Set parent-child relationships
-    for (const template of DEFAULT_COA_TEMPLATE) {
-      if (template.parentCode) {
+    // Set parent-child relationships in parallel (batch update)
+    const parentUpdates = DEFAULT_COA_TEMPLATE.filter((t) => t.parentCode)
+      .map((template) => {
         const accountId = codeToId.get(template.code);
-        const parentId = codeToId.get(template.parentCode);
+        const parentId = codeToId.get(template.parentCode!);
         if (accountId && parentId) {
-          await tx.gLAccount.update({
+          return tx.gLAccount.update({
             where: { id: accountId },
             data: { parentAccountId: parentId },
           });
         }
-      }
-    }
+        return null;
+      })
+      .filter((p) => p !== null);
+
+    await Promise.all(parentUpdates);
 
     // Audit log (transaction-safe — ARCH-6)
     await createAuditLog({

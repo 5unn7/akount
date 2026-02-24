@@ -132,21 +132,43 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
           });
         }
 
-        // Create user in our database
-        user = await prisma.user.create({
-          data: {
-            clerkUserId: request.userId as string,
-            email: primaryEmail.emailAddress,
-            name: clerkUser.firstName && clerkUser.lastName
-              ? `${clerkUser.firstName} ${clerkUser.lastName}`
-              : clerkUser.firstName || clerkUser.username || data.entityName,
-          },
-        });
+        // Create user in our database (with race condition handling)
+        try {
+          user = await prisma.user.create({
+            data: {
+              clerkUserId: request.userId as string,
+              email: primaryEmail.emailAddress,
+              name: clerkUser.firstName && clerkUser.lastName
+                ? `${clerkUser.firstName} ${clerkUser.lastName}`
+                : clerkUser.firstName || clerkUser.username || data.entityName,
+            },
+          });
 
-        request.log.info(
-          { clerkUserId: request.userId, userId: user.id, email: user.email },
-          'Created new user from Clerk authentication'
-        );
+          request.log.info(
+            { clerkUserId: request.userId, userId: user.id, email: user.email },
+            'Created new user from Clerk authentication'
+          );
+        } catch (error: any) {
+          // Handle race condition: another request created the user simultaneously
+          if (error.code === 'P2002') {
+            // Re-query user by clerkUserId (unique key guaranteed by Clerk)
+            user = await prisma.user.findUnique({
+              where: { clerkUserId: request.userId as string },
+            });
+
+            if (!user) {
+              // Should never happen, but handle defensively
+              throw error;
+            }
+
+            request.log.info(
+              { clerkUserId: request.userId, userId: user.id },
+              'User already exists (race condition), using existing record'
+            );
+          } else {
+            throw error;
+          }
+        }
       }
 
       // Check if user already has a tenant

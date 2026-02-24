@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth, useUser, useSession } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
@@ -27,12 +27,19 @@ export function CompletionStep() {
   const [completedItems, setCompletedItems] = useState(0)
   const [isDone, setIsDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const setupStartedRef = useRef(false)
 
   const runSetup = useCallback(async () => {
     if (!userId) {
       goToStep(0)
       return
     }
+
+    // Prevent duplicate initialization (race condition guard)
+    if (setupStartedRef.current) {
+      return
+    }
+    setupStartedRef.current = true
 
     try {
       const state = useOnboardingStore.getState()
@@ -212,6 +219,7 @@ export function CompletionStep() {
             setError(null)
             setCompletedItems(0)
             setIsDone(false)
+            setupStartedRef.current = false
             runSetup()
           }}
           className="px-6 py-2.5 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover transition-colors"

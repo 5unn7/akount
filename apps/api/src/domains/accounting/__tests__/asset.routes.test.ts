@@ -31,7 +31,7 @@ vi.mock('../../../middleware/validation', () => ({
     validateParams: vi.fn(() => async () => {}),
     validateBody: vi.fn(() => {
         const handler = async () => {};
-        (handler as Record<string, unknown>).optional = () => async () => {};
+        (handler as unknown as Record<string, unknown>).optional = () => async () => {};
         return handler;
     }),
 }));
