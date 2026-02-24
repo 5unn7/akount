@@ -648,7 +648,8 @@ describe('Invoice Routes', () => {
       });
 
       expect(mockGetInvoiceStats).toHaveBeenCalledWith(
-        expect.objectContaining({ tenantId: 'tenant-abc-123' })
+        expect.objectContaining({ tenantId: 'tenant-abc-123' }),
+        undefined
       );
     });
 

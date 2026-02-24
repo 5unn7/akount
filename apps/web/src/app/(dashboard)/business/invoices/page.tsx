@@ -26,8 +26,8 @@ export default async function InvoicingPage() {
 
     // Fetch all data in parallel
     const [invoiceStats, billStats, invoicesResult, billsResult, clientsResult, vendorsResult] = await Promise.all([
-        getInvoiceStats(),
-        getBillStats(),
+        getInvoiceStats(entityId),
+        getBillStats(entityId),
         listInvoices({ limit: 20, entityId }),
         listBills({ limit: 20, entityId }),
         listClients({ limit: 100, entityId }),

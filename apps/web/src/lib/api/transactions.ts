@@ -68,6 +68,10 @@ export async function listTransactions(
         searchParams.append('limit', String(params.limit));
     }
 
+    if (params?.entityId) {
+        searchParams.append('entityId', params.entityId);
+    }
+
     const endpoint = `/api/banking/transactions${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
 
     return apiClient<ListTransactionsResponse>(endpoint);

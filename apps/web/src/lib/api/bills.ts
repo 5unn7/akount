@@ -151,8 +151,11 @@ export async function getBill(id: string): Promise<Bill> {
 /**
  * Get bill stats (AP metrics + aging)
  */
-export async function getBillStats(): Promise<BillStats> {
-  return apiClient<BillStats>('/api/business/bills/stats');
+export async function getBillStats(entityId?: string): Promise<BillStats> {
+  const params = new URLSearchParams();
+  if (entityId) params.append('entityId', entityId);
+  const query = params.toString();
+  return apiClient<BillStats>(`/api/business/bills/stats${query ? `?${query}` : ''}`);
 }
 
 /**

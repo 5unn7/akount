@@ -151,8 +151,11 @@ export async function getInvoice(id: string): Promise<Invoice> {
 /**
  * Get invoice stats (AR metrics + aging)
  */
-export async function getInvoiceStats(): Promise<InvoiceStats> {
-  return apiClient<InvoiceStats>('/api/business/invoices/stats');
+export async function getInvoiceStats(entityId?: string): Promise<InvoiceStats> {
+  const params = new URLSearchParams();
+  if (entityId) params.append('entityId', entityId);
+  const query = params.toString();
+  return apiClient<InvoiceStats>(`/api/business/invoices/stats${query ? `?${query}` : ''}`);
 }
 
 /**

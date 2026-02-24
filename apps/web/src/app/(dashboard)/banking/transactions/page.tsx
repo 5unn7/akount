@@ -15,6 +15,8 @@ import { DailyCashFlowTimeline } from '@/components/banking/DailyCashFlowTimelin
 import { listAccounts } from '@/lib/api/accounts';
 import { listCategories } from '@/lib/api/categories';
 import { listTransactions, getSpendingByCategory } from '@/lib/api/transactions';
+import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import type { Transaction } from '@/lib/api/transactions.types';
 import { computeTransactionStats } from '@/lib/utils/account-helpers';
 
@@ -37,6 +39,13 @@ export default async function TransactionsPage({
     searchParams,
 }: TransactionsPageProps) {
     const params = await searchParams;
+
+    // Read entity selection from cookie
+    const [{ entityId: rawEntityId }, allEntities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, allEntities) ?? undefined;
 
     // Current month date range for stats/charts
     const now = new Date();
@@ -75,16 +84,18 @@ export default async function TransactionsPage({
     try {
         const [accountsResult, categoriesResult, txnResult, spendingResult] =
             await Promise.all([
-                listAccounts({ isActive: true }),
+                listAccounts({ isActive: true, entityId }),
                 listCategories({ isActive: true }),
                 listTransactions({
                     startDate: monthStart.toISOString(),
                     endDate: monthEnd.toISOString(),
                     limit: 100,
+                    entityId,
                 }),
                 getSpendingByCategory({
                     startDate: monthStart.toISOString(),
                     endDate: monthEnd.toISOString(),
+                    entityId,
                 }),
             ]);
 
