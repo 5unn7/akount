@@ -13,6 +13,8 @@ const CALENDAR_SELECT = {
     year: true,
     startDate: true,
     endDate: true,
+    createdAt: true, // TS-7: Timestamps required per SELECT constant convention
+    updatedAt: true,
     periods: {
         select: {
             id: true,
@@ -21,6 +23,8 @@ const CALENDAR_SELECT = {
             startDate: true,
             endDate: true,
             status: true,
+            createdAt: true, // TS-7: Timestamps required
+            updatedAt: true,
         },
         orderBy: { periodNumber: 'asc' as const },
     },
@@ -34,12 +38,18 @@ const PERIOD_SELECT = {
     startDate: true,
     endDate: true,
     status: true,
+    createdAt: true, // TS-7: Timestamps required per SELECT constant convention
+    updatedAt: true,
 } as const;
 
 const MONTH_NAMES = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December',
 ];
+
+// TS-9: Type definitions for period actions/statuses (moved outside class)
+type PeriodAction = 'LOCK' | 'CLOSE' | 'REOPEN';
+type PeriodStatus = 'OPEN' | 'LOCKED' | 'CLOSED';
 
 export class FiscalPeriodService {
     constructor(
@@ -317,11 +327,6 @@ export class FiscalPeriodService {
 
         return period;
     }
-
-
-    // Type definitions for period actions and statuses
-    type PeriodAction = 'LOCK' | 'CLOSE' | 'REOPEN';
-    type PeriodStatus = 'OPEN' | 'LOCKED' | 'CLOSED';
 
     private async auditPeriodAction(
         period: { id: string; status: PeriodStatus; fiscalCalendar: { entityId: string } },
