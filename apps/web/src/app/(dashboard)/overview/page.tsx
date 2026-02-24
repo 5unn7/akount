@@ -19,6 +19,9 @@ import { listTransactions } from "@/lib/api/transactions";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
 import { getDashboardConfig } from "@/lib/dashboard-personalization";
 import { buildQuickStats, orderStats } from "@/lib/dashboard/transformers";
+import { ProfitLossSummaryWidget } from "@/components/dashboard/ProfitLossSummaryWidget";
+import { TrialBalanceStatusWidget } from "@/components/dashboard/TrialBalanceStatusWidget";
+import { TopRevenueClientsWidget } from "@/components/dashboard/TopRevenueClientsWidget";
 import { Building2, Landmark, Upload, PenLine } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -180,7 +183,22 @@ export default async function OverviewPage() {
                     </div>
                 </div>
 
-                {/* Row 4: Cash Flow + Recent Activity (height-capped) */}
+                {/* Row 4: Report Widgets */}
+                <div className="xl:col-span-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <GlowCard variant="glass" className="p-4">
+                            <ProfitLossSummaryWidget entityId={entityId} />
+                        </GlowCard>
+                        <GlowCard variant="glass" className="p-4">
+                            <TrialBalanceStatusWidget entityId={entityId} />
+                        </GlowCard>
+                        <GlowCard variant="glass" className="p-4">
+                            <TopRevenueClientsWidget entityId={entityId} />
+                        </GlowCard>
+                    </div>
+                </div>
+
+                {/* Row 5: Cash Flow + Recent Activity (height-capped) */}
                 <div className="xl:col-span-2 h-[300px]">
                     <DashboardCashFlowChart />
                 </div>
