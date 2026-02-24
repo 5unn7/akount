@@ -180,11 +180,11 @@ export default async function OverviewPage() {
                     </div>
                 </div>
 
-                {/* Row 4: Cash Flow + Recent Activity */}
-                <div className="xl:col-span-2">
+                {/* Row 4: Cash Flow + Recent Activity (height-capped) */}
+                <div className="xl:col-span-2 h-[300px]">
                     <DashboardCashFlowChart />
                 </div>
-                <div className="xl:col-span-2">
+                <div className="xl:col-span-2 h-[300px]">
                     <RecentTransactions transactions={recentTransactions.transactions} />
                 </div>
 
