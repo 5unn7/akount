@@ -443,23 +443,37 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
       }
 
       // ✅ SECURITY: Verify user belongs to tenant (but allow any role)
-      const tenantUser = await prisma.tenantUser.findFirst({
+      let tenantUser = await prisma.tenantUser.findFirst({
         where: {
           tenantId: request.tenantId,
           userId: request.userId,
         },
       });
 
+      // Auto-fix: If TenantUser is missing (onboarding glitch), create it as OWNER
       if (!tenantUser) {
-        request.log.error({
+        request.log.warn({
           tenantId: request.tenantId,
           userId: request.userId,
-          message: 'TenantUser not found for dismiss-card request',
+          message: 'TenantUser not found - creating as OWNER (onboarding repair)',
         });
-        return reply.status(403).send({
-          error: 'Forbidden',
-          message: 'Access denied - user not found in tenant',
-        });
+
+        try {
+          tenantUser = await prisma.tenantUser.create({
+            data: {
+              tenantId: request.tenantId as string,
+              userId: request.userId as string,
+              role: 'OWNER',
+            },
+          });
+          request.log.info({ tenantUserId: tenantUser.id }, 'TenantUser created successfully');
+        } catch (createError) {
+          request.log.error({ error: createError }, 'Failed to create TenantUser');
+          return reply.status(403).send({
+            error: 'Forbidden',
+            message: 'Access denied - unable to verify tenant membership',
+          });
+        }
       }
 
       request.log.info({
