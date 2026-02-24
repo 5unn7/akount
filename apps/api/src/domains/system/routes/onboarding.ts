@@ -48,7 +48,7 @@ const initializeOnboardingSchema = z.object({
 });
 
 const completeOnboardingSchema = z.object({
-  tenantId: z.string(),
+  // SEC-26: tenantId removed - derived server-side from user's membership
   entityName: z.string().min(1).max(255),
   entityType: z.enum(['PERSONAL', 'CORPORATION', 'SOLE_PROPRIETORSHIP', 'PARTNERSHIP', 'LLC']),
   country: z.string().length(2).toUpperCase(),
@@ -374,37 +374,30 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // Verify tenant belongs to user AND user has OWNER role (RBAC check)
+      // SEC-26: Derive tenantId from user's membership (server-side)
+      // This prevents malicious users from supplying a different tenant's ID
       const tenantUser = await prisma.tenantUser.findFirst({
         where: {
-          tenantId: data.tenantId,
           userId: user.id,
+          role: 'OWNER', // Only OWNER can complete onboarding
         },
       });
 
       if (!tenantUser) {
         return reply.status(403).send({
           error: 'Forbidden',
-          message: 'You do not have access to this tenant',
+          message: 'No tenant found for this user with OWNER role',
         });
       }
 
-      // SECURITY: RBAC check - only OWNER can complete onboarding
-      if (tenantUser.role !== 'OWNER') {
-        request.log.warn(
-          { userId: user.id, tenantId: data.tenantId, role: tenantUser.role },
-          'Non-owner attempted to complete onboarding'
-        );
-        return reply.status(403).send({
-          error: 'Forbidden',
-          message: 'Only account owners can complete onboarding',
-        });
-      }
+      const tenantId = tenantUser.tenantId; // Derived server-side, not from client
+
+      // RBAC already verified above (role === 'OWNER' in query)
 
       // Update tenant and entity
       const result = await prisma.$transaction(async (tx) => {
         const tenant = await tx.tenant.update({
-          where: { id: data.tenantId },
+          where: { id: tenantId },
           data: {
             onboardingStatus: 'COMPLETED',
             onboardingCompletedAt: new Date(),
@@ -413,7 +406,7 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
 
         // Find the entity for this tenant
         const entity = await tx.entity.findFirst({
-          where: { tenantId: data.tenantId },
+          where: { tenantId },
         });
 
         if (!entity) {
@@ -468,18 +461,18 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
         });
 
         // Seed proper 30-account COA (idempotent — skips if accounts exist from /initialize)
-        await seedDefaultCOA(entity.id, data.tenantId, user.id, tx);
+        await seedDefaultCOA(entity.id, tenantId, user.id, tx);
 
         return { tenant, entity: updatedEntity };
       });
 
-      request.log.info({ tenantId: data.tenantId, userId: user.id }, 'Onboarding completed');
+      request.log.info({ tenantId, userId: user.id }, 'Onboarding completed');
 
       // Update Clerk metadata to mark onboarding complete and set role
       try {
         await clerkClient.users.updateUserMetadata(request.userId as string, {
           publicMetadata: {
-            tenantId: data.tenantId,
+            tenantId,
             role: tenantUser.role,
             onboardingCompleted: true,
           },
