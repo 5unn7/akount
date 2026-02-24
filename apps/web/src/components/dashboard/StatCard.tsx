@@ -62,7 +62,7 @@ export function StatCard({ stat, index, highlighted }: { stat: StatCardData; ind
             onClick={handleClick}
         >
             <div className="flex items-start justify-between mb-2 h-5">
-                <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                     {stat.label}
                 </p>
                 <div className="opacity-70 w-14 h-5">
@@ -86,12 +86,12 @@ export function StatCard({ stat, index, highlighted }: { stat: StatCardData; ind
                 {stat.trend && Icon ? (
                     <>
                         <Icon className="h-3 w-3" />
-                        <span className="text-[10px] font-medium">
+                        <span className="text-micro font-medium">
                             {stat.trend.text}
                         </span>
                     </>
                 ) : (
-                    <span className="text-[10px]">&nbsp;</span>
+                    <span className="text-micro">&nbsp;</span>
                 )}
             </div>
         </div>

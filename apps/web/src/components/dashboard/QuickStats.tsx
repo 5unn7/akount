@@ -12,7 +12,7 @@ interface QuickStatsProps {
 export function QuickStats({ stats }: QuickStatsProps) {
     return (
         <div className="glass rounded-xl p-4">
-            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+            <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                 Quick Stats
             </p>
             {!stats || stats.length === 0 ? (

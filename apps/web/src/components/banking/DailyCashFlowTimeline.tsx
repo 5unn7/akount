@@ -74,7 +74,7 @@ export function DailyCashFlowTimeline({
     if (!hasData) {
         return (
             <div className="glass rounded-xl p-5">
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                     Daily Cash Flow
                 </h3>
                 <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
@@ -105,10 +105,10 @@ export function DailyCashFlowTimeline({
     return (
         <div className="glass rounded-xl p-5 space-y-3">
             <div className="flex items-center justify-between">
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                     Daily Cash Flow
                 </h3>
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-micro text-muted-foreground">
                     {monthLabel}
                 </span>
             </div>
@@ -226,7 +226,7 @@ export function DailyCashFlowTimeline({
                                 top: '4px',
                             }}
                         >
-                            <p className="text-[10px] text-muted-foreground mb-1">
+                            <p className="text-micro text-muted-foreground mb-1">
                                 {new Date(d.date + 'T00:00:00').toLocaleDateString('en-CA', {
                                     month: 'short',
                                     day: 'numeric',
@@ -254,13 +254,13 @@ export function DailyCashFlowTimeline({
             <div className="flex items-center gap-4 justify-center">
                 <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-sm bg-ak-green" />
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-micro text-muted-foreground">
                         Income
                     </span>
                 </div>
                 <div className="flex items-center gap-1.5">
                     <div className="w-2 h-2 rounded-sm bg-ak-red" />
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-micro text-muted-foreground">
                         Expenses
                     </span>
                 </div>

@@ -17,7 +17,7 @@ const ACTIONS: QuickAction[] = [
 export function QuickActions() {
     return (
         <div className="glass rounded-xl p-4">
-            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+            <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                 Quick Actions
             </p>
             <div className="grid grid-cols-2 gap-2">

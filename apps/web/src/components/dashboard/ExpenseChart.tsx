@@ -41,7 +41,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                                 key={p}
                                 onClick={() => setPeriod(p)}
                                 className={cn(
-                                    'px-2.5 py-1 text-[10px] uppercase tracking-wider rounded-sm transition-colors',
+                                    'px-2.5 py-1 text-micro uppercase tracking-wider rounded-sm transition-colors',
                                     period === p
                                         ? 'bg-ak-bg-4 text-foreground'
                                         : 'text-muted-foreground hover:text-foreground'
@@ -99,7 +99,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                             key={p}
                             onClick={() => setPeriod(p)}
                             className={cn(
-                                'px-2.5 py-1 text-[10px] uppercase tracking-wider rounded-sm transition-colors',
+                                'px-2.5 py-1 text-micro uppercase tracking-wider rounded-sm transition-colors',
                                 period === p
                                     ? 'bg-ak-bg-4 text-foreground'
                                     : 'text-muted-foreground hover:text-foreground'
@@ -153,7 +153,7 @@ export function ExpenseChart({ data, className }: ExpenseChartProps) {
                             className="h-2 w-2 rounded-md"
                             style={{ backgroundColor: color }}
                         />
-                        <span className="text-[10px] text-muted-foreground">{name}</span>
+                        <span className="text-micro text-muted-foreground">{name}</span>
                     </div>
                 ))}
             </div>

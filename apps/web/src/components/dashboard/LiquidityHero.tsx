@@ -63,7 +63,7 @@ export function LiquidityHero({
             <GlowCard variant="glass" className="p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div className="space-y-1">
-                        <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                        <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                             Total Liquidity
                         </p>
                         <p className="text-4xl font-mono font-semibold tracking-tight">

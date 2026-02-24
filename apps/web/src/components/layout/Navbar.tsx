@@ -70,7 +70,7 @@ function EntitySelector({ entities, selectedId, onSelect, isPending }: {
                     <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                     <div className="min-w-0">
                         <p className="text-foreground">All Entities</p>
-                        <p className="text-[10px] text-muted-foreground">Consolidated view</p>
+                        <p className="text-micro text-muted-foreground">Consolidated view</p>
                     </div>
                     {isAllEntities && (
                         <Check className="h-3.5 w-3.5 text-primary ml-auto shrink-0" />
@@ -89,7 +89,7 @@ function EntitySelector({ entities, selectedId, onSelect, isPending }: {
                         />
                         <div className="min-w-0">
                             <p className="text-foreground truncate">{entity.name}</p>
-                            <p className="text-[10px] text-muted-foreground">{entity.type}</p>
+                            <p className="text-micro text-muted-foreground">{entity.type}</p>
                         </div>
                         {entity.id === selectedId && (
                             <Check className="h-3.5 w-3.5 text-primary ml-auto shrink-0" />
@@ -182,7 +182,7 @@ export function Navbar({ entities }: NavbarProps) {
                 >
                     <Search className="h-4 w-4 shrink-0" />
                     <span className="flex-1 text-left truncate">Search transactions, accounts, invoices...</span>
-                    <kbd className="ml-auto text-[10px] font-mono bg-ak-bg-3 px-1.5 py-0.5 rounded shrink-0">
+                    <kbd className="ml-auto text-micro font-mono bg-ak-bg-3 px-1.5 py-0.5 rounded shrink-0">
                         Cmd+K
                     </kbd>
                 </button>

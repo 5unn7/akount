@@ -92,7 +92,7 @@ export default async function OverviewPage() {
                                         <Landmark className="h-5 w-5" />
                                     </div>
                                     <p className="text-sm font-medium">Connect Bank</p>
-                                    <p className="text-[10px] text-muted-foreground">Securely link for automatic sync</p>
+                                    <p className="text-micro text-muted-foreground">Securely link for automatic sync</p>
                                 </CardContent>
                             </GlowCard>
                         </Link>
@@ -103,7 +103,7 @@ export default async function OverviewPage() {
                                         <Upload className="h-5 w-5" />
                                     </div>
                                     <p className="text-sm font-medium">Import Statement</p>
-                                    <p className="text-[10px] text-muted-foreground">Upload CSV or PDF</p>
+                                    <p className="text-micro text-muted-foreground">Upload CSV or PDF</p>
                                 </CardContent>
                             </GlowCard>
                         </Link>
@@ -114,7 +114,7 @@ export default async function OverviewPage() {
                                         <PenLine className="h-5 w-5" />
                                     </div>
                                     <p className="text-sm font-medium">Add Manually</p>
-                                    <p className="text-[10px] text-muted-foreground">Enter account details</p>
+                                    <p className="text-micro text-muted-foreground">Enter account details</p>
                                 </CardContent>
                             </GlowCard>
                         </Link>

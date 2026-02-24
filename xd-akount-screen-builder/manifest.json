@@ -1,0 +1,21 @@
+{
+  "id": "akount-screen-builder-xd",
+  "name": "Akount Screen Builder",
+  "version": "1.0.0",
+  "description": "Build Akount UI screens programmatically using design system tokens",
+  "summary": "Programmatic screen builder for Akount financial app",
+  "languages": ["en"],
+  "author": "Akount Team",
+  "helpUrl": "https://github.com/akount/xd-screen-builder",
+  "host": {
+    "app": "XD",
+    "minVersion": "35.0.0"
+  },
+  "uiEntryPoints": [
+    {
+      "type": "panel",
+      "label": "Akount Builder",
+      "panelId": "akountBuilder"
+    }
+  ]
+}

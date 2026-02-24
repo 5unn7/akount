@@ -280,7 +280,7 @@ export function AccountFormSheet({
                                     disabled
                                     className="w-full px-3 py-2 text-sm rounded-lg border border-input bg-muted text-muted-foreground cursor-not-allowed font-mono"
                                 />
-                                <p className="text-[10px] text-muted-foreground">
+                                <p className="text-micro text-muted-foreground">
                                     Auto-set from country. Change country to update.
                                 </p>
                             </div>
@@ -312,7 +312,7 @@ export function AccountFormSheet({
                                     className="pl-7 font-mono"
                                 />
                             </div>
-                            <p className="text-[10px] text-muted-foreground">
+                            <p className="text-micro text-muted-foreground">
                                 Current balance of this account. A journal entry will be created automatically.
                             </p>
                         </div>

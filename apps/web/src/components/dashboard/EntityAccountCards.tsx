@@ -77,7 +77,7 @@ export async function EntityAccountCards({ entityId, currency }: EntityAccountCa
                                     <p className="text-sm font-medium truncate">
                                         {account.name}
                                     </p>
-                                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground mt-0.5">
+                                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground mt-0.5">
                                         {ACCOUNT_TYPE_LABELS[account.type]}
                                     </p>
                                 </div>
@@ -86,7 +86,7 @@ export async function EntityAccountCards({ entityId, currency }: EntityAccountCa
                                 <span className={`text-lg font-mono font-semibold ${isNegative ? 'text-ak-red' : 'text-foreground'}`}>
                                     {formatCurrency(account.currentBalance, account.currency)}
                                 </span>
-                                <span className="text-[10px] font-mono text-muted-foreground">
+                                <span className="text-micro font-mono text-muted-foreground">
                                     {account.currency}
                                 </span>
                             </div>

@@ -104,7 +104,7 @@ export function ClientDetailPanel({
                         </h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="glass-2 rounded-lg p-4 space-y-2">
-                                <div className="flex items-center gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">
+                                <div className="flex items-center gap-2 text-micro uppercase tracking-wide text-muted-foreground">
                                     <FileText className="h-3 w-3" />
                                     Open Invoices
                                 </div>
@@ -113,7 +113,7 @@ export function ClientDetailPanel({
                                 </p>
                             </div>
                             <div className="glass-2 rounded-lg p-4 space-y-2">
-                                <div className="flex items-center gap-2 text-[10px] uppercase tracking-wide text-muted-foreground">
+                                <div className="flex items-center gap-2 text-micro uppercase tracking-wide text-muted-foreground">
                                     <DollarSign className="h-3 w-3" />
                                     Balance Due
                                 </div>

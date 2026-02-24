@@ -47,7 +47,7 @@ function InsightCardItem({ insight }: { insight: InsightCard }) {
                 <div className="flex items-center gap-2 mb-2 sm:mb-2.5">
                     <div className={cn('h-1.5 w-1.5 rounded-full animate-pulse', config.dotColor)} />
                     <Icon className={cn('h-3.5 w-3.5', config.iconColor)} />
-                    <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.05em] font-semibold text-muted-foreground">
+                    <span className="text-[9px] sm:text-micro uppercase tracking-[0.05em] font-semibold text-muted-foreground">
                         {config.label}
                     </span>
                 </div>
@@ -55,7 +55,7 @@ function InsightCardItem({ insight }: { insight: InsightCard }) {
                     {insight.body}
                 </p>
                 {insight.meta && (
-                    <p className="text-[10px] font-mono text-muted-foreground mt-1.5 sm:mt-2">
+                    <p className="text-micro font-mono text-muted-foreground mt-1.5 sm:mt-2">
                         {insight.meta}
                     </p>
                 )}

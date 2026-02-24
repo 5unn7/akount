@@ -88,7 +88,7 @@ export function TransactionsTableClient({
                 <Table>
                     <TableHeader>
                         <TableRow className="border-b border-ak-border hover:bg-transparent">
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground w-[100px]">
+                            <TableHead className="text-micro uppercase tracking-wider text-muted-foreground w-[100px]">
                                 Date
                             </TableHead>
                             <TableHead variant="label">
@@ -97,13 +97,13 @@ export function TransactionsTableClient({
                             <TableHead variant="label">
                                 Category
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground text-right">
+                            <TableHead className="text-micro uppercase tracking-wider text-muted-foreground text-right">
                                 Amount
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground text-right w-[120px]">
+                            <TableHead className="text-micro uppercase tracking-wider text-muted-foreground text-right w-[120px]">
                                 Balance
                             </TableHead>
-                            <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground text-center w-[60px]">
+                            <TableHead className="text-micro uppercase tracking-wider text-muted-foreground text-center w-[60px]">
                                 Status
                             </TableHead>
                         </TableRow>
@@ -173,7 +173,7 @@ function TransactionRow({ transaction, currency }: TransactionRowProps) {
             <TableCell>
                 <div className="flex flex-col">
                     <span className="text-sm font-medium">{transaction.description}</span>
-                    <span className="text-[10px] text-muted-foreground">{sourceLabel}</span>
+                    <span className="text-micro text-muted-foreground">{sourceLabel}</span>
                 </div>
             </TableCell>
             <TableCell>

@@ -18,10 +18,10 @@ export function AIBrief({ body, date }: AIBriefProps) {
         >
             <div className="flex items-center gap-2 mb-3">
                 <div className="h-2 w-2 rounded-full bg-ak-purple animate-pulse" />
-                <span className="text-[10px] uppercase tracking-[0.05em] font-semibold text-ak-purple">
+                <span className="text-micro uppercase tracking-[0.05em] font-semibold text-ak-purple">
                     Insights
                 </span>
-                <span className="text-[10px] text-muted-foreground ml-auto font-mono">
+                <span className="text-micro text-muted-foreground ml-auto font-mono">
                     {briefDate}
                 </span>
             </div>

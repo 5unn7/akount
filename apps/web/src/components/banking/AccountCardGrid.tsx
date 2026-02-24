@@ -79,7 +79,7 @@ export function AccountCardGrid({ accounts, showInactive = false }: AccountCardG
                             >
                                 {tab.label}
                                 {tab.value !== 'ALL' && (
-                                    <span className="ml-1.5 text-[10px] opacity-70">
+                                    <span className="ml-1.5 text-micro opacity-70">
                                         {accounts.filter(
                                             (a) => a.type === tab.value
                                         ).length}
@@ -100,7 +100,7 @@ export function AccountCardGrid({ accounts, showInactive = false }: AccountCardG
                         )}
                     >
                         {showInactive ? 'Hide' : 'Show'} Inactive
-                        <span className="ml-1.5 text-[10px] opacity-70">
+                        <span className="ml-1.5 text-micro opacity-70">
                             {inactiveCount}
                         </span>
                     </button>
@@ -142,7 +142,7 @@ export function AccountCardGrid({ accounts, showInactive = false }: AccountCardG
                                 <div className="flex items-center justify-between">
                                     <Badge
                                         className={cn(
-                                            'text-[10px] border-0',
+                                            'text-micro border-0',
                                             accountTypeColors[account.type]
                                         )}
                                     >
@@ -180,7 +180,7 @@ export function AccountCardGrid({ accounts, showInactive = false }: AccountCardG
 
                                 {/* Footer */}
                                 <div className="pt-2 border-t border-ak-border flex items-center justify-between">
-                                    <p className="text-[10px] text-muted-foreground truncate">
+                                    <p className="text-micro text-muted-foreground truncate">
                                         {account.entity.name}
                                     </p>
                                     <Badge className="text-[9px] glass text-muted-foreground border-ak-border font-mono px-1.5 py-0">

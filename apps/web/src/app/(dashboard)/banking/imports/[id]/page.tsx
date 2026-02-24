@@ -206,7 +206,7 @@ export default async function ImportDetailPage({ params }: ImportDetailPageProps
                                             {txn.category ? (
                                                 <Badge
                                                     variant="outline"
-                                                    className="text-[10px] border-ak-border"
+                                                    className="text-micro border-ak-border"
                                                 >
                                                     {txn.category.name}
                                                 </Badge>
@@ -245,7 +245,7 @@ export default async function ImportDetailPage({ params }: ImportDetailPageProps
 function StatCard({ label, value }: { label: string; value: React.ReactNode }) {
     return (
         <div className="glass rounded-lg px-4 py-3.5">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+            <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">
                 {label}
             </p>
             <div className="text-sm font-medium">{value}</div>

@@ -117,7 +117,7 @@ export function FileListEditor({
                                         {fileType}
                                     </Badge>
                                 </div>
-                                <span className="text-[10px] text-muted-foreground font-mono">
+                                <span className="text-micro text-muted-foreground font-mono">
                                     {(item.file.size / 1024).toFixed(1)} KB
                                     {files.length > 1 && (
                                         <span className="ml-2 text-muted-foreground/60">

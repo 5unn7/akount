@@ -61,7 +61,7 @@ export function StatsGrid({ stats, columns = 4, className }: StatsGridProps) {
                         `fi${Math.min(i + 1, 6)}`
                     )}
                 >
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
+                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
                         {stat.label}
                     </p>
                     <p
@@ -83,7 +83,7 @@ export function StatsGrid({ stats, columns = 4, className }: StatsGridProps) {
                                 const Icon = TrendIcon[stat.trend.direction];
                                 return <Icon className="h-3 w-3" />;
                             })()}
-                            <span className="text-[10px] font-medium">
+                            <span className="text-micro font-medium">
                                 {stat.trend.text}
                             </span>
                         </div>

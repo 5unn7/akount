@@ -9,7 +9,7 @@ interface CommandCenterRightPanelProps {
 export function CommandCenterRightPanel({ upcomingPayments }: CommandCenterRightPanelProps) {
     return (
         <div className="glass rounded-xl p-4 flex flex-col gap-3 h-full">
-            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+            <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                 Quick Actions
             </p>
             <QuickActionPills />

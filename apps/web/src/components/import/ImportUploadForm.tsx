@@ -128,7 +128,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
                         )}
                         <div className="flex items-center gap-1.5">
                             <div
-                                className={`flex items-center justify-center h-6 w-6 rounded-full text-[10px] font-medium transition-colors ${
+                                className={`flex items-center justify-center h-6 w-6 rounded-full text-micro font-medium transition-colors ${
                                     isCompleted
                                         ? 'bg-ak-green/15 text-ak-green'
                                         : isActive

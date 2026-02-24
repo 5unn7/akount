@@ -100,13 +100,13 @@ export function AgingBar({
               className={cn('w-1.5 h-1.5 rounded-full', dotClasses[bucket.color])}
             />
             <div className="min-w-0">
-              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+              <p className="text-micro uppercase tracking-wide text-muted-foreground">
                 {bucket.label}
               </p>
               <p className="font-mono text-xs font-medium truncate">
                 {formatCurrency(bucket.amount, currency)}
               </p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-micro text-muted-foreground">
                 {bucket.percentage}%
               </p>
             </div>

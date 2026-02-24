@@ -79,10 +79,10 @@ export function PaymentTable({ payments }: PaymentTableProps) {
                                 <TableHead variant="label">
                                     Reference
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground text-center">
+                                <TableHead className="text-micro uppercase tracking-wider text-muted-foreground text-center">
                                     Allocations
                                 </TableHead>
-                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead className="text-right text-micro uppercase tracking-wider text-muted-foreground">
                                     Amount
                                 </TableHead>
                             </TableRow>
@@ -197,7 +197,7 @@ function PaymentDetail({ payment }: { payment: Payment }) {
             <div className="mt-6 space-y-6">
                 {/* Party Info */}
                 <div className="glass-2 rounded-lg p-4 space-y-2">
-                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                    <p className="text-micro uppercase tracking-wide text-muted-foreground">
                         {isCustomer ? 'Client' : 'Vendor'}
                     </p>
                     <p className="font-medium">{partyName ?? 'Unknown'}</p>
@@ -283,7 +283,7 @@ function PaymentDetail({ payment }: { payment: Payment }) {
                     <>
                         <Separator className="bg-ak-border" />
                         <div className="glass-2 rounded-lg p-4 space-y-2">
-                            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                            <p className="text-micro uppercase tracking-wide text-muted-foreground">
                                 Notes
                             </p>
                             <p className="text-sm text-muted-foreground whitespace-pre-wrap">

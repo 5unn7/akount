@@ -61,7 +61,7 @@ export function AccountInsightCard({
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-ak-green" />
                 </span>
                 <Sparkles className="h-3.5 w-3.5 text-ak-green" />
-                <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                     Account Insight
                 </span>
             </div>

@@ -83,7 +83,7 @@ export default async function InvoiceDetailPage({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Client */}
                 <div className="glass rounded-xl p-5 space-y-3">
-                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <div className="flex items-center gap-2 text-micro uppercase tracking-wider text-muted-foreground">
                         <User className="h-3 w-3" />
                         Client
                     </div>
@@ -99,7 +99,7 @@ export default async function InvoiceDetailPage({
 
                 {/* Issue Date */}
                 <div className="glass rounded-xl p-5 space-y-3">
-                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <div className="flex items-center gap-2 text-micro uppercase tracking-wider text-muted-foreground">
                         <Calendar className="h-3 w-3" />
                         Issue Date
                     </div>
@@ -110,7 +110,7 @@ export default async function InvoiceDetailPage({
 
                 {/* Due Date */}
                 <div className="glass rounded-xl p-5 space-y-3">
-                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <div className="flex items-center gap-2 text-micro uppercase tracking-wider text-muted-foreground">
                         <Calendar className="h-3 w-3" />
                         Due Date
                     </div>
@@ -127,7 +127,7 @@ export default async function InvoiceDetailPage({
                 </h2>
                 <div className="glass rounded-xl overflow-hidden">
                     {/* Table Header */}
-                    <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-ak-bg-3/50 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <div className="grid grid-cols-12 gap-4 px-5 py-3 bg-ak-bg-3/50 text-micro uppercase tracking-wider text-muted-foreground">
                         <div className="col-span-5">Description</div>
                         <div className="col-span-1 text-right">Qty</div>
                         <div className="col-span-2 text-right">Unit Price</div>
@@ -224,7 +224,7 @@ export default async function InvoiceDetailPage({
             {/* Notes */}
             {invoice.notes && (
                 <div className="glass rounded-xl p-5 space-y-2">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground">
                         Notes
                     </p>
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap">

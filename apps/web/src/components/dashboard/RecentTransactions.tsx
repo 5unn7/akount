@@ -55,7 +55,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
                 <h3 className="text-sm font-heading font-normal">Recent Activity</h3>
                 <Link
                     href="/banking/transactions"
-                    className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                    className="inline-flex items-center gap-0.5 text-micro text-muted-foreground hover:text-foreground transition-colors"
                 >
                     View all
                     <ArrowRight className="h-2.5 w-2.5" />
@@ -68,7 +68,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
                     {Array.from(grouped.entries()).map(([date, txs]) => (
                         <div key={date}>
                             {/* Date label — no sticky/blur to avoid glass artifacts */}
-                            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
+                            <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                                 {date}
                             </p>
 

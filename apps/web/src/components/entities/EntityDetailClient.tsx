@@ -211,7 +211,7 @@ export function EntityDetailClient({ entity }: EntityDetailClientProps) {
                     <div key={m.label} className="glass rounded-xl p-4">
                         <div className="flex items-center gap-2 text-muted-foreground mb-1">
                             {m.icon}
-                            <span className="text-[10px] uppercase tracking-[0.05em] font-medium">
+                            <span className="text-micro uppercase tracking-[0.05em] font-medium">
                                 {m.label}
                             </span>
                         </div>

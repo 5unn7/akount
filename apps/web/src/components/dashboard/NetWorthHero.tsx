@@ -65,7 +65,7 @@ export function NetWorthHero({
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="space-y-1">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Net Worth
                     </p>
                     <p className="text-3xl md:text-4xl font-mono font-semibold tracking-tight">
@@ -94,7 +94,7 @@ export function NetWorthHero({
                 <div className="glass-2 rounded-lg p-2 sm:p-3">
                     <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                         <DollarSign className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-ak-green" />
-                        <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                        <span className="text-[9px] sm:text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                             Cash
                         </span>
                     </div>
@@ -106,7 +106,7 @@ export function NetWorthHero({
                 <div className="glass-2 rounded-lg p-2 sm:p-3">
                     <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                         <CreditCard className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-ak-red" />
-                        <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                        <span className="text-[9px] sm:text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                             Debt
                         </span>
                     </div>
@@ -119,7 +119,7 @@ export function NetWorthHero({
                     <div className="glass-2 rounded-lg p-2 sm:p-3">
                         <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                             <Clock className="h-3 sm:h-3.5 w-3 sm:w-3.5 text-ak-teal" />
-                            <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                            <span className="text-[9px] sm:text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                                 Runway
                             </span>
                         </div>

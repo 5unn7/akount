@@ -64,7 +64,7 @@ export function CategorySelector({
                     size="sm"
                     onClick={handleCreateNew}
                     disabled={!newCategoryName.trim()}
-                    className="h-6 px-1.5 rounded-md bg-primary hover:bg-ak-pri-hover text-black text-[10px]"
+                    className="h-6 px-1.5 rounded-md bg-primary hover:bg-ak-pri-hover text-black text-micro"
                 >
                     Add
                 </Button>
@@ -125,7 +125,7 @@ export function CategorySelector({
 
                     return (
                         <div key={type}>
-                            <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground py-1">
+                            <DropdownMenuLabel className="text-micro uppercase tracking-wider text-muted-foreground py-1">
                                 {type}
                             </DropdownMenuLabel>
                             {items.map((cat) => (
@@ -141,7 +141,7 @@ export function CategorySelector({
                                     <Tag className="h-3 w-3 shrink-0" />
                                     <span className="truncate">{cat.name}</span>
                                     {cat._count?.transactions !== undefined && cat._count.transactions > 0 && (
-                                        <span className="ml-auto text-[10px] text-muted-foreground">
+                                        <span className="ml-auto text-micro text-muted-foreground">
                                             {cat._count.transactions}
                                         </span>
                                     )}

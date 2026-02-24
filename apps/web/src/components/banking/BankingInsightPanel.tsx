@@ -77,7 +77,7 @@ export function BankingInsightPanel({
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-ak-blue" />
                     </span>
                     <Activity className="h-3.5 w-3.5 text-ak-blue" />
-                    <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Banking Insight
                     </span>
                 </div>
@@ -88,7 +88,7 @@ export function BankingInsightPanel({
 
             {/* Needs Attention */}
             <div className="glass rounded-xl p-5">
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                     Needs Attention
                 </h3>
                 <div className="space-y-3">

@@ -49,7 +49,7 @@ export function BalanceHistoryChart({
         return (
             <div className="glass rounded-xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Balance History
                     </h3>
                 </div>
@@ -113,7 +113,7 @@ export function BalanceHistoryChart({
     return (
         <div className="glass rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                     Balance History
                 </h3>
                 <div className="flex items-center gap-1">
@@ -122,7 +122,7 @@ export function BalanceHistoryChart({
                             key={p.value}
                             onClick={() => setPeriod(p.value)}
                             className={cn(
-                                'px-2 py-1 rounded text-[10px] font-medium transition-all',
+                                'px-2 py-1 rounded text-micro font-medium transition-all',
                                 period === p.value
                                     ? 'bg-primary text-black'
                                     : 'text-muted-foreground hover:text-foreground'
@@ -270,7 +270,7 @@ export function BalanceHistoryChart({
                                 currency
                             )}
                         </p>
-                        <p className="text-muted-foreground text-[10px]">
+                        <p className="text-muted-foreground text-micro">
                             {new Date(
                                 points[hoverIndex].date + 'T00:00:00'
                             ).toLocaleDateString('en-CA', {

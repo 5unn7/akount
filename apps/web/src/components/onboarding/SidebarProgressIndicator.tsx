@@ -57,11 +57,11 @@ export function SidebarProgressIndicator() {
 
       {/* Status */}
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-muted-foreground tracking-wider font-mono">
+        <span className="text-micro text-muted-foreground tracking-wider font-mono">
           {completed}/{CAPABILITIES.length}
         </span>
         {nextCapability && (
-          <span className="text-[10px] text-[var(--ak-t3)] group-hover:text-primary transition-colors truncate ml-2">
+          <span className="text-micro text-[var(--ak-t3)] group-hover:text-primary transition-colors truncate ml-2">
             {nextCapability.unlock} →
           </span>
         )}

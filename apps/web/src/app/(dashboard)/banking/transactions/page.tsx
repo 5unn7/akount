@@ -144,7 +144,7 @@ export default async function TransactionsPage({
                             {monthTransactions.length} transactions this month
                         </p>
                         {uncategorized.length > 0 && (
-                            <Badge className="text-[10px] px-1.5 py-0 bg-ak-red-dim text-ak-red border-ak-red/20">
+                            <Badge className="text-micro px-1.5 py-0 bg-ak-red-dim text-ak-red border-ak-red/20">
                                 {uncategorized.length} uncategorized
                             </Badge>
                         )}

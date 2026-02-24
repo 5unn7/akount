@@ -209,7 +209,7 @@ export function OnboardingWizard({ initialState = DEFAULT_INITIAL_STATE }: Onboa
                   {/* Label */}
                   <span
                     className={cn(
-                      'text-[10px] uppercase tracking-wider transition-colors',
+                      'text-micro uppercase tracking-wider transition-colors',
                       isCurrent
                         ? 'text-primary font-medium'
                         : 'text-muted-foreground',

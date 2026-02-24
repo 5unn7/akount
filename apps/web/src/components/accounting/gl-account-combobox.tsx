@@ -131,7 +131,7 @@ export function GLAccountCombobox({
                                 if (!typeAccounts || typeAccounts.length === 0) return null;
                                 return (
                                     <div key={type}>
-                                        <div className="px-3 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                                        <div className="px-3 py-1.5 text-micro uppercase tracking-wider text-muted-foreground font-medium">
                                             {ACCOUNT_TYPE_LABELS[type] || type}
                                         </div>
                                         {typeAccounts.map((account) => (

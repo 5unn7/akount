@@ -129,7 +129,7 @@ export function BankingBalanceHero({
                     {/* Balance display */}
                     <div className="space-y-4">
                         <div>
-                            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
+                            <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                                 Total Balance
                             </p>
                             <span
@@ -147,7 +147,7 @@ export function BankingBalanceHero({
                                         key={group.type}
                                         className="flex items-baseline gap-2"
                                     >
-                                        <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground">
+                                        <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground">
                                             {group.label}
                                         </span>
                                         <span className="text-sm font-mono font-semibold">

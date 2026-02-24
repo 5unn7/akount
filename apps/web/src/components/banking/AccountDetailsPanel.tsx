@@ -25,7 +25,7 @@ function DetailRow({
 }) {
     return (
         <div className="flex items-center justify-between py-1.5">
-            <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+            <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                 {label}
             </span>
             <span className="text-xs font-mono">{value}</span>
@@ -66,7 +66,7 @@ export function AccountDetailsPanel({
 
     return (
         <div className="glass rounded-xl p-5">
-            <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+            <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                 Account Details
             </h3>
             <div className="divide-y divide-ak-border">
@@ -82,7 +82,7 @@ export function AccountDetailsPanel({
 
                 {/* GL Account Linking */}
                 <div className="flex items-center justify-between py-1.5">
-                    <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         GL Account
                     </span>
                     {!isEditingGL ? (

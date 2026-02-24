@@ -47,7 +47,7 @@ function PostingStatusBadge({
         return (
             <Link
                 href={`/accounting/journal-entries/${journalEntryId}`}
-                className="inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/25 transition-colors"
+                className="inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/25 transition-colors"
                 onClick={(e) => e.stopPropagation()}
             >
                 <BookOpen className="h-3 w-3" />
@@ -57,7 +57,7 @@ function PostingStatusBadge({
     }
 
     return (
-        <span className="inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20">
+        <span className="inline-flex items-center rounded-lg border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20">
             Unposted
         </span>
     );
@@ -135,11 +135,11 @@ export function TransactionsTable({
                             <TableHead variant="label">
                                 GL Status
                             </TableHead>
-                            <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">
+                            <TableHead className="text-right text-micro uppercase tracking-wider text-muted-foreground">
                                 Amount
                             </TableHead>
                             {showRunningBalance && (
-                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                <TableHead className="text-right text-micro uppercase tracking-wider text-muted-foreground w-[120px]">
                                     Balance
                                 </TableHead>
                             )}
@@ -192,7 +192,7 @@ export function TransactionsTable({
                                                     {transaction.description}
                                                 </span>
                                             </div>
-                                            <span className="text-[10px] text-muted-foreground">
+                                            <span className="text-micro text-muted-foreground">
                                                 {transaction.account?.name ?? ''}{transaction.account?.name && transaction.sourceType ? ' · ' : ''}{transaction.sourceType}
                                             </span>
                                         </div>
@@ -247,7 +247,7 @@ export function TransactionsTable({
                                                     e.stopPropagation();
                                                     onPostTransaction(transaction.id);
                                                 }}
-                                                className="inline-flex items-center rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20 hover:bg-primary/15 hover:text-primary hover:border-primary/20 transition-colors cursor-pointer"
+                                                className="inline-flex items-center rounded-lg border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider bg-zinc-500/15 text-zinc-400 border-zinc-500/20 hover:bg-primary/15 hover:text-primary hover:border-primary/20 transition-colors cursor-pointer"
                                             >
                                                 Unposted
                                             </button>

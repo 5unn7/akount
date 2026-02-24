@@ -43,7 +43,7 @@ export function StatusCard({
 
     return (
         <div className="glass rounded-xl px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px">
-            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
+            <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
                 {title}
             </p>
             <p className={`text-lg font-mono font-semibold leading-none ${valueColor}`}>
@@ -95,12 +95,12 @@ export function TransactionRow({
                 </TableCell>
                 <TableCell>
                     {isMatched ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-ak-green-dim text-ak-green border-ak-green/20">
+                        <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider bg-ak-green-dim text-ak-green border-ak-green/20">
                             <CheckCircle2 className="h-3 w-3" />
                             Matched
                         </span>
                     ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-ak-pri-dim text-primary border-primary/20">
+                        <span className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-micro font-semibold uppercase tracking-wider bg-ak-pri-dim text-primary border-primary/20">
                             <XCircle className="h-3 w-3" />
                             Unmatched
                         </span>
@@ -168,7 +168,7 @@ export function TransactionRow({
                                                     </span>
                                                     <Badge
                                                         variant="outline"
-                                                        className={`text-[10px] ${confidence.color}`}
+                                                        className={`text-micro ${confidence.color}`}
                                                     >
                                                         {confidence.label} ({formatConfidence(suggestion.confidence)})
                                                     </Badge>
@@ -188,7 +188,7 @@ export function TransactionRow({
                                                         {suggestion.reasons.map((reason, i) => (
                                                             <span
                                                                 key={i}
-                                                                className="text-[10px] text-muted-foreground bg-ak-bg-3 border border-ak-border px-1.5 py-0.5 rounded"
+                                                                className="text-micro text-muted-foreground bg-ak-bg-3 border border-ak-border px-1.5 py-0.5 rounded"
                                                             >
                                                                 {reason}
                                                             </span>

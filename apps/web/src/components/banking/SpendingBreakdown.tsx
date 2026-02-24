@@ -43,14 +43,14 @@ export function SpendingBreakdown({
     return (
         <div className="glass rounded-xl p-5 space-y-4">
             <div className="flex items-center justify-between">
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                     Spending by Category
                 </h3>
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => setPeriod('month')}
                         className={cn(
-                            'px-2 py-1 rounded text-[10px] font-medium transition-all',
+                            'px-2 py-1 rounded text-micro font-medium transition-all',
                             period === 'month'
                                 ? 'bg-primary text-black'
                                 : 'text-muted-foreground hover:text-foreground'
@@ -61,7 +61,7 @@ export function SpendingBreakdown({
                     <button
                         onClick={() => setPeriod('90d')}
                         className={cn(
-                            'px-2 py-1 rounded text-[10px] font-medium transition-all',
+                            'px-2 py-1 rounded text-micro font-medium transition-all',
                             period === '90d'
                                 ? 'bg-primary text-black'
                                 : 'text-muted-foreground hover:text-foreground'
@@ -95,7 +95,7 @@ export function SpendingBreakdown({
                                     <span className="text-xs truncate max-w-[100px] sm:max-w-[140px]">
                                         {cat.categoryName}
                                     </span>
-                                    <span className="text-[10px] text-muted-foreground">
+                                    <span className="text-micro text-muted-foreground">
                                         {cat.transactionCount} txn
                                     </span>
                                 </div>
@@ -124,7 +124,7 @@ export function SpendingBreakdown({
             {/* Total footer */}
             {totalExpenses > 0 && (
                 <div className="pt-3 border-t border-ak-border flex items-center justify-between">
-                    <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Total Expenses
                     </span>
                     <span className="text-sm font-mono font-semibold text-ak-red">

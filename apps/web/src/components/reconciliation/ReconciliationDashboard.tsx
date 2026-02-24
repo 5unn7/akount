@@ -156,7 +156,7 @@ export function ReconciliationDashboard({
             {/* Account selector */}
             <div className="glass rounded-[14px] p-5">
                 <div className="flex items-center gap-4">
-                    <label className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium whitespace-nowrap">
+                    <label className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium whitespace-nowrap">
                         Select Account
                     </label>
                     <Select value={selectedAccountId} onValueChange={handleAccountChange}>
@@ -252,19 +252,19 @@ export function ReconciliationDashboard({
                     <Table>
                         <TableHeader>
                             <TableRow className="border-b border-ak-border hover:bg-transparent">
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground w-[100px]">
+                                <TableHead className="text-micro uppercase tracking-wider text-muted-foreground w-[100px]">
                                     Date
                                 </TableHead>
                                 <TableHead variant="label">
                                     Description
                                 </TableHead>
-                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                <TableHead className="text-right text-micro uppercase tracking-wider text-muted-foreground w-[120px]">
                                     Amount
                                 </TableHead>
-                                <TableHead className="text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                <TableHead className="text-micro uppercase tracking-wider text-muted-foreground w-[120px]">
                                     Status
                                 </TableHead>
-                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground w-[120px]">
+                                <TableHead className="text-right text-micro uppercase tracking-wider text-muted-foreground w-[120px]">
                                     Actions
                                 </TableHead>
                             </TableRow>

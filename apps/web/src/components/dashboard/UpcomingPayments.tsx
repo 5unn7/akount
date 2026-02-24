@@ -22,7 +22,7 @@ export function UpcomingPayments({ data = [], pageSize = DEFAULT_PAGE_SIZE }: Up
     if (!payments || payments.length === 0) {
         return (
             <div>
-                <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-2">
+                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-2">
                     Upcoming Payments
                 </p>
                 <div className="flex flex-col items-center gap-2 py-4 text-center">
@@ -40,12 +40,12 @@ export function UpcomingPayments({ data = [], pageSize = DEFAULT_PAGE_SIZE }: Up
     return (
         <div>
             <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                     Upcoming Payments
                 </p>
                 <Link
                     href="/business/payments"
-                    className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                    className="inline-flex items-center gap-0.5 text-micro text-muted-foreground hover:text-foreground transition-colors"
                 >
                     View all
                     <ArrowRight className="h-2.5 w-2.5" />
@@ -83,7 +83,7 @@ export function UpcomingPayments({ data = [], pageSize = DEFAULT_PAGE_SIZE }: Up
 
             {/* Footer: pagination + count */}
             <div className="pt-2 mt-2 border-t border-ak-border flex items-center justify-between">
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-micro text-muted-foreground">
                     {payments.length} total
                 </span>
                 {totalPages > 1 && (
@@ -95,7 +95,7 @@ export function UpcomingPayments({ data = [], pageSize = DEFAULT_PAGE_SIZE }: Up
                         >
                             <ChevronLeft className="h-3 w-3 text-muted-foreground" />
                         </button>
-                        <span className="text-[10px] text-muted-foreground tabular-nums font-mono">
+                        <span className="text-micro text-muted-foreground tabular-nums font-mono">
                             {page + 1}/{totalPages}
                         </span>
                         <button

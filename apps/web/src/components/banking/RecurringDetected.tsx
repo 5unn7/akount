@@ -106,7 +106,7 @@ export function RecurringDetected({
             <div className="glass rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-3">
                     <RefreshCw className="h-3.5 w-3.5 text-ak-teal" />
-                    <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         Recurring Detected
                     </h3>
                 </div>
@@ -122,7 +122,7 @@ export function RecurringDetected({
         <div className="glass rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
                 <RefreshCw className="h-3.5 w-3.5 text-ak-teal" />
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                     Recurring Detected
                 </h3>
             </div>
@@ -133,7 +133,7 @@ export function RecurringDetected({
                             <span className="text-xs truncate">
                                 {item.name}
                             </span>
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-ak-teal/10 text-ak-teal shrink-0">
+                            <span className="text-micro px-1.5 py-0.5 rounded bg-ak-teal/10 text-ak-teal shrink-0">
                                 {frequencyLabels[item.frequency]}
                             </span>
                         </div>

@@ -97,7 +97,7 @@ export function AddressStep({ onNext }: AddressStepProps) {
           <label className={labelClasses}>Country</label>
           <CountrySelect value={country} onChange={handleCountryChange} />
           {ipDetected && (
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="text-micro text-muted-foreground mt-1">
               Detected from your location
             </p>
           )}
@@ -114,7 +114,7 @@ export function AddressStep({ onNext }: AddressStepProps) {
               disabled
               className={cn(inputClasses, 'cursor-not-allowed opacity-60')}
             />
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="text-micro text-muted-foreground mt-1">
               Auto from country — change later in Settings
             </p>
           </div>
@@ -194,7 +194,7 @@ export function AddressStep({ onNext }: AddressStepProps) {
             maxLength={50}
             className={inputClasses}
           />
-          <p className="text-[10px] text-muted-foreground mt-1">
+          <p className="text-micro text-muted-foreground mt-1">
             Appears on your invoices. You can add this later in Settings.
           </p>
         </div>

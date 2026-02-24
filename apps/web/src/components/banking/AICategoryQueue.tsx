@@ -27,7 +27,7 @@ export function AICategoryQueue({
             <div className="glass rounded-xl p-5">
                 <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="h-3.5 w-3.5 text-ak-purple" />
-                    <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         AI Category Queue
                     </h3>
                 </div>
@@ -44,11 +44,11 @@ export function AICategoryQueue({
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Sparkles className="h-3.5 w-3.5 text-ak-purple" />
-                    <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                         AI Category Queue
                     </h3>
                 </div>
-                <span className="text-[10px] text-ak-purple font-medium">
+                <span className="text-micro text-ak-purple font-medium">
                     {visible.length} uncategorized
                 </span>
             </div>
@@ -63,7 +63,7 @@ export function AICategoryQueue({
                             <p className="text-xs truncate">
                                 {txn.description}
                             </p>
-                            <p className="text-[10px] text-muted-foreground">
+                            <p className="text-micro text-muted-foreground">
                                 {new Date(txn.date).toLocaleDateString(
                                     'en-CA',
                                     { month: 'short', day: 'numeric' }
@@ -109,7 +109,7 @@ export function AICategoryQueue({
             </div>
 
             {remaining > 0 && (
-                <p className="text-[10px] text-center text-muted-foreground">
+                <p className="text-micro text-center text-muted-foreground">
                     +{remaining} more uncategorized
                 </p>
             )}

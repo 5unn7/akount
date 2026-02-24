@@ -51,7 +51,7 @@ export function ActionItems({ entityId, limit = 10 }: ActionItemsProps) {
 
     return (
         <div className="glass rounded-xl p-4">
-            <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+            <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                 Action Items
             </p>
             {loading ? (
@@ -86,7 +86,7 @@ export function ActionItems({ entityId, limit = 10 }: ActionItemsProps) {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium truncate">{item.title}</p>
-                                    <p className="text-[10px] text-muted-foreground truncate">{item.meta}</p>
+                                    <p className="text-micro text-muted-foreground truncate">{item.meta}</p>
                                 </div>
                                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                             </Link>

@@ -1,0 +1,17 @@
+{
+  "id": "DEV-178",
+  "title": "Fix onboarding race conditions and transaction timeout (P2002/P2028)",
+  "description": "Fixed three critical bugs blocking new user onboarding: (1) Frontend race condition causing duplicate API calls, (2) Backend transaction timeout during COA seeding (33 sequential creates), (3) User creation P2002 constraint violation. Optimized COA seeding from 53 sequential operations (5.3s) to batch operations (1s).",
+  "priority": "critical",
+  "effort": "1-2h",
+  "status": "done",
+  "domain": "dev",
+  "tags": ["bug", "onboarding", "performance", "race-condition"],
+  "files": [
+    "apps/web/src/app/onboarding/components/steps/CompletionStep.tsx",
+    "apps/api/src/domains/accounting/services/coa-template.ts",
+    "apps/api/src/domains/system/routes/onboarding.ts"
+  ],
+  "source": "manual",
+  "createdAt": "2026-02-23T23:51:00.000Z"
+}

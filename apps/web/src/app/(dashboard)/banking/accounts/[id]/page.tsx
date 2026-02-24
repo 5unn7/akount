@@ -301,7 +301,7 @@ function AccountSpendingMini({
 
     return (
         <div className="glass rounded-xl p-6">
-            <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-4">
+            <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-4">
                 Spending Breakdown
             </h3>
             {sorted.length === 0 ? (
@@ -335,7 +335,7 @@ function AccountSpendingMini({
                         );
                     })}
                     <div className="pt-2 border-t border-ak-border flex justify-between">
-                        <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                        <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
                             Total Expenses
                         </span>
                         <span className="text-xs font-mono font-semibold text-ak-red">

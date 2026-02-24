@@ -37,7 +37,7 @@ export function StatPill({
                 <Icon className={cn('h-4 w-4', colorClasses[color])} />
             )}
             <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground leading-none mb-1">
+                <span className="text-micro uppercase tracking-[0.05em] text-muted-foreground leading-none mb-1">
                     {label}
                 </span>
                 <span className={cn('text-sm font-mono font-medium leading-none', colorClasses[color])}>
@@ -45,7 +45,7 @@ export function StatPill({
                 </span>
             </div>
             {badge !== undefined && (
-                <span className="ml-auto inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-primary/15 text-primary text-[10px] font-semibold">
+                <span className="ml-auto inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-primary/15 text-primary text-micro font-semibold">
                     {badge}
                 </span>
             )}

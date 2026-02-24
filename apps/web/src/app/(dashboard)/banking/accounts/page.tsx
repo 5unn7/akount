@@ -105,7 +105,7 @@ export default async function AccountsPage({
                                         <Landmark className="h-5 w-5" />
                                     </div>
                                     <p className="text-sm font-medium">Connect Bank</p>
-                                    <p className="text-[10px] text-muted-foreground">Automatic sync</p>
+                                    <p className="text-micro text-muted-foreground">Automatic sync</p>
                                 </CardContent>
                             </GlowCard>
                         </Link>
@@ -116,7 +116,7 @@ export default async function AccountsPage({
                                         <Upload className="h-5 w-5" />
                                     </div>
                                     <p className="text-sm font-medium">Import Statement</p>
-                                    <p className="text-[10px] text-muted-foreground">CSV or PDF</p>
+                                    <p className="text-micro text-muted-foreground">CSV or PDF</p>
                                 </CardContent>
                             </GlowCard>
                         </Link>
@@ -127,7 +127,7 @@ export default async function AccountsPage({
                                         <PenLine className="h-5 w-5" />
                                     </div>
                                     <p className="text-sm font-medium">Add Manually</p>
-                                    <p className="text-[10px] text-muted-foreground">Enter by hand</p>
+                                    <p className="text-micro text-muted-foreground">Enter by hand</p>
                                 </CardContent>
                             </GlowCard>
                         </Link>

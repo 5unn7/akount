@@ -55,10 +55,10 @@ export function ClientsTable({ clients, currency = 'CAD' }: ClientsTableProps) {
                                 <TableHead variant="label">
                                     Status
                                 </TableHead>
-                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead className="text-right text-micro uppercase tracking-wider text-muted-foreground">
                                     Open Invoices
                                 </TableHead>
-                                <TableHead className="text-right text-[10px] uppercase tracking-wider text-muted-foreground">
+                                <TableHead className="text-right text-micro uppercase tracking-wider text-muted-foreground">
                                     Balance Due
                                 </TableHead>
                             </TableRow>

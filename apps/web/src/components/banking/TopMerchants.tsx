@@ -43,7 +43,7 @@ export function TopMerchants({ transactions, currency }: TopMerchantsProps) {
     if (top.length === 0) {
         return (
             <div className="glass rounded-xl p-5">
-                <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+                <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                     Top Merchants
                 </h3>
                 <div className="flex flex-col items-center justify-center py-6 gap-2 text-center">
@@ -56,18 +56,18 @@ export function TopMerchants({ transactions, currency }: TopMerchantsProps) {
 
     return (
         <div className="glass rounded-xl p-5">
-            <h3 className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
+            <h3 className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
                 Top Merchants
             </h3>
             <div className="space-y-2.5">
                 {top.map((m, i) => (
                     <div key={i} className="flex items-center justify-between">
                         <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-[10px] text-muted-foreground w-4 shrink-0">
+                            <span className="text-micro text-muted-foreground w-4 shrink-0">
                                 {i + 1}.
                             </span>
                             <span className="text-xs truncate">{m.name}</span>
-                            <span className="text-[10px] text-muted-foreground shrink-0">
+                            <span className="text-micro text-muted-foreground shrink-0">
                                 {m.count}x
                             </span>
                         </div>

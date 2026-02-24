@@ -53,7 +53,7 @@ function SparkCard({ card, index }: { card: StatCardData; index: number }) {
         >
             <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
+                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1.5">
                         {card.label}
                     </p>
                     <p className="text-lg font-mono font-semibold leading-none">
@@ -80,7 +80,7 @@ function SparkCard({ card, index }: { card: StatCardData; index: number }) {
                         const Icon = TrendIcon[card.trend.direction];
                         return <Icon className="h-3 w-3" />;
                     })()}
-                    <span className="text-[10px] font-medium">
+                    <span className="text-micro font-medium">
                         {card.trend.text}
                     </span>
                 </div>

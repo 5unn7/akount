@@ -101,15 +101,15 @@ export function AccountDetailHero({
                                 </p>
                             )}
                             <div className="flex items-center gap-2 mt-2 flex-wrap">
-                                <Badge className="text-[10px] border-0 px-2 py-0.5 bg-ak-green/15 text-ak-green">
+                                <Badge className="text-micro border-0 px-2 py-0.5 bg-ak-green/15 text-ak-green">
                                     {account.isActive ? 'Active' : 'Inactive'}
                                 </Badge>
                                 <Badge
-                                    className={`text-[10px] border-0 px-2 py-0.5 ${accountTypeColors[account.type]}`}
+                                    className={`text-micro border-0 px-2 py-0.5 ${accountTypeColors[account.type]}`}
                                 >
                                     {accountTypeLabels[account.type]}
                                 </Badge>
-                                <Badge className="text-[10px] glass text-muted-foreground border-ak-border font-mono px-2 py-0.5">
+                                <Badge className="text-micro glass text-muted-foreground border-ak-border font-mono px-2 py-0.5">
                                     {account.currency}
                                 </Badge>
                             </div>
@@ -154,7 +154,7 @@ export function AccountDetailHero({
                 {/* Balance + Sparkline */}
                 <div className="mt-6 flex flex-col sm:flex-row sm:items-end gap-4">
                     <div>
-                        <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
+                        <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-1">
                             Current Balance
                         </p>
                         <span
