@@ -53,9 +53,9 @@ export function DashboardCharts() {
 
 function ChartSkeleton() {
     return (
-        <div className="glass rounded-xl p-5">
-            <div className="h-4 w-32 bg-muted animate-pulse rounded mb-3" />
-            <div className="h-[170px] bg-muted/30 animate-pulse rounded" />
+        <div className="glass rounded-xl p-4 h-full">
+            <div className="h-4 w-32 bg-muted animate-pulse rounded mb-2" />
+            <div className="h-[100px] bg-muted/30 animate-pulse rounded" />
         </div>
     );
 }

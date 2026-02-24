@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { getProfitLossReport } from "@/lib/api/reports";
 import { listEntities } from "@/lib/api/entities";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
-
-const PLReportView = dynamic(() => import("./pl-report-view").then(m => ({ default: m.PLReportView })), { ssr: false });
+import { PLReportView } from "./pl-report-view";
 
 export const metadata: Metadata = {
     title: "Profit & Loss Statement | Akount",

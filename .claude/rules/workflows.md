@@ -19,6 +19,29 @@
 | Reset context when off-track | `/processes:reset` |
 | Weekly health audit (brutal honest) | `/processes:audit` |
 
+## Agent Execution (Use `/pm:*`)
+
+| Use Case | Skill |
+|----------|-------|
+| Execute task with domain agent (single) | `/pm:execute <task-id>` |
+| Execute multiple tasks in parallel | `/pm:execute-parallel <id1> <id2> [id3...]` |
+
+**Available execution agents:**
+
+*Domain Agents:*
+- `banking-agent` — Banking domain (accounts, transactions, transfers)
+- `ui-agent` — Frontend/UI (design system, components, pages)
+- `security-agent` — Security enforcement (tenant isolation, auth, OWASP)
+- `compliance-agent` — Financial compliance (audit trails, double-entry)
+
+*Technical Layer Agents:*
+- `api-agent` — Fastify backend (routes, services, schemas, middleware)
+- `web-agent` — Next.js 16 frontend (pages, server/client components, layouts)
+- `db-agent` — Prisma/PostgreSQL (schema, migrations, indexes, seed data)
+- `test-agent` — Vitest testing (route tests, service tests, financial assertions)
+
+**Flow:** Task Lookup → Agent Selection → Worktree → Execute → Security Gate → Compliance Gate → Merge → Tests → Report
+
 ## Review Agents (Use Task tool)
 
 | Use Case | Agent |

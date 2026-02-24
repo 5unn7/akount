@@ -442,79 +442,8 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // ✅ SECURITY: Verify user belongs to tenant (but allow any role)
-      let tenantUser = await prisma.tenantUser.findFirst({
-        where: {
-          tenantId: request.tenantId,
-          userId: request.userId,
-        },
-      });
-
-      // Auto-fix: If TenantUser is missing (onboarding glitch), create it as OWNER
-      if (!tenantUser) {
-        request.log.warn({
-          tenantId: request.tenantId,
-          userId: request.userId,
-          message: 'TenantUser not found - attempting repair',
-        });
-
-        // Diagnostic: Check if tenant and user exist
-        const [tenant, user] = await Promise.all([
-          prisma.tenant.findUnique({ where: { id: request.tenantId as string } }),
-          prisma.user.findUnique({ where: { id: request.userId as string } }),
-        ]);
-
-        request.log.info({
-          tenantExists: !!tenant,
-          userExists: !!user,
-          tenantId: request.tenantId,
-          userId: request.userId,
-        }, 'Diagnostic check before TenantUser creation');
-
-        if (!tenant) {
-          return reply.status(404).send({
-            error: 'NotFound',
-            message: `Tenant not found: ${request.tenantId}`,
-          });
-        }
-
-        if (!user) {
-          return reply.status(404).send({
-            error: 'NotFound',
-            message: `User not found: ${request.userId}`,
-          });
-        }
-
-        try {
-          tenantUser = await prisma.tenantUser.create({
-            data: {
-              tenantId: request.tenantId as string,
-              userId: request.userId as string,
-              role: 'OWNER',
-            },
-          });
-          request.log.info({ tenantUserId: tenantUser.id }, 'TenantUser created successfully');
-        } catch (createError: unknown) {
-          const errorDetails = createError instanceof Error ? createError.message : String(createError);
-          request.log.error({
-            error: createError,
-            tenantId: request.tenantId,
-            userId: request.userId,
-            errorMessage: errorDetails,
-          }, 'Failed to create TenantUser');
-
-          return reply.status(500).send({
-            error: 'DatabaseError',
-            message: `Failed to create tenant membership: ${errorDetails}`,
-          });
-        }
-      }
-
-      request.log.info({
-        tenantId: request.tenantId,
-        userId: request.userId,
-        role: tenantUser.role,
-      }, 'User verified for dismiss-card');
+      // Tenant middleware already verified access — no additional check needed
+      // for a UI preference action like dismissing a card
 
       const currentProgress = await prisma.onboardingProgress.findUnique({
         where: { tenantId: request.tenantId },

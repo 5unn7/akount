@@ -98,10 +98,10 @@
 | ~~DRY-17~~ | ~~Refactor StatusBadges to use base Badge component + fix semantic token violations~~ | 1-2h | 🟡 Medium | ✅ done | 4ce91e4 | ad-hoc:session |
 | ~~FIN-24~~ | ~~Transfer service: extract overdraft-allowed account types constant + add multi-currency limitation doc comment~~ | 10m | ⚪ Low | ✅ done | | review:transfer-service [atomic] |
 | FIN-25 | Fix subtotal calculation bug in invoice & bill services — backend subtracts tax from pre-tax amount, blocking all creation | <1h | 🔴 Critical | 🟢 | | diagnose:invoice-form |
-| FIN-26 | Wire taxRateId to invoice/bill line items — accept in Zod schema, pass through service to Prisma | 1-2h | 🔴 High | 🟢 | [needs: FIN-25] | diagnose:invoice-form |
+| ~~FIN-26~~ | ~~Wire taxRateId to invoice/bill line items — accept in Zod schema, pass through service to Prisma~~ | 1-2h | 🔴 High | ✅ done | [needs: FIN-25] | diagnose:invoice-form |
 | FIN-27 | Fix document-posting.service.ts netAmount — same pre-tax bug as FIN-25, under-credits Revenue and under-debits Expense in JEs | <1h | 🔴 Critical | 🟢 | | diagnose:financial-audit |
 | FIN-28 | Fix transfer baseCurrency calculation — exchangeRate applied twice for foreign-currency side, JEs don't balance in base currency | <1h | 🔴 Critical | 🟢 | | diagnose:financial-audit |
-| UX-102 | Replace manual tax input with tax rate dropdown + auto-calculation in LineItemBuilder | 2-4h | 🔴 High | 🟢 | [needs: FIN-26] | diagnose:invoice-form |
+| ~~UX-102~~ | ~~Replace manual tax input with tax rate dropdown + auto-calculation in LineItemBuilder~~ | 2-4h | 🔴 High | ✅ done | [needs: FIN-26] | diagnose:invoice-form |
 | UX-3 | Report tables: add `aria-*` attributes, caption, scope, role="progressbar" | 45m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |
 | UX-4 | Report views: replace array index React keys with stable identifiers | 15m | 🟡 Medium | 🟢 | | review:nextjs [atomic] |
 | DOC-2 | Consolidate logging rules (full version in api-conventions.md, update guardrails.md ref) | 30m | 🟡 Medium | ✅ done | | review:smooth-floating-mountain [atomic] |

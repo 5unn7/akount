@@ -21,7 +21,7 @@ function formatCompact(value: number): string {
     return `$${value}`;
 }
 
-export function CashFlowChart({ data, height = 170, className }: CashFlowChartProps) {
+export function CashFlowChart({ data, height = 150, className }: CashFlowChartProps) {
     const svgRef = useRef<SVGSVGElement>(null);
     const [tooltip, setTooltip] = useState<{ x: number; y: number; value: string; date: string } | null>(null);
 
@@ -78,12 +78,12 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
 
     if (!hasData) {
         return (
-            <div className={cn('glass rounded-xl p-5', className)}>
+            <div className={cn('glass rounded-xl p-4 h-full flex flex-col', className)}>
                 <div className="flex items-center justify-between mb-3">
                     <h3 className="text-sm font-heading font-normal">Cash Flow</h3>
                     <span className="text-xs text-muted-foreground font-mono">30d history + 30d forecast</span>
                 </div>
-                <div className="flex flex-col items-center gap-2 py-10 text-center">
+                <div className="flex-1 flex flex-col items-center justify-center gap-2 text-center">
                     <TrendingUp className="h-8 w-8 text-muted-foreground/30" />
                     <p className="text-xs text-muted-foreground">Add transactions to see your cash flow</p>
                 </div>
@@ -101,7 +101,7 @@ export function CashFlowChart({ data, height = 170, className }: CashFlowChartPr
     const xLabels = data.filter((_, i) => i % labelStep === 0 || i === data.length - 1);
 
     return (
-        <div className={cn('glass rounded-xl p-5', className)}>
+        <div className={cn('glass rounded-xl p-4 h-full flex flex-col', className)}>
             <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-heading font-normal">Cash Flow</h3>
                 <span className="text-xs text-muted-foreground font-mono">30d history + 30d forecast</span>

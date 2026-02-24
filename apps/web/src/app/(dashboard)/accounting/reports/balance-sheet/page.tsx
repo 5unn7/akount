@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { getBalanceSheetReport } from "@/lib/api/reports";
 import { listEntities } from "@/lib/api/entities";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
-
-const BSReportView = dynamic(() => import("./bs-report-view").then(m => ({ default: m.BSReportView })), { ssr: false });
+import { BSReportView } from "./bs-report-view";
 
 export const metadata: Metadata = {
     title: "Balance Sheet | Akount",

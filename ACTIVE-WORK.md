@@ -1,6 +1,6 @@
 # Active Work Tracker
 
-**Last Updated:** 2026-02-23 14:30
+**Last Updated:** 2026-02-23 15:30
 
 ---
 
@@ -8,6 +8,7 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
+| agent-e2e-tests | 2026-02-23 15:30 | TEST-2: E2E tests for critical user flows (onboarding, import, posting, reports) | in_progress | main |
 | agent-ux-search-filter | 2026-02-23 10:30 | UX-31, UX-32: Search/filter + pagination on business list pages | completed | main |
 | agent-dry9-currency-641 | 2026-02-23 10:15 | DRY-9: Remove formatCurrency duplicates — consolidate 5+ inline implementations to @/lib/utils/currency | completed | main |
 | agent-dry11-badges | 2026-02-22 17:00 | DRY-11: Consolidate StatusBadge components to packages/ui (6 components, 22 files) | completed | main |
