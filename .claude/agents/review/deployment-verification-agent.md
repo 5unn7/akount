@@ -2,6 +2,16 @@
 name: deployment-verification-agent
 description: "Generate executable Go/No-Go checklists for risky data deployments. Creates pre-deployment, deployment, and post-deployment validation steps."
 model: inherit
+review_type: code
+scope:
+  - deployment
+  - go-live
+  - checklists
+layer:
+  - all
+domain:
+  - all
+priority: low
 context_files:
   - docs/architecture/operations.md
   - docs/standards/financial-data.md

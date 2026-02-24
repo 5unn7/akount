@@ -1,8 +1,17 @@
 ---
 name: architecture-strategist
 description: "Use this agent when analyzing code changes from an architectural perspective, evaluating system design decisions, or ensuring modifications align with established patterns. This includes reviewing PRs for architectural compliance, assessing the impact of new features on system structure, or validating that changes maintain proper component boundaries and design principles. <example>Context: The user has refactored a major service. user: \"I refactored the authentication service to use a new pattern\" assistant: \"I'll use the architecture-strategist agent to review these changes from an architectural perspective\" <commentary>Structural changes to services require architectural review to ensure alignment with system design.</commentary></example> <example>Context: Adding new services or major features. user: \"I've added a new notification service that integrates with existing services\" assistant: \"Let me analyze this with the architecture-strategist agent to ensure it fits within our system architecture\" <commentary>New service additions require architectural validation of boundaries and integration patterns.</commentary></example>"
-_source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
+review_type: both
+scope:
+  - architecture
+  - system-design
+  - domain-boundaries
+layer:
+  - all
+domain:
+  - all
+priority: high
 context_files:
   - docs/architecture/decisions.md
   - docs/design-system/05-governance/information-architecture.md

@@ -2,6 +2,17 @@
 name: fastify-api-reviewer
 description: "Use this agent when reviewing Fastify API code, route handlers, middleware, error handling, or any backend API changes. Validates route patterns, Zod schemas, authentication, and API design consistency."
 model: inherit
+review_type: code
+scope:
+  - fastify
+  - api-routes
+  - middleware
+  - backend
+layer:
+  - backend
+domain:
+  - all
+priority: high
 context_files:
   - docs/standards/api-design.md
   - docs/standards/security.md

@@ -1,16 +1,34 @@
 ---
 name: processes:claim
-description: Lightweight task claiming from TASKS.md
-argument-hint: "[task-id | --domain <name> | --effort <range> | --priority <level> | --quick-wins | --rebuild-index]"
+description: Claim tasks with intelligent agent delegation and real-time execution
+argument-hint: "[task-id] [--domain <name>] [--isolated] [--no-agents] [--quick-wins]"
 ---
 
-# Workflow: Claim Task
+# Workflow: Claim Task (Enhanced)
 
-Quick entry point for claiming a task from TASKS.md and updating ACTIVE-WORK.md.
+Claim and execute tasks with **intelligent agent delegation** and **real-time visibility**.
 
-**Purpose:** Streamlined workflow for subsequent sessions within 2 hours of last session.
+**Modes:** Main branch (default) | Worktree (`--isolated`)
+**Features:** Auto-agent selection, progress streaming, user checkpoints
 
-**New:** Supports filtering and smart recommendations for 93% token reduction.
+---
+
+## Arguments
+
+```bash
+/processes:claim [task-id]                    # Claim specific task
+/processes:claim --domain <name>              # Filter by domain
+/processes:claim --effort <range>             # Filter by effort (<30m, <1h, <2h)
+/processes:claim --priority <level>           # Filter by priority
+/processes:claim --quick-wins                 # High priority + <1h tasks
+/processes:claim --isolated                   # Use worktree (safe mode)
+/processes:claim --no-agents                  # No agent delegation
+/processes:claim                              # Smart recommendations
+```
+
+**New flags:**
+- `--isolated` — Execute in worktree (safe for risky tasks)
+- `--no-agents` — Force direct execution (no delegation)
 
 ---
 
@@ -530,23 +548,241 @@ Agent:
 
 ---
 
+## Phase 2: Task Execution (NEW - Intelligent Delegation)
+
+### Step 1: Classify task & decide execution strategy
+
+```python
+def classify_task(task: Task, config: Config) -> Execution:
+    # Parse from task description and enrichments
+    complexity = 'simple' if task.files <= 2 and task.effort < '1h' else 'complex'
+    scope = infer_scope(task.files or task.description)  # frontend, backend, schema
+    risk = 'high' if any(kw in task.description.lower()
+                         for kw in ['financial', 'auth', 'migration']) else 'normal'
+
+    # Decide delegation
+    should_delegate = (
+        config.use_agents and  # --no-agents flag check
+        (complexity == 'complex' or risk == 'high')
+    )
+
+    agent = select_agent(scope, risk) if should_delegate else 'main'
+
+    return {
+        'mode': config.mode,  # main | worktree
+        'delegate_to': agent,
+        'complexity': complexity,
+        'scope': scope
+    }
+```
+
+### Step 2: Setup execution environment
+
+**If mode == 'main' (default):**
+```bash
+# Work on current branch
+echo "🔧 Executing on main branch (changes visible in IDE)"
+```
+
+**If mode == 'worktree' (--isolated):**
+```bash
+# Create isolated worktree
+mkdir -p .worktrees
+git worktree add .worktrees/claim-${TASK_ID} -b task/${TASK_ID}
+cd .worktrees/claim-${TASK_ID}
+echo "🔒 Executing in worktree (isolated, safe)"
+```
+
+### Step 3: Execute with appropriate strategy
+
+**Path A: Direct execution (simple tasks)**
+
+```markdown
+⚡ Executing directly (simple task)
+
+Task: SEC-24 - Fix tenant isolation
+Complexity: Simple (1 file)
+Estimated: 15 min
+
+Steps:
+1. Read apps/api/src/domains/invoicing/routes/invoice.ts
+2. Add tenantId filter
+3. Test
+4. Commit
+```
+
+**Path B: Agent delegation (complex tasks)**
+
+```markdown
+🤖 Delegating to api-agent (complex task)
+
+Task: DEV-46 - Banking transfers backend
+Complexity: Complex (8 files, 2 hours)
+Scope: Backend + Schema
+Risk: High (financial logic)
+
+Agent will:
+1. Create Prisma model (db-agent first)
+2. Implement service layer
+3. Create API routes
+4. Write tests (24 tests)
+5. Compliance review
+
+You'll see real-time progress below ⬇️
+```
+
+### Step 4: Stream agent progress (same as work flow)
+
+```
+api-agent executing DEV-46...
+
+📝 Reading existing transfer patterns
+📝 Creating apps/api/src/domains/banking/schemas/transfer.schema.ts
+   └─ Zod validation schemas
+✅ transfer.schema.ts complete (67 lines)
+
+📝 Editing apps/api/src/domains/banking/routes/transfer.ts
+   └─ Line 24: POST /transfers endpoint
+   └─ Line 58: GET /transfers list
+✅ transfer.ts complete (189 lines)
+
+📝 Running tests
+   └─ 24/24 passing ✅
+
+✅ Task complete (1h 52m)
+
+Files modified:
+  + apps/api/src/domains/banking/schemas/transfer.schema.ts
+  + apps/api/src/domains/banking/routes/transfer.ts
+  + apps/api/src/domains/banking/services/transfer.service.ts
+  + ... (5 more files)
+
+🔍 Auto-triggering compliance review (financial task detected)...
+   ✅ Compliance passed
+
+Ready to commit? [Y/n/review]:
+```
+
+### Step 5: Commit & update tracking
+
+```bash
+git add [modified files]
+git commit -m "${task-type}(${domain}): ${task.title}
+
+Task: ${TASK_ID}
+Co-Authored-By: ${agent-name if delegated}
+Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
+```
+
+**If in worktree mode:**
+```bash
+# Merge back to main
+git checkout main
+git merge --no-ff task/${TASK_ID}
+git worktree remove .worktrees/claim-${TASK_ID}
+```
+
+Update TASKS.md status to done with commit hash.
+
+---
+
+## Agent Selection for Claims
+
+**Auto-selected based on task:**
+
+| Task Scope | Complexity | Agent Used |
+|-----------|-----------|------------|
+| Frontend (UX-, DS-) | Simple | main (direct) |
+| Frontend | Complex | `web-agent` |
+| Backend (DEV-, SEC-) | Simple | main (direct) |
+| Backend | Complex | `api-agent` |
+| Schema (any) | Any | `db-agent` |
+| Financial (FIN-) | Any | `api-agent` + `compliance-agent` review |
+| Security (SEC-) | High risk | `security-agent` |
+| Performance (PERF-) | Multi-file | Scope-specific agent |
+
+**User can override:**
+- Use `--no-agents` to force direct execution
+- Agent will still classify task and show what would have been delegated
+
+---
+
+## Real-Time Execution Example
+
+```
+User: /processes:claim DEV-46
+
+📋 Task Claimed: DEV-46
+
+**Task:** Banking transfers - backend implementation
+**Priority:** 🟠 High
+**Effort:** 2 hours
+**Scope:** Backend + Schema
+**Complexity:** Complex (8 files affected)
+
+---
+
+🤖 Auto-selected agent: api-agent
+Reason: Complex backend task with financial logic
+
+Execution mode: Main branch (use --isolated for worktree)
+Agent delegation: Enabled (use --no-agents to disable)
+
+Files that will be modified (from enrichments):
+- packages/db/prisma/schema.prisma
+- apps/api/src/domains/banking/schemas/transfer.schema.ts
+- apps/api/src/domains/banking/routes/transfer.ts
+- apps/api/src/domains/banking/services/transfer.service.ts
+- ... (4 more)
+
+Continue with api-agent? [Y/n/execute-directly]:
+
+[User: Y]
+
+🚀 Launching api-agent...
+
+📝 Reading existing patterns in apps/api/src/domains/banking/
+📝 Creating transfer.schema.ts
+   └─ CreateTransferSchema, UpdateTransferSchema
+✅ transfer.schema.ts complete (78 lines)
+
+📝 Editing transfer.ts route handler
+   └─ Line 15: POST /transfers
+   └─ Line 42: GET /transfers
+   └─ Line 89: GET /transfers/:id
+✅ transfer.ts complete (167 lines)
+
+[... continues with real-time updates ...]
+
+⏸️  Task complete. Mark as done in TASKS.md? [Y/n]:
+```
+
+---
+
 ## Notes
 
 **Difference from /processes:begin:**
 - `claim` is lightweight (no git status, no industry intel, no pro tips)
-- Focused on task claiming and ACTIVE-WORK.md updates
+- NOW includes intelligent execution (agent delegation)
+- Focused on single-task completion
 - Used for subsequent sessions within 2 hours
+
+**Difference from /pm:execute:**
+- `claim` shows real-time progress (not fire-and-forget)
+- User can give feedback during execution
+- Works on main branch by default (IDE visibility)
+- Checkpoints after each major step
 
 **When to use:**
 - Quick task switching during active work day
-- Multi-agent parallel sessions
-- When you already know what task to work on
+- Want visibility into agent work
+- Need to give feedback during execution
 
-**When NOT to use:**
-- First session of day → use `/processes:begin` instead
-- Need full context → use `/processes:begin` instead
-- Ad-hoc work not in TASKS.md → just start coding (Tier 3)
+**When to use /pm:execute instead:**
+- Running multiple tasks in parallel
+- Don't need to watch (fire-and-forget)
+- Trust agents completely
 
 ---
 
-_Lines: ~140. Lightweight alternative to /processes:begin for quick task claiming._
+_Enhanced claim workflow. Intelligent agent delegation. Real-time visibility. Hybrid main/worktree modes._

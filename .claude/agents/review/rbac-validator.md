@@ -1,8 +1,18 @@
 ---
 name: rbac-validator
 description: "Validates RBAC implementation against design-system permissions matrix. Use this agent when reviewing authorization logic, route protection, or any code that checks user roles and permissions. Essential for ensuring the 6-role permission system is correctly implemented across frontend and backend. <example>Context: New protected route. user: \"Review this admin settings page for proper authorization\" assistant: \"I'll use the rbac-validator agent to verify RBAC compliance\" <commentary>Admin routes require strict role checking against the permissions matrix.</commentary></example> <example>Context: Sidebar navigation filtering. user: \"Check if the sidebar correctly hides menu items based on role\" assistant: \"Let me use the rbac-validator to verify role-based UI filtering\" <commentary>UI elements must be hidden (not just disabled) for unauthorized roles.</commentary></example>"
-_source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
+review_type: code
+scope:
+  - rbac
+  - permissions
+  - authorization
+  - roles
+layer:
+  - all
+domain:
+  - all
+priority: medium
 context_files:
   - docs/design-system/05-governance/permissions-matrix.md
   - docs/design-system/05-governance/information-architecture.md

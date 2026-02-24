@@ -2,6 +2,16 @@
 name: data-migration-expert
 description: "Validate database migrations to prevent data corruption, swapped values, and ensure rollback safety. Reviews schema changes, data transformations, and backfill scripts."
 model: inherit
+review_type: code
+scope:
+  - data-migration
+  - backfills
+  - schema-changes
+layer:
+  - backend
+domain:
+  - all
+priority: medium
 context_files:
   - packages/db/prisma/schema.prisma
   - docs/standards/financial-data.md

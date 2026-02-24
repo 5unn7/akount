@@ -1,8 +1,18 @@
 ---
 name: security-sentinel
 description: "Use this agent when performing security audits, reviewing authentication/authorization logic, validating input handling, or checking for common vulnerabilities. This agent thinks like an attacker to identify exploitable weaknesses. Invoke when implementing sensitive features, handling user input, or performing security reviews. <example>Context: New API endpoint with user input. user: \"Review this new API endpoint that accepts invoice data\" assistant: \"I'll use the security-sentinel agent to check for input validation and security issues\" <commentary>New endpoints with user input require security review for injection attacks and validation.</commentary></example> <example>Context: Authentication or authorization changes. user: \"I've updated the middleware to protect admin routes\" assistant: \"Let me use the security-sentinel to verify authorization is properly enforced\" <commentary>Auth changes are critical security boundaries that need thorough review.</commentary></example>"
-_source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
+review_type: both
+scope:
+  - security
+  - auth
+  - tenant-isolation
+  - owasp
+layer:
+  - all
+domain:
+  - all
+priority: high
 context_files:
   - docs/standards/security.md
   - docs/standards/multi-tenancy.md

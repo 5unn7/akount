@@ -1,8 +1,18 @@
 ---
 name: design-system-enforcer
 description: "Validates ALL UI code against Akount Design System specifications. Use this agent when reviewing frontend code for design system compliance, checking color usage, typography, component patterns, and layout consistency. Essential for any PR that touches UI components, styling, or visual presentation. <example>Context: The user has a PR with UI changes. user: \"Review this dashboard component for design compliance\" assistant: \"I'll use the design-system-enforcer agent to validate against Akount Design System\" <commentary>UI changes need validation against design system tokens and patterns.</commentary></example> <example>Context: New component using colors. user: \"Check if my invoice card uses correct colors\" assistant: \"Let me use the design-system-enforcer to verify color token usage\" <commentary>Color usage must follow semantic tokens, not hardcoded values.</commentary></example>"
-_source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
+review_type: code
+scope:
+  - design-system
+  - ui-components
+  - color-tokens
+  - typography
+layer:
+  - frontend
+domain:
+  - all
+priority: medium
 context_files:
   - docs/design-system/README.md
   - docs/design-system/00-foundations/colors.md

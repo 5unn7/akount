@@ -1,8 +1,19 @@
 ---
 name: financial-data-validator
 description: "Use this agent when reviewing code that involves financial calculations, accounting logic, invoice/payment flows, journal entries, or any code that touches monetary data. This agent validates double-entry bookkeeping rules, multi-currency calculations, fiscal period handling, audit trail integrity, and ensures financial data accuracy. Essential for any PR that modifies Invoice, Payment, Bill, JournalEntry, or accounting logic. <example>Context: The user has a PR that creates journal entries from invoice payments. user: \"Review this PR that posts journal entries when payments are received\" assistant: \"I'll use the financial-data-validator agent to verify double-entry bookkeeping and audit trails\" <commentary>Creating journal entries requires validating debits equal credits and proper GL account posting, making this perfect for financial-data-validator.</commentary></example> <example>Context: The user is implementing multi-currency invoice calculations. user: \"This PR adds support for invoices in multiple currencies with FX conversion\" assistant: \"Let me have the financial-data-validator check the currency conversion logic and rounding\" <commentary>Multi-currency calculations are error-prone and need validation of FX rates, precision, and rounding rules.</commentary></example> <example>Context: The user is closing fiscal periods. user: \"Added logic to lock fiscal periods and prevent modifications to posted entries\" assistant: \"I'll use the financial-data-validator to ensure fiscal period integrity and audit compliance\" <commentary>Fiscal period closures are critical for financial reporting and require careful validation.</commentary></example>"
-_source: "See .claude/agents/REGISTRY.json for authoritative metadata"
 model: inherit
+review_type: code
+scope:
+  - financial-logic
+  - accounting
+  - double-entry
+  - money-calculations
+layer:
+  - backend
+domain:
+  - business
+  - accounting
+priority: high
 context_files:
   - docs/standards/financial-data.md
   - docs/design-system/01-components/financial-components.md

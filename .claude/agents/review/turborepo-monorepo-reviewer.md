@@ -2,6 +2,17 @@
 name: turborepo-monorepo-reviewer
 description: "Use this agent when reviewing changes that affect the monorepo structure, package dependencies, workspace configuration, or Turborepo pipeline. Validates workspace integrity, dependency management, and build optimization."
 model: inherit
+review_type: code
+scope:
+  - turborepo
+  - monorepo
+  - workspace
+  - dependencies
+layer:
+  - all
+domain:
+  - all
+priority: low
 context_files:
   - turbo.json
   - package.json

@@ -2,6 +2,17 @@
 name: clerk-auth-reviewer
 description: "Use this agent when reviewing authentication and authorization code involving Clerk. Validates JWT verification, session handling, protected routes, middleware configuration, and authorization patterns."
 model: inherit
+review_type: code
+scope:
+  - clerk
+  - auth
+  - jwt
+  - sessions
+layer:
+  - all
+domain:
+  - all
+priority: medium
 context_files:
   - docs/standards/security.md
   - docs/standards/multi-tenancy.md
