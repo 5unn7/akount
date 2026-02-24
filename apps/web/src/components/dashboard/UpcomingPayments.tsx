@@ -1,60 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, ArrowDownRight, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getUpcomingPayments, type UpcomingPayment } from '@/lib/api/dashboard-client';
+import type { UpcomingPayment } from '@/lib/api/dashboard';
 import { formatCurrency } from '@/lib/utils/currency';
 import { formatDate } from '@/lib/utils/date';
 
 interface UpcomingPaymentsProps {
-    entityId?: string;
-    limit?: number;
+    data?: UpcomingPayment[]; // UX-105: Data now passed from server
     pageSize?: number;
 }
 
 const DEFAULT_PAGE_SIZE = 5;
 
-export function UpcomingPayments({ entityId, limit = 20, pageSize = DEFAULT_PAGE_SIZE }: UpcomingPaymentsProps) {
-    const [payments, setPayments] = useState<UpcomingPayment[] | undefined>();
-    const [loading, setLoading] = useState(true);
+export function UpcomingPayments({ data = [], pageSize = DEFAULT_PAGE_SIZE }: UpcomingPaymentsProps) {
     const [page, setPage] = useState(0);
+    const payments = data; // Server-fetched data (no client-side loading flash)
 
-    useEffect(() => {
-        getUpcomingPayments(entityId, limit)
-            .then((response) => {
-                setPayments(response.data);
-                setLoading(false);
-            })
-            .catch(() => {
-                setPayments(undefined);
-                setLoading(false);
-            });
-    }, [entityId, limit]);
-
-    // Loading state
-    if (loading) {
-        return (
-            <div>
-                <div className="flex items-center justify-between mb-2">
-                    <p className="text-[10px] uppercase tracking-[0.05em] text-muted-foreground font-medium">
-                        Upcoming Payments
-                    </p>
-                </div>
-                <div className="space-y-0">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="flex items-center gap-2 py-1.5 px-1">
-                            <div className="w-0.5 h-4 rounded-full bg-muted/30 animate-pulse shrink-0" />
-                            <div className="h-3 w-20 bg-muted/30 animate-pulse rounded" />
-                            <div className="h-2.5 w-14 bg-muted/20 animate-pulse rounded ml-auto" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    // Empty state
+    // Empty state (UX-105: No loading state needed - data from server)
     if (!payments || payments.length === 0) {
         return (
             <div>

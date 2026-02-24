@@ -13,7 +13,7 @@ import { OnboardingHeroCard } from "@/components/onboarding/OnboardingHeroCard";
 import { GlowCard } from "@/components/ui/glow-card";
 import { CardContent } from "@/components/ui/card";
 import { listEntities } from "@/lib/api/entities";
-import { getDashboardMetrics, getIntents } from "@/lib/api/dashboard";
+import { getDashboardMetrics, getIntents, getUpcomingPayments } from "@/lib/api/dashboard";
 import { getPerformanceMetrics } from "@/lib/api/performance";
 import { listTransactions } from "@/lib/api/transactions";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
@@ -44,19 +44,22 @@ export default async function OverviewPage() {
     let performance: Awaited<ReturnType<typeof getPerformanceMetrics>> | null = null;
     let recentTransactions: Awaited<ReturnType<typeof listTransactions>> = { transactions: [], hasMore: false };
     let intents: string[] = [];
+    let upcomingPayments: Awaited<ReturnType<typeof getUpcomingPayments>> = { data: [] };
 
     try {
-        const [metricsResult, performanceResult, transactionsResult, intentsResult] = await Promise.allSettled([
+        const [metricsResult, performanceResult, transactionsResult, intentsResult, upcomingResult] = await Promise.allSettled([
             getDashboardMetrics(entityId, currency),
             getPerformanceMetrics(entityId, currency),
             listTransactions({ limit: 10, entityId }),
             getIntents(),
+            getUpcomingPayments(entityId, 20), // UX-105: Fetch server-side
         ]);
 
         if (metricsResult.status === 'fulfilled') metrics = metricsResult.value;
         if (performanceResult.status === 'fulfilled') performance = performanceResult.value;
         if (transactionsResult.status === 'fulfilled') recentTransactions = transactionsResult.value;
         if (intentsResult.status === 'fulfilled') intents = intentsResult.value;
+        if (upcomingResult.status === 'fulfilled') upcomingPayments = upcomingResult.value;
     } catch {
         // Continue with defaults
     }
@@ -160,7 +163,7 @@ export default async function OverviewPage() {
                     />
                 </div>
                 <div className="xl:col-span-2">
-                    <CommandCenterRightPanel />
+                    <CommandCenterRightPanel upcomingPayments={upcomingPayments.data} />
                 </div>
 
                 {/* Row 2: AI Insights (full width) */}

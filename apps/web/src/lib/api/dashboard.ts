@@ -158,3 +158,41 @@ export async function getCashFlow(
 
     return apiClient<CashFlowData>(endpoint);
 }
+
+/**
+ * Upcoming payment event
+ */
+export interface UpcomingPayment {
+    id: string;
+    type: 'BILL' | 'INVOICE';
+    name: string;
+    dueDate: string;
+    amount: number;
+    currency: string;
+    status: string;
+}
+
+/**
+ * Fetch upcoming payments (bills due + expected invoice payments)
+ * SERVER-SIDE function - use from Server Components only
+ *
+ * @param entityId - Optional entity ID filter
+ * @param limit - Maximum number of items to return (default: 10)
+ * @returns Array of upcoming payment events
+ */
+export async function getUpcomingPayments(
+    entityId?: string,
+    limit: number = 10
+): Promise<{ data: UpcomingPayment[] }> {
+    const params = new URLSearchParams();
+
+    if (entityId) {
+        params.append('entityId', entityId);
+    }
+
+    params.append('limit', limit.toString());
+
+    const endpoint = `/api/overview/upcoming-payments?${params.toString()}`;
+
+    return apiClient<{ data: UpcomingPayment[] }>(endpoint);
+}
