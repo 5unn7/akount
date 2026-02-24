@@ -554,8 +554,9 @@ describe('BillService', () => {
 
   describe('updateBill', () => {
     it('should verify bill exists and tenant owns before updating', async () => {
-      const existing = mockBill({ id: 'bill-1' });
-      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce(existing as never);
+      const existing = mockBill({ id: 'bill-1', status: 'DRAFT' });
+      // FIN-29: Now fetches with billLines for validation
+      vi.mocked(prisma.bill.findFirst).mockResolvedValueOnce({ ...existing, billLines: [] } as never);
       vi.mocked(prisma.bill.update).mockResolvedValueOnce(existing as never);
 
       await billService.updateBill(
@@ -570,7 +571,7 @@ describe('BillService', () => {
           entity: { tenantId: TENANT_ID },
           deletedAt: null,
         },
-        include: { vendor: true, entity: true, billLines: { include: { taxRate: true } } },
+        include: { billLines: true },
       });
     });
 

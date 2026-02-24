@@ -555,8 +555,9 @@ describe('InvoiceService', () => {
 
   describe('updateInvoice', () => {
     it('should verify invoice exists and tenant owns before updating', async () => {
-      const existing = mockInvoice({ id: 'inv-1' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(existing as never);
+      const existing = mockInvoice({ id: 'inv-1', status: 'DRAFT' });
+      // FIN-29: Now fetches with invoiceLines for validation
+      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce({ ...existing, invoiceLines: [] } as never);
       vi.mocked(prisma.invoice.update).mockResolvedValueOnce(existing as never);
 
       await invoiceService.updateInvoice(
@@ -571,7 +572,7 @@ describe('InvoiceService', () => {
           entity: { tenantId: TENANT_ID },
           deletedAt: null,
         },
-        include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
+        include: { invoiceLines: true },
       });
     });
 
