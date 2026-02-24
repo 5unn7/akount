@@ -451,11 +451,22 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
       });
 
       if (!tenantUser) {
+        request.log.error({
+          tenantId: request.tenantId,
+          userId: request.userId,
+          message: 'TenantUser not found for dismiss-card request',
+        });
         return reply.status(403).send({
           error: 'Forbidden',
-          message: 'Access denied',
+          message: 'Access denied - user not found in tenant',
         });
       }
+
+      request.log.info({
+        tenantId: request.tenantId,
+        userId: request.userId,
+        role: tenantUser.role,
+      }, 'User verified for dismiss-card');
 
       const currentProgress = await prisma.onboardingProgress.findUnique({
         where: { tenantId: request.tenantId },
