@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Plus,
     Sprout,
     ListTree,
     Loader2,
+    Search,
 } from 'lucide-react';
 import type {
     GLAccount,
@@ -18,6 +19,7 @@ import type {
 import type { Entity } from '@/lib/api/entities';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
     Select,
     SelectContent,
@@ -61,6 +63,7 @@ export function ChartOfAccountsClient({
     const [accounts, setAccounts] = useState(initialAccounts);
     const [balances, setBalances] = useState(initialBalances);
     const [filterType, setFilterType] = useState<string>('all');
+    const [search, setSearch] = useState('');
     const [sheetOpen, setSheetOpen] = useState(false);
     const [editingAccount, setEditingAccount] = useState<GLAccount | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -78,11 +81,26 @@ export function ChartOfAccountsClient({
 
     const entityId = selectedEntityId;
 
-    // Filter accounts
-    const filtered =
-        filterType === 'all'
-            ? accounts
-            : accounts.filter((a) => a.type === filterType);
+    // Debounced search - refetch when search or filterType changes
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            const params: any = { entityId };
+            if (search) params.search = search;
+            if (filterType !== 'all') params.type = filterType;
+
+            try {
+                const newAccounts = await fetchGLAccounts(params);
+                setAccounts(newAccounts);
+            } catch (error) {
+                console.error('Failed to fetch accounts:', error);
+            }
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(timer);
+    }, [search, filterType, entityId]);
+
+    // Filter accounts (client-side filtering is now redundant since backend does it)
+    const filtered = accounts;
 
     const grouped = buildGroupedTree(filtered, balances);
 
@@ -241,6 +259,16 @@ export function ChartOfAccountsClient({
         <div className="space-y-4">
             {/* Toolbar */}
             <div className="flex items-center gap-3">
+                <div className="relative max-w-sm">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Search by code or name..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="pl-9 rounded-lg border-ak-border-2 glass"
+                    />
+                </div>
+
                 <Select value={filterType} onValueChange={setFilterType}>
                     <SelectTrigger className="w-40 rounded-lg border-ak-border-2 glass">
                         <SelectValue placeholder="All Types" />
