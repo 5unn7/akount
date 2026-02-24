@@ -17,9 +17,15 @@ import { generateEntryNumber } from '../utils/entry-number';
  * - Source document snapshots are immutable
  * - Fiscal period locks are enforced
  *
+ * IMPORTANT — line.amount semantics:
+ * line.amount = qty * unitPrice = PRE-TAX amount (integer cents).
+ * line.taxAmount = tax computed ON the pre-tax amount.
+ * document.subtotal = SUM(line.amount), document.total = subtotal + taxAmount.
+ * Revenue/Expense journal lines use line.amount directly (NOT line.amount - line.taxAmount).
+ *
  * Journal patterns:
  * - Invoice:  DR Accounts Receivable, CR Revenue, CR Tax Payable
- * - Bill:     DR Expense, CR Accounts Payable
+ * - Bill:     DR Expense, DR Recoverable Tax, CR Accounts Payable
  * - Payment (AR): DR Cash/Bank, CR Accounts Receivable
  * - Payment (AP): DR Accounts Payable, CR Cash/Bank
  */
@@ -47,9 +53,12 @@ export class DocumentPostingService {
    * Post an invoice to the general ledger.
    *
    * Creates journal entry:
-   *   DR Accounts Receivable (invoice.total)
-   *   CR Revenue per line (line.amount - line.taxAmount)
+   *   DR Accounts Receivable (invoice.total = subtotal + taxAmount)
+   *   CR Revenue per line (line.amount — already pre-tax: qty * unitPrice)
    *   CR Sales Tax Payable (sum of line.taxAmount)
+   *
+   * Balance proof: DR(total) = CR(SUM(line.amount) + SUM(line.taxAmount))
+   *              = CR(subtotal + taxAmount) = CR(total)
    *
    * Prerequisites:
    * - Invoice must be SENT (not DRAFT)
@@ -119,6 +128,18 @@ export class DocumentPostingService {
         tx, entityId, WELL_KNOWN_CODES.SERVICE_REVENUE
       );
 
+      // 4b. Defensive: verify line totals match document totals
+      // line.amount is pre-tax (qty * unitPrice), so SUM(line.amount) should equal invoice.subtotal
+      const lineSubtotal = invoice.invoiceLines.reduce((sum, l) => sum + l.amount, 0);
+      const lineTaxTotal = invoice.invoiceLines.reduce((sum, l) => sum + l.taxAmount, 0);
+      if (lineSubtotal + lineTaxTotal !== invoice.total) {
+        throw new AccountingError(
+          `Invoice line totals (${lineSubtotal} + ${lineTaxTotal} = ${lineSubtotal + lineTaxTotal}) do not match invoice.total (${invoice.total})`,
+          'UNBALANCED_ENTRY',
+          400
+        );
+      }
+
       // 5. Build journal lines (with multi-currency support)
       const lines: Array<{
         glAccountId: string;
@@ -158,7 +179,8 @@ export class DocumentPostingService {
         }),
       });
 
-      // CR Revenue per line (line.amount is pre-tax: qty * unitPrice)
+      // CR Revenue per line — line.amount is already pre-tax (qty * unitPrice),
+      // NOT line.amount - line.taxAmount (that would double-subtract tax)
       for (const line of invoice.invoiceLines) {
         const netAmount = line.amount;
         if (netAmount > 0) {
@@ -292,9 +314,12 @@ export class DocumentPostingService {
    * Post a bill to the general ledger.
    *
    * Creates journal entry:
-   *   DR Expense per line (line.amount - line.taxAmount)
+   *   DR Expense per line (line.amount — already pre-tax: qty * unitPrice)
    *   DR Recoverable Tax (sum of line.taxAmount, if applicable)
-   *   CR Accounts Payable (bill.total)
+   *   CR Accounts Payable (bill.total = subtotal + taxAmount)
+   *
+   * Balance proof: DR(SUM(line.amount) + SUM(line.taxAmount))
+   *              = DR(subtotal + taxAmount) = DR(total) = CR(total)
    *
    * Prerequisites:
    * - Bill must be PENDING or later (not DRAFT)
@@ -364,6 +389,18 @@ export class DocumentPostingService {
         tx, entityId, WELL_KNOWN_CODES.OTHER_EXPENSES
       );
 
+      // 4b. Defensive: verify line totals match document totals
+      // line.amount is pre-tax (qty * unitPrice), so SUM(line.amount) should equal bill.subtotal
+      const lineSubtotal = bill.billLines.reduce((sum, l) => sum + l.amount, 0);
+      const lineTaxTotal = bill.billLines.reduce((sum, l) => sum + l.taxAmount, 0);
+      if (lineSubtotal + lineTaxTotal !== bill.total) {
+        throw new AccountingError(
+          `Bill line totals (${lineSubtotal} + ${lineTaxTotal} = ${lineSubtotal + lineTaxTotal}) do not match bill.total (${bill.total})`,
+          'UNBALANCED_ENTRY',
+          400
+        );
+      }
+
       // 5. Build journal lines (with multi-currency support)
       const lines: Array<{
         glAccountId: string;
@@ -389,7 +426,8 @@ export class DocumentPostingService {
         );
       }
 
-      // DR Expense per line (line.amount is pre-tax: qty * unitPrice)
+      // DR Expense per line — line.amount is already pre-tax (qty * unitPrice),
+      // NOT line.amount - line.taxAmount (that would double-subtract tax)
       for (const line of bill.billLines) {
         const netAmount = line.amount;
         if (netAmount > 0) {
