@@ -122,13 +122,13 @@ export class AssetService {
 
         // Validate GL accounts if provided
         if (data.assetGLAccountId) {
-            await validateGLAccountOwnership(data.assetGLAccountId, data.entityId, this.tenantId);
+            await validateGLAccountOwnership(data.assetGLAccountId, this.tenantId);
         }
         if (data.depreciationExpenseGLAccountId) {
-            await validateGLAccountOwnership(data.depreciationExpenseGLAccountId, data.entityId, this.tenantId);
+            await validateGLAccountOwnership(data.depreciationExpenseGLAccountId, this.tenantId);
         }
         if (data.accumulatedDepreciationGLAccountId) {
-            await validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, data.entityId, this.tenantId);
+            await validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, this.tenantId);
         }
 
         const asset = await prisma.fixedAsset.create({
@@ -188,13 +188,13 @@ export class AssetService {
 
         // Validate GL accounts if provided
         if (data.assetGLAccountId) {
-            await validateGLAccountOwnership(data.assetGLAccountId, existing.entityId, this.tenantId);
+            await validateGLAccountOwnership(data.assetGLAccountId, this.tenantId);
         }
         if (data.depreciationExpenseGLAccountId) {
-            await validateGLAccountOwnership(data.depreciationExpenseGLAccountId, existing.entityId, this.tenantId);
+            await validateGLAccountOwnership(data.depreciationExpenseGLAccountId, this.tenantId);
         }
         if (data.accumulatedDepreciationGLAccountId) {
-            await validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, existing.entityId, this.tenantId);
+            await validateGLAccountOwnership(data.accumulatedDepreciationGLAccountId, this.tenantId);
         }
 
         const asset = await prisma.fixedAsset.update({

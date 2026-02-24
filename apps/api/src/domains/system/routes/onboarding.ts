@@ -1,4 +1,3 @@
-import { Prisma } from '@akount/db';
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { prisma, Prisma } from '@akount/db';
