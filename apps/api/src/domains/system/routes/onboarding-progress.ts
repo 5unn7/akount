@@ -455,8 +455,35 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
         request.log.warn({
           tenantId: request.tenantId,
           userId: request.userId,
-          message: 'TenantUser not found - creating as OWNER (onboarding repair)',
+          message: 'TenantUser not found - attempting repair',
         });
+
+        // Diagnostic: Check if tenant and user exist
+        const [tenant, user] = await Promise.all([
+          prisma.tenant.findUnique({ where: { id: request.tenantId as string } }),
+          prisma.user.findUnique({ where: { id: request.userId as string } }),
+        ]);
+
+        request.log.info({
+          tenantExists: !!tenant,
+          userExists: !!user,
+          tenantId: request.tenantId,
+          userId: request.userId,
+        }, 'Diagnostic check before TenantUser creation');
+
+        if (!tenant) {
+          return reply.status(404).send({
+            error: 'NotFound',
+            message: `Tenant not found: ${request.tenantId}`,
+          });
+        }
+
+        if (!user) {
+          return reply.status(404).send({
+            error: 'NotFound',
+            message: `User not found: ${request.userId}`,
+          });
+        }
 
         try {
           tenantUser = await prisma.tenantUser.create({
@@ -467,11 +494,18 @@ export async function onboardingProgressRoutes(fastify: FastifyInstance) {
             },
           });
           request.log.info({ tenantUserId: tenantUser.id }, 'TenantUser created successfully');
-        } catch (createError) {
-          request.log.error({ error: createError }, 'Failed to create TenantUser');
-          return reply.status(403).send({
-            error: 'Forbidden',
-            message: 'Access denied - unable to verify tenant membership',
+        } catch (createError: unknown) {
+          const errorDetails = createError instanceof Error ? createError.message : String(createError);
+          request.log.error({
+            error: createError,
+            tenantId: request.tenantId,
+            userId: request.userId,
+            errorMessage: errorDetails,
+          }, 'Failed to create TenantUser');
+
+          return reply.status(500).send({
+            error: 'DatabaseError',
+            message: `Failed to create tenant membership: ${errorDetails}`,
           });
         }
       }
