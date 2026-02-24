@@ -1,6 +1,6 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-23 14:30
+**Last Updated:** 2026-02-24 10:15
 **Current Phase:** Phase 6 — Launch MVP
 
 > **209 product tasks** · 🔴 2 critical · 🟠 43 high · 🟡 104 medium · ⚪ 23 low · ✅ 114 done
@@ -26,11 +26,11 @@
 |----|------|--------|----------|--------|------|--------|
 | ~~FIN-23~~ | ~~Fix `voidTransfer` balance reversal — voiding a transfer marks JEs as VOIDED but does NOT reverse account balances (financial integrity bug)~~ | 30-45m | 🔴 Critical | ✅ done | | review:transfer-service |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
-| SEC-24 | GL Account service: _count queries don't filter by tenant (childAccounts, journalLines counts leak cross-tenant) | 1h | 🟠 High | 🟢 | | pm:execute/UX-19 |
-| TEST-1 | Service tests for 4 remaining reports (BS, CF, TB, GL) + route tests | 3-4h | 🟠 High | 🟢 | | review:typescript |
+| ~~SEC-24~~ | ~~GL Account service: _count queries don't filter by tenant (childAccounts, journalLines counts leak cross-tenant)~~ | 1h | 🟠 High | ✅ done | | pm:execute/UX-19 (18d40d1) |
+| ~~TEST-1~~ | ~~Service tests for 4 remaining reports (BS, CF, TB, GL) + route tests~~ | 3-4h | 🟠 High | ✅ done | | review:typescript (256b647) |
 | TEST-2 | E2E tests for critical user flows (onboarding, import, posting, reports) | 4h | 🟠 High | 🟢 | | roadmap |
-| TEST-3 | 80%+ API test coverage target | 2h | 🟠 High | 🔒 | [needs: TEST-1] | roadmap |
-| DEV-2 | Service tests for client/invoice/bill/vendor services | 3h | 🟠 High | 🟢 | | audit:smooth-floating-mountain |
+| TEST-3 | 80%+ API test coverage target | 2h | 🟠 High | 🟢 | | roadmap |
+| ~~DEV-2~~ | ~~Service tests for client/invoice/bill/vendor services~~ | 3h | 🟠 High | ✅ done | | audit:smooth-floating-mountain (pre-existing) |
 | ~~UX-8~~ | ~~Add loading/error states to remaining dashboard pages (~30 pages)~~ | 2h | 🟠 High | ✅ done | | plan:phase-6-tasks, plan:entity-selector-global.md (364ea9b) |
 | ~~DEV-46~~ | ~~Banking: Implement transfers backend API + wire transfers page — inter-account transfers with journal entry creation (10/12 tasks complete, tests deferred)~~ | 4-6h | 🟠 High | ✅ | session | audit:fe-be-parity, sitemap:audit, plan:2026-02-21-banking-transfers.md |
 | ~~UX-15~~ | ~~Banking: Add GL account linking UI on account detail~~ | 1-2h | 🟠 High | ✅ done | | audit:fe-be-parity, plan:banking-command-center.md |
@@ -130,11 +130,17 @@
 | DEV-12 | Overview: Add action items endpoint — unreconciled txns, overdue invoices, overdue bills (RightRail placeholder) | 3-4h | 🟡 Medium | 🟢 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-13 | Overview: Add cash flow time-series chart endpoint — historical cash position by day/week (CashFlowChart placeholder) | 3-4h | 🟡 Medium | 🟢 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-14 | Overview: Add expense breakdown by category endpoint for ExpenseChart (placeholder component) | 2-3h | 🟡 Medium | 🟢 | | audit:fe-be-parity, plan:command-center-dashboard.md |
-| DEV-17 | Overview: P&L Summary mini-widget — revenue vs expense bars + YTD trend (ReportService ready) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
+| ~~DEV-17~~ | ~~Overview: P&L Summary mini-widget — revenue vs expense bars + YTD trend (ReportService ready)~~ **SUPERSEDED by DEV-179+DEV-180** | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-18 | Overview: Balance Sheet Snapshot widget — asset:liability donut + equity trend (ReportService ready) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
-| DEV-19 | Overview: Trial Balance Status widget — balanced alert + account type counts (ReportService ready) | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
+| ~~DEV-19~~ | ~~Overview: Trial Balance Status widget — balanced alert + account type counts (ReportService ready)~~ **SUPERSEDED by DEV-179+DEV-181** | 1-2h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | FIN-16 | Overview: Financial Health Ratios widget — current ratio, working capital, debt-to-equity, profit margin (computed from BS+P&L) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
-| DEV-20 | Overview: Top Revenue Clients widget — top 5 by YTD revenue + concentration % (ReportService ready) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
+| ~~DEV-20~~ | ~~Overview: Top Revenue Clients widget — top 5 by YTD revenue + concentration % (ReportService ready)~~ **SUPERSEDED by DEV-179+DEV-182** | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
+| DEV-179 | Overview Widgets: Add client-side API functions for P&L, Trial Balance, and Revenue reports (dashboard-client.ts) | 30m | 🟡 Medium | 🟢 | | plan:2026-02-24-overview-dashboard-widgets.md |
+| DEV-180 | Overview Widgets: Create ProfitLossSummaryWidget component — revenue vs expense bars + YTD trend | 1h | 🟡 Medium | 🟢 | [needs: DEV-179] | plan:2026-02-24-overview-dashboard-widgets.md |
+| DEV-181 | Overview Widgets: Create TrialBalanceStatusWidget component — balanced alert + account type counts | 45m | 🟡 Medium | 🟢 | [needs: DEV-179] | plan:2026-02-24-overview-dashboard-widgets.md |
+| DEV-182 | Overview Widgets: Create TopRevenueClientsWidget component — top 5 by YTD revenue + concentration % | 1h | 🟡 Medium | 🟢 | [needs: DEV-179] | plan:2026-02-24-overview-dashboard-widgets.md |
+| DEV-183 | Overview Widgets: Add 3 report widgets to Overview page grid layout (responsive 3-col) | 30m | 🟡 Medium | 🟢 | [needs: DEV-180, DEV-181, DEV-182] | plan:2026-02-24-overview-dashboard-widgets.md |
+| DEV-184 | Overview Widgets: Update Overview loading skeleton to include report widgets row | 15m | 🟡 Medium | 🟢 | [needs: DEV-183] | plan:2026-02-24-overview-dashboard-widgets.md |
 | DEV-21 | Overview: Client Payment Health widget — % paid on time, avg days-to-payment, overdue count (Invoice model) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-22 | Overview: Invoice Aging Waterfall widget — AR buckets 0-30, 31-60, 61-90, 90+ days | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-23 | Overview: Revenue by Category widget — revenue sources breakdown from InvoiceLine + Category | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
@@ -295,6 +301,7 @@
 | INFRA-5 | Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts) | 2h | 🟠 High | 🔒 | [needs: INFRA-2] | roadmap |
 | INFRA-7 | OpenTelemetry instrumentation (distributed tracing, metrics, alerting) | 4h | 🟠 High | 🔒 | [needs: INFRA-2] | review:smooth-floating-mountain |
 | INFRA-8 | Docker image building + container deployment pipeline | 3h | 🟠 High | 🔒 | [needs: INFRA-1] | review:smooth-floating-mountain |
+| INFRA-59 | Flinks API production readiness — verify env vars, test demo mode, create deployment checklist (code already exists, prep for API key activation) | 1-2h | 🟠 High | 🟢 | | ad-hoc:flinks-production-prep |
 
 **→ Linear PM Infrastructure tasks (43 tasks) moved to [LINEAR-TASKS.md](LINEAR-TASKS.md)**
 
@@ -493,16 +500,18 @@
 
 
 
+
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-24T00:12:28.680Z",
+  "generated": "2026-02-24T15:50:17.022Z",
   "summary": {
-    "total": 223,
-    "ready": 65,
+    "total": 230,
+    "ready": 67,
     "blocked": 7,
     "backlog": 118,
-    "done": 32
+    "done": 37
   },
   "byPriority": {
     "critical": [
@@ -566,7 +575,8 @@
       "ARCH-3",
       "INFRA-5",
       "INFRA-7",
-      "INFRA-8"
+      "INFRA-8",
+      "INFRA-59"
     ],
     "medium": [
       "UX-33",
@@ -632,6 +642,12 @@
       "DEV-19",
       "FIN-16",
       "DEV-20",
+      "DEV-179",
+      "DEV-180",
+      "DEV-181",
+      "DEV-182",
+      "DEV-183",
+      "DEV-184",
       "DEV-21",
       "DEV-22",
       "DEV-23",
@@ -744,6 +760,7 @@
       "UX-4",
       "DOC-3",
       "DOC-8",
+      "DEV-184",
       "DEV-114",
       "DOC-4",
       "DOC-5",
@@ -792,6 +809,11 @@
       "DS-4",
       "FIN-14",
       "DEV-19",
+      "DEV-179",
+      "DEV-180",
+      "DEV-181",
+      "DEV-182",
+      "DEV-183",
       "DEV-26",
       "DEV-27",
       "DEV-28",
@@ -835,6 +857,7 @@
       "INFRA-2",
       "INFRA-3",
       "INFRA-5",
+      "INFRA-59",
       "INFRA-4",
       "INFRA-6"
     ],
@@ -977,6 +1000,12 @@
       "DEV-18",
       "DEV-19",
       "DEV-20",
+      "DEV-179",
+      "DEV-180",
+      "DEV-181",
+      "DEV-182",
+      "DEV-183",
+      "DEV-184",
       "DEV-21",
       "DEV-22",
       "DEV-23",
@@ -1094,6 +1123,7 @@
       "INFRA-5",
       "INFRA-7",
       "INFRA-8",
+      "INFRA-59",
       "INFRA-4",
       "INFRA-6"
     ],
@@ -1186,11 +1216,6 @@
     "DRY-13",
     "DRY-14",
     "DRY-15",
-    "FIN-25",
-    "FIN-26",
-    "FIN-27",
-    "FIN-28",
-    "UX-102",
     "UX-3",
     "UX-4",
     "DOC-3",
@@ -1201,6 +1226,12 @@
     "DEV-12",
     "DEV-13",
     "DEV-14",
+    "DEV-179",
+    "DEV-180",
+    "DEV-181",
+    "DEV-182",
+    "DEV-183",
+    "DEV-184",
     "DEV-115",
     "DEV-116",
     "DOC-4",
@@ -1224,14 +1255,14 @@
     "INFRA-1",
     "INFRA-2",
     "INFRA-3",
-    "ARCH-3"
+    "ARCH-3",
+    "INFRA-59"
   ],
   "quickWins": [
     "SEC-24",
     "DEV-72",
     "DEV-78",
     "UX-45",
-    "FIN-26",
     "DS-1",
     "MKT-3",
     "MKT-5",
@@ -1241,9 +1272,12 @@
     "MKT-10",
     "MKT-11",
     "INFRA-2",
-    "INFRA-3"
+    "INFRA-3",
+    "INFRA-59"
   ],
-  "dashboard": [],
+  "dashboard": [
+    "DEV-179"
+  ],
   "tasks": {
     "FIN-23": {
       "line": 27,
@@ -1868,7 +1902,7 @@
       "title": "Fix subtotal calculation bug in invoice & bill services — backend subtracts tax from pre-tax amount, blocking all creation",
       "effort": "<1h",
       "priority": "critical",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "financial"
     },
@@ -1877,7 +1911,7 @@
       "title": "Wire taxRateId to invoice/bill line items — accept in Zod schema, pass through service to Prisma",
       "effort": "1-2h",
       "priority": "critical",
-      "status": "ready",
+      "status": "done",
       "deps": [
         "FIN-25"
       ],
@@ -1888,7 +1922,7 @@
       "title": "Fix document-posting.service.ts netAmount — same pre-tax bug as FIN-25, under-credits Revenue and under-debits Expense in JEs",
       "effort": "<1h",
       "priority": "critical",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "financial"
     },
@@ -1897,7 +1931,7 @@
       "title": "Fix transfer baseCurrency calculation — exchangeRate applied twice for foreign-currency side, JEs don't balance in base currency",
       "effort": "<1h",
       "priority": "critical",
-      "status": "ready",
+      "status": "done",
       "deps": [],
       "domain": "financial"
     },
@@ -1906,7 +1940,7 @@
       "title": "Replace manual tax input with tax rate dropdown + auto-calculation in LineItemBuilder",
       "effort": "2-4h",
       "priority": "critical",
-      "status": "ready",
+      "status": "done",
       "deps": [
         "FIN-26"
       ],
@@ -2172,7 +2206,7 @@
     },
     "DEV-17": {
       "line": 133,
-      "title": "Overview: P&L Summary mini-widget — revenue vs expense bars + YTD trend (ReportService ready)",
+      "title": "Overview: P&L Summary mini-widget — revenue vs expense bars + YTD trend (ReportService ready)~~ **SUPERSEDED by DEV-179+DEV-180**",
       "effort": "2-3h",
       "priority": "medium",
       "status": "backlog",
@@ -2190,7 +2224,7 @@
     },
     "DEV-19": {
       "line": 135,
-      "title": "Overview: Trial Balance Status widget — balanced alert + account type counts (ReportService ready)",
+      "title": "Overview: Trial Balance Status widget — balanced alert + account type counts (ReportService ready)~~ **SUPERSEDED by DEV-179+DEV-181**",
       "effort": "1-2h",
       "priority": "medium",
       "status": "backlog",
@@ -2208,15 +2242,77 @@
     },
     "DEV-20": {
       "line": 137,
-      "title": "Overview: Top Revenue Clients widget — top 5 by YTD revenue + concentration % (ReportService ready)",
+      "title": "Overview: Top Revenue Clients widget — top 5 by YTD revenue + concentration % (ReportService ready)~~ **SUPERSEDED by DEV-179+DEV-182**",
       "effort": "2-3h",
       "priority": "medium",
       "status": "backlog",
       "deps": [],
       "domain": "development"
     },
-    "DEV-21": {
+    "DEV-179": {
       "line": 138,
+      "title": "Overview Widgets: Add client-side API functions for P&L, Trial Balance, and Revenue reports (dashboard-client.ts)",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "development"
+    },
+    "DEV-180": {
+      "line": 139,
+      "title": "Overview Widgets: Create ProfitLossSummaryWidget component — revenue vs expense bars + YTD trend",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "DEV-179"
+      ],
+      "domain": "development"
+    },
+    "DEV-181": {
+      "line": 140,
+      "title": "Overview Widgets: Create TrialBalanceStatusWidget component — balanced alert + account type counts",
+      "effort": "45m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "DEV-179"
+      ],
+      "domain": "development"
+    },
+    "DEV-182": {
+      "line": 141,
+      "title": "Overview Widgets: Create TopRevenueClientsWidget component — top 5 by YTD revenue + concentration %",
+      "effort": "1h",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "DEV-179"
+      ],
+      "domain": "development"
+    },
+    "DEV-183": {
+      "line": 142,
+      "title": "Overview Widgets: Add 3 report widgets to Overview page grid layout (responsive 3-col)",
+      "effort": "30m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "development"
+    },
+    "DEV-184": {
+      "line": 143,
+      "title": "Overview Widgets: Update Overview loading skeleton to include report widgets row",
+      "effort": "15m",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "DEV-183"
+      ],
+      "domain": "development"
+    },
+    "DEV-21": {
+      "line": 144,
       "title": "Overview: Client Payment Health widget — % paid on time, avg days-to-payment, overdue count (Invoice model)",
       "effort": "2-3h",
       "priority": "medium",
@@ -2225,7 +2321,7 @@
       "domain": "development"
     },
     "DEV-22": {
-      "line": 139,
+      "line": 145,
       "title": "Overview: Invoice Aging Waterfall widget — AR buckets 0-30, 31-60, 61-90, 90+ days",
       "effort": "2-3h",
       "priority": "medium",
@@ -2234,7 +2330,7 @@
       "domain": "development"
     },
     "DEV-23": {
-      "line": 140,
+      "line": 146,
       "title": "Overview: Revenue by Category widget — revenue sources breakdown from InvoiceLine + Category",
       "effort": "2-3h",
       "priority": "medium",
@@ -2243,7 +2339,7 @@
       "domain": "development"
     },
     "DEV-24": {
-      "line": 141,
+      "line": 147,
       "title": "Overview: Top Expense Vendors widget — top 5 by YTD spend + % of total (Bill + vendor aggregations)",
       "effort": "2-3h",
       "priority": "medium",
@@ -2252,7 +2348,7 @@
       "domain": "development"
     },
     "DEV-25": {
-      "line": 142,
+      "line": 148,
       "title": "Overview: Bill Aging Waterfall widget — AP buckets 0-30, 31-60, 61-90, 90+ days",
       "effort": "2-3h",
       "priority": "medium",
@@ -2261,7 +2357,7 @@
       "domain": "development"
     },
     "DEV-26": {
-      "line": 143,
+      "line": 149,
       "title": "Overview: Vendor Payment Terms widget — on-time vs late payment performance",
       "effort": "2h",
       "priority": "medium",
@@ -2270,7 +2366,7 @@
       "domain": "development"
     },
     "DEV-27": {
-      "line": 144,
+      "line": 150,
       "title": "Overview: Reconciliation Status widget — progress bar per account + unmatched count (ReconciliationService ready)",
       "effort": "1-2h",
       "priority": "medium",
@@ -2279,7 +2375,7 @@
       "domain": "development"
     },
     "DEV-28": {
-      "line": 145,
+      "line": 151,
       "title": "Overview: Import Health widget — last import date, success rate, failed imports (ImportBatch model)",
       "effort": "1-2h",
       "priority": "medium",
@@ -2288,7 +2384,7 @@
       "domain": "development"
     },
     "DEV-29": {
-      "line": 146,
+      "line": 152,
       "title": "Overview: Categorization Gap widget — % of transactions uncategorized by account (Transaction.categoryId)",
       "effort": "1-2h",
       "priority": "medium",
@@ -2297,7 +2393,7 @@
       "domain": "development"
     },
     "DEV-30": {
-      "line": 147,
+      "line": 153,
       "title": "Overview: Duplicate Detection Stats widget — duplicates detected this month (duplication.service)",
       "effort": "1-2h",
       "priority": "medium",
@@ -2306,7 +2402,7 @@
       "domain": "development"
     },
     "DEV-31": {
-      "line": 148,
+      "line": 154,
       "title": "Overview: Journal Entry Status widget — count by status (DRAFT/POSTED/VOIDED), draft aging > 7d alert",
       "effort": "1-2h",
       "priority": "medium",
@@ -2315,7 +2411,7 @@
       "domain": "development"
     },
     "DEV-32": {
-      "line": 149,
+      "line": 155,
       "title": "Overview: GL Posting Pipeline widget — pending bank feed txns waiting to post, oldest first",
       "effort": "1-2h",
       "priority": "medium",
@@ -2324,7 +2420,7 @@
       "domain": "development"
     },
     "DEV-33": {
-      "line": 150,
+      "line": 156,
       "title": "Overview: Ledger Spike Detection widget — accounts with unusual balance swings this month",
       "effort": "3-4h",
       "priority": "medium",
@@ -2333,7 +2429,7 @@
       "domain": "development"
     },
     "DEV-34": {
-      "line": 151,
+      "line": 157,
       "title": "Overview: Goal Progress widget — progress bars for active goals, days to deadline (Goal model)",
       "effort": "2-3h",
       "priority": "medium",
@@ -2342,7 +2438,7 @@
       "domain": "development"
     },
     "DEV-35": {
-      "line": 152,
+      "line": 158,
       "title": "Overview: Budget vs Actual widget — % of budget used this month, over-budget alerts (Budget model)",
       "effort": "3-4h",
       "priority": "medium",
@@ -2351,7 +2447,7 @@
       "domain": "development"
     },
     "DEV-36": {
-      "line": 153,
+      "line": 159,
       "title": "Overview: Expense Forecast widget — projected monthly spend at current 3-month run rate",
       "effort": "2-3h",
       "priority": "medium",
@@ -2360,7 +2456,7 @@
       "domain": "development"
     },
     "DEV-37": {
-      "line": 154,
+      "line": 160,
       "title": "Overview: Cash Runway widget — days of cash remaining at burn rate, healthy/monitor/critical",
       "effort": "2-3h",
       "priority": "medium",
@@ -2369,7 +2465,7 @@
       "domain": "development"
     },
     "DEV-38": {
-      "line": 155,
+      "line": 161,
       "title": "Overview: Multi-Currency Exposure widget — portfolio breakdown by currency + FX risk %",
       "effort": "2-3h",
       "priority": "medium",
@@ -2378,7 +2474,7 @@
       "domain": "development"
     },
     "DEV-39": {
-      "line": 156,
+      "line": 162,
       "title": "Overview: Entity KPI Comparison widget — side-by-side entity performance for multi-business users",
       "effort": "3-4h",
       "priority": "medium",
@@ -2387,7 +2483,7 @@
       "domain": "development"
     },
     "DEV-40": {
-      "line": 157,
+      "line": 163,
       "title": "Overview: Onboarding Completion nudge widget — checklist of remaining steps (OnboardingProgress model)",
       "effort": "1-2h",
       "priority": "low",
@@ -2396,7 +2492,7 @@
       "domain": "development"
     },
     "DEV-41": {
-      "line": 158,
+      "line": 164,
       "title": "Overview: Tax Liability Estimate widget — estimated taxes due this quarter (needs tax rules engine)",
       "effort": "4-6h",
       "priority": "low",
@@ -2405,7 +2501,7 @@
       "domain": "development"
     },
     "DEV-42": {
-      "line": 159,
+      "line": 165,
       "title": "Overview: Subscription MRR/ARR widget — recurring revenue detection for SaaS solopreneurs",
       "effort": "4-6h",
       "priority": "low",
@@ -2414,7 +2510,7 @@
       "domain": "development"
     },
     "DEV-47": {
-      "line": 160,
+      "line": 166,
       "title": "Banking: Add transaction full-text search on description/notes",
       "effort": "2-3h",
       "priority": "medium",
@@ -2423,7 +2519,7 @@
       "domain": "development"
     },
     "DEV-48": {
-      "line": 161,
+      "line": 167,
       "title": "Banking: Add transaction split UI + endpoint (isSplit field exists, no implementation)",
       "effort": "3-4h",
       "priority": "medium",
@@ -2432,7 +2528,7 @@
       "domain": "development"
     },
     "DEV-49": {
-      "line": 162,
+      "line": 168,
       "title": "Banking: Show multi-currency amounts — display original + base currency on transactions",
       "effort": "1-2h",
       "priority": "medium",
@@ -2441,7 +2537,7 @@
       "domain": "development"
     },
     "DEV-50": {
-      "line": 163,
+      "line": 169,
       "title": "Banking: Add transaction export (CSV/PDF) for filtered transaction views",
       "effort": "2-3h",
       "priority": "medium",
@@ -2450,7 +2546,7 @@
       "domain": "development"
     },
     "DEV-51": {
-      "line": 164,
+      "line": 170,
       "title": "Banking: Add account balance history chart — historical balance trend over time",
       "effort": "3-4h",
       "priority": "medium",
@@ -2459,7 +2555,7 @@
       "domain": "development"
     },
     "DEV-52": {
-      "line": 165,
+      "line": 171,
       "title": "Banking: Add duplicate management UI — view detected duplicates, approve/dismiss",
       "effort": "2-3h",
       "priority": "medium",
@@ -2468,7 +2564,7 @@
       "domain": "development"
     },
     "DEV-53": {
-      "line": 166,
+      "line": 172,
       "title": "Banking: Add transaction auto-categorization rules UI (Rule model exists in AI domain)",
       "effort": "2-3h",
       "priority": "medium",
@@ -2477,7 +2573,7 @@
       "domain": "development"
     },
     "DEV-54": {
-      "line": 167,
+      "line": 173,
       "title": "Banking: Add batch transaction edit — bulk update description/category/notes",
       "effort": "2-3h",
       "priority": "medium",
@@ -2486,7 +2582,7 @@
       "domain": "development"
     },
     "DEV-55": {
-      "line": 168,
+      "line": 174,
       "title": "Banking: Recurring transaction detection — identify frequency patterns (e.g. Netflix monthly, API subscriptions)",
       "effort": "3-4h",
       "priority": "medium",
@@ -2495,7 +2591,7 @@
       "domain": "development"
     },
     "DEV-56": {
-      "line": 169,
+      "line": 175,
       "title": "Banking: Add receipt/attachment upload per transaction (notes field exists, need file storage)",
       "effort": "3-4h",
       "priority": "medium",
@@ -2504,7 +2600,7 @@
       "domain": "development"
     },
     "DEV-57": {
-      "line": 170,
+      "line": 176,
       "title": "Banking: Add CSV import column mapping UI (backend supports columnMappings, frontend hardcoded)",
       "effort": "2-3h",
       "priority": "medium",
@@ -2513,7 +2609,7 @@
       "domain": "development"
     },
     "DEV-58": {
-      "line": 171,
+      "line": 177,
       "title": "Banking: Add import error detail view — show per-row errors when import partially fails",
       "effort": "1-2h",
       "priority": "medium",
@@ -2522,7 +2618,7 @@
       "domain": "development"
     },
     "UX-52": {
-      "line": 172,
+      "line": 178,
       "title": "Business: Add sort by columns on invoice/bill/client/vendor lists (backend supports orderBy)",
       "effort": "1-2h",
       "priority": "medium",
@@ -2531,7 +2627,7 @@
       "domain": "ux"
     },
     "DEV-85": {
-      "line": 173,
+      "line": 179,
       "title": "Business: Add bill PDF generation (invoice PDF exists, bills have no PDF)",
       "effort": "2-3h",
       "priority": "medium",
@@ -2540,7 +2636,7 @@
       "domain": "development"
     },
     "DEV-86": {
-      "line": 174,
+      "line": 180,
       "title": "Business: Add aging drill-down — click AR/AP aging bucket to see individual invoices/bills",
       "effort": "2-3h",
       "priority": "medium",
@@ -2549,7 +2645,7 @@
       "domain": "development"
     },
     "DEV-87": {
-      "line": 175,
+      "line": 181,
       "title": "Business: Add duplicate invoice/bill detection — flag same vendor+amount+date combinations",
       "effort": "2-3h",
       "priority": "medium",
@@ -2558,7 +2654,7 @@
       "domain": "development"
     },
     "DEV-88": {
-      "line": 176,
+      "line": 182,
       "title": "Business: Add email reminder for overdue invoices (mark-overdue endpoint exists, no notification)",
       "effort": "2-3h",
       "priority": "medium",
@@ -2567,7 +2663,7 @@
       "domain": "development"
     },
     "DEV-89": {
-      "line": 177,
+      "line": 183,
       "title": "Business: Add recurring invoice templates — auto-generate invoices on schedule",
       "effort": "4-6h",
       "priority": "medium",
@@ -2576,7 +2672,7 @@
       "domain": "development"
     },
     "UX-54": {
-      "line": 178,
+      "line": 184,
       "title": "Business: Auto-fill due date from client/vendor payment terms (terms field exists, not used in form)",
       "effort": "30m",
       "priority": "medium",
@@ -2585,7 +2681,7 @@
       "domain": "ux"
     },
     "UX-55": {
-      "line": 179,
+      "line": 185,
       "title": "Business: Add visual status pipeline on invoice/bill list — Draft→Sent→Partial→Paid flow",
       "effort": "1-2h",
       "priority": "medium",
@@ -2594,7 +2690,7 @@
       "domain": "ux"
     },
     "DEV-90": {
-      "line": 180,
+      "line": 186,
       "title": "Business: Add top debtors/creditors summary widget — clients with most outstanding AR, vendors with most AP",
       "effort": "2-3h",
       "priority": "medium",
@@ -2603,7 +2699,7 @@
       "domain": "development"
     },
     "DEV-91": {
-      "line": 181,
+      "line": 187,
       "title": "Business: Add invoice/bill/client/vendor CSV export",
       "effort": "2-3h",
       "priority": "medium",
@@ -2612,7 +2708,7 @@
       "domain": "development"
     },
     "DEV-93": {
-      "line": 182,
+      "line": 188,
       "title": "Business: Add payment receipt PDF generation",
       "effort": "2-3h",
       "priority": "low",
@@ -2621,7 +2717,7 @@
       "domain": "development"
     },
     "DEV-94": {
-      "line": 183,
+      "line": 189,
       "title": "Business: Add batch invoice creation — generate multiple invoices from template",
       "effort": "3-4h",
       "priority": "low",
@@ -2630,7 +2726,7 @@
       "domain": "development"
     },
     "UX-57": {
-      "line": 184,
+      "line": 190,
       "title": "Business: Add notes/activity log per client and vendor (notes field exists, no UI)",
       "effort": "2-3h",
       "priority": "low",
@@ -2639,7 +2735,7 @@
       "domain": "ux"
     },
     "DEV-99": {
-      "line": 185,
+      "line": 191,
       "title": "Planning: Add budget variance analysis endpoint — compare budget amount vs actual spend from GL/transactions",
       "effort": "3-4h",
       "priority": "medium",
@@ -2650,7 +2746,7 @@
       "domain": "development"
     },
     "DEV-100": {
-      "line": 186,
+      "line": 192,
       "title": "Planning: Add goal auto-tracking + milestone notifications — calculate currentAmount from linked account/category, alert at 25/50/75/100%",
       "effort": "3-4h",
       "priority": "medium",
@@ -2661,7 +2757,7 @@
       "domain": "development"
     },
     "DEV-101": {
-      "line": 187,
+      "line": 193,
       "title": "Planning: Wire planning reports to existing accounting report endpoints (reuse P&L/BS/CF, don't duplicate)",
       "effort": "1-2h",
       "priority": "medium",
@@ -2670,7 +2766,7 @@
       "domain": "development"
     },
     "UX-61": {
-      "line": 188,
+      "line": 194,
       "title": "Planning: Build forecasts page — cash flow projection chart using historical transaction trends",
       "effort": "3-4h",
       "priority": "medium",
@@ -2679,7 +2775,7 @@
       "domain": "ux"
     },
     "DEV-102": {
-      "line": 189,
+      "line": 195,
       "title": "Planning: Add Forecast model to Prisma + CRUD service (scenario modeling: optimistic/pessimistic/baseline)",
       "effort": "4-6h",
       "priority": "medium",
@@ -2688,7 +2784,7 @@
       "domain": "development"
     },
     "UX-62": {
-      "line": 190,
+      "line": 196,
       "title": "Planning: Add budget period selector (monthly/quarterly/yearly) with visual spend-rate indicator",
       "effort": "1-2h",
       "priority": "medium",
@@ -2699,7 +2795,7 @@
       "domain": "ux"
     },
     "UX-63": {
-      "line": 191,
+      "line": 197,
       "title": "Planning: Add budget vs actual drill-down — click category to see transactions contributing to spend",
       "effort": "2-3h",
       "priority": "medium",
@@ -2710,7 +2806,7 @@
       "domain": "ux"
     },
     "DEV-103": {
-      "line": 192,
+      "line": 198,
       "title": "Planning: Add cash runway calculator — months remaining at current burn rate, healthy/warning/critical indicator",
       "effort": "2-3h",
       "priority": "medium",
@@ -2719,7 +2815,7 @@
       "domain": "development"
     },
     "DEV-104": {
-      "line": 193,
+      "line": 199,
       "title": "Planning: Add seasonal pattern detection — highlight historically high/low revenue months from transaction data",
       "effort": "3-4h",
       "priority": "medium",
@@ -2728,7 +2824,7 @@
       "domain": "development"
     },
     "DEV-105": {
-      "line": 194,
+      "line": 200,
       "title": "Planning: Add budget alerts — threshold warnings at 80%/100% utilization, surfaced to dashboard action items",
       "effort": "2-3h",
       "priority": "medium",
@@ -2739,7 +2835,7 @@
       "domain": "development"
     },
     "UX-64": {
-      "line": 195,
+      "line": 201,
       "title": "Planning: Add goal trajectory projection — trend line showing \"on pace\" vs \"behind\" based on progress rate",
       "effort": "2-3h",
       "priority": "medium",
@@ -2750,7 +2846,7 @@
       "domain": "ux"
     },
     "DEV-106": {
-      "line": 196,
+      "line": 202,
       "title": "Planning: Add soft delete to Budget and Goal models (missing deletedAt — financial invariant gap)",
       "effort": "1h",
       "priority": "low",
@@ -2759,7 +2855,7 @@
       "domain": "development"
     },
     "DEV-107": {
-      "line": 197,
+      "line": 203,
       "title": "Planning: Add AI-powered expense forecast — predict next month spend using 3-month trend + seasonality",
       "effort": "4-6h",
       "priority": "low",
@@ -2770,7 +2866,7 @@
       "domain": "development"
     },
     "DEV-108": {
-      "line": 198,
+      "line": 204,
       "title": "Planning: Add goal templates — pre-built goals (emergency fund, revenue target, expense reduction)",
       "effort": "2-3h",
       "priority": "low",
@@ -2781,7 +2877,7 @@
       "domain": "development"
     },
     "UX-65": {
-      "line": 199,
+      "line": 205,
       "title": "Planning: Add budget/goal export (CSV/PDF)",
       "effort": "2-3h",
       "priority": "low",
@@ -2790,7 +2886,7 @@
       "domain": "ux"
     },
     "DEV-109": {
-      "line": 200,
+      "line": 206,
       "title": "Planning: Add budget rollover — option to carry unused budget forward to next period",
       "effort": "1-2h",
       "priority": "low",
@@ -2801,7 +2897,7 @@
       "domain": "development"
     },
     "DEV-110": {
-      "line": 201,
+      "line": 207,
       "title": "Planning: Add \"What-if\" scenario comparison — side-by-side view of 2-3 forecast scenarios",
       "effort": "4-6h",
       "priority": "low",
@@ -2812,7 +2908,7 @@
       "domain": "development"
     },
     "DEV-111": {
-      "line": 202,
+      "line": 208,
       "title": "Planning: Auto-suggest budgets from existing spending patterns — pre-fill amounts from 3-month category averages",
       "effort": "2-3h",
       "priority": "low",
@@ -2823,7 +2919,7 @@
       "domain": "development"
     },
     "DEV-114": {
-      "line": 203,
+      "line": 209,
       "title": "Insights: Extract shared AI types to `packages/types/src/ai.ts` (currently only in backend `services/types.ts`)",
       "effort": "20m",
       "priority": "medium",
@@ -2832,7 +2928,7 @@
       "domain": "development"
     },
     "DEV-115": {
-      "line": 204,
+      "line": 210,
       "title": "Insights: Add route-level tests for `/api/ai/chat` and `/api/ai/categorize` endpoints",
       "effort": "1h",
       "priority": "medium",
@@ -2841,7 +2937,7 @@
       "domain": "development"
     },
     "DEV-116": {
-      "line": 205,
+      "line": 211,
       "title": "Insights: Add RBAC tests for AI permission enforcement (verify 403 for insufficient roles)",
       "effort": "30m",
       "priority": "medium",
@@ -2850,7 +2946,7 @@
       "domain": "development"
     },
     "DEV-117": {
-      "line": 206,
+      "line": 212,
       "title": "Insights: Wire AIBrief on dashboard to show real data (generate basic insight from transaction trends)",
       "effort": "1h",
       "priority": "medium",
@@ -2861,7 +2957,7 @@
       "domain": "development"
     },
     "DEV-118": {
-      "line": 207,
+      "line": 213,
       "title": "Insights: Implement `GET /api/ai/insights` endpoint (replace 501 stub, use Insight Prisma model)",
       "effort": "2-4h",
       "priority": "medium",
@@ -2870,7 +2966,7 @@
       "domain": "development"
     },
     "DEV-119": {
-      "line": 208,
+      "line": 214,
       "title": "Insights: Build Policy Alerts page with real data (requires new BE endpoint for rule-based alerts)",
       "effort": "3-4h",
       "priority": "low",
@@ -2879,7 +2975,7 @@
       "domain": "development"
     },
     "DEV-120": {
-      "line": 209,
+      "line": 215,
       "title": "Insights: Build History page with AI interaction logging (requires new BE endpoint + model)",
       "effort": "2-3h",
       "priority": "low",
@@ -2890,7 +2986,7 @@
       "domain": "development"
     },
     "DOC-4": {
-      "line": 210,
+      "line": 216,
       "title": "Elevate source preservation to explicit 5th invariant in guardrails.md",
       "effort": "15m",
       "priority": "medium",
@@ -2899,7 +2995,7 @@
       "domain": "documentation"
     },
     "DEV-15": {
-      "line": 211,
+      "line": 217,
       "title": "Overview: Add top expense categories widget (data exists in categorized transactions)",
       "effort": "1-2h",
       "priority": "low",
@@ -2908,7 +3004,7 @@
       "domain": "development"
     },
     "DEV-16": {
-      "line": 212,
+      "line": 218,
       "title": "Overview: Add unreconciled transaction count badge to dashboard",
       "effort": "1h",
       "priority": "low",
@@ -2917,7 +3013,7 @@
       "domain": "development"
     },
     "PERF-4": {
-      "line": 213,
+      "line": 219,
       "title": "PDF generation: move to worker thread (unblock event loop)",
       "effort": "2h",
       "priority": "low",
@@ -2926,7 +3022,7 @@
       "domain": "performance"
     },
     "PERF-11": {
-      "line": 214,
+      "line": 220,
       "title": "Distributed rate limiting (Redis-backed) for multi-instance",
       "effort": "2h",
       "priority": "low",
@@ -2935,7 +3031,7 @@
       "domain": "performance"
     },
     "DRY-5": {
-      "line": 215,
+      "line": 221,
       "title": "`window.Clerk` triple-cast in downloadReport: clean up type assertion",
       "effort": "30m",
       "priority": "low",
@@ -2944,7 +3040,7 @@
       "domain": "code-quality"
     },
     "DOC-5": {
-      "line": 216,
+      "line": 222,
       "title": "Add double-entry bookkeeping check to guardrails.md anti-patterns",
       "effort": "15m",
       "priority": "low",
@@ -2953,7 +3049,7 @@
       "domain": "documentation"
     },
     "DOC-6": {
-      "line": 217,
+      "line": 223,
       "title": "Update version dates across CLAUDE.md files (inconsistent: 2026-02-15 vs 2026-02-09)",
       "effort": "15m",
       "priority": "low",
@@ -2962,7 +3058,7 @@
       "domain": "documentation"
     },
     "FIN-11": {
-      "line": 218,
+      "line": 224,
       "title": "Consolidation/elimination accounting (multi-entity)",
       "effort": "8h",
       "priority": "low",
@@ -2971,7 +3067,7 @@
       "domain": "financial"
     },
     "FIN-12": {
-      "line": 219,
+      "line": 225,
       "title": "GAAP-compliant GL export format (XBRL/ixBRL regulatory reporting)",
       "effort": "6h",
       "priority": "low",
@@ -2980,7 +3076,7 @@
       "domain": "financial"
     },
     "SEC-15": {
-      "line": 220,
+      "line": 226,
       "title": "Duplicate file detection for uploads",
       "effort": "1h",
       "priority": "low",
@@ -2989,7 +3085,7 @@
       "domain": "security"
     },
     "SEC-16": {
-      "line": 221,
+      "line": 227,
       "title": "File retention policies (auto-cleanup of old uploads)",
       "effort": "1h",
       "priority": "medium",
@@ -2998,7 +3094,7 @@
       "domain": "security"
     },
     "INFRA-11": {
-      "line": 222,
+      "line": 228,
       "title": "Database migration testing in CI pipeline",
       "effort": "2h",
       "priority": "medium",
@@ -3007,7 +3103,7 @@
       "domain": "infrastructure"
     },
     "INFRA-12": {
-      "line": 223,
+      "line": 229,
       "title": "Usage analytics (companies, transactions, reports generated)",
       "effort": "2h",
       "priority": "low",
@@ -3016,7 +3112,7 @@
       "domain": "infrastructure"
     },
     "FIN-6": {
-      "line": 224,
+      "line": 230,
       "title": "Cash Flow: document hardcoded account code ranges for categorization",
       "effort": "doc",
       "priority": "low",
@@ -3025,7 +3121,7 @@
       "domain": "financial"
     },
     "DEV-121": {
-      "line": 225,
+      "line": 231,
       "title": "Accounting: Add journal entry detail page `/accounting/journal-entries/[id]` — view entry with debit/credit lines, approve/void actions, source document link (API `GET /:id` exists, no frontend)",
       "effort": "3-4h",
       "priority": "critical",
@@ -3034,7 +3130,7 @@
       "domain": "development"
     },
     "UX-77": {
-      "line": 226,
+      "line": 232,
       "title": "Routing: Move `/business/invoices/bills/[id]` → `/business/bills/[id]` — bills aren't children of invoices, fix domain nesting + update all internal links",
       "effort": "30m",
       "priority": "high",
@@ -3043,7 +3139,7 @@
       "domain": "ux"
     },
     "UX-78": {
-      "line": 227,
+      "line": 233,
       "title": "Routing: Rename `/insights/insights` → `/insights` — move page.tsx up one level, eliminate stuttering URL segment, update nav config",
       "effort": "30m",
       "priority": "high",
@@ -3052,7 +3148,7 @@
       "domain": "ux"
     },
     "DEV-122": {
-      "line": 228,
+      "line": 234,
       "title": "Business: Add client detail page `/business/clients/[id]` — contact info, stats summary, invoice history tab, edit capability (API `GET /clients/:id` + `PUT` exist). Absorbs DEV-95 + UX-37 (client portion)",
       "effort": "3-4h",
       "priority": "medium",
@@ -3061,7 +3157,7 @@
       "domain": "development"
     },
     "UX-79": {
-      "line": 229,
+      "line": 235,
       "title": "Business: Add bill detail page at `/business/bills/[id]` — view bill, approve/cancel actions, payment progress bar, mark-overdue button (API `GET /bills/:id` exists). Absorbs UX-56 + UX-40. Depends on UX-77 (route fix)",
       "effort": "2-3h",
       "priority": "medium",
@@ -3072,7 +3168,7 @@
       "domain": "ux"
     },
     "UX-81": {
-      "line": 230,
+      "line": 236,
       "title": "Business: Add payment detail page `/business/payments/[id]` — view payment with allocation breakdown across invoices/bills and GL posting status",
       "effort": "2-3h",
       "priority": "low",
@@ -3081,7 +3177,7 @@
       "domain": "ux"
     },
     "DS-1": {
-      "line": 248,
+      "line": 254,
       "title": "Figma-to-code token sync audit",
       "effort": "2h",
       "priority": "high",
@@ -3090,7 +3186,7 @@
       "domain": "design-system"
     },
     "DS-2": {
-      "line": 254,
+      "line": 260,
       "title": "Storybook setup for component documentation",
       "effort": "3h",
       "priority": "medium",
@@ -3099,7 +3195,7 @@
       "domain": "design-system"
     },
     "MKT-1": {
-      "line": 264,
+      "line": 270,
       "title": "Landing page copy and design",
       "effort": "3h",
       "priority": "high",
@@ -3108,7 +3204,7 @@
       "domain": "marketing"
     },
     "MKT-3": {
-      "line": 265,
+      "line": 271,
       "title": "Install 3D dependencies (`@react-three/fiber`, `@react-three/drei`, `three`)",
       "effort": "15m",
       "priority": "high",
@@ -3117,7 +3213,7 @@
       "domain": "marketing"
     },
     "MKT-4": {
-      "line": 266,
+      "line": 272,
       "title": "Create hero section with 3D orb and parallax effect",
       "effort": "2-3h",
       "priority": "high",
@@ -3128,7 +3224,7 @@
       "domain": "marketing"
     },
     "MKT-5": {
-      "line": 267,
+      "line": 273,
       "title": "Create problem statement section (3 pain point cards)",
       "effort": "1-2h",
       "priority": "high",
@@ -3137,7 +3233,7 @@
       "domain": "marketing"
     },
     "MKT-6": {
-      "line": 268,
+      "line": 274,
       "title": "Create solution pillars section (3 GlowCard components)",
       "effort": "2h",
       "priority": "high",
@@ -3146,7 +3242,7 @@
       "domain": "marketing"
     },
     "MKT-7": {
-      "line": 269,
+      "line": 275,
       "title": "Create 3D feature showcase (interactive card grid)",
       "effort": "3-4h",
       "priority": "high",
@@ -3157,7 +3253,7 @@
       "domain": "marketing"
     },
     "MKT-8": {
-      "line": 270,
+      "line": 276,
       "title": "Create stats/social proof section (animated counters)",
       "effort": "1-2h",
       "priority": "high",
@@ -3166,7 +3262,7 @@
       "domain": "marketing"
     },
     "MKT-9": {
-      "line": 271,
+      "line": 277,
       "title": "Create final CTA section (gradient background, glass container)",
       "effort": "1h",
       "priority": "high",
@@ -3175,7 +3271,7 @@
       "domain": "marketing"
     },
     "MKT-10": {
-      "line": 272,
+      "line": 278,
       "title": "Create landing page layout (minimal nav + footer)",
       "effort": "1-2h",
       "priority": "high",
@@ -3184,7 +3280,7 @@
       "domain": "marketing"
     },
     "MKT-11": {
-      "line": 273,
+      "line": 279,
       "title": "Replace root page with landing (remove redirect)",
       "effort": "30m",
       "priority": "high",
@@ -3193,7 +3289,7 @@
       "domain": "marketing"
     },
     "MKT-12": {
-      "line": 274,
+      "line": 280,
       "title": "Add scroll animations and performance optimization (Lighthouse >90)",
       "effort": "2-3h",
       "priority": "high",
@@ -3204,7 +3300,7 @@
       "domain": "marketing"
     },
     "MKT-2": {
-      "line": 280,
+      "line": 286,
       "title": "User documentation / getting started guide",
       "effort": "2h",
       "priority": "medium",
@@ -3213,7 +3309,7 @@
       "domain": "marketing"
     },
     "CNT-1": {
-      "line": 281,
+      "line": 287,
       "title": "Competitive analysis update",
       "effort": "2h",
       "priority": "medium",
@@ -3222,7 +3318,7 @@
       "domain": "content"
     },
     "INFRA-1": {
-      "line": 291,
+      "line": 297,
       "title": "CI/CD pipeline (GitHub Actions)",
       "effort": "3h",
       "priority": "high",
@@ -3231,7 +3327,7 @@
       "domain": "infrastructure"
     },
     "INFRA-2": {
-      "line": 292,
+      "line": 298,
       "title": "Production environment setup",
       "effort": "2h",
       "priority": "high",
@@ -3240,7 +3336,7 @@
       "domain": "infrastructure"
     },
     "INFRA-3": {
-      "line": 293,
+      "line": 299,
       "title": "Database backups (automated daily)",
       "effort": "1h",
       "priority": "high",
@@ -3249,7 +3345,7 @@
       "domain": "infrastructure"
     },
     "ARCH-3": {
-      "line": 294,
+      "line": 300,
       "title": "S3 cloud storage migration for file uploads (replace local filesystem)",
       "effort": "3h",
       "priority": "high",
@@ -3258,7 +3354,7 @@
       "domain": "architecture"
     },
     "INFRA-5": {
-      "line": 295,
+      "line": 301,
       "title": "Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts)",
       "effort": "2h",
       "priority": "high",
@@ -3269,7 +3365,7 @@
       "domain": "infrastructure"
     },
     "INFRA-7": {
-      "line": 296,
+      "line": 302,
       "title": "OpenTelemetry instrumentation (distributed tracing, metrics, alerting)",
       "effort": "4h",
       "priority": "high",
@@ -3280,7 +3376,7 @@
       "domain": "infrastructure"
     },
     "INFRA-8": {
-      "line": 297,
+      "line": 303,
       "title": "Docker image building + container deployment pipeline",
       "effort": "3h",
       "priority": "high",
@@ -3290,8 +3386,17 @@
       ],
       "domain": "infrastructure"
     },
+    "INFRA-59": {
+      "line": 304,
+      "title": "Flinks API production readiness — verify env vars, test demo mode, create deployment checklist (code already exists, prep for API key activation)",
+      "effort": "1-2h",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure"
+    },
     "INFRA-4": {
-      "line": 305,
+      "line": 312,
       "title": "Disaster recovery procedure + documentation",
       "effort": "2h",
       "priority": "medium",
@@ -3302,7 +3407,7 @@
       "domain": "infrastructure"
     },
     "INFRA-6": {
-      "line": 306,
+      "line": 313,
       "title": "Deployment documentation",
       "effort": "1h",
       "priority": "medium",
