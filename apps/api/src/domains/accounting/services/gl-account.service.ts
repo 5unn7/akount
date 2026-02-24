@@ -3,25 +3,31 @@ import { AccountingError } from '../errors';
 import { createAuditLog } from '../../../lib/audit';
 import type { CreateGLAccountInput, UpdateGLAccountInput, ListGLAccountsQuery } from '../schemas/gl-account.schema';
 
-const GL_ACCOUNT_SELECT = {
-  id: true,
-  entityId: true,
-  code: true,
-  name: true,
-  type: true,
-  normalBalance: true,
-  description: true,
-  parentAccountId: true,
-  isActive: true,
-  createdAt: true,
-  updatedAt: true,
-  _count: {
-    select: {
-      childAccounts: true,
-      journalLines: true,
+function glAccountSelect(tenantId: string) {
+  return {
+    id: true,
+    entityId: true,
+    code: true,
+    name: true,
+    type: true,
+    normalBalance: true,
+    description: true,
+    parentAccountId: true,
+    isActive: true,
+    createdAt: true,
+    updatedAt: true,
+    _count: {
+      select: {
+        childAccounts: {
+          where: { entity: { tenantId } },
+        },
+        journalLines: {
+          where: { deletedAt: null },
+        },
+      },
     },
-  },
-} as const;
+  };
+}
 
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
@@ -71,7 +77,7 @@ export class GLAccountService {
 
     const accounts = await prisma.gLAccount.findMany({
       where,
-      select: GL_ACCOUNT_SELECT,
+      select: glAccountSelect(this.tenantId),
       orderBy: { code: 'asc' },
     });
 
@@ -88,7 +94,7 @@ export class GLAccountService {
         entity: { tenantId: this.tenantId },
       },
       select: {
-        ...GL_ACCOUNT_SELECT,
+        ...glAccountSelect(this.tenantId),
         parentAccount: {
           select: { id: true, code: true, name: true },
         },
@@ -149,7 +155,7 @@ export class GLAccountService {
           description: data.description,
           parentAccountId: data.parentAccountId,
         },
-        select: GL_ACCOUNT_SELECT,
+        select: glAccountSelect(this.tenantId),
       });
 
       await createAuditLog({
@@ -233,7 +239,7 @@ export class GLAccountService {
         isActive: data.isActive,
         parentAccountId: data.parentAccountId,
       },
-      select: GL_ACCOUNT_SELECT,
+      select: glAccountSelect(this.tenantId),
     });
 
     await createAuditLog({
@@ -298,7 +304,7 @@ export class GLAccountService {
     const account = await prisma.gLAccount.update({
       where: { id },
       data: { isActive: false },
-      select: GL_ACCOUNT_SELECT,
+      select: glAccountSelect(this.tenantId),
     });
 
     await createAuditLog({
@@ -336,7 +342,14 @@ export class GLAccountService {
         parentAccountId: true,
         isActive: true,
         _count: {
-          select: { childAccounts: true, journalLines: true },
+          select: {
+            childAccounts: {
+              where: { entity: { tenantId: this.tenantId } },
+            },
+            journalLines: {
+              where: { deletedAt: null },
+            },
+          },
         },
       },
       orderBy: { code: 'asc' },
