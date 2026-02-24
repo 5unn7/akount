@@ -52,7 +52,7 @@ export class DashboardService {
 
     // Fetch receivables and payables in parallel
     const [invoiceStats, billStats] = await Promise.all([
-      getInvoiceStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }),
+      getInvoiceStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }, entityId),
       getBillStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }, entityId),
     ]);
 

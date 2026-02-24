@@ -82,10 +82,12 @@ export async function billRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/bills/stats - AP metrics + aging
+  const StatsQuerySchema = z.object({ entityId: z.string().cuid().optional() });
   fastify.get(
     '/stats',
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateQuery(StatsQuerySchema)],
       config: {
         rateLimit: statsRateLimitConfig(), // SECURITY FIX M-5: Limit expensive stats queries
       },
@@ -95,8 +97,10 @@ export async function billRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Context not initialized' });
       }
 
+      const { entityId } = request.query as z.infer<typeof StatsQuerySchema>;
       const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
-      const stats = await billService.getBillStats(tenant);
+      const stats = await billService.getBillStats(tenant, entityId);
+      request.log.info({ entityId, tenantId: request.tenantId }, 'Fetched bill stats');
       return reply.status(200).send(stats);
     }
   );

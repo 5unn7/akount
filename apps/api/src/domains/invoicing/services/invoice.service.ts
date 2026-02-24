@@ -212,12 +212,17 @@ export async function deleteInvoice(id: string, ctx: TenantContext) {
   });
 }
 
-export async function getInvoiceStats(ctx: TenantContext) {
+export async function getInvoiceStats(ctx: TenantContext, entityId?: string) {
+  const entityFilter = {
+    tenantId: ctx.tenantId,
+    ...(entityId && { id: entityId }),
+  };
+
   // Outstanding AR, collected this month, overdue
   const [total, paid, overdue] = await Promise.all([
     prisma.invoice.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: { in: ['SENT', 'OVERDUE'] },
       },
@@ -225,7 +230,7 @@ export async function getInvoiceStats(ctx: TenantContext) {
     }),
     prisma.invoice.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'PAID',
       },
@@ -233,7 +238,7 @@ export async function getInvoiceStats(ctx: TenantContext) {
     }),
     prisma.invoice.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
       },
@@ -247,7 +252,7 @@ export async function getInvoiceStats(ctx: TenantContext) {
     // Current (not yet due)
     prisma.invoice.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: { in: ['SENT', 'OVERDUE'] },
         dueDate: { gte: now },
@@ -257,7 +262,7 @@ export async function getInvoiceStats(ctx: TenantContext) {
     // 1-30 days overdue
     prisma.invoice.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
         dueDate: {
@@ -270,7 +275,7 @@ export async function getInvoiceStats(ctx: TenantContext) {
     // 31-60 days overdue
     prisma.invoice.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
         dueDate: {
@@ -283,7 +288,7 @@ export async function getInvoiceStats(ctx: TenantContext) {
     // 60+ days overdue
     prisma.invoice.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
         dueDate: { lt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000) },

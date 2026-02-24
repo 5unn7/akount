@@ -82,10 +82,12 @@ export async function invoiceRoutes(fastify: FastifyInstance) {
   );
 
   // GET /api/invoices/stats - AR metrics + aging
+  const StatsQuerySchema = z.object({ entityId: z.string().cuid().optional() });
   fastify.get(
     '/stats',
     {
       preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateQuery(StatsQuerySchema)],
       config: {
         rateLimit: statsRateLimitConfig(), // SECURITY FIX M-5: Limit expensive stats queries
       },
@@ -95,8 +97,10 @@ export async function invoiceRoutes(fastify: FastifyInstance) {
         return reply.status(500).send({ error: 'Context not initialized' });
       }
 
+      const { entityId } = request.query as z.infer<typeof StatsQuerySchema>;
       const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
-      const stats = await invoiceService.getInvoiceStats(tenant);
+      const stats = await invoiceService.getInvoiceStats(tenant, entityId);
+      request.log.info({ entityId, tenantId: request.tenantId }, 'Fetched invoice stats');
       return reply.status(200).send(stats);
     }
   );

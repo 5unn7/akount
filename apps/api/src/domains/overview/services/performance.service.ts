@@ -86,7 +86,7 @@ export class PerformanceService {
           },
         },
       }),
-      getInvoiceStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }),
+      getInvoiceStats({ tenantId: this.tenantId, userId: '', role: 'OWNER' }, entityId),
     ]);
 
     // Classify transactions as revenue or expense:

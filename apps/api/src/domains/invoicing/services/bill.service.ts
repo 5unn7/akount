@@ -203,12 +203,17 @@ export async function deleteBill(id: string, ctx: TenantContext) {
   });
 }
 
-export async function getBillStats(ctx: TenantContext) {
+export async function getBillStats(ctx: TenantContext, entityId?: string) {
+  const entityFilter = {
+    tenantId: ctx.tenantId,
+    ...(entityId && { id: entityId }),
+  };
+
   // Outstanding AP, paid this month, overdue
   const [total, paid, overdue] = await Promise.all([
     prisma.bill.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
       },
@@ -216,7 +221,7 @@ export async function getBillStats(ctx: TenantContext) {
     }),
     prisma.bill.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'PAID',
       },
@@ -224,7 +229,7 @@ export async function getBillStats(ctx: TenantContext) {
     }),
     prisma.bill.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
       },
@@ -238,7 +243,7 @@ export async function getBillStats(ctx: TenantContext) {
     // Current (not yet due)
     prisma.bill.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: { in: ['PENDING', 'PARTIALLY_PAID', 'OVERDUE'] },
         dueDate: { gte: now },
@@ -248,7 +253,7 @@ export async function getBillStats(ctx: TenantContext) {
     // 1-30 days overdue
     prisma.bill.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
         dueDate: {
@@ -261,7 +266,7 @@ export async function getBillStats(ctx: TenantContext) {
     // 31-60 days overdue
     prisma.bill.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
         dueDate: {
@@ -274,7 +279,7 @@ export async function getBillStats(ctx: TenantContext) {
     // 60+ days overdue
     prisma.bill.aggregate({
       where: {
-        entity: { tenantId: ctx.tenantId },
+        entity: entityFilter,
         deletedAt: null,
         status: 'OVERDUE',
         dueDate: { lt: new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000) },
