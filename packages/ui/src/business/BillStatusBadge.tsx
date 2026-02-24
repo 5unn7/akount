@@ -1,19 +1,20 @@
 import { Badge } from '../primitives/Badge';
 import type { BadgeVariant } from '../primitives/Badge';
+import type { BillStatus } from '@akount/db';
 
-const BILL_STATUS_CONFIG: Record<string, { label: string; variant: BadgeVariant; className?: string }> = {
+// DRY-20: Type-safe config using BillStatus enum
+const BILL_STATUS_CONFIG: Record<BillStatus, { label: string; variant: BadgeVariant; className?: string }> = {
     DRAFT: { label: 'Draft', variant: 'default' },
     PENDING: { label: 'Pending', variant: 'info' },
-    // Uses teal instead of info-blue to distinguish "Approved" (bill-specific state) from generic info states
-    APPROVED: { label: 'Approved', variant: 'info', className: 'bg-ak-teal/10 text-ak-teal border-ak-teal/20' },
     PAID: { label: 'Paid', variant: 'success' },
     PARTIALLY_PAID: { label: 'Partial', variant: 'warning' },
     OVERDUE: { label: 'Overdue', variant: 'error' },
     CANCELLED: { label: 'Cancelled', variant: 'locked' },
+    // Note: APPROVED removed - not in Prisma BillStatus enum
 };
 
 interface BillStatusBadgeProps {
-    status: string;
+    status: BillStatus; // Type-safe enum instead of string
 }
 
 export function BillStatusBadge({ status }: BillStatusBadgeProps) {

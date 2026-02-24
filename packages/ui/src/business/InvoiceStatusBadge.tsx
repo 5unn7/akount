@@ -1,7 +1,9 @@
 import { Badge } from '../primitives/Badge';
 import type { BadgeVariant } from '../primitives/Badge';
+import type { InvoiceStatus } from '@akount/db';
 
-const INVOICE_STATUS_CONFIG: Record<string, { label: string; variant: BadgeVariant }> = {
+// DRY-20: Type-safe config using InvoiceStatus enum
+const INVOICE_STATUS_CONFIG: Record<InvoiceStatus, { label: string; variant: BadgeVariant }> = {
     DRAFT: { label: 'Draft', variant: 'default' },
     SENT: { label: 'Sent', variant: 'info' },
     PAID: { label: 'Paid', variant: 'success' },
@@ -11,7 +13,7 @@ const INVOICE_STATUS_CONFIG: Record<string, { label: string; variant: BadgeVaria
 };
 
 interface InvoiceStatusBadgeProps {
-    status: string;
+    status: InvoiceStatus; // Type-safe enum instead of string
 }
 
 export function InvoiceStatusBadge({ status }: InvoiceStatusBadgeProps) {
