@@ -610,10 +610,5 @@ export class AssetService {
     // ========================================================================
     // Validation Helpers
     // ========================================================================
-
-
-        }
-
-        return glAccount;
-    }
+    // Moved to shared utils/validate-ownership.ts
 }
