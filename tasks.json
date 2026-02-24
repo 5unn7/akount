@@ -1,26 +1,26 @@
 {
   "$schema": "./tasks.schema.json",
   "version": "2.0",
-  "generated": "2026-02-22T17:17:59.934Z",
+  "generated": "2026-02-24T00:12:28.685Z",
   "generatedBy": "regenerate-task-index.js",
   "summary": {
-    "total": 206,
-    "active": 195,
-    "done": 11,
-    "stale": 0,
+    "total": 223,
+    "active": 191,
+    "done": 32,
+    "stale": 2,
     "riskDistribution": {
-      "low": 158,
-      "medium": 37,
+      "low": 142,
+      "medium": 49,
       "high": 0
     },
     "byPriority": {
-      "critical": 1,
-      "high": 34,
-      "medium": 127,
-      "low": 33
+      "critical": 5,
+      "high": 40,
+      "medium": 115,
+      "low": 31
     },
     "byStatus": {
-      "ready": 69,
+      "ready": 65,
       "blocked": 7,
       "backlog": 118
     }
@@ -67,7 +67,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 2,
+        "daysSinceVerified": 4,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -77,6 +77,50 @@
         "large_effort",
         "source_unspecific"
       ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "SEC-24": {
+      "id": "SEC-24",
+      "title": "GL Account service: _count queries don't filter by tenant (childAccounts, journalLines counts leak cross-tenant)",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "security",
+      "source": "pm:execute/UX-19",
+      "created": "2026-02-24",
+      "line": 29,
+      "files": [
+        "apps/api/src/domains/accounting/services/gl-account.service.ts"
+      ],
+      "verification": "Check: Search for _count in gl-account.service.ts and verify tenant filters",
+      "acceptanceCriteria": [
+        "childAccounts count filtered by tenant",
+        "journalLines count filtered by tenant",
+        "All relation counts respect tenant isolation",
+        "Tests verify cross-tenant count prevention"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "security",
+        "tenant-isolation",
+        "accounting"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
       "claimed": false,
       "claimedBy": null
     },
@@ -92,7 +136,7 @@
       "domain": "testing",
       "source": "review:typescript",
       "created": "2026-02-18",
-      "line": 29,
+      "line": 30,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -114,7 +158,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -138,7 +182,7 @@
       "domain": "testing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 30,
+      "line": 31,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -158,7 +202,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -185,7 +229,7 @@
       "domain": "testing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 31,
+      "line": 32,
       "files": [
         "apps/api/src/domains/",
         "apps/api/src/__tests__/"
@@ -206,7 +250,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -231,7 +275,7 @@
       "domain": "development",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 32,
+      "line": 33,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -256,7 +300,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -265,51 +309,6 @@
       "riskFactors": [
         "large_effort"
       ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-15": {
-      "id": "UX-15",
-      "title": "Banking: Add GL account linking UI on account detail (glAccountId field exists, no UI)",
-      "effort": "1-2h",
-      "effortMinutes": 90,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity, plan:banking-command-center.md",
-      "created": "2026-02-21",
-      "line": 35,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
       "claimed": false,
       "claimedBy": null
     },
@@ -325,7 +324,7 @@
       "domain": "infrastructure",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 36,
+      "line": 37,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -349,7 +348,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -373,7 +372,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 37,
+      "line": 38,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -399,152 +398,13 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
       "hallucinationRisk": "low",
       "riskScore": 0,
       "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-59": {
-      "id": "DEV-59",
-      "title": "Accounting: Add transaction posting UI — post bank txns to GL (3 backend endpoints exist, no UI)",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:acct-fe-be",
-      "created": "2026-02-19",
-      "line": 38,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Accounting: Add transaction posting UI",
-        "post bank txns to GL (3 backend endpoints exist",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-31": {
-      "id": "UX-31",
-      "title": "Business: Add search/filter bar on invoice, bill, client, vendor lists (no search, status filter, or date filter)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:app-ux",
-      "created": "2026-02-19",
-      "line": 39,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Business: Add search/filter bar on invoice",
-        "vendor lists (no search",
-        "status filter",
-        "or date filter)",
-        "Amount stored as integer cents"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-32": {
-      "id": "UX-32",
-      "title": "Business: Add pagination controls — backend supports cursor pagination, frontend shows max 50 items with no \"Load More\"",
-      "effort": "1-2h",
-      "effortMinutes": 90,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:app-ux",
-      "created": "2026-02-19",
-      "line": 40,
-      "files": [],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Business: Add pagination controls",
-        "backend supports cursor pagination",
-        "frontend shows max 50 items with no \"Load More\""
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "web",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
-      ],
       "claimed": false,
       "claimedBy": null
     },
@@ -560,7 +420,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 41,
+      "line": 42,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -586,7 +446,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -608,7 +468,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 42,
+      "line": 43,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -634,7 +494,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -656,7 +516,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 43,
+      "line": 44,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -680,7 +540,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -702,7 +562,7 @@
       "domain": "development",
       "source": "audit:app-ux, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 44,
+      "line": 45,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -728,7 +588,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -744,55 +604,6 @@
       "effort": "3-4h",
       "effortMinutes": 210,
       "effortCategory": "medium",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
-      "created": "2026-02-21",
-      "line": 46,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-77": {
-      "id": "DEV-77",
-      "title": "Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
       "priority": "high",
       "status": "ready",
       "deps": [],
@@ -824,7 +635,56 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 1,
+      "riskFactors": [
+        "large_effort"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-77": {
+      "id": "DEV-77",
+      "title": "Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI)",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
+      "created": "2026-02-21",
+      "line": 48,
+      "files": [
+        "apps/api/src/domains/invoicing/services/invoice.service.ts",
+        "apps/api/src/domains/invoicing/routes/invoices.ts",
+        "apps/api/src/domains/invoicing/services/bill.service.ts",
+        "apps/api/src/domains/invoicing/routes/bills.ts",
+        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
+      ],
+      "verification": "Grep for related code: Grep \"dev\" apps/",
+      "acceptanceCriteria": [
+        "Amount stored as integer cents",
+        "Soft delete implemented (deletedAt field)",
+        "Page renders without errors",
+        "Loading and error states implemented"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "invoicing",
+        "dev"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -846,7 +706,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 48,
+      "line": 49,
       "files": [],
       "verification": "Run: cd apps/api && npm test -- [domain]",
       "acceptanceCriteria": [
@@ -863,7 +723,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -887,7 +747,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 49,
+      "line": 50,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -912,7 +772,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -934,7 +794,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 50,
+      "line": 51,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -959,7 +819,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -983,7 +843,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 51,
+      "line": 52,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1006,7 +866,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -1032,7 +892,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 52,
+      "line": 53,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1058,7 +918,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1084,7 +944,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 53,
+      "line": 54,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1110,7 +970,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1134,7 +994,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 54,
+      "line": 55,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -1160,7 +1020,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1182,7 +1042,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 62,
+      "line": 63,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1208,7 +1068,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1230,7 +1090,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 63,
+      "line": 64,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1256,7 +1116,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1280,7 +1140,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 64,
+      "line": 65,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1305,7 +1165,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1327,7 +1187,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 65,
+      "line": 66,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1350,7 +1210,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1372,7 +1232,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 66,
+      "line": 67,
       "files": [],
       "verification": "Run: cd apps/api && npm test -- [domain]",
       "acceptanceCriteria": [
@@ -1391,7 +1251,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -1401,101 +1261,6 @@
         "no_files",
         "large_effort"
       ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-84": {
-      "id": "DEV-84",
-      "title": "App-wide: Fix navigation.ts mismatches — Bills route points to stub, verify all nav items match real pages",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:app-ux [atomic]",
-      "created": "2026-02-21",
-      "line": 67,
-      "files": [
-        "apps/api/src/domains/vendors/services/vendor.service.ts",
-        "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
-        "apps/api/src/domains/vendors/services/__tests__/vendor.service.test.ts",
-        "apps/api/src/domains/vendors/services/bill.service.ts",
-        "apps/api/src/domains/vendors/routes/__tests__/vendors.routes.test.ts"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [
-        "App-wide: Fix navigation.ts mismatches",
-        "Bills route points to stub",
-        "verify all nav items match real pages",
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "vendors",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-19": {
-      "id": "UX-19",
-      "title": "Accounting COA: Add search input for GL accounts (backend `search` param exists, UI only has type filter)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:acct-fe-be",
-      "created": "2026-02-19",
-      "line": 68,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Accounting COA: Add search input for GL accounts (backend `search` param exists",
-        "UI only has type filter)",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
       "claimed": false,
       "claimedBy": null
     },
@@ -1511,7 +1276,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 69,
+      "line": 70,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1534,7 +1299,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -1556,7 +1321,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 70,
+      "line": 71,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1581,7 +1346,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1603,7 +1368,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 71,
+      "line": 72,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1626,7 +1391,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1648,7 +1413,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 72,
+      "line": 73,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1668,7 +1433,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1692,7 +1457,7 @@
       "domain": "ux",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 73,
+      "line": 74,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1715,7 +1480,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1737,7 +1502,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 74,
+      "line": 75,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1760,7 +1525,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1782,7 +1547,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 75,
+      "line": 76,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1805,7 +1570,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1818,53 +1583,6 @@
     "DEV-63": {
       "id": "DEV-63",
       "title": "Accounting: Add recurring journal entry templates (monthly depreciation, rent, etc.)",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:acct-fe-be",
-      "created": "2026-02-19",
-      "line": 76,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Debits equal credits (double-entry validation)",
-        "Source document preserved"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-64": {
-      "id": "DEV-64",
-      "title": "Accounting: Add journal entry CSV import (bulk import from external accounting software)",
       "effort": "3-4h",
       "effortMinutes": 210,
       "effortCategory": "medium",
@@ -1897,7 +1615,54 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 1,
+      "riskFactors": [
+        "large_effort"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-64": {
+      "id": "DEV-64",
+      "title": "Accounting: Add journal entry CSV import (bulk import from external accounting software)",
+      "effort": "3-4h",
+      "effortMinutes": 210,
+      "effortCategory": "medium",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:acct-fe-be",
+      "created": "2026-02-19",
+      "line": 78,
+      "files": [
+        "apps/api/src/domains/banking/routes.ts",
+        "apps/api/src/domains/banking/services/account.service.ts",
+        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
+        "apps/api/src/domains/banking/routes/transactions.ts",
+        "apps/api/src/domains/banking/services/transaction.service.ts"
+      ],
+      "verification": "Grep for related code: Grep \"dev\" apps/",
+      "acceptanceCriteria": [
+        "Debits equal credits (double-entry validation)",
+        "Source document preserved"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "banking",
+        "dev"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1921,7 +1686,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 78,
+      "line": 79,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1944,7 +1709,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -1968,7 +1733,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 79,
+      "line": 80,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1988,7 +1753,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2013,7 +1778,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 80,
+      "line": 81,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2036,7 +1801,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2052,51 +1817,6 @@
       "effort": "3-4h",
       "effortMinutes": 210,
       "effortCategory": "medium",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:acct-fe-be",
-      "created": "2026-02-19",
-      "line": 81,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-69": {
-      "id": "DEV-69",
-      "title": "Accounting Reports: Add year-over-year comparison mode (multi-year P&L and BS trends)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
       "priority": "medium",
       "status": "backlog",
       "deps": [],
@@ -2123,25 +1843,26 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 7,
         "recommendation": "ok"
       },
       "hallucinationRisk": "low",
-      "riskScore": 1,
+      "riskScore": 2,
       "riskFactors": [
+        "large_effort",
         "no_acceptance_criteria"
       ],
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-70": {
-      "id": "DEV-70",
-      "title": "Accounting Reports: One-click export all statements as ZIP",
-      "effort": "1-2h",
-      "effortMinutes": 90,
-      "effortCategory": "short",
-      "priority": "low",
+    "DEV-69": {
+      "id": "DEV-69",
+      "title": "Accounting Reports: Add year-over-year comparison mode (multi-year P&L and BS trends)",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "medium",
       "status": "backlog",
       "deps": [],
       "domain": "development",
@@ -2167,7 +1888,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2179,84 +1900,39 @@
       "claimed": false,
       "claimedBy": null
     },
-    "PERF-2": {
-      "id": "PERF-2",
-      "title": "Revenue: add JSONB expression index for extraction",
-      "effort": "30m",
-      "effortMinutes": 30,
+    "DEV-70": {
+      "id": "DEV-70",
+      "title": "Accounting Reports: One-click export all statements as ZIP",
+      "effort": "1-2h",
+      "effortMinutes": 90,
       "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
+      "priority": "low",
+      "status": "backlog",
       "deps": [],
-      "domain": "performance",
-      "source": "review:performance [atomic]",
-      "created": "2026-02-21",
+      "domain": "development",
+      "source": "audit:acct-fe-be",
+      "created": "2026-02-19",
       "line": 84,
       "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/accounting/services/report.service.ts",
-        "apps/web/src/components/transactions/TransactionsListClient.tsx",
         "apps/api/src/domains/banking/routes.ts",
-        "apps/web/src/app/globals.css"
+        "apps/api/src/domains/banking/services/account.service.ts",
+        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
+        "apps/api/src/domains/banking/routes/transactions.ts",
+        "apps/api/src/domains/banking/services/transaction.service.ts"
       ],
-      "verification": "Check: git diff HEAD~1 packages/db/prisma/schema.prisma | grep '@@index'",
+      "verification": "Grep for related code: Grep \"dev\" apps/",
       "acceptanceCriteria": [],
       "lastVerified": null,
       "sourceRef": null,
       "externalId": null,
       "tags": [
-        "performance",
-        "perf"
+        "banking",
+        "dev"
       ],
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "vague_title",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "PERF-3": {
-      "id": "PERF-3",
-      "title": "Recharts: code-split import (lazy load)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "performance",
-      "source": "review:performance [atomic]",
-      "created": "2026-02-21",
-      "line": 85,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/accounting/services/report.service.ts",
-        "apps/web/src/components/transactions/TransactionsListClient.tsx",
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/web/src/app/globals.css"
-      ],
-      "verification": "Run performance benchmarks",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "performance",
-        "perf"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2280,7 +1956,7 @@
       "domain": "performance",
       "source": "roadmap [atomic]",
       "created": "2026-02-21",
-      "line": 86,
+      "line": 87,
       "files": [
         "apps/web/src/app/(dashboard)/",
         "apps/web/src/components/"
@@ -2301,7 +1977,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -2309,46 +1985,6 @@
       "riskScore": 2,
       "riskFactors": [
         "vague_title"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-2": {
-      "id": "DRY-2",
-      "title": "CSV sanitization: deduplicate between report-export and data-export",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "review:simplicity [atomic]",
-      "created": "2026-02-21",
-      "line": 87,
-      "files": [],
-      "verification": "Grep for related code: Grep \"dry\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "refactoring",
-        "dry"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 5,
-      "riskFactors": [
-        "no_files",
-        "vague_title",
-        "no_acceptance_criteria"
       ],
       "claimed": false,
       "claimedBy": null
@@ -2365,7 +2001,7 @@
       "domain": "code-quality",
       "source": "review:simplicity [atomic]",
       "created": "2026-02-21",
-      "line": 88,
+      "line": 89,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -2379,43 +2015,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-9": {
-      "id": "DRY-9",
-      "title": "Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency`",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "critical",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "inline-bandaid-audit [atomic]",
-      "created": "2026-02-22",
-      "line": 90,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2440,42 +2040,6 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit [atomic]",
       "created": "2026-02-22",
-      "line": 91,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 5,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-11": {
-      "id": "DRY-11",
-      "title": "Extract StatusBadge components to `packages/ui` — create InvoiceStatusBadge, BillStatusBadge, AccountStatusBadge",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "inline-bandaid-audit",
-      "created": "2026-02-22",
       "line": 92,
       "files": [],
       "verification": null,
@@ -2487,44 +2051,8 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-12": {
-      "id": "DRY-12",
-      "title": "Create `<EmptyState>` component — consolidate 11+ inline empty state patterns",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "low",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "inline-bandaid-audit [atomic]",
-      "created": "2026-02-22",
-      "line": 93,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
+        "daysSinceVerified": 2,
+        "staleAfterDays": 5,
         "recommendation": "ok"
       },
       "hallucinationRisk": "medium",
@@ -2548,7 +2076,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-22",
-      "line": 94,
+      "line": 95,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2559,7 +2087,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2584,7 +2112,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-22",
-      "line": 95,
+      "line": 96,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2595,7 +2123,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -2620,7 +2148,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit [atomic]",
       "created": "2026-02-22",
-      "line": 96,
+      "line": 97,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2631,7 +2159,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 0,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2639,6 +2167,191 @@
       "riskScore": 3,
       "riskFactors": [
         "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "FIN-25": {
+      "id": "FIN-25",
+      "title": "Fix subtotal calculation bug in invoice & bill services — backend subtracts tax from pre-tax amount, blocking all creation",
+      "effort": "<1h",
+      "effortMinutes": null,
+      "effortCategory": "unknown",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "financial",
+      "source": "diagnose:invoice-form",
+      "created": "2026-02-23",
+      "line": 100,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "FIN-26": {
+      "id": "FIN-26",
+      "title": "Wire taxRateId to invoice/bill line items — accept in Zod schema, pass through service to Prisma",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [
+        "FIN-25"
+      ],
+      "domain": "financial",
+      "source": "diagnose:invoice-form",
+      "created": "2026-02-23",
+      "line": 101,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "FIN-27": {
+      "id": "FIN-27",
+      "title": "Fix document-posting.service.ts netAmount — same pre-tax bug as FIN-25, under-credits Revenue and under-debits Expense in JEs",
+      "effort": "<1h",
+      "effortMinutes": null,
+      "effortCategory": "unknown",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "financial",
+      "source": "diagnose:financial-audit",
+      "created": "2026-02-23",
+      "line": 102,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "FIN-28": {
+      "id": "FIN-28",
+      "title": "Fix transfer baseCurrency calculation — exchangeRate applied twice for foreign-currency side, JEs don't balance in base currency",
+      "effort": "<1h",
+      "effortMinutes": null,
+      "effortCategory": "unknown",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "financial",
+      "source": "diagnose:financial-audit",
+      "created": "2026-02-23",
+      "line": 103,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "UX-102": {
+      "id": "UX-102",
+      "title": "Replace manual tax input with tax rate dropdown + auto-calculation in LineItemBuilder",
+      "effort": "2-4h",
+      "effortMinutes": 180,
+      "effortCategory": "medium",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [
+        "FIN-26"
+      ],
+      "domain": "ux",
+      "source": "diagnose:invoice-form",
+      "created": "2026-02-23",
+      "line": 104,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 4,
+      "riskFactors": [
+        "no_files",
+        "large_effort",
         "no_acceptance_criteria"
       ],
       "claimed": false,
@@ -2656,7 +2369,7 @@
       "domain": "ux",
       "source": "review:nextjs [atomic]",
       "created": "2026-02-21",
-      "line": 98,
+      "line": 105,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [
@@ -2673,7 +2386,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2697,7 +2410,7 @@
       "domain": "ux",
       "source": "review:nextjs [atomic]",
       "created": "2026-02-21",
-      "line": 99,
+      "line": 106,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [],
@@ -2711,7 +2424,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -2720,47 +2433,6 @@
       "riskFactors": [
         "no_files",
         "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DOC-2": {
-      "id": "DOC-2",
-      "title": "Consolidate logging rules (full version in api-conventions.md, update guardrails.md ref)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "documentation",
-      "source": "review:smooth-floating-mountain [atomic]",
-      "created": "2026-02-21",
-      "line": 100,
-      "files": [],
-      "verification": "Grep for related code: Grep \"doc\" apps/",
-      "acceptanceCriteria": [
-        "Consolidate logging rules (full version in api-conventions.md",
-        "update guardrails.md ref)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "documentation",
-        "doc"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
       ],
       "claimed": false,
       "claimedBy": null
@@ -2777,7 +2449,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain [atomic]",
       "created": "2026-02-21",
-      "line": 101,
+      "line": 108,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -2791,7 +2463,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -2800,50 +2472,6 @@
       "riskFactors": [
         "no_files",
         "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DOC-7": {
-      "id": "DOC-7",
-      "title": "Update test/page counts in context files (apps/api: 362→1010 tests, apps/web: 38→54 pages, root: 38→40 models)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "low",
-      "status": "ready",
-      "deps": [],
-      "domain": "documentation",
-      "source": "audit:2026-02-20 [atomic]",
-      "created": "2026-02-21",
-      "line": 102,
-      "files": [],
-      "verification": "Run: npm test",
-      "acceptanceCriteria": [
-        "Update test/page counts in context files (apps/api: 362→1010 tests",
-        "apps/web: 38→54 pages",
-        "root: 38→40 models)",
-        "All test assertions pass",
-        "Coverage maintained or improved"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "documentation",
-        "doc"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "no_files"
       ],
       "claimed": false,
       "claimedBy": null
@@ -2860,7 +2488,7 @@
       "domain": "documentation",
       "source": "audit:2026-02-20 [atomic]",
       "created": "2026-02-21",
-      "line": 103,
+      "line": 110,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [
@@ -2877,7 +2505,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -2901,7 +2529,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 104,
+      "line": 111,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -2921,7 +2549,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -2947,7 +2575,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 105,
+      "line": 112,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [],
@@ -2961,7 +2589,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -2989,7 +2617,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 106,
+      "line": 113,
       "files": [
         "apps/web/src/components/help/",
         "apps/web/src/app/(dashboard)/layout.tsx"
@@ -3011,7 +2639,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -3036,7 +2664,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3 [atomic]",
       "created": "2026-02-21",
-      "line": 107,
+      "line": 114,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -3056,7 +2684,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3080,7 +2708,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.4 [atomic]",
       "created": "2026-02-21",
-      "line": 108,
+      "line": 115,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -3103,7 +2731,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3125,7 +2753,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.1",
       "created": "2026-02-18",
-      "line": 109,
+      "line": 116,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -3145,7 +2773,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3170,7 +2798,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.3",
       "created": "2026-02-18",
-      "line": 110,
+      "line": 117,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -3190,7 +2818,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3214,7 +2842,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.2",
       "created": "2026-02-18",
-      "line": 111,
+      "line": 118,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3234,7 +2862,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3261,7 +2889,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.2",
       "created": "2026-02-18",
-      "line": 112,
+      "line": 119,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3284,7 +2912,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3310,7 +2938,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.1",
       "created": "2026-02-18",
-      "line": 113,
+      "line": 120,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3330,7 +2958,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3355,7 +2983,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.4",
       "created": "2026-02-18",
-      "line": 114,
+      "line": 121,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3380,7 +3008,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3404,7 +3032,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain §2.2.2",
       "created": "2026-02-18",
-      "line": 115,
+      "line": 122,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [
@@ -3424,7 +3052,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3449,7 +3077,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 116,
+      "line": 123,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -3463,7 +3091,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3489,7 +3117,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 117,
+      "line": 124,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -3503,7 +3131,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3529,7 +3157,7 @@
       "domain": "testing",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 118,
+      "line": 125,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -3549,7 +3177,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3557,139 +3185,6 @@
       "riskScore": 1,
       "riskFactors": [
         "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-7": {
-      "id": "DRY-7",
-      "title": "Dashboard page.tsx: extract 120+ lines of data transformation to `lib/dashboard/transformers.ts`",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "review:dashboard-overview [atomic]",
-      "created": "2026-02-21",
-      "line": 119,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": "docs/reviews/dashboard-overview/SUMMARY.md#server-component-transformation-bloat",
-      "externalId": null,
-      "tags": [
-        "overview",
-        "dry"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DS-4": {
-      "id": "DS-4",
-      "title": "ExpenseChart: replace inline `backgroundColor` with token-mapped CSS variables",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "design-system",
-      "source": "review:dashboard-overview [atomic]",
-      "created": "2026-02-21",
-      "line": 120,
-      "files": [
-        "packages/ui/package.json",
-        "packages/ui/src/ai/AIPanel.tsx",
-        "packages/ui/src/patterns/navigation/Sidebar.tsx",
-        "packages/ui/src/patterns/navigation/TopCommandBar.tsx",
-        "packages/design-tokens/README.md"
-      ],
-      "verification": "Grep for related code: Grep \"ds\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "design-system",
-        "ds"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "FIN-14": {
-      "id": "FIN-14",
-      "title": "DashboardService: document or fix float arithmetic in FX conversion (`Math.abs(balance) * rate`)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "financial",
-      "source": "review:dashboard-overview [atomic]",
-      "created": "2026-02-21",
-      "line": 121,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Grep for related code: Grep \"fin\" apps/",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "fin"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
       ],
       "claimed": false,
       "claimedBy": null
@@ -3706,7 +3201,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 122,
+      "line": 129,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3729,7 +3224,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3751,7 +3246,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 123,
+      "line": 130,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3777,7 +3272,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3801,7 +3296,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 124,
+      "line": 131,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3823,7 +3318,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3847,7 +3342,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 125,
+      "line": 132,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3867,7 +3362,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3891,7 +3386,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 126,
+      "line": 133,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3913,7 +3408,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3935,7 +3430,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 127,
+      "line": 134,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3958,7 +3453,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3980,7 +3475,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 128,
+      "line": 135,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4002,7 +3497,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4024,7 +3519,7 @@
       "domain": "financial",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 129,
+      "line": 136,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4050,7 +3545,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4072,7 +3567,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 130,
+      "line": 137,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4094,7 +3589,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4116,7 +3611,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 131,
+      "line": 138,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4142,7 +3637,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4164,7 +3659,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 132,
+      "line": 139,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4189,7 +3684,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4211,7 +3706,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 133,
+      "line": 140,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4234,7 +3729,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4256,7 +3751,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 134,
+      "line": 141,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -4279,7 +3774,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4301,7 +3796,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 135,
+      "line": 142,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -4326,7 +3821,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4348,7 +3843,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 136,
+      "line": 143,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -4370,7 +3865,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4392,7 +3887,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 137,
+      "line": 144,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4414,7 +3909,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4436,7 +3931,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 138,
+      "line": 145,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4461,7 +3956,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4483,7 +3978,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 139,
+      "line": 146,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4505,7 +4000,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4527,7 +4022,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 140,
+      "line": 147,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4549,7 +4044,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4571,7 +4066,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 141,
+      "line": 148,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -4597,7 +4092,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4619,7 +4114,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 142,
+      "line": 149,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -4643,7 +4138,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4665,7 +4160,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 143,
+      "line": 150,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4687,7 +4182,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -4711,7 +4206,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 144,
+      "line": 151,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4735,7 +4230,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4757,7 +4252,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 145,
+      "line": 152,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4781,7 +4276,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -4805,7 +4300,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 146,
+      "line": 153,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4827,7 +4322,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4849,7 +4344,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 147,
+      "line": 154,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4873,7 +4368,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4895,7 +4390,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 148,
+      "line": 155,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4917,7 +4412,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4939,7 +4434,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 149,
+      "line": 156,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4961,7 +4456,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -4985,7 +4480,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 150,
+      "line": 157,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5007,7 +4502,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5029,7 +4524,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 151,
+      "line": 158,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5051,7 +4546,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -5075,7 +4570,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 152,
+      "line": 159,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5097,7 +4592,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -5121,7 +4616,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 153,
+      "line": 160,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5141,7 +4636,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5165,7 +4660,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 154,
+      "line": 161,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5190,7 +4685,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5214,7 +4709,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 155,
+      "line": 162,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5236,7 +4731,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5258,7 +4753,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 156,
+      "line": 163,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5278,7 +4773,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5302,7 +4797,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 157,
+      "line": 164,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5324,7 +4819,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5348,7 +4843,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 158,
+      "line": 165,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5374,7 +4869,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5396,7 +4891,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 159,
+      "line": 166,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5419,7 +4914,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5441,7 +4936,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 160,
+      "line": 167,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5463,7 +4958,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5485,7 +4980,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 161,
+      "line": 168,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5509,7 +5004,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5533,7 +5028,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 162,
+      "line": 169,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5556,7 +5051,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5580,7 +5075,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 163,
+      "line": 170,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5605,7 +5100,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5627,7 +5122,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 164,
+      "line": 171,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5649,7 +5144,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5662,327 +5157,6 @@
     "UX-52": {
       "id": "UX-52",
       "title": "Business: Add sort by columns on invoice/bill/client/vendor lists (backend supports orderBy)",
-      "effort": "1-2h",
-      "effortMinutes": 90,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 165,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-85": {
-      "id": "DEV-85",
-      "title": "Business: Add bill PDF generation (invoice PDF exists, bills have no PDF)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 166,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Business: Add bill PDF generation (invoice PDF exists",
-        "bills have no PDF)",
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-86": {
-      "id": "DEV-86",
-      "title": "Business: Add aging drill-down — click AR/AP aging bucket to see individual invoices/bills",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 167,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-87": {
-      "id": "DEV-87",
-      "title": "Business: Add duplicate invoice/bill detection — flag same vendor+amount+date combinations",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 168,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-88": {
-      "id": "DEV-88",
-      "title": "Business: Add email reminder for overdue invoices (mark-overdue endpoint exists, no notification)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 169,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Business: Add email reminder for overdue invoices (mark-overdue endpoint exists",
-        "no notification)",
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-89": {
-      "id": "DEV-89",
-      "title": "Business: Add recurring invoice templates — auto-generate invoices on schedule",
-      "effort": "4-6h",
-      "effortMinutes": 300,
-      "effortCategory": "long",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 170,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 5,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-54": {
-      "id": "UX-54",
-      "title": "Business: Auto-fill due date from client/vendor payment terms (terms field exists, not used in form)",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity [atomic]",
-      "created": "2026-02-21",
-      "line": 171,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Business: Auto-fill due date from client/vendor payment terms (terms field exists",
-        "not used in form)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-55": {
-      "id": "UX-55",
-      "title": "Business: Add visual status pipeline on invoice/bill list — Draft→Sent→Partial→Paid flow",
       "effort": "1-2h",
       "effortMinutes": 90,
       "effortCategory": "short",
@@ -6015,7 +5189,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6025,9 +5199,9 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-90": {
-      "id": "DEV-90",
-      "title": "Business: Add top debtors/creditors summary widget — clients with most outstanding AR, vendors with most AP",
+    "DEV-85": {
+      "id": "DEV-85",
+      "title": "Business: Add bill PDF generation (invoice PDF exists, bills have no PDF)",
       "effort": "2-3h",
       "effortMinutes": 150,
       "effortCategory": "unknown",
@@ -6047,9 +5221,10 @@
       ],
       "verification": "Grep for related code: Grep \"dev\" apps/",
       "acceptanceCriteria": [
-        "Business: Add top debtors/creditors summary widget",
-        "clients with most outstanding AR",
-        "vendors with most AP"
+        "Business: Add bill PDF generation (invoice PDF exists",
+        "bills have no PDF)",
+        "Amount stored as integer cents",
+        "Soft delete implemented (deletedAt field)"
       ],
       "lastVerified": null,
       "sourceRef": null,
@@ -6061,7 +5236,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6071,9 +5246,9 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-91": {
-      "id": "DEV-91",
-      "title": "Business: Add invoice/bill/client/vendor CSV export",
+    "DEV-86": {
+      "id": "DEV-86",
+      "title": "Business: Add aging drill-down — click AR/AP aging bucket to see individual invoices/bills",
       "effort": "2-3h",
       "effortMinutes": 150,
       "effortCategory": "unknown",
@@ -6106,7 +5281,282 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-87": {
+      "id": "DEV-87",
+      "title": "Business: Add duplicate invoice/bill detection — flag same vendor+amount+date combinations",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:fe-be-parity",
+      "created": "2026-02-19",
+      "line": 175,
+      "files": [
+        "apps/api/src/domains/invoicing/services/invoice.service.ts",
+        "apps/api/src/domains/invoicing/routes/invoices.ts",
+        "apps/api/src/domains/invoicing/services/bill.service.ts",
+        "apps/api/src/domains/invoicing/routes/bills.ts",
+        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
+      ],
+      "verification": "Grep for related code: Grep \"dev\" apps/",
+      "acceptanceCriteria": [
+        "Amount stored as integer cents",
+        "Soft delete implemented (deletedAt field)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "invoicing",
+        "dev"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-88": {
+      "id": "DEV-88",
+      "title": "Business: Add email reminder for overdue invoices (mark-overdue endpoint exists, no notification)",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:fe-be-parity",
+      "created": "2026-02-19",
+      "line": 176,
+      "files": [
+        "apps/api/src/domains/invoicing/services/invoice.service.ts",
+        "apps/api/src/domains/invoicing/routes/invoices.ts",
+        "apps/api/src/domains/invoicing/services/bill.service.ts",
+        "apps/api/src/domains/invoicing/routes/bills.ts",
+        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
+      ],
+      "verification": "Grep for related code: Grep \"dev\" apps/",
+      "acceptanceCriteria": [
+        "Business: Add email reminder for overdue invoices (mark-overdue endpoint exists",
+        "no notification)",
+        "Amount stored as integer cents",
+        "Soft delete implemented (deletedAt field)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "invoicing",
+        "dev"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-89": {
+      "id": "DEV-89",
+      "title": "Business: Add recurring invoice templates — auto-generate invoices on schedule",
+      "effort": "4-6h",
+      "effortMinutes": 300,
+      "effortCategory": "long",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:fe-be-parity",
+      "created": "2026-02-19",
+      "line": 177,
+      "files": [
+        "apps/api/src/domains/invoicing/services/invoice.service.ts",
+        "apps/api/src/domains/invoicing/routes/invoices.ts",
+        "apps/api/src/domains/invoicing/services/bill.service.ts",
+        "apps/api/src/domains/invoicing/routes/bills.ts",
+        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
+      ],
+      "verification": "Grep for related code: Grep \"dev\" apps/",
+      "acceptanceCriteria": [
+        "Amount stored as integer cents",
+        "Soft delete implemented (deletedAt field)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "invoicing",
+        "dev"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 5,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 1,
+      "riskFactors": [
+        "large_effort"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "UX-55": {
+      "id": "UX-55",
+      "title": "Business: Add visual status pipeline on invoice/bill list — Draft→Sent→Partial→Paid flow",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "ux",
+      "source": "audit:fe-be-parity",
+      "created": "2026-02-19",
+      "line": 179,
+      "files": [
+        "apps/api/src/domains/invoicing/services/invoice.service.ts",
+        "apps/api/src/domains/invoicing/routes/invoices.ts",
+        "apps/api/src/domains/invoicing/services/bill.service.ts",
+        "apps/api/src/domains/invoicing/routes/bills.ts",
+        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
+      ],
+      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
+      "acceptanceCriteria": [
+        "Amount stored as integer cents",
+        "Soft delete implemented (deletedAt field)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "invoicing",
+        "ux"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-90": {
+      "id": "DEV-90",
+      "title": "Business: Add top debtors/creditors summary widget — clients with most outstanding AR, vendors with most AP",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:fe-be-parity",
+      "created": "2026-02-19",
+      "line": 180,
+      "files": [
+        "apps/api/src/domains/invoicing/services/invoice.service.ts",
+        "apps/api/src/domains/invoicing/routes/invoices.ts",
+        "apps/api/src/domains/invoicing/services/bill.service.ts",
+        "apps/api/src/domains/invoicing/routes/bills.ts",
+        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
+      ],
+      "verification": "Grep for related code: Grep \"dev\" apps/",
+      "acceptanceCriteria": [
+        "Business: Add top debtors/creditors summary widget",
+        "clients with most outstanding AR",
+        "vendors with most AP"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "invoicing",
+        "dev"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 5,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DEV-91": {
+      "id": "DEV-91",
+      "title": "Business: Add invoice/bill/client/vendor CSV export",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "medium",
+      "status": "backlog",
+      "deps": [],
+      "domain": "development",
+      "source": "audit:fe-be-parity",
+      "created": "2026-02-19",
+      "line": 181,
+      "files": [
+        "apps/api/src/domains/invoicing/services/invoice.service.ts",
+        "apps/api/src/domains/invoicing/routes/invoices.ts",
+        "apps/api/src/domains/invoicing/services/bill.service.ts",
+        "apps/api/src/domains/invoicing/routes/bills.ts",
+        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
+      ],
+      "verification": "Grep for related code: Grep \"dev\" apps/",
+      "acceptanceCriteria": [
+        "Amount stored as integer cents",
+        "Soft delete implemented (deletedAt field)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "invoicing",
+        "dev"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6128,7 +5578,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 175,
+      "line": 182,
       "files": [],
       "verification": "Grep for related code: Grep \"dev\" apps/",
       "acceptanceCriteria": [],
@@ -6142,7 +5592,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6168,7 +5618,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 176,
+      "line": 183,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -6191,7 +5641,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6215,7 +5665,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 177,
+      "line": 184,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -6238,7 +5688,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6262,7 +5712,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 178,
+      "line": 185,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6284,7 +5734,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6310,7 +5760,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 179,
+      "line": 186,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6334,7 +5784,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6358,7 +5808,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 180,
+      "line": 187,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6381,7 +5831,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6403,7 +5853,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 181,
+      "line": 188,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6426,7 +5876,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6450,7 +5900,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 182,
+      "line": 189,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6470,7 +5920,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -6497,7 +5947,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 183,
+      "line": 190,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6517,7 +5967,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6543,7 +5993,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 184,
+      "line": 191,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6565,7 +6015,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6587,7 +6037,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 185,
+      "line": 192,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6611,7 +6061,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6633,7 +6083,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 186,
+      "line": 193,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6655,7 +6105,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -6681,7 +6131,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 187,
+      "line": 194,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6705,7 +6155,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6729,7 +6179,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 188,
+      "line": 195,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6751,7 +6201,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6773,7 +6223,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity [atomic]",
       "created": "2026-02-21",
-      "line": 189,
+      "line": 196,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6795,7 +6245,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6819,7 +6269,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 190,
+      "line": 197,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6841,7 +6291,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -6867,7 +6317,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 191,
+      "line": 198,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6893,7 +6343,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6915,7 +6365,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 192,
+      "line": 199,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6935,7 +6385,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -6961,7 +6411,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 193,
+      "line": 200,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6983,7 +6433,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7007,7 +6457,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 194,
+      "line": 201,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7029,7 +6479,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -7055,7 +6505,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 195,
+      "line": 202,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7077,57 +6527,13 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
       "hallucinationRisk": "low",
       "riskScore": 0,
       "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-114": {
-      "id": "DEV-114",
-      "title": "Insights: Extract shared AI types to `packages/types/src/ai.ts` (currently only in backend `services/types.ts`)",
-      "effort": "20m",
-      "effortMinutes": 20,
-      "effortCategory": "quick",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:ai-advisor [atomic]",
-      "created": "2026-02-21",
-      "line": 196,
-      "files": [
-        "apps/api/src/domains/ai/services/categorization.service.ts",
-        "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
-        "apps/api/src/domains/ai/services/ai.service.ts",
-        "apps/web/src/app/(dashboard)/insights/history/error.tsx",
-        "apps/web/src/app/(dashboard)/insights/history/loading.tsx"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "insights",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 14,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
       "claimed": false,
       "claimedBy": null
     },
@@ -7143,7 +6549,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 197,
+      "line": 204,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7166,7 +6572,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7188,7 +6594,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 198,
+      "line": 205,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7211,7 +6617,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7235,7 +6641,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 199,
+      "line": 206,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7255,7 +6661,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7279,7 +6685,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 200,
+      "line": 207,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7302,7 +6708,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -7326,7 +6732,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 201,
+      "line": 208,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7350,7 +6756,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -7376,7 +6782,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-19",
-      "line": 202,
+      "line": 209,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7400,7 +6806,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 3,
+        "daysSinceVerified": 5,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7422,7 +6828,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2 [atomic]",
       "created": "2026-02-21",
-      "line": 203,
+      "line": 210,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -7436,7 +6842,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -7461,7 +6867,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 204,
+      "line": 211,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7481,7 +6887,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7505,7 +6911,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity, plan:command-center-dashboard.md",
       "created": "2026-02-21",
-      "line": 205,
+      "line": 212,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7525,7 +6931,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7549,7 +6955,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 206,
+      "line": 213,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -7569,7 +6975,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7593,7 +6999,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain §2.1.4",
       "created": "2026-02-18",
-      "line": 207,
+      "line": 214,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -7613,7 +7019,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7637,7 +7043,7 @@
       "domain": "code-quality",
       "source": "review:typescript [atomic]",
       "created": "2026-02-21",
-      "line": 208,
+      "line": 215,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -7651,7 +7057,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7676,7 +7082,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2 [atomic]",
       "created": "2026-02-21",
-      "line": 209,
+      "line": 216,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -7690,7 +7096,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -7715,7 +7121,7 @@
       "domain": "documentation",
       "source": "review:smooth-floating-mountain §1.2 [atomic]",
       "created": "2026-02-21",
-      "line": 210,
+      "line": 217,
       "files": [],
       "verification": "Grep for related code: Grep \"doc\" apps/",
       "acceptanceCriteria": [],
@@ -7729,7 +7135,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -7754,7 +7160,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.1",
       "created": "2026-02-18",
-      "line": 211,
+      "line": 218,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -7773,14 +7179,15 @@
       ],
       "notes": null,
       "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 4,
+        "isStale": true,
+        "daysSinceVerified": 6,
         "staleAfterDays": 5,
-        "recommendation": "ok"
+        "recommendation": "verify_before_executing"
       },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
+      "hallucinationRisk": "medium",
+      "riskScore": 5,
       "riskFactors": [
+        "age_stale",
         "large_effort",
         "no_acceptance_criteria"
       ],
@@ -7799,7 +7206,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain §2.3.3",
       "created": "2026-02-18",
-      "line": 212,
+      "line": 219,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -7818,14 +7225,15 @@
       ],
       "notes": null,
       "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 4,
+        "isStale": true,
+        "daysSinceVerified": 6,
         "staleAfterDays": 5,
-        "recommendation": "ok"
+        "recommendation": "verify_before_executing"
       },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
+      "hallucinationRisk": "medium",
+      "riskScore": 5,
       "riskFactors": [
+        "age_stale",
         "large_effort",
         "no_acceptance_criteria"
       ],
@@ -7844,7 +7252,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3",
       "created": "2026-02-18",
-      "line": 213,
+      "line": 220,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -7864,7 +7272,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7889,7 +7297,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain §2.2.3",
       "created": "2026-02-18",
-      "line": 214,
+      "line": 221,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -7909,7 +7317,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7933,7 +7341,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain §2.4.4",
       "created": "2026-02-18",
-      "line": 215,
+      "line": 222,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -7952,7 +7360,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -7976,7 +7384,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain §2.4.5",
       "created": "2026-02-18",
-      "line": 216,
+      "line": 223,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -8000,7 +7408,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -8022,7 +7430,7 @@
       "domain": "financial",
       "source": "review:financial",
       "created": "2026-02-18",
-      "line": 217,
+      "line": 224,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -8042,7 +7450,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -8051,54 +7459,6 @@
       "riskFactors": [
         "no_acceptance_criteria"
       ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-77": {
-      "id": "UX-77",
-      "title": "Routing: Move `/business/invoices/bills/[id]` → `/business/bills/[id]` — bills aren't children of invoices, fix domain nesting + update all internal links",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "ux",
-      "source": "sitemap:audit [atomic]",
-      "created": "2026-02-21",
-      "line": 219,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Routing: Move `/business/invoices/bills/[id]` → `/business/bills/[id]`",
-        "bills aren't children of invoices",
-        "fix domain nesting + update all internal links",
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
       "claimed": false,
       "claimedBy": null
     },
@@ -8116,7 +7476,7 @@
       "domain": "ux",
       "source": "sitemap:audit, plan:phase-4-bill-and-get-paid.md",
       "created": "2026-02-21",
-      "line": 222,
+      "line": 229,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -8142,7 +7502,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -8164,7 +7524,7 @@
       "domain": "ux",
       "source": "sitemap:audit",
       "created": "2026-02-21",
-      "line": 223,
+      "line": 230,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -8189,7 +7549,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 3,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -8211,7 +7571,7 @@
       "domain": "design-system",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 241,
+      "line": 248,
       "files": [
         "packages/ui/package.json",
         "packages/ui/src/ai/AIPanel.tsx",
@@ -8231,7 +7591,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -8256,7 +7616,7 @@
       "domain": "design-system",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 247,
+      "line": 254,
       "files": [
         "packages/ui/",
         "packages/ui/.storybook/",
@@ -8278,7 +7638,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 21,
         "recommendation": "ok"
       },
@@ -8304,7 +7664,7 @@
       "domain": "marketing",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 257,
+      "line": 264,
       "files": [
         "apps/web/src/app/(marketing)/",
         "apps/web/src/app/page.tsx"
@@ -8325,7 +7685,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -8335,6 +7695,373 @@
         "vague_title",
         "large_effort",
         "source_unspecific"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-3": {
+      "id": "MKT-3",
+      "title": "Install 3D dependencies (`@react-three/fiber`, `@react-three/drei`, `three`)",
+      "effort": "15m",
+      "effortMinutes": 15,
+      "effortCategory": "quick",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 265,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-4": {
+      "id": "MKT-4",
+      "title": "Create hero section with 3D orb and parallax effect",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "high",
+      "status": "ready",
+      "deps": [
+        "MKT-3"
+      ],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 266,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-5": {
+      "id": "MKT-5",
+      "title": "Create problem statement section (3 pain point cards)",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 267,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-6": {
+      "id": "MKT-6",
+      "title": "Create solution pillars section (3 GlowCard components)",
+      "effort": "2h",
+      "effortMinutes": 120,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 268,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-7": {
+      "id": "MKT-7",
+      "title": "Create 3D feature showcase (interactive card grid)",
+      "effort": "3-4h",
+      "effortMinutes": 210,
+      "effortCategory": "medium",
+      "priority": "high",
+      "status": "ready",
+      "deps": [
+        "MKT-3"
+      ],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 269,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 4,
+      "riskFactors": [
+        "no_files",
+        "large_effort",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-8": {
+      "id": "MKT-8",
+      "title": "Create stats/social proof section (animated counters)",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 270,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-9": {
+      "id": "MKT-9",
+      "title": "Create final CTA section (gradient background, glass container)",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 271,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-10": {
+      "id": "MKT-10",
+      "title": "Create landing page layout (minimal nav + footer)",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 272,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-11": {
+      "id": "MKT-11",
+      "title": "Replace root page with landing (remove redirect)",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 273,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "MKT-12": {
+      "id": "MKT-12",
+      "title": "Add scroll animations and performance optimization (Lighthouse >90)",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "high",
+      "status": "ready",
+      "deps": [
+        "MKT-11"
+      ],
+      "domain": "marketing",
+      "source": "plan:2026-02-23-marketing-landing-page.md",
+      "created": "2026-02-23",
+      "line": 274,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 1,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
       ],
       "claimed": false,
       "claimedBy": null
@@ -8351,7 +8078,7 @@
       "domain": "marketing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 263,
+      "line": 280,
       "files": [],
       "verification": "Grep for related code: Grep \"mkt\" apps/",
       "acceptanceCriteria": [
@@ -8368,7 +8095,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -8393,7 +8120,7 @@
       "domain": "content",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 264,
+      "line": 281,
       "files": [
         "brand/competitive-analysis.md"
       ],
@@ -8413,7 +8140,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -8438,7 +8165,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 274,
+      "line": 291,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8454,7 +8181,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -8480,7 +8207,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 275,
+      "line": 292,
       "files": [
         "docker-compose.yml",
         "Dockerfile",
@@ -8504,7 +8231,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -8529,7 +8256,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 276,
+      "line": 293,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8545,7 +8272,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -8570,7 +8297,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 277,
+      "line": 294,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -8584,7 +8311,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -8612,7 +8339,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 278,
+      "line": 295,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8632,7 +8359,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -8658,7 +8385,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 279,
+      "line": 296,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8674,7 +8401,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -8701,7 +8428,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 280,
+      "line": 297,
       "files": [
         "Dockerfile",
         "docker-compose.yml",
@@ -8724,7 +8451,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -8751,7 +8478,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 288,
+      "line": 305,
       "files": [
         "docs/operations/disaster-recovery.md",
         "packages/db/prisma/"
@@ -8773,7 +8500,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -8800,7 +8527,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 289,
+      "line": 306,
       "files": [
         "docs/operations/deployment.md",
         "Dockerfile",
@@ -8823,7 +8550,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 4,
+        "daysSinceVerified": 6,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -8862,6 +8589,38 @@
       "completedAt": null,
       "completedCommit": null
     },
+    "UX-15": {
+      "id": "UX-15",
+      "title": "Banking: Add GL account linking UI on account detail",
+      "domain": "ux",
+      "source": "audit:fe-be-parity, plan:banking-command-center.md",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-59": {
+      "id": "DEV-59",
+      "title": "Accounting: Add transaction posting UI — post bank txns to GL",
+      "domain": "development",
+      "source": "audit:acct-fe-be",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-31": {
+      "id": "UX-31",
+      "title": "Business: Add search/filter bar on invoice, bill, client, vendor lists",
+      "domain": "ux",
+      "source": "audit:app-ux",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-32": {
+      "id": "UX-32",
+      "title": "Business: Add pagination controls — cursor pagination + Load More",
+      "domain": "ux",
+      "source": "audit:app-ux",
+      "completedAt": null,
+      "completedCommit": null
+    },
     "DEV-75": {
       "id": "DEV-75",
       "title": "Business: Replace bills \"Coming Soon\" stub with real bill list page (API ready, `/business/bills` is placeholder)",
@@ -8886,11 +8645,83 @@
       "completedAt": null,
       "completedCommit": null
     },
+    "DEV-84": {
+      "id": "DEV-84",
+      "title": "App-wide: Fix navigation.ts mismatches — Bills route points to stub, verify all nav items match real pages",
+      "domain": "development",
+      "source": "audit:app-ux [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-19": {
+      "id": "UX-19",
+      "title": "Accounting COA: Add search input for GL accounts (backend `search` param exists, UI only has type filter)",
+      "domain": "ux",
+      "source": "audit:acct-fe-be",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "PERF-2": {
+      "id": "PERF-2",
+      "title": "Revenue: add JSONB expression index for extraction",
+      "domain": "performance",
+      "source": "review:performance [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "PERF-3": {
+      "id": "PERF-3",
+      "title": "Recharts: code-split import (lazy load)",
+      "domain": "performance",
+      "source": "review:performance [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DRY-2": {
+      "id": "DRY-2",
+      "title": "CSV sanitization: deduplicate between report-export and data-export",
+      "domain": "code-quality",
+      "source": "review:simplicity [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
     "DRY-8": {
       "id": "DRY-8",
       "title": "Transfer routes: refactor string-matching error handling to use `AccountingError.statusCode` pattern (consistent with all other routes)",
       "domain": "code-quality",
       "source": "review:transfer-service [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DRY-9": {
+      "id": "DRY-9",
+      "title": "Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency`",
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DRY-11": {
+      "id": "DRY-11",
+      "title": "Extract StatusBadge components to `packages/ui` — create InvoiceStatusBadge, BillStatusBadge, AccountStatusBadge",
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DRY-12": {
+      "id": "DRY-12",
+      "title": "Create `<EmptyState>` component — consolidate 11+ inline empty state patterns",
+      "domain": "code-quality",
+      "source": "inline-bandaid-audit [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DRY-17": {
+      "id": "DRY-17",
+      "title": "Refactor StatusBadges to use base Badge component + fix semantic token violations",
+      "domain": "code-quality",
+      "source": "ad-hoc:session",
       "completedAt": null,
       "completedCommit": null
     },
@@ -8902,11 +8733,75 @@
       "completedAt": null,
       "completedCommit": null
     },
+    "DOC-2": {
+      "id": "DOC-2",
+      "title": "Consolidate logging rules (full version in api-conventions.md, update guardrails.md ref)",
+      "domain": "documentation",
+      "source": "review:smooth-floating-mountain [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DOC-7": {
+      "id": "DOC-7",
+      "title": "Update test/page counts in context files (apps/api: 362→1010 tests, apps/web: 38→54 pages, root: 38→40 models)",
+      "domain": "documentation",
+      "source": "audit:2026-02-20 [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DRY-7": {
+      "id": "DRY-7",
+      "title": "Dashboard page.tsx: extract 120+ lines of data transformation to `lib/dashboard/transformers.ts`",
+      "domain": "code-quality",
+      "source": "review:dashboard-overview [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DS-4": {
+      "id": "DS-4",
+      "title": "ExpenseChart: replace inline `backgroundColor` with token-mapped CSS variables",
+      "domain": "design-system",
+      "source": "review:dashboard-overview [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "FIN-14": {
+      "id": "FIN-14",
+      "title": "DashboardService: document or fix float arithmetic in FX conversion (`Math.abs(balance) * rate`)",
+      "domain": "financial",
+      "source": "review:dashboard-overview [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-54": {
+      "id": "UX-54",
+      "title": "Business: Auto-fill due date from client/vendor payment terms (terms field exists, not used in form)",
+      "domain": "ux",
+      "source": "audit:fe-be-parity [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "DEV-114": {
+      "id": "DEV-114",
+      "title": "Insights: Extract shared AI types to `packages/types/src/ai.ts` (currently only in backend `services/types.ts`)",
+      "domain": "development",
+      "source": "audit:ai-advisor [atomic]",
+      "completedAt": null,
+      "completedCommit": null
+    },
     "DEV-121": {
       "id": "DEV-121",
       "title": "Accounting: Add journal entry detail page `/accounting/journal-entries/[id]` — view entry with debit/credit lines, approve/void actions, source document link (API `GET /:id` exists, no frontend)",
       "domain": "development",
       "source": "sitemap:audit",
+      "completedAt": null,
+      "completedCommit": null
+    },
+    "UX-77": {
+      "id": "UX-77",
+      "title": "Routing: Move `/business/invoices/bills/[id]` → `/business/bills/[id]` — bills aren't children of invoices, fix domain nesting + update all internal links",
+      "domain": "ux",
+      "source": "sitemap:audit [atomic]",
       "completedAt": null,
       "completedCommit": null
     },
@@ -8931,6 +8826,7 @@
     "byDomain": {
       "security": [
         "SEC-8",
+        "SEC-24",
         "SEC-10",
         "SEC-12",
         "SEC-14",
@@ -8945,7 +8841,6 @@
       ],
       "development": [
         "DEV-2",
-        "DEV-59",
         "DEV-71",
         "DEV-72",
         "DEV-73",
@@ -8956,7 +8851,6 @@
         "DEV-97",
         "DEV-98",
         "DEV-83",
-        "DEV-84",
         "DEV-61",
         "DEV-62",
         "DEV-63",
@@ -9031,7 +8925,6 @@
         "DEV-109",
         "DEV-110",
         "DEV-111",
-        "DEV-114",
         "DEV-115",
         "DEV-116",
         "DEV-117",
@@ -9040,42 +8933,6 @@
         "DEV-120",
         "DEV-15",
         "DEV-16"
-      ],
-      "ux": [
-        "UX-15",
-        "UX-18",
-        "UX-31",
-        "UX-32",
-        "UX-45",
-        "UX-58",
-        "UX-59",
-        "UX-60",
-        "UX-33",
-        "UX-34",
-        "UX-36",
-        "UX-44",
-        "UX-19",
-        "UX-20",
-        "UX-21",
-        "UX-22",
-        "UX-24",
-        "UX-25",
-        "UX-3",
-        "UX-4",
-        "UX-6",
-        "UX-7",
-        "UX-52",
-        "UX-54",
-        "UX-55",
-        "UX-57",
-        "UX-61",
-        "UX-62",
-        "UX-63",
-        "UX-64",
-        "UX-65",
-        "UX-77",
-        "UX-79",
-        "UX-81"
       ],
       "infrastructure": [
         "INFRA-13",
@@ -9090,9 +8947,38 @@
         "INFRA-4",
         "INFRA-6"
       ],
+      "ux": [
+        "UX-18",
+        "UX-45",
+        "UX-58",
+        "UX-59",
+        "UX-60",
+        "UX-33",
+        "UX-34",
+        "UX-36",
+        "UX-44",
+        "UX-20",
+        "UX-21",
+        "UX-22",
+        "UX-24",
+        "UX-25",
+        "UX-102",
+        "UX-3",
+        "UX-4",
+        "UX-6",
+        "UX-7",
+        "UX-52",
+        "UX-55",
+        "UX-57",
+        "UX-61",
+        "UX-62",
+        "UX-63",
+        "UX-64",
+        "UX-65",
+        "UX-79",
+        "UX-81"
+      ],
       "performance": [
-        "PERF-2",
-        "PERF-3",
         "PERF-7",
         "PERF-10",
         "PERF-12",
@@ -9100,37 +8986,33 @@
         "PERF-11"
       ],
       "code-quality": [
-        "DRY-2",
         "DRY-3",
-        "DRY-9",
         "DRY-10",
-        "DRY-11",
-        "DRY-12",
         "DRY-13",
         "DRY-14",
         "DRY-15",
-        "DRY-7",
         "DRY-5"
       ],
-      "documentation": [
-        "DOC-2",
-        "DOC-3",
-        "DOC-7",
-        "DOC-8",
-        "DOC-4",
-        "DOC-5",
-        "DOC-6"
-      ],
       "financial": [
+        "FIN-25",
+        "FIN-26",
+        "FIN-27",
+        "FIN-28",
         "FIN-7",
         "FIN-8",
         "FIN-9",
         "FIN-10",
-        "FIN-14",
         "FIN-16",
         "FIN-11",
         "FIN-12",
         "FIN-6"
+      ],
+      "documentation": [
+        "DOC-3",
+        "DOC-8",
+        "DOC-4",
+        "DOC-5",
+        "DOC-6"
       ],
       "architecture": [
         "ARCH-5",
@@ -9139,12 +9021,21 @@
         "ARCH-3"
       ],
       "design-system": [
-        "DS-4",
         "DS-1",
         "DS-2"
       ],
       "marketing": [
         "MKT-1",
+        "MKT-3",
+        "MKT-4",
+        "MKT-5",
+        "MKT-6",
+        "MKT-7",
+        "MKT-8",
+        "MKT-9",
+        "MKT-10",
+        "MKT-11",
+        "MKT-12",
         "MKT-2"
       ],
       "content": [
@@ -9153,20 +9044,21 @@
     },
     "byPriority": {
       "critical": [
-        "DRY-9"
+        "FIN-25",
+        "FIN-26",
+        "FIN-27",
+        "FIN-28",
+        "UX-102"
       ],
       "high": [
         "SEC-8",
+        "SEC-24",
         "TEST-1",
         "TEST-2",
         "TEST-3",
         "DEV-2",
-        "UX-15",
         "INFRA-13",
         "UX-18",
-        "DEV-59",
-        "UX-31",
-        "UX-32",
         "DEV-71",
         "DEV-72",
         "DEV-73",
@@ -9180,9 +9072,18 @@
         "UX-58",
         "UX-59",
         "UX-60",
-        "UX-77",
         "DS-1",
         "MKT-1",
+        "MKT-3",
+        "MKT-4",
+        "MKT-5",
+        "MKT-6",
+        "MKT-7",
+        "MKT-8",
+        "MKT-9",
+        "MKT-10",
+        "MKT-11",
+        "MKT-12",
         "INFRA-1",
         "INFRA-2",
         "INFRA-3",
@@ -9197,8 +9098,6 @@
         "UX-36",
         "UX-44",
         "DEV-83",
-        "DEV-84",
-        "UX-19",
         "UX-20",
         "UX-21",
         "UX-22",
@@ -9213,18 +9112,13 @@
         "DEV-67",
         "DEV-68",
         "DEV-69",
-        "PERF-2",
-        "PERF-3",
         "PERF-7",
-        "DRY-2",
         "DRY-3",
         "DRY-10",
-        "DRY-11",
         "DRY-13",
         "DRY-14",
         "UX-3",
         "UX-4",
-        "DOC-2",
         "DOC-3",
         "SEC-10",
         "UX-6",
@@ -9241,9 +9135,6 @@
         "ARCH-1",
         "ARCH-4",
         "TEST-4",
-        "DRY-7",
-        "DS-4",
-        "FIN-14",
         "DEV-11",
         "DEV-12",
         "DEV-13",
@@ -9290,7 +9181,6 @@
         "DEV-87",
         "DEV-88",
         "DEV-89",
-        "UX-54",
         "UX-55",
         "DEV-90",
         "DEV-91",
@@ -9305,7 +9195,6 @@
         "DEV-104",
         "DEV-105",
         "UX-64",
-        "DEV-114",
         "DEV-115",
         "DEV-116",
         "DEV-117",
@@ -9322,9 +9211,7 @@
       ],
       "low": [
         "DEV-70",
-        "DRY-12",
         "DRY-15",
-        "DOC-7",
         "DOC-8",
         "DEV-40",
         "DEV-41",
@@ -9362,47 +9249,34 @@
         "UX-4",
         "DOC-3",
         "DOC-8",
-        "DEV-114",
         "DOC-4",
         "DOC-5",
-        "DOC-6"
+        "DOC-6",
+        "MKT-3"
       ],
       "short": [
+        "SEC-24",
         "TEST-3",
-        "UX-15",
-        "UX-32",
         "DEV-72",
         "DEV-78",
         "UX-45",
         "UX-36",
-        "DEV-84",
-        "UX-19",
         "UX-21",
         "UX-22",
         "UX-24",
         "UX-25",
         "DEV-70",
-        "PERF-2",
-        "PERF-3",
         "PERF-7",
-        "DRY-2",
         "DRY-3",
-        "DRY-9",
-        "DRY-11",
-        "DRY-12",
         "DRY-13",
         "DRY-15",
+        "FIN-26",
         "UX-3",
-        "DOC-2",
-        "DOC-7",
         "UX-6",
         "UX-7",
         "SEC-12",
         "SEC-14",
         "PERF-12",
-        "DRY-7",
-        "DS-4",
-        "FIN-14",
         "DEV-19",
         "DEV-26",
         "DEV-27",
@@ -9415,7 +9289,6 @@
         "DEV-49",
         "DEV-58",
         "UX-52",
-        "UX-54",
         "UX-55",
         "DEV-101",
         "UX-62",
@@ -9433,8 +9306,13 @@
         "SEC-16",
         "INFRA-11",
         "INFRA-12",
-        "UX-77",
         "DS-1",
+        "MKT-5",
+        "MKT-6",
+        "MKT-8",
+        "MKT-9",
+        "MKT-10",
+        "MKT-11",
         "MKT-2",
         "CNT-1",
         "INFRA-2",
@@ -9448,7 +9326,6 @@
         "TEST-1",
         "TEST-2",
         "DEV-2",
-        "DEV-59",
         "DEV-76",
         "UX-58",
         "UX-59",
@@ -9457,6 +9334,7 @@
         "DEV-64",
         "DEV-66",
         "DEV-68",
+        "UX-102",
         "SEC-10",
         "PERF-10",
         "FIN-7",
@@ -9485,6 +9363,7 @@
         "DEV-119",
         "DS-2",
         "MKT-1",
+        "MKT-7",
         "INFRA-1",
         "ARCH-3",
         "INFRA-7",
@@ -9510,14 +9389,11 @@
     },
     "byStatus": {
       "ready": [
+        "SEC-24",
         "TEST-1",
         "TEST-2",
         "DEV-2",
-        "UX-15",
         "UX-18",
-        "DEV-59",
-        "UX-31",
-        "UX-32",
         "DEV-71",
         "DEV-72",
         "DEV-73",
@@ -9528,42 +9404,32 @@
         "UX-45",
         "UX-33",
         "UX-36",
-        "DEV-84",
-        "UX-19",
         "UX-20",
         "UX-21",
         "UX-22",
         "UX-24",
         "UX-25",
-        "PERF-2",
-        "PERF-3",
         "PERF-7",
-        "DRY-2",
         "DRY-3",
-        "DRY-9",
         "DRY-10",
-        "DRY-11",
-        "DRY-12",
         "DRY-13",
         "DRY-14",
         "DRY-15",
+        "FIN-25",
+        "FIN-26",
+        "FIN-27",
+        "FIN-28",
+        "UX-102",
         "UX-3",
         "UX-4",
-        "DOC-2",
         "DOC-3",
-        "DOC-7",
         "DOC-8",
         "SEC-12",
         "SEC-14",
-        "DRY-7",
-        "DS-4",
-        "FIN-14",
         "DEV-11",
         "DEV-12",
         "DEV-13",
         "DEV-14",
-        "UX-54",
-        "DEV-114",
         "DEV-115",
         "DEV-116",
         "DOC-4",
@@ -9571,10 +9437,19 @@
         "DEV-16",
         "DOC-5",
         "DOC-6",
-        "UX-77",
         "UX-79",
         "UX-81",
         "DS-1",
+        "MKT-3",
+        "MKT-4",
+        "MKT-5",
+        "MKT-6",
+        "MKT-7",
+        "MKT-8",
+        "MKT-9",
+        "MKT-10",
+        "MKT-11",
+        "MKT-12",
         "INFRA-1",
         "INFRA-2",
         "INFRA-3",
@@ -9711,18 +9586,26 @@
       ]
     },
     "quickWins": [
-      "UX-15",
-      "UX-32",
+      "SEC-24",
       "DEV-72",
       "DEV-78",
       "UX-45",
-      "DRY-9",
-      "UX-77",
+      "FIN-26",
       "DS-1",
+      "MKT-3",
+      "MKT-5",
+      "MKT-6",
+      "MKT-8",
+      "MKT-9",
+      "MKT-10",
+      "MKT-11",
       "INFRA-2",
       "INFRA-3"
     ],
-    "stale": [],
+    "stale": [
+      "FIN-11",
+      "FIN-12"
+    ],
     "highRisk": []
   }
 }
