@@ -71,13 +71,14 @@ const MOCK_ENTITY = {
   name: 'Test Business',
 };
 
+// FIN-25: line.amount is PRE-TAX (qty * unitPrice), NOT post-tax
 const MOCK_INVOICE_LINE = {
   id: 'line-1',
   description: 'Consulting services',
   quantity: 10,
   unitPrice: 15000, // $150.00 per hour
   taxAmount: 19500, // 13% tax
-  amount: 169500, // (10 * 15000) + 19500
+  amount: 150000, // Pre-tax line amount: qty * unitPrice (10 * 15000)
   glAccountId: null,
   categoryId: null,
   taxRateId: null,
@@ -160,7 +161,7 @@ describe('Invoice Routes', () => {
           quantity: 10,
           unitPrice: 15000,
           taxAmount: 19500,
-          amount: 169500,
+          amount: 150000, // Pre-tax: qty * unitPrice (10 * 15000)
         },
       ],
     };

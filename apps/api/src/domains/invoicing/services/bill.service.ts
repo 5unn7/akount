@@ -76,6 +76,7 @@ export async function createBill(data: CreateBillInput, ctx: TenantContext) {
   }
 
   // SECURITY FIX M-2: Validate totals match line items to prevent amount manipulation
+  // Note: line.amount is PRE-TAX (qty * unitPrice). subtotal = sum(line.amount), total = subtotal + taxAmount
   const calculatedSubtotal = data.lines.reduce((sum, line) => sum + line.amount, 0);
   const calculatedTaxAmount = data.lines.reduce((sum, line) => sum + line.taxAmount, 0);
   const calculatedTotal = calculatedSubtotal + calculatedTaxAmount;
