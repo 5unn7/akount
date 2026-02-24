@@ -848,6 +848,7 @@ export class ReportService {
             AND je."deletedAt" IS NULL
             AND jl."deletedAt" IS NULL
             AND je."date" <= ${params.asOfDate}
+            AND (je."linkedEntryId" IS NULL OR je.id < je."linkedEntryId")
           ))
         GROUP BY gl.id, gl.code, gl.name, gl.type, gl."normalBalance"
         ORDER BY gl.code ASC
@@ -969,6 +970,7 @@ export class ReportService {
           AND je."deletedAt" IS NULL
           AND jl."deletedAt" IS NULL
           AND je.date < ${params.startDate}
+          AND (je."linkedEntryId" IS NULL OR je.id < je."linkedEntryId")
       `
     );
 
@@ -1005,6 +1007,7 @@ export class ReportService {
           AND jl."deletedAt" IS NULL
           AND je.date >= ${params.startDate}
           AND je.date <= ${params.endDate}
+          AND (je."linkedEntryId" IS NULL OR je.id < je."linkedEntryId")
           ${params.cursor ? Prisma.sql`AND jl.id > ${params.cursor}` : Prisma.empty}
         ORDER BY jl.id ASC
         LIMIT ${params.limit}
