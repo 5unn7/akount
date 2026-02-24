@@ -1,5 +1,6 @@
 import { prisma, Prisma } from '@akount/db';
 import { AccountingError } from '../errors';
+import { validateEntityOwnership, validateGLAccountOwnership } from '../utils/validate-ownership';
 import { createAuditLog } from '../../../lib/audit';
 import type {
     CreateTaxRateInput,
@@ -33,18 +34,24 @@ export class TaxRateService {
     /**
      * List tax rates with optional filters.
      * Returns both entity-specific and global rates (entityId: null).
+     * SEC-27: When entityId absent, returns ALL tenant's entity rates + global rates.
      */
     async listTaxRates(params: ListTaxRatesQuery) {
         // Build AND conditions to avoid overwriting tenant-scoping OR
         const conditions: Prisma.TaxRateWhereInput[] = [
             // Tenant scoping: entity-specific + global rates
             {
-                OR: [
-                    ...(params.entityId
-                        ? [{ entityId: params.entityId, entity: { tenantId: this.tenantId } }]
-                        : []),
-                    { entityId: null },
-                ],
+                OR: params.entityId
+                    ? [
+                          // Specific entity + global rates
+                          { entityId: params.entityId, entity: { tenantId: this.tenantId } },
+                          { entityId: null },
+                      ]
+                    : [
+                          // All tenant entities + global rates (SEC-27 fix)
+                          { entity: { tenantId: this.tenantId } },
+                          { entityId: null },
+                      ],
             },
         ];
 
@@ -106,12 +113,12 @@ export class TaxRateService {
     async createTaxRate(data: CreateTaxRateInput) {
         // Validate entity ownership if entityId provided
         if (data.entityId) {
-            await this.validateEntityOwnership(data.entityId);
+            await validateEntityOwnership(data.entityId, this.tenantId);
         }
 
         // Validate GL account ownership if provided
         if (data.glAccountId) {
-            await this.validateGLAccountOwnership(data.glAccountId);
+            await validateGLAccountOwnership(data.glAccountId, this.tenantId);
         }
 
         // Validate date range
@@ -199,7 +206,7 @@ export class TaxRateService {
 
         // Validate GL account ownership if provided
         if (data.glAccountId) {
-            await this.validateGLAccountOwnership(data.glAccountId);
+            await validateGLAccountOwnership(data.glAccountId, this.tenantId);
         }
 
         // Validate date range — check partial updates against existing record
@@ -292,32 +299,8 @@ export class TaxRateService {
     /**
      * Validate that an entity belongs to the current tenant.
      */
-    private async validateEntityOwnership(entityId: string) {
-        const entity = await prisma.entity.findFirst({
-            where: { id: entityId, tenantId: this.tenantId },
-            select: { id: true },
-        });
-
-        if (!entity) {
-            throw new AccountingError('Entity not found', 'ENTITY_NOT_FOUND', 403);
-        }
-
-        return entity;
-    }
 
     /**
      * Validate that a GL account belongs to an entity owned by the current tenant.
      */
-    private async validateGLAccountOwnership(glAccountId: string) {
-        const glAccount = await prisma.gLAccount.findFirst({
-            where: { id: glAccountId, entity: { tenantId: this.tenantId } },
-            select: { id: true },
-        });
-
-        if (!glAccount) {
-            throw new AccountingError('GL account not found', 'GL_ACCOUNT_NOT_FOUND', 403);
-        }
-
-        return glAccount;
-    }
 }
