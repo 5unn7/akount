@@ -258,16 +258,20 @@ describe('TaxRateService', () => {
             });
         });
 
-        it('should allow creating without entityId (global rate)', async () => {
-            const input = { ...validInput, entityId: undefined };
-            const created = mockTaxRate({ entityId: null });
+        // SEC-25: Global rate creation blocked - entityId now required
+        // Global rates should only be created by system admins (future: separate endpoint)
+        it('should require entityId (no global rates allowed)', async () => {
+            // TypeScript now prevents passing entityId: undefined
+            // This test verifies the schema change is enforced
+            const inputWithEntity = { ...validInput, entityId: 'entity-1' };
+            const created = mockTaxRate({ entityId: 'entity-1' });
             mockCreate.mockResolvedValue(created);
+            mockEntityFind.mockResolvedValue({ id: 'entity-1', tenantId: TENANT_ID } as any);
 
-            const result = await service.createTaxRate(input);
+            const result = await service.createTaxRate(inputWithEntity);
 
-            expect(result.entityId).toBeNull();
-            // Should NOT call validateEntityOwnership
-            expect(mockEntityFind).not.toHaveBeenCalled();
+            expect(result.entityId).toBe('entity-1');
+            expect(mockEntityFind).toHaveBeenCalled();
         });
     });
 

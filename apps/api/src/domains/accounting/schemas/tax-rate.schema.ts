@@ -14,7 +14,7 @@ export type TaxRateParams = z.infer<typeof TaxRateParamsSchema>;
 // ============================================================================
 
 export const CreateTaxRateSchema = z.object({
-    entityId: z.string().cuid('Invalid entity ID').optional(), // Optional for global rates
+    entityId: z.string().cuid('Invalid entity ID'), // REQUIRED - prevents global rate pollution (SEC-25)
     code: z
         .string()
         .min(1, 'Code is required')
