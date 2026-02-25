@@ -47,7 +47,7 @@
 | DEV-76 | Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + endpoints exist) | 3-4h | 🟠 High | 🟢 | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | DEV-77 | Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | DEV-78 | Business: Wire "Post to GL" button on payment allocation (backend route exists, no frontend trigger) | 1h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
-| UX-45 | Business: Add quick "Record Payment" button on invoice detail page (shortcut to payment form) | 1-2h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
+| ~~UX-45~~ | ~~Business: Add quick "Record Payment" button on invoice detail page (shortcut to payment form)~~ | 1-2h | 🟠 High | ✅ done | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | DEV-97 | Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model, migrate from Entity.metadata) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
 | DEV-98 | Planning: Build Budget service + full CRUD (create/list/get/update/delete using Budget model) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
 | UX-58 | Planning: Build goals page — list goals, create form, progress tracking, status updates | 3-4h | 🟠 High | 📦 | [needs: DEV-97] | audit:fe-be-parity |
@@ -81,7 +81,7 @@
 |----|------|--------|----------|--------|------|--------|
 | UX-33 | App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill (isolated views currently) | 2-3h | 🟡 Medium | 🟢 | | audit:app-ux |
 | UX-34 | App-wide: Add bulk operations to list pages — Business (batch send/approve invoices, batch approve bills), Banking (batch deactivate accounts) | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
-| UX-36 | Business: Add standalone "Create Client" / "Create Vendor" buttons on list pages (currently only via invoice/bill forms) | 1h | 🟡 Medium | 🟢 | | audit:app-ux |
+| ~~UX-36~~ | ~~Business: Add standalone "Create Client" / "Create Vendor" buttons on list pages (currently only via invoice/bill forms)~~ | 1h | 🟡 Medium | ✅ done | | audit:app-ux |
 | UX-44 | Business: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-84 | App-wide: Fix navigation.ts mismatches — Bills route points to stub, verify all nav items match real pages | 30m | 🟡 Medium | ✅ done | | audit:app-ux [atomic] |

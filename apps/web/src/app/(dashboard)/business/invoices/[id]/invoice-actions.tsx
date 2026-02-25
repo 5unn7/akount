@@ -17,9 +17,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { Invoice } from '@/lib/api/invoices';
 import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction } from './actions';
-import { Send, BookOpen, Download, XCircle, Loader2, ExternalLink, Pencil } from 'lucide-react';
+import { Send, BookOpen, Download, XCircle, Loader2, ExternalLink, Pencil, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
 import { InvoiceForm } from '@/components/business/InvoiceForm';
+import { PaymentForm } from '@/components/business/PaymentForm';
 
 interface InvoiceActionsProps {
     invoice: Invoice;
@@ -31,6 +32,10 @@ export function InvoiceActions({ invoice, clients }: InvoiceActionsProps) {
     const [loading, setLoading] = useState<string | null>(null);
     const [journalEntryId, setJournalEntryId] = useState<string | null>(null);
     const [editOpen, setEditOpen] = useState(false);
+    const [paymentOpen, setPaymentOpen] = useState(false);
+
+    const balanceDue = invoice.total - (invoice.paidAmount ?? 0);
+    const canRecordPayment = balanceDue > 0 && !['CANCELLED', 'DRAFT'].includes(invoice.status);
 
     const ACTION_LABELS: Record<string, string> = {
         send: 'Invoice sent',
@@ -137,6 +142,17 @@ export function InvoiceActions({ invoice, clients }: InvoiceActionsProps) {
                     </Link>
                 </Button>
             )}
+            {canRecordPayment && (
+                <Button
+                    size="sm"
+                    onClick={() => setPaymentOpen(true)}
+                    disabled={loading !== null}
+                    className="gap-1.5"
+                >
+                    <DollarSign className="h-4 w-4" />
+                    Record Payment
+                </Button>
+            )}
             <Button
                 size="sm"
                 variant="ghost"
@@ -193,6 +209,23 @@ export function InvoiceActions({ invoice, clients }: InvoiceActionsProps) {
                     clients={clients}
                     editInvoice={invoice}
                     onSuccess={() => router.refresh()}
+                />
+            )}
+
+            {canRecordPayment && (
+                <PaymentForm
+                    key={`payment-${invoice.id}`}
+                    open={paymentOpen}
+                    onOpenChange={setPaymentOpen}
+                    clients={clients}
+                    vendors={[]}
+                    onSuccess={() => router.refresh()}
+                    defaults={{
+                        direction: 'AR',
+                        clientId: invoice.clientId,
+                        amount: balanceDue,
+                        currency: invoice.currency,
+                    }}
                 />
             )}
         </div>

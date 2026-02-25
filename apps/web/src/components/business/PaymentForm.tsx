@@ -15,6 +15,14 @@ interface PaymentFormProps {
   clients: Array<{ id: string; name: string }>;
   vendors: Array<{ id: string; name: string }>;
   onSuccess?: () => void;
+  /** Pre-fill defaults (e.g. from invoice detail page) */
+  defaults?: {
+    direction?: PaymentDirection;
+    clientId?: string;
+    vendorId?: string;
+    amount?: number; // Integer cents
+    currency?: string;
+  };
 }
 
 type PaymentDirection = 'AR' | 'AP';
@@ -34,12 +42,17 @@ function parseCentsInput(value: string): number {
   return Math.round(num * 100);
 }
 
-export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess }: PaymentFormProps) {
-  const [direction, setDirection] = useState<PaymentDirection>('AR');
-  const [selectedId, setSelectedId] = useState('');
+export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, defaults }: PaymentFormProps) {
+  const defaultDirection = defaults?.direction ?? 'AR';
+  const defaultSelectedId = (defaultDirection === 'AR' ? defaults?.clientId : defaults?.vendorId) ?? '';
+  const defaultAmountStr = defaults?.amount ? (defaults.amount / 100).toFixed(2) : '';
+  const defaultCurrency = defaults?.currency ?? 'CAD';
+
+  const [direction, setDirection] = useState<PaymentDirection>(defaultDirection);
+  const [selectedId, setSelectedId] = useState(defaultSelectedId);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [amountStr, setAmountStr] = useState('');
-  const [currency, setCurrency] = useState('CAD');
+  const [amountStr, setAmountStr] = useState(defaultAmountStr);
+  const [currency, setCurrency] = useState(defaultCurrency);
   const [paymentMethod, setPaymentMethod] = useState('TRANSFER');
   const [reference, setReference] = useState('');
   const [notes, setNotes] = useState('');
@@ -47,11 +60,11 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess }:
   const [submitting, setSubmitting] = useState(false);
 
   const resetForm = () => {
-    setDirection('AR');
-    setSelectedId('');
+    setDirection(defaultDirection);
+    setSelectedId(defaultSelectedId);
     setDate(new Date().toISOString().split('T')[0]);
-    setAmountStr('');
-    setCurrency('CAD');
+    setAmountStr(defaultAmountStr);
+    setCurrency(defaultCurrency);
     setPaymentMethod('TRANSFER');
     setReference('');
     setNotes('');
