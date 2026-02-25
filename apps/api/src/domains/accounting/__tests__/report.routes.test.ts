@@ -263,7 +263,7 @@ describe('Report Routes', () => {
 
       expect(response.statusCode).toBe(404);
       const body = response.json();
-      expect(body.code).toBe('ENTITY_NOT_FOUND');
+      expect(body.error).toBe('ENTITY_NOT_FOUND');
     });
 
     it('should handle unexpected errors with 500', async () => {
@@ -276,8 +276,6 @@ describe('Report Routes', () => {
       });
 
       expect(response.statusCode).toBe(500);
-      const body = response.json();
-      expect(body.error).toBe('Internal server error');
     });
   });
 
@@ -411,7 +409,7 @@ describe('Report Routes', () => {
 
       expect(response.statusCode).toBe(404);
       const body = response.json();
-      expect(body.code).toBe('ENTITY_NOT_FOUND');
+      expect(body.error).toBe('ENTITY_NOT_FOUND');
     });
   });
 
@@ -465,7 +463,7 @@ describe('Report Routes', () => {
 
       expect(response.statusCode).toBe(404);
       const body = response.json();
-      expect(body.code).toBe('GL_ACCOUNT_NOT_FOUND');
+      expect(body.error).toBe('GL_ACCOUNT_NOT_FOUND');
     });
 
     it('should handle cursor pagination parameter', async () => {

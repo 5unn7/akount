@@ -32,6 +32,7 @@ import {
     createGLAccountAction,
     updateGLAccountAction,
     deactivateGLAccountAction,
+    reactivateGLAccountAction,
     seedDefaultCOAAction,
     fetchGLAccounts,
     fetchAccountBalances,
@@ -173,6 +174,20 @@ export function ChartOfAccountsClient({
             toast.success('Account deactivated');
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Failed to deactivate account';
+            toast.error(msg);
+            setActionError(msg);
+        }
+    }
+
+    async function handleReactivate(id: string) {
+        try {
+            const updated = await reactivateGLAccountAction(id);
+            setAccounts((prev) =>
+                prev.map((a) => (a.id === updated.id ? updated : a))
+            );
+            toast.success('Account reactivated');
+        } catch (error) {
+            const msg = error instanceof Error ? error.message : 'Failed to reactivate account';
             toast.error(msg);
             setActionError(msg);
         }
@@ -348,6 +363,7 @@ export function ChartOfAccountsClient({
                                     totalBalance={group.totalBalance}
                                     onEdit={openEditSheet}
                                     onDeactivate={handleDeactivate}
+                                    onReactivate={handleReactivate}
                                 />
                             ))}
                         </tbody>
@@ -390,12 +406,14 @@ function GroupedSection({
     totalBalance,
     onEdit,
     onDeactivate,
+    onReactivate,
 }: {
     type: GLAccountType;
     nodes: AccountNode[];
     totalBalance: number;
     onEdit: (account: GLAccount) => void;
     onDeactivate: (id: string) => void;
+    onReactivate: (id: string) => void;
 }) {
     return (
         <>
@@ -408,6 +426,7 @@ function GroupedSection({
                     isLast={idx === nodes.length - 1}
                     onEdit={onEdit}
                     onDeactivate={onDeactivate}
+                    onReactivate={onReactivate}
                 />
             ))}
         </>

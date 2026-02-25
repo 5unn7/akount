@@ -45,6 +45,12 @@ export async function deactivateGLAccountAction(
     return deactivateGLAccount(id);
 }
 
+export async function reactivateGLAccountAction(
+    id: string
+): Promise<GLAccount> {
+    return updateGLAccount(id, { isActive: true });
+}
+
 export async function seedDefaultCOAAction(
     entityId: string
 ): Promise<{ created: number; skipped?: boolean }> {

@@ -86,7 +86,7 @@
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-84 | App-wide: Fix navigation.ts mismatches — Bills route points to stub, verify all nav items match real pages | 30m | 🟡 Medium | ✅ done | | audit:app-ux [atomic] |
 | UX-19 | Accounting COA: Add search input for GL accounts (backend `search` param exists, UI only has type filter) | 30m | 🟡 Medium | ✅ done | d7e9e90 | audit:acct-fe-be |
-| UX-20 | Accounting COA: Add reactivate button for deactivated accounts (PATCH isActive:true works, no UI) | 15m | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| ~~UX-20~~ | ~~Accounting COA: Add reactivate button for deactivated accounts (PATCH isActive:true works, no UI)~~ | 15m | 🟡 Medium | ✅ done | | audit:acct-fe-be |
 | UX-21 | Accounting COA: Add balance summary header (Total Assets/Liabilities/Equity cards, data already fetched) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
 | UX-22 | Accounting JE: Fix filter auto-refresh (date/status changes don't re-fetch, only affect loadMore) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
 | UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
@@ -105,7 +105,7 @@
 | PERF-3 | Recharts: code-split import (lazy load) | 30m | 🟡 Medium | ✅ done | | review:performance [atomic] |
 | PERF-7 | Lazy-loading heavy frontend components | 1h | 🟡 Medium | 🟢 | | roadmap [atomic] |
 | DRY-2 | CSV sanitization: deduplicate between report-export and data-export | 30m | 🟡 Medium | ✅ done | | review:simplicity [atomic] |
-| DRY-3 | Report routes: extract shared 40-line handler pattern into helper | 1h | 🟡 Medium | 🟢 | | review:simplicity [atomic] |
+| ~~DRY-3~~ | ~~Report routes: extract shared 40-line handler pattern into helper~~ | 1h | 🟡 Medium | ✅ done | | review:simplicity [atomic] |
 | ~~DRY-8~~ | ~~Transfer routes: refactor string-matching error handling to use `AccountingError.statusCode` pattern (consistent with all other routes)~~ | 15-20m | 🟡 Medium | ✅ done | | review:transfer-service [atomic] |
 | ~~DRY-9~~ | ~~Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency`~~ | 1h | 🔴 High | ✅ done | 3860bf0 | inline-bandaid-audit [atomic] |
 | DRY-10 | Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit [atomic] |

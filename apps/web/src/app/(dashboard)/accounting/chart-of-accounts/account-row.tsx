@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronRight, ChevronDown, Pencil, Power } from 'lucide-react';
+import { ChevronRight, ChevronDown, Pencil, Power, PowerOff } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -171,12 +171,14 @@ export function AccountRow({
     isLast,
     onEdit,
     onDeactivate,
+    onReactivate,
 }: {
     node: AccountNode;
     depth: number;
     isLast: boolean;
     onEdit: (account: GLAccount) => void;
     onDeactivate: (id: string) => void;
+    onReactivate: (id: string) => void;
 }) {
     const [expanded, setExpanded] = useState(depth < 1);
     const hasChildren = node.children.length > 0;
@@ -260,7 +262,7 @@ export function AccountRow({
                         >
                             <Pencil className="h-3.5 w-3.5" />
                         </button>
-                        {node.isActive && (
+                        {node.isActive ? (
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <button
@@ -289,6 +291,35 @@ export function AccountRow({
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
+                        ) : (
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <button
+                                        className="p-1.5 rounded-md hover:bg-ak-green/10 text-muted-foreground hover:text-ak-green"
+                                        title="Reactivate"
+                                    >
+                                        <PowerOff className="h-3.5 w-3.5" />
+                                    </button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Reactivate account?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            &ldquo;{node.code} &mdash; {node.name}&rdquo; will be reactivated
+                                            and available for selection again.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className="bg-ak-green text-black hover:bg-ak-green/90"
+                                            onClick={() => onReactivate(node.id)}
+                                        >
+                                            Reactivate
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         )}
                     </div>
                 </td>
@@ -303,6 +334,7 @@ export function AccountRow({
                         isLast={idx === node.children.length - 1}
                         onEdit={onEdit}
                         onDeactivate={onDeactivate}
+                        onReactivate={onReactivate}
                     />
                 ))}
         </>
