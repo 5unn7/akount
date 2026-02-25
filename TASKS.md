@@ -1,10 +1,10 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-24 16:58
+**Last Updated:** 2026-02-24 23:28
 **Current Phase:** Phase 6 — Launch MVP
 
-> **223 product tasks** · 🔴 5 critical · 🟠 45 high · 🟡 113 medium · ⚪ 23 low · ✅ 114 done
-> 216 active · 53% progress
+> **389 product tasks** · 🔴 6 critical · 🟠 44 high · 🟡 126 medium · ⚪ 33 low · ✅ 194 done
+> 195 open · 50% progress
 >
 > _Note: 43 Linear PM infrastructure tasks moved to [LINEAR-TASKS.md](LINEAR-TASKS.md)_
 
@@ -41,12 +41,12 @@
 | ~~UX-32~~ | ~~Business: Add pagination controls — cursor pagination + Load More~~ | 1-2h | 🟠 High | ✅ done | cc6c96c | audit:app-ux |
 | ~~DEV-71~~ | ~~Business: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-72~~ | ~~Business: Void invoice full stack — schema + service + route + frontend (ef8ff46)~~ | 1h | 🟠 High | ✅ done | ef8ff46 | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
-| ~~DEV-73~~ | ~~Business: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
-| ~~DEV-74~~ | ~~Business: Add client CRUD — create/edit/delete (full backend API exists, only inline from invoice form)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-73~~ | ~~Business: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only)~~ | 2-3h | 🟠 High | ✅ done | c444e75 | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-74~~ | ~~Business: Add client CRUD — create/edit/delete (full backend API exists, only inline from invoice form)~~ | 2-3h | 🟠 High | ✅ done | c444e75 | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-75~~ | ~~Business: Replace bills "Coming Soon" stub with real bill list page (API ready, `/business/bills` is placeholder)~~ | 2-3h | 🟠 High | ✅ | 1e987ed | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
-| ~~DEV-76~~ | ~~Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + endpoints exist)~~ | 3-4h | 🟠 High | ✅ done | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
-| ~~DEV-77~~ | ~~Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
-| ~~DEV-78~~ | ~~Business: Wire "Post to GL" button on payment allocation (backend route exists, no frontend trigger)~~ | 1h | 🟠 High | ✅ done | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-76~~ | ~~Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + endpoints exist)~~ | 3-4h | 🟠 High | ✅ done | bc6de0c | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-77~~ | ~~Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI)~~ | 2-3h | 🟠 High | ✅ done | bc6de0c | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-78~~ | ~~Business: Wire "Post to GL" button on payment allocation (backend route exists, no frontend trigger)~~ | 1h | 🟠 High | ✅ done | bc6de0c | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | ~~UX-45~~ | ~~Business: Add quick "Record Payment" button on invoice detail page (shortcut to payment form)~~ | 1-2h | 🟠 High | ✅ done | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | DEV-97 | Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model, migrate from Entity.metadata) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
 | DEV-98 | Planning: Build Budget service + full CRUD (create/list/get/update/delete using Budget model) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
