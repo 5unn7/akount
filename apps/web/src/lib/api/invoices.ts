@@ -34,7 +34,7 @@ export interface Invoice {
   subtotal: number; // Integer cents
   taxAmount: number; // Integer cents
   total: number; // Integer cents
-  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
+  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID' | 'VOIDED';
   paidAmount: number; // Integer cents
   notes?: string | null;
   deletedAt?: string | null;
@@ -66,7 +66,7 @@ export interface InvoiceStats {
 
 export interface ListInvoicesParams {
   entityId?: string;
-  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
+  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID' | 'VOIDED';
   clientId?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -88,7 +88,7 @@ export interface CreateInvoiceInput {
   subtotal: number;
   taxAmount: number;
   total: number;
-  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
+  status: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID' | 'VOIDED';
   notes?: string;
   lines: Array<{
     description: string;
@@ -110,7 +110,7 @@ export interface UpdateInvoiceInput {
   subtotal?: number;
   taxAmount?: number;
   total?: number;
-  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
+  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID' | 'VOIDED';
   notes?: string;
 }
 
@@ -195,6 +195,15 @@ export async function sendInvoice(id: string): Promise<Invoice> {
  */
 export async function cancelInvoice(id: string): Promise<Invoice> {
   return apiClient<Invoice>(`/api/business/invoices/${id}/cancel`, {
+    method: 'POST',
+  });
+}
+
+/**
+ * Void invoice (reverses GL journal entries, marks as VOIDED)
+ */
+export async function voidInvoice(id: string): Promise<Invoice> {
+  return apiClient<Invoice>(`/api/business/invoices/${id}/void`, {
     method: 'POST',
   });
 }

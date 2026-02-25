@@ -7,6 +7,7 @@ import type {
 } from '../schemas/invoice.schema';
 import { generateInvoicePdf } from './pdf.service';
 import { sendEmail } from '../../../lib/email';
+import { JournalEntryService } from '../../accounting/services/journal-entry.service';
 
 /**
  * Invoice service — Business logic for invoice CRUD + status transitions.
@@ -20,13 +21,15 @@ import { sendEmail } from '../../../lib/email';
  * Invoice lifecycle: DRAFT → SENT → PARTIALLY_PAID → PAID
  *                    DRAFT/SENT → CANCELLED (if no payments)
  *                    SENT/PARTIALLY_PAID → OVERDUE
+ *                    SENT/PAID/PARTIALLY_PAID/OVERDUE → VOIDED (reverses GL)
  */
 
 const VALID_TRANSITIONS: Record<string, InvoiceStatus[]> = {
   DRAFT: ['SENT', 'CANCELLED'],
-  SENT: ['PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED'],
-  PARTIALLY_PAID: ['PAID', 'OVERDUE'],
-  OVERDUE: ['PARTIALLY_PAID', 'PAID'],
+  SENT: ['PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED', 'VOIDED'],
+  PARTIALLY_PAID: ['PAID', 'OVERDUE', 'VOIDED'],
+  OVERDUE: ['PARTIALLY_PAID', 'PAID', 'VOIDED'],
+  PAID: ['VOIDED'],
 };
 
 function assertTransition(current: InvoiceStatus, target: InvoiceStatus): void {
@@ -521,6 +524,39 @@ export async function cancelInvoice(id: string, ctx: TenantContext) {
   return prisma.invoice.update({
     where: { id },
     data: { status: 'CANCELLED' },
+    include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
+  });
+}
+
+/**
+ * Void invoice: SENT/PAID/PARTIALLY_PAID/OVERDUE → VOIDED
+ * Voids any associated GL journal entries (creates reversing entries).
+ * Unlike cancel, void works on invoices that have been posted or paid.
+ */
+export async function voidInvoice(id: string, ctx: TenantContext) {
+  const invoice = await getInvoice(id, ctx);
+  assertTransition(invoice.status, 'VOIDED');
+
+  // Void any GL journal entries posted from this invoice
+  const journalEntries = await prisma.journalEntry.findMany({
+    where: {
+      sourceType: 'INVOICE',
+      sourceId: id,
+      status: 'POSTED',
+      entity: { tenantId: ctx.tenantId },
+      deletedAt: null,
+    },
+    select: { id: true },
+  });
+
+  const jeService = new JournalEntryService(ctx.tenantId, ctx.userId);
+  for (const je of journalEntries) {
+    await jeService.voidEntry(je.id);
+  }
+
+  return prisma.invoice.update({
+    where: { id },
+    data: { status: 'VOIDED' },
     include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
 }

@@ -10,6 +10,7 @@ const INVOICE_STATUS_CONFIG: Record<InvoiceStatus, { label: string; variant: Bad
     PARTIALLY_PAID: { label: 'Partial', variant: 'warning' },
     OVERDUE: { label: 'Overdue', variant: 'error' },
     CANCELLED: { label: 'Cancelled', variant: 'locked' },
+    VOIDED: { label: 'Voided', variant: 'error' },
 };
 
 interface InvoiceStatusBadgeProps {

@@ -17,7 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Filter, X, Loader2 } from 'lucide-react';
 import { fetchMoreInvoices } from '../actions';
 
-type InvoiceStatus = 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID';
+type InvoiceStatus = 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID' | 'VOIDED';
 
 interface InvoicesListClientProps {
     initialInvoices: Invoice[];
@@ -127,6 +127,7 @@ export function InvoicesListClient({
                                     <SelectItem value="OVERDUE">Overdue</SelectItem>
                                     <SelectItem value="CANCELLED">Cancelled</SelectItem>
                                     <SelectItem value="PARTIALLY_PAID">Partially Paid</SelectItem>
+                                    <SelectItem value="VOIDED">Voided</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

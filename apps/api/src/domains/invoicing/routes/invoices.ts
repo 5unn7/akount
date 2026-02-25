@@ -265,6 +265,39 @@ export async function invoiceRoutes(fastify: FastifyInstance) {
     }
   );
 
+  // POST /api/invoices/:id/void - Void invoice (reverses GL journal entries)
+  fastify.post(
+    '/:id/void',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN']),
+      preValidation: [validateParams(z.object({ id: z.string() }))],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const params = request.params as { id: string };
+      const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
+
+      try {
+        const invoice = await invoiceService.voidInvoice(params.id, tenant);
+        request.log.info({ invoiceId: params.id }, 'Voided invoice');
+        return reply.status(200).send(invoice);
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.message.includes('not found')) {
+            return reply.status(404).send({ error: 'Invoice not found' });
+          }
+          if (error.message.includes('Invalid status') || error.message.includes('already voided')) {
+            return reply.status(400).send({ error: error.message });
+          }
+        }
+        throw error;
+      }
+    }
+  );
+
   // POST /api/invoices/:id/mark-overdue - Mark invoice overdue
   fastify.post(
     '/:id/mark-overdue',

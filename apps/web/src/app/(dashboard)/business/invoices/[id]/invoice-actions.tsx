@@ -16,8 +16,8 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import type { Invoice } from '@/lib/api/invoices';
-import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction } from './actions';
-import { Send, BookOpen, Download, XCircle, Loader2, ExternalLink, Pencil, DollarSign } from 'lucide-react';
+import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction, voidInvoiceAction, deleteInvoiceAction } from './actions';
+import { Send, BookOpen, Download, XCircle, Ban, Loader2, ExternalLink, Pencil, DollarSign, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { InvoiceForm } from '@/components/business/InvoiceForm';
 import { PaymentForm } from '@/components/business/PaymentForm';
@@ -41,6 +41,8 @@ export function InvoiceActions({ invoice, clients }: InvoiceActionsProps) {
         send: 'Invoice sent',
         post: 'Invoice posted to GL',
         cancel: 'Invoice cancelled',
+        void: 'Invoice voided',
+        delete: 'Invoice deleted',
     };
 
     const handleAction = async (
@@ -75,14 +77,32 @@ export function InvoiceActions({ invoice, clients }: InvoiceActionsProps) {
     const handleCancel = () =>
         handleAction('cancel', () => cancelInvoiceAction(invoice.id));
 
+    const handleVoid = () =>
+        handleAction('void', () => voidInvoiceAction(invoice.id));
+
     const handleDownloadPdf = () => {
         window.open(`/api/business/invoices/${invoice.id}/pdf`, '_blank');
+    };
+
+    const handleDelete = async () => {
+        setLoading('delete');
+        try {
+            await deleteInvoiceAction(invoice.id);
+            toast.success('Invoice deleted');
+            router.push('/business/invoices');
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Failed to delete invoice';
+            toast.error(message);
+            setLoading(null);
+        }
     };
 
     const canEdit = invoice.status === 'DRAFT';
     const canSend = invoice.status === 'DRAFT';
     const canPost = !['CANCELLED', 'DRAFT'].includes(invoice.status);
     const canCancel = ['DRAFT', 'SENT'].includes(invoice.status);
+    const canVoid = ['SENT', 'PARTIALLY_PAID', 'OVERDUE', 'PAID'].includes(invoice.status);
+    const canDelete = ['DRAFT', 'CANCELLED'].includes(invoice.status);
 
     return (
         <div className="flex gap-2">
@@ -195,6 +215,82 @@ export function InvoiceActions({ invoice, clients }: InvoiceActionsProps) {
                                 onClick={handleCancel}
                             >
                                 Cancel Invoice
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
+
+            {canVoid && (
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={loading !== null}
+                            className="gap-1.5 text-ak-red hover:text-ak-red"
+                        >
+                            {loading === 'void' ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Ban className="h-4 w-4" />
+                            )}
+                            Void
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Void this invoice?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Invoice #{invoice.invoiceNumber} will be voided and all associated
+                                journal entries will be reversed. This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Invoice</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={handleVoid}
+                            >
+                                Void Invoice
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
+
+            {canDelete && (
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={loading !== null}
+                            className="gap-1.5 text-ak-red hover:text-ak-red"
+                        >
+                            {loading === 'delete' ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Trash2 className="h-4 w-4" />
+                            )}
+                            Delete
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete this invoice?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Invoice #{invoice.invoiceNumber} will be permanently removed.
+                                This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Invoice</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={handleDelete}
+                            >
+                                Delete Invoice
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
