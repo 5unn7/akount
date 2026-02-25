@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { apiFetch } from '@/lib/api/client-browser';
-import { formatCurrency } from '@/lib/utils/currency';
+import { formatCurrency, parseCentsInput } from '@/lib/utils/currency';
 import { Loader2, Check } from 'lucide-react';
 
 interface PaymentFormProps {
@@ -44,12 +44,6 @@ const PAYMENT_METHODS = [
   { value: 'WIRE', label: 'Wire' },
   { value: 'OTHER', label: 'Other' },
 ] as const;
-
-function parseCentsInput(value: string): number {
-  const num = parseFloat(value);
-  if (isNaN(num)) return 0;
-  return Math.round(num * 100);
-}
 
 const OPEN_INVOICE_STATUSES = ['SENT', 'OVERDUE', 'PARTIALLY_PAID'];
 const OPEN_BILL_STATUSES = ['PENDING', 'OVERDUE', 'PARTIALLY_PAID'];

@@ -128,14 +128,14 @@
 | DOC-7 | Update test/page counts in context files (apps/api: 362→1010 tests, apps/web: 38→54 pages, root: 38→40 models) | 30m | ⚪ Low | ✅ done | | audit:2026-02-20 [atomic] |
 | DOC-8 | Update domain status in apps/api/CLAUDE.md (Invoicing marked "stub" but is fully built) | 15m | ⚪ Low | 🟢 | | audit:2026-02-20 [atomic] |
 | SEC-27 | Fix listTaxRates to include custom rates when entityId absent | 30m | 🟠 High | 🟢 | | review:revie23feb |
-| DRY-18 | Sanitize invoice number in Content-Disposition header (HTTP response splitting risk) | 20m | 🟠 High | 🟢 | | review:revie23feb |
+| ~~DRY-18~~ | ~~Sanitize invoice number in Content-Disposition header (already implemented — invoices.ts:221 + report.ts:218)~~ | 20m | 🟠 High | ✅ done | | review:revie23feb |
 | DRY-19 | Replace z.record(z.unknown()) in onboarding with typed schema | 30m | 🟡 Medium | 🟢 | | review:revie23feb |
 | FIN-29 | Re-validate totals against line items in updateInvoice/updateBill PATCH | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
 | FIN-30 | Add linkedEntryId deduplication filter to GL report queries | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
 | UX-104 | Fix static key="create" bug in ClientForm/VendorForm (stale data on switch) | 20m | 🟡 Medium | 🟢 | | review:revie23feb |
-| UX-105 | Move UpcomingPayments fetch to server component (eliminate waterfall) | 30m | 🟡 Medium | 🟢 | | review:revie23feb |
-| DRY-20 | Strengthen StatusBadge types (enum union vs string) | 30m | 🟡 Medium | 🟢 | | review:revie23feb |
-| DRY-21 | Extract inline formatCents/parseCentsInput to shared utility | 20m | 🟡 Medium | 🟢 | | review:revie23feb |
+| ~~UX-105~~ | ~~Move UpcomingPayments fetch to server component (already implemented — page.tsx:55, component accepts data prop)~~ | 30m | 🟡 Medium | ✅ done | | review:revie23feb |
+| ~~DRY-20~~ | ~~Strengthen StatusBadge types (InvoiceStatusBadge already uses Record<InvoiceStatus, ...> enum type)~~ | 30m | 🟡 Medium | ✅ done | | review:revie23feb |
+| ~~DRY-21~~ | ~~Extract inline formatCents/parseCentsInput to shared utility (PaymentForm now imports from currency.ts)~~ | 20m | 🟡 Medium | ✅ done | | review:revie23feb |
 | TEST-5 | Add assertIntegerCents to transfer.service.test.ts | 15m | 🟡 Medium | 🟢 | | review:revie23feb |
 | TEST-6 | Write tests for data-export and report-export services | 2h | 🟡 Medium | 🟢 | | review:revie23feb |
 | SEC-10 | Row-Level Security (PostgreSQL) for production hardening | 3h | 🟡 Medium | 📦 | | roadmap |
@@ -166,11 +166,11 @@
 | FIN-16 | Overview: Financial Health Ratios widget — current ratio, working capital, debt-to-equity, profit margin (computed from BS+P&L) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | ~~DEV-20~~ | ~~Overview: Top Revenue Clients widget — top 5 by YTD revenue + concentration % (ReportService ready)~~ **SUPERSEDED by DEV-179+DEV-182** | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-179 | Overview Widgets: Add client-side API functions for P&L, Trial Balance, and Revenue reports (dashboard-client.ts) | 30m | 🟡 Medium | ✅ | commit:b6b09b1 | plan:2026-02-24-overview-dashboard-widgets.md |
-| DEV-180 | Overview Widgets: Create ProfitLossSummaryWidget component — revenue vs expense bars + YTD trend | 1h | 🟡 Medium | 🟢 | | plan:2026-02-24-overview-dashboard-widgets.md |
-| DEV-181 | Overview Widgets: Create TrialBalanceStatusWidget component — balanced alert + account type counts | 45m | 🟡 Medium | 🟢 | | plan:2026-02-24-overview-dashboard-widgets.md |
-| DEV-182 | Overview Widgets: Create TopRevenueClientsWidget component — top 5 by YTD revenue + concentration % | 1h | 🟡 Medium | 🟢 | | plan:2026-02-24-overview-dashboard-widgets.md |
-| DEV-183 | Overview Widgets: Add 3 report widgets to Overview page grid layout (responsive 3-col) | 30m | 🟡 Medium | 🟢 | [needs: DEV-180, DEV-181, DEV-182] | plan:2026-02-24-overview-dashboard-widgets.md |
-| DEV-184 | Overview Widgets: Update Overview loading skeleton to include report widgets row | 15m | 🟡 Medium | 🟢 | [needs: DEV-183] | plan:2026-02-24-overview-dashboard-widgets.md |
+| ~~DEV-180~~ | ~~Overview Widgets: Create ProfitLossSummaryWidget component — revenue vs expense bars + YTD trend (already implemented)~~ | 1h | 🟡 Medium | ✅ done | | plan:2026-02-24-overview-dashboard-widgets.md |
+| ~~DEV-181~~ | ~~Overview Widgets: Create TrialBalanceStatusWidget component — balanced alert + account type counts (already implemented)~~ | 45m | 🟡 Medium | ✅ done | | plan:2026-02-24-overview-dashboard-widgets.md |
+| ~~DEV-182~~ | ~~Overview Widgets: Create TopRevenueClientsWidget component — top 5 by YTD revenue + concentration % (already implemented)~~ | 1h | 🟡 Medium | ✅ done | | plan:2026-02-24-overview-dashboard-widgets.md |
+| ~~DEV-183~~ | ~~Overview Widgets: Add 3 report widgets to Overview page grid layout (responsive 3-col) (already integrated)~~ | 30m | 🟡 Medium | ✅ done | | plan:2026-02-24-overview-dashboard-widgets.md |
+| ~~DEV-184~~ | ~~Overview Widgets: Update Overview loading skeleton to include report widgets row (already implemented)~~ | 15m | 🟡 Medium | ✅ done | | plan:2026-02-24-overview-dashboard-widgets.md |
 | DEV-21 | Overview: Client Payment Health widget — % paid on time, avg days-to-payment, overdue count (Invoice model) | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-22 | Overview: Invoice Aging Waterfall widget — AR buckets 0-30, 31-60, 61-90, 90+ days | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
 | DEV-23 | Overview: Revenue by Category widget — revenue sources breakdown from InvoiceLine + Category | 2-3h | 🟡 Medium | 📦 | | audit:fe-be-parity, plan:command-center-dashboard.md |
