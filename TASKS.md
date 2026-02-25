@@ -39,10 +39,10 @@
 | ~~DEV-59~~ | ~~Accounting: Add transaction posting UI — post bank txns to GL~~ | 3-4h | 🟠 High | ✅ done | | audit:acct-fe-be |
 | ~~UX-31~~ | ~~Business: Add search/filter bar on invoice, bill, client, vendor lists~~ | 2-3h | 🟠 High | ✅ done | cc6c96c | audit:app-ux |
 | ~~UX-32~~ | ~~Business: Add pagination controls — cursor pagination + Load More~~ | 1-2h | 🟠 High | ✅ done | cc6c96c | audit:app-ux |
-| DEV-71 | Business: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-71~~ | ~~Business: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-72~~ | ~~Business: Void invoice full stack — schema + service + route + frontend (ef8ff46)~~ | 1h | 🟠 High | ✅ done | ef8ff46 | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
-| DEV-73 | Business: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
-| DEV-74 | Business: Add client CRUD — create/edit/delete (full backend API exists, only inline from invoice form) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-73~~ | ~~Business: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-74~~ | ~~Business: Add client CRUD — create/edit/delete (full backend API exists, only inline from invoice form)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-75~~ | ~~Business: Replace bills "Coming Soon" stub with real bill list page (API ready, `/business/bills` is placeholder)~~ | 2-3h | 🟠 High | ✅ | 1e987ed | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-76~~ | ~~Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + endpoints exist)~~ | 3-4h | 🟠 High | ✅ done | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-77~~ | ~~Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
@@ -71,8 +71,8 @@
 | DEV-198 | AI: Wire AIAction approval to execution (action-executor service) | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-193,DEV-195,DEV-197] | plan:ai-auto-bookkeeper-phase1 |
 | DEV-199 | AI: Dashboard AI Action widget (glass card, pending count, quick-approve) | 1-2h | 🟡 Medium | 🟢 | [needs: DEV-194,DEV-196] | plan:ai-auto-bookkeeper-phase1 |
 | DEV-200 | AI: Integration test — full auto-bookkeeper workflow E2E | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-191,DEV-194,DEV-197,DEV-198] | plan:ai-auto-bookkeeper-phase1 |
-| SEC-25 | Global tax rate pollution: Make entityId required in create schema | 30m | 🔴 Critical | 🟢 | | review:revie23feb |
-| SEC-26 | Derive tenantId server-side in onboarding /complete endpoint | 30m | 🔴 Critical | 🟢 | | review:revie23feb |
+| ~~SEC-25~~ | ~~Global tax rate pollution: Make entityId required in create schema (already implemented)~~ | 30m | 🔴 Critical | ✅ done | | review:revie23feb |
+| ~~SEC-26~~ | ~~Derive tenantId server-side in onboarding /complete endpoint (already implemented)~~ | 30m | 🔴 Critical | ✅ done | | review:revie23feb |
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
 
 ### Medium / Low

@@ -13,6 +13,8 @@ import {
     DollarSign,
     Pencil,
     ExternalLink,
+    Trash2,
+    Loader2,
 } from 'lucide-react';
 import type { Vendor } from '@/lib/api/vendors';
 import type { Bill } from '@/lib/api/bills';
@@ -21,7 +23,19 @@ import { formatCurrency } from '@/lib/utils/currency';
 import { formatDate } from '@/lib/utils/date';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { VendorForm } from '@/components/business/VendorForm';
+import { toast } from 'sonner';
 import { BillStatusBadge, VendorStatusBadge } from '@akount/ui/business';
 import {
     Table,
@@ -45,6 +59,19 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
     const [vendor, setVendor] = useState(initialVendor);
     const [activeTab, setActiveTab] = useState<Tab>('overview');
     const [editOpen, setEditOpen] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        try {
+            await apiFetch(`/api/business/vendors/${vendor.id}`, { method: 'DELETE' });
+            toast.success('Vendor deleted');
+            router.push('/business/vendors');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to delete vendor');
+            setDeleting(false);
+        }
+    };
 
     // Calculate stats
     const totalBills = bills.length;
@@ -77,10 +104,38 @@ export function VendorDetailClient({ vendor: initialVendor, bills }: VendorDetai
                         Vendor since {formatDate(vendor.createdAt)}
                     </p>
                 </div>
-                <Button variant="outline" size="sm" className="gap-2" onClick={() => setEditOpen(true)}>
-                    <Pencil className="h-3.5 w-3.5" />
-                    Edit Vendor
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" size="sm" className="gap-2" onClick={() => setEditOpen(true)}>
+                        <Pencil className="h-3.5 w-3.5" />
+                        Edit Vendor
+                    </Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="gap-2 text-ak-red hover:text-ak-red" disabled={deleting}>
+                                {deleting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                                Delete
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Delete this vendor?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    {vendor.name} will be permanently removed along with their data.
+                                    This action cannot be undone.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Keep Vendor</AlertDialogCancel>
+                                <AlertDialogAction
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    onClick={handleDelete}
+                                >
+                                    Delete Vendor
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
             </div>
 
             <VendorForm
