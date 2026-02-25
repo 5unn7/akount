@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
     BookOpen,
@@ -78,6 +78,28 @@ export function JournalEntriesClient({
     const [sourceTypeFilter, setSourceTypeFilter] = useState<string>('all');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+
+    // Re-fetch when filters change (debounced)
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            try {
+                const result = await fetchJournalEntries({
+                    entityId,
+                    status: statusFilter !== 'all' ? (statusFilter as JournalEntryStatus) : undefined,
+                    sourceType: sourceTypeFilter !== 'all' ? sourceTypeFilter : undefined,
+                    startDate: startDate || undefined,
+                    endDate: endDate || undefined,
+                });
+                setEntries(result.entries);
+                setHasMore(result.hasMore);
+                setNextCursor(result.nextCursor);
+            } catch {
+                // Keep existing entries on error
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [statusFilter, sourceTypeFilter, startDate, endDate, entityId]);
 
     // Stats
     const totalEntries = entries.length;

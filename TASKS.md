@@ -87,10 +87,10 @@
 | DEV-84 | App-wide: Fix navigation.ts mismatches — Bills route points to stub, verify all nav items match real pages | 30m | 🟡 Medium | ✅ done | | audit:app-ux [atomic] |
 | UX-19 | Accounting COA: Add search input for GL accounts (backend `search` param exists, UI only has type filter) | 30m | 🟡 Medium | ✅ done | d7e9e90 | audit:acct-fe-be |
 | ~~UX-20~~ | ~~Accounting COA: Add reactivate button for deactivated accounts (PATCH isActive:true works, no UI)~~ | 15m | 🟡 Medium | ✅ done | | audit:acct-fe-be |
-| UX-21 | Accounting COA: Add balance summary header (Total Assets/Liabilities/Equity cards, data already fetched) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
-| UX-22 | Accounting JE: Fix filter auto-refresh (date/status changes don't re-fetch, only affect loadMore) | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| ~~UX-21~~ | ~~Accounting COA: Add balance summary header (Total Assets/Liabilities/Equity cards, data already fetched)~~ | 1h | 🟡 Medium | ✅ done | | audit:acct-fe-be |
+| ~~UX-22~~ | ~~Accounting JE: Fix filter auto-refresh (date/status changes don't re-fetch, only affect loadMore)~~ | 1h | 🟡 Medium | ✅ done | | audit:acct-fe-be |
 | UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
-| UX-25 | Accounting Reports: Add quick-generate buttons (Last Month / This Quarter / YTD) on report hub cards | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
+| ~~UX-25~~ | ~~Accounting Reports: Add quick-generate buttons (Last Month / This Quarter / YTD) on report hub cards~~ | 1h | 🟡 Medium | ✅ done | | audit:acct-fe-be |
 | DEV-61 | Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-62 | Accounting JE: Add batch approve (select multiple drafts → approve all, needs new backend endpoint) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-63 | Accounting: Add recurring journal entry templates (monthly depreciation, rent, etc.) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |

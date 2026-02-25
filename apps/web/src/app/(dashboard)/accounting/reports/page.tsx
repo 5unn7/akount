@@ -21,6 +21,56 @@ export const metadata: Metadata = {
     description: "Generate financial statements and management reports",
 };
 
+// ---- Date preset helpers (computed at render time in Server Component) ----
+
+function getDatePresets() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth(); // 0-indexed
+    const today = now.toISOString().split('T')[0];
+
+    // Last month
+    const lmStart = new Date(year, month - 1, 1);
+    const lmEnd = new Date(year, month, 0); // day 0 of current month = last day of prev month
+
+    // This quarter
+    const qStartMonth = Math.floor(month / 3) * 3;
+    const tqStart = new Date(year, qStartMonth, 1);
+
+    // YTD
+    const ytdStart = new Date(year, 0, 1);
+
+    const fmt = (d: Date) => d.toISOString().split('T')[0];
+
+    return {
+        lastMonth: { startDate: fmt(lmStart), endDate: fmt(lmEnd) },
+        thisQuarter: { startDate: fmt(tqStart), endDate: today },
+        ytd: { startDate: fmt(ytdStart), endDate: today },
+        asOfToday: { asOfDate: today },
+        asOfLastMonth: { asOfDate: fmt(lmEnd) },
+    };
+}
+
+interface QuickLink {
+    label: string;
+    params: string;
+}
+
+function periodLinks(presets: ReturnType<typeof getDatePresets>): QuickLink[] {
+    return [
+        { label: 'Last Month', params: `startDate=${presets.lastMonth.startDate}&endDate=${presets.lastMonth.endDate}` },
+        { label: 'This Quarter', params: `startDate=${presets.thisQuarter.startDate}&endDate=${presets.thisQuarter.endDate}` },
+        { label: 'YTD', params: `startDate=${presets.ytd.startDate}&endDate=${presets.ytd.endDate}` },
+    ];
+}
+
+function pointInTimeLinks(presets: ReturnType<typeof getDatePresets>): QuickLink[] {
+    return [
+        { label: 'Today', params: `asOfDate=${presets.asOfToday.asOfDate}` },
+        { label: 'Last Month End', params: `asOfDate=${presets.asOfLastMonth.asOfDate}` },
+    ];
+}
+
 // ---- Report definitions ----
 
 interface ReportDef {
@@ -30,6 +80,7 @@ interface ReportDef {
     href: string;
     color: string;
     dimBg: string;
+    quickLinkType: 'period' | 'point-in-time' | 'none';
 }
 
 const reports: ReportDef[] = [
@@ -40,6 +91,7 @@ const reports: ReportDef[] = [
         href: "/accounting/reports/profit-loss",
         color: "text-finance-income",
         dimBg: "bg-ak-green-dim",
+        quickLinkType: "period",
     },
     {
         title: "Balance Sheet",
@@ -48,6 +100,7 @@ const reports: ReportDef[] = [
         href: "/accounting/reports/balance-sheet",
         color: "text-ak-blue",
         dimBg: "bg-ak-blue-dim",
+        quickLinkType: "point-in-time",
     },
     {
         title: "Cash Flow",
@@ -56,6 +109,7 @@ const reports: ReportDef[] = [
         href: "/accounting/reports/cash-flow",
         color: "text-primary",
         dimBg: "bg-ak-pri-dim",
+        quickLinkType: "period",
     },
     {
         title: "Trial Balance",
@@ -64,6 +118,7 @@ const reports: ReportDef[] = [
         href: "/accounting/reports/trial-balance",
         color: "text-ak-purple",
         dimBg: "bg-ak-purple-dim",
+        quickLinkType: "point-in-time",
     },
     {
         title: "General Ledger",
@@ -72,6 +127,7 @@ const reports: ReportDef[] = [
         href: "/accounting/reports/general-ledger",
         color: "text-ak-teal",
         dimBg: "bg-ak-teal-dim",
+        quickLinkType: "none",
     },
     {
         title: "Spending by Category",
@@ -80,6 +136,7 @@ const reports: ReportDef[] = [
         href: "/accounting/reports/spending",
         color: "text-finance-expense",
         dimBg: "bg-ak-red-dim",
+        quickLinkType: "period",
     },
     {
         title: "Revenue by Client",
@@ -88,6 +145,7 @@ const reports: ReportDef[] = [
         href: "/accounting/reports/revenue",
         color: "text-finance-income",
         dimBg: "bg-ak-green-dim",
+        quickLinkType: "period",
     },
 ];
 
@@ -138,6 +196,9 @@ export default async function ReportsHomePage() {
         listEntities(),
     ]);
     const entityId = validateEntityId(rawEntityId, allEntities);
+
+    // Compute quick-generate date presets
+    const presets = getDatePresets();
 
     // Fetch stats if entity is selected
     const stats: ReportStats = entityId
@@ -261,27 +322,44 @@ export default async function ReportsHomePage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {reports.map((report) => {
                     const Icon = report.icon;
+                    const quickLinks = report.quickLinkType === 'period'
+                        ? periodLinks(presets)
+                        : report.quickLinkType === 'point-in-time'
+                            ? pointInTimeLinks(presets)
+                            : [];
                     return (
-                        <Link
-                            key={report.href}
-                            href={report.href}
-                            className="group glass rounded-xl p-6 transition-all hover:border-ak-border-2 hover:-translate-y-px"
-                        >
-                            <div className="flex items-start gap-4">
-                                <div className={`rounded-lg p-2.5 ${report.dimBg} ${report.color}`}>
-                                    <Icon className="h-5 w-5" />
+                        <div key={report.href} className="group glass rounded-xl p-6 transition-all hover:border-ak-border-2 hover:-translate-y-px">
+                            <Link href={report.href}>
+                                <div className="flex items-start gap-4">
+                                    <div className={`rounded-lg p-2.5 ${report.dimBg} ${report.color}`}>
+                                        <Icon className="h-5 w-5" />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <h3 className="font-medium font-heading group-hover:text-primary transition-colors">
+                                            {report.title}
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">
+                                            {report.description}
+                                        </p>
+                                    </div>
+                                    <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0 mt-1" />
                                 </div>
-                                <div className="flex-1 space-y-1">
-                                    <h3 className="font-medium font-heading group-hover:text-primary transition-colors">
-                                        {report.title}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">
-                                        {report.description}
-                                    </p>
+                            </Link>
+                            {quickLinks.length > 0 && (
+                                <div className="mt-4 pt-3 border-t border-ak-border flex items-center gap-2 flex-wrap">
+                                    <span className="text-micro text-muted-foreground uppercase tracking-wider">Quick:</span>
+                                    {quickLinks.map((ql) => (
+                                        <Link
+                                            key={ql.label}
+                                            href={`${report.href}?${ql.params}`}
+                                            className="text-xs px-2.5 py-1 rounded-md bg-ak-bg-3 hover:bg-ak-bg-4 text-muted-foreground hover:text-foreground transition-colors"
+                                        >
+                                            {ql.label}
+                                        </Link>
+                                    ))}
                                 </div>
-                                <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0 mt-1" />
-                            </div>
-                        </Link>
+                            )}
+                        </div>
                     );
                 })}
             </div>

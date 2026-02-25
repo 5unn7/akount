@@ -17,6 +17,7 @@ import type {
     UpdateGLAccountInput,
 } from '@/lib/api/accounting';
 import type { Entity } from '@/lib/api/entities';
+import { formatCurrency } from '@/lib/utils/currency';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -270,8 +271,33 @@ export function ChartOfAccountsClient({
         );
     }
 
+    // Compute balance totals from grouped data
+    const balanceTotals = {
+        assets: grouped.find((g) => g.type === 'ASSET')?.totalBalance ?? 0,
+        liabilities: grouped.find((g) => g.type === 'LIABILITY')?.totalBalance ?? 0,
+        equity: grouped.find((g) => g.type === 'EQUITY')?.totalBalance ?? 0,
+        revenue: grouped.find((g) => g.type === 'REVENUE')?.totalBalance ?? 0,
+        expenses: grouped.find((g) => g.type === 'EXPENSE')?.totalBalance ?? 0,
+    };
+
     return (
         <div className="space-y-4">
+            {/* Balance Summary Cards */}
+            <div className="grid grid-cols-3 gap-3">
+                <div className="glass rounded-xl p-4">
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">Total Assets</p>
+                    <p className="text-xl font-mono font-semibold text-ak-green">{formatCurrency(balanceTotals.assets)}</p>
+                </div>
+                <div className="glass rounded-xl p-4">
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">Total Liabilities</p>
+                    <p className="text-xl font-mono font-semibold text-ak-red">{formatCurrency(balanceTotals.liabilities)}</p>
+                </div>
+                <div className="glass rounded-xl p-4">
+                    <p className="text-micro uppercase tracking-wider text-muted-foreground mb-1">Total Equity</p>
+                    <p className="text-xl font-mono font-semibold text-ak-blue">{formatCurrency(balanceTotals.equity)}</p>
+                </div>
+            </div>
+
             {/* Toolbar */}
             <div className="flex items-center gap-3">
                 <div className="relative max-w-sm">
