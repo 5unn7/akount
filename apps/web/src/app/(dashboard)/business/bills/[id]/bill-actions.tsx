@@ -16,8 +16,8 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import type { Bill } from '@/lib/api/bills';
-import { approveBillAction, postBillAction, cancelBillAction } from './actions';
-import { CheckCircle, BookOpen, XCircle, Loader2, ExternalLink, Pencil } from 'lucide-react';
+import { approveBillAction, postBillAction, cancelBillAction, deleteBillAction } from './actions';
+import { CheckCircle, BookOpen, XCircle, Loader2, ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { BillForm } from '@/components/business/BillForm';
 
@@ -36,6 +36,7 @@ export function BillActions({ bill, vendors }: BillActionsProps) {
         approve: 'Bill approved',
         post: 'Bill posted to GL',
         cancel: 'Bill cancelled',
+        delete: 'Bill deleted',
     };
 
     const handleAction = async (
@@ -70,10 +71,24 @@ export function BillActions({ bill, vendors }: BillActionsProps) {
     const handleCancel = () =>
         handleAction('cancel', () => cancelBillAction(bill.id));
 
+    const handleDelete = async () => {
+        setLoading('delete');
+        try {
+            await deleteBillAction(bill.id);
+            toast.success('Bill deleted');
+            router.push('/business/bills');
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Failed to delete bill';
+            toast.error(message);
+            setLoading(null);
+        }
+    };
+
     const canEdit = bill.status === 'DRAFT';
     const canApprove = bill.status === 'DRAFT';
     const canPost = !['CANCELLED', 'DRAFT'].includes(bill.status);
     const canCancel = ['DRAFT', 'PENDING'].includes(bill.status);
+    const canDelete = ['DRAFT', 'CANCELLED'].includes(bill.status);
 
     return (
         <div className="flex gap-2">
@@ -165,6 +180,44 @@ export function BillActions({ bill, vendors }: BillActionsProps) {
                                 onClick={handleCancel}
                             >
                                 Cancel Bill
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
+
+            {canDelete && (
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={loading !== null}
+                            className="gap-1.5 text-ak-red hover:text-ak-red"
+                        >
+                            {loading === 'delete' ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Trash2 className="h-4 w-4" />
+                            )}
+                            Delete
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete this bill?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This bill will be permanently removed.
+                                This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Bill</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={handleDelete}
+                            >
+                                Delete Bill
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>

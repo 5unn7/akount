@@ -154,6 +154,23 @@ export async function deallocatePayment(
 }
 
 /**
+ * Post a payment allocation to the general ledger (creates journal entry)
+ */
+export async function postPaymentAllocation(
+  paymentId: string,
+  allocationId: string,
+  bankGLAccountId: string
+): Promise<{ journalEntryId: string; type: string }> {
+  return apiClient<{ journalEntryId: string; type: string }>(
+    `/api/business/payments/${paymentId}/allocations/${allocationId}/post`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ bankGLAccountId }),
+    }
+  );
+}
+
+/**
  * Soft delete a payment (reverses all allocations)
  */
 export async function deletePayment(id: string): Promise<void> {

@@ -1,8 +1,9 @@
 'use client';
 import { formatDate } from '@/lib/utils/date';
 
-import { useState } from 'react';
-import type { Payment } from '@/lib/api/payments';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import type { Payment, PaymentAllocation } from '@/lib/api/payments';
 import {
     Table,
     TableBody,
@@ -12,6 +13,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
     Sheet,
@@ -20,13 +22,42 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/components/ui/sheet';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
-import { CreditCard, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { apiFetch } from '@/lib/api/client-browser';
+import {
+    CreditCard,
+    ArrowUpRight,
+    ArrowDownLeft,
+    BookOpen,
+    ExternalLink,
+    Loader2,
+    Trash2,
+} from 'lucide-react';
 import { EmptyState } from '@akount/ui';
+import { toast } from 'sonner';
 
 interface PaymentTableProps {
     payments: Payment[];
+    onPaymentDeleted?: () => void;
 }
 
 
@@ -39,13 +70,21 @@ const METHOD_LABELS: Record<string, string> = {
     OTHER: 'Other',
 };
 
-export function PaymentTable({ payments }: PaymentTableProps) {
+export function PaymentTable({ payments: initialPayments, onPaymentDeleted }: PaymentTableProps) {
+    const [payments, setPayments] = useState(initialPayments);
     const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
     const [open, setOpen] = useState(false);
 
     const handleRowClick = (payment: Payment) => {
         setSelectedPayment(payment);
         setOpen(true);
+    };
+
+    const handleDeleteSuccess = (deletedId: string) => {
+        setPayments(prev => prev.filter(p => p.id !== deletedId));
+        setSelectedPayment(null);
+        setOpen(false);
+        onPaymentDeleted?.();
     };
 
     if (payments.length === 0) {
@@ -145,7 +184,10 @@ export function PaymentTable({ payments }: PaymentTableProps) {
             <Sheet open={open} onOpenChange={setOpen}>
                 <SheetContent className="glass w-full sm:max-w-2xl overflow-y-auto">
                     {selectedPayment && (
-                        <PaymentDetail payment={selectedPayment} />
+                        <PaymentDetail
+                            payment={selectedPayment}
+                            onDeleteSuccess={handleDeleteSuccess}
+                        />
                     )}
                 </SheetContent>
             </Sheet>
@@ -153,7 +195,19 @@ export function PaymentTable({ payments }: PaymentTableProps) {
     );
 }
 
-function PaymentDetail({ payment }: { payment: Payment }) {
+interface GLAccount {
+    id: string;
+    code: string;
+    name: string;
+}
+
+function PaymentDetail({
+    payment,
+    onDeleteSuccess,
+}: {
+    payment: Payment;
+    onDeleteSuccess: (id: string) => void;
+}) {
     const isCustomer = !!payment.clientId;
     const partyName = isCustomer
         ? payment.client?.name
@@ -164,6 +218,62 @@ function PaymentDetail({ payment }: { payment: Payment }) {
         0
     );
     const unallocated = payment.amount - totalAllocated;
+
+    const [deleting, setDeleting] = useState(false);
+    const [glAccounts, setGLAccounts] = useState<GLAccount[]>([]);
+    const [postedAllocations, setPostedAllocations] = useState<Record<string, string>>({});
+    const [postingAlloc, setPostingAlloc] = useState<string | null>(null);
+    const [selectedGLAccount, setSelectedGLAccount] = useState<string>('');
+
+    // Fetch bank GL accounts for Post to GL
+    useEffect(() => {
+        if (payment.allocations.length === 0) return;
+        apiFetch<GLAccount[]>('/api/accounting/chart-of-accounts?accountType=ASSET')
+            .then(setGLAccounts)
+            .catch(() => {
+                // GL accounts not available — posting will still work if user has accounts
+            });
+    }, [payment.allocations.length]);
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        try {
+            await apiFetch(`/api/business/payments/${payment.id}`, {
+                method: 'DELETE',
+            });
+            toast.success('Payment deleted');
+            onDeleteSuccess(payment.id);
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to delete payment');
+            setDeleting(false);
+        }
+    };
+
+    const handlePostAllocation = async (alloc: PaymentAllocation) => {
+        if (!selectedGLAccount) {
+            toast.error('Please select a bank account first');
+            return;
+        }
+        setPostingAlloc(alloc.id);
+        try {
+            const result = await apiFetch<{ journalEntryId: string; type: string }>(
+                `/api/business/payments/${payment.id}/allocations/${alloc.id}/post`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ bankGLAccountId: selectedGLAccount }),
+                }
+            );
+            setPostedAllocations(prev => ({
+                ...prev,
+                [alloc.id]: result.journalEntryId,
+            }));
+            toast.success('Allocation posted to GL');
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to post allocation');
+        } finally {
+            setPostingAlloc(null);
+        }
+    };
 
     return (
         <>
@@ -177,20 +287,22 @@ function PaymentDetail({ payment }: { payment: Payment }) {
                         <SheetDescription>
                             {formatDate(payment.date)} &middot;{' '}
                             {METHOD_LABELS[payment.paymentMethod] ?? payment.paymentMethod}
-                            {payment.reference && ` &middot; Ref: ${payment.reference}`}
+                            {payment.reference && ` · Ref: ${payment.reference}`}
                         </SheetDescription>
                     </div>
-                    {isCustomer ? (
-                        <Badge className="bg-ak-green-dim text-ak-green border-ak-green/20 text-xs gap-1">
-                            <ArrowDownLeft className="h-3 w-3" />
-                            Received
-                        </Badge>
-                    ) : (
-                        <Badge className="bg-ak-red-dim text-ak-red border-ak-red/20 text-xs gap-1">
-                            <ArrowUpRight className="h-3 w-3" />
-                            Paid
-                        </Badge>
-                    )}
+                    <div className="flex items-center gap-2">
+                        {isCustomer ? (
+                            <Badge className="bg-ak-green-dim text-ak-green border-ak-green/20 text-xs gap-1">
+                                <ArrowDownLeft className="h-3 w-3" />
+                                Received
+                            </Badge>
+                        ) : (
+                            <Badge className="bg-ak-red-dim text-ak-red border-ak-red/20 text-xs gap-1">
+                                <ArrowUpRight className="h-3 w-3" />
+                                Paid
+                            </Badge>
+                        )}
+                    </div>
                 </div>
             </SheetHeader>
 
@@ -220,6 +332,28 @@ function PaymentDetail({ payment }: { payment: Payment }) {
                     <h3 className="text-sm uppercase tracking-wider text-muted-foreground">
                         Allocations
                     </h3>
+
+                    {/* Bank account selector for GL posting */}
+                    {payment.allocations.length > 0 && glAccounts.length > 0 && (
+                        <div className="space-y-1.5">
+                            <label className="text-xs text-muted-foreground">
+                                Bank Account (for GL posting)
+                            </label>
+                            <Select value={selectedGLAccount} onValueChange={setSelectedGLAccount}>
+                                <SelectTrigger className="h-8 text-sm">
+                                    <SelectValue placeholder="Select bank account..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {glAccounts.map(gl => (
+                                        <SelectItem key={gl.id} value={gl.id}>
+                                            {gl.code} — {gl.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )}
+
                     {payment.allocations.length === 0 ? (
                         <p className="text-sm text-muted-foreground">
                             No allocations — full amount is unallocated
@@ -235,24 +369,59 @@ function PaymentDetail({ payment }: { payment: Payment }) {
                                 const docType = alloc.invoiceId
                                     ? 'Invoice'
                                     : 'Bill';
+                                const journalEntryId = postedAllocations[alloc.id];
 
                                 return (
                                     <div
                                         key={alloc.id}
-                                        className={`p-4 flex items-center justify-between ${
+                                        className={`p-4 space-y-2 ${
                                             idx !== payment.allocations.length - 1
                                                 ? 'border-b border-ak-border'
                                                 : ''
                                         }`}
                                     >
-                                        <div>
-                                            <p className="text-sm font-medium">
-                                                {docType} {docNumber}
-                                            </p>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium">
+                                                    {docType} {docNumber}
+                                                </p>
+                                            </div>
+                                            <span className="font-mono font-medium text-sm">
+                                                {formatCurrency(alloc.amount, payment.currency)}
+                                            </span>
                                         </div>
-                                        <span className="font-mono font-medium text-sm">
-                                            {formatCurrency(alloc.amount, payment.currency)}
-                                        </span>
+
+                                        {/* Post to GL / View JE */}
+                                        <div className="flex justify-end">
+                                            {journalEntryId ? (
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    asChild
+                                                    className="h-7 gap-1.5 text-xs text-ak-green hover:text-ak-green"
+                                                >
+                                                    <Link href={`/accounting/journal-entries/${journalEntryId}`}>
+                                                        <ExternalLink className="h-3 w-3" />
+                                                        View Journal Entry
+                                                    </Link>
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    className="h-7 gap-1.5 text-xs"
+                                                    disabled={!selectedGLAccount || postingAlloc !== null}
+                                                    onClick={() => handlePostAllocation(alloc)}
+                                                >
+                                                    {postingAlloc === alloc.id ? (
+                                                        <Loader2 className="h-3 w-3 animate-spin" />
+                                                    ) : (
+                                                        <BookOpen className="h-3 w-3" />
+                                                    )}
+                                                    Post to GL
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
                                 );
                             })}
@@ -292,6 +461,44 @@ function PaymentDetail({ payment }: { payment: Payment }) {
                         </div>
                     </>
                 )}
+
+                {/* Delete Action */}
+                <Separator className="bg-ak-border" />
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="gap-1.5 text-ak-red hover:text-ak-red w-full"
+                            disabled={deleting}
+                        >
+                            {deleting ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Trash2 className="h-4 w-4" />
+                            )}
+                            Delete Payment
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Delete this payment?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This payment will be permanently removed. All allocations will be
+                                reversed, restoring outstanding balances on associated invoices and bills.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Keep Payment</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                onClick={handleDelete}
+                            >
+                                Delete Payment
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </>
     );

@@ -44,9 +44,9 @@
 | DEV-73 | Business: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | DEV-74 | Business: Add client CRUD — create/edit/delete (full backend API exists, only inline from invoice form) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-75~~ | ~~Business: Replace bills "Coming Soon" stub with real bill list page (API ready, `/business/bills` is placeholder)~~ | 2-3h | 🟠 High | ✅ | 1e987ed | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
-| DEV-76 | Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + endpoints exist) | 3-4h | 🟠 High | 🟢 | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
-| DEV-77 | Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
-| DEV-78 | Business: Wire "Post to GL" button on payment allocation (backend route exists, no frontend trigger) | 1h | 🟠 High | 🟢 | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-76~~ | ~~Business: Wire payment allocation UI — split payment across multiple invoices (PaymentAllocation model + endpoints exist)~~ | 3-4h | 🟠 High | ✅ done | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-77~~ | ~~Business: Wire edit/delete invoice/bill/payment actions (PUT/DELETE endpoints exist, no UI)~~ | 2-3h | 🟠 High | ✅ done | | audit:app-ux, audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-78~~ | ~~Business: Wire "Post to GL" button on payment allocation (backend route exists, no frontend trigger)~~ | 1h | 🟠 High | ✅ done | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | ~~UX-45~~ | ~~Business: Add quick "Record Payment" button on invoice detail page (shortcut to payment form)~~ | 1-2h | 🟠 High | ✅ done | | audit:fe-be-parity, plan:phase-4-bill-and-get-paid.md |
 | DEV-97 | Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model, migrate from Entity.metadata) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
 | DEV-98 | Planning: Build Budget service + full CRUD (create/list/get/update/delete using Budget model) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |

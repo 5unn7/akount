@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { apiFetch } from '@/lib/api/client-browser';
-import { Loader2 } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils/currency';
+import { Loader2, Check } from 'lucide-react';
 
 interface PaymentFormProps {
   open: boolean;
@@ -27,6 +28,14 @@ interface PaymentFormProps {
 
 type PaymentDirection = 'AR' | 'AP';
 
+interface OpenDocument {
+  id: string;
+  number: string;
+  total: number;
+  paidAmount: number;
+  status: string;
+}
+
 const PAYMENT_METHODS = [
   { value: 'TRANSFER', label: 'Bank Transfer' },
   { value: 'CARD', label: 'Card' },
@@ -41,6 +50,9 @@ function parseCentsInput(value: string): number {
   if (isNaN(num)) return 0;
   return Math.round(num * 100);
 }
+
+const OPEN_INVOICE_STATUSES = ['SENT', 'OVERDUE', 'PARTIALLY_PAID'];
+const OPEN_BILL_STATUSES = ['PENDING', 'OVERDUE', 'PARTIALLY_PAID'];
 
 export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, defaults }: PaymentFormProps) {
   const defaultDirection = defaults?.direction ?? 'AR';
@@ -59,6 +71,75 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, d
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  // Allocation state
+  const [openDocuments, setOpenDocuments] = useState<OpenDocument[]>([]);
+  const [loadingDocs, setLoadingDocs] = useState(false);
+  const [allocations, setAllocations] = useState<Record<string, string>>({});
+
+  // Fetch open documents when client/vendor changes
+  useEffect(() => {
+    if (!selectedId) {
+      setOpenDocuments([]);
+      setAllocations({});
+      return;
+    }
+
+    setLoadingDocs(true);
+    const endpoint = direction === 'AR'
+      ? `/api/business/invoices?clientId=${selectedId}&limit=100`
+      : `/api/business/bills?vendorId=${selectedId}&limit=100`;
+
+    apiFetch<{ invoices?: Array<Record<string, unknown>>; data?: Array<Record<string, unknown>> }>(endpoint)
+      .then(result => {
+        // Invoice list returns { invoices: [...] }, bill list returns { data: [...] }
+        const items = (result.invoices ?? result.data ?? []) as Array<{
+          id: string;
+          invoiceNumber?: string;
+          billNumber?: string;
+          total: number;
+          paidAmount: number;
+          status: string;
+        }>;
+
+        const validStatuses = direction === 'AR' ? OPEN_INVOICE_STATUSES : OPEN_BILL_STATUSES;
+        const openDocs = items
+          .filter(item =>
+            validStatuses.includes(item.status) && item.total > (item.paidAmount ?? 0)
+          )
+          .map(item => ({
+            id: item.id,
+            number: (direction === 'AR' ? item.invoiceNumber : item.billNumber) ?? '—',
+            total: item.total,
+            paidAmount: item.paidAmount ?? 0,
+            status: item.status,
+          }));
+
+        setOpenDocuments(openDocs);
+        setAllocations({});
+      })
+      .catch(() => {
+        setOpenDocuments([]);
+      })
+      .finally(() => setLoadingDocs(false));
+  }, [selectedId, direction]);
+
+  const paymentAmountCents = parseCentsInput(amountStr);
+  const totalAllocated = Object.values(allocations).reduce(
+    (sum, val) => sum + parseCentsInput(val),
+    0
+  );
+  const unallocated = paymentAmountCents - totalAllocated;
+  const isOverAllocated = totalAllocated > paymentAmountCents && paymentAmountCents > 0;
+
+  const setAllocationAmount = (docId: string, value: string) => {
+    setAllocations(prev => ({ ...prev, [docId]: value }));
+  };
+
+  const fillFull = (doc: OpenDocument) => {
+    const outstanding = doc.total - doc.paidAmount;
+    setAllocations(prev => ({ ...prev, [doc.id]: (outstanding / 100).toFixed(2) }));
+  };
+
   const resetForm = () => {
     setDirection(defaultDirection);
     setSelectedId(defaultSelectedId);
@@ -69,6 +150,8 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, d
     setReference('');
     setNotes('');
     setError('');
+    setOpenDocuments([]);
+    setAllocations({});
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,9 +163,23 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, d
     if (amountCents <= 0) { setError('Amount must be greater than zero'); return; }
     if (!date) { setError('Date is required'); return; }
 
+    // Validate allocations
+    if (isOverAllocated) { setError('Total allocations exceed payment amount'); return; }
+
+    // Validate each allocation doesn't exceed document outstanding
+    for (const doc of openDocuments) {
+      const allocCents = parseCentsInput(allocations[doc.id] ?? '0');
+      const outstanding = doc.total - doc.paidAmount;
+      if (allocCents > outstanding) {
+        setError(`Allocation for ${doc.number} exceeds outstanding balance of ${formatCurrency(outstanding, currency)}`);
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
-      await apiFetch('/api/business/payments', {
+      // Phase 1: Create payment
+      const payment = await apiFetch<{ id: string }>('/api/business/payments', {
         method: 'POST',
         body: JSON.stringify({
           date: new Date(date).toISOString(),
@@ -94,6 +191,21 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, d
           ...(direction === 'AR' ? { clientId: selectedId } : { vendorId: selectedId }),
         }),
       });
+
+      // Phase 2: Allocate each line (sequential to avoid race conditions)
+      const allocationEntries = Object.entries(allocations)
+        .map(([docId, amtStr]) => ({ docId, amount: parseCentsInput(amtStr) }))
+        .filter(a => a.amount > 0);
+
+      for (const alloc of allocationEntries) {
+        await apiFetch(`/api/business/payments/${payment.id}/allocate`, {
+          method: 'POST',
+          body: JSON.stringify({
+            [direction === 'AR' ? 'invoiceId' : 'billId']: alloc.docId,
+            amount: alloc.amount,
+          }),
+        });
+      }
 
       resetForm();
       onOpenChange(false);
@@ -109,7 +221,7 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, d
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-lg overflow-y-auto">
+      <SheetContent className="sm:max-w-xl overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="font-heading">Record Payment</SheetTitle>
         </SheetHeader>
@@ -226,6 +338,102 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, d
             />
           </div>
 
+          {/* Allocation Section */}
+          {selectedId && (
+            <div className="space-y-3">
+              <Label className="text-sm uppercase tracking-wider text-muted-foreground">
+                Allocate Payment
+              </Label>
+
+              {loadingDocs ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading open {direction === 'AR' ? 'invoices' : 'bills'}...
+                </div>
+              ) : openDocuments.length === 0 ? (
+                <p className="text-sm text-muted-foreground py-2">
+                  No outstanding {direction === 'AR' ? 'invoices' : 'bills'} for this {direction === 'AR' ? 'client' : 'vendor'}
+                </p>
+              ) : (
+                <div className="glass-2 rounded-lg overflow-hidden">
+                  {/* Table header */}
+                  <div className="grid grid-cols-[1fr_auto_auto_80px_auto] gap-2 px-3 py-2 border-b border-ak-border text-micro uppercase tracking-wider text-muted-foreground">
+                    <span>Document</span>
+                    <span className="text-right w-20">Total</span>
+                    <span className="text-right w-24">Outstanding</span>
+                    <span className="text-right">Allocate</span>
+                    <span className="w-12" />
+                  </div>
+
+                  {/* Document rows */}
+                  {openDocuments.map(doc => {
+                    const outstanding = doc.total - doc.paidAmount;
+                    const allocCents = parseCentsInput(allocations[doc.id] ?? '0');
+                    const isOverDoc = allocCents > outstanding;
+
+                    return (
+                      <div
+                        key={doc.id}
+                        className="grid grid-cols-[1fr_auto_auto_80px_auto] gap-2 px-3 py-2 items-center border-b border-ak-border last:border-0"
+                      >
+                        <span className="text-sm font-medium truncate">{doc.number}</span>
+                        <span className="text-sm font-mono text-muted-foreground text-right w-20">
+                          {formatCurrency(doc.total, currency)}
+                        </span>
+                        <span className="text-sm font-mono text-right w-24">
+                          {formatCurrency(outstanding, currency)}
+                        </span>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={allocations[doc.id] ?? ''}
+                          onChange={e => setAllocationAmount(doc.id, e.target.value)}
+                          placeholder="0.00"
+                          className={`h-7 text-sm font-mono text-right ${isOverDoc ? 'border-destructive' : ''}`}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-12 text-xs text-ak-green hover:text-ak-green px-1"
+                          onClick={() => fillFull(doc)}
+                        >
+                          <Check className="h-3 w-3 mr-0.5" />
+                          Full
+                        </Button>
+                      </div>
+                    );
+                  })}
+
+                  {/* Running totals */}
+                  {paymentAmountCents > 0 && (
+                    <div className="px-3 py-2 space-y-1 border-t border-ak-border-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Allocated</span>
+                        <span className="font-mono">{formatCurrency(totalAllocated, currency)}</span>
+                      </div>
+                      {unallocated > 0 && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-primary">Unallocated</span>
+                          <span className="font-mono text-primary">{formatCurrency(unallocated, currency)}</span>
+                        </div>
+                      )}
+                      {isOverAllocated && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-destructive">Over-allocated</span>
+                          <span className="font-mono text-destructive">
+                            {formatCurrency(totalAllocated - paymentAmountCents, currency)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {error && (
             <p className="text-sm text-destructive">{error}</p>
           )}
@@ -234,7 +442,7 @@ export function PaymentForm({ open, onOpenChange, clients, vendors, onSuccess, d
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button type="submit" disabled={submitting || isOverAllocated}>
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Record Payment
             </Button>
