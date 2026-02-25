@@ -74,6 +74,8 @@
 | ~~SEC-25~~ | ~~Global tax rate pollution: Make entityId required in create schema (already implemented)~~ | 30m | 🔴 Critical | ✅ done | | review:revie23feb |
 | ~~SEC-26~~ | ~~Derive tenantId server-side in onboarding /complete endpoint (already implemented)~~ | 30m | 🔴 Critical | ✅ done | | review:revie23feb |
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
+| DEV-201 | Banking: Fix missing `XLSX` in `ListImportsQuerySchema` Zod enum — `sourceType=XLSX` filter fails validation despite XLSX uploads working (`apps/api/src/domains/banking/routes/imports.ts:20`) | <1h | 🟠 High | 🟢 | | trace:import-flow |
+| FIN-31 | Banking: Add audit logging to XLSX upload route (`POST /api/banking/imports/xlsx`) — CSV and PDF have `createAuditLog()`, XLSX does not (`apps/api/src/domains/banking/routes/imports.ts:196-307`) | <1h | 🟠 High | 🟢 | | trace:import-flow |
 
 ### Medium / Low
 
@@ -105,6 +107,7 @@
 | PERF-3 | Recharts: code-split import (lazy load) | 30m | 🟡 Medium | ✅ done | | review:performance [atomic] |
 | PERF-7 | Lazy-loading heavy frontend components | 1h | 🟡 Medium | 🟢 | | roadmap [atomic] |
 | DRY-2 | CSV sanitization: deduplicate between report-export and data-export | 30m | 🟡 Medium | ✅ done | | review:simplicity [atomic] |
+| UX-106 | Banking: Normalize import route naming — `/banking/import` (singular upload) vs `/banking/imports` (plural list) — pick one convention and redirect the other | 1-2h | ⚪ Low | 🟢 | | trace:import-flow |
 | ~~DRY-3~~ | ~~Report routes: extract shared 40-line handler pattern into helper~~ | 1h | 🟡 Medium | ✅ done | | review:simplicity [atomic] |
 | ~~DRY-8~~ | ~~Transfer routes: refactor string-matching error handling to use `AccountingError.statusCode` pattern (consistent with all other routes)~~ | 15-20m | 🟡 Medium | ✅ done | | review:transfer-service [atomic] |
 | ~~DRY-9~~ | ~~Remove formatCurrency duplicates — consolidate 5+ inline implementations to `@/lib/utils/currency`~~ | 1h | 🔴 High | ✅ done | 3860bf0 | inline-bandaid-audit [atomic] |

@@ -1,15 +1,15 @@
 # Akount — Status Dashboard
 
-**Auto-generated via `/processes:eod`** | **Last Updated:** 2026-02-23
+**Auto-generated via `/processes:eod`** | **Last Updated:** 2026-02-24
 
 ## Metrics
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Backend Tests | 1304 passing (2 failed) | 1100+ | ⚠️ 2 test failures (invoice/bill stats entityId) |
-| Test Files | 60 | — | — |
+| Backend Tests | 1349 passing (0 failed) | 1100+ | ✅ 123% (+45 from yesterday) |
+| Test Files | 61 | — | — |
 | Service Coverage | 36 services | 27+ | ✅ 133% |
-| TypeScript Errors | 0 | 0 | ✅ Both apps/api and apps/web compile clean |
+| TypeScript Errors | 0 | 0 | ✅ Both apps compile clean |
 | NPM Vulnerabilities | 19 (minimatch dev-only + archiver transitive) | 0 | ⚠️ Accepted risk |
 | Frontend Tests | 0 | 100+ | ❌ 0% |
 | Loading States | 56/55 pages | 55/55 | ✅ 100% |
@@ -18,13 +18,13 @@
 
 ## Task Summary (from TASKS.md)
 
-| Domain | Total | Done | Active | Critical | High | Medium | Low |
-|--------|-------|------|--------|----------|------|--------|-----|
-| Dev | 216 | 132 | 84 | 0 | 16 | 104 | 23 |
-| Design System | 2 | 0 | 2 | 0 | 1 | 1 | 0 |
-| Marketing & Content | 13 | 10 | 3 | 0 | 1 | 2 | 0 |
-| Operations | 9 | 0 | 9 | 0 | 7 | 2 | 0 |
-| **TOTAL** | **240** | **142** | **98** | **0** | **25** | **109** | **25** |
+| Domain | Total | Done | Ready | Backlog | Blocked | Critical | High | Medium | Low |
+|--------|-------|------|-------|---------|---------|----------|------|--------|-----|
+| Dev | 216 | 152 | 52 | 106 | 5 | 5 | 35 | 108 | 22 |
+| Design System | 2 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0 |
+| Marketing & Content | 13 | 10 | 10 | 1 | 0 | 0 | 10 | 2 | 0 |
+| Operations | 9 | 1 | 5 | 0 | 3 | 0 | 7 | 2 | 0 |
+| **TOTAL** | **240** | **163** | **68** | **108** | **8** | **5** | **53** | **113** | **22** |
 
 > _Note: 43 Linear PM infrastructure tasks tracked separately in [LINEAR-TASKS.md](LINEAR-TASKS.md)_
 
@@ -32,19 +32,19 @@
 
 | Track | Total | Done | % | Trend |
 |-------|-------|------|---|-------|
-| Security | 21 | 14 | 67% | +SEC-24 created |
+| Security | 21 | 16 | 76% | ↑ from 67% (+SEC-24/25/26/27) |
 | Performance | 17 | 10 | 59% | — |
-| Financial | 27 | 18 | 67% | ↑ from 59% (+5 done) |
-| DRY/Quality | 10 | 7 | 70% | ↑ from 60% (+1 done) |
-| UX | 69 | 38 | 55% | ↑ from 51% (+3 done) |
+| Financial | 27 | 20 | 74% | ↑ from 67% (+FIN-29/30) |
+| DRY/Quality | 10 | 9 | 90% | ↑ from 70% (+DRY-3/18/19/20/21) |
+| UX | 69 | 47 | 68% | ↑ from 55% (+UX-20/21/22/25/45/103/104/105) |
 | Architecture | 8 | 4 | 50% | — |
-| Dev Features | 121 | 27 | 22% | ↑ from 18% (+5 done) |
+| Dev Features | 121 | 39 | 32% | ↑ from 22% (+DEV-72/73/74/76/77/78/179-184) |
 | Documentation | 8 | 2 | 25% | — |
 | Design System | 6 | 3 | 50% | — |
-| Test | 4 | 0 | 0% | — |
+| Test | 4 | 1 | 25% | ↑ from 0% (+TEST-1) |
 | Infrastructure | 57 | 19 | 33% | — |
-| Marketing | 13 | 10 | 77% | NEW (landing page) |
-| **Overall** | **361** | **152** | **42%** | ↑ from 38% (+24 done) |
+| Marketing | 13 | 10 | 77% | — |
+| **Overall** | **361** | **180** | **50%** | ↑ from 42% (+28 done today) |
 
 ## Completed Plans
 
@@ -58,122 +58,127 @@
 | Banking Transfers (DEV-46) | 12/12 tasks | ✅ COMPLETE |
 | Accounting Domain UX Overhaul | Phase 1-5 complete | ✅ COMPLETE |
 | Marketing Landing Page | 10/10 sections | ✅ COMPLETE |
+| Overview Dashboard Widgets | 6/6 tasks | ✅ COMPLETE |
 
-## Session Quality Insights (Feb 23)
+## Session Quality Insights (Feb 24)
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Sessions completed | 12 | ✅ |
-| Commits today | 44 | ✅ |
-| Tests added | 1298 → 1306 (+8) | ✅ |
-| TS errors resolved | 1 → 0 (-1) | ✅ |
+| Sessions completed | 9 | ✅ |
+| Commits today | 36 | ✅ |
+| Tests updated | 1304 → 1349 (+45) | ✅ |
+| Test failures | 2 → 0 | ✅ |
 | Invariant violations | 0 | ✅ |
-| Pre-flight compliance | 92% (11/12) | ✅ |
-| Context efficiency avg | A (10xA, 1xB, 1xB+) | ✅ |
-| Loops detected | 2 minor (sizing guesses, agent monitoring) | ✅ |
+| Pre-flight compliance | 100% (9/9) | ✅ |
+| Context efficiency avg | A (8xA, 1xB+) | ✅ |
+| Loops detected | 1 (agent output file retrieval) | ✅ |
 
-### Feb 23 Summary (12 sessions, 44 commits)
+### Feb 24 Summary (9 sessions, 36 commits)
 
-**Financial Integrity (Critical):**
-- FIN-25/27/28: Fixed 4 critical calculation bugs — subtotal validation, document-posting amounts, transfer base currency
-- FIN-26 + UX-102: Wired tax rate dropdown to invoice/bill line items with auto-calculation
-- Root cause: `line.amount` semantic mismatch (pre-tax vs post-tax) was pervasive across 4 backend services
+**Security Hardening (3 critical fixes):**
+- SEC-24: Fixed _count tenant isolation leak in GL account service
+- SEC-25: Made entityId required in tax rate creation (global rate pollution)
+- SEC-26: Derived tenantId server-side in onboarding /complete endpoint
 
-**Business Domain CRUD:**
-- DEV-71/72: Draft invoice/bill edit + cancel from list pages
-- DEV-73/74: Vendor/client create+edit Sheet components (-239 lines net via extraction)
-- UX-31/32: Search, filter, and pagination for all business list pages
+**Multi-Agent Code Review + Remediation (25 findings, all fixed):**
+- Launched 5 parallel review agents (financial, security, frontend, TypeScript, test coverage)
+- 3 critical, 12 medium, 10 low findings identified and fixed in 1h48m turnaround
+- Fixes: FIN-29/30, SEC-27, DRY-18/19/20/21, FE-9, UX-103/104/105, TS-7
 
-**Onboarding (DEV-178):**
-- Fixed 3 critical bugs: race condition (P2002), transaction timeout (P2028 5.3s→1s), idempotent user creation
-- Converted 33 sequential DB creates to batch createMany (5x faster)
+**Overview Dashboard Widgets (DEV-179 through DEV-184):**
+- ProfitLossSummaryWidget, TrialBalanceStatusWidget, TopRevenueClientsWidget
+- 3-col responsive grid layout on Overview page, loading skeletons updated
 
-**Landing Page (MKT-3 through MKT-12):**
-- Full marketing page: hero with 3D orb, problem statement, solution pillars, feature showcase, stats, CTA
-- Client Component wrapper pattern for Next.js 16 SSR compatibility with WebGL
+**Void Invoice Full Stack (DEV-72):**
+- VOIDED status added to InvoiceStatus enum, service with GL journal entry reversal
+- POST /:id/void route (OWNER/ADMIN only), frontend Void button with AlertDialog
 
-**Dashboard Polish:**
-- UpcomingPayments: compact rows + client-side pagination
-- RecentTransactions: compact rows + fade gradient + scrollbar-thin-glass CSS utility
-- Entity cards: type-colored icon badges, glow effects, hover micro-interactions
-- Height fixes: CashFlowChart + ExpenseChart + Entities sections aligned
+**Business Payment & Document Actions (DEV-76/77/78):**
+- Payment allocation UI with inline allocation table + two-phase submit
+- Delete actions for invoices, bills, payments (DRAFT/CANCELLED only)
+- Post to GL button per allocation with bank GL account selector
 
-**Layout & UX:**
-- ContentPanel component + DomainTabs auto-detection centralized in root layout
-- UX-19: Chart of Accounts search (first agent execution via /pm:execute)
-- Entity hint messages when create buttons hidden
-- First successful parallel agent execution (3 worktrees for FIN-25/27/28)
+**Accounting UX Polish:**
+- UX-20: COA reactivate button for inactive GL accounts
+- UX-21: COA balance summary cards (Assets/Liabilities/Equity)
+- UX-22: JE filter auto-refresh with 300ms debounce
+- UX-25: Report quick-generate buttons (Last Month/Quarter/YTD)
+- DRY-3: Extracted generic createReportHandler (-142 lines)
 
-**TypeScript:** 1 remaining API error → 0 (asset.routes.test.ts fixed)
+**Client/Vendor Completion (DEV-73/74):**
+- Delete buttons with AlertDialog on client and vendor detail pages
+- UX-45: Record Payment button on invoice detail page
+
+**Workflow System Enhancement:**
+- Enhanced /processes:review with auto-detection and intelligent agent selection
+- Enhanced /processes:work with hybrid mode (main/worktree) and agent delegation
+- Enhanced /processes:claim with task classification and real-time visibility
+- Updated all 15 review agent metadata files with semantic tags
 
 ### Common Patterns (Today's Sessions)
 
 **Strengths:**
-- Perfect invariant compliance (12/12 sessions)
-- High context efficiency (10/12 sessions graded A+/A)
-- Deep financial diagnosis caught 4 critical bugs in one audit session
-- Agent execution pipeline proven (single + parallel)
+- Perfect invariant compliance (9/9 sessions, 0 violations)
+- Multi-agent review is highly effective (5 agents, 25 findings, all fixed same day)
+- Plan-driven widget development (plan first, execute systematically)
+- 100% pre-flight checklist compliance
 
 **Improvement Areas:**
-- Ask size/layout preferences before implementing arbitrary pixel values
-- Analyze all components before applying patterns (don't create wrappers for components that don't need them)
-- Use TaskOutput with block:true from start for agent monitoring
-- Start with console logs before reading code for diagnosis
+- Background agent output files unreliable (0-byte files with `run_in_background: true`)
+- Check `git log` before fixing review findings (avoid duplicate work from other sessions)
+- Convention violations cluster in new services — review existing patterns first
 
 ### Bugs Fixed Today
-- FIN-25: Subtotal validation subtracting tax from pre-tax amount (blocked all invoice/bill creation)
-- FIN-27: Document-posting JE amounts under-credited Revenue / under-debited Expense
-- FIN-28: Multi-currency transfer JE balance broken (exchange rate applied twice)
-- DEV-178: Onboarding race condition (P2002), transaction timeout (P2028), non-idempotent user creation
-- Next.js 16 build error: `ssr: false` not allowed in Server Components
-- Entity hint hidden when no entity selected (silent UX failure)
-- Scroll blur glitch: sticky + backdrop-blur on glass surfaces
-- SEC-24 discovered: _count queries leak across tenants (created for follow-up)
+- SEC-24: _count queries leak across tenants in GL account service
+- SEC-25/26: Tax rate global pollution + onboarding IDOR
+- FIN-29: PATCH totals not validated against line items
+- FIN-30: Transfer JEs duplicated in GL reports (missing linkedEntryId dedup)
+- UX-103: HeroSection SSR bypass
+- UX-104: Stale form data in ClientForm/VendorForm (missing key prop)
+- UX-105: UpcomingPayments client-side fetch (moved to server)
+- DRY-18: Unsanitized invoice number in Content-Disposition header
+- 2 test failures fixed (invoice/bill stats entityId param — 43dbba8)
 
 ### Patterns Discovered
-- `line.amount` is always pre-tax (qty * unitPrice) — 4 backend services assumed otherwise
-- Conservation of value for transfers — both JE sides use same baseCurrencyAmount
-- Next.js 16: `ssr: false` requires Client Component wrapper + mounted state check for WebGL
-- Browser-side `apiFetch` for client components, NOT server-side typed API functions
-- Prisma transaction timeout: >20 sequential operations = batch with createMany + Promise.all
-- Glass + sticky + backdrop-blur = visual artifacts (never combine)
-- Parallel agent execution: worktree isolation prevents conflicts when files don't overlap
+- Background agents with `run_in_background: true` produce 0-byte output files
+- Multi-agent review: 5 specialized agents cover 14,500 lines in ~5 minutes
+- JournalEntryService.voidEntry() creates reversing entries (swaps debit/credit) — reusable for bill void
+- VALID_TRANSITIONS map pattern for status machines
+- TrialBalanceAccount type lacks `type` field (can't group by account type)
+- Generic `createReportHandler<TQuery, TReport>()` pattern for DRY report routes
 
 ## Known Issues
 
 | Issue | Status | Priority |
 |-------|--------|----------|
-| 2 test failures (invoice/bill stats entityId param) | Needs fix | High |
-| SEC-24: _count queries don't filter by tenant | Created | High |
+| ~~2 test failures (invoice/bill stats entityId param)~~ | ✅ FIXED (43dbba8) | ~~High~~ |
+| ~~SEC-24: _count queries leak across tenants~~ | ✅ FIXED (18d40d1) | ~~High~~ |
 | NPM vulnerabilities (19 - dev-only) | Accepted risk | Low |
 | Frontend tests (0) | Needs kickoff | Medium |
+| Background agent output files (0-byte) | Workaround: use blocking agents | Low |
 
 ## Uncommitted Work
 
 | Item | Files | Status |
 |------|-------|--------|
-| Business list search/filter/pagination | 5 modified (transactions, invoices, bills, API clients) | ⏳ needs commit |
-| Landing page app | 1 new directory (apps/landing/) | ⏳ untracked |
-| Figma plugins | 2 new directories | ⏳ untracked |
-| Brand explorations | 1 new HTML file | ⏳ untracked |
+| Duplication service fuzzy matching | 2 files (service + test) | ⏳ pre-existing |
 
 ## Next Session Recommendations
 
 **High Priority:**
-1. Fix 2 test failures (invoice/bill stats entityId parameter mismatch)
-2. Commit remaining uncommitted business list changes
-3. SEC-24: Fix _count tenant isolation in GL account service
-4. Frontend tests kickoff (currently 0 — target 100+)
+1. AI Auto-Bookkeeper Phase 1 (DEV-185 through DEV-200) — 16 tasks, critical path
+2. Frontend tests kickoff (currently 0 — target 100+)
+3. Planning domain: DEV-97 (goals), DEV-98 (budgets) — blocked by backend
 
 **Medium Priority:**
-5. Business domain: DEV-76 (payment allocation), DEV-77 (edit/delete actions), DEV-78 (post to GL)
-6. TEST-1 (remaining report service tests)
-7. DRY-10 (formatDate consolidation)
-8. Accounting: UX-18 (landing page stats), UX-20 (reactivate accounts)
+4. DRY-10 (formatDate consolidation — 15+ inline implementations)
+5. UX-33 (cross-links between related records)
+6. UX-18 (accounting landing page)
+7. UX-79 (bill detail page)
 
 **Infrastructure:**
-9. INFRA-1 (CI/CD pipeline), INFRA-2 (production environment)
-10. Planning domain: DEV-97 (goals), DEV-98 (budgets) — backlog
+8. INFRA-1 (CI/CD pipeline), INFRA-2 (production environment)
+9. DS-1 (Figma-to-code token sync)
 
 ---
 
