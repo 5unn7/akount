@@ -589,5 +589,55 @@ describe('DuplicationService', () => {
       const result = findInternalDuplicates(transactions);
       expect(result.size).toBe(0);
     });
+
+    it('should detect fuzzy duplicates with similar descriptions (PDF summary vs detail)', () => {
+      const transactions = [
+        mockParsedTransaction({ tempId: 'temp-1', description: 'GROCERY STORE #1234 MAIN ST' }),
+        mockParsedTransaction({ tempId: 'temp-2', description: 'GROCERY STORE' }),
+      ];
+
+      const result = findInternalDuplicates(transactions);
+
+      // "grocery store" is a substring of "grocery store 1234 main st" → duplicate
+      expect(result.size).toBe(1);
+      expect(result.get('temp-1')).toEqual(['temp-2']);
+    });
+
+    it('should detect fuzzy duplicates with Levenshtein similarity ≥ 0.6', () => {
+      const transactions = [
+        mockParsedTransaction({ tempId: 'temp-1', description: 'STARBUCKS COFFEE DOWNTOWN' }),
+        mockParsedTransaction({ tempId: 'temp-2', description: 'STARBUCKS COFFEE' }),
+      ];
+
+      const result = findInternalDuplicates(transactions);
+
+      expect(result.size).toBe(1);
+      expect(result.get('temp-1')).toEqual(['temp-2']);
+    });
+
+    it('should match amounts by absolute value (handles sign differences)', () => {
+      const transactions = [
+        mockParsedTransaction({ tempId: 'temp-1', amount: 550, description: 'STARBUCKS' }),
+        mockParsedTransaction({ tempId: 'temp-2', amount: -550, description: 'STARBUCKS' }),
+      ];
+
+      const result = findInternalDuplicates(transactions);
+
+      // abs(550) === abs(-550) → same amount → duplicate
+      expect(result.size).toBe(1);
+      expect(result.get('temp-1')).toEqual(['temp-2']);
+    });
+
+    it('should NOT match genuinely different transactions on same day with same amount', () => {
+      const transactions = [
+        mockParsedTransaction({ tempId: 'temp-1', amount: 550, description: 'STARBUCKS COFFEE' }),
+        mockParsedTransaction({ tempId: 'temp-2', amount: 550, description: 'WALMART GROCERY' }),
+      ];
+
+      const result = findInternalDuplicates(transactions);
+
+      // Completely different descriptions → not duplicates
+      expect(result.size).toBe(0);
+    });
   });
 });

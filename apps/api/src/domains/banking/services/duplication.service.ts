@@ -277,7 +277,12 @@ export async function deduplicateExistingTransactions(
 /**
  * Find duplicates within the imported batch (before comparing to database)
  *
- * This catches duplicates in the CSV file itself
+ * Uses fuzzy matching to catch duplicates that appear in different sections
+ * of the same document (e.g., PDF summary table + detail table) where
+ * descriptions may differ slightly.
+ *
+ * Match criteria: same date + same amount + similar description
+ * (Levenshtein similarity ≥ 0.6 OR one description contains the other)
  */
 export function findInternalDuplicates(transactions: ParsedTransaction[]): Map<string, string[]> {
   const duplicateGroups = new Map<string, string[]>();
@@ -289,11 +294,20 @@ export function findInternalDuplicates(transactions: ParsedTransaction[]): Map<s
       const t1 = transactions[i];
       const t2 = transactions[j];
 
-      // Check if exact duplicate
+      // Must match on date and amount (absolute value to handle sign differences)
+      if (t1.date !== t2.date || Math.abs(t1.amount) !== Math.abs(t2.amount)) {
+        continue;
+      }
+
+      // Check description similarity (fuzzy match)
+      const desc1 = normalizeDescription(t1.description);
+      const desc2 = normalizeDescription(t2.description);
+
       if (
-        t1.date === t2.date &&
-        t1.amount === t2.amount &&
-        normalizeDescription(t1.description) === normalizeDescription(t2.description)
+        desc1 === desc2 ||
+        compareTwoStrings(desc1, desc2) >= 0.6 ||
+        desc1.includes(desc2) ||
+        desc2.includes(desc1)
       ) {
         groups.push(t2.tempId);
       }
