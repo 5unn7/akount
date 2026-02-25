@@ -40,7 +40,7 @@
 | ~~UX-31~~ | ~~Business: Add search/filter bar on invoice, bill, client, vendor lists~~ | 2-3h | 🟠 High | ✅ done | cc6c96c | audit:app-ux |
 | ~~UX-32~~ | ~~Business: Add pagination controls — cursor pagination + Load More~~ | 1-2h | 🟠 High | ✅ done | cc6c96c | audit:app-ux |
 | DEV-71 | Business: Add invoice/bill edit for DRAFT status (PUT endpoints exist, no edit UI) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
-| DEV-72 | Business: Add void invoice action (POST /business/invoices/:id/void exists, no UI button) | 1h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
+| ~~DEV-72~~ | ~~Business: Void invoice full stack — schema + service + route + frontend (ef8ff46)~~ | 1h | 🟠 High | ✅ done | ef8ff46 | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | DEV-73 | Business: Add vendor CRUD — create/edit/delete (full backend API exists, frontend is read-only) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | DEV-74 | Business: Add client CRUD — create/edit/delete (full backend API exists, only inline from invoice form) | 2-3h | 🟠 High | 🟢 | | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
 | ~~DEV-75~~ | ~~Business: Replace bills "Coming Soon" stub with real bill list page (API ready, `/business/bills` is placeholder)~~ | 2-3h | 🟠 High | ✅ | 1e987ed | audit:app-ux, plan:phase-4-bill-and-get-paid.md |
