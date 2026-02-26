@@ -270,6 +270,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 
 | ID | Task | Completed |
 |----|------|-----------|
+| DEV-229 | AI: Address Phase 1 code review findings — cross-tenant test, extract constants (ACTION_EXPIRY_DAYS, HIGH_CONFIDENCE_THRESHOLD), widget error handling | 2026-02-26 |
 | SEC-25 | Global tax rate pollution: Make entityId required in create schema | 2026-02-24 |
 | SEC-26 | Derive tenantId server-side in onboarding /complete endpoint | 2026-02-24 |
 | DEV-180 | Overview: ProfitLossSummaryWidget component | 2026-02-24 |
@@ -279,7 +280,6 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 | DEV-184 | Overview: Update loading skeleton for report widgets | 2026-02-24 |
 | FIN-25 | Fix subtotal calculation bug in invoice & bill services | 2026-02-23 |
 | FIN-27 | Fix document-posting.service.ts netAmount | 2026-02-23 |
-| FIN-28 | Fix transfer baseCurrency calculation | 2026-02-23 |
 
 ---
 
@@ -304,10 +304,11 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 
 
 
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-26T05:11:17.282Z",
+  "generated": "2026-02-26T16:22:49.802Z",
   "summary": {
     "total": 188,
     "ready": 67,

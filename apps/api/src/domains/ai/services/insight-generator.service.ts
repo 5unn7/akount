@@ -46,7 +46,7 @@ const ANALYZER_REGISTRY: AnalyzerEntry[] = [
   { type: 'cash_flow_warning', kind: 'pure', fn: analyzeCashFlow },
   { type: 'overdue_alert', kind: 'pure', fn: analyzeOverdue },
   { type: 'spending_anomaly', kind: 'pure', fn: analyzeSpending },
-  { type: 'duplicate_expense', kind: 'pure', fn: analyzeDuplicates as PureAnalyzer },
+  { type: 'duplicate_expense', kind: 'db', fn: analyzeDuplicates },
   { type: 'revenue_trend', kind: 'db', fn: analyzeRevenue },
   { type: 'reconciliation_gap', kind: 'db', fn: analyzeReconciliation },
 ];

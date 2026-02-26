@@ -256,6 +256,26 @@ describe('AIActionService', () => {
       await expect(service.getAction('act-missing')).rejects.toThrow(AIError);
       await expect(service.getAction('act-missing')).rejects.toThrow('Action not found');
     });
+
+    it('should reject cross-tenant action access', async () => {
+      // Mock returns null because action belongs to different tenant
+      mockFindFirst.mockResolvedValue(null);
+
+      // Try to access action that exists but belongs to another tenant
+      await expect(service.getAction('act-other-tenant')).rejects.toThrow(AIError);
+      await expect(service.getAction('act-other-tenant')).rejects.toThrow('Action not found');
+
+      // Verify tenant isolation was enforced in query
+      expect(mockFindFirst).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            id: 'act-other-tenant',
+            entityId: ENTITY_ID,
+            entity: { tenantId: TENANT_ID },
+          }),
+        })
+      );
+    });
   });
 
   // -----------------------------------------------------------------------
