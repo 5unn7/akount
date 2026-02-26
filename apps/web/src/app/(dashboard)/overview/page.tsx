@@ -22,6 +22,7 @@ import { buildQuickStats, orderStats } from "@/lib/dashboard/transformers";
 import { ProfitLossSummaryWidget } from "@/components/dashboard/ProfitLossSummaryWidget";
 import { TrialBalanceStatusWidget } from "@/components/dashboard/TrialBalanceStatusWidget";
 import { TopRevenueClientsWidget } from "@/components/dashboard/TopRevenueClientsWidget";
+import { AIActionWidget } from "@/components/dashboard/AIActionWidget";
 import { Building2, Landmark, Upload, PenLine } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -166,9 +167,12 @@ export default async function OverviewPage() {
                     <CommandCenterRightPanel upcomingPayments={upcomingPayments.data} />
                 </div>
 
-                {/* Row 2: AI Insights (full width) */}
-                <div className="xl:col-span-4">
+                {/* Row 2: AI Insights + AI Actions */}
+                <div className="xl:col-span-3">
                     <InsightCards />
+                </div>
+                <div className="xl:col-span-1">
+                    <AIActionWidget entityId={entityId} />
                 </div>
 
                 {/* Row 3: Quick Stats (full width, responsive grid, intent-ordered) */}
