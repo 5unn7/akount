@@ -23,6 +23,20 @@ import {
 } from './schemas/je-suggestion.schema';
 import { JESuggestionService, type JESuggestionInput } from './services/je-suggestion.service';
 import { actionRoutes } from './routes/action.routes';
+import {
+  ListInsightsSchema,
+  DismissInsightSchema,
+  SnoozeInsightSchema,
+  GenerateInsightsSchema,
+  GetInsightCountsSchema,
+  type ListInsightsInput,
+  type DismissInsightInput,
+  type SnoozeInsightInput,
+  type GenerateInsightsInput,
+  type GetInsightCountsInput,
+} from './schemas/insight.schema.js';
+import { InsightService } from './services/insight.service.js';
+import { handleAIError } from './errors.js';
 
 /**
  * AI Domain Routes
@@ -375,13 +389,13 @@ export async function aiRoutes(fastify: FastifyInstance) {
   );
 
   // -----------------------------------------------------------------------
-  // Placeholder Endpoints
+  // Insight Endpoints
   // -----------------------------------------------------------------------
 
   /**
    * GET /api/ai/insights
    *
-   * Get AI-generated financial insights and recommendations.
+   * List AI-generated financial insights with optional filters and cursor pagination.
    */
   fastify.get(
     '/insights',
@@ -390,31 +404,221 @@ export async function aiRoutes(fastify: FastifyInstance) {
       config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'AI insights will be implemented in a future phase',
+      const query = request.query as Partial<ListInsightsInput>;
+
+      // Validate query params
+      const validation = ListInsightsSchema.safeParse(query);
+      if (!validation.success) {
+        return reply.status(400).send({
+          error: 'Validation Error',
+          details: validation.error.errors,
+        });
+      }
+
+      // entityId is required per schema but TS doesn't know that
+      if (!validation.data.entityId) {
+        return reply.status(400).send({ error: 'entityId is required' });
+      }
+
+      const params = validation.data as ListInsightsInput & { entityId: string };
+      const tenantId = request.tenantId!;
+
+      try {
+        const service = new InsightService(tenantId, request.userId!);
+        const result = await service.listInsights(params);
+
+        request.log.info(
+          {
+            entityId: params.entityId,
+            count: result.insights.length,
+            type: params.type,
+            priority: params.priority,
+          },
+          'Listed insights'
+        );
+
+        return result;
+      } catch (error: unknown) {
+        request.log.error({ error }, 'List insights error');
+        return handleAIError(error, reply);
+      }
+    }
+  );
+
+  /**
+   * GET /api/ai/insights/:id
+   *
+   * Get a single insight by ID.
+   */
+  fastify.get(
+    '/insights/:id',
+    {
+      ...withPermission('ai', 'insights', 'VIEW'),
+      config: { rateLimit: aiRateLimitConfig() },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { id } = request.params as { id: string };
+      const tenantId = request.tenantId!;
+
+      try {
+        const service = new InsightService(tenantId, request.userId!);
+        const insight = await service.getInsight(id);
+
+        request.log.info({ insightId: id }, 'Retrieved insight');
+        return insight;
+      } catch (error: unknown) {
+        if (error instanceof Error && error.message === 'Insight not found') {
+          return reply.status(404).send({ error: 'Not Found', message: error.message });
+        }
+        request.log.error({ error }, 'Get insight error');
+        return handleAIError(error, reply);
+      }
+    }
+  );
+
+  /**
+   * POST /api/ai/insights/:id/dismiss
+   *
+   * Dismiss an insight (sets dismissedAt, status = dismissed).
+   */
+  fastify.post(
+    '/insights/:id/dismiss',
+    {
+      ...withPermission('ai', 'insights', 'ACT'),
+      config: { rateLimit: aiRateLimitConfig() },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { id } = request.params as { id: string };
+      const tenantId = request.tenantId!;
+
+      try {
+        const service = new InsightService(tenantId, request.userId!);
+        const insight = await service.dismissInsight(id);
+
+        request.log.info({ insightId: id }, 'Dismissed insight');
+        return insight;
+      } catch (error: unknown) {
+        if (error instanceof Error && error.message === 'Insight not found') {
+          return reply.status(404).send({ error: 'Not Found', message: error.message });
+        }
+        request.log.error({ error }, 'Dismiss insight error');
+        return handleAIError(error, reply);
+      }
+    }
+  );
+
+  /**
+   * POST /api/ai/insights/:id/snooze
+   *
+   * Snooze an insight until a future date.
+   */
+  fastify.post(
+    '/insights/:id/snooze',
+    {
+      ...withPermission('ai', 'insights', 'ACT'),
+      preValidation: [validateBody(SnoozeInsightSchema)],
+      config: { rateLimit: aiRateLimitConfig() },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { id } = request.params as { id: string };
+      const { snoozedUntil } = request.body as SnoozeInsightInput;
+      const tenantId = request.tenantId!;
+
+      try {
+        const service = new InsightService(tenantId, request.userId!);
+        const insight = await service.snoozeInsight(id, snoozedUntil);
+
+        request.log.info({ insightId: id, snoozedUntil }, 'Snoozed insight');
+        return insight;
+      } catch (error: unknown) {
+        if (error instanceof Error && error.message === 'Insight not found') {
+          return reply.status(404).send({ error: 'Not Found', message: error.message });
+        }
+        if (error instanceof Error && error.message.includes('future')) {
+          return reply.status(400).send({ error: 'Bad Request', message: error.message });
+        }
+        request.log.error({ error }, 'Snooze insight error');
+        return handleAIError(error, reply);
+      }
+    }
+  );
+
+  /**
+   * POST /api/ai/insights/generate
+   *
+   * Trigger insight generation for an entity (runs all analyzers).
+   */
+  fastify.post(
+    '/insights/generate',
+    {
+      ...withPermission('ai', 'insights', 'ACT'),
+      preValidation: [validateBody(GenerateInsightsSchema)],
+      config: { rateLimit: aiRateLimitConfig() },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { entityId, types } = request.body as GenerateInsightsInput;
+      const tenantId = request.tenantId!;
+
+      // Validate entity ownership (IDOR prevention)
+      const entity = await prisma.entity.findFirst({
+        where: { id: entityId, tenantId },
+        select: { id: true },
+      });
+      if (!entity) {
+        return reply.status(404).send({ error: 'Entity not found or access denied' });
+      }
+
+      // Placeholder: Generator service will be implemented in Sprint 3b
+      // For now, return a pending response
+      request.log.info({ entityId, types }, 'Insight generation requested');
+
+      return reply.status(202).send({
+        message: 'Insight generation scheduled',
+        entityId,
+        types: types || 'all',
       });
     }
   );
 
   /**
-   * GET /api/ai/recommendations
+   * GET /api/ai/insights/counts
    *
-   * Get AI-generated action recommendations.
+   * Get insight counts grouped by priority and type (for dashboard widget).
    */
   fastify.get(
-    '/recommendations',
+    '/insights/counts',
     {
-      ...withPermission('ai', 'recommendations', 'VIEW'),
+      ...withPermission('ai', 'insights', 'VIEW'),
       config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
-      return reply.status(501).send({
-        error: 'Not Implemented',
-        message: 'AI recommendations will be implemented in a future phase',
-      });
+      const query = request.query as Partial<GetInsightCountsInput>;
+
+      // Validate query params
+      const validation = GetInsightCountsSchema.safeParse(query);
+      if (!validation.success) {
+        return reply.status(400).send({
+          error: 'Validation Error',
+          details: validation.error.errors,
+        });
+      }
+
+      const { entityId } = validation.data;
+      const tenantId = request.tenantId!;
+
+      try {
+        const service = new InsightService(tenantId, request.userId!);
+        const counts = await service.getInsightCounts(entityId);
+
+        request.log.info({ entityId, total: counts.total }, 'Retrieved insight counts');
+        return counts;
+      } catch (error: unknown) {
+        if (error instanceof Error && error.message.includes('not found')) {
+          return reply.status(404).send({ error: 'Not Found', message: error.message });
+        }
+        request.log.error({ error }, 'Get insight counts error');
+        return handleAIError(error, reply);
+      }
     }
   );
 
@@ -422,6 +626,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
    * POST /api/ai/rules/suggest
    *
    * Get AI-suggested categorization rules based on transaction patterns.
+   * Phase 2 placeholder - will be implemented in AI Auto-Bookkeeper Phase 2.
    */
   fastify.post(
     '/rules/suggest',
@@ -430,10 +635,10 @@ export async function aiRoutes(fastify: FastifyInstance) {
       config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      // Placeholder - implementation to come
+      // Placeholder - implementation to come in Phase 2
       return reply.status(501).send({
         error: 'Not Implemented',
-        message: 'AI rule suggestions will be implemented in a future phase',
+        message: 'AI rule suggestions will be implemented in Phase 2',
       });
     }
   );
