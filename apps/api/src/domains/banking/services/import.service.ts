@@ -3,6 +3,7 @@ import { parseCSV, parsePDF, parseXLSX } from './parser.service';
 import { findDuplicates, findInternalDuplicates } from './duplication.service';
 import { CategoryService } from './category.service';
 import { categorizeTransactions } from '../../ai/services/categorization.service';
+import { InsightGeneratorService } from '../../ai/services/insight-generator.service';
 import type { ColumnMappings } from '../../../schemas/import';
 import { logger } from '../../../lib/logger';
 
@@ -222,6 +223,9 @@ export class ImportService {
 
         // 5b. Auto-categorize imported transactions
         await this.autoCategorize(importBatch.id);
+
+        // 5c. Generate insights (spending anomaly + duplicate detection)
+        await this.generateImportInsights(importBatch.id, account.entityId);
       }
 
       // 6. Update ImportBatch (status: PROCESSED)
@@ -352,6 +356,9 @@ export class ImportService {
         });
 
         await this.autoCategorize(importBatch.id);
+
+        // Generate insights (spending anomaly + duplicate detection)
+        await this.generateImportInsights(importBatch.id, account.entityId);
       }
 
       await prisma.importBatch.update({
@@ -499,6 +506,9 @@ export class ImportService {
 
         // 5b. Auto-categorize imported transactions
         await this.autoCategorize(importBatch.id);
+
+        // 5c. Generate insights (spending anomaly + duplicate detection)
+        await this.generateImportInsights(importBatch.id, account.entityId);
       }
 
       // 6. Update ImportBatch (status: PROCESSED)
@@ -592,6 +602,32 @@ export class ImportService {
     } catch (error) {
       // Non-critical — log but don't fail the import
       logger.error({ err: error }, 'Error during auto-categorization');
+    }
+  }
+
+  /**
+   * Run insight generation after import (spending anomaly + duplicate detection).
+   * Non-critical — errors are logged but never fail the import.
+   */
+  private async generateImportInsights(importBatchId: string, entityId: string): Promise<void> {
+    try {
+      const txns = await prisma.transaction.findMany({
+        where: { importBatchId, deletedAt: null },
+        select: { id: true },
+      });
+
+      if (txns.length === 0) return;
+
+      const generator = new InsightGeneratorService(this.tenantId, 'system', entityId);
+      const summary = await generator.generateForImport(txns.map(t => t.id));
+
+      logger.info(
+        { importBatchId, entityId, insightsGenerated: summary.generated },
+        'Import-triggered insight generation complete'
+      );
+    } catch (error) {
+      // Non-critical — log but don't fail the import
+      logger.error({ err: error, importBatchId }, 'Error during import insight generation');
     }
   }
 

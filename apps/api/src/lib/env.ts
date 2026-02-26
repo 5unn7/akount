@@ -39,6 +39,9 @@ const envSchema = z.object({
     // AI (Perplexity) — optional, fallback AI provider
     PERPLEXITY_API_KEY: z.string().optional(),
 
+    // Insight generation timer (optional — 0 = disabled)
+    INSIGHT_GENERATION_INTERVAL_MS: z.coerce.number().int().min(0).optional().default(0),
+
     // File Scanning (optional — ClamAV daemon for virus scanning)
     CLAMAV_HOST: z.string().optional(),
     CLAMAV_PORT: z.coerce.number().positive().int().optional().default(3310),

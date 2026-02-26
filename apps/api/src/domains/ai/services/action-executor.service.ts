@@ -1,5 +1,6 @@
 import { prisma } from '@akount/db';
 import { JournalEntryService } from '../../accounting/services/journal-entry.service';
+import { InsightService } from './insight.service';
 import { AIError } from '../errors';
 import { logger } from '../../../lib/logger';
 
@@ -24,6 +25,13 @@ interface CategorizationPayload {
   categoryId: string;
   categoryName: string;
   confidence: number;
+}
+
+/** Payload shape for ALERT actions (created by InsightGeneratorService) */
+interface AlertPayload {
+  insightType: string;
+  triggerId: string;
+  metadata: Record<string, unknown>;
 }
 
 export interface ExecutionResult {
@@ -275,12 +283,54 @@ export class ActionExecutorService {
     type: string;
     payload: unknown;
   }): Promise<void> {
-    if (action.type !== 'JE_DRAFT') {
-      // Only JE_DRAFT has rejection side-effects
-      return;
+    switch (action.type) {
+      case 'JE_DRAFT':
+        return this.handleJEDraftRejection(action.payload as JEDraftPayload);
+      case 'ALERT':
+        return this.handleAlertRejection(action.payload as AlertPayload);
+      default:
+        // Other types have no rejection side-effects
+        return;
     }
+  }
 
-    const payload = action.payload as JEDraftPayload;
+  /**
+   * ALERT rejection: dismiss the linked insight so it doesn't resurface.
+   * The triggerId in the payload maps to the insight's triggerId field.
+   */
+  private async handleAlertRejection(payload: AlertPayload): Promise<void> {
+    if (!payload.triggerId) return;
+
+    try {
+      // Find the insight by triggerId
+      const insight = await prisma.insight.findFirst({
+        where: {
+          triggerId: payload.triggerId,
+          entity: { tenantId: this.tenantId },
+          status: 'active',
+        },
+        select: { id: true },
+      });
+
+      if (insight) {
+        const insightService = new InsightService(this.tenantId, this.userId);
+        await insightService.dismissInsight(insight.id);
+        logger.info(
+          { triggerId: payload.triggerId, insightId: insight.id },
+          'Dismissed insight linked to rejected ALERT action'
+        );
+      }
+    } catch (error) {
+      // Non-critical — log but don't propagate
+      logger.error(
+        { err: error, triggerId: payload.triggerId },
+        'Failed to dismiss insight for rejected ALERT'
+      );
+    }
+  }
+
+  /** JE_DRAFT rejection: soft-delete the draft JE and unlink transaction */
+  private async handleJEDraftRejection(payload: JEDraftPayload): Promise<void> {
     if (!payload.journalEntryId) return;
 
     try {
@@ -313,14 +363,14 @@ export class ActionExecutorService {
         }
 
         logger.info(
-          { journalEntryId: payload.journalEntryId, actionId: action.id },
+          { journalEntryId: payload.journalEntryId },
           'Soft-deleted rejected draft JE'
         );
       }
     } catch (error) {
       // Non-critical: log but don't fail the rejection
       logger.warn(
-        { err: error, journalEntryId: payload.journalEntryId, actionId: action.id },
+        { err: error, journalEntryId: payload.journalEntryId },
         'Failed to cleanup rejected draft JE'
       );
     }

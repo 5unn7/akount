@@ -21,6 +21,9 @@ import { aiRoutes } from './domains/ai';
 import { servicesRoutes } from './domains/services';
 import { systemRoutes } from './domains/system';
 import { reportCache } from './domains/accounting/services/report-cache';
+import { InsightGeneratorService } from './domains/ai/services/insight-generator.service';
+
+let insightTimer: ReturnType<typeof setInterval> | undefined;
 
 const server: FastifyInstance = Fastify({
     logger: true,
@@ -245,6 +248,7 @@ const gracefulShutdown = async () => {
     server.log.info('Shutting down gracefully...');
     try {
         await server.close();
+        if (insightTimer) clearInterval(insightTimer);
         reportCache.destroy(); // Cleanup report cache
         await prisma.$disconnect();
         server.log.info('✓ Server and database connections closed gracefully');
@@ -262,10 +266,49 @@ const gracefulShutdown = async () => {
 process.on('SIGTERM', gracefulShutdown);
 process.on('SIGINT', gracefulShutdown);
 
+/** Start scheduled insight generation (if INSIGHT_GENERATION_INTERVAL_MS > 0) */
+function startInsightTimer(): void {
+    const intervalMs = env.INSIGHT_GENERATION_INTERVAL_MS;
+    if (!intervalMs || intervalMs <= 0) return;
+
+    server.log.info(
+        { intervalMs, intervalMin: Math.round(intervalMs / 60000) },
+        'Starting scheduled insight generation timer'
+    );
+
+    insightTimer = setInterval(async () => {
+        try {
+            const entities = await prisma.entity.findMany({
+                select: { id: true, tenantId: true },
+            });
+
+            let totalInsights = 0;
+            for (const entity of entities) {
+                const generator = new InsightGeneratorService(entity.tenantId, 'system', entity.id);
+                const summary = await generator.generateAll();
+                totalInsights += summary.generated;
+            }
+
+            server.log.info(
+                { entityCount: entities.length, insightCount: totalInsights },
+                'Scheduled insight generation complete'
+            );
+        } catch (error) {
+            server.log.error(error, 'Scheduled insight generation failed');
+        }
+    }, intervalMs);
+
+    // Don't keep process alive just for this timer
+    insightTimer.unref();
+}
+
 const start = async () => {
     try {
         await server.listen({ port: env.PORT, host: env.HOST });
         server.log.info(`✓ Server listening on ${env.HOST}:${env.PORT}`);
+
+        // Start optional background insight generation
+        startInsightTimer();
     } catch (err) {
         server.log.error(err);
         await prisma.$disconnect();
