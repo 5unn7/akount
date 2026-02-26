@@ -50,7 +50,9 @@ export function redactText(content: string): RedactionResult {
   const log: RedactionLogEntry[] = [];
   let redacted = content;
 
-  // 1. Redact credit card numbers (with Luhn validation)
+  // Order matters! Check most specific patterns first to avoid false positives.
+
+  // 1. Redact credit card numbers (with Luhn validation) - most specific
   redacted = redactCreditCards(redacted, log);
 
   // 2. Redact SSN (US) - format: XXX-XX-XXXX
@@ -62,11 +64,11 @@ export function redactText(content: string): RedactionResult {
   // 4. Redact email addresses
   redacted = redactEmails(redacted, log);
 
-  // 5. Redact bank account numbers (8-17 digits)
-  redacted = redactBankAccounts(redacted, log);
-
-  // 6. Redact phone numbers (10-11 digits with optional formatting)
+  // 5. Redact phone numbers BEFORE bank accounts (more specific: 10-11 digits vs 8-17)
   redacted = redactPhoneNumbers(redacted, log);
+
+  // 6. Redact bank account numbers (8-17 digits) - most generic, check last
+  redacted = redactBankAccounts(redacted, log);
 
   const redactedBuffer = Buffer.from(redacted, 'utf-8');
 
@@ -283,26 +285,53 @@ function redactBankAccounts(text: string, log: RedactionLogEntry[]): string {
  * Formats: (XXX) XXX-XXXX, XXX-XXX-XXXX, XXXXXXXXXX
  */
 function redactPhoneNumbers(text: string, log: RedactionLogEntry[]): string {
-  const phonePattern =
-    /\b(\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b|\b\d{10,11}\b/g;
-
-  return text.replace(phonePattern, (match, offset) => {
-    // Skip if it looks like a bank account (handled above)
-    if (match.length > 11) return match;
-
+  // Pattern 1: (555) 123-4567 format
+  const phoneWithParens = /\(\d{3}\)\s?\d{3}[-.\s]?\d{4}/g;
+  text = text.replace(phoneWithParens, (match, offset) => {
     const replacement = '***-***-****';
-
     log.push({
       type: 'phone',
-      pattern: 'phone_format',
+      pattern: 'phone_with_parens',
       position: offset,
       replacement,
     });
-
     logger.info({ position: offset }, 'Phone number detected and redacted');
-
     return replacement;
   });
+
+  // Pattern 2: 555-123-4567 format
+  const phoneWithDashes = /\b\d{3}[-.\s]\d{3}[-.\s]\d{4}\b/g;
+  text = text.replace(phoneWithDashes, (match, offset) => {
+    const replacement = '***-***-****';
+    log.push({
+      type: 'phone',
+      pattern: 'phone_with_dashes',
+      position: offset,
+      replacement,
+    });
+    logger.info({ position: offset }, 'Phone number detected and redacted');
+    return replacement;
+  });
+
+  // Pattern 3: 5551234567 (10 digits, no formatting)
+  // Only match if NOT already redacted by CC or bank account patterns
+  const phoneNoFormat = /\b\d{10}\b/g;
+  text = text.replace(phoneNoFormat, (match, offset) => {
+    // Skip if already contains *, meaning it was caught by another pattern
+    if (match.includes('*')) return match;
+
+    const replacement = '***-***-****';
+    log.push({
+      type: 'phone',
+      pattern: 'phone_no_format',
+      position: offset,
+      replacement,
+    });
+    logger.info({ position: offset }, 'Phone number detected and redacted');
+    return replacement;
+  });
+
+  return text;
 }
 
 /**
