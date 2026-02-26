@@ -11,7 +11,10 @@ export type AIErrorCode =
   | 'ACTION_EXPIRED'
   | 'ENTITY_NOT_FOUND'
   | 'INVALID_ACTION_TYPE'
-  | 'BATCH_PARTIAL_FAILURE';
+  | 'BATCH_PARTIAL_FAILURE'
+  | 'PERIOD_NOT_FOUND'
+  | 'PERIOD_NOT_READY'
+  | 'PERIOD_INVALID_STATUS';
 
 export class AIError extends Error {
   constructor(

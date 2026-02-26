@@ -24,6 +24,7 @@ import {
 import { JESuggestionService, type JESuggestionInput } from './services/je-suggestion.service';
 import { actionRoutes } from './routes/action.routes';
 import { rulesRoutes } from './routes/rules';
+import { monthlyCloseRoutes } from './routes/monthly-close';
 import {
   ListInsightsSchema,
   DismissInsightSchema,
@@ -653,4 +654,9 @@ export async function aiRoutes(fastify: FastifyInstance) {
   // Rules Routes (sub-plugin)
   // -----------------------------------------------------------------------
   fastify.register(rulesRoutes, { prefix: '/rules' });
+
+  // -----------------------------------------------------------------------
+  // Monthly Close Routes (sub-plugin)
+  // -----------------------------------------------------------------------
+  fastify.register(monthlyCloseRoutes, { prefix: '/monthly-close' });
 }
