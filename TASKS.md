@@ -105,20 +105,6 @@
 | FIN-29 | Re-validate totals against line items in updateInvoice/updateBill PATCH | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
 | FIN-30 | Add linkedEntryId deduplication filter to GL report queries | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
 | TEST-6 | Write tests for data-export and report-export services | 2h | 🟡 Medium | 🟢 | | review:revie23feb |
-| TEST-7 | Frontend: Fix WelcomeStep 7 failing tests (text mismatch) | 30m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
-| TEST-8 | Frontend: Create test-utils/ dir + render helper | 30m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
-| TEST-9 | Frontend: Create mock data factories (Account, Invoice, etc.) | 45m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
-| TEST-10 | Frontend: Create API mock helpers (typed apiFetch wrappers) | 30m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
-| TEST-11 | Frontend: Test currency.ts (4 functions, ~20 tests) | 45m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
-| TEST-12 | Frontend: Test date.ts (4 functions, ~15 tests) | 45m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
-| TEST-13 | Frontend: Test account-helpers.ts (2 functions + maps, ~15 tests) | 45m | 🟡 Medium | ✅ done | 38cfde1 | plan:frontend-test-coverage |
-| TEST-14 | Frontend: Test StatCard / QuickStats / QuickActionPills | 1.5h | 🟡 Medium | ✅ done | b3dee11 | plan:frontend-test-coverage |
-| TEST-15 | Frontend: Test DashboardMetrics + EntityAccountCards | 1.5h | 🟡 Medium | ✅ done | b3dee11 | plan:frontend-test-coverage |
-| TEST-16 | Frontend: Test overview widgets (P&L, TrialBalance, TopRevenue) | 1.5h | 🟡 Medium | ✅ done | b3dee11 | plan:frontend-test-coverage |
-| TEST-17 | Frontend: Test InvoiceTable + BillsTable + PaymentTable | 2h | 🟡 Medium | ✅ done | 4d6cc4a | plan:frontend-test-coverage |
-| TEST-18 | Frontend: Test ClientForm + VendorForm | 2h | 🟡 Medium | ✅ done | 4d6cc4a | plan:frontend-test-coverage |
-| TEST-19 | Frontend: Test InvoiceForm line items + totals (financial calcs) | 2.5h | 🟠 High | ✅ done | 4d6cc4a | plan:frontend-test-coverage |
-| TEST-20 | Frontend: Test navigation components + E2E onboarding fix | 2h | ⚪ Low | ✅ done | fe8d986 | plan:frontend-test-coverage |
 | UX-3 | Report tables: add `aria-*` attributes, caption, scope, role="progressbar" | 45m | 🟡 Medium | 🟢 | | review:nextjs |
 | DOC-3 | Archive .reviews/ temp workspace to docs/reviews/ or delete | 15m | 🟡 Medium | 🟢 | | review:smooth-floating-mountain |
 | DOC-4 | Elevate source preservation to explicit 5th invariant in guardrails.md | 15m | 🟡 Medium | 🟢 | | review:smooth-floating-mountain |
