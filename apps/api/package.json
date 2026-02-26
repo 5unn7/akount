@@ -15,6 +15,7 @@
     "dependencies": {
         "@akount/db": "*",
         "@akount/types": "*",
+        "@anthropic-ai/sdk": "^0.78.0",
         "@clerk/backend": "^2.29.7",
         "@fastify/cors": "^10.1.0",
         "@fastify/helmet": "^12.0.1",

@@ -33,7 +33,10 @@ const envSchema = z.object({
     // Email (Resend) — optional, email disabled when unset
     RESEND_API_KEY: z.string().optional(),
 
-    // AI (Perplexity) — optional, AI features disabled when unset
+    // AI (Anthropic Claude) — optional, primary AI provider
+    ANTHROPIC_API_KEY: z.string().optional(),
+
+    // AI (Perplexity) — optional, fallback AI provider
     PERPLEXITY_API_KEY: z.string().optional(),
 
     // File Scanning (optional — ClamAV daemon for virus scanning)

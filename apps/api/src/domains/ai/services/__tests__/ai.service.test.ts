@@ -3,139 +3,192 @@ import { AIService } from '../ai.service';
 import type { AIMessage, AIChatResponse } from '../types';
 
 // Mock PerplexityProvider
-const mockChat = vi.fn();
+const mockPerplexityChat = vi.fn();
+vi.mock('../providers/perplexity.provider', () => ({
+  PerplexityProvider: class {
+    chat = mockPerplexityChat;
+  },
+}));
 
-vi.mock('../providers/perplexity.provider', () => {
-  return {
-    PerplexityProvider: class {
-      chat = mockChat;
-    },
-  };
-});
+// Mock ClaudeProvider
+const mockClaudeChat = vi.fn();
+vi.mock('../providers/claude.provider', () => ({
+  ClaudeProvider: class {
+    chat = mockClaudeChat;
+  },
+}));
 
 describe('AIService', () => {
-  let originalEnv: string | undefined;
+  let originalPerplexityKey: string | undefined;
+  let originalAnthropicKey: string | undefined;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    originalEnv = process.env.PERPLEXITY_API_KEY;
+    originalPerplexityKey = process.env.PERPLEXITY_API_KEY;
+    originalAnthropicKey = process.env.ANTHROPIC_API_KEY;
   });
 
   afterEach(() => {
-    if (originalEnv) {
-      process.env.PERPLEXITY_API_KEY = originalEnv;
+    if (originalPerplexityKey) {
+      process.env.PERPLEXITY_API_KEY = originalPerplexityKey;
     } else {
       delete process.env.PERPLEXITY_API_KEY;
+    }
+    if (originalAnthropicKey) {
+      process.env.ANTHROPIC_API_KEY = originalAnthropicKey;
+    } else {
+      delete process.env.ANTHROPIC_API_KEY;
     }
   });
 
   describe('constructor', () => {
+    it('should initialize claude provider when ANTHROPIC_API_KEY present', () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      delete process.env.PERPLEXITY_API_KEY;
+
+      const service = new AIService();
+
+      expect(service.isProviderAvailable('claude')).toBe(true);
+      expect(service.getDefaultProviderName()).toBe('claude');
+    });
+
     it('should initialize perplexity provider when API key present', () => {
       process.env.PERPLEXITY_API_KEY = 'test-key';
+      delete process.env.ANTHROPIC_API_KEY;
 
       const service = new AIService();
 
       expect(service.isProviderAvailable('perplexity')).toBe(true);
     });
 
+    it('should initialize both providers when both keys present', () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      process.env.PERPLEXITY_API_KEY = 'test-key';
+
+      const service = new AIService();
+
+      expect(service.isProviderAvailable('claude')).toBe(true);
+      expect(service.isProviderAvailable('perplexity')).toBe(true);
+      expect(service.getDefaultProviderName()).toBe('claude');
+    });
+
     it('should not initialize perplexity when API key missing', () => {
       delete process.env.PERPLEXITY_API_KEY;
+      delete process.env.ANTHROPIC_API_KEY;
 
       const service = new AIService();
 
       expect(service.isProviderAvailable('perplexity')).toBe(false);
     });
+
+    it('should fall back to perplexity as default when claude key missing', () => {
+      delete process.env.ANTHROPIC_API_KEY;
+      process.env.PERPLEXITY_API_KEY = 'test-key';
+
+      const service = new AIService();
+
+      expect(service.getDefaultProviderName()).toBe('perplexity');
+    });
   });
 
   describe('chat', () => {
-    let service: AIService;
     const mockMessages: AIMessage[] = [
       { role: 'user', content: 'Hello AI' },
     ];
 
-    beforeEach(() => {
-      process.env.PERPLEXITY_API_KEY = 'test-key';
-      service = new AIService();
-    });
+    it('should call claude provider by default when available', async () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      const service = new AIService();
 
-    it('should call provider chat with messages', async () => {
       const mockResponse: AIChatResponse = {
-        content: 'AI response',
-        model: 'perplexity-test',
+        content: 'Claude response',
+        model: 'claude-sonnet-4-5-20250929',
       };
-
-      mockChat.mockResolvedValueOnce(mockResponse);
+      mockClaudeChat.mockResolvedValueOnce(mockResponse);
 
       const result = await service.chat(mockMessages);
 
-      expect(mockChat).toHaveBeenCalledWith(mockMessages, undefined);
+      expect(mockClaudeChat).toHaveBeenCalledWith(mockMessages, undefined);
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('should call perplexity when specified explicitly', async () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      process.env.PERPLEXITY_API_KEY = 'test-key';
+      const service = new AIService();
+
+      const mockResponse: AIChatResponse = {
+        content: 'Perplexity response',
+        model: 'sonar',
+      };
+      mockPerplexityChat.mockResolvedValueOnce(mockResponse);
+
+      const result = await service.chat(mockMessages, { provider: 'perplexity' });
+
+      expect(mockPerplexityChat).toHaveBeenCalled();
       expect(result).toEqual(mockResponse);
     });
 
     it('should use default provider when not specified', async () => {
+      process.env.PERPLEXITY_API_KEY = 'test-key';
+      delete process.env.ANTHROPIC_API_KEY;
+      const service = new AIService();
+
       const mockResponse: AIChatResponse = {
         content: 'Response',
-        model: 'perplexity-test',
+        model: 'sonar',
       };
-
-      mockChat.mockResolvedValueOnce(mockResponse);
+      mockPerplexityChat.mockResolvedValueOnce(mockResponse);
 
       await service.chat(mockMessages);
 
-      expect(mockChat).toHaveBeenCalled();
-    });
-
-    it('should use specified provider when provided', async () => {
-      const mockResponse: AIChatResponse = {
-        content: 'Response',
-        model: 'perplexity-test',
-      };
-
-      mockChat.mockResolvedValueOnce(mockResponse);
-
-      await service.chat(mockMessages, { provider: 'perplexity' });
-
-      expect(mockChat).toHaveBeenCalled();
+      expect(mockPerplexityChat).toHaveBeenCalled();
     });
 
     it('should throw error for unavailable provider', async () => {
+      process.env.PERPLEXITY_API_KEY = 'test-key';
+      const service = new AIService();
+
       await expect(
         service.chat(mockMessages, { provider: 'gpt-4' })
       ).rejects.toThrow('AI Provider "gpt-4" not configured or unavailable.');
     });
 
     it('should throw error for non-existent provider', async () => {
+      process.env.PERPLEXITY_API_KEY = 'test-key';
+      const service = new AIService();
+
       await expect(
         service.chat(mockMessages, { provider: 'fake-provider' })
       ).rejects.toThrow('AI Provider "fake-provider" not configured or unavailable.');
     });
 
     it('should pass options to provider', async () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      const service = new AIService();
+
       const mockResponse: AIChatResponse = {
         content: 'Response',
-        model: 'perplexity-test',
+        model: 'claude-sonnet-4-5-20250929',
       };
+      mockClaudeChat.mockResolvedValueOnce(mockResponse);
 
-      mockChat.mockResolvedValueOnce(mockResponse);
-
-      const options = {
-        temperature: 0.7,
-        maxTokens: 1000,
-      };
-
+      const options = { temperature: 0.7, maxTokens: 1000 };
       await service.chat(mockMessages, options);
 
-      expect(mockChat).toHaveBeenCalledWith(mockMessages, options);
+      expect(mockClaudeChat).toHaveBeenCalledWith(mockMessages, options);
     });
 
-    it('should forward provider response', async () => {
+    it('should forward provider response with usage', async () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      const service = new AIService();
+
       const mockResponse: AIChatResponse = {
         content: 'Detailed AI response',
-        model: 'perplexity-test',
+        model: 'claude-sonnet-4-5-20250929',
         usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
       };
-
-      mockChat.mockResolvedValueOnce(mockResponse);
+      mockClaudeChat.mockResolvedValueOnce(mockResponse);
 
       const result = await service.chat(mockMessages);
 
@@ -145,14 +198,25 @@ describe('AIService', () => {
     });
 
     it('should handle provider errors gracefully', async () => {
-      mockChat.mockRejectedValueOnce(new Error('Provider API error'));
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      const service = new AIService();
+
+      mockClaudeChat.mockRejectedValueOnce(new Error('Provider API error'));
 
       await expect(service.chat(mockMessages)).rejects.toThrow('Provider API error');
     });
   });
 
   describe('getDefaultProviderName', () => {
-    it('should return perplexity as default', () => {
+    it('should return claude when anthropic key present', () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      const service = new AIService();
+
+      expect(service.getDefaultProviderName()).toBe('claude');
+    });
+
+    it('should return perplexity when only perplexity key present', () => {
+      delete process.env.ANTHROPIC_API_KEY;
       process.env.PERPLEXITY_API_KEY = 'test-key';
       const service = new AIService();
 
@@ -160,18 +224,24 @@ describe('AIService', () => {
     });
 
     it('should be consistent across calls', () => {
-      process.env.PERPLEXITY_API_KEY = 'test-key';
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
       const service = new AIService();
 
       const first = service.getDefaultProviderName();
       const second = service.getDefaultProviderName();
 
       expect(first).toBe(second);
-      expect(first).toBe('perplexity');
     });
   });
 
   describe('isProviderAvailable', () => {
+    it('should return true for claude when ANTHROPIC_API_KEY present', () => {
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
+      const service = new AIService();
+
+      expect(service.isProviderAvailable('claude')).toBe(true);
+    });
+
     it('should return true for perplexity when API key present', () => {
       process.env.PERPLEXITY_API_KEY = 'test-key';
       const service = new AIService();
@@ -202,9 +272,17 @@ describe('AIService', () => {
 
     it('should return false for perplexity when API key missing', () => {
       delete process.env.PERPLEXITY_API_KEY;
+      delete process.env.ANTHROPIC_API_KEY;
       const service = new AIService();
 
       expect(service.isProviderAvailable('perplexity')).toBe(false);
+    });
+
+    it('should return false for claude when ANTHROPIC_API_KEY missing', () => {
+      delete process.env.ANTHROPIC_API_KEY;
+      const service = new AIService();
+
+      expect(service.isProviderAvailable('claude')).toBe(false);
     });
   });
 });
