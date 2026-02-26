@@ -1,42 +1,41 @@
-import type { Metadata } from "next";
-import { Target } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Metadata } from 'next';
+import { listGoals } from '@/lib/api/planning';
+import { listEntities } from '@/lib/api/entities';
+import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
+import { GoalsList } from './goals-list';
 
 export const metadata: Metadata = {
-    title: "Goals | Akount",
-    description: "Set and track financial goals",
+    title: 'Goals | Akount',
+    description: 'Set and track financial goals',
 };
 
-export default function GoalsPage() {
-    return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <h2 className="text-3xl font-bold tracking-tight font-heading">Goals</h2>
-                    <Badge variant="outline" className="text-xs glass text-muted-foreground border-ak-border">
-                        Coming Soon
-                    </Badge>
-                </div>
-            </div>
+export default async function GoalsPage() {
+    const [{ entityId: rawEntityId }, entities] = await Promise.all([
+        getEntitySelection(),
+        listEntities(),
+    ]);
+    const entityId = validateEntityId(rawEntityId, entities) ?? undefined;
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Target className="h-5 w-5" />
-                        Coming Soon
-                    </CardTitle>
-                    <CardDescription>
-                        Set financial goals and track your progress.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                        This feature is under development. It will provide goal setting,
-                        milestone tracking, and progress visualization.
-                    </p>
-                </CardContent>
-            </Card>
+    if (!entityId) {
+        return (
+            <div className="flex-1 space-y-4">
+                <h1 className="text-2xl font-heading font-normal">Goals</h1>
+                <p className="text-sm text-muted-foreground">
+                    Select an entity to view and manage financial goals.
+                </p>
+            </div>
+        );
+    }
+
+    const result = await listGoals({ entityId, limit: 50 });
+
+    return (
+        <div className="flex-1 space-y-6">
+            <GoalsList
+                initialGoals={result.goals}
+                initialNextCursor={result.nextCursor}
+                entityId={entityId}
+            />
         </div>
     );
 }
