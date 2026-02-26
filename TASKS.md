@@ -1,10 +1,10 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-24
+**Last Updated:** 2026-02-25
 **Current Phase:** Phase 6 — Launch MVP
 
-> **123 active tasks** · 🔴 5 critical · 🟠 25 high · 🟡 75 medium · ⚪ 18 low
-> 📦 74 backlog · 🟢 43 ready · 🔒 6 blocked · 🟡 1 deferred
+> **152 active tasks** · 🔴 8 critical · 🟠 33 high · 🟡 82 medium · ⚪ 18 low
+> 📦 74 backlog · 🟢 72 ready · 🔒 6 blocked · 🟡 1 deferred
 >
 > _Completed tasks (152) archived in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 > _43 Linear PM infrastructure tasks in [LINEAR-TASKS.md](LINEAR-TASKS.md)_
@@ -32,8 +32,6 @@
 | DEV-198 | AI: Wire AIAction approval to execution (action-executor service) | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-193,DEV-195,DEV-197] | plan:ai-auto-bookkeeper-phase1 |
 | DEV-200 | AI: Integration test — full auto-bookkeeper workflow E2E | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-191,DEV-194,DEV-197,DEV-198] | plan:ai-auto-bookkeeper-phase1 |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
-| TEST-2 | E2E tests for critical user flows (onboarding, import, posting, reports) | 4h | 🟠 High | 🟢 | | roadmap |
-| TEST-3 | 80%+ API test coverage target | 2h | 🟠 High | 🟢 | | roadmap |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
 | UX-18 | Accounting: Add landing page at `/accounting` with summary stats (draft JEs, account count, recent activity) | 2-3h | 🟠 High | 🟢 | | audit:acct-fe-be |
 | DEV-97 | Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
