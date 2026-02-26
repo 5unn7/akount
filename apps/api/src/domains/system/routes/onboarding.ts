@@ -137,6 +137,14 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
     Reply: InitializeResponse | ErrorResponse;
   }>('/initialize', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
+      // SEC-39: Verify authentication before proceeding
+      if (!request.userId) {
+        return reply.status(401).send({
+          error: 'Unauthorized',
+          message: 'Authentication required',
+        });
+      }
+
       // Validate request body
       const data = initializeOnboardingSchema.parse(request.body);
 
@@ -395,6 +403,14 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
     Reply: CompleteResponse | ErrorResponse;
   }>('/complete', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
+      // SEC-39: Verify authentication before proceeding
+      if (!request.userId) {
+        return reply.status(401).send({
+          error: 'Unauthorized',
+          message: 'Authentication required',
+        });
+      }
+
       const data = completeOnboardingSchema.parse(request.body);
 
       // Get user
@@ -547,6 +563,14 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
    */
   fastify.get<{ Reply: StatusResponse | ErrorResponse }>('/status', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
+      // SEC-39: Verify authentication before proceeding
+      if (!request.userId) {
+        return reply.status(401).send({
+          error: 'Unauthorized',
+          message: 'Authentication required',
+        });
+      }
+
       // Add cache headers to reduce API calls (30 seconds)
       reply.header('Cache-Control', 'private, max-age=30');
 
@@ -594,6 +618,14 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
     bodyLimit: 51200, // 50KB max to prevent DoS
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     try {
+      // SEC-39: Verify authentication before proceeding
+      if (!request.userId) {
+        return reply.status(401).send({
+          error: 'Unauthorized',
+          message: 'Authentication required',
+        });
+      }
+
       const body = saveStepSchema.parse(request.body);
       const clerkUserId = request.userId as string;
 
@@ -655,6 +687,14 @@ export async function onboardingRoutes(fastify: FastifyInstance) {
    */
   fastify.get('/resume', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
+      // SEC-39: Verify authentication before proceeding
+      if (!request.userId) {
+        return reply.status(401).send({
+          error: 'Unauthorized',
+          message: 'Authentication required',
+        });
+      }
+
       const clerkUserId = request.userId as string;
 
       const state = await prisma.onboardingWizardState.findUnique({
