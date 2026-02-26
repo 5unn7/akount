@@ -2,15 +2,18 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { withPermission } from '../../../middleware/withPermission';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { BudgetService } from '../services/budget.service';
+import { BudgetVarianceService } from '../services/budget-variance.service';
 import {
   CreateBudgetSchema,
   UpdateBudgetSchema,
   ListBudgetsQuerySchema,
   BudgetIdParamSchema,
+  BudgetVarianceQuerySchema,
   type CreateBudgetInput,
   type UpdateBudgetInput,
   type ListBudgetsQuery,
   type BudgetIdParam,
+  type BudgetVarianceQuery,
 } from '../schemas/budget.schema';
 
 /**
@@ -160,6 +163,52 @@ export async function budgetRoutes(fastify: FastifyInstance) {
         }
         throw error;
       }
+    }
+  );
+
+  // GET /budgets/variance — Budget variance analysis (all budgets)
+  fastify.get(
+    '/variance',
+    {
+      ...withPermission('planning', 'budgets', 'VIEW'),
+      preValidation: [validateQuery(BudgetVarianceQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const varianceService = new BudgetVarianceService(request.tenantId);
+      const query = request.query as BudgetVarianceQuery;
+
+      const result = await varianceService.listBudgetVariances(query.entityId);
+      request.log.info({ count: result.length }, 'Listed budget variances');
+      return reply.status(200).send({ variances: result });
+    }
+  );
+
+  // GET /budgets/:id/variance — Single budget variance detail with transactions
+  fastify.get(
+    '/:id/variance',
+    {
+      ...withPermission('planning', 'budgets', 'VIEW'),
+      preValidation: [validateParams(BudgetIdParamSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const varianceService = new BudgetVarianceService(request.tenantId);
+      const params = request.params as BudgetIdParam;
+
+      const result = await varianceService.getBudgetVarianceDetail(params.id);
+      if (!result) {
+        return reply.status(404).send({ error: 'Budget not found' });
+      }
+
+      request.log.info({ budgetId: params.id, alertLevel: result.alertLevel }, 'Retrieved budget variance');
+      return reply.status(200).send(result);
     }
   );
 }

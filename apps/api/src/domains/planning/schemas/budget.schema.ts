@@ -36,7 +36,12 @@ export const BudgetIdParamSchema = z.object({
   id: z.string().cuid('Invalid budget ID'),
 });
 
+export const BudgetVarianceQuerySchema = z.object({
+  entityId: z.string().cuid('Invalid entity ID'),
+});
+
 export type CreateBudgetInput = z.infer<typeof CreateBudgetSchema>;
 export type UpdateBudgetInput = z.infer<typeof UpdateBudgetSchema>;
 export type ListBudgetsQuery = z.infer<typeof ListBudgetsQuerySchema>;
 export type BudgetIdParam = z.infer<typeof BudgetIdParamSchema>;
+export type BudgetVarianceQuery = z.infer<typeof BudgetVarianceQuerySchema>;

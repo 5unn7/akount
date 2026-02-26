@@ -213,3 +213,61 @@ export async function deleteBudget(id: string): Promise<void> {
     method: 'DELETE',
   });
 }
+
+// ============================================================================
+// Types — Budget Variance
+// ============================================================================
+
+export type AlertLevel = 'ok' | 'warning' | 'over-budget';
+
+export interface BudgetVariance {
+  budgetId: string;
+  budgetName: string;
+  period: string;
+  budgetedAmount: number; // Integer cents
+  actualAmount: number; // Integer cents
+  variance: number; // budgetedAmount - actualAmount
+  variancePercent: number;
+  utilizationPercent: number;
+  alertLevel: AlertLevel;
+  startDate: string;
+  endDate: string;
+  glAccountId: string | null;
+  categoryId: string | null;
+}
+
+export interface BudgetVarianceDetail extends BudgetVariance {
+  transactions: Array<{
+    id: string;
+    date: string;
+    memo: string;
+    debitAmount: number;
+    creditAmount: number;
+    glAccountName: string;
+    entryNumber: string | null;
+  }>;
+}
+
+export interface ListBudgetVariancesResponse {
+  variances: BudgetVariance[];
+}
+
+// ============================================================================
+// API Functions — Budget Variance
+// ============================================================================
+
+export async function listBudgetVariances(
+  entityId: string
+): Promise<ListBudgetVariancesResponse> {
+  return apiClient<ListBudgetVariancesResponse>(
+    `/api/planning/budgets/variance?entityId=${entityId}`
+  );
+}
+
+export async function getBudgetVarianceDetail(
+  budgetId: string
+): Promise<BudgetVarianceDetail> {
+  return apiClient<BudgetVarianceDetail>(
+    `/api/planning/budgets/${budgetId}/variance`
+  );
+}

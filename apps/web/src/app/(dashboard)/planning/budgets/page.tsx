@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { listBudgets } from '@/lib/api/planning';
+import { listBudgets, listBudgetVariances } from '@/lib/api/planning';
 import { listEntities } from '@/lib/api/entities';
 import { getEntitySelection, validateEntityId } from '@/lib/entity-cookies';
 import { BudgetsList } from './budgets-list';
@@ -27,13 +27,17 @@ export default async function BudgetsPage() {
         );
     }
 
-    const result = await listBudgets({ entityId, limit: 50 });
+    const [result, varianceResult] = await Promise.all([
+        listBudgets({ entityId, limit: 50 }),
+        listBudgetVariances(entityId).catch(() => ({ variances: [] })),
+    ]);
 
     return (
         <div className="flex-1 space-y-6">
             <BudgetsList
                 initialBudgets={result.budgets}
                 initialNextCursor={result.nextCursor}
+                initialVariances={varianceResult.variances}
                 entityId={entityId}
             />
         </div>

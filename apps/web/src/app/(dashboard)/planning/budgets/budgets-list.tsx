@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Budget, BudgetPeriod } from '@/lib/api/planning';
+import type { Budget, BudgetPeriod, BudgetVariance } from '@/lib/api/planning';
 import { apiFetch } from '@/lib/api/client-browser';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,14 +34,22 @@ const PERIOD_CONFIG: Record<BudgetPeriod, { label: string; className: string }> 
     yearly: { label: 'Yearly', className: 'bg-ak-green-dim text-ak-green border-transparent' },
 };
 
+const ALERT_CONFIG: Record<BudgetVariance['alertLevel'], { label: string; className: string }> = {
+    ok: { label: '', className: '' },
+    warning: { label: '80%+', className: 'bg-ak-pri-dim text-ak-pri-text border-transparent' },
+    'over-budget': { label: 'Over Budget', className: 'bg-ak-red-dim text-ak-red border-transparent' },
+};
+
 interface BudgetsListProps {
     initialBudgets: Budget[];
     initialNextCursor: string | null;
+    initialVariances: BudgetVariance[];
     entityId: string;
 }
 
-export function BudgetsList({ initialBudgets, initialNextCursor, entityId }: BudgetsListProps) {
+export function BudgetsList({ initialBudgets, initialNextCursor, initialVariances, entityId }: BudgetsListProps) {
     const [budgets, setBudgets] = useState(initialBudgets);
+    const [variances] = useState(initialVariances);
     const [sheetOpen, setSheetOpen] = useState(false);
     const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
     const [deletingBudgetId, setDeletingBudgetId] = useState<string | null>(null);
@@ -77,6 +85,10 @@ export function BudgetsList({ initialBudgets, initialNextCursor, entityId }: Bud
         }
         setSheetOpen(false);
         setEditingBudget(null);
+    }
+
+    function getVariance(budgetId: string): BudgetVariance | undefined {
+        return variances.find(v => v.budgetId === budgetId);
     }
 
     return (
@@ -115,7 +127,9 @@ export function BudgetsList({ initialBudgets, initialNextCursor, entityId }: Bud
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Name</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Category</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Period</TableHead>
-                                <TableHead className="text-xs uppercase tracking-wider text-muted-foreground text-right">Amount</TableHead>
+                                <TableHead className="text-xs uppercase tracking-wider text-muted-foreground text-right">Budget</TableHead>
+                                <TableHead className="text-xs uppercase tracking-wider text-muted-foreground text-right">Spent</TableHead>
+                                <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Utilization</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Date Range</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground w-[80px]" />
                             </TableRow>
@@ -123,9 +137,22 @@ export function BudgetsList({ initialBudgets, initialNextCursor, entityId }: Bud
                         <TableBody>
                             {budgets.map(budget => {
                                 const periodConfig = PERIOD_CONFIG[budget.period];
+                                const variance = getVariance(budget.id);
+                                const utilization = variance?.utilizationPercent ?? 0;
+                                const alertLevel = variance?.alertLevel ?? 'ok';
+                                const alertConfig = ALERT_CONFIG[alertLevel];
                                 return (
                                     <TableRow key={budget.id} className="border-ak-border hover:bg-ak-bg-3">
-                                        <TableCell className="font-medium">{budget.name}</TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium">{budget.name}</span>
+                                                {alertConfig.label && (
+                                                    <Badge variant="outline" className={alertConfig.className}>
+                                                        {alertConfig.label}
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                        </TableCell>
                                         <TableCell className="text-sm text-muted-foreground">
                                             {budget.category?.name ?? budget.glAccount?.name ?? '\u2014'}
                                         </TableCell>
@@ -135,6 +162,32 @@ export function BudgetsList({ initialBudgets, initialNextCursor, entityId }: Bud
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right font-mono text-sm">{formatCurrency(budget.amount)}</TableCell>
+                                        <TableCell className="text-right font-mono text-sm">
+                                            {variance ? formatCurrency(variance.actualAmount) : '\u2014'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {variance ? (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex-1 h-2 rounded-full bg-ak-bg-3 overflow-hidden max-w-[100px]">
+                                                        <div
+                                                            className={`h-full rounded-full transition-all ${
+                                                                utilization >= 100
+                                                                    ? 'bg-ak-red'
+                                                                    : utilization >= 80
+                                                                        ? 'bg-primary'
+                                                                        : 'bg-ak-green'
+                                                            }`}
+                                                            style={{ width: `${Math.min(100, utilization)}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs font-mono text-muted-foreground w-10 text-right">
+                                                        {Math.round(utilization)}%
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground">\u2014</span>
+                                            )}
+                                        </TableCell>
                                         <TableCell className="text-sm text-muted-foreground">
                                             {new Date(budget.startDate).toLocaleDateString()} \u2014 {new Date(budget.endDate).toLocaleDateString()}
                                         </TableCell>
