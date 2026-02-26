@@ -10,6 +10,77 @@ paths:
 
 ---
 
+## Centralized Mock Pattern (REQUIRED for Service Tests)
+
+All service tests MUST use the centralized `mockPrisma` singleton from `test-utils/prisma-mock.ts`. This eliminates `as never` casts, consolidates mock styles, and reduces boilerplate to 4 lines per file.
+
+### Canonical Setup (Copy This)
+
+```typescript
+import { mockPrisma, rewirePrismaMock, TEST_IDS } from '../../../../test-utils';
+
+// Dynamic import inside factory bypasses vi.mock hoisting constraint
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
+}));
+
+describe('MyService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    rewirePrismaMock(); // Re-wires $transaction after clearAllMocks
+  });
+
+  it('works', async () => {
+    mockPrisma.account.findMany.mockResolvedValueOnce([mockAccount()]);
+    // ... test logic
+  });
+});
+```
+
+### Why Dynamic Import?
+
+Vitest hoists `vi.mock()` above all imports, so static imports aren't available when the factory runs. Using `await import()` inside the async factory loads the module dynamically. ES module caching ensures the static `import { mockPrisma }` in the test body gets the SAME singleton instance.
+
+### Anti-Patterns
+
+```typescript
+// ❌ WRONG — vi.hoisted inlines ~25 lines per file, defeats DRY
+const { mockPrisma } = vi.hoisted(() => { /* create mock inline */ });
+
+// ❌ WRONG — as never casts hide type errors
+vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(data as never);
+
+// ❌ WRONG — bare auto-mock breaks enum re-exports
+vi.mock('@akount/db');
+
+// ❌ WRONG — manual mock without importOriginal loses Prisma enums
+vi.mock('@akount/db', () => ({ prisma: mockPrisma }));
+
+// ✅ CORRECT — dynamic import + importOriginal preserves enums
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
+}));
+```
+
+### Test Utils Available
+
+| Export | From | Purpose |
+|--------|------|---------|
+| `mockPrisma` | `test-utils/prisma-mock` | Singleton mock Prisma client |
+| `rewirePrismaMock()` | `test-utils/prisma-mock` | Re-wire `$transaction` after `clearAllMocks` |
+| `TEST_IDS` | `test-utils/mock-factories` | Standard test IDs (TENANT_ID, ENTITY_ID, USER_ID) |
+| `mockAccount()`, `mockInvoice()`, etc. | `test-utils/mock-factories` | Type-safe mock data factories |
+| `assertIntegerCents()`, etc. | `test-utils/financial-assertions` | Financial invariant assertions |
+| `AUTH_HEADERS`, `TEST_AUTH` | `test-utils/middleware-mocks` | Standard auth headers for route tests |
+
+### Route Tests vs Service Tests
+
+- **Service tests** mock Prisma directly via `mockPrisma` (the pattern above)
+- **Route tests** mock the SERVICE layer (not Prisma) — they don't need `mockPrisma`
+- Middleware mocks (auth, tenant, validation) must be copy-pasted per route test file because `vi.mock()` inside imported functions is NOT hoisted
+
 ## Financial Invariant Assertions (REQUIRED)
 
 Every test file that touches financial data MUST include assertions for the 5 key invariants.

@@ -14,10 +14,10 @@ export {
   assertListMoneyIntegrity,
 } from './financial-assertions';
 
-// Prisma mock factory
+// Prisma mock singleton + rewire helper
 export {
-  createMockPrismaClient,
-  setupPrismaMock,
+  mockPrisma,
+  rewirePrismaMock,
   type MockPrismaClient,
   type MockModelDelegate,
 } from './prisma-mock';
@@ -44,9 +44,9 @@ export {
   mockAIAction,
 } from './mock-factories';
 
-// Middleware mocks
+// Middleware mock constants
 export {
-  setupStandardMiddlewareMocks,
   AUTH_HEADERS,
   NO_AUTH_HEADERS,
+  TEST_AUTH,
 } from './middleware-mocks';

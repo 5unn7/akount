@@ -10,27 +10,58 @@ const mockSnoozeInsight = vi.fn();
 const mockGetInsightCounts = vi.fn();
 
 vi.mock('../services/insight.service', () => ({
-  InsightService: vi.fn().mockImplementation(() => ({
-    listInsights: mockListInsights,
-    getInsight: mockGetInsight,
-    dismissInsight: mockDismissInsight,
-    snoozeInsight: mockSnoozeInsight,
-    getInsightCounts: mockGetInsightCounts,
-  })),
+  InsightService: function (this: Record<string, unknown>) {
+    this.listInsights = mockListInsights;
+    this.getInsight = mockGetInsight;
+    this.dismissInsight = mockDismissInsight;
+    this.snoozeInsight = mockSnoozeInsight;
+    this.getInsightCounts = mockGetInsightCounts;
+  },
 }));
 
 // Mock other services
-vi.mock('../services/ai.service');
-vi.mock('../services/categorization.service');
-vi.mock('../services/je-suggestion.service');
+vi.mock('../services/ai.service', () => ({
+  aiService: { chat: vi.fn() },
+}));
+vi.mock('../services/categorization.service', () => ({
+  CategorizationService: function (this: Record<string, unknown>) {
+    this.categorize = vi.fn();
+    this.categorizeBatch = vi.fn();
+  },
+}));
+vi.mock('../services/je-suggestion.service', () => ({
+  JESuggestionService: function (this: Record<string, unknown>) {
+    this.suggestBatch = vi.fn();
+    this.createDraftJEs = vi.fn();
+  },
+}));
+
 vi.mock('@akount/db', async (importOriginal) => {
   const actual = await importOriginal<Record<string, unknown>>();
-  return { ...actual };
+  return {
+    ...actual,
+    prisma: {
+      entity: { findFirst: vi.fn() },
+      transaction: { findMany: vi.fn().mockResolvedValue([]) },
+      aIAction: { findFirst: vi.fn() },
+    },
+  };
 });
+
 vi.mock('../../../lib/audit');
+vi.mock('../../../lib/logger', () => ({
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+}));
+
 vi.mock('../../../middleware/rate-limit', () => ({
   aiRateLimitConfig: () => ({}),
   aiChatRateLimitConfig: () => ({}),
+}));
+
+vi.mock('../../../middleware/validation', () => ({
+  validateBody: vi.fn(() => async () => {}),
+  validateParams: vi.fn(() => async () => {}),
+  validateQuery: vi.fn(() => async () => {}),
 }));
 
 // Mock middleware
@@ -51,15 +82,30 @@ vi.mock('../../../middleware/withPermission', () => ({
   withPermission: () => ({}),
 }));
 
+// Mock sub-route services
+vi.mock('../services/ai-action.service', () => ({
+  AIActionService: function (this: Record<string, unknown>) {
+    this.listActions = vi.fn();
+    this.getStats = vi.fn();
+    this.approveAction = vi.fn();
+    this.rejectAction = vi.fn();
+    this.batchApprove = vi.fn();
+    this.batchReject = vi.fn();
+  },
+}));
+
 const TENANT_ID = 'tenant-abc-123';
 const USER_ID = 'user-test-001';
-const ENTITY_ID = 'entity-123';
+const ENTITY_ID = 'cltest00000000000000entity';
+const INSIGHT_ID = 'cltest0000000000insight01';
+const INSIGHT_ID_2 = 'cltest0000000000insight02';
+const CURSOR_ID = 'cltest000000000000cursor1';
 
 function mockInsight(overrides: Record<string, unknown> = {}) {
   return {
-    id: 'insight-1',
+    id: INSIGHT_ID,
     entityId: ENTITY_ID,
-    triggerId: 'cash_flow_warning:entity-123:2026-02',
+    triggerId: `cash_flow_warning:${ENTITY_ID}:2026-02`,
     title: 'Cash Flow Warning',
     description: 'Projected balance dropping below threshold',
     type: 'cash_flow_warning',
@@ -84,12 +130,12 @@ describe('Insight Routes', () => {
 
   describe('GET /insights', () => {
     it('should return 200 with insights list', async () => {
-      const insights = [mockInsight(), mockInsight({ id: 'insight-2' })];
+      const insights = [mockInsight(), mockInsight({ id: INSIGHT_ID_2 })];
       mockListInsights.mockResolvedValue({ insights, nextCursor: null });
 
       const response = await app.inject({
         method: 'GET',
-        url: '/ai/insights?entityId=entity-123',
+        url: `/ai/insights?entityId=${ENTITY_ID}`,
       });
 
       expect(response.statusCode).toBe(200);
@@ -114,7 +160,7 @@ describe('Insight Routes', () => {
 
       await app.inject({
         method: 'GET',
-        url: '/ai/insights?entityId=entity-123&type=cash_flow_warning',
+        url: `/ai/insights?entityId=${ENTITY_ID}&type=cash_flow_warning`,
       });
 
       expect(mockListInsights).toHaveBeenCalledWith(
@@ -123,16 +169,16 @@ describe('Insight Routes', () => {
     });
 
     it('should handle cursor pagination', async () => {
-      mockListInsights.mockResolvedValue({ insights: [mockInsight()], nextCursor: 'next-id' });
+      mockListInsights.mockResolvedValue({ insights: [mockInsight()], nextCursor: CURSOR_ID });
 
       const response = await app.inject({
         method: 'GET',
-        url: '/ai/insights?entityId=entity-123&cursor=prev-id&limit=10',
+        url: `/ai/insights?entityId=${ENTITY_ID}&cursor=${CURSOR_ID}&limit=10`,
       });
 
       expect(response.statusCode).toBe(200);
       expect(mockListInsights).toHaveBeenCalledWith(
-        expect.objectContaining({ cursor: 'prev-id', limit: 10 })
+        expect.objectContaining({ cursor: CURSOR_ID, limit: 10 })
       );
     });
   });
@@ -144,12 +190,12 @@ describe('Insight Routes', () => {
 
       const response = await app.inject({
         method: 'GET',
-        url: '/ai/insights/insight-1',
+        url: `/ai/insights/${INSIGHT_ID}`,
       });
 
       expect(response.statusCode).toBe(200);
       const body = response.json();
-      expect(body.id).toBe('insight-1');
+      expect(body.id).toBe(INSIGHT_ID);
     });
 
     it('should return 404 when insight not found', async () => {
@@ -157,7 +203,7 @@ describe('Insight Routes', () => {
 
       const response = await app.inject({
         method: 'GET',
-        url: '/ai/insights/invalid-id',
+        url: `/ai/insights/${INSIGHT_ID}`,
       });
 
       expect(response.statusCode).toBe(404);
@@ -171,7 +217,7 @@ describe('Insight Routes', () => {
 
       const response = await app.inject({
         method: 'POST',
-        url: '/ai/insights/insight-1/dismiss',
+        url: `/ai/insights/${INSIGHT_ID}/dismiss`,
       });
 
       expect(response.statusCode).toBe(200);
@@ -188,8 +234,8 @@ describe('Insight Routes', () => {
 
       const response = await app.inject({
         method: 'POST',
-        url: '/ai/insights/insight-1/snooze',
-        payload: { id: 'insight-1', snoozedUntil: tomorrow.toISOString() },
+        url: `/ai/insights/${INSIGHT_ID}/snooze`,
+        payload: { id: INSIGHT_ID, snoozedUntil: tomorrow.toISOString() },
       });
 
       expect(response.statusCode).toBe(200);
@@ -217,7 +263,7 @@ describe('Insight Routes', () => {
 
       const response = await app.inject({
         method: 'GET',
-        url: '/ai/insights/counts?entityId=entity-123',
+        url: `/ai/insights/counts?entityId=${ENTITY_ID}`,
       });
 
       expect(response.statusCode).toBe(200);

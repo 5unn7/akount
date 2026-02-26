@@ -4,14 +4,44 @@
  * Provides type-safe Prisma mocking that eliminates `as never` casts
  * and consolidates the two competing mock styles into one pattern.
  *
- * Usage:
- *   import { createMockPrismaClient, setupPrismaMock } from '../../test-utils/prisma-mock';
+ * ## Usage Pattern (per test file — 4 lines of setup)
  *
- *   const mockPrisma = createMockPrismaClient();
- *   setupPrismaMock(mockPrisma);
+ * ```typescript
+ * import { mockPrisma, rewirePrismaMock } from '../../test-utils/prisma-mock';
+ * import { mockAccount, TEST_IDS } from '../../test-utils/mock-factories';
  *
- *   // In tests:
- *   mockPrisma.account.findMany.mockResolvedValueOnce([mockAccount()]);
+ * // Dynamic import inside factory bypasses vi.mock hoisting constraint
+ * vi.mock('@akount/db', async (importOriginal) => ({
+ *   ...(await importOriginal<Record<string, unknown>>()),
+ *   prisma: (await import('../../test-utils/prisma-mock')).mockPrisma,
+ * }));
+ *
+ * describe('MyService', () => {
+ *   beforeEach(() => {
+ *     vi.clearAllMocks();
+ *     rewirePrismaMock(); // Re-wires $transaction after clearAllMocks
+ *   });
+ *
+ *   it('works', async () => {
+ *     mockPrisma.account.findMany.mockResolvedValueOnce([mockAccount()]);
+ *     // ... test logic
+ *   });
+ * });
+ * ```
+ *
+ * ## Why dynamic import?
+ *
+ * Vitest hoists `vi.mock()` above all imports, so static imports are
+ * not yet available when the factory runs. Using `await import()` inside
+ * the async factory loads this module dynamically. ES module caching
+ * ensures the static `import { mockPrisma }` in the test body gets the
+ * SAME singleton instance.
+ *
+ * ## Why not vi.hoisted()?
+ *
+ * `vi.hoisted()` forces inlining the mock creation in every file (~25 lines),
+ * defeating the purpose of centralization. The dynamic import pattern keeps
+ * the factory in ONE place while each test file needs only 4 lines of setup.
  */
 
 import { vi } from 'vitest';
@@ -43,120 +73,108 @@ function createMockModelDelegate() {
  */
 export type MockModelDelegate = ReturnType<typeof createMockModelDelegate>;
 
+// --- Model delegates (shared across the singleton) ---
+const models = {
+  // System
+  tenant: createMockModelDelegate(),
+  tenantUser: createMockModelDelegate(),
+  entity: createMockModelDelegate(),
+  auditLog: createMockModelDelegate(),
+  onboarding: createMockModelDelegate(),
+
+  // Banking
+  account: createMockModelDelegate(),
+  transaction: createMockModelDelegate(),
+  importBatch: createMockModelDelegate(),
+  transfer: createMockModelDelegate(),
+
+  // Business
+  invoice: createMockModelDelegate(),
+  invoiceLine: createMockModelDelegate(),
+  bill: createMockModelDelegate(),
+  billLine: createMockModelDelegate(),
+  client: createMockModelDelegate(),
+  vendor: createMockModelDelegate(),
+  payment: createMockModelDelegate(),
+  paymentAllocation: createMockModelDelegate(),
+  creditNote: createMockModelDelegate(),
+
+  // Accounting
+  gLAccount: createMockModelDelegate(),
+  journalEntry: createMockModelDelegate(),
+  journalLine: createMockModelDelegate(),
+  fiscalCalendar: createMockModelDelegate(),
+  fiscalPeriod: createMockModelDelegate(),
+  taxRate: createMockModelDelegate(),
+  category: createMockModelDelegate(),
+
+  // AI
+  aIAction: createMockModelDelegate(),
+  insight: createMockModelDelegate(),
+  rule: createMockModelDelegate(),
+  ruleSuggestion: createMockModelDelegate(),
+  monthlyClose: createMockModelDelegate(),
+
+  // Planning
+  budget: createMockModelDelegate(),
+  budgetLine: createMockModelDelegate(),
+  forecast: createMockModelDelegate(),
+  forecastLine: createMockModelDelegate(),
+  goal: createMockModelDelegate(),
+
+  // Documents
+  document: createMockModelDelegate(),
+  asset: createMockModelDelegate(),
+} as const;
+
+type Models = typeof models;
+
 /**
- * Creates a complete mock PrismaClient with all models.
- * Each model has mocked CRUD methods that return type-safe defaults.
+ * Singleton mock PrismaClient — shared within each test file (one per worker).
  *
- * The mock includes a working $transaction that passes itself as the tx client.
+ * Use in tests via:
+ *   mockPrisma.account.findMany.mockResolvedValueOnce([...])
  */
-export function createMockPrismaClient() {
-  const models = {
-    // System
-    tenant: createMockModelDelegate(),
-    tenantUser: createMockModelDelegate(),
-    entity: createMockModelDelegate(),
-    auditLog: createMockModelDelegate(),
-    onboarding: createMockModelDelegate(),
-
-    // Banking
-    account: createMockModelDelegate(),
-    transaction: createMockModelDelegate(),
-    importBatch: createMockModelDelegate(),
-    transfer: createMockModelDelegate(),
-
-    // Business
-    invoice: createMockModelDelegate(),
-    invoiceLine: createMockModelDelegate(),
-    bill: createMockModelDelegate(),
-    billLine: createMockModelDelegate(),
-    client: createMockModelDelegate(),
-    vendor: createMockModelDelegate(),
-    payment: createMockModelDelegate(),
-    paymentAllocation: createMockModelDelegate(),
-    creditNote: createMockModelDelegate(),
-
-    // Accounting
-    gLAccount: createMockModelDelegate(),
-    journalEntry: createMockModelDelegate(),
-    journalLine: createMockModelDelegate(),
-    fiscalCalendar: createMockModelDelegate(),
-    fiscalPeriod: createMockModelDelegate(),
-    taxRate: createMockModelDelegate(),
-    category: createMockModelDelegate(),
-
-    // AI
-    aIAction: createMockModelDelegate(),
-    insight: createMockModelDelegate(),
-    rule: createMockModelDelegate(),
-    ruleSuggestion: createMockModelDelegate(),
-    monthlyClose: createMockModelDelegate(),
-
-    // Planning
-    budget: createMockModelDelegate(),
-    budgetLine: createMockModelDelegate(),
-    forecast: createMockModelDelegate(),
-    forecastLine: createMockModelDelegate(),
-    goal: createMockModelDelegate(),
-
-    // Documents
-    document: createMockModelDelegate(),
-    asset: createMockModelDelegate(),
-  } as const;
-
-  type Models = typeof models;
-
-  const client = {
-    ...models,
-    $transaction: vi.fn(
-      (fnOrArray: unknown) => {
-        if (typeof fnOrArray === 'function') {
-          // Interactive transaction: pass the mock client as tx
-          return (fnOrArray as (tx: Models) => Promise<unknown>)(models);
-        }
-        // Sequential transaction: resolve all promises
-        if (Array.isArray(fnOrArray)) {
-          return Promise.all(fnOrArray);
-        }
-        return Promise.resolve();
+export const mockPrisma = {
+  ...models,
+  $transaction: vi.fn(
+    (fnOrArray: unknown) => {
+      if (typeof fnOrArray === 'function') {
+        return (fnOrArray as (tx: Models) => Promise<unknown>)(models);
       }
-    ),
-    $queryRaw: vi.fn().mockResolvedValue([]),
-    $executeRaw: vi.fn().mockResolvedValue(0),
-    $connect: vi.fn(),
-    $disconnect: vi.fn(),
-  };
-
-  return client;
-}
+      if (Array.isArray(fnOrArray)) {
+        return Promise.all(fnOrArray);
+      }
+      return Promise.resolve();
+    }
+  ),
+  $queryRaw: vi.fn().mockResolvedValue([]),
+  $executeRaw: vi.fn().mockResolvedValue(0),
+  $connect: vi.fn(),
+  $disconnect: vi.fn(),
+};
 
 /**
  * Type for the mock Prisma client.
  */
-export type MockPrismaClient = ReturnType<typeof createMockPrismaClient>;
+export type MockPrismaClient = typeof mockPrisma;
 
 /**
- * Sets up the @akount/db mock with a pre-configured mock client.
+ * Re-wires $transaction mock after vi.clearAllMocks().
  *
- * This replaces the 15-line vi.mock('@akount/db', ...) block found in every test file.
- * It uses importOriginal to preserve Prisma enum re-exports (prevents the
- * "Invalid enum value" / "No export defined" errors from bare auto-mocks).
- *
- * Usage:
- *   const mockPrisma = createMockPrismaClient();
- *   setupPrismaMock(mockPrisma);
- *
- *   // Then in tests:
- *   mockPrisma.account.findMany.mockResolvedValueOnce([...]);
- *
- * IMPORTANT: Call this at module scope (not inside describe/beforeEach).
- * vi.mock is hoisted by Vitest automatically.
+ * Call this in beforeEach() after vi.clearAllMocks() — clearing mocks
+ * removes the $transaction implementation, breaking interactive transactions.
  */
-export function setupPrismaMock(mockClient: MockPrismaClient): void {
-  vi.mock('@akount/db', async (importOriginal) => {
-    const actual = await importOriginal<Record<string, unknown>>();
-    return {
-      ...actual,
-      prisma: mockClient,
-    };
-  });
+export function rewirePrismaMock(): void {
+  mockPrisma.$transaction.mockImplementation(
+    (fnOrArray: unknown) => {
+      if (typeof fnOrArray === 'function') {
+        return (fnOrArray as (tx: Models) => Promise<unknown>)(models);
+      }
+      if (Array.isArray(fnOrArray)) {
+        return Promise.all(fnOrArray);
+      }
+      return Promise.resolve();
+    }
+  );
 }

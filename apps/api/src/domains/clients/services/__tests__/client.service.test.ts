@@ -1,34 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as clientService from '../client.service';
-import { assertIntegerCents, assertMoneyFields } from '../../../../test-utils/financial-assertions';
+import {
+  mockPrisma,
+  assertIntegerCents,
+  TEST_IDS,
+} from '../../../../test-utils';
 
-// Mock Prisma client
-vi.mock('@akount/db', () => ({
-  prisma: {
-    client: {
-      findMany: vi.fn(),
-      findFirst: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-    },
-    entity: {
-      findFirst: vi.fn(),
-    },
-    invoice: {
-      count: vi.fn(),
-      aggregate: vi.fn(),
-    },
-  },
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
-import { prisma } from '@akount/db';
-
-const TENANT_ID = 'tenant-test-123';
-const ENTITY_ID = 'entity-test-456';
+const TENANT_ID = TEST_IDS.TENANT_ID;
+const ENTITY_ID = TEST_IDS.ENTITY_ID;
 
 const mockTenantContext = {
   tenantId: TENANT_ID,
-  userId: 'user-test-789',
+  userId: TEST_IDS.USER_ID,
   role: 'OWNER' as const,
 };
 
@@ -58,8 +47,8 @@ describe('ClientService', () => {
   describe('createClient', () => {
     it('should verify entity belongs to tenant before creating', async () => {
       const entity = { id: ENTITY_ID, tenantId: TENANT_ID, name: 'Corp', deletedAt: null };
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.client.create).mockResolvedValueOnce(mockClient() as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.client.create.mockResolvedValueOnce(mockClient());
 
       await clientService.createClient(
         {
@@ -74,7 +63,7 @@ describe('ClientService', () => {
         mockTenantContext
       );
 
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.entity.findFirst).toHaveBeenCalledWith({
         where: {
           id: ENTITY_ID,
           tenantId: TENANT_ID,
@@ -83,7 +72,7 @@ describe('ClientService', () => {
     });
 
     it('should throw if entity does not belong to tenant', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         clientService.createClient(
@@ -103,8 +92,8 @@ describe('ClientService', () => {
 
     it('should create client with all provided fields', async () => {
       const entity = { id: ENTITY_ID, tenantId: TENANT_ID, deletedAt: null };
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.client.create).mockResolvedValueOnce(mockClient() as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.client.create.mockResolvedValueOnce(mockClient());
 
       await clientService.createClient(
         {
@@ -119,7 +108,7 @@ describe('ClientService', () => {
         mockTenantContext
       );
 
-      const createArgs = vi.mocked(prisma.client.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.client.create.mock.calls[0][0]!;
       expect(createArgs.data).toEqual({
         entityId: ENTITY_ID,
         name: 'Test Client',
@@ -135,38 +124,38 @@ describe('ClientService', () => {
 
   describe('listClients', () => {
     it('should filter by tenantId via entity relation', async () => {
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce([]);
 
       await clientService.listClients({ limit: 10 }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.client.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.client.findMany.mock.calls[0][0]!;
       expect(callArgs.where!.entity).toEqual({ tenantId: TENANT_ID });
     });
 
     it('should always filter soft-deleted records', async () => {
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce([]);
 
       await clientService.listClients({ limit: 10 }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.client.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.client.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('deletedAt', null);
     });
 
     it('should support status filter', async () => {
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce([]);
 
       await clientService.listClients({ limit: 10, status: 'active' }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.client.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.client.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('status', 'active');
     });
 
     it('should support search filter (name and email)', async () => {
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce([]);
 
       await clientService.listClients({ limit: 10, search: 'acme' }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.client.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.client.findMany.mock.calls[0][0]!;
       expect(callArgs.where!.OR).toEqual([
         { name: { contains: 'acme', mode: 'insensitive' } },
         { email: { contains: 'acme', mode: 'insensitive' } },
@@ -174,11 +163,11 @@ describe('ClientService', () => {
     });
 
     it('should support cursor pagination', async () => {
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce([]);
 
       await clientService.listClients({ limit: 10, cursor: 'cursor-abc' }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.client.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.client.findMany.mock.calls[0][0]!;
       expect(callArgs.where!.id).toEqual({ gt: 'cursor-abc' });
     });
 
@@ -187,7 +176,7 @@ describe('ClientService', () => {
         mockClient({ id: 'client-1' }),
         mockClient({ id: 'client-2' }),
       ];
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce(clients as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce(clients);
 
       const result = await clientService.listClients({ limit: 2 }, mockTenantContext);
 
@@ -196,7 +185,7 @@ describe('ClientService', () => {
 
     it('should return null cursor when fewer results than limit', async () => {
       const clients = [mockClient({ id: 'client-1' })];
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce(clients as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce(clients);
 
       const result = await clientService.listClients({ limit: 10 }, mockTenantContext);
 
@@ -204,11 +193,11 @@ describe('ClientService', () => {
     });
 
     it('should order by createdAt desc', async () => {
-      vi.mocked(prisma.client.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.client.findMany.mockResolvedValueOnce([]);
 
       await clientService.listClients({ limit: 10 }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.client.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.client.findMany.mock.calls[0][0]!;
       expect(callArgs.orderBy).toEqual({ createdAt: 'desc' });
     });
   });
@@ -216,15 +205,15 @@ describe('ClientService', () => {
   describe('getClient', () => {
     it('should find client by id with tenant isolation', async () => {
       const client = mockClient({ id: 'client-xyz' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(3 as never);
-      vi.mocked(prisma.invoice.aggregate).mockResolvedValueOnce({
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.count.mockResolvedValueOnce(3);
+      mockPrisma.invoice.aggregate.mockResolvedValueOnce({
         _sum: { total: 10000, paidAmount: 2500 },
-      } as never);
+      });
 
       await clientService.getClient('client-xyz', mockTenantContext);
 
-      expect(prisma.client.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.client.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'client-xyz',
           entity: { tenantId: TENANT_ID },
@@ -235,7 +224,7 @@ describe('ClientService', () => {
     });
 
     it('should throw when client not found', async () => {
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         clientService.getClient('nonexistent', mockTenantContext)
@@ -243,13 +232,13 @@ describe('ClientService', () => {
     });
 
     it('should reject cross-tenant access', async () => {
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         clientService.getClient('client-other-tenant', mockTenantContext)
       ).rejects.toThrow('Client not found');
 
-      expect(prisma.client.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.client.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'client-other-tenant',
           entity: { tenantId: TENANT_ID },
@@ -261,11 +250,11 @@ describe('ClientService', () => {
 
     it('should calculate balanceDue as integer cents', async () => {
       const client = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(2 as never);
-      vi.mocked(prisma.invoice.aggregate).mockResolvedValueOnce({
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.count.mockResolvedValueOnce(2);
+      mockPrisma.invoice.aggregate.mockResolvedValueOnce({
         _sum: { total: 50000, paidAmount: 12500 }, // $500.00 - $125.00 = $375.00
-      } as never);
+      });
 
       const result = await clientService.getClient('client-1', mockTenantContext);
 
@@ -275,11 +264,11 @@ describe('ClientService', () => {
 
     it('should include openInvoices count', async () => {
       const client = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(5 as never);
-      vi.mocked(prisma.invoice.aggregate).mockResolvedValueOnce({
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.count.mockResolvedValueOnce(5);
+      mockPrisma.invoice.aggregate.mockResolvedValueOnce({
         _sum: { total: 10000, paidAmount: 0 },
-      } as never);
+      });
 
       const result = await clientService.getClient('client-1', mockTenantContext);
 
@@ -288,11 +277,11 @@ describe('ClientService', () => {
 
     it('should handle zero balances correctly', async () => {
       const client = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.invoice.aggregate).mockResolvedValueOnce({
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.count.mockResolvedValueOnce(0);
+      mockPrisma.invoice.aggregate.mockResolvedValueOnce({
         _sum: { total: null, paidAmount: null },
-      } as never);
+      });
 
       const result = await clientService.getClient('client-1', mockTenantContext);
 
@@ -302,29 +291,29 @@ describe('ClientService', () => {
 
     it('should only query SENT and OVERDUE invoices for balance', async () => {
       const client = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.invoice.aggregate).mockResolvedValueOnce({
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.count.mockResolvedValueOnce(0);
+      mockPrisma.invoice.aggregate.mockResolvedValueOnce({
         _sum: { total: 0, paidAmount: 0 },
-      } as never);
+      });
 
       await clientService.getClient('client-1', mockTenantContext);
 
-      expect(prisma.invoice.count).toHaveBeenCalledWith({
+      expect(mockPrisma.invoice.count).toHaveBeenCalledWith({
         where: {
           clientId: 'client-1',
           status: { in: ['SENT', 'OVERDUE'] },
           deletedAt: null,
-          entity: { tenantId: 'tenant-test-123' },
+          entity: { tenantId: TENANT_ID },
         },
       });
 
-      expect(prisma.invoice.aggregate).toHaveBeenCalledWith({
+      expect(mockPrisma.invoice.aggregate).toHaveBeenCalledWith({
         where: {
           clientId: 'client-1',
           status: { in: ['SENT', 'OVERDUE'] },
           deletedAt: null,
-          entity: { tenantId: 'tenant-test-123' },
+          entity: { tenantId: TENANT_ID },
         },
         _sum: { total: true, paidAmount: true },
       });
@@ -334,12 +323,12 @@ describe('ClientService', () => {
   describe('updateClient', () => {
     it('should verify client exists and tenant owns before updating', async () => {
       const existing = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.client.update).mockResolvedValueOnce(existing as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.client.update.mockResolvedValueOnce(existing);
 
       await clientService.updateClient('client-1', { name: 'Updated Name' }, mockTenantContext);
 
-      expect(prisma.client.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.client.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'client-1',
           entity: { tenantId: TENANT_ID },
@@ -349,17 +338,17 @@ describe('ClientService', () => {
     });
 
     it('should throw when client not found', async () => {
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         clientService.updateClient('nonexistent', { name: 'Updated' }, mockTenantContext)
       ).rejects.toThrow('Client not found');
 
-      expect(prisma.client.update).not.toHaveBeenCalled();
+      expect(mockPrisma.client.update).not.toHaveBeenCalled();
     });
 
     it('should reject cross-tenant update', async () => {
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         clientService.updateClient('client-other-tenant', { name: 'Hacked' }, mockTenantContext)
@@ -368,8 +357,8 @@ describe('ClientService', () => {
 
     it('should only update provided fields', async () => {
       const existing = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.client.update).mockResolvedValueOnce(existing as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.client.update.mockResolvedValueOnce(existing);
 
       await clientService.updateClient(
         'client-1',
@@ -377,7 +366,7 @@ describe('ClientService', () => {
         mockTenantContext
       );
 
-      const updateArgs = vi.mocked(prisma.client.update).mock.calls[0][0]!;
+      const updateArgs = mockPrisma.client.update.mock.calls[0][0]!;
       expect(updateArgs.data).toEqual({
         name: 'New Name',
         email: 'new@email.com',
@@ -386,28 +375,28 @@ describe('ClientService', () => {
 
     it('should handle optional fields correctly (allow nullable)', async () => {
       const existing = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.client.update).mockResolvedValueOnce(existing as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.client.update.mockResolvedValueOnce(existing);
 
       await clientService.updateClient(
         'client-1',
-        { phone: null, address: null } as any,
+        { phone: null, address: null } as Record<string, unknown>,
         mockTenantContext
       );
 
-      const updateArgs = vi.mocked(prisma.client.update).mock.calls[0][0]!;
+      const updateArgs = mockPrisma.client.update.mock.calls[0][0]!;
       expect(updateArgs.data).toHaveProperty('phone', null);
       expect(updateArgs.data).toHaveProperty('address', null);
     });
 
     it('should include entity in response', async () => {
       const existing = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.client.update).mockResolvedValueOnce(existing as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.client.update.mockResolvedValueOnce(existing);
 
       await clientService.updateClient('client-1', { name: 'Updated' }, mockTenantContext);
 
-      const updateArgs = vi.mocked(prisma.client.update).mock.calls[0][0]!;
+      const updateArgs = mockPrisma.client.update.mock.calls[0][0]!;
       expect(updateArgs.include).toEqual({ entity: true });
     });
   });
@@ -415,15 +404,15 @@ describe('ClientService', () => {
   describe('deleteClient', () => {
     it('should verify client exists and tenant owns before deleting', async () => {
       const existing = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.client.update).mockResolvedValueOnce({
+      mockPrisma.client.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.client.update.mockResolvedValueOnce({
         ...existing,
         deletedAt: new Date(),
-      } as never);
+      });
 
       await clientService.deleteClient('client-1', mockTenantContext);
 
-      expect(prisma.client.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.client.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'client-1',
           entity: { tenantId: TENANT_ID },
@@ -433,26 +422,26 @@ describe('ClientService', () => {
     });
 
     it('should throw when client not found', async () => {
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         clientService.deleteClient('nonexistent', mockTenantContext)
       ).rejects.toThrow('Client not found');
 
-      expect(prisma.client.update).not.toHaveBeenCalled();
+      expect(mockPrisma.client.update).not.toHaveBeenCalled();
     });
 
     it('should soft delete (set deletedAt, not hard delete)', async () => {
       const existing = mockClient({ id: 'client-1' });
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.client.update).mockResolvedValueOnce({
+      mockPrisma.client.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.client.update.mockResolvedValueOnce({
         ...existing,
         deletedAt: new Date(),
-      } as never);
+      });
 
       const result = await clientService.deleteClient('client-1', mockTenantContext);
 
-      const updateArgs = vi.mocked(prisma.client.update).mock.calls[0][0]!;
+      const updateArgs = mockPrisma.client.update.mock.calls[0][0]!;
       expect(updateArgs.data).toHaveProperty('deletedAt');
       expect(updateArgs.data.deletedAt).toBeInstanceOf(Date);
 
@@ -461,7 +450,7 @@ describe('ClientService', () => {
     });
 
     it('should reject cross-tenant delete', async () => {
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         clientService.deleteClient('client-other-tenant', mockTenantContext)
