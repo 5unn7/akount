@@ -1,6 +1,7 @@
 import { prisma, Prisma } from '@akount/db';
 import { generateEntryNumber } from '../../accounting/utils/entry-number';
 import { CategorizationService, type CategorySuggestion } from './categorization.service';
+import { AIActionService } from './ai-action.service';
 import { logger } from '../../../lib/logger';
 
 // ---------------------------------------------------------------------------
@@ -73,12 +74,15 @@ const WELL_KNOWN_CODES = {
 export class JESuggestionService {
   private categorizationService: CategorizationService;
 
+  private actionService: AIActionService;
+
   constructor(
     private tenantId: string,
     private entityId: string,
     private userId: string
   ) {
     this.categorizationService = new CategorizationService(tenantId, entityId);
+    this.actionService = new AIActionService(tenantId, entityId);
   }
 
   /**
@@ -237,6 +241,33 @@ export class JESuggestionService {
         });
 
         results.push({ transactionId: suggestion.transactionId, journalEntryId: jeId });
+
+        // Create AIAction for the Action Feed
+        try {
+          await this.actionService.createAction({
+            entityId: this.entityId,
+            type: 'JE_DRAFT',
+            title: `AI-drafted JE: ${suggestion.memo}`,
+            confidence: suggestion.confidence,
+            priority: suggestion.confidence >= 80 ? 'MEDIUM' : 'LOW',
+            payload: {
+              journalEntryId: jeId,
+              transactionId: suggestion.transactionId,
+              lines: suggestion.lines,
+            },
+            aiProvider: 'categorization-engine',
+            metadata: {
+              categorization: suggestion.categorization,
+              sourceType: suggestion.sourceType,
+            },
+          });
+        } catch (actionErr) {
+          // Non-critical: JE was created even if action tracking fails
+          logger.warn(
+            { err: actionErr, journalEntryId: jeId },
+            'Failed to create AIAction for draft JE'
+          );
+        }
       } catch (error) {
         logger.error(
           { err: error, transactionId: suggestion.transactionId },

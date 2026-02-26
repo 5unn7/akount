@@ -27,6 +27,14 @@ vi.mock('../categorization.service', () => ({
   },
 }));
 
+// Mock AIActionService
+const mockCreateAction = vi.fn();
+vi.mock('../ai-action.service', () => ({
+  AIActionService: class {
+    createAction = mockCreateAction;
+  },
+}));
+
 // Mock generateEntryNumber
 const mockGenerateEntryNumber = vi.fn();
 vi.mock('../../../accounting/utils/entry-number', () => ({
@@ -105,6 +113,9 @@ describe('JESuggestionService', () => {
     mockAccountFindMany.mockResolvedValue([
       { id: 'acct-001', glAccountId: BANK_GL.id, glAccount: BANK_GL },
     ]);
+
+    // Default: AIAction creation succeeds
+    mockCreateAction.mockResolvedValue({ id: 'action-001' });
   });
 
   // -------------------------------------------------------------------------
@@ -624,6 +635,121 @@ describe('JESuggestionService', () => {
       expect(results).toHaveLength(0);
       // JE should not have been created
       expect(mockJournalEntryCreate).not.toHaveBeenCalled();
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // AIAction wiring (DEV-195)
+  // -------------------------------------------------------------------------
+
+  describe('AIAction wiring', () => {
+    it('should create AIAction after draft JE creation', async () => {
+      const mockSuggestion: JESuggestion = {
+        transactionId: 'txn-001',
+        entryNumber: null,
+        date: new Date('2025-03-01'),
+        memo: 'AI-drafted: Coffee at Starbucks — Meals & Entertainment',
+        sourceType: 'AI_SUGGESTION',
+        sourceId: 'txn-001',
+        status: 'DRAFT',
+        lines: [
+          { glAccountId: EXPENSE_GL.id, glAccountCode: EXPENSE_GL.code, debitAmount: 550, creditAmount: 0, memo: 'Expense' },
+          { glAccountId: BANK_GL.id, glAccountCode: BANK_GL.code, debitAmount: 0, creditAmount: 550, memo: 'Bank' },
+        ],
+        categorization: makeCategorySuggestion(),
+        confidence: 85,
+      };
+
+      mockGenerateEntryNumber.mockResolvedValue('JE-001');
+      mockJournalEntryCreate.mockResolvedValue({ id: 'je-001' });
+      mockTransactionUpdate.mockResolvedValue({});
+      mockTransaction.mockImplementation(async (fn) =>
+        fn({ journalEntry: { create: mockJournalEntryCreate }, transaction: { update: mockTransactionUpdate } })
+      );
+
+      await service.createDraftJEs([mockSuggestion]);
+
+      // AIAction should have been created
+      expect(mockCreateAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          entityId: ENTITY_ID,
+          type: 'JE_DRAFT',
+          title: expect.stringContaining('AI-drafted'),
+          confidence: 85,
+          payload: expect.objectContaining({
+            journalEntryId: 'je-001',
+            transactionId: 'txn-001',
+          }),
+        })
+      );
+    });
+
+    it('should still return JE results even if AIAction creation fails', async () => {
+      const mockSuggestion: JESuggestion = {
+        transactionId: 'txn-001',
+        entryNumber: null,
+        date: new Date('2025-03-01'),
+        memo: 'Test',
+        sourceType: 'AI_SUGGESTION',
+        sourceId: 'txn-001',
+        status: 'DRAFT',
+        lines: [
+          { glAccountId: EXPENSE_GL.id, glAccountCode: EXPENSE_GL.code, debitAmount: 550, creditAmount: 0, memo: 'Expense' },
+          { glAccountId: BANK_GL.id, glAccountCode: BANK_GL.code, debitAmount: 0, creditAmount: 550, memo: 'Bank' },
+        ],
+        categorization: makeCategorySuggestion(),
+        confidence: 60,
+      };
+
+      mockGenerateEntryNumber.mockResolvedValue('JE-001');
+      mockJournalEntryCreate.mockResolvedValue({ id: 'je-001' });
+      mockTransactionUpdate.mockResolvedValue({});
+      mockTransaction.mockImplementation(async (fn) =>
+        fn({ journalEntry: { create: mockJournalEntryCreate }, transaction: { update: mockTransactionUpdate } })
+      );
+
+      // AIAction creation fails
+      mockCreateAction.mockRejectedValue(new Error('DB error'));
+
+      const results = await service.createDraftJEs([mockSuggestion]);
+
+      // JE was still created successfully
+      expect(results).toHaveLength(1);
+      expect(results[0].journalEntryId).toBe('je-001');
+    });
+
+    it('should set priority LOW for low-confidence suggestions', async () => {
+      const mockSuggestion: JESuggestion = {
+        transactionId: 'txn-001',
+        entryNumber: null,
+        date: new Date('2025-03-01'),
+        memo: 'Low confidence test',
+        sourceType: 'AI_SUGGESTION',
+        sourceId: 'txn-001',
+        status: 'DRAFT',
+        lines: [
+          { glAccountId: EXPENSE_GL.id, glAccountCode: EXPENSE_GL.code, debitAmount: 100, creditAmount: 0, memo: 'E' },
+          { glAccountId: BANK_GL.id, glAccountCode: BANK_GL.code, debitAmount: 0, creditAmount: 100, memo: 'B' },
+        ],
+        categorization: makeCategorySuggestion(),
+        confidence: 40, // Below 80 threshold
+      };
+
+      mockGenerateEntryNumber.mockResolvedValue('JE-001');
+      mockJournalEntryCreate.mockResolvedValue({ id: 'je-001' });
+      mockTransactionUpdate.mockResolvedValue({});
+      mockTransaction.mockImplementation(async (fn) =>
+        fn({ journalEntry: { create: mockJournalEntryCreate }, transaction: { update: mockTransactionUpdate } })
+      );
+
+      await service.createDraftJEs([mockSuggestion]);
+
+      expect(mockCreateAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          priority: 'LOW',
+          confidence: 40,
+        })
+      );
     });
   });
 
