@@ -162,11 +162,14 @@ export async function actionRoutes(fastify: FastifyInstance) {
 
       try {
         const service = new AIActionService(tenantId, entityId);
-        const action = await service.approveAction(actionId, userId);
+        const result = await service.approveAction(actionId, userId);
 
-        request.log.info({ actionId, entityId, userId }, 'Approved AI action');
+        request.log.info(
+          { actionId, entityId, userId, executionSuccess: result.execution?.success },
+          'Approved AI action'
+        );
 
-        return action;
+        return result;
       } catch (error) {
         return handleAIError(error, reply);
       }

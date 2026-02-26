@@ -300,8 +300,11 @@ describe('AI Action Routes', () => {
   // POST /api/ai/actions/:actionId/approve — Approve Single
   // -------------------------------------------------------------------------
   describe('POST /api/ai/actions/:actionId/approve', () => {
-    it('should approve a pending action', async () => {
-      mockApproveAction.mockResolvedValue({ ...MOCK_ACTION, status: 'APPROVED' });
+    it('should approve a pending action with execution result', async () => {
+      mockApproveAction.mockResolvedValue({
+        action: { ...MOCK_ACTION, status: 'APPROVED' },
+        execution: { success: true, actionId: ACTION_ID, type: 'JE_DRAFT', detail: 'JE posted' },
+      });
 
       const response = await app.inject({
         method: 'POST',
@@ -311,7 +314,9 @@ describe('AI Action Routes', () => {
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.json().status).toBe('APPROVED');
+      const body = response.json();
+      expect(body.action.status).toBe('APPROVED');
+      expect(body.execution.success).toBe(true);
       expect(mockApproveAction).toHaveBeenCalledWith(ACTION_ID, 'test-user-id');
     });
 

@@ -22,4 +22,8 @@ export {
   type ActionStats,
   type BatchResult,
 } from './services/ai-action.service';
+export {
+  ActionExecutorService,
+  type ExecutionResult,
+} from './services/action-executor.service';
 export { AIError, handleAIError, type AIErrorCode } from './errors';

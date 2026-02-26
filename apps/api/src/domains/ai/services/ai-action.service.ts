@@ -1,5 +1,6 @@
 import { prisma, type Prisma } from '@akount/db';
 import { AIError } from '../errors';
+import { ActionExecutorService, type ExecutionResult } from './action-executor.service';
 import { logger } from '../../../lib/logger';
 
 // ---------------------------------------------------------------------------
@@ -141,10 +142,18 @@ export class AIActionService {
   }
 
   /**
-   * Approve a pending action.
+   * Approve a pending action, then execute it.
    * Validates: must be PENDING, must not be expired.
+   *
+   * Execution is dispatched by ActionExecutorService:
+   * - JE_DRAFT: approves the linked draft journal entry
+   * - CATEGORIZATION: applies the suggested category to the transaction
+   * - RULE_SUGGESTION/ALERT: acknowledged (no automated execution)
    */
-  async approveAction(actionId: string, userId: string) {
+  async approveAction(
+    actionId: string,
+    userId: string
+  ): Promise<{ action: Record<string, unknown>; execution?: ExecutionResult }> {
     const action = await this.getAction(actionId);
 
     if (action.status !== 'PENDING') {
@@ -164,7 +173,7 @@ export class AIActionService {
       throw new AIError('Action has expired', 'ACTION_EXPIRED', 410);
     }
 
-    return prisma.aIAction.update({
+    const updated = await prisma.aIAction.update({
       where: { id: actionId },
       data: {
         status: 'APPROVED',
@@ -172,10 +181,28 @@ export class AIActionService {
         reviewedBy: userId,
       },
     });
+
+    // Execute the approved action
+    const executor = new ActionExecutorService(this.tenantId, this.entityId, userId);
+    const execution = await executor.execute({
+      id: action.id,
+      type: action.type,
+      payload: action.payload,
+    });
+
+    if (!execution.success) {
+      logger.warn(
+        { actionId, executionError: execution.error },
+        'Action approved but execution failed'
+      );
+    }
+
+    return { action: updated as unknown as Record<string, unknown>, execution };
   }
 
   /**
-   * Reject a pending action.
+   * Reject a pending action and handle side-effects.
+   * For JE_DRAFT: soft-deletes the linked draft journal entry.
    */
   async rejectAction(actionId: string, userId: string) {
     const action = await this.getAction(actionId);
@@ -188,7 +215,7 @@ export class AIActionService {
       );
     }
 
-    return prisma.aIAction.update({
+    const updated = await prisma.aIAction.update({
       where: { id: actionId },
       data: {
         status: 'REJECTED',
@@ -196,30 +223,57 @@ export class AIActionService {
         reviewedBy: userId,
       },
     });
+
+    // Handle rejection side-effects (e.g., soft-delete draft JE)
+    const executor = new ActionExecutorService(this.tenantId, this.entityId, userId);
+    await executor.handleRejection({
+      id: action.id,
+      type: action.type,
+      payload: action.payload,
+    });
+
+    return updated;
   }
 
   /**
-   * Batch approve multiple actions. Returns per-action results.
+   * Batch approve multiple actions, then execute each.
    * Uses optimistic concurrency: only updates PENDING actions.
+   * Execution runs after status update; failures are logged but don't revert approval.
    */
   async batchApprove(actionIds: string[], userId: string): Promise<BatchResult> {
     const succeeded: string[] = [];
     const failed: Array<{ id: string; reason: string }> = [];
+    const approvedActions: Array<{ id: string; type: string; payload: unknown }> = [];
 
     for (const id of actionIds) {
       try {
-        // Optimistic: update only if still PENDING and not expired
-        const result = await prisma.aIAction.updateMany({
+        // Fetch the action first (need payload for execution)
+        const action = await prisma.aIAction.findFirst({
           where: {
             id,
             entityId: this.entityId,
             entity: { tenantId: this.tenantId },
-            status: 'PENDING',
-            OR: [
-              { expiresAt: null },
-              { expiresAt: { gt: new Date() } },
-            ],
           },
+          select: { id: true, type: true, payload: true, status: true, expiresAt: true },
+        });
+
+        if (!action || action.status !== 'PENDING') {
+          failed.push({ id, reason: 'Not found or not pending' });
+          continue;
+        }
+
+        if (action.expiresAt && action.expiresAt < new Date()) {
+          await prisma.aIAction.update({
+            where: { id },
+            data: { status: 'EXPIRED' },
+          });
+          failed.push({ id, reason: 'Action expired' });
+          continue;
+        }
+
+        // Update status to APPROVED
+        await prisma.aIAction.update({
+          where: { id },
           data: {
             status: 'APPROVED',
             reviewedAt: new Date(),
@@ -227,11 +281,8 @@ export class AIActionService {
           },
         });
 
-        if (result.count > 0) {
-          succeeded.push(id);
-        } else {
-          failed.push({ id, reason: 'Not found, not pending, or expired' });
-        }
+        succeeded.push(id);
+        approvedActions.push({ id: action.id, type: action.type, payload: action.payload });
       } catch (error) {
         logger.error({ err: error, actionId: id }, 'Failed to approve action');
         failed.push({
@@ -241,25 +292,52 @@ export class AIActionService {
       }
     }
 
+    // Execute all approved actions
+    if (approvedActions.length > 0) {
+      const executor = new ActionExecutorService(this.tenantId, this.entityId, userId);
+      for (const action of approvedActions) {
+        const result = await executor.execute(action);
+        if (!result.success) {
+          logger.warn(
+            { actionId: action.id, executionError: result.error },
+            'Batch-approved action execution failed'
+          );
+        }
+      }
+    }
+
     return { succeeded, failed };
   }
 
   /**
-   * Batch reject multiple actions.
+   * Batch reject multiple actions with side-effect handling.
+   * For JE_DRAFT actions: soft-deletes linked draft journal entries.
    */
   async batchReject(actionIds: string[], userId: string): Promise<BatchResult> {
     const succeeded: string[] = [];
     const failed: Array<{ id: string; reason: string }> = [];
+    const rejectedActions: Array<{ id: string; type: string; payload: unknown }> = [];
 
     for (const id of actionIds) {
       try {
-        const result = await prisma.aIAction.updateMany({
+        // Fetch action for rejection side-effects
+        const action = await prisma.aIAction.findFirst({
           where: {
             id,
             entityId: this.entityId,
             entity: { tenantId: this.tenantId },
             status: 'PENDING',
           },
+          select: { id: true, type: true, payload: true },
+        });
+
+        if (!action) {
+          failed.push({ id, reason: 'Not found or not pending' });
+          continue;
+        }
+
+        await prisma.aIAction.update({
+          where: { id },
           data: {
             status: 'REJECTED',
             reviewedAt: new Date(),
@@ -267,17 +345,22 @@ export class AIActionService {
           },
         });
 
-        if (result.count > 0) {
-          succeeded.push(id);
-        } else {
-          failed.push({ id, reason: 'Not found or not pending' });
-        }
+        succeeded.push(id);
+        rejectedActions.push({ id: action.id, type: action.type, payload: action.payload });
       } catch (error) {
         logger.error({ err: error, actionId: id }, 'Failed to reject action');
         failed.push({
           id,
           reason: error instanceof Error ? error.message : 'Unknown error',
         });
+      }
+    }
+
+    // Handle rejection side-effects for all rejected actions
+    if (rejectedActions.length > 0) {
+      const executor = new ActionExecutorService(this.tenantId, this.entityId, userId);
+      for (const action of rejectedActions) {
+        await executor.handleRejection(action);
       }
     }
 
