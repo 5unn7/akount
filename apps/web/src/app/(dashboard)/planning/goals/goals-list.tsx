@@ -105,10 +105,13 @@ export function GoalsList({ initialGoals, initialNextCursor, entityId }: GoalsLi
                         Set financial targets and track your progress
                     </p>
                 </div>
-                <Button onClick={handleCreate} className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium gap-2">
-                    <Plus className="h-4 w-4" />
-                    Set Goal
-                </Button>
+                <div className="flex items-center gap-2">
+                    <ExportPlanningButton type="goals" data={goals} />
+                    <Button onClick={handleCreate} className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium gap-2">
+                        <Plus className="h-4 w-4" />
+                        Set Goal
+                    </Button>
+                </div>
             </div>
 
             {/* Goals Table */}
