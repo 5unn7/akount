@@ -35,6 +35,8 @@ vi.mock('../../../middleware/withPermission', () => ({
 // Mock validation middleware — let schemas pass through (we test validation separately)
 vi.mock('../../../middleware/validation', () => ({
   validateBody: vi.fn(() => async () => {}),
+  validateParams: vi.fn(() => async () => {}),
+  validateQuery: vi.fn(() => async () => {}),
 }));
 
 // Mock rate-limit middleware
@@ -71,6 +73,23 @@ vi.mock('../services/je-suggestion.service', () => ({
   },
 }));
 
+// Mock AIActionService (needed since routes.ts registers action sub-routes)
+vi.mock('../services/ai-action.service', () => ({
+  AIActionService: function (this: Record<string, unknown>) {
+    this.listActions = vi.fn();
+    this.getStats = vi.fn();
+    this.approveAction = vi.fn();
+    this.rejectAction = vi.fn();
+    this.batchApprove = vi.fn();
+    this.batchReject = vi.fn();
+  },
+}));
+
+// Mock logger (required by ai-action.service)
+vi.mock('../../../lib/logger', () => ({
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+}));
+
 // Mock Prisma
 const mockEntityFindFirst = vi.fn();
 const mockTransactionFindMany = vi.fn();
@@ -78,6 +97,7 @@ vi.mock('@akount/db', () => ({
   prisma: {
     entity: { findFirst: (...args: unknown[]) => mockEntityFindFirst(...args) },
     transaction: { findMany: (...args: unknown[]) => mockTransactionFindMany(...args) },
+    aIAction: { findFirst: vi.fn() },
   },
 }));
 

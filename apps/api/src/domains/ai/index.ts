@@ -15,3 +15,11 @@ export {
   type JESuggestion,
   type JESuggestionBatchResult,
 } from './services/je-suggestion.service';
+export {
+  AIActionService,
+  type CreateActionInput,
+  type ListActionsFilter,
+  type ActionStats,
+  type BatchResult,
+} from './services/ai-action.service';
+export { AIError, handleAIError, type AIErrorCode } from './errors';

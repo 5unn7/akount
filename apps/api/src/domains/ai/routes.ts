@@ -22,6 +22,7 @@ import {
   type JECreateFromSuggestionsInput,
 } from './schemas/je-suggestion.schema';
 import { JESuggestionService, type JESuggestionInput } from './services/je-suggestion.service';
+import { actionRoutes } from './routes/action.routes';
 
 /**
  * AI Domain Routes
@@ -436,4 +437,9 @@ export async function aiRoutes(fastify: FastifyInstance) {
       });
     }
   );
+
+  // -----------------------------------------------------------------------
+  // Action Feed Routes (sub-plugin)
+  // -----------------------------------------------------------------------
+  fastify.register(actionRoutes, { prefix: '/actions' });
 }
