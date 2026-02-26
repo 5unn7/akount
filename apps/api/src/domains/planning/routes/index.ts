@@ -3,6 +3,7 @@ import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { goalRoutes } from './goal.routes';
 import { budgetRoutes } from './budget.routes';
+import { forecastRoutes } from './forecast.routes';
 
 /**
  * Planning Domain Routes
@@ -18,6 +19,5 @@ export async function planningRoutes(fastify: FastifyInstance) {
   // Register sub-routes
   fastify.register(goalRoutes, { prefix: '/goals' });
   fastify.register(budgetRoutes, { prefix: '/budgets' });
-
-  // Forecast and report routes will be added in later sprints
+  fastify.register(forecastRoutes, { prefix: '/forecasts' });
 }

@@ -320,3 +320,172 @@ export async function getBudgetVarianceDetail(
     `/api/planning/budgets/${budgetId}/variance`
   );
 }
+
+// ============================================================================
+// Types — Forecasts
+// ============================================================================
+
+export type ForecastType = 'CASH_FLOW' | 'REVENUE' | 'EXPENSE';
+export type ForecastScenario = 'BASELINE' | 'OPTIMISTIC' | 'PESSIMISTIC';
+
+export interface ForecastDataPoint {
+  month: string; // YYYY-MM
+  amount: number; // Integer cents
+}
+
+export interface Forecast {
+  id: string;
+  entityId: string;
+  name: string;
+  type: ForecastType;
+  scenario: ForecastScenario;
+  periodStart: string;
+  periodEnd: string;
+  data: ForecastDataPoint[];
+  assumptions: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ListForecastsParams {
+  entityId: string;
+  cursor?: string;
+  limit?: number;
+  type?: ForecastType;
+  scenario?: ForecastScenario;
+}
+
+export interface ListForecastsResponse {
+  forecasts: Forecast[];
+  nextCursor: string | null;
+}
+
+export interface CreateForecastInput {
+  name: string;
+  entityId: string;
+  type: ForecastType;
+  scenario: ForecastScenario;
+  periodStart: string;
+  periodEnd: string;
+  data: ForecastDataPoint[];
+  assumptions?: Record<string, unknown>;
+}
+
+export interface UpdateForecastInput {
+  name?: string;
+  type?: ForecastType;
+  scenario?: ForecastScenario;
+  periodStart?: string;
+  periodEnd?: string;
+  data?: ForecastDataPoint[];
+  assumptions?: Record<string, unknown> | null;
+}
+
+// ============================================================================
+// Types — Cash Runway
+// ============================================================================
+
+export interface CashRunwayResult {
+  cashBalance: number;
+  monthlyBurnRate: number;
+  monthlyRevenue: number;
+  netBurnRate: number;
+  runwayMonths: number;
+  runwayDate: string | null;
+  monthsAnalyzed: number;
+}
+
+// ============================================================================
+// Types — Seasonal Patterns
+// ============================================================================
+
+export interface MonthlyDataPoint {
+  month: string;
+  revenue: number;
+  expenses: number;
+  net: number;
+}
+
+export interface SeasonalAnalysis {
+  monthlyData: MonthlyDataPoint[];
+  averageRevenue: number;
+  averageExpenses: number;
+  highRevenueMonths: string[];
+  lowRevenueMonths: string[];
+  highExpenseMonths: string[];
+  lowExpenseMonths: string[];
+  seasonalityScore: number;
+  monthsAnalyzed: number;
+}
+
+// ============================================================================
+// API Functions — Forecasts
+// ============================================================================
+
+export async function listForecasts(
+  params: ListForecastsParams
+): Promise<ListForecastsResponse> {
+  const searchParams = new URLSearchParams();
+  searchParams.append('entityId', params.entityId);
+  if (params.cursor) searchParams.append('cursor', params.cursor);
+  if (params.limit !== undefined) searchParams.append('limit', String(params.limit));
+  if (params.type) searchParams.append('type', params.type);
+  if (params.scenario) searchParams.append('scenario', params.scenario);
+
+  return apiClient<ListForecastsResponse>(
+    `/api/planning/forecasts?${searchParams.toString()}`
+  );
+}
+
+export async function getForecast(id: string): Promise<Forecast> {
+  return apiClient<Forecast>(`/api/planning/forecasts/${id}`);
+}
+
+export async function createForecast(data: CreateForecastInput): Promise<Forecast> {
+  return apiClient<Forecast>('/api/planning/forecasts', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateForecast(
+  id: string,
+  data: UpdateForecastInput
+): Promise<Forecast> {
+  return apiClient<Forecast>(`/api/planning/forecasts/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteForecast(id: string): Promise<void> {
+  return apiClient<void>(`/api/planning/forecasts/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+// ============================================================================
+// API Functions — Cash Runway
+// ============================================================================
+
+export async function getCashRunway(entityId: string): Promise<CashRunwayResult> {
+  return apiClient<CashRunwayResult>(
+    `/api/planning/forecasts/runway?entityId=${entityId}`
+  );
+}
+
+// ============================================================================
+// API Functions — Seasonal Patterns
+// ============================================================================
+
+export async function getSeasonalPatterns(
+  entityId: string,
+  lookbackMonths?: number
+): Promise<SeasonalAnalysis> {
+  const searchParams = new URLSearchParams({ entityId });
+  if (lookbackMonths) searchParams.append('lookbackMonths', String(lookbackMonths));
+
+  return apiClient<SeasonalAnalysis>(
+    `/api/planning/forecasts/seasonal?${searchParams.toString()}`
+  );
+}
