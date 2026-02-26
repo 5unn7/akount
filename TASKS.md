@@ -3,10 +3,10 @@
 **Last Updated:** 2026-02-26
 **Current Phase:** Phase 6 — Launch MVP
 
-> **147 active tasks** · 🔴 1 critical · 🟠 16 high · 🟡 103 medium · ⚪ 27 low
-> 📦 114 backlog · 🟢 26 ready · 🔒 6 blocked · 🟡 1 deferred
+> **143 active tasks** · 🔴 1 critical · 🟠 16 high · 🟡 99 medium · ⚪ 27 low
+> 📦 114 backlog · 🟢 22 ready · 🔒 6 blocked · 🟡 1 deferred
 >
-> _Completed tasks (228) archived in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
+> _Completed tasks (232) archived in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 > _43 Linear PM infrastructure tasks in [LINEAR-TASKS.md](LINEAR-TASKS.md)_
 
 ---
@@ -39,10 +39,6 @@
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
-| DEV-211 | AI Rules: Frontend API client + types for rules | 1-2h | 🟡 Medium | 🟢 | [needs: DEV-205,DEV-210] | plan:ai-auto-bookkeeper-phase2 |
-| DEV-212 | AI Rules: Rules management page (`/insights/rules`) + Sheet + navigation | 3-4h | 🟡 Medium | 🟢 | [needs: DEV-211] | plan:ai-auto-bookkeeper-phase2 |
-| DEV-213 | AI Rules: Rule condition builder component (visual AND/OR, field dropdowns) | 2-3h | 🟡 Medium | 🟢 | [needs: DEV-212] | plan:ai-auto-bookkeeper-phase2 |
-| DEV-214 | AI Rules: Rule suggestions in Action Feed (card rendering, approve creates rule) | 2-3h | 🟡 Medium | 🟢 | [needs: DEV-211,DEV-212,DEV-196] | plan:ai-auto-bookkeeper-phase2 |
 | UX-44 | Business: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-61 | Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
@@ -268,13 +264,14 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 
 
 
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-26T18:03:28.823Z",
+  "generated": "2026-02-26T19:04:30.339Z",
   "summary": {
-    "total": 147,
-    "ready": 26,
+    "total": 143,
+    "ready": 22,
     "blocked": 6,
     "backlog": 114,
     "done": 0
@@ -302,10 +299,6 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "INFRA-8"
     ],
     "medium": [
-      "DEV-211",
-      "DEV-212",
-      "DEV-213",
-      "DEV-214",
       "UX-44",
       "DEV-83",
       "DEV-61",
@@ -441,7 +434,6 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "UX-103"
     ],
     "short": [
-      "DEV-211",
       "PERF-7",
       "DRY-13",
       "DRY-19",
@@ -493,7 +485,6 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "SEC-8",
       "UX-58",
       "UX-59",
-      "DEV-212",
       "DEV-63",
       "DEV-64",
       "DEV-66",
@@ -589,10 +580,6 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
     "development": [
       "DEV-97",
       "DEV-98",
-      "DEV-211",
-      "DEV-212",
-      "DEV-213",
-      "DEV-214",
       "DEV-83",
       "DEV-61",
       "DEV-62",
@@ -724,10 +711,6 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
   },
   "ready": [
     "UX-103",
-    "DEV-211",
-    "DEV-212",
-    "DEV-213",
-    "DEV-214",
     "PERF-7",
     "DRY-10",
     "DRY-13",
@@ -834,48 +817,8 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "deps": [],
       "domain": "ux"
     },
-    "DEV-211": {
-      "line": 42,
-      "title": "AI Rules: Frontend API client + types for rules",
-      "effort": "1-2h",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development"
-    },
-    "DEV-212": {
-      "line": 43,
-      "title": "AI Rules: Rules management page (`/insights/rules`) + Sheet + navigation",
-      "effort": "3-4h",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "DEV-211"
-      ],
-      "domain": "development"
-    },
-    "DEV-213": {
-      "line": 44,
-      "title": "AI Rules: Rule condition builder component (visual AND/OR, field dropdowns)",
-      "effort": "2-3h",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [
-        "DEV-212"
-      ],
-      "domain": "development"
-    },
-    "DEV-214": {
-      "line": 45,
-      "title": "AI Rules: Rule suggestions in Action Feed (card rendering, approve creates rule)",
-      "effort": "2-3h",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development"
-    },
     "UX-44": {
-      "line": 46,
+      "line": 42,
       "title": "Business: Add invoice/client list CSV/PDF export buttons",
       "effort": "2-3h",
       "priority": "medium",
@@ -884,7 +827,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-83": {
-      "line": 47,
+      "line": 43,
       "title": "Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI)",
       "effort": "4-6h",
       "priority": "medium",
@@ -893,7 +836,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-61": {
-      "line": 48,
+      "line": 44,
       "title": "Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only)",
       "effort": "2-3h",
       "priority": "medium",
@@ -902,7 +845,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-62": {
-      "line": 49,
+      "line": 45,
       "title": "Accounting JE: Add batch approve (select multiple drafts → approve all)",
       "effort": "2-3h",
       "priority": "medium",
@@ -911,7 +854,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-63": {
-      "line": 50,
+      "line": 46,
       "title": "Accounting: Add recurring journal entry templates (monthly depreciation, rent, etc.)",
       "effort": "3-4h",
       "priority": "medium",
@@ -920,7 +863,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-64": {
-      "line": 51,
+      "line": 47,
       "title": "Accounting: Add journal entry CSV import (bulk import from external accounting software)",
       "effort": "3-4h",
       "priority": "medium",
@@ -929,7 +872,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-65": {
-      "line": 52,
+      "line": 48,
       "title": "Accounting: Add account reconciliation page (compare GL vs bank statement balances)",
       "effort": "4-6h",
       "priority": "medium",
@@ -938,7 +881,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-66": {
-      "line": 53,
+      "line": 49,
       "title": "Accounting: Add aged receivables/payables report (AR/AP aging 30/60/90+ day buckets)",
       "effort": "3-4h",
       "priority": "medium",
@@ -947,7 +890,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-67": {
-      "line": 54,
+      "line": 50,
       "title": "Accounting: Add audit trail view (who approved/voided/created entries, timestamps)",
       "effort": "2-3h",
       "priority": "medium",
@@ -956,7 +899,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-68": {
-      "line": 55,
+      "line": 51,
       "title": "Accounting: Add GL account merge/reclassify (move journal lines between accounts)",
       "effort": "3-4h",
       "priority": "medium",
@@ -965,7 +908,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-69": {
-      "line": 56,
+      "line": 52,
       "title": "Accounting Reports: Add year-over-year comparison mode (multi-year P&L and BS trends)",
       "effort": "2-3h",
       "priority": "medium",
@@ -974,7 +917,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "PERF-7": {
-      "line": 57,
+      "line": 53,
       "title": "Lazy-loading heavy frontend components",
       "effort": "1h",
       "priority": "medium",
@@ -983,7 +926,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "performance"
     },
     "DRY-10": {
-      "line": 58,
+      "line": 54,
       "title": "Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations",
       "effort": "1.5h",
       "priority": "medium",
@@ -992,7 +935,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "code-quality"
     },
     "DRY-13": {
-      "line": 59,
+      "line": 55,
       "title": "Create `<EntitySelector>` component — wire API integration for 7 report views",
       "effort": "2h",
       "priority": "medium",
@@ -1001,7 +944,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "code-quality"
     },
     "DRY-14": {
-      "line": 60,
+      "line": 56,
       "title": "Create global error tracking util — integrate Sentry in 3+ error.tsx files",
       "effort": "1.5h",
       "priority": "medium",
@@ -1010,7 +953,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "code-quality"
     },
     "DRY-19": {
-      "line": 61,
+      "line": 57,
       "title": "Replace z.record(z.unknown()) in onboarding with typed schema",
       "effort": "30m",
       "priority": "medium",
@@ -1019,7 +962,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "code-quality"
     },
     "FIN-29": {
-      "line": 62,
+      "line": 58,
       "title": "Re-validate totals against line items in updateInvoice/updateBill PATCH",
       "effort": "1h",
       "priority": "medium",
@@ -1028,7 +971,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "FIN-30": {
-      "line": 63,
+      "line": 59,
       "title": "Add linkedEntryId deduplication filter to GL report queries",
       "effort": "1h",
       "priority": "medium",
@@ -1037,7 +980,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "SEC-10": {
-      "line": 64,
+      "line": 60,
       "title": "Row-Level Security (PostgreSQL) for production hardening",
       "effort": "3h",
       "priority": "medium",
@@ -1046,7 +989,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "security"
     },
     "UX-6": {
-      "line": 65,
+      "line": 61,
       "title": "Keyboard shortcuts for power users (command palette, table nav)",
       "effort": "2h",
       "priority": "medium",
@@ -1055,7 +998,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "UX-7": {
-      "line": 66,
+      "line": 62,
       "title": "Help overlay documenting keyboard shortcuts",
       "effort": "1h",
       "priority": "medium",
@@ -1066,7 +1009,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "PERF-10": {
-      "line": 67,
+      "line": 63,
       "title": "Distributed caching (Redis) for multi-instance deployment",
       "effort": "4h",
       "priority": "medium",
@@ -1075,7 +1018,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "performance"
     },
     "PERF-12": {
-      "line": 68,
+      "line": 64,
       "title": "N+1 query monitoring / slow query detection in production (APM)",
       "effort": "2h",
       "priority": "medium",
@@ -1084,7 +1027,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "performance"
     },
     "FIN-7": {
-      "line": 69,
+      "line": 65,
       "title": "Fiscal period enforcement (prevent posting to locked periods)",
       "effort": "4h",
       "priority": "medium",
@@ -1093,7 +1036,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "FIN-8": {
-      "line": 70,
+      "line": 66,
       "title": "Fiscal year close process (closing entries, revenue → retained earnings)",
       "effort": "4h",
       "priority": "medium",
@@ -1104,7 +1047,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "FIN-9": {
-      "line": 71,
+      "line": 67,
       "title": "Multi-currency revaluation on period close (FX gains/losses, IFRS/GAAP)",
       "effort": "4h",
       "priority": "medium",
@@ -1115,7 +1058,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "FIN-10": {
-      "line": 72,
+      "line": 68,
       "title": "Invoice/bill reconciliation workflows (AP/AR aging, match/approve)",
       "effort": "4h",
       "priority": "medium",
@@ -1124,7 +1067,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "ARCH-5": {
-      "line": 73,
+      "line": 69,
       "title": "Error recovery patterns (idempotency keys, circuit breakers, retry with backoff)",
       "effort": "4h",
       "priority": "medium",
@@ -1133,7 +1076,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "architecture"
     },
     "ARCH-1": {
-      "line": 74,
+      "line": 70,
       "title": "OpenAPI spec auto-generation from Zod schemas (fastify-zod-openapi)",
       "effort": "3h",
       "priority": "medium",
@@ -1142,7 +1085,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "architecture"
     },
     "ARCH-4": {
-      "line": 75,
+      "line": 71,
       "title": "Background job processing setup (BullMQ for PDF gen, email, imports)",
       "effort": "4h",
       "priority": "medium",
@@ -1151,7 +1094,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "architecture"
     },
     "TEST-4": {
-      "line": 76,
+      "line": 72,
       "title": "Integration tests (API → DB → API roundtrip for critical flows)",
       "effort": "4h",
       "priority": "medium",
@@ -1160,7 +1103,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "testing"
     },
     "DEV-11": {
-      "line": 77,
+      "line": 73,
       "title": "Overview: Add upcoming payments endpoint — bills due + expected invoice payments",
       "effort": "2-3h",
       "priority": "medium",
@@ -1169,7 +1112,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-12": {
-      "line": 78,
+      "line": 74,
       "title": "Overview: Add action items endpoint — unreconciled txns, overdue invoices, overdue bills",
       "effort": "3-4h",
       "priority": "medium",
@@ -1178,7 +1121,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-13": {
-      "line": 79,
+      "line": 75,
       "title": "Overview: Add cash flow time-series chart endpoint — historical cash position by day/week",
       "effort": "3-4h",
       "priority": "medium",
@@ -1187,7 +1130,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-14": {
-      "line": 80,
+      "line": 76,
       "title": "Overview: Add expense breakdown by category endpoint for ExpenseChart",
       "effort": "2-3h",
       "priority": "medium",
@@ -1196,7 +1139,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-18": {
-      "line": 81,
+      "line": 77,
       "title": "Overview: Balance Sheet Snapshot widget — asset:liability donut + equity trend",
       "effort": "2-3h",
       "priority": "medium",
@@ -1205,7 +1148,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "FIN-16": {
-      "line": 82,
+      "line": 78,
       "title": "Overview: Financial Health Ratios widget — current ratio, working capital, debt-to-equity",
       "effort": "2-3h",
       "priority": "medium",
@@ -1214,7 +1157,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "DEV-21": {
-      "line": 83,
+      "line": 79,
       "title": "Overview: Client Payment Health widget — % paid on time, avg days-to-payment, overdue count",
       "effort": "2-3h",
       "priority": "medium",
@@ -1223,7 +1166,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-22": {
-      "line": 84,
+      "line": 80,
       "title": "Overview: Invoice Aging Waterfall widget — AR buckets 0-30, 31-60, 61-90, 90+ days",
       "effort": "2-3h",
       "priority": "medium",
@@ -1232,7 +1175,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-23": {
-      "line": 85,
+      "line": 81,
       "title": "Overview: Revenue by Category widget — revenue sources breakdown",
       "effort": "2-3h",
       "priority": "medium",
@@ -1241,7 +1184,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-24": {
-      "line": 86,
+      "line": 82,
       "title": "Overview: Top Expense Vendors widget — top 5 by YTD spend + % of total",
       "effort": "2-3h",
       "priority": "medium",
@@ -1250,7 +1193,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-25": {
-      "line": 87,
+      "line": 83,
       "title": "Overview: Bill Aging Waterfall widget — AP buckets 0-30, 31-60, 61-90, 90+ days",
       "effort": "2-3h",
       "priority": "medium",
@@ -1259,7 +1202,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-26": {
-      "line": 88,
+      "line": 84,
       "title": "Overview: Vendor Payment Terms widget — on-time vs late payment performance",
       "effort": "2h",
       "priority": "medium",
@@ -1268,7 +1211,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-27": {
-      "line": 89,
+      "line": 85,
       "title": "Overview: Reconciliation Status widget — progress bar per account + unmatched count",
       "effort": "1-2h",
       "priority": "medium",
@@ -1277,7 +1220,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-28": {
-      "line": 90,
+      "line": 86,
       "title": "Overview: Import Health widget — last import date, success rate, failed imports",
       "effort": "1-2h",
       "priority": "medium",
@@ -1286,7 +1229,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-29": {
-      "line": 91,
+      "line": 87,
       "title": "Overview: Categorization Gap widget — % of transactions uncategorized by account",
       "effort": "1-2h",
       "priority": "medium",
@@ -1295,7 +1238,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-30": {
-      "line": 92,
+      "line": 88,
       "title": "Overview: Duplicate Detection Stats widget — duplicates detected this month",
       "effort": "1-2h",
       "priority": "medium",
@@ -1304,7 +1247,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-31": {
-      "line": 93,
+      "line": 89,
       "title": "Overview: Journal Entry Status widget — count by status, draft aging > 7d alert",
       "effort": "1-2h",
       "priority": "medium",
@@ -1313,7 +1256,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-32": {
-      "line": 94,
+      "line": 90,
       "title": "Overview: GL Posting Pipeline widget — pending bank feed txns waiting to post",
       "effort": "1-2h",
       "priority": "medium",
@@ -1322,7 +1265,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-33": {
-      "line": 95,
+      "line": 91,
       "title": "Overview: Ledger Spike Detection widget — accounts with unusual balance swings",
       "effort": "3-4h",
       "priority": "medium",
@@ -1331,7 +1274,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-34": {
-      "line": 96,
+      "line": 92,
       "title": "Overview: Goal Progress widget — progress bars for active goals, days to deadline",
       "effort": "2-3h",
       "priority": "medium",
@@ -1340,7 +1283,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-35": {
-      "line": 97,
+      "line": 93,
       "title": "Overview: Budget vs Actual widget — % of budget used this month, over-budget alerts",
       "effort": "3-4h",
       "priority": "medium",
@@ -1349,7 +1292,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-36": {
-      "line": 98,
+      "line": 94,
       "title": "Overview: Expense Forecast widget — projected monthly spend at current 3-month run rate",
       "effort": "2-3h",
       "priority": "medium",
@@ -1358,7 +1301,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-37": {
-      "line": 99,
+      "line": 95,
       "title": "Overview: Cash Runway widget — days of cash remaining at burn rate",
       "effort": "2-3h",
       "priority": "medium",
@@ -1367,7 +1310,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-38": {
-      "line": 100,
+      "line": 96,
       "title": "Overview: Multi-Currency Exposure widget — portfolio breakdown by currency + FX risk %",
       "effort": "2-3h",
       "priority": "medium",
@@ -1376,7 +1319,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-39": {
-      "line": 101,
+      "line": 97,
       "title": "Overview: Entity KPI Comparison widget — side-by-side entity performance",
       "effort": "3-4h",
       "priority": "medium",
@@ -1385,7 +1328,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-47": {
-      "line": 102,
+      "line": 98,
       "title": "Banking: Add transaction full-text search on description/notes",
       "effort": "2-3h",
       "priority": "medium",
@@ -1394,7 +1337,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-48": {
-      "line": 103,
+      "line": 99,
       "title": "Banking: Add transaction split UI + endpoint (isSplit field exists, no implementation)",
       "effort": "3-4h",
       "priority": "medium",
@@ -1403,7 +1346,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-49": {
-      "line": 104,
+      "line": 100,
       "title": "Banking: Show multi-currency amounts — display original + base currency on transactions",
       "effort": "1-2h",
       "priority": "medium",
@@ -1412,7 +1355,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-50": {
-      "line": 105,
+      "line": 101,
       "title": "Banking: Add transaction export (CSV/PDF) for filtered transaction views",
       "effort": "2-3h",
       "priority": "medium",
@@ -1421,7 +1364,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-51": {
-      "line": 106,
+      "line": 102,
       "title": "Banking: Add account balance history chart — historical balance trend over time",
       "effort": "3-4h",
       "priority": "medium",
@@ -1430,7 +1373,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-52": {
-      "line": 107,
+      "line": 103,
       "title": "Banking: Add duplicate management UI — view detected duplicates, approve/dismiss",
       "effort": "2-3h",
       "priority": "medium",
@@ -1439,7 +1382,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-53": {
-      "line": 108,
+      "line": 104,
       "title": "Banking: Add transaction auto-categorization rules UI (Rule model exists in AI domain)",
       "effort": "2-3h",
       "priority": "medium",
@@ -1448,7 +1391,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-54": {
-      "line": 109,
+      "line": 105,
       "title": "Banking: Add batch transaction edit — bulk update description/category/notes",
       "effort": "2-3h",
       "priority": "medium",
@@ -1457,7 +1400,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-55": {
-      "line": 110,
+      "line": 106,
       "title": "Banking: Recurring transaction detection — identify frequency patterns",
       "effort": "3-4h",
       "priority": "medium",
@@ -1466,7 +1409,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-56": {
-      "line": 111,
+      "line": 107,
       "title": "Banking: Add receipt/attachment upload per transaction",
       "effort": "3-4h",
       "priority": "medium",
@@ -1475,7 +1418,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-57": {
-      "line": 112,
+      "line": 108,
       "title": "Banking: Add CSV import column mapping UI (backend supports, frontend hardcoded)",
       "effort": "2-3h",
       "priority": "medium",
@@ -1484,7 +1427,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-58": {
-      "line": 113,
+      "line": 109,
       "title": "Banking: Add import error detail view — show per-row errors when import partially fails",
       "effort": "1-2h",
       "priority": "medium",
@@ -1493,7 +1436,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "UX-52": {
-      "line": 114,
+      "line": 110,
       "title": "Business: Add sort by columns on invoice/bill/client/vendor lists",
       "effort": "1-2h",
       "priority": "medium",
@@ -1502,7 +1445,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-85": {
-      "line": 115,
+      "line": 111,
       "title": "Business: Add bill PDF generation (invoice PDF exists, bills have no PDF)",
       "effort": "2-3h",
       "priority": "medium",
@@ -1511,7 +1454,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-86": {
-      "line": 116,
+      "line": 112,
       "title": "Business: Add aging drill-down — click AR/AP aging bucket to see individual invoices/bills",
       "effort": "2-3h",
       "priority": "medium",
@@ -1520,7 +1463,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-87": {
-      "line": 117,
+      "line": 113,
       "title": "Business: Add duplicate invoice/bill detection — flag same vendor+amount+date",
       "effort": "2-3h",
       "priority": "medium",
@@ -1529,7 +1472,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-88": {
-      "line": 118,
+      "line": 114,
       "title": "Business: Add email reminder for overdue invoices",
       "effort": "2-3h",
       "priority": "medium",
@@ -1538,7 +1481,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-89": {
-      "line": 119,
+      "line": 115,
       "title": "Business: Add recurring invoice templates — auto-generate invoices on schedule",
       "effort": "4-6h",
       "priority": "medium",
@@ -1547,7 +1490,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "UX-55": {
-      "line": 120,
+      "line": 116,
       "title": "Business: Add visual status pipeline on invoice/bill list — Draft→Sent→Partial→Paid",
       "effort": "1-2h",
       "priority": "medium",
@@ -1556,7 +1499,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-90": {
-      "line": 121,
+      "line": 117,
       "title": "Business: Add top debtors/creditors summary widget",
       "effort": "2-3h",
       "priority": "medium",
@@ -1565,7 +1508,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-91": {
-      "line": 122,
+      "line": 118,
       "title": "Business: Add invoice/bill/client/vendor CSV export",
       "effort": "2-3h",
       "priority": "medium",
@@ -1574,7 +1517,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-99": {
-      "line": 123,
+      "line": 119,
       "title": "Planning: Add budget variance analysis endpoint — compare budget vs actual from GL",
       "effort": "3-4h",
       "priority": "medium",
@@ -1585,7 +1528,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-100": {
-      "line": 124,
+      "line": 120,
       "title": "Planning: Add goal auto-tracking + milestone notifications",
       "effort": "3-4h",
       "priority": "medium",
@@ -1596,7 +1539,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-101": {
-      "line": 125,
+      "line": 121,
       "title": "Planning: Wire planning reports to existing accounting report endpoints",
       "effort": "1-2h",
       "priority": "medium",
@@ -1605,7 +1548,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "UX-61": {
-      "line": 126,
+      "line": 122,
       "title": "Planning: Build forecasts page — cash flow projection chart",
       "effort": "3-4h",
       "priority": "medium",
@@ -1614,7 +1557,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-102": {
-      "line": 127,
+      "line": 123,
       "title": "Planning: Add Forecast model to Prisma + CRUD service (scenario modeling)",
       "effort": "4-6h",
       "priority": "medium",
@@ -1623,7 +1566,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "UX-62": {
-      "line": 128,
+      "line": 124,
       "title": "Planning: Add budget period selector with visual spend-rate indicator",
       "effort": "1-2h",
       "priority": "medium",
@@ -1634,7 +1577,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "UX-63": {
-      "line": 129,
+      "line": 125,
       "title": "Planning: Add budget vs actual drill-down — click category to see transactions",
       "effort": "2-3h",
       "priority": "medium",
@@ -1645,7 +1588,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-103": {
-      "line": 130,
+      "line": 126,
       "title": "Planning: Add cash runway calculator — months remaining at burn rate",
       "effort": "2-3h",
       "priority": "medium",
@@ -1654,7 +1597,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-104": {
-      "line": 131,
+      "line": 127,
       "title": "Planning: Add seasonal pattern detection — highlight high/low revenue months",
       "effort": "3-4h",
       "priority": "medium",
@@ -1663,7 +1606,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-105": {
-      "line": 132,
+      "line": 128,
       "title": "Planning: Add budget alerts — threshold warnings at 80%/100% utilization",
       "effort": "2-3h",
       "priority": "medium",
@@ -1674,7 +1617,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "UX-64": {
-      "line": 133,
+      "line": 129,
       "title": "Planning: Add goal trajectory projection — \"on pace\" vs \"behind\" trend line",
       "effort": "2-3h",
       "priority": "medium",
@@ -1685,7 +1628,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-115": {
-      "line": 134,
+      "line": 130,
       "title": "Insights: Add route-level tests for `/api/ai/chat` and `/api/ai/categorize`",
       "effort": "1h",
       "priority": "medium",
@@ -1694,7 +1637,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-116": {
-      "line": 135,
+      "line": 131,
       "title": "Insights: Add RBAC tests for AI permission enforcement",
       "effort": "30m",
       "priority": "medium",
@@ -1703,7 +1646,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-117": {
-      "line": 136,
+      "line": 132,
       "title": "Insights: Wire AIBrief on dashboard to show real data",
       "effort": "1h",
       "priority": "medium",
@@ -1712,7 +1655,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-118": {
-      "line": 137,
+      "line": 133,
       "title": "Insights: Implement `GET /api/ai/insights` endpoint (replace 501 stub)",
       "effort": "2-4h",
       "priority": "medium",
@@ -1721,7 +1664,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "SEC-16": {
-      "line": 138,
+      "line": 134,
       "title": "File retention policies (auto-cleanup of old uploads)",
       "effort": "1h",
       "priority": "medium",
@@ -1730,7 +1673,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "security"
     },
     "INFRA-11": {
-      "line": 139,
+      "line": 135,
       "title": "Database migration testing in CI pipeline",
       "effort": "2h",
       "priority": "medium",
@@ -1739,7 +1682,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "DEV-70": {
-      "line": 140,
+      "line": 136,
       "title": "Accounting Reports: One-click export all statements as ZIP",
       "effort": "1-2h",
       "priority": "low",
@@ -1748,7 +1691,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DRY-15": {
-      "line": 141,
+      "line": 137,
       "title": "Standardize table header styling — create `<TableHead variant=\"label\">`",
       "effort": "30m",
       "priority": "low",
@@ -1757,7 +1700,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "code-quality"
     },
     "DRY-5": {
-      "line": 142,
+      "line": 138,
       "title": "`window.Clerk` triple-cast in downloadReport: clean up type assertion",
       "effort": "30m",
       "priority": "low",
@@ -1766,7 +1709,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "code-quality"
     },
     "DEV-40": {
-      "line": 143,
+      "line": 139,
       "title": "Overview: Onboarding Completion nudge widget — checklist of remaining steps",
       "effort": "1-2h",
       "priority": "low",
@@ -1775,7 +1718,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-41": {
-      "line": 144,
+      "line": 140,
       "title": "Overview: Tax Liability Estimate widget",
       "effort": "4-6h",
       "priority": "low",
@@ -1784,7 +1727,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-42": {
-      "line": 145,
+      "line": 141,
       "title": "Overview: Subscription MRR/ARR widget — recurring revenue detection",
       "effort": "4-6h",
       "priority": "low",
@@ -1793,7 +1736,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-15": {
-      "line": 146,
+      "line": 142,
       "title": "Overview: Add top expense categories widget",
       "effort": "1-2h",
       "priority": "low",
@@ -1802,7 +1745,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-16": {
-      "line": 147,
+      "line": 143,
       "title": "Overview: Add unreconciled transaction count badge to dashboard",
       "effort": "1h",
       "priority": "low",
@@ -1811,7 +1754,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "PERF-4": {
-      "line": 148,
+      "line": 144,
       "title": "PDF generation: move to worker thread (unblock event loop)",
       "effort": "2h",
       "priority": "low",
@@ -1820,7 +1763,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "performance"
     },
     "PERF-11": {
-      "line": 149,
+      "line": 145,
       "title": "Distributed rate limiting (Redis-backed) for multi-instance",
       "effort": "2h",
       "priority": "low",
@@ -1829,7 +1772,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "performance"
     },
     "FIN-6": {
-      "line": 150,
+      "line": 146,
       "title": "Cash Flow: document hardcoded account code ranges for categorization",
       "effort": "doc",
       "priority": "low",
@@ -1838,7 +1781,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "FIN-11": {
-      "line": 151,
+      "line": 147,
       "title": "Consolidation/elimination accounting (multi-entity)",
       "effort": "8h",
       "priority": "low",
@@ -1847,7 +1790,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "FIN-12": {
-      "line": 152,
+      "line": 148,
       "title": "GAAP-compliant GL export format (XBRL/ixBRL regulatory reporting)",
       "effort": "6h",
       "priority": "low",
@@ -1856,7 +1799,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "financial"
     },
     "SEC-15": {
-      "line": 153,
+      "line": 149,
       "title": "Duplicate file detection for uploads",
       "effort": "1h",
       "priority": "low",
@@ -1865,7 +1808,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "security"
     },
     "INFRA-12": {
-      "line": 154,
+      "line": 150,
       "title": "Usage analytics (companies, transactions, reports generated)",
       "effort": "2h",
       "priority": "low",
@@ -1874,7 +1817,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "DEV-93": {
-      "line": 155,
+      "line": 151,
       "title": "Business: Add payment receipt PDF generation",
       "effort": "2-3h",
       "priority": "low",
@@ -1883,7 +1826,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-94": {
-      "line": 156,
+      "line": 152,
       "title": "Business: Add batch invoice creation — generate multiple from template",
       "effort": "3-4h",
       "priority": "low",
@@ -1892,7 +1835,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "UX-57": {
-      "line": 157,
+      "line": 153,
       "title": "Business: Add notes/activity log per client and vendor",
       "effort": "2-3h",
       "priority": "low",
@@ -1901,7 +1844,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-106": {
-      "line": 158,
+      "line": 154,
       "title": "Planning: Add soft delete to Budget and Goal models (missing deletedAt)",
       "effort": "1h",
       "priority": "low",
@@ -1910,7 +1853,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-107": {
-      "line": 159,
+      "line": 155,
       "title": "Planning: Add AI-powered expense forecast",
       "effort": "4-6h",
       "priority": "low",
@@ -1921,7 +1864,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-108": {
-      "line": 160,
+      "line": 156,
       "title": "Planning: Add goal templates (emergency fund, revenue target, expense reduction)",
       "effort": "2-3h",
       "priority": "low",
@@ -1932,7 +1875,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "UX-65": {
-      "line": 161,
+      "line": 157,
       "title": "Planning: Add budget/goal export (CSV/PDF)",
       "effort": "2-3h",
       "priority": "low",
@@ -1941,7 +1884,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "ux"
     },
     "DEV-109": {
-      "line": 162,
+      "line": 158,
       "title": "Planning: Add budget rollover — carry unused budget forward to next period",
       "effort": "1-2h",
       "priority": "low",
@@ -1952,7 +1895,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-110": {
-      "line": 163,
+      "line": 159,
       "title": "Planning: Add \"What-if\" scenario comparison — side-by-side forecast scenarios",
       "effort": "4-6h",
       "priority": "low",
@@ -1963,7 +1906,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-111": {
-      "line": 164,
+      "line": 160,
       "title": "Planning: Auto-suggest budgets from existing spending patterns",
       "effort": "2-3h",
       "priority": "low",
@@ -1974,7 +1917,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-119": {
-      "line": 165,
+      "line": 161,
       "title": "Insights: Build Policy Alerts page with real data",
       "effort": "3-4h",
       "priority": "low",
@@ -1983,7 +1926,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DEV-120": {
-      "line": 166,
+      "line": 162,
       "title": "Insights: Build History page with AI interaction logging",
       "effort": "2-3h",
       "priority": "low",
@@ -1994,7 +1937,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "development"
     },
     "DS-1": {
-      "line": 186,
+      "line": 182,
       "title": "Figma-to-code token sync audit",
       "effort": "2h",
       "priority": "high",
@@ -2003,7 +1946,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "design-system"
     },
     "DS-2": {
-      "line": 187,
+      "line": 183,
       "title": "Storybook setup for component documentation",
       "effort": "3h",
       "priority": "medium",
@@ -2012,7 +1955,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "design-system"
     },
     "MKT-1": {
-      "line": 195,
+      "line": 191,
       "title": "Landing page copy and design",
       "effort": "3h",
       "priority": "high",
@@ -2021,7 +1964,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "marketing"
     },
     "MKT-2": {
-      "line": 196,
+      "line": 192,
       "title": "User documentation / getting started guide",
       "effort": "2h",
       "priority": "medium",
@@ -2030,7 +1973,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "marketing"
     },
     "CNT-1": {
-      "line": 197,
+      "line": 193,
       "title": "Competitive analysis update",
       "effort": "2h",
       "priority": "medium",
@@ -2039,7 +1982,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "content"
     },
     "INFRA-1": {
-      "line": 207,
+      "line": 203,
       "title": "CI/CD pipeline (GitHub Actions)",
       "effort": "3h",
       "priority": "high",
@@ -2048,7 +1991,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "INFRA-2": {
-      "line": 208,
+      "line": 204,
       "title": "Production environment setup",
       "effort": "2h",
       "priority": "high",
@@ -2057,7 +2000,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "INFRA-3": {
-      "line": 209,
+      "line": 205,
       "title": "Database backups (automated daily)",
       "effort": "1h",
       "priority": "high",
@@ -2066,7 +2009,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "ARCH-3": {
-      "line": 210,
+      "line": 206,
       "title": "S3 cloud storage migration for file uploads (replace local filesystem)",
       "effort": "3h",
       "priority": "high",
@@ -2075,7 +2018,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "architecture"
     },
     "INFRA-5": {
-      "line": 211,
+      "line": 207,
       "title": "Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts)",
       "effort": "2h",
       "priority": "high",
@@ -2086,7 +2029,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "INFRA-7": {
-      "line": 212,
+      "line": 208,
       "title": "OpenTelemetry instrumentation (distributed tracing, metrics, alerting)",
       "effort": "4h",
       "priority": "high",
@@ -2097,7 +2040,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "INFRA-8": {
-      "line": 213,
+      "line": 209,
       "title": "Docker image building + container deployment pipeline",
       "effort": "3h",
       "priority": "high",
@@ -2108,7 +2051,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "INFRA-4": {
-      "line": 221,
+      "line": 217,
       "title": "Disaster recovery procedure + documentation",
       "effort": "2h",
       "priority": "medium",
@@ -2119,7 +2062,7 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
       "domain": "infrastructure"
     },
     "INFRA-6": {
-      "line": 222,
+      "line": 218,
       "title": "Deployment documentation",
       "effort": "1h",
       "priority": "medium",

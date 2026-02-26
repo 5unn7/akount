@@ -223,6 +223,15 @@
 **Period Covered:** 2026-02-17 to 2026-02-24
 | ID | Task | Completed | Source |
 |----|------|-----------|--------|
+| DEV-211 | AI Rules: Frontend API client + types for rules | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-212 | AI Rules: Rules management page + Sheet + navigation | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-213 | AI Rules: Rule condition builder component | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-214 | AI Rules: Rule suggestions in Action Feed | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-206 | AI Rules: Hook rules into autoCategorize pipeline | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-207 | AI Rules: Pattern detection service | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-208 | AI Rules: Rule suggestion generation service | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-209 | AI Rules: Wire correction triggers + RULE_SUGGESTION executor handler | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
+| DEV-210 | AI Rules: Rule suggestion API routes + tests | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
 | DOC-8 | Update domain status in apps/api/CLAUDE.md (Invoicing marked "stub" but is fully built) | 2026-02-26 | audit:2026-02-20 |
 | UX-79 | Business: Add bill detail page at `/business/bills/[id]` | 2026-02-26 | sitemap:audit |
 | DOC-5 | Add double-entry bookkeeping check to guardrails.md anti-patterns | 2026-02-26 | review:smooth-floating-mountain |
