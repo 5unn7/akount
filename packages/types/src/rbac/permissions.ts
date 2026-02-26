@@ -282,6 +282,22 @@ export const PERMISSION_MATRIX: Record<PermissionKey, PermissionEntry> = {
     INVESTOR: 'HIDDEN',
     ADVISOR: 'HIDDEN',
   },
+  'ai:actions': {
+    OWNER: 'ACT',
+    ADMIN: 'ACT',
+    ACCOUNTANT: 'VIEW',
+    BOOKKEEPER: 'HIDDEN',
+    INVESTOR: 'HIDDEN',
+    ADVISOR: 'HIDDEN',
+  },
+  'ai:monthly-close': {
+    OWNER: 'APPROVE',
+    ADMIN: 'APPROVE',
+    ACCOUNTANT: 'APPROVE',
+    BOOKKEEPER: 'HIDDEN',
+    INVESTOR: 'HIDDEN',
+    ADVISOR: 'HIDDEN',
+  },
 
   // System Administration Domain
   'system:entities': {

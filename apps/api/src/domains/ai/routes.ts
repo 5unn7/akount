@@ -5,6 +5,7 @@ import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
 import { validateBody } from '../../middleware/validation';
 import { withPermission } from '../../middleware/withPermission';
+import { aiChatRateLimitConfig, aiRateLimitConfig } from '../../middleware/rate-limit';
 import { categorizeTransaction } from './services/categorization.service';
 
 // Validation schemas
@@ -52,6 +53,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
     {
       ...withPermission('ai', 'chat', 'ACT'),
       preValidation: [validateBody(chatBodySchema)],
+      config: { rateLimit: aiChatRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const { messages, options } = request.body as z.infer<typeof chatBodySchema>;
@@ -77,6 +79,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
     {
       ...withPermission('ai', 'categorize', 'ACT'),
       preValidation: [validateBody(categorizationBodySchema)],
+      config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const { description, amount } = request.body as z.infer<typeof categorizationBodySchema>;
@@ -102,6 +105,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
     '/insights',
     {
       ...withPermission('ai', 'insights', 'VIEW'),
+      config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       // Placeholder - implementation to come
@@ -121,6 +125,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
     '/recommendations',
     {
       ...withPermission('ai', 'recommendations', 'VIEW'),
+      config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       // Placeholder - implementation to come
@@ -140,6 +145,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
     '/rules/suggest',
     {
       ...withPermission('ai', 'rules', 'ACT'),
+      config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       // Placeholder - implementation to come

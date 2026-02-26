@@ -34,6 +34,7 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ❌ Using floats for money (`amount: Float` in Prisma)
 - ❌ Hard delete on financial models (Invoice, Bill, Payment, JournalEntry, Account, Transaction)
 - ❌ Missing `tenantId` filter in queries
+- ❌ JE from document without `sourceType`/`sourceId`/`sourceDocument` (Invariant #5)
 
 **Hook:** `.claude/hooks/hard-rules.sh`
 
@@ -232,6 +233,7 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ❌ **NEVER accept FK references without ownership check** — validate glAccountId, categoryId etc. belong to tenant (IDOR prevention)
 - ❌ **NEVER add P2002 error handler without @@unique constraint** — verify Prisma schema first, dead handlers = false confidence
 - ❌ **NEVER chain `.optional()` on validation middleware** — `validateBody()` returns a function, not a Zod schema
+- ❌ **NEVER create JEs from documents without source preservation** — every JE from an Invoice, Bill, Payment, or Transfer MUST set `sourceType`, `sourceId`, and `sourceDocument` (JSON snapshot). Without this, GL rebuilds and audit trails are impossible.
 - ❌ **NEVER inline JE entry number generation** — use `generateEntryNumber()` from `domains/accounting/utils/entry-number.ts`. Inline `parseInt(str.replace('JE-', ''))` produces NaN on unexpected formats.
 - ❌ **NEVER duplicate private methods across services** — if 3+ services need the same function, extract to `domains/<domain>/utils/`
 

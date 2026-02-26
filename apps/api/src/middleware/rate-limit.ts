@@ -46,6 +46,25 @@ export const STATS_RATE_LIMIT = {
 };
 
 /**
+ * AI rate limit for LLM-powered endpoints.
+ * Tighter than global due to high compute cost per request.
+ * Applied to /api/ai/* routes (chat, categorize, actions, monthly-close).
+ */
+export const AI_RATE_LIMIT = {
+  max: 20,
+  timeWindow: '1 minute',
+};
+
+/**
+ * AI chat rate limit (stricter — each call invokes an LLM).
+ * Applied to /api/ai/chat specifically.
+ */
+export const AI_CHAT_RATE_LIMIT = {
+  max: 10,
+  timeWindow: '1 minute',
+};
+
+/**
  * Register global rate limiting middleware.
  *
  * @example
@@ -177,5 +196,45 @@ export function statsRateLimitConfig() {
   return {
     max: STATS_RATE_LIMIT.max,
     timeWindow: STATS_RATE_LIMIT.timeWindow,
+  };
+}
+
+/**
+ * AI rate limit for LLM-powered endpoints.
+ *
+ * @example
+ * ```typescript
+ * fastify.post('/categorize', {
+ *   config: {
+ *     rateLimit: aiRateLimitConfig(),
+ *   },
+ *   handler: async (request, reply) => { ... }
+ * });
+ * ```
+ */
+export function aiRateLimitConfig() {
+  return {
+    max: AI_RATE_LIMIT.max,
+    timeWindow: AI_RATE_LIMIT.timeWindow,
+  };
+}
+
+/**
+ * Strict AI chat rate limit (LLM calls are expensive).
+ *
+ * @example
+ * ```typescript
+ * fastify.post('/chat', {
+ *   config: {
+ *     rateLimit: aiChatRateLimitConfig(),
+ *   },
+ *   handler: async (request, reply) => { ... }
+ * });
+ * ```
+ */
+export function aiChatRateLimitConfig() {
+  return {
+    max: AI_CHAT_RATE_LIMIT.max,
+    timeWindow: AI_CHAT_RATE_LIMIT.timeWindow,
   };
 }

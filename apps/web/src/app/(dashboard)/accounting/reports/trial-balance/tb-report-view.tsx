@@ -137,19 +137,20 @@ export function TBReportView({ initialData, initialParams, error, entities = [] 
 
                     {/* Account Table */}
                     <div className="glass rounded-xl overflow-hidden">
-                        <table className="w-full">
+                        <table className="w-full" aria-label="Trial Balance">
+                            <caption className="sr-only">Trial Balance — account codes with debit and credit balances</caption>
                             <thead>
                                 <tr className="border-b border-ak-border bg-ak-bg-3">
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                         Code
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                         Account Name
                                     </th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                         Debit
                                     </th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                         Credit
                                     </th>
                                 </tr>

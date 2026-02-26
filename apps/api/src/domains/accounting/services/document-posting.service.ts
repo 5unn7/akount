@@ -4,6 +4,7 @@ import { createAuditLog } from '../../../lib/audit';
 import { FxRateService } from '../../banking/services/fx-rate.service';
 import { reportCache } from './report-cache';
 import { generateEntryNumber } from '../utils/entry-number';
+import { resolveGLAccountByCode } from '../utils/gl-resolve';
 
 /**
  * Document Posting Service
@@ -118,13 +119,13 @@ export class DocumentPostingService {
       await this.checkFiscalPeriod(tx, entityId, invoice.issueDate);
 
       // 4. Resolve GL accounts
-      const arAccount = await this.resolveGLAccountByCode(
+      const arAccount = await resolveGLAccountByCode(
         tx, entityId, WELL_KNOWN_CODES.ACCOUNTS_RECEIVABLE
       );
-      const taxAccount = await this.resolveGLAccountByCode(
+      const taxAccount = await resolveGLAccountByCode(
         tx, entityId, WELL_KNOWN_CODES.SALES_TAX_PAYABLE
       );
-      const defaultRevenueAccount = await this.resolveGLAccountByCode(
+      const defaultRevenueAccount = await resolveGLAccountByCode(
         tx, entityId, WELL_KNOWN_CODES.SERVICE_REVENUE
       );
 
@@ -379,13 +380,13 @@ export class DocumentPostingService {
       await this.checkFiscalPeriod(tx, entityId, bill.issueDate);
 
       // 4. Resolve GL accounts
-      const apAccount = await this.resolveGLAccountByCode(
+      const apAccount = await resolveGLAccountByCode(
         tx, entityId, WELL_KNOWN_CODES.ACCOUNTS_PAYABLE
       );
-      const taxAccount = await this.resolveGLAccountByCode(
+      const taxAccount = await resolveGLAccountByCode(
         tx, entityId, WELL_KNOWN_CODES.SALES_TAX_PAYABLE
       );
-      const defaultExpenseAccount = await this.resolveGLAccountByCode(
+      const defaultExpenseAccount = await resolveGLAccountByCode(
         tx, entityId, WELL_KNOWN_CODES.OTHER_EXPENSES
       );
 
@@ -672,7 +673,7 @@ export class DocumentPostingService {
       const counterCode = isARPayment
         ? WELL_KNOWN_CODES.ACCOUNTS_RECEIVABLE
         : WELL_KNOWN_CODES.ACCOUNTS_PAYABLE;
-      const counterAccount = await this.resolveGLAccountByCode(tx, entityId, counterCode);
+      const counterAccount = await resolveGLAccountByCode(tx, entityId, counterCode);
 
       // 7. Build journal lines (with multi-currency support)
       const docRef = isARPayment
@@ -897,7 +898,7 @@ export class DocumentPostingService {
     await this.checkFiscalPeriod(tx, entityId, openingBalanceDate);
 
     // 3. Resolve Opening Balance Equity GL account (code 3300)
-    const obeAccount = await this.resolveGLAccountByCode(
+    const obeAccount = await resolveGLAccountByCode(
       tx, entityId, WELL_KNOWN_CODES.OPENING_BALANCE_EQUITY
     );
 
@@ -1028,36 +1029,6 @@ export class DocumentPostingService {
   // ============================================================================
   // Private Helpers
   // ============================================================================
-
-  /**
-   * Find a GL account by well-known code within an entity.
-   * Throws if not found (COA must be seeded first).
-   */
-  private async resolveGLAccountByCode(
-    tx: Prisma.TransactionClient,
-    entityId: string,
-    code: string
-  ) {
-    const account = await tx.gLAccount.findFirst({
-      where: {
-        entityId,
-        code,
-        isActive: true,
-      },
-      select: { id: true, code: true, name: true },
-    });
-
-    if (!account) {
-      throw new AccountingError(
-        `Required GL account ${code} not found — seed the Chart of Accounts first`,
-        'GL_ACCOUNT_NOT_FOUND',
-        400,
-        { code, entityId }
-      );
-    }
-
-    return account;
-  }
 
   private async checkFiscalPeriod(
     tx: Prisma.TransactionClient,
