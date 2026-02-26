@@ -6,7 +6,7 @@ import { listVendors } from '@/lib/api/vendors';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
 import { BillStatusBadge } from '@akount/ui/business';
-import { FileText, Building2, Calendar, ArrowLeft } from 'lucide-react';
+import { FileText, Building2, Calendar, ArrowLeft, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { BillActions } from './bill-actions';
 
@@ -82,10 +82,16 @@ export default async function BillDetailPage({
             {/* Info Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Vendor */}
-                <div className="glass rounded-xl p-5 space-y-3">
-                    <div className="flex items-center gap-2 text-micro uppercase tracking-wider text-muted-foreground">
-                        <Building2 className="h-3 w-3" />
-                        Vendor
+                <Link
+                    href={`/business/vendors/${bill.vendorId}`}
+                    className="glass rounded-xl p-5 space-y-3 group hover:border-ak-border-2 transition-all hover:-translate-y-px block"
+                >
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-micro uppercase tracking-wider text-muted-foreground">
+                            <Building2 className="h-3 w-3" />
+                            Vendor
+                        </div>
+                        <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div>
                         <p className="font-medium">{bill.vendor.name}</p>
@@ -95,7 +101,7 @@ export default async function BillDetailPage({
                             </p>
                         )}
                     </div>
-                </div>
+                </Link>
 
                 {/* Issue Date */}
                 <div className="glass rounded-xl p-5 space-y-3">

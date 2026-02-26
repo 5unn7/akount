@@ -202,10 +202,30 @@ export function EntryDetail({
                                 Reversal of entry
                             </span>
                         )}
-                        {entry.sourceType && (
+                        {entry.sourceType && entry.sourceId && (
+                            <Button
+                                size="sm"
+                                variant="ghost"
+                                asChild
+                                className="h-7 gap-1.5 text-xs text-muted-foreground hover:text-foreground ml-auto"
+                            >
+                                <Link href={
+                                    entry.sourceType === 'INVOICE'
+                                        ? `/business/invoices/${entry.sourceId}`
+                                        : entry.sourceType === 'BILL'
+                                            ? `/business/bills/${entry.sourceId}`
+                                            : entry.sourceType === 'PAYMENT'
+                                                ? `/business/payments`
+                                                : '#'
+                                }>
+                                    <ExternalLink className="h-3 w-3" />
+                                    Source: {entry.sourceType}
+                                </Link>
+                            </Button>
+                        )}
+                        {entry.sourceType && !entry.sourceId && (
                             <span className="text-xs text-muted-foreground ml-auto">
                                 Source: {entry.sourceType}
-                                {entry.sourceId ? ` #${entry.sourceId.slice(0, 8)}` : ''}
                             </span>
                         )}
                     </div>

@@ -58,8 +58,6 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | DEV-199 | AI: Dashboard AI Action widget (glass card, pending count, quick-approve) | 1-2h | 🟡 Medium | 🟢 | [needs: DEV-194,DEV-196] | plan:ai-auto-bookkeeper-phase1 |
-| UX-33 | App-wide: Add cross-links between related records — Invoice↔Client, Transaction↔JournalEntry, Bill↔Vendor, Payment↔Invoice/Bill | 2-3h | 🟡 Medium | 🟢 | | audit:app-ux |
-| UX-34 | App-wide: Add bulk operations to list pages — batch send/approve invoices, batch approve bills, batch deactivate accounts | 3-4h | 🟡 Medium | 📦 | | audit:app-ux |
 | UX-44 | Business: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
 | UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
@@ -104,8 +102,6 @@
 | SEC-10 | Row-Level Security (PostgreSQL) for production hardening | 3h | 🟡 Medium | 📦 | | roadmap |
 | UX-6 | Keyboard shortcuts for power users (command palette, table nav) | 2h | 🟡 Medium | 📦 | | roadmap |
 | UX-7 | Help overlay documenting keyboard shortcuts | 1h | 🟡 Medium | 🔒 | [needs: UX-6] | roadmap |
-| SEC-12 | File upload quota enforcement per tenant (prevent abuse/DoS) | 1h | 🟡 Medium | ✅ done | | review:smooth-floating-mountain |
-| SEC-14 | Audit log retention policies (prevent unbounded growth, compliance) | 1h | 🟡 Medium | ✅ done | | review:smooth-floating-mountain |
 | PERF-10 | Distributed caching (Redis) for multi-instance deployment | 4h | 🟡 Medium | 📦 | | review:smooth-floating-mountain |
 | PERF-12 | N+1 query monitoring / slow query detection in production (APM) | 2h | 🟡 Medium | 📦 | | review:smooth-floating-mountain |
 | FIN-7 | Fiscal period enforcement (prevent posting to locked periods) | 4h | 🟡 Medium | 📦 | | review:smooth-floating-mountain |

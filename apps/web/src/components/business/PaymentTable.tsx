@@ -308,12 +308,21 @@ function PaymentDetail({
 
             <div className="mt-6 space-y-6">
                 {/* Party Info */}
-                <div className="glass-2 rounded-lg p-4 space-y-2">
-                    <p className="text-micro uppercase tracking-wide text-muted-foreground">
-                        {isCustomer ? 'Client' : 'Vendor'}
-                    </p>
+                <Link
+                    href={isCustomer
+                        ? `/business/clients/${payment.clientId}`
+                        : `/business/vendors/${payment.vendorId}`
+                    }
+                    className="glass-2 rounded-lg p-4 space-y-2 block group hover:border-ak-border-2 transition-all"
+                >
+                    <div className="flex items-center justify-between">
+                        <p className="text-micro uppercase tracking-wide text-muted-foreground">
+                            {isCustomer ? 'Client' : 'Vendor'}
+                        </p>
+                        <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
                     <p className="font-medium">{partyName ?? 'Unknown'}</p>
-                </div>
+                </Link>
 
                 {/* Amount */}
                 <div className="flex items-center justify-between">
@@ -382,9 +391,17 @@ function PaymentDetail({
                                     >
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-sm font-medium">
+                                                <Link
+                                                    href={alloc.invoiceId
+                                                        ? `/business/invoices/${alloc.invoiceId}`
+                                                        : `/business/bills/${alloc.billId}`
+                                                    }
+                                                    className="text-sm font-medium hover:text-primary transition-colors inline-flex items-center gap-1"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
                                                     {docType} {docNumber}
-                                                </p>
+                                                    <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                                                </Link>
                                             </div>
                                             <span className="font-mono font-medium text-sm">
                                                 {formatCurrency(alloc.amount, payment.currency)}

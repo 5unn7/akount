@@ -6,7 +6,7 @@ import { listClients } from '@/lib/api/clients';
 import { Separator } from '@/components/ui/separator';
 import { formatCurrency } from '@/lib/utils/currency';
 import { InvoiceStatusBadge } from '@akount/ui/business';
-import { FileText, User, Calendar, ArrowLeft } from 'lucide-react';
+import { FileText, User, Calendar, ArrowLeft, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { InvoiceActions } from './invoice-actions';
 
@@ -82,10 +82,16 @@ export default async function InvoiceDetailPage({
             {/* Info Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Client */}
-                <div className="glass rounded-xl p-5 space-y-3">
-                    <div className="flex items-center gap-2 text-micro uppercase tracking-wider text-muted-foreground">
-                        <User className="h-3 w-3" />
-                        Client
+                <Link
+                    href={`/business/clients/${invoice.clientId}`}
+                    className="glass rounded-xl p-5 space-y-3 group hover:border-ak-border-2 transition-all hover:-translate-y-px block"
+                >
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-micro uppercase tracking-wider text-muted-foreground">
+                            <User className="h-3 w-3" />
+                            Client
+                        </div>
+                        <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div>
                         <p className="font-medium">{invoice.client.name}</p>
@@ -95,7 +101,7 @@ export default async function InvoiceDetailPage({
                             </p>
                         )}
                     </div>
-                </div>
+                </Link>
 
                 {/* Issue Date */}
                 <div className="glass rounded-xl p-5 space-y-3">
