@@ -1,36 +1,20 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { z } from 'zod';
+import { prisma } from '@akount/db';
 import { aiService } from './services/ai.service';
+import { CategorizationService } from './services/categorization.service';
 import { authMiddleware } from '../../middleware/auth';
 import { tenantMiddleware } from '../../middleware/tenant';
 import { validateBody } from '../../middleware/validation';
 import { withPermission } from '../../middleware/withPermission';
 import { aiChatRateLimitConfig, aiRateLimitConfig } from '../../middleware/rate-limit';
-import { categorizeTransaction } from './services/categorization.service';
-
-// Validation schemas
-const chatBodySchema = z.object({
-  messages: z.array(
-    z.object({
-      role: z.enum(['system', 'user', 'assistant']),
-      content: z.string(),
-    })
-  ),
-  options: z
-    .object({
-      provider: z.string().optional(),
-      model: z.string().optional(),
-      temperature: z.number().optional(),
-      maxTokens: z.number().optional(),
-      systemPrompt: z.string().optional(),
-    })
-    .optional(),
-});
-
-const categorizationBodySchema = z.object({
-  description: z.string(),
-  amount: z.number().int(), // Cents must be an integer
-});
+import {
+  ChatBodySchema,
+  CategorizeSingleSchema,
+  CategorizeBatchSchema,
+  type ChatBodyInput,
+  type CategorizeSingleInput,
+  type CategorizeBatchInput,
+} from './schemas/categorization.schema';
 
 /**
  * AI Domain Routes
@@ -52,11 +36,11 @@ export async function aiRoutes(fastify: FastifyInstance) {
     '/chat',
     {
       ...withPermission('ai', 'chat', 'ACT'),
-      preValidation: [validateBody(chatBodySchema)],
+      preValidation: [validateBody(ChatBodySchema)],
       config: { rateLimit: aiChatRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const { messages, options } = request.body as z.infer<typeof chatBodySchema>;
+      const { messages, options } = request.body as ChatBodyInput;
 
       try {
         const response = await aiService.chat(messages, options);
@@ -72,27 +56,121 @@ export async function aiRoutes(fastify: FastifyInstance) {
   /**
    * POST /api/ai/categorize
    *
-   * AI-powered transaction categorization.
+   * AI-powered single transaction categorization.
+   * Now supports optional entityId for GL account resolution.
    */
   fastify.post(
     '/categorize',
     {
       ...withPermission('ai', 'categorize', 'ACT'),
-      preValidation: [validateBody(categorizationBodySchema)],
+      preValidation: [validateBody(CategorizeSingleSchema)],
       config: { rateLimit: aiRateLimitConfig() },
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
-      const { description, amount } = request.body as z.infer<typeof categorizationBodySchema>;
+      const { description, amount, entityId } = request.body as CategorizeSingleInput;
       const tenantId = request.tenantId!;
 
+      // Validate entityId belongs to this tenant (IDOR prevention)
+      if (entityId) {
+        const entity = await prisma.entity.findFirst({
+          where: { id: entityId, tenantId },
+          select: { id: true },
+        });
+        if (!entity) {
+          return reply.status(404).send({ error: 'Entity not found or access denied' });
+        }
+      }
+
       try {
-        const suggestion = await categorizeTransaction(description, amount, tenantId);
+        const service = new CategorizationService(tenantId, entityId);
+        const suggestion = await service.categorize(description, amount);
+        request.log.info(
+          { categoryId: suggestion.categoryId, confidence: suggestion.confidence },
+          'Categorized transaction'
+        );
         return suggestion;
       } catch (error: unknown) {
         request.log.error({ error }, 'Categorization error');
         const message = error instanceof Error ? error.message : 'Unknown error';
         return reply.status(500).send({ error: message });
       }
+    }
+  );
+
+  /**
+   * POST /api/ai/categorize/batch
+   *
+   * Batch categorization: accepts transaction IDs, fetches them,
+   * runs categorization with GL resolution, and returns per-transaction suggestions.
+   */
+  fastify.post(
+    '/categorize/batch',
+    {
+      ...withPermission('ai', 'categorize', 'ACT'),
+      preValidation: [validateBody(CategorizeBatchSchema)],
+      config: { rateLimit: aiRateLimitConfig() },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { transactionIds, entityId } = request.body as CategorizeBatchInput;
+      const tenantId = request.tenantId!;
+
+      // Validate entityId belongs to this tenant (IDOR prevention)
+      const entity = await prisma.entity.findFirst({
+        where: { id: entityId, tenantId },
+        select: { id: true },
+      });
+      if (!entity) {
+        return reply.status(404).send({ error: 'Entity not found or access denied' });
+      }
+
+      // Fetch transactions with tenant isolation via Account → Entity chain
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          id: { in: transactionIds },
+          deletedAt: null,
+          account: { entity: { tenantId } },
+        },
+        select: {
+          id: true,
+          description: true,
+          amount: true,
+          categoryId: true,
+        },
+      });
+
+      if (transactions.length === 0) {
+        return reply.status(404).send({ error: 'No matching transactions found' });
+      }
+
+      // Run batch categorization with GL resolution
+      const service = new CategorizationService(tenantId, entityId);
+      const suggestions = await service.categorizeBatch(
+        transactions.map((t) => ({ description: t.description, amount: t.amount }))
+      );
+
+      // Pair transaction IDs with their suggestions
+      const results = transactions.map((t, i) => ({
+        transactionId: t.id,
+        existingCategoryId: t.categoryId,
+        suggestion: suggestions[i],
+      }));
+
+      request.log.info(
+        { count: results.length, entityId },
+        'Batch categorized transactions'
+      );
+
+      return {
+        results,
+        summary: {
+          total: transactionIds.length,
+          matched: transactions.length,
+          missing: transactionIds.length - transactions.length,
+          highConfidence: suggestions.filter((s) => s.confidenceTier === 'high').length,
+          mediumConfidence: suggestions.filter((s) => s.confidenceTier === 'medium').length,
+          lowConfidence: suggestions.filter((s) => s.confidenceTier === 'low').length,
+        },
+      };
     }
   );
 
