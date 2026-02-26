@@ -1,9 +1,10 @@
 # AI Auto-Bookkeeper Phase III: AI Financial Advisor — Implementation Plan
 
 **Created:** 2026-02-24
-**Status:** Draft
+**Status:** Ready (amended with multi-agent review findings 2026-02-25)
+**Review:** [Review Plan](../../.claude/plans/zany-wibbling-clarke.md)
 **Brainstorm:** [docs/brainstorms/2026-02-24-ai-autonomous-bookkeeper-brainstorm.md](docs/brainstorms/2026-02-24-ai-autonomous-bookkeeper-brainstorm.md) (Phase 3, lines 121-168)
-**Prerequisites:** [Phase 1 Plan](docs/plans/2026-02-24-ai-auto-bookkeeper-phase1.md) (DEV-185 to DEV-200), [Phase 2 Plan](docs/plans/2026-02-24-ai-auto-bookkeeper-phase2.md)
+**Prerequisites:** [Phase 1 Plan](docs/plans/2026-02-24-ai-auto-bookkeeper-phase1.md) (DEV-185 to DEV-200). Phase 2 is NOT required — Phases 2 and 3 can run in parallel after Phase 1.
 
 ## Context
 
@@ -409,17 +410,19 @@ Sprint 3d:  T12 ← T4, T11              │
 
 ## Progress
 
-- [ ] Task 1: Insight schema enhancement
-- [ ] Task 2: Insight types, constants, Zod schemas
-- [ ] Task 3: Insight CRUD service
-- [ ] Task 4: Insight API routes
-- [ ] Task 5: Insight generator service (orchestrator)
-- [ ] Task 6: Cash flow + overdue analyzers
-- [ ] Task 7: Spending anomaly + duplicate expense analyzers
-- [ ] Task 8: Revenue trend + reconciliation gap analyzers
-- [ ] Task 9: Wire import trigger + generation timer
-- [ ] Task 10: Monthly close readiness service
-- [ ] Task 11: Monthly close API routes
-- [ ] Task 12: Frontend API client + types
-- [ ] Task 13: Insights list page
-- [ ] Task 14: Monthly Close page + dashboard widget
+**Depends on:** Phase 1 complete (DEV-185 to DEV-200), SEC-28 (RBAC). Can run in parallel with Phase 2.
+
+- [ ] Task 1 (DEV-215): Insight schema enhancement + @@unique dedup
+- [ ] Task 2 (DEV-216): Insight types, constants, Zod schemas
+- [ ] Task 3 (DEV-217): Insight CRUD service (upsert dedup, dismiss, snooze)
+- [ ] Task 4 (DEV-218): Insight API routes (replace 501 stubs)
+- [ ] Task 5 (DEV-219): Insight generator service (orchestrator + AIAction bridge)
+- [ ] Task 6 (DEV-220): Cash flow + overdue analyzers (integer cents)
+- [ ] Task 7 (DEV-221): Spending anomaly + duplicate expense analyzers
+- [ ] Task 8 (DEV-222): Revenue trend + reconciliation gap analyzers
+- [ ] Task 9 (DEV-223): Wire import trigger + generation timer (SYSTEM_USER_ID)
+- [ ] Task 10 (DEV-224): Monthly close readiness (atomic, post-lock re-validation, APPROVE RBAC)
+- [ ] Task 11 (DEV-225): Monthly close API routes + tests
+- [ ] Task 12 (DEV-226): Frontend API client + types
+- [ ] Task 13 (DEV-227): Insights list page (tabs, filters, dismiss/snooze)
+- [ ] Task 14 (DEV-228): Monthly Close page + dashboard widget

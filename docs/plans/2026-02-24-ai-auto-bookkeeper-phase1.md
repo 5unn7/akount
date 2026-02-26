@@ -1,7 +1,8 @@
 # AI Auto-Bookkeeper (Phase 1) — Implementation Plan
 
 **Created:** 2026-02-24
-**Status:** Draft
+**Status:** Ready (amended with multi-agent review findings 2026-02-25)
+**Review:** [Review Plan](../../.claude/plans/zany-wibbling-clarke.md)
 **Brainstorm:** [docs/brainstorms/2026-02-24-ai-autonomous-bookkeeper-brainstorm.md](docs/brainstorms/2026-02-24-ai-autonomous-bookkeeper-brainstorm.md)
 
 ## Context
@@ -340,19 +341,21 @@ Sprint 1d:  T13 (parallel) ───┤
 
 ## Progress
 
-- [ ] Task 1: Category defaultGLAccountId FK
-- [ ] Task 2: AI_SUGGESTION enum
-- [ ] Task 3: Enhanced categorization + GL resolution
-- [ ] Task 4: Batch categorize API
-- [ ] Task 5: Claude provider
-- [ ] Task 6: JE suggestion service
-- [ ] Task 7: JE suggestion API + tests
-- [ ] Task 8: AIAction Prisma model
-- [ ] Task 9: AIAction service + error handler
-- [ ] Task 10: Action Feed API routes
-- [ ] Task 11: Wire services to create AIActions
-- [ ] Task 12: Frontend Action Feed UI
-- [ ] Task 13: Batch JE approval endpoint
-- [ ] Task 14: Wire AIAction approval to execution
-- [ ] Task 15: Dashboard AI Action widget
-- [ ] Task 16: Integration test
+**Prerequisites:** SEC-28 (RBAC), INFRA-60 (rate limiting), DEV-202 (GL utility extraction)
+
+- [ ] Task 1 (DEV-185): Category defaultGLAccountId FK + cross-scope FK documentation
+- [ ] Task 2 (DEV-186): AI_SUGGESTION enum
+- [ ] Task 3 (DEV-187): Enhanced categorization + GL resolution + sign-aware fallback
+- [ ] Task 4 (DEV-188): Batch categorize API
+- [ ] Task 5 (DEV-189): Claude provider + ANTHROPIC_API_KEY env validation
+- [ ] Task 6 (DEV-190): JE suggestion service + transfer guard + zero-amount guard
+- [ ] Task 7 (DEV-191): JE suggestion API + tests + JSON payload size limits
+- [ ] Task 8 (DEV-192): AIAction Prisma model (no INSIGHT enum, Int confidence)
+- [ ] Task 9 (DEV-193): AIAction service + error handler + expiresAt validation
+- [ ] Task 10 (DEV-194): Action Feed API routes + entityId required + SEC-28 RBAC
+- [ ] Task 11 (DEV-195): Wire services to create AIActions
+- [ ] Task 12 (DEV-196): Frontend Action Feed UI
+- [ ] Task 13 (DEV-197): Batch JE approval + per-entry $transaction atomicity
+- [ ] Task 14 (DEV-198): Wire AIAction approval + DRAFT JE cleanup on rejection
+- [ ] Task 15 (DEV-199): Dashboard AI Action widget
+- [ ] Task 16 (DEV-200): Integration test

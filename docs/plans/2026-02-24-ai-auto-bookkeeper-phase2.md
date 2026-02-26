@@ -1,7 +1,8 @@
 # AI Auto-Bookkeeper Phase II: Smart Rules Engine — Implementation Plan
 
 **Created:** 2026-02-24
-**Status:** Draft
+**Status:** Ready (amended with multi-agent review findings 2026-02-25)
+**Review:** [Review Plan](../../.claude/plans/zany-wibbling-clarke.md)
 **Brainstorm:** [docs/brainstorms/2026-02-24-ai-autonomous-bookkeeper-brainstorm.md](docs/brainstorms/2026-02-24-ai-autonomous-bookkeeper-brainstorm.md) (Phase 2, lines 79-118)
 **Prerequisite:** [Phase 1 Plan](docs/plans/2026-02-24-ai-auto-bookkeeper-phase1.md) (DEV-185 to DEV-200)
 
@@ -41,7 +42,7 @@ Phase I builds the "AI suggests, you approve" pipeline (categorization → JE dr
   ]
 }
 ```
-Supported fields: `description`, `amount`, `accountId`. Ops: `contains`, `eq`, `gt`, `lt`, `gte`, `lte`, `matches` (regex).
+Supported fields: `description`, `amount`, `accountId`. Ops: `contains`, `eq`, `gt`, `lt`, `gte`, `lte`. **`matches` (regex) removed per security review** — ReDoS risk with no native JS timeout. Add `re2` later if needed.
 
 **D3: Rule Action Schema** — JSON stored in `Rule.action`:
 ```json
@@ -301,15 +302,17 @@ Sprint 2c:  T9  ← T3, T8              │
 
 ## Progress
 
-- [ ] Task 1: Rule service CRUD
-- [ ] Task 2: Rule evaluation engine
-- [ ] Task 3: Rules API routes + schemas
-- [ ] Task 4: Hook rules into autoCategorize pipeline
-- [ ] Task 5: Pattern detection service
-- [ ] Task 6: Rule suggestion generation service
-- [ ] Task 7: Wire correction triggers + executor handler
-- [ ] Task 8: Rule suggestion API routes
-- [ ] Task 9: Frontend API client + types
-- [ ] Task 10: Rules management page
-- [ ] Task 11: Rule condition builder component
-- [ ] Task 12: Rule suggestions in Action Feed
+**Depends on:** Phase 1 complete (DEV-185 to DEV-200). Can run in parallel with Phase 3.
+
+- [ ] Task 1 (DEV-203): Rule service CRUD
+- [ ] Task 2 (DEV-204): Rule evaluation engine (NO regex, field allowlist)
+- [ ] Task 3 (DEV-205): Rules API routes + schemas + JSON size validation
+- [ ] Task 4 (DEV-206): Hook rules into autoCategorize pipeline
+- [ ] Task 5 (DEV-207): Pattern detection service
+- [ ] Task 6 (DEV-208): Rule suggestion generation service
+- [ ] Task 7 (DEV-209): Wire correction triggers + executor handler
+- [ ] Task 8 (DEV-210): Rule suggestion API routes
+- [ ] Task 9 (DEV-211): Frontend API client + types
+- [ ] Task 10 (DEV-212): Rules management page
+- [ ] Task 11 (DEV-213): Rule condition builder component
+- [ ] Task 12 (DEV-214): Rule suggestions in Action Feed
