@@ -195,6 +195,7 @@ Glob "**/*similar*.ts*"
 | Roadmap | `ROADMAP.md` |
 | Task population rules | `.claude/rules/task-population.md` — approval gate, **atomic ID reservation (mandatory)** |
 | Task ID reservation | `node .claude/scripts/reserve-task-ids.js <PREFIX> [count]` — atomic counter, prevents ID collisions |
+| Task auto-archive | `node .claude/scripts/archive-done-tasks.js` — moves done tasks to TASKS-ARCHIVE.md (also runs via hook + end-session) |
 | API patterns | `apps/api/CLAUDE.md` |
 | Frontend patterns | `apps/web/CLAUDE.md` |
 | Database schema | `packages/db/CLAUDE.md` |

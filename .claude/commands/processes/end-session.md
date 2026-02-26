@@ -53,6 +53,24 @@ After: Row removed from Active Now. Task moved to Done (Recent):
 - Skip TASKS.md Active Now updates
 - Just create session file below
 
+### Step 1b: Auto-Archive & Refresh Index (15 seconds)
+
+After updating task statuses, run these two scripts to keep the task file clean:
+
+```bash
+# Archive completed tasks (moves done → TASKS-ARCHIVE.md, keeps last 10 in Recent)
+node .claude/scripts/archive-done-tasks.js
+
+# Refresh the embedded TASK-INDEX for fast agent lookups
+node .claude/scripts/regenerate-task-index.js
+```
+
+This ensures:
+- Completed tasks don't accumulate in TASKS.md (auto-moved to archive)
+- "Recently Completed" stays at a rolling window of 10
+- Header counts stay accurate
+- TASK-INDEX stays fresh for next session's fast task lookups
+
 ---
 
 ### Step 2: Auto-Gather from Git (30 seconds)

@@ -221,3 +221,20 @@
 
 **Total Archived:** 152 completed tasks
 **Period Covered:** 2026-02-17 to 2026-02-24
+| ID | Task | Completed | Source |
+|----|------|-----------|--------|
+| DOC-8 | Update domain status in apps/api/CLAUDE.md (Invoicing marked "stub" but is fully built) | 2026-02-26 | audit:2026-02-20 |
+| UX-79 | Business: Add bill detail page at `/business/bills/[id]` | 2026-02-26 | sitemap:audit |
+| DOC-5 | Add double-entry bookkeeping check to guardrails.md anti-patterns | 2026-02-26 | review:smooth-floating-mountain |
+| DOC-6 | Update version dates across CLAUDE.md files | 2026-02-26 | review:smooth-floating-mountain |
+| UX-81 | Business: Add payment detail page `/business/payments/[id]` | 2026-02-26 | sitemap:audit |
+| MKT-3 | Install 3D dependencies (`@react-three/fiber`, `@react-three/drei`, `three`) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-4 | Create hero section with 3D orb and parallax effect | 2026-02-26 | plan:marketing-landing-page |
+| MKT-5 | Create problem statement section (3 pain point cards) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-6 | Create solution pillars section (3 GlowCard components) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-7 | Create 3D feature showcase (interactive card grid) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-8 | Create stats/social proof section (animated counters) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-9 | Create final CTA section (gradient background, glass container) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-10 | Create landing page layout (minimal nav + footer) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-11 | Replace root page with landing (remove redirect) | 2026-02-26 | plan:marketing-landing-page |
+| MKT-12 | Add scroll animations and performance optimization (Lighthouse >90) | 2026-02-26 | plan:marketing-landing-page |

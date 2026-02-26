@@ -160,6 +160,34 @@ Agent B: reads TASKS.md → sees SEC-19 → assigns SEC-20  ← COLLISION
 - Lock released after write
 - No collisions possible
 
+## Auto-Archive (Completed Task Cleanup)
+
+Completed tasks are automatically moved from TASKS.md to TASKS-ARCHIVE.md to prevent bloat.
+
+**Standalone script:**
+```bash
+node .claude/scripts/archive-done-tasks.js              # execute
+node .claude/scripts/archive-done-tasks.js --dry-run     # preview changes
+node .claude/scripts/archive-done-tasks.js --keep-recent=5  # custom rolling window
+```
+
+**Detection rules** (a task is "done" if ANY match):
+1. Strikethrough ID in active table: `~~SEC-24~~`
+2. Status column contains `✅` or `done`
+3. Listed in "Recently Completed" section (overflow beyond keep-recent limit)
+4. ID already exists in TASKS-ARCHIVE.md but still in active table
+
+**When it runs automatically:**
+- `/processes:end-session` — Step 1b runs archive + index refresh
+- `task-complete-sync.sh` hook — triggers when Recently Completed exceeds 10 entries
+- `regenerate-task-index.js --archive` — combined archive + index refresh
+
+**What it does:**
+1. Removes done tasks from active tables in TASKS.md
+2. Trims "Recently Completed" to rolling window (default: 10)
+3. Prepends archived tasks to TASKS-ARCHIVE.md
+4. Recounts header stats (active tasks, priority, status distribution)
+
 ## Enrichment Guidelines (Reduce Hallucination Risk)
 
 When creating tasks, include metadata that helps agents execute safely:

@@ -109,6 +109,40 @@ if [ -n "$CLAUDE_PROJECT_DIR" ]; then
             echo "⚠️ Index regeneration failed (non-blocking)" >&2
         fi
     fi
+
+    # --- Auto-archive if Recently Completed has >10 tasks ---
+    if [ -f "$TASKS_FILE" ]; then
+        RECENT_COUNT=$(node -e "
+            const fs = require('fs');
+            const c = fs.readFileSync(process.argv[1], 'utf8');
+            const lines = c.split('\n');
+            let inSection = false, count = 0;
+            for (const l of lines) {
+                if (l.includes('## Recently Completed')) { inSection = true; continue; }
+                if (inSection && l.startsWith('## ')) break;
+                if (inSection && l.startsWith('---')) break;
+                if (inSection && l.match(/^\|.*[A-Z]+-[0-9]/)) count++;
+            }
+            console.log(count);
+        " "$TASKS_FILE" 2>/dev/null || echo 0)
+
+        if [ "$RECENT_COUNT" -gt 10 ]; then
+            echo "📦 Recently Completed has $RECENT_COUNT tasks (limit: 10) — auto-archiving..." >&2
+
+            if node "$CLAUDE_PROJECT_DIR/.claude/scripts/archive-done-tasks.js" 2>&1; then
+                echo "✅ Archived completed tasks" >&2
+
+                # Stage updated files
+                git add "$TASKS_FILE" 2>/dev/null
+                ARCHIVE_FILE="$CLAUDE_PROJECT_DIR/TASKS-ARCHIVE.md"
+                if [ -f "$ARCHIVE_FILE" ]; then
+                    git add "$ARCHIVE_FILE" 2>/dev/null
+                fi
+            else
+                echo "⚠️ Auto-archive failed (non-blocking)" >&2
+            fi
+        fi
+    fi
 fi
 
 exit 0
