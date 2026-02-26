@@ -7,6 +7,7 @@ import { prisma } from '@akount/db';
 import { env } from './lib/env';
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
+import { csrfProtection, getCsrfToken } from './middleware/csrf';
 // Validation middleware available for routes (removed debug endpoints for security)
 import { HealthService } from './domains/system/services/health.service';
 import { UserService, UserNotFoundError } from './domains/system/services/user.service';
@@ -113,6 +114,16 @@ server.register(multipart, {
         fileSize: 10 * 1024 * 1024, // 10MB max file size
         files: 1, // Only allow 1 file at a time for now (phase 1)
     },
+});
+
+// SEC-40: CSRF protection for state-changing endpoints
+// Protects POST/PUT/PATCH/DELETE from Cross-Site Request Forgery
+server.register(csrfProtection);
+
+// CSRF token endpoint - Client fetches token before making state-changing requests
+server.get('/api/csrf-token', async (request: FastifyRequest, reply: FastifyReply) => {
+    const token = getCsrfToken(request);
+    return reply.status(200).send({ token });
 });
 
 // Register domain routes with prefixes (Phase 4 restructure)

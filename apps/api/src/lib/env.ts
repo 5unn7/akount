@@ -21,6 +21,10 @@ const envSchema = z.object({
     CLERK_SECRET_KEY: z.string().min(1, 'CLERK_SECRET_KEY is required'),
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1, 'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is required'),
 
+    // Cookie secret for signing cookies (CSRF protection)
+    // Falls back to CLERK_SECRET_KEY if not set
+    COOKIE_SECRET: z.string().optional(),
+
     // CORS Configuration
     CORS_ORIGINS: z.string().optional().default('http://localhost:3000'),
 
@@ -48,6 +52,13 @@ const envSchema = z.object({
     // File Scanning (optional — ClamAV daemon for virus scanning)
     CLAMAV_HOST: z.string().optional(),
     CLAMAV_PORT: z.coerce.number().positive().int().optional().default(3310),
+
+    // Redis & Job Queues (BullMQ) — optional in dev (memory fallback), required in production
+    REDIS_HOST: z.string().optional().default('localhost'),
+    REDIS_PORT: z.coerce.number().positive().int().optional().default(6379),
+    REDIS_PASSWORD: z.string().optional(),
+    REDIS_TLS_ENABLED: z.coerce.boolean().optional().default(false),
+    REDIS_DB: z.coerce.number().int().min(0).max(15).optional().default(0),
 
     // Flinks Bank Connection — required in production, optional in dev (demo mode)
     FLINKS_INSTANCE: z.string().optional(),       // e.g. "toolbox"
