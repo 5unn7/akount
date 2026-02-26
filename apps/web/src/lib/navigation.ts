@@ -286,6 +286,11 @@ export const navigationDomains: NavDomain[] = [
         icon: History,
         href: '/insights/history',
       },
+      {
+        label: 'Actions',
+        icon: Workflow,
+        href: '/insights/actions',
+      },
     ],
   },
 

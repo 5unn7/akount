@@ -92,6 +92,52 @@ export interface AIRuleSuggestion {
 }
 
 // ============================================================================
+// AI Action Types
+// ============================================================================
+
+export type AIActionStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'MODIFIED' | 'EXPIRED';
+export type AIActionType = 'CATEGORIZATION' | 'JE_DRAFT' | 'RULE_SUGGESTION' | 'ALERT';
+export type AIActionPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+
+export interface AIAction {
+  id: string;
+  entityId: string;
+  type: AIActionType;
+  title: string;
+  description: string | null;
+  status: AIActionStatus;
+  confidence: number;
+  priority: AIActionPriority;
+  payload: Record<string, unknown>;
+  aiProvider: string;
+  aiModel: string | null;
+  metadata: Record<string, unknown> | null;
+  reviewedAt: string | null;
+  reviewedBy: string | null;
+  expiresAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIActionListResponse {
+  actions: AIAction[];
+  total: number;
+}
+
+export interface AIActionStats {
+  pending: number;
+  approved: number;
+  rejected: number;
+  expired: number;
+  pendingByType: Record<string, number>;
+}
+
+export interface AIActionBatchResult {
+  succeeded: string[];
+  failed: Array<{ id: string; reason: string }>;
+}
+
+// ============================================================================
 // Request/Response Interfaces
 // ============================================================================
 
@@ -193,5 +239,103 @@ export async function getRecommendations(): Promise<AIRecommendation[]> {
 export async function suggestRules(): Promise<AIRuleSuggestion[]> {
   return apiClient<AIRuleSuggestion[]>('/api/ai/rules/suggest', {
     method: 'POST',
+  });
+}
+
+// ============================================================================
+// AI Action API Functions
+// ============================================================================
+
+/**
+ * List AI actions with optional filters
+ *
+ * GET /api/ai/actions
+ */
+export async function listAIActions(params: {
+  entityId: string;
+  status?: AIActionStatus;
+  type?: AIActionType;
+  limit?: number;
+  offset?: number;
+}): Promise<AIActionListResponse> {
+  const searchParams = new URLSearchParams({ entityId: params.entityId });
+  if (params.status) searchParams.set('status', params.status);
+  if (params.type) searchParams.set('type', params.type);
+  if (params.limit) searchParams.set('limit', String(params.limit));
+  if (params.offset) searchParams.set('offset', String(params.offset));
+
+  return apiClient<AIActionListResponse>(
+    `/api/ai/actions?${searchParams.toString()}`
+  );
+}
+
+/**
+ * Get AI action dashboard stats
+ *
+ * GET /api/ai/actions/stats
+ */
+export async function getAIActionStats(entityId: string): Promise<AIActionStats> {
+  return apiClient<AIActionStats>(
+    `/api/ai/actions/stats?entityId=${encodeURIComponent(entityId)}`
+  );
+}
+
+/**
+ * Approve a single AI action
+ *
+ * POST /api/ai/actions/:actionId/approve
+ */
+export async function approveAIAction(
+  actionId: string,
+  entityId: string
+): Promise<AIAction> {
+  return apiClient<AIAction>(`/api/ai/actions/${actionId}/approve`, {
+    method: 'POST',
+    body: JSON.stringify({ entityId }),
+  });
+}
+
+/**
+ * Reject a single AI action
+ *
+ * POST /api/ai/actions/:actionId/reject
+ */
+export async function rejectAIAction(
+  actionId: string,
+  entityId: string
+): Promise<AIAction> {
+  return apiClient<AIAction>(`/api/ai/actions/${actionId}/reject`, {
+    method: 'POST',
+    body: JSON.stringify({ entityId }),
+  });
+}
+
+/**
+ * Batch approve AI actions
+ *
+ * POST /api/ai/actions/batch/approve
+ */
+export async function batchApproveAIActions(
+  entityId: string,
+  actionIds: string[]
+): Promise<AIActionBatchResult> {
+  return apiClient<AIActionBatchResult>('/api/ai/actions/batch/approve', {
+    method: 'POST',
+    body: JSON.stringify({ entityId, actionIds }),
+  });
+}
+
+/**
+ * Batch reject AI actions
+ *
+ * POST /api/ai/actions/batch/reject
+ */
+export async function batchRejectAIActions(
+  entityId: string,
+  actionIds: string[]
+): Promise<AIActionBatchResult> {
+  return apiClient<AIActionBatchResult>('/api/ai/actions/batch/reject', {
+    method: 'POST',
+    body: JSON.stringify({ entityId, actionIds }),
   });
 }
