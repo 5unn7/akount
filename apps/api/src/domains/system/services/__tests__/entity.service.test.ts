@@ -1,35 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EntityService } from '../entity.service';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
 
 // Mock audit log
 vi.mock('../../../../lib/audit', () => ({
   createAuditLog: vi.fn(),
 }));
 
-// Mock Prisma client
-vi.mock('@akount/db', () => ({
-  prisma: {
-    entity: {
-      findMany: vi.fn(),
-      findFirst: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      count: vi.fn(),
-    },
-    account: { count: vi.fn() },
-    invoice: { count: vi.fn() },
-    bill: { count: vi.fn() },
-    $transaction: vi.fn((fn: (tx: unknown) => Promise<unknown>) =>
-      fn({
-        entity: {
-          update: vi.fn(),
-        },
-      })
-    ),
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
-import { prisma } from '@akount/db';
 import { createAuditLog } from '../../../../lib/audit';
 
 const TENANT_ID = 'tenant-abc-123';
@@ -65,6 +51,7 @@ describe('EntityService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
     service = new EntityService(TENANT_ID, USER_ID);
   });
 
@@ -75,12 +62,12 @@ describe('EntityService', () => {
         mockEntity({ id: 'entity-2', name: 'Company B' }),
       ];
 
-      vi.mocked(prisma.entity.findMany).mockResolvedValueOnce(entities as never);
+      mockPrisma.entity.findMany.mockResolvedValueOnce(entities);
 
       const result = await service.listEntities();
 
       expect(result).toEqual(entities);
-      expect(prisma.entity.findMany).toHaveBeenCalledWith({
+      expect(mockPrisma.entity.findMany).toHaveBeenCalledWith({
         where: { tenantId: TENANT_ID },
         select: {
           id: true,
@@ -108,16 +95,16 @@ describe('EntityService', () => {
     });
 
     it('should filter by status when provided', async () => {
-      vi.mocked(prisma.entity.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.entity.findMany.mockResolvedValueOnce([]);
 
       await service.listEntities({ status: 'ACTIVE' });
 
-      const callArgs = vi.mocked(prisma.entity.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.entity.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toEqual({ tenantId: TENANT_ID, status: 'ACTIVE' });
     });
 
     it('should return empty array when no entities exist', async () => {
-      vi.mocked(prisma.entity.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.entity.findMany.mockResolvedValueOnce([]);
 
       const result = await service.listEntities();
 
@@ -125,20 +112,20 @@ describe('EntityService', () => {
     });
 
     it('should order entities by name ascending', async () => {
-      vi.mocked(prisma.entity.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.entity.findMany.mockResolvedValueOnce([]);
 
       await service.listEntities();
 
-      const callArgs = vi.mocked(prisma.entity.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.entity.findMany.mock.calls[0][0]!;
       expect(callArgs.orderBy).toEqual({ name: 'asc' });
     });
 
     it('should not include entities from other tenants', async () => {
-      vi.mocked(prisma.entity.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.entity.findMany.mockResolvedValueOnce([]);
 
       await service.listEntities();
 
-      const callArgs = vi.mocked(prisma.entity.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.entity.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toMatchObject({ tenantId: TENANT_ID });
     });
   });
@@ -159,12 +146,12 @@ describe('EntityService', () => {
         },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
 
       const result = await service.getEntityDetail('entity-1');
 
       expect(result).toEqual(entity);
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.entity.findFirst).toHaveBeenCalledWith({
         where: { id: 'entity-1', tenantId: TENANT_ID },
         include: {
           _count: {
@@ -184,7 +171,7 @@ describe('EntityService', () => {
     });
 
     it('should return null when entity not found', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.getEntityDetail('nonexistent');
 
@@ -199,7 +186,7 @@ describe('EntityService', () => {
         _count: { accounts: 5, glAccounts: 120, clients: 15, vendors: 8 },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
 
       const result = await service.getEntity('entity-1');
 
@@ -207,11 +194,11 @@ describe('EntityService', () => {
     });
 
     it('should enforce tenant isolation', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       await service.getEntity('entity-other');
 
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith(
+      expect(mockPrisma.entity.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({ tenantId: TENANT_ID }),
         })
@@ -229,7 +216,7 @@ describe('EntityService', () => {
         functionalCurrency: 'CAD',
       });
 
-      vi.mocked(prisma.entity.create).mockResolvedValueOnce(newEntity as never);
+      mockPrisma.entity.create.mockResolvedValueOnce(newEntity);
 
       const result = await service.createEntity(USER_ID, {
         name: 'New Company',
@@ -239,7 +226,7 @@ describe('EntityService', () => {
       });
 
       expect(result).toEqual(newEntity);
-      expect(prisma.entity.create).toHaveBeenCalledWith({
+      expect(mockPrisma.entity.create).toHaveBeenCalledWith({
         data: {
           tenantId: TENANT_ID,
           name: 'New Company',
@@ -264,7 +251,7 @@ describe('EntityService', () => {
     });
 
     it('should default reportingCurrency to functionalCurrency', async () => {
-      vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity() as never);
+      mockPrisma.entity.create.mockResolvedValueOnce(mockEntity());
 
       await service.createEntity(USER_ID, {
         name: 'Test Co',
@@ -273,12 +260,12 @@ describe('EntityService', () => {
         functionalCurrency: 'USD',
       });
 
-      const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.entity.create.mock.calls[0][0]!;
       expect(createArgs.data.reportingCurrency).toBe('USD');
     });
 
     it('should use custom reportingCurrency when provided', async () => {
-      vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity() as never);
+      mockPrisma.entity.create.mockResolvedValueOnce(mockEntity());
 
       await service.createEntity(USER_ID, {
         name: 'Test Co',
@@ -288,13 +275,13 @@ describe('EntityService', () => {
         reportingCurrency: 'USD',
       });
 
-      const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.entity.create.mock.calls[0][0]!;
       expect(createArgs.data.functionalCurrency).toBe('CAD');
       expect(createArgs.data.reportingCurrency).toBe('USD');
     });
 
     it('should default fiscalYearStart to 1 (January)', async () => {
-      vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity() as never);
+      mockPrisma.entity.create.mockResolvedValueOnce(mockEntity());
 
       await service.createEntity(USER_ID, {
         name: 'Test Co',
@@ -303,12 +290,12 @@ describe('EntityService', () => {
         functionalCurrency: 'USD',
       });
 
-      const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.entity.create.mock.calls[0][0]!;
       expect(createArgs.data.fiscalYearStart).toBe(1);
     });
 
     it('should include entitySubType when provided', async () => {
-      vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity() as never);
+      mockPrisma.entity.create.mockResolvedValueOnce(mockEntity());
 
       await service.createEntity(USER_ID, {
         name: 'Test Co',
@@ -318,12 +305,12 @@ describe('EntityService', () => {
         entitySubType: 'S_CORP',
       });
 
-      const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.entity.create.mock.calls[0][0]!;
       expect(createArgs.data.entitySubType).toBe('S_CORP');
     });
 
     it('should set tenantId from service constructor', async () => {
-      vi.mocked(prisma.entity.create).mockResolvedValueOnce(mockEntity() as never);
+      mockPrisma.entity.create.mockResolvedValueOnce(mockEntity());
 
       await service.createEntity(USER_ID, {
         name: 'Test Co',
@@ -332,7 +319,7 @@ describe('EntityService', () => {
         functionalCurrency: 'USD',
       });
 
-      const createArgs = vi.mocked(prisma.entity.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.entity.create.mock.calls[0][0]!;
       expect(createArgs.data.tenantId).toBe(TENANT_ID);
     });
   });
@@ -342,13 +329,13 @@ describe('EntityService', () => {
       const existing = mockEntity({ id: 'entity-1', name: 'Old Name' });
       const updated = mockEntity({ id: 'entity-1', name: 'New Name' });
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.entity.update).mockResolvedValueOnce(updated as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.entity.update.mockResolvedValueOnce(updated);
 
       const result = await service.updateEntity('entity-1', { name: 'New Name' });
 
       expect(result).toEqual(updated);
-      expect(prisma.entity.update).toHaveBeenCalledWith({
+      expect(mockPrisma.entity.update).toHaveBeenCalledWith({
         where: { id: 'entity-1' },
         data: { name: 'New Name' },
       });
@@ -362,31 +349,31 @@ describe('EntityService', () => {
     });
 
     it('should return null when entity not found', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.updateEntity('nonexistent', { name: 'New Name' });
 
       expect(result).toBeNull();
-      expect(prisma.entity.update).not.toHaveBeenCalled();
+      expect(mockPrisma.entity.update).not.toHaveBeenCalled();
     });
 
     it('should enforce tenant isolation before update', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       await service.updateEntity('entity-other-tenant', { name: 'Hacked' });
 
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.entity.findFirst).toHaveBeenCalledWith({
         where: { id: 'entity-other-tenant', tenantId: TENANT_ID },
       });
-      expect(prisma.entity.update).not.toHaveBeenCalled();
+      expect(mockPrisma.entity.update).not.toHaveBeenCalled();
     });
 
     it('should accept expanded fields (taxId, address, entitySubType)', async () => {
       const existing = mockEntity();
       const updated = mockEntity({ taxId: '12-3456789', entitySubType: 'S_CORP' });
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.entity.update).mockResolvedValueOnce(updated as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.entity.update.mockResolvedValueOnce(updated);
 
       await service.updateEntity('entity-1', {
         taxId: '12-3456789',
@@ -394,7 +381,7 @@ describe('EntityService', () => {
         address: '123 Main St',
       });
 
-      expect(prisma.entity.update).toHaveBeenCalledWith({
+      expect(mockPrisma.entity.update).toHaveBeenCalledWith({
         where: { id: 'entity-1' },
         data: { taxId: '12-3456789', entitySubType: 'S_CORP', address: '123 Main St' },
       });
@@ -408,11 +395,11 @@ describe('EntityService', () => {
         _count: { accounts: 0, invoices: 0, bills: 0 },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never); // 2 active entities
-      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.entity.count.mockResolvedValueOnce(2); // 2 active entities
+      mockPrisma.account.count.mockResolvedValueOnce(0);
+      mockPrisma.invoice.count.mockResolvedValueOnce(0);
+      mockPrisma.bill.count.mockResolvedValueOnce(0);
 
       const result = await service.archiveEntity('entity-1');
 
@@ -432,11 +419,11 @@ describe('EntityService', () => {
         _count: { accounts: 3, invoices: 0, bills: 0 },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never);
-      vi.mocked(prisma.account.count).mockResolvedValueOnce(3 as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.entity.count.mockResolvedValueOnce(2);
+      mockPrisma.account.count.mockResolvedValueOnce(3);
+      mockPrisma.invoice.count.mockResolvedValueOnce(0);
+      mockPrisma.bill.count.mockResolvedValueOnce(0);
 
       const result = await service.archiveEntity('entity-1');
 
@@ -454,11 +441,11 @@ describe('EntityService', () => {
         _count: { accounts: 0, invoices: 2, bills: 0 },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never);
-      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(2 as never);
-      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.entity.count.mockResolvedValueOnce(2);
+      mockPrisma.account.count.mockResolvedValueOnce(0);
+      mockPrisma.invoice.count.mockResolvedValueOnce(2);
+      mockPrisma.bill.count.mockResolvedValueOnce(0);
 
       const result = await service.archiveEntity('entity-1');
 
@@ -476,11 +463,11 @@ describe('EntityService', () => {
         _count: { accounts: 0, invoices: 0, bills: 1 },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.entity.count).mockResolvedValueOnce(2 as never);
-      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.bill.count).mockResolvedValueOnce(1 as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.entity.count.mockResolvedValueOnce(2);
+      mockPrisma.account.count.mockResolvedValueOnce(0);
+      mockPrisma.invoice.count.mockResolvedValueOnce(0);
+      mockPrisma.bill.count.mockResolvedValueOnce(1);
 
       const result = await service.archiveEntity('entity-1');
 
@@ -498,11 +485,11 @@ describe('EntityService', () => {
         _count: { accounts: 0, invoices: 0, bills: 0 },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.entity.count).mockResolvedValueOnce(1 as never); // Only 1 active
-      vi.mocked(prisma.account.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.bill.count).mockResolvedValueOnce(0 as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.entity.count.mockResolvedValueOnce(1); // Only 1 active
+      mockPrisma.account.count.mockResolvedValueOnce(0);
+      mockPrisma.invoice.count.mockResolvedValueOnce(0);
+      mockPrisma.bill.count.mockResolvedValueOnce(0);
 
       const result = await service.archiveEntity('entity-1');
 
@@ -520,11 +507,11 @@ describe('EntityService', () => {
         _count: { accounts: 2, invoices: 3, bills: 1 },
       };
 
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(prisma.entity.count).mockResolvedValueOnce(1 as never);
-      vi.mocked(prisma.account.count).mockResolvedValueOnce(2 as never);
-      vi.mocked(prisma.invoice.count).mockResolvedValueOnce(3 as never);
-      vi.mocked(prisma.bill.count).mockResolvedValueOnce(1 as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(entity);
+      mockPrisma.entity.count.mockResolvedValueOnce(1);
+      mockPrisma.account.count.mockResolvedValueOnce(2);
+      mockPrisma.invoice.count.mockResolvedValueOnce(3);
+      mockPrisma.bill.count.mockResolvedValueOnce(1);
 
       const result = await service.archiveEntity('entity-1');
 
@@ -535,7 +522,7 @@ describe('EntityService', () => {
     });
 
     it('should return error when entity not found', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.archiveEntity('nonexistent');
 
@@ -550,21 +537,21 @@ describe('EntityService', () => {
     it('should not list entities from other tenants', async () => {
       const otherService = new EntityService(OTHER_TENANT_ID);
 
-      vi.mocked(prisma.entity.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.entity.findMany.mockResolvedValueOnce([]);
 
       await otherService.listEntities();
 
-      const callArgs = vi.mocked(prisma.entity.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.entity.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toMatchObject({ tenantId: OTHER_TENANT_ID });
     });
 
     it('should not allow cross-tenant entity access via getEntity', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.getEntity('entity-other-tenant');
 
       expect(result).toBeNull();
-      expect(prisma.entity.findFirst).toHaveBeenCalledWith(
+      expect(mockPrisma.entity.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({ tenantId: TENANT_ID }),
         })
@@ -572,14 +559,14 @@ describe('EntityService', () => {
     });
 
     it('should not allow cross-tenant entity updates', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.updateEntity('entity-other-tenant', {
         name: 'Hacked Name',
       });
 
       expect(result).toBeNull();
-      expect(prisma.entity.update).not.toHaveBeenCalled();
+      expect(mockPrisma.entity.update).not.toHaveBeenCalled();
     });
   });
 });

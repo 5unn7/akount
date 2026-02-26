@@ -1,23 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ImportService } from '../import.service';
 import type { ParsedTransaction } from '../../../../schemas/import';
+import { mockPrisma, rewirePrismaMock, TEST_IDS } from '../../../../test-utils';
 
-// Mock dependencies
-vi.mock('@akount/db', () => ({
-  prisma: {
-    account: {
-      findFirst: vi.fn(),
-    },
-    importBatch: {
-      create: vi.fn(),
-      update: vi.fn(),
-      findFirst: vi.fn(),
-      findMany: vi.fn(),
-    },
-    transaction: {
-      createMany: vi.fn(),
-    },
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
 vi.mock('../parser.service', () => ({
@@ -30,7 +22,6 @@ vi.mock('../duplication.service', () => ({
   findInternalDuplicates: vi.fn(),
 }));
 
-import { prisma } from '@akount/db';
 import { parseCSV, parsePDF } from '../parser.service';
 import { findDuplicates, findInternalDuplicates } from '../duplication.service';
 
@@ -94,6 +85,7 @@ describe('ImportService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
     service = new ImportService(TENANT_ID);
     // Default: no internal duplicates
     vi.mocked(findInternalDuplicates).mockReturnValue(new Map());
@@ -104,10 +96,10 @@ describe('ImportService', () => {
 
     it('should create import batch and transactions from CSV', async () => {
       // Mock account lookup
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
 
       // Mock import batch creation
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(mockImportBatch() as never);
+      mockPrisma.importBatch.create.mockResolvedValueOnce(mockImportBatch());
 
       // Mock CSV parsing
       const parsedTxns = [
@@ -126,11 +118,11 @@ describe('ImportService', () => {
       ]);
 
       // Mock transaction creation
-      vi.mocked(prisma.transaction.createMany).mockResolvedValueOnce({ count: 2 } as never);
+      mockPrisma.transaction.createMany.mockResolvedValueOnce({ count: 2 });
 
       // Mock batch update
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
-        mockImportBatch({ status: 'PROCESSED' }) as never
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
+        mockImportBatch({ status: 'PROCESSED' })
       );
 
       const result = await service.createCSVImport({
@@ -139,7 +131,7 @@ describe('ImportService', () => {
       });
 
       // Verify account was checked
-      expect(prisma.account.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.account.findFirst).toHaveBeenCalledWith({
         where: {
           id: ACCOUNT_ID,
           deletedAt: null,
@@ -155,7 +147,7 @@ describe('ImportService', () => {
       expect(findDuplicates).toHaveBeenCalledWith(parsedTxns, ACCOUNT_ID);
 
       // Verify transactions were created
-      expect(prisma.transaction.createMany).toHaveBeenCalledWith({
+      expect(mockPrisma.transaction.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({
             accountId: ACCOUNT_ID,
@@ -175,7 +167,7 @@ describe('ImportService', () => {
       });
 
       // Verify batch was updated to PROCESSED
-      expect(prisma.importBatch.update).toHaveBeenCalledWith({
+      expect(mockPrisma.importBatch.update).toHaveBeenCalledWith({
         where: { id: IMPORT_BATCH_ID },
         data: { status: 'PROCESSED' },
       });
@@ -199,7 +191,7 @@ describe('ImportService', () => {
     });
 
     it('should throw error if account not found (tenant isolation)', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         service.createCSVImport({
@@ -210,14 +202,14 @@ describe('ImportService', () => {
     });
 
     it('should handle empty CSV file (0 transactions)', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(mockImportBatch() as never);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
+      mockPrisma.importBatch.create.mockResolvedValueOnce(mockImportBatch());
       vi.mocked(parseCSV).mockReturnValueOnce({
         transactions: [],
         columns: ['date', 'description', 'amount'],
       });
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
-        mockImportBatch({ status: 'FAILED', error: 'CSV file contains no valid transactions' }) as never
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
+        mockImportBatch({ status: 'FAILED', error: 'CSV file contains no valid transactions' })
       );
 
       const result = await service.createCSVImport({
@@ -232,8 +224,8 @@ describe('ImportService', () => {
     });
 
     it('should skip duplicate transactions', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(mockImportBatch() as never);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
+      mockPrisma.importBatch.create.mockResolvedValueOnce(mockImportBatch());
 
       const parsedTxns = [
         mockParsedTransaction({ tempId: 'temp-1', amount: 550 }),
@@ -252,9 +244,9 @@ describe('ImportService', () => {
         mockDuplicateResult('temp-3', false),
       ]);
 
-      vi.mocked(prisma.transaction.createMany).mockResolvedValueOnce({ count: 2 } as never);
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
-        mockImportBatch({ status: 'PROCESSED' }) as never
+      mockPrisma.transaction.createMany.mockResolvedValueOnce({ count: 2 });
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
+        mockImportBatch({ status: 'PROCESSED' })
       );
 
       const result = await service.createCSVImport({
@@ -263,7 +255,7 @@ describe('ImportService', () => {
       });
 
       // Should only create 2 transactions (temp-1 and temp-3)
-      expect(prisma.transaction.createMany).toHaveBeenCalledWith({
+      expect(mockPrisma.transaction.createMany).toHaveBeenCalledWith({
         data: expect.arrayContaining([
           expect.objectContaining({ amount: 550 }),
           expect.objectContaining({ amount: 800 }),
@@ -276,8 +268,8 @@ describe('ImportService', () => {
     });
 
     it('should handle all transactions being duplicates', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(mockImportBatch() as never);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
+      mockPrisma.importBatch.create.mockResolvedValueOnce(mockImportBatch());
 
       const parsedTxns = [
         mockParsedTransaction({ tempId: 'temp-1', amount: 550 }),
@@ -294,8 +286,8 @@ describe('ImportService', () => {
         mockDuplicateResult('temp-2', true),
       ]);
 
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
-        mockImportBatch({ status: 'PROCESSED' }) as never
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
+        mockImportBatch({ status: 'PROCESSED' })
       );
 
       const result = await service.createCSVImport({
@@ -304,7 +296,7 @@ describe('ImportService', () => {
       });
 
       // Should not call createMany if all are duplicates
-      expect(prisma.transaction.createMany).not.toHaveBeenCalled();
+      expect(mockPrisma.transaction.createMany).not.toHaveBeenCalled();
 
       expect(result.stats.total).toBe(2);
       expect(result.stats.imported).toBe(0);
@@ -312,13 +304,13 @@ describe('ImportService', () => {
     });
 
     it('should handle CSV parsing errors', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(mockImportBatch() as never);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
+      mockPrisma.importBatch.create.mockResolvedValueOnce(mockImportBatch());
       vi.mocked(parseCSV).mockImplementation(() => {
         throw new Error('Invalid CSV format');
       });
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
-        mockImportBatch({ status: 'FAILED', error: 'Invalid CSV format' }) as never
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
+        mockImportBatch({ status: 'FAILED', error: 'Invalid CSV format' })
       );
 
       await expect(
@@ -329,7 +321,7 @@ describe('ImportService', () => {
       ).rejects.toThrow('Invalid CSV format');
 
       // Verify batch was updated to FAILED
-      expect(prisma.importBatch.update).toHaveBeenCalledWith({
+      expect(mockPrisma.importBatch.update).toHaveBeenCalledWith({
         where: { id: IMPORT_BATCH_ID },
         data: {
           status: 'FAILED',
@@ -343,9 +335,9 @@ describe('ImportService', () => {
     const pdfBuffer = Buffer.from('fake-pdf-content');
 
     it('should create import batch and transactions from PDF', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(
-        mockImportBatch({ sourceType: 'PDF' }) as never
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
+      mockPrisma.importBatch.create.mockResolvedValueOnce(
+        mockImportBatch({ sourceType: 'PDF' })
       );
 
       const parsedTxns = [mockParsedTransaction({ tempId: 'temp-1', amount: 550 })];
@@ -354,9 +346,9 @@ describe('ImportService', () => {
       });
 
       vi.mocked(findDuplicates).mockResolvedValueOnce([mockDuplicateResult('temp-1', false)]);
-      vi.mocked(prisma.transaction.createMany).mockResolvedValueOnce({ count: 1 } as never);
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
-        mockImportBatch({ status: 'PROCESSED' }) as never
+      mockPrisma.transaction.createMany.mockResolvedValueOnce({ count: 1 });
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
+        mockImportBatch({ status: 'PROCESSED' })
       );
 
       const result = await service.createPDFImport({
@@ -372,19 +364,19 @@ describe('ImportService', () => {
     });
 
     it('should handle empty PDF file (0 transactions)', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(
-        mockImportBatch({ sourceType: 'PDF' }) as never
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
+      mockPrisma.importBatch.create.mockResolvedValueOnce(
+        mockImportBatch({ sourceType: 'PDF' })
       );
       vi.mocked(parsePDF).mockResolvedValueOnce({
         transactions: [],
       });
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
         mockImportBatch({
           sourceType: 'PDF',
           status: 'FAILED',
           error: 'PDF file contains no valid transactions',
-        }) as never
+        })
       );
 
       const result = await service.createPDFImport({
@@ -397,13 +389,13 @@ describe('ImportService', () => {
     });
 
     it('should handle PDF parsing errors', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(mockAccount() as never);
-      vi.mocked(prisma.importBatch.create).mockResolvedValueOnce(
-        mockImportBatch({ sourceType: 'PDF' }) as never
+      mockPrisma.account.findFirst.mockResolvedValueOnce(mockAccount());
+      mockPrisma.importBatch.create.mockResolvedValueOnce(
+        mockImportBatch({ sourceType: 'PDF' })
       );
       vi.mocked(parsePDF).mockRejectedValueOnce(new Error('PDF is password-protected'));
-      vi.mocked(prisma.importBatch.update).mockResolvedValueOnce(
-        mockImportBatch({ status: 'FAILED', error: 'PDF is password-protected' }) as never
+      mockPrisma.importBatch.update.mockResolvedValueOnce(
+        mockImportBatch({ status: 'FAILED', error: 'PDF is password-protected' })
       );
 
       await expect(
@@ -413,7 +405,7 @@ describe('ImportService', () => {
         })
       ).rejects.toThrow('PDF is password-protected');
 
-      expect(prisma.importBatch.update).toHaveBeenCalledWith({
+      expect(mockPrisma.importBatch.update).toHaveBeenCalledWith({
         where: { id: IMPORT_BATCH_ID },
         data: {
           status: 'FAILED',
@@ -442,11 +434,11 @@ describe('ImportService', () => {
         },
       };
 
-      vi.mocked(prisma.importBatch.findFirst).mockResolvedValueOnce(mockBatch as never);
+      mockPrisma.importBatch.findFirst.mockResolvedValueOnce(mockBatch);
 
       const result = await service.getImportBatch(IMPORT_BATCH_ID);
 
-      expect(prisma.importBatch.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.importBatch.findFirst).toHaveBeenCalledWith({
         where: {
           id: IMPORT_BATCH_ID,
           tenantId: TENANT_ID,
@@ -466,7 +458,7 @@ describe('ImportService', () => {
     });
 
     it('should return null for batch in different tenant', async () => {
-      vi.mocked(prisma.importBatch.findFirst).mockResolvedValueOnce(null);
+      mockPrisma.importBatch.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.getImportBatch(IMPORT_BATCH_ID);
 
@@ -474,7 +466,7 @@ describe('ImportService', () => {
     });
 
     it('should return null for non-existent batch ID', async () => {
-      vi.mocked(prisma.importBatch.findFirst).mockResolvedValueOnce(null);
+      mockPrisma.importBatch.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.getImportBatch('non-existent-id');
 
@@ -489,11 +481,11 @@ describe('ImportService', () => {
         { ...mockImportBatch({ id: 'batch-2' }), transactions: [], _count: { transactions: 5 } },
       ];
 
-      vi.mocked(prisma.importBatch.findMany).mockResolvedValueOnce(mockBatches as never);
+      mockPrisma.importBatch.findMany.mockResolvedValueOnce(mockBatches);
 
       const result = await service.listImportBatches();
 
-      expect(prisma.importBatch.findMany).toHaveBeenCalledWith({
+      expect(mockPrisma.importBatch.findMany).toHaveBeenCalledWith({
         where: { tenantId: TENANT_ID },
         include: {
           transactions: {
@@ -512,11 +504,11 @@ describe('ImportService', () => {
     });
 
     it('should filter by entityId correctly', async () => {
-      vi.mocked(prisma.importBatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.importBatch.findMany.mockResolvedValueOnce([]);
 
       await service.listImportBatches({ entityId: ENTITY_ID });
 
-      expect(prisma.importBatch.findMany).toHaveBeenCalledWith(
+      expect(mockPrisma.importBatch.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             tenantId: TENANT_ID,
@@ -527,11 +519,11 @@ describe('ImportService', () => {
     });
 
     it('should filter by sourceType correctly', async () => {
-      vi.mocked(prisma.importBatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.importBatch.findMany.mockResolvedValueOnce([]);
 
       await service.listImportBatches({ sourceType: 'CSV' });
 
-      expect(prisma.importBatch.findMany).toHaveBeenCalledWith(
+      expect(mockPrisma.importBatch.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             tenantId: TENANT_ID,
@@ -542,11 +534,11 @@ describe('ImportService', () => {
     });
 
     it('should filter by status correctly', async () => {
-      vi.mocked(prisma.importBatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.importBatch.findMany.mockResolvedValueOnce([]);
 
       await service.listImportBatches({ status: 'PROCESSED' });
 
-      expect(prisma.importBatch.findMany).toHaveBeenCalledWith(
+      expect(mockPrisma.importBatch.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             tenantId: TENANT_ID,
@@ -564,7 +556,7 @@ describe('ImportService', () => {
         _count: { transactions: 0 },
       }));
 
-      vi.mocked(prisma.importBatch.findMany).mockResolvedValueOnce(mockBatches as never);
+      mockPrisma.importBatch.findMany.mockResolvedValueOnce(mockBatches);
 
       const result = await service.listImportBatches({ limit: 10 });
 
@@ -574,11 +566,11 @@ describe('ImportService', () => {
     });
 
     it('should respect limit parameter', async () => {
-      vi.mocked(prisma.importBatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.importBatch.findMany.mockResolvedValueOnce([]);
 
       await service.listImportBatches({ limit: 25 });
 
-      expect(prisma.importBatch.findMany).toHaveBeenCalledWith(
+      expect(mockPrisma.importBatch.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           take: 26, // limit + 1
         })
@@ -586,11 +578,11 @@ describe('ImportService', () => {
     });
 
     it('should use cursor for pagination', async () => {
-      vi.mocked(prisma.importBatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.importBatch.findMany.mockResolvedValueOnce([]);
 
       await service.listImportBatches({ cursor: 'batch-cursor-123' });
 
-      expect(prisma.importBatch.findMany).toHaveBeenCalledWith(
+      expect(mockPrisma.importBatch.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           cursor: { id: 'batch-cursor-123' },
           skip: 1,

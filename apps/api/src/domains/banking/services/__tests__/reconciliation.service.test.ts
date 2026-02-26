@@ -1,39 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReconciliationService } from '../reconciliation.service';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
 
-vi.mock('@akount/db', () => ({
-  prisma: {
-    bankFeedTransaction: {
-      findFirst: vi.fn(),
-      update: vi.fn(),
-      count: vi.fn(),
-    },
-    transaction: {
-      findFirst: vi.fn(),
-      findMany: vi.fn(),
-    },
-    transactionMatch: {
-      findFirst: vi.fn(),
-      findMany: vi.fn(),
-      create: vi.fn(),
-      delete: vi.fn(),
-      count: vi.fn(),
-    },
-    account: {
-      findFirst: vi.fn(),
-    },
-    $transaction: vi.fn(),
-  },
-  TransactionMatchStatus: {
-    MATCHED: 'MATCHED',
-    SUGGESTED: 'SUGGESTED',
-    UNMATCHED: 'UNMATCHED',
-  },
-  BankFeedStatus: {
-    PENDING: 'PENDING',
-    POSTED: 'POSTED',
-    CANCELLED: 'CANCELLED',
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
 vi.mock('../../../../lib/audit', () => ({
@@ -44,7 +19,6 @@ vi.mock('string-similarity', () => ({
   compareTwoStrings: vi.fn(),
 }));
 
-import { prisma } from '@akount/db';
 import { compareTwoStrings } from 'string-similarity';
 
 const TENANT_ID = 'tenant-abc-123';
@@ -130,6 +104,7 @@ describe('ReconciliationService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
     service = new ReconciliationService(TENANT_ID, USER_ID);
     // Default: description similarity returns high score
     vi.mocked(compareTwoStrings).mockReturnValue(0.95);
@@ -139,12 +114,12 @@ describe('ReconciliationService', () => {
 
   describe('suggestMatches', () => {
     it('should return empty array when no candidates match', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([]);
 
       const result = await service.suggestMatches('bft-1');
 
@@ -152,7 +127,7 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if bank feed transaction not found', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(null);
 
       await expect(service.suggestMatches('bft-nonexistent')).rejects.toThrow(
         'Bank feed transaction not found'
@@ -160,11 +135,11 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if bank feed transaction is already matched', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(
-        mockMatch() as never
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(
+        mockMatch()
       );
 
       await expect(service.suggestMatches('bft-1')).rejects.toThrow(
@@ -173,14 +148,14 @@ describe('ReconciliationService', () => {
     });
 
     it('should return HIGH confidence for exact amount + close date + similar description', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([
         mockTransaction(),
-      ] as never);
+      ]);
       vi.mocked(compareTwoStrings).mockReturnValue(0.95);
 
       const result = await service.suggestMatches('bft-1');
@@ -191,14 +166,14 @@ describe('ReconciliationService', () => {
     });
 
     it('should return MEDIUM confidence for exact amount + close date without description match', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([
         mockTransaction(),
-      ] as never);
+      ]);
       // Low description similarity
       vi.mocked(compareTwoStrings).mockReturnValue(0.30);
 
@@ -209,16 +184,16 @@ describe('ReconciliationService', () => {
     });
 
     it('should return lower confidence for exact amount + far date', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
 
       // Transaction 5 days away
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([
         mockTransaction({ date: new Date('2024-01-20') }),
-      ] as never);
+      ]);
       vi.mocked(compareTwoStrings).mockReturnValue(0.30);
 
       const result = await service.suggestMatches('bft-1');
@@ -228,16 +203,16 @@ describe('ReconciliationService', () => {
     });
 
     it('should skip candidates with different amounts', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
 
       // Different amount
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([
         mockTransaction({ amount: 999 }),
-      ] as never);
+      ]);
 
       const result = await service.suggestMatches('bft-1');
 
@@ -245,29 +220,29 @@ describe('ReconciliationService', () => {
     });
 
     it('should exclude already-matched transactions', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
       // Return matched transaction IDs to exclude
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([
         { transactionId: 'txn-already-matched' },
-      ] as never);
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([] as never);
+      ]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([]);
 
       await service.suggestMatches('bft-1');
 
       // Verify findMany was called with notIn filter
-      const callArgs = vi.mocked(prisma.transaction.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.transaction.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('id', { notIn: ['txn-already-matched'] });
     });
 
     it('should sort suggestions by confidence DESC and limit to 5', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
 
       // Create 7 candidates with varying dates (all same amount)
       const candidates = Array.from({ length: 7 }, (_, i) =>
@@ -276,7 +251,7 @@ describe('ReconciliationService', () => {
           date: new Date(2024, 0, 15 + i), // spread across days
         })
       );
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce(candidates as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce(candidates);
       vi.mocked(compareTwoStrings).mockReturnValue(0.50); // Below threshold
 
       const result = await service.suggestMatches('bft-1');
@@ -289,16 +264,16 @@ describe('ReconciliationService', () => {
     });
 
     it('should respect custom limit parameter', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
 
       const candidates = Array.from({ length: 5 }, (_, i) =>
         mockTransaction({ id: `txn-${i}` })
       );
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce(candidates as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce(candidates);
       vi.mocked(compareTwoStrings).mockReturnValue(0.95);
 
       const result = await service.suggestMatches('bft-1', 2);
@@ -307,14 +282,14 @@ describe('ReconciliationService', () => {
     });
 
     it('should include reasons in suggestions', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(prisma.transactionMatch.findMany).mockResolvedValueOnce([] as never);
-      vi.mocked(prisma.transaction.findMany).mockResolvedValueOnce([
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.transactionMatch.findMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([
         mockTransaction(),
-      ] as never);
+      ]);
       vi.mocked(compareTwoStrings).mockReturnValue(0.95);
 
       const result = await service.suggestMatches('bft-1');
@@ -329,19 +304,19 @@ describe('ReconciliationService', () => {
 
   describe('createMatch', () => {
     it('should create a match between bank feed and posted transaction', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(
-        mockTransaction() as never
+      mockPrisma.transaction.findFirst.mockResolvedValueOnce(
+        mockTransaction()
       );
       // No existing match
-      vi.mocked(prisma.transactionMatch.findFirst)
-        .mockResolvedValueOnce(null as never)
-        .mockResolvedValueOnce(null as never);
+      mockPrisma.transactionMatch.findFirst
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null);
 
       const createdMatch = mockMatch();
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (fn: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (fn: any) => {
         return fn({
           transactionMatch: { create: vi.fn().mockResolvedValue(createdMatch) },
           bankFeedTransaction: { update: vi.fn().mockResolvedValue({}) },
@@ -357,7 +332,7 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if bank feed transaction not found', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         service.createMatch({
@@ -368,10 +343,10 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if posted transaction not found', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.transaction.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         service.createMatch({
@@ -382,15 +357,15 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if bank feed transaction is already matched', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(
-        mockTransaction() as never
+      mockPrisma.transaction.findFirst.mockResolvedValueOnce(
+        mockTransaction()
       );
       // Already matched
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(
-        mockMatch() as never
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(
+        mockMatch()
       );
 
       await expect(
@@ -402,17 +377,17 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if posted transaction is already matched to another bank feed', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(
-        mockTransaction() as never
+      mockPrisma.transaction.findFirst.mockResolvedValueOnce(
+        mockTransaction()
       );
       // First check: bank feed not matched
-      vi.mocked(prisma.transactionMatch.findFirst)
-        .mockResolvedValueOnce(null as never)
+      mockPrisma.transactionMatch.findFirst
+        .mockResolvedValueOnce(null)
         // Second check: posted transaction IS matched
-        .mockResolvedValueOnce(mockMatch({ bankFeedTransactionId: 'bft-other' }) as never);
+        .mockResolvedValueOnce(mockMatch({ bankFeedTransactionId: 'bft-other' }));
 
       await expect(
         service.createMatch({
@@ -423,18 +398,18 @@ describe('ReconciliationService', () => {
     });
 
     it('should set confidence to 1.0 for manual matches', async () => {
-      vi.mocked(prisma.bankFeedTransaction.findFirst).mockResolvedValueOnce(
-        mockBankFeedTxn() as never
+      mockPrisma.bankFeedTransaction.findFirst.mockResolvedValueOnce(
+        mockBankFeedTxn()
       );
-      vi.mocked(prisma.transaction.findFirst).mockResolvedValueOnce(
-        mockTransaction() as never
+      mockPrisma.transaction.findFirst.mockResolvedValueOnce(
+        mockTransaction()
       );
-      vi.mocked(prisma.transactionMatch.findFirst)
-        .mockResolvedValueOnce(null as never)
-        .mockResolvedValueOnce(null as never);
+      mockPrisma.transactionMatch.findFirst
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null);
 
       let capturedCreateData: Record<string, unknown> | undefined;
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (fn: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (fn: any) => {
         return fn({
           transactionMatch: {
             create: vi.fn().mockImplementation((args: any) => {
@@ -459,18 +434,18 @@ describe('ReconciliationService', () => {
 
   describe('unmatch', () => {
     it('should delete match and reset bank feed status', async () => {
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce({
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce({
         id: 'match-1',
         bankFeedTransactionId: 'bft-1',
         transactionId: 'txn-1',
         bankFeedTransaction: {
           account: { entityId: ENTITY_ID },
         },
-      } as never);
+      });
 
       const mockDelete = vi.fn();
       const mockUpdate = vi.fn();
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (fn: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (fn: any) => {
         return fn({
           transactionMatch: { delete: mockDelete },
           bankFeedTransaction: { update: mockUpdate },
@@ -487,7 +462,7 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if match not found', async () => {
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
 
       await expect(service.unmatch('match-nonexistent')).rejects.toThrow(
         'Match not found'
@@ -495,14 +470,14 @@ describe('ReconciliationService', () => {
     });
 
     it('should enforce tenant isolation when finding match', async () => {
-      vi.mocked(prisma.transactionMatch.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.transactionMatch.findFirst.mockResolvedValueOnce(null);
 
       await expect(service.unmatch('match-other-tenant')).rejects.toThrow(
         'Match not found'
       );
 
       // Verify tenant filter was applied
-      const callArgs = vi.mocked(prisma.transactionMatch.findFirst).mock.calls[0][0]!;
+      const callArgs = mockPrisma.transactionMatch.findFirst.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('bankFeedTransaction');
     });
   });
@@ -511,14 +486,14 @@ describe('ReconciliationService', () => {
 
   describe('getReconciliationStatus', () => {
     it('should return reconciliation status for an account', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce({
+      mockPrisma.account.findFirst.mockResolvedValueOnce({
         id: ACCOUNT_ID,
-      } as never);
+      });
 
-      vi.mocked(prisma.bankFeedTransaction.count)
-        .mockResolvedValueOnce(100 as never) // total
-        .mockResolvedValueOnce(60 as never); // matched
-      vi.mocked(prisma.transactionMatch.count).mockResolvedValueOnce(10 as never); // suggested
+      mockPrisma.bankFeedTransaction.count
+        .mockResolvedValueOnce(100) // total
+        .mockResolvedValueOnce(60); // matched
+      mockPrisma.transactionMatch.count.mockResolvedValueOnce(10); // suggested
 
       const result = await service.getReconciliationStatus(ACCOUNT_ID);
 
@@ -533,14 +508,14 @@ describe('ReconciliationService', () => {
     });
 
     it('should return 100% when no bank feed transactions exist', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce({
+      mockPrisma.account.findFirst.mockResolvedValueOnce({
         id: ACCOUNT_ID,
-      } as never);
+      });
 
-      vi.mocked(prisma.bankFeedTransaction.count)
-        .mockResolvedValueOnce(0 as never)
-        .mockResolvedValueOnce(0 as never);
-      vi.mocked(prisma.transactionMatch.count).mockResolvedValueOnce(0 as never);
+      mockPrisma.bankFeedTransaction.count
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(0);
+      mockPrisma.transactionMatch.count.mockResolvedValueOnce(0);
 
       const result = await service.getReconciliationStatus(ACCOUNT_ID);
 
@@ -549,7 +524,7 @@ describe('ReconciliationService', () => {
     });
 
     it('should throw if account not found', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(null);
 
       await expect(service.getReconciliationStatus('acc-nonexistent')).rejects.toThrow(
         'Account not found'
@@ -557,26 +532,26 @@ describe('ReconciliationService', () => {
     });
 
     it('should enforce tenant isolation on account lookup', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.account.findFirst.mockResolvedValueOnce(null);
 
       await expect(service.getReconciliationStatus(ACCOUNT_ID)).rejects.toThrow(
         'Account not found'
       );
 
       // Verify tenant filter
-      const callArgs = vi.mocked(prisma.account.findFirst).mock.calls[0][0]!;
+      const callArgs = mockPrisma.account.findFirst.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('entity', { tenantId: TENANT_ID });
     });
 
     it('should calculate correct reconciliation percentage', async () => {
-      vi.mocked(prisma.account.findFirst).mockResolvedValueOnce({
+      mockPrisma.account.findFirst.mockResolvedValueOnce({
         id: ACCOUNT_ID,
-      } as never);
+      });
 
-      vi.mocked(prisma.bankFeedTransaction.count)
-        .mockResolvedValueOnce(3 as never) // total
-        .mockResolvedValueOnce(1 as never); // matched
-      vi.mocked(prisma.transactionMatch.count).mockResolvedValueOnce(0 as never);
+      mockPrisma.bankFeedTransaction.count
+        .mockResolvedValueOnce(3) // total
+        .mockResolvedValueOnce(1); // matched
+      mockPrisma.transactionMatch.count.mockResolvedValueOnce(0);
 
       const result = await service.getReconciliationStatus(ACCOUNT_ID);
 

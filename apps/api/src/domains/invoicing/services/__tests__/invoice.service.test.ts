@@ -1,27 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as invoiceService from '../invoice.service';
 import { assertIntegerCents } from '../../../../test-utils/financial-assertions';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
 
-// Mock Prisma client
-vi.mock('@akount/db', () => ({
-  prisma: {
-    invoice: {
-      findMany: vi.fn(),
-      findFirst: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      aggregate: vi.fn(),
-    },
-    client: {
-      findFirst: vi.fn(),
-    },
-    taxRate: {
-      findMany: vi.fn(),
-    },
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
-
-import { prisma } from '@akount/db';
 
 const TENANT_ID = 'tenant-test-123';
 const ENTITY_ID = 'entity-test-456';
@@ -61,6 +50,7 @@ function mockInvoice(overrides: Record<string, unknown> = {}) {
 describe('InvoiceService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
   });
 
   describe('createInvoice', () => {
@@ -71,8 +61,8 @@ describe('InvoiceService', () => {
         entity: { tenantId: TENANT_ID },
         deletedAt: null,
       };
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.create.mockResolvedValueOnce(mockInvoice());
 
       await invoiceService.createInvoice(
         {
@@ -101,7 +91,7 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      expect(prisma.client.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.client.findFirst).toHaveBeenCalledWith({
         where: {
           id: CLIENT_ID,
           entity: { tenantId: TENANT_ID },
@@ -111,7 +101,7 @@ describe('InvoiceService', () => {
     });
 
     it('should throw if client does not belong to tenant', async () => {
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         invoiceService.createInvoice(
@@ -140,8 +130,8 @@ describe('InvoiceService', () => {
         entity: { tenantId: TENANT_ID },
         deletedAt: null,
       };
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.create.mockResolvedValueOnce(mockInvoice());
 
       await invoiceService.createInvoice(
         {
@@ -170,7 +160,7 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      const createArgs = vi.mocked(prisma.invoice.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.invoice.create.mock.calls[0][0]!;
       assertIntegerCents(createArgs.data.subtotal, 'subtotal');
       assertIntegerCents(createArgs.data.taxAmount, 'taxAmount');
       assertIntegerCents(createArgs.data.total, 'total');
@@ -184,8 +174,8 @@ describe('InvoiceService', () => {
         entity: { tenantId: TENANT_ID },
         deletedAt: null,
       };
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.create.mockResolvedValueOnce(mockInvoice());
 
       await invoiceService.createInvoice(
         {
@@ -214,7 +204,7 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      const createArgs = vi.mocked(prisma.invoice.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.invoice.create.mock.calls[0][0]!;
       expect(createArgs.data.paidAmount).toBe(0);
     });
 
@@ -225,8 +215,8 @@ describe('InvoiceService', () => {
         entity: { tenantId: TENANT_ID },
         deletedAt: null,
       };
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.create.mockResolvedValueOnce(mockInvoice());
 
       const lines = [
         {
@@ -266,7 +256,7 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      const createArgs = vi.mocked(prisma.invoice.create).mock.calls[0][0]!;
+      const createArgs = mockPrisma.invoice.create.mock.calls[0][0]!;
       expect(createArgs.data.invoiceLines).toEqual({ create: lines });
     });
 
@@ -277,9 +267,9 @@ describe('InvoiceService', () => {
         entity: { tenantId: TENANT_ID },
         deletedAt: null,
       };
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
       // Return empty array — taxRateId not found for this tenant
-      vi.mocked(prisma.taxRate.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.taxRate.findMany.mockResolvedValueOnce([]);
 
       await expect(
         invoiceService.createInvoice(
@@ -319,11 +309,11 @@ describe('InvoiceService', () => {
         entity: { tenantId: TENANT_ID },
         deletedAt: null,
       };
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.taxRate.findMany).mockResolvedValueOnce([
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.taxRate.findMany.mockResolvedValueOnce([
         { id: 'taxrate-valid' },
-      ] as never);
-      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+      ]);
+      mockPrisma.invoice.create.mockResolvedValueOnce(mockInvoice());
 
       await invoiceService.createInvoice(
         {
@@ -353,7 +343,7 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      expect(prisma.taxRate.findMany).toHaveBeenCalledWith({
+      expect(mockPrisma.taxRate.findMany).toHaveBeenCalledWith({
         where: {
           id: { in: ['taxrate-valid'] },
           OR: [
@@ -363,7 +353,7 @@ describe('InvoiceService', () => {
         },
         select: { id: true },
       });
-      expect(prisma.invoice.create).toHaveBeenCalled();
+      expect(mockPrisma.invoice.create).toHaveBeenCalled();
     });
 
     it('should skip taxRateId validation when no lines have taxRateId', async () => {
@@ -373,8 +363,8 @@ describe('InvoiceService', () => {
         entity: { tenantId: TENANT_ID },
         deletedAt: null,
       };
-      vi.mocked(prisma.client.findFirst).mockResolvedValueOnce(client as never);
-      vi.mocked(prisma.invoice.create).mockResolvedValueOnce(mockInvoice() as never);
+      mockPrisma.client.findFirst.mockResolvedValueOnce(client);
+      mockPrisma.invoice.create.mockResolvedValueOnce(mockInvoice());
 
       await invoiceService.createInvoice(
         {
@@ -403,57 +393,57 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      expect(prisma.taxRate.findMany).not.toHaveBeenCalled();
-      expect(prisma.invoice.create).toHaveBeenCalled();
+      expect(mockPrisma.taxRate.findMany).not.toHaveBeenCalled();
+      expect(mockPrisma.invoice.create).toHaveBeenCalled();
     });
   });
 
   describe('listInvoices', () => {
     it('should filter by tenantId via entity relation', async () => {
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce([]);
 
       await invoiceService.listInvoices({ limit: 10 }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.invoice.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.invoice.findMany.mock.calls[0][0]!;
       expect(callArgs.where!.entity).toEqual({ tenantId: TENANT_ID });
     });
 
     it('should always filter soft-deleted records', async () => {
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce([]);
 
       await invoiceService.listInvoices({ limit: 10 }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.invoice.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.invoice.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('deletedAt', null);
     });
 
     it('should support status filter', async () => {
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce([]);
 
       await invoiceService.listInvoices({ limit: 10, status: 'SENT' }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.invoice.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.invoice.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('status', 'SENT');
     });
 
     it('should support clientId filter', async () => {
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce([]);
 
       await invoiceService.listInvoices({ limit: 10, clientId: CLIENT_ID }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.invoice.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.invoice.findMany.mock.calls[0][0]!;
       expect(callArgs.where).toHaveProperty('clientId', CLIENT_ID);
     });
 
     it('should support date range filters', async () => {
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce([]);
 
       await invoiceService.listInvoices(
         { limit: 10, dateFrom: '2024-01-01', dateTo: '2024-01-31' },
         mockTenantContext
       );
 
-      const callArgs = vi.mocked(prisma.invoice.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.invoice.findMany.mock.calls[0][0]!;
       expect(callArgs.where!.issueDate).toEqual({
         gte: new Date('2024-01-01'),
         lte: new Date('2024-01-31'),
@@ -461,17 +451,17 @@ describe('InvoiceService', () => {
     });
 
     it('should support cursor pagination', async () => {
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce([]);
 
       await invoiceService.listInvoices({ limit: 10, cursor: 'cursor-abc' }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.invoice.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.invoice.findMany.mock.calls[0][0]!;
       expect(callArgs.where!.id).toEqual({ gt: 'cursor-abc' });
     });
 
     it('should return nextCursor when limit reached', async () => {
       const invoices = [mockInvoice({ id: 'inv-1' }), mockInvoice({ id: 'inv-2' })];
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce(invoices as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce(invoices);
 
       const result = await invoiceService.listInvoices({ limit: 2 }, mockTenantContext);
 
@@ -480,7 +470,7 @@ describe('InvoiceService', () => {
 
     it('should return null cursor when fewer results than limit', async () => {
       const invoices = [mockInvoice({ id: 'inv-1' })];
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce(invoices as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce(invoices);
 
       const result = await invoiceService.listInvoices({ limit: 10 }, mockTenantContext);
 
@@ -488,11 +478,11 @@ describe('InvoiceService', () => {
     });
 
     it('should order by createdAt desc', async () => {
-      vi.mocked(prisma.invoice.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.invoice.findMany.mockResolvedValueOnce([]);
 
       await invoiceService.listInvoices({ limit: 10 }, mockTenantContext);
 
-      const callArgs = vi.mocked(prisma.invoice.findMany).mock.calls[0][0]!;
+      const callArgs = mockPrisma.invoice.findMany.mock.calls[0][0]!;
       expect(callArgs.orderBy).toEqual({ createdAt: 'desc' });
     });
   });
@@ -500,12 +490,12 @@ describe('InvoiceService', () => {
   describe('getInvoice', () => {
     it('should find invoice by id with tenant isolation', async () => {
       const invoice = mockInvoice({ id: 'inv-xyz' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       const result = await invoiceService.getInvoice('inv-xyz', mockTenantContext);
 
       expect(result).toEqual(invoice);
-      expect(prisma.invoice.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.invoice.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'inv-xyz',
           entity: { tenantId: TENANT_ID },
@@ -520,7 +510,7 @@ describe('InvoiceService', () => {
     });
 
     it('should throw when invoice not found', async () => {
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         invoiceService.getInvoice('nonexistent', mockTenantContext)
@@ -528,7 +518,7 @@ describe('InvoiceService', () => {
     });
 
     it('should reject cross-tenant access', async () => {
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         invoiceService.getInvoice('inv-other-tenant', mockTenantContext)
@@ -542,7 +532,7 @@ describe('InvoiceService', () => {
         total: 110000,
         paidAmount: 25000,
       });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       const result = await invoiceService.getInvoice('inv-1', mockTenantContext);
 
@@ -557,8 +547,8 @@ describe('InvoiceService', () => {
     it('should verify invoice exists and tenant owns before updating', async () => {
       const existing = mockInvoice({ id: 'inv-1', status: 'DRAFT' });
       // FIN-29: Now fetches with invoiceLines for validation
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce({ ...existing, invoiceLines: [] } as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce(existing as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce({ ...existing, invoiceLines: [] });
+      mockPrisma.invoice.update.mockResolvedValueOnce(existing);
 
       await invoiceService.updateInvoice(
         'inv-1',
@@ -566,7 +556,7 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      expect(prisma.invoice.findFirst).toHaveBeenCalledWith({
+      expect(mockPrisma.invoice.findFirst).toHaveBeenCalledWith({
         where: {
           id: 'inv-1',
           entity: { tenantId: TENANT_ID },
@@ -577,17 +567,17 @@ describe('InvoiceService', () => {
     });
 
     it('should throw when invoice not found', async () => {
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         invoiceService.updateInvoice('nonexistent', { status: 'SENT' }, mockTenantContext)
       ).rejects.toThrow('Invoice not found');
 
-      expect(prisma.invoice.update).not.toHaveBeenCalled();
+      expect(mockPrisma.invoice.update).not.toHaveBeenCalled();
     });
 
     it('should reject cross-tenant update', async () => {
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         invoiceService.updateInvoice('inv-other-tenant', { status: 'SENT' }, mockTenantContext)
@@ -596,8 +586,8 @@ describe('InvoiceService', () => {
 
     it('should only update provided fields', async () => {
       const existing = mockInvoice({ id: 'inv-1' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce(existing as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.invoice.update.mockResolvedValueOnce(existing);
 
       await invoiceService.updateInvoice(
         'inv-1',
@@ -605,7 +595,7 @@ describe('InvoiceService', () => {
         mockTenantContext
       );
 
-      const updateArgs = vi.mocked(prisma.invoice.update).mock.calls[0][0]!;
+      const updateArgs = mockPrisma.invoice.update.mock.calls[0][0]!;
       expect(updateArgs.data).toEqual({
         status: 'SENT',
         notes: 'Updated notes',
@@ -616,28 +606,28 @@ describe('InvoiceService', () => {
   describe('deleteInvoice', () => {
     it('should verify invoice exists and tenant owns before deleting', async () => {
       const existing = mockInvoice({ id: 'inv-1' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.invoice.update.mockResolvedValueOnce({
         ...existing,
         deletedAt: new Date(),
-      } as never);
+      });
 
       await invoiceService.deleteInvoice('inv-1', mockTenantContext);
 
-      expect(prisma.invoice.findFirst).toHaveBeenCalled();
+      expect(mockPrisma.invoice.findFirst).toHaveBeenCalled();
     });
 
     it('should soft delete (set deletedAt, not hard delete)', async () => {
       const existing = mockInvoice({ id: 'inv-1' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(existing as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(existing);
+      mockPrisma.invoice.update.mockResolvedValueOnce({
         ...existing,
         deletedAt: new Date(),
-      } as never);
+      });
 
       const result = await invoiceService.deleteInvoice('inv-1', mockTenantContext);
 
-      const updateArgs = vi.mocked(prisma.invoice.update).mock.calls[0][0]!;
+      const updateArgs = mockPrisma.invoice.update.mock.calls[0][0]!;
       expect(updateArgs.data).toHaveProperty('deletedAt');
       expect(result.deletedAt).toBeInstanceOf(Date);
     });
@@ -645,14 +635,14 @@ describe('InvoiceService', () => {
 
   describe('getInvoiceStats', () => {
     it('should calculate outstandingAR as integer cents', async () => {
-      vi.mocked(prisma.invoice.aggregate)
-        .mockResolvedValueOnce({ _sum: { total: 100000, paidAmount: 25000 } } as never) // Outstanding
-        .mockResolvedValueOnce({ _sum: { total: 50000 } } as never) // Paid
-        .mockResolvedValueOnce({ _sum: { total: 30000 } } as never) // Overdue
-        .mockResolvedValueOnce({ _sum: { total: 40000, paidAmount: 0 } } as never) // Current
-        .mockResolvedValueOnce({ _sum: { total: 20000, paidAmount: 0 } } as never) // 1-30
-        .mockResolvedValueOnce({ _sum: { total: 10000, paidAmount: 0 } } as never) // 31-60
-        .mockResolvedValueOnce({ _sum: { total: 5000, paidAmount: 0 } } as never); // 60+
+      mockPrisma.invoice.aggregate
+        .mockResolvedValueOnce({ _sum: { total: 100000, paidAmount: 25000 } }) // Outstanding
+        .mockResolvedValueOnce({ _sum: { total: 50000 } }) // Paid
+        .mockResolvedValueOnce({ _sum: { total: 30000 } }) // Overdue
+        .mockResolvedValueOnce({ _sum: { total: 40000, paidAmount: 0 } }) // Current
+        .mockResolvedValueOnce({ _sum: { total: 20000, paidAmount: 0 } }) // 1-30
+        .mockResolvedValueOnce({ _sum: { total: 10000, paidAmount: 0 } }) // 31-60
+        .mockResolvedValueOnce({ _sum: { total: 5000, paidAmount: 0 } }); // 60+
 
       const result = await invoiceService.getInvoiceStats(mockTenantContext);
 
@@ -661,14 +651,14 @@ describe('InvoiceService', () => {
     });
 
     it('should calculate aging buckets correctly', async () => {
-      vi.mocked(prisma.invoice.aggregate)
-        .mockResolvedValueOnce({ _sum: { total: 100000, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 40000, paidAmount: 0 } } as never) // Current: 40%
-        .mockResolvedValueOnce({ _sum: { total: 30000, paidAmount: 0 } } as never) // 1-30: 30%
-        .mockResolvedValueOnce({ _sum: { total: 20000, paidAmount: 0 } } as never) // 31-60: 20%
-        .mockResolvedValueOnce({ _sum: { total: 10000, paidAmount: 0 } } as never); // 60+: 10%
+      mockPrisma.invoice.aggregate
+        .mockResolvedValueOnce({ _sum: { total: 100000, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 40000, paidAmount: 0 } }) // Current: 40%
+        .mockResolvedValueOnce({ _sum: { total: 30000, paidAmount: 0 } }) // 1-30: 30%
+        .mockResolvedValueOnce({ _sum: { total: 20000, paidAmount: 0 } }) // 31-60: 20%
+        .mockResolvedValueOnce({ _sum: { total: 10000, paidAmount: 0 } }); // 60+: 10%
 
       const result = await invoiceService.getInvoiceStats(mockTenantContext);
 
@@ -683,14 +673,14 @@ describe('InvoiceService', () => {
     });
 
     it('should handle zero balances correctly', async () => {
-      vi.mocked(prisma.invoice.aggregate)
-        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } } as never)
-        .mockResolvedValueOnce({ _sum: { total: null } } as never)
-        .mockResolvedValueOnce({ _sum: { total: null } } as never)
-        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } } as never)
-        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } } as never)
-        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } } as never)
-        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } } as never);
+      mockPrisma.invoice.aggregate
+        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } })
+        .mockResolvedValueOnce({ _sum: { total: null } })
+        .mockResolvedValueOnce({ _sum: { total: null } })
+        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } })
+        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } })
+        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } })
+        .mockResolvedValueOnce({ _sum: { total: null, paidAmount: null } });
 
       const result = await invoiceService.getInvoiceStats(mockTenantContext);
 
@@ -701,34 +691,34 @@ describe('InvoiceService', () => {
     });
 
     it('should filter by SENT and OVERDUE status for outstanding AR', async () => {
-      vi.mocked(prisma.invoice.aggregate)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never);
+      mockPrisma.invoice.aggregate
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } });
 
       await invoiceService.getInvoiceStats(mockTenantContext);
 
-      const calls = vi.mocked(prisma.invoice.aggregate).mock.calls;
+      const calls = mockPrisma.invoice.aggregate.mock.calls;
       expect(calls[0]![0].where!.status).toEqual({ in: ['SENT', 'OVERDUE'] });
     });
 
     it('should filter by tenantId for all aggregations', async () => {
-      vi.mocked(prisma.invoice.aggregate)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never)
-        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } } as never);
+      mockPrisma.invoice.aggregate
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } })
+        .mockResolvedValueOnce({ _sum: { total: 0, paidAmount: 0 } });
 
       await invoiceService.getInvoiceStats(mockTenantContext);
 
-      const calls = vi.mocked(prisma.invoice.aggregate).mock.calls;
+      const calls = mockPrisma.invoice.aggregate.mock.calls;
       calls.forEach((call) => {
         expect(call[0]!.where!.entity).toEqual({ tenantId: TENANT_ID });
         expect(call[0]!.where!.deletedAt).toBeNull();
@@ -741,20 +731,20 @@ describe('InvoiceService', () => {
   describe('sendInvoice', () => {
     it('should transition DRAFT → SENT', async () => {
       const invoice = mockInvoice({ status: 'DRAFT', client: { id: CLIENT_ID, name: 'Acme', email: 'acme@test.com', entityId: ENTITY_ID } });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({ ...invoice, status: 'SENT' } as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
+      mockPrisma.invoice.update.mockResolvedValueOnce({ ...invoice, status: 'SENT' });
 
       const result = await invoiceService.sendInvoice('inv-1', mockTenantContext);
 
       expect(result.status).toBe('SENT');
-      expect(prisma.invoice.update).toHaveBeenCalledWith(
+      expect(mockPrisma.invoice.update).toHaveBeenCalledWith(
         expect.objectContaining({ data: { status: 'SENT' } })
       );
     });
 
     it('should reject PAID → SENT transition', async () => {
       const invoice = mockInvoice({ status: 'PAID', client: { id: CLIENT_ID, name: 'Acme', email: 'acme@test.com', entityId: ENTITY_ID } });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       await expect(invoiceService.sendInvoice('inv-1', mockTenantContext))
         .rejects.toThrow('Invalid status transition');
@@ -762,7 +752,7 @@ describe('InvoiceService', () => {
 
     it('should reject if client has no email', async () => {
       const invoice = mockInvoice({ status: 'DRAFT', client: { id: CLIENT_ID, name: 'Acme', email: null, entityId: ENTITY_ID } });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       await expect(invoiceService.sendInvoice('inv-1', mockTenantContext))
         .rejects.toThrow('Client email required');
@@ -772,8 +762,8 @@ describe('InvoiceService', () => {
   describe('cancelInvoice', () => {
     it('should transition DRAFT → CANCELLED', async () => {
       const invoice = mockInvoice({ status: 'DRAFT', paidAmount: 0 });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({ ...invoice, status: 'CANCELLED' } as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
+      mockPrisma.invoice.update.mockResolvedValueOnce({ ...invoice, status: 'CANCELLED' });
 
       const result = await invoiceService.cancelInvoice('inv-1', mockTenantContext);
       expect(result.status).toBe('CANCELLED');
@@ -781,7 +771,7 @@ describe('InvoiceService', () => {
 
     it('should reject if payments exist', async () => {
       const invoice = mockInvoice({ status: 'SENT', paidAmount: 50000 });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       await expect(invoiceService.cancelInvoice('inv-1', mockTenantContext))
         .rejects.toThrow('Cannot cancel invoice with existing payments');
@@ -789,7 +779,7 @@ describe('InvoiceService', () => {
 
     it('should reject PAID → CANCELLED transition', async () => {
       const invoice = mockInvoice({ status: 'PAID', paidAmount: 0 });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       await expect(invoiceService.cancelInvoice('inv-1', mockTenantContext))
         .rejects.toThrow('Invalid status transition');
@@ -799,8 +789,8 @@ describe('InvoiceService', () => {
   describe('markInvoiceOverdue', () => {
     it('should transition SENT → OVERDUE', async () => {
       const invoice = mockInvoice({ status: 'SENT' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({ ...invoice, status: 'OVERDUE' } as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
+      mockPrisma.invoice.update.mockResolvedValueOnce({ ...invoice, status: 'OVERDUE' });
 
       const result = await invoiceService.markInvoiceOverdue('inv-1', mockTenantContext);
       expect(result.status).toBe('OVERDUE');
@@ -808,7 +798,7 @@ describe('InvoiceService', () => {
 
     it('should reject DRAFT → OVERDUE transition', async () => {
       const invoice = mockInvoice({ status: 'DRAFT' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       await expect(invoiceService.markInvoiceOverdue('inv-1', mockTenantContext))
         .rejects.toThrow('Invalid status transition');
@@ -818,10 +808,10 @@ describe('InvoiceService', () => {
   describe('applyPaymentToInvoice', () => {
     it('should update paidAmount and transition to PARTIALLY_PAID', async () => {
       const invoice = mockInvoice({ status: 'SENT', paidAmount: 0, total: 99000 });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
+      mockPrisma.invoice.update.mockResolvedValueOnce({
         ...invoice, paidAmount: 50000, status: 'PARTIALLY_PAID',
-      } as never);
+      });
 
       const result = await invoiceService.applyPaymentToInvoice('inv-1', 50000, mockTenantContext);
 
@@ -832,10 +822,10 @@ describe('InvoiceService', () => {
 
     it('should transition to PAID when fully paid', async () => {
       const invoice = mockInvoice({ status: 'PARTIALLY_PAID', paidAmount: 50000, total: 99000 });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
+      mockPrisma.invoice.update.mockResolvedValueOnce({
         ...invoice, paidAmount: 99000, status: 'PAID',
-      } as never);
+      });
 
       const result = await invoiceService.applyPaymentToInvoice('inv-1', 49000, mockTenantContext);
 
@@ -845,7 +835,7 @@ describe('InvoiceService', () => {
 
     it('should reject payment exceeding balance', async () => {
       const invoice = mockInvoice({ status: 'SENT', paidAmount: 90000, total: 99000 });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       await expect(invoiceService.applyPaymentToInvoice('inv-1', 10000, mockTenantContext))
         .rejects.toThrow('would exceed invoice balance');
@@ -853,7 +843,7 @@ describe('InvoiceService', () => {
 
     it('should reject zero or negative amount', async () => {
       const invoice = mockInvoice({ status: 'SENT' });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
 
       await expect(invoiceService.applyPaymentToInvoice('inv-1', 0, mockTenantContext))
         .rejects.toThrow('Payment amount must be positive');
@@ -868,10 +858,10 @@ describe('InvoiceService', () => {
         total: 99000,
         dueDate: new Date('2099-01-31'), // future date
       });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
+      mockPrisma.invoice.update.mockResolvedValueOnce({
         ...invoice, paidAmount: 0, status: 'SENT',
-      } as never);
+      });
 
       const result = await invoiceService.reversePaymentFromInvoice('inv-1', 50000, mockTenantContext);
 
@@ -886,14 +876,14 @@ describe('InvoiceService', () => {
         total: 99000,
         dueDate: new Date('2020-01-01'), // past date
       });
-      vi.mocked(prisma.invoice.findFirst).mockResolvedValueOnce(invoice as never);
-      vi.mocked(prisma.invoice.update).mockResolvedValueOnce({
+      mockPrisma.invoice.findFirst.mockResolvedValueOnce(invoice);
+      mockPrisma.invoice.update.mockResolvedValueOnce({
         ...invoice, paidAmount: 0, status: 'OVERDUE',
-      } as never);
+      });
 
       await invoiceService.reversePaymentFromInvoice('inv-1', 50000, mockTenantContext);
 
-      const updateArgs = vi.mocked(prisma.invoice.update).mock.calls[0][0]!;
+      const updateArgs = mockPrisma.invoice.update.mock.calls[0][0]!;
       expect(updateArgs.data.status).toBe('OVERDUE');
     });
   });

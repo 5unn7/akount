@@ -2,53 +2,22 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TransferService } from '../transfer.service';
 import { AccountingError } from '../../../accounting/errors';
 import { assertIntegerCents } from '../../../../test-utils/financial-assertions';
+import { mockPrisma, rewirePrismaMock, TEST_IDS } from '../../../../test-utils';
 
 // Mock audit - all mocks must be inline
 vi.mock('../../../../lib/audit', () => ({
   createAuditLog: vi.fn().mockResolvedValue(undefined),
 }));
 
-// Mock Prisma - avoid top-level variable references
-vi.mock('@akount/db', () => {
-  return {
-    prisma: {
-      $transaction: vi.fn(async (callback: (tx: unknown) => Promise<unknown>) => {
-        // Create mock tx object
-        const tx = {
-          account: {
-            findFirst: vi.fn(),
-            update: vi.fn(),
-          },
-          journalEntry: {
-            create: vi.fn(),
-            update: vi.fn(),
-            findFirst: vi.fn(),
-            findMany: vi.fn(),
-            updateMany: vi.fn(),
-          },
-          entity: {
-            findFirst: vi.fn(),
-          },
-        };
-        return callback(tx);
-      }),
-      entity: {
-        findFirst: vi.fn(),
-      },
-      journalEntry: {
-        findFirst: vi.fn(),
-        findMany: vi.fn(),
-      },
-    },
-    Prisma: {
-      TransactionIsolationLevel: {
-        Serializable: 'Serializable',
-      },
-    },
-  };
-});
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
 
-import { prisma } from '@akount/db';
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
+}));
+
 import { createAuditLog } from '../../../../lib/audit';
 
 const TENANT_ID = 'tenant-123';
@@ -78,6 +47,7 @@ describe('TransferService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
     service = new TransferService(TENANT_ID, USER_ID);
     vi.mocked(createAuditLog).mockResolvedValue(undefined);
   });
@@ -96,7 +66,7 @@ describe('TransferService', () => {
       });
 
       // Mock the transaction callback
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -130,7 +100,7 @@ describe('TransferService', () => {
     });
 
     it('should reject transfer when from account not found', async () => {
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -152,7 +122,7 @@ describe('TransferService', () => {
     });
 
     it('should reject transfer when to account not found', async () => {
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -174,7 +144,7 @@ describe('TransferService', () => {
     });
 
     it('should reject transfer when from account has no glAccountId', async () => {
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -196,7 +166,7 @@ describe('TransferService', () => {
     });
 
     it('should reject cross-entity transfer', async () => {
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -223,7 +193,7 @@ describe('TransferService', () => {
         type: 'BANK',
       });
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -251,7 +221,7 @@ describe('TransferService', () => {
       });
       const toAcc = mockAccount({ id: 'to-acc' });
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -290,7 +260,7 @@ describe('TransferService', () => {
         glAccountId: 'gl-cad',
       });
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -315,7 +285,7 @@ describe('TransferService', () => {
       const fromAcc = mockAccount({ currency: 'CAD' });
       const toAcc = mockAccount({ id: 'to-acc', currency: 'CAD' });
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -356,7 +326,7 @@ describe('TransferService', () => {
         .mockResolvedValueOnce({ id: 'je-1', entityId: ENTITY_ID })
         .mockResolvedValueOnce({ id: 'je-2' });
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -438,7 +408,7 @@ describe('TransferService', () => {
         .mockResolvedValueOnce({ id: 'je-1', entityId: ENTITY_ID })
         .mockResolvedValueOnce({ id: 'je-2' });
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           account: {
             findFirst: vi.fn()
@@ -476,8 +446,8 @@ describe('TransferService', () => {
 
   describe('listTransfers', () => {
     it('should list transfers for entity with tenant filter', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce({ id: ENTITY_ID } as never);
-      vi.mocked(prisma.journalEntry.findMany).mockResolvedValueOnce([
+      mockPrisma.entity.findFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockPrisma.journalEntry.findMany.mockResolvedValueOnce([
         {
           id: 'je-1',
           date: new Date('2024-01-15'),
@@ -502,7 +472,7 @@ describe('TransferService', () => {
     });
 
     it('should reject access to other tenant entity', async () => {
-      vi.mocked(prisma.entity.findFirst).mockResolvedValueOnce(null);
+      mockPrisma.entity.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         service.listTransfers({ entityId: 'other-entity', limit: 50 })
@@ -512,7 +482,7 @@ describe('TransferService', () => {
 
   describe('getTransfer', () => {
     it('should get single transfer with linked entry', async () => {
-      vi.mocked(prisma.journalEntry.findFirst).mockResolvedValueOnce({
+      mockPrisma.journalEntry.findFirst.mockResolvedValueOnce({
         id: 'je-1',
         entityId: ENTITY_ID,
         entryNumber: 'JE-001',
@@ -533,7 +503,7 @@ describe('TransferService', () => {
     });
 
     it('should return 404 when transfer not found', async () => {
-      vi.mocked(prisma.journalEntry.findFirst).mockResolvedValueOnce(null);
+      mockPrisma.journalEntry.findFirst.mockResolvedValueOnce(null);
 
       await expect(service.getTransfer('invalid')).rejects.toThrow(
         'Transfer not found'
@@ -546,7 +516,7 @@ describe('TransferService', () => {
       const mockAccountUpdate = vi.fn().mockResolvedValue({});
       const mockUpdateMany = vi.fn().mockResolvedValue({ count: 2 });
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           journalEntry: {
             findFirst: vi.fn().mockResolvedValueOnce({
@@ -617,7 +587,7 @@ describe('TransferService', () => {
     it('should void multi-currency transfer with correct exchange rate', async () => {
       const mockAccountUpdate = vi.fn().mockResolvedValue({});
 
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           journalEntry: {
             findFirst: vi.fn().mockResolvedValueOnce({
@@ -659,7 +629,7 @@ describe('TransferService', () => {
     });
 
     it('should reject void on already-voided transfer', async () => {
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           journalEntry: {
             findFirst: vi.fn().mockResolvedValueOnce({
@@ -678,7 +648,7 @@ describe('TransferService', () => {
     });
 
     it('should return 404 when transfer not found for void', async () => {
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           journalEntry: {
             findFirst: vi.fn().mockResolvedValueOnce(null),
@@ -693,7 +663,7 @@ describe('TransferService', () => {
     });
 
     it('should reject void when sourceDocument is missing', async () => {
-      vi.mocked(prisma.$transaction).mockImplementationOnce(async (callback: any) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (callback: any) => {
         const tx = {
           journalEntry: {
             findFirst: vi.fn().mockResolvedValueOnce({

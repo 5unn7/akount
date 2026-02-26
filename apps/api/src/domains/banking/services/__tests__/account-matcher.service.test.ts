@@ -4,16 +4,15 @@ import {
   findDuplicateAccounts,
   type ExternalAccountData,
 } from '../account-matcher.service';
+import { mockPrisma, rewirePrismaMock, TEST_IDS } from '../../../../test-utils';
 
-// Mock Prisma
-const mockFindMany = vi.fn();
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
 
-vi.mock('@akount/db', () => ({
-  prisma: {
-    account: {
-      findMany: (...args: unknown[]) => mockFindMany(...args),
-    },
-  },
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
 // Mock normalizeInstitutionName from parser.service
@@ -50,6 +49,7 @@ function mockBankConnection() {
 describe('AccountMatcherService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
   });
 
   describe('matchAccountToBankConnection', () => {
@@ -59,7 +59,7 @@ describe('AccountMatcherService', () => {
           name: 'TD Bank Checking 1234',
           currency: 'USD',
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const externalData: ExternalAccountData = {
           accountId: 'plaid-123',
@@ -90,7 +90,7 @@ describe('AccountMatcherService', () => {
           name: 'TD Account 5678',
           currency: 'CAD',
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const externalData: ExternalAccountData = {
           accountId: 'plaid-456',
@@ -116,7 +116,7 @@ describe('AccountMatcherService', () => {
           name: 'RBC Checking Account',
           currency: 'CAD',
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const externalData: ExternalAccountData = {
           accountId: 'plaid-789',
@@ -140,7 +140,7 @@ describe('AccountMatcherService', () => {
           name: 'Business Account 4321',
           currency: 'USD',
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const externalData: ExternalAccountData = {
           accountId: 'plaid-999',
@@ -166,7 +166,7 @@ describe('AccountMatcherService', () => {
           name: 'My Account',
           currency: 'USD',
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const externalData: ExternalAccountData = {
           accountId: 'plaid-111',
@@ -188,7 +188,7 @@ describe('AccountMatcherService', () => {
 
     describe('no match scenarios', () => {
       it('should return null when no accounts exist', async () => {
-        mockFindMany.mockResolvedValueOnce([]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([]);
 
         const result = await matchAccountToBankConnection(
           ENTITY_ID,
@@ -212,7 +212,7 @@ describe('AccountMatcherService', () => {
           name: 'TD Checking 1234',
           currency: 'CAD', // Different currency
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const result = await matchAccountToBankConnection(
           ENTITY_ID,
@@ -251,7 +251,7 @@ describe('AccountMatcherService', () => {
             currency: 'USD',
           }), // Score: 50
         ];
-        mockFindMany.mockResolvedValueOnce(accounts);
+        mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
 
         const result = await matchAccountToBankConnection(
           ENTITY_ID,
@@ -276,7 +276,7 @@ describe('AccountMatcherService', () => {
           name: 'Checking Account',
           currency: 'USD',
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const result = await matchAccountToBankConnection(
           ENTITY_ID,
@@ -298,7 +298,7 @@ describe('AccountMatcherService', () => {
           name: 'Savings Account',
           currency: 'USD',
         });
-        mockFindMany.mockResolvedValueOnce([account]);
+        mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
         const result = await matchAccountToBankConnection(
           ENTITY_ID,
@@ -323,7 +323,7 @@ describe('AccountMatcherService', () => {
         ];
 
         for (const account of accounts) {
-          mockFindMany.mockResolvedValueOnce([account]);
+          mockPrisma.account.findMany.mockResolvedValueOnce([account]);
 
           const result = await matchAccountToBankConnection(
             ENTITY_ID,
@@ -349,12 +349,12 @@ describe('AccountMatcherService', () => {
         mockAccount({ id: 'acc-1', currency: 'USD', isActive: true }),
         mockAccount({ id: 'acc-2', currency: 'USD', isActive: true }),
       ];
-      mockFindMany.mockResolvedValueOnce(accounts);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
 
       const result = await findDuplicateAccounts(ENTITY_ID, { currency: 'USD' });
 
       expect(result).toHaveLength(2);
-      expect(mockFindMany).toHaveBeenCalledWith({
+      expect(mockPrisma.account.findMany).toHaveBeenCalledWith({
         where: {
           entityId: ENTITY_ID,
           currency: 'USD',
@@ -368,7 +368,7 @@ describe('AccountMatcherService', () => {
         mockAccount({ id: 'acc-1', currency: 'USD', type: 'BANK' }),
         mockAccount({ id: 'acc-2', currency: 'USD', type: 'CREDIT_CARD' }),
       ];
-      mockFindMany.mockResolvedValueOnce(accounts);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
 
       const result = await findDuplicateAccounts(ENTITY_ID, {
         currency: 'USD',
@@ -380,7 +380,7 @@ describe('AccountMatcherService', () => {
     });
 
     it('should return empty array when no matches', async () => {
-      mockFindMany.mockResolvedValueOnce([]);
+      mockPrisma.account.findMany.mockResolvedValueOnce([]);
 
       const result = await findDuplicateAccounts(ENTITY_ID, { currency: 'EUR' });
 
@@ -388,11 +388,11 @@ describe('AccountMatcherService', () => {
     });
 
     it('should only return active accounts', async () => {
-      mockFindMany.mockResolvedValueOnce([]);
+      mockPrisma.account.findMany.mockResolvedValueOnce([]);
 
       await findDuplicateAccounts(ENTITY_ID, { currency: 'USD' });
 
-      expect(mockFindMany).toHaveBeenCalledWith({
+      expect(mockPrisma.account.findMany).toHaveBeenCalledWith({
         where: expect.objectContaining({
           isActive: true,
         }),

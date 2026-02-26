@@ -6,18 +6,15 @@ import {
   type DuplicateResult,
 } from '../duplication.service';
 import type { ParsedTransaction } from '../../../../schemas/import';
+import { mockPrisma, rewirePrismaMock, TEST_IDS } from '../../../../test-utils';
 
-// Mock Prisma
-const mockFindMany = vi.fn();
-const mockUpdateMany = vi.fn();
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
 
-vi.mock('@akount/db', () => ({
-  prisma: {
-    transaction: {
-      findMany: (...args: unknown[]) => mockFindMany(...args),
-      updateMany: (...args: unknown[]) => mockUpdateMany(...args),
-    },
-  },
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
 const ACCOUNT_ID = 'acc-123';
@@ -50,17 +47,18 @@ function mockExistingTransaction(overrides: Record<string, unknown> = {}) {
 describe('DuplicationService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
   });
 
   describe('findDuplicates', () => {
     it('should return empty array for empty transactions', async () => {
       const result = await findDuplicates([], ACCOUNT_ID);
       expect(result).toEqual([]);
-      expect(mockFindMany).not.toHaveBeenCalled();
+      expect(mockPrisma.transaction.findMany).not.toHaveBeenCalled();
     });
 
     it('should return no duplicates when no existing transactions', async () => {
-      mockFindMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([]);
 
       const transactions = [mockParsedTransaction()];
       const result = await findDuplicates(transactions, ACCOUNT_ID);
@@ -73,7 +71,7 @@ describe('DuplicationService', () => {
 
     it('should detect perfect match (score 100)', async () => {
       const existing = mockExistingTransaction();
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -99,7 +97,7 @@ describe('DuplicationService', () => {
         date: new Date('2026-02-16'), // +1 day (30 points)
         description: 'STARBUCKS COFFEE DOWNTOWN', // Similar (18+ points)
       });
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -120,7 +118,7 @@ describe('DuplicationService', () => {
         date: new Date('2026-02-18'), // +3 days (10 points)
         description: 'WALMART', // Different description (0 points)
       });
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -141,7 +139,7 @@ describe('DuplicationService', () => {
         date: new Date('2026-02-16'), // +1 day
         description: 'STARBUCKS COFFEE',
       });
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -163,7 +161,7 @@ describe('DuplicationService', () => {
         date: new Date('2026-02-17'), // +2 days
         description: 'STARBUCKS COFFEE',
       });
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -186,7 +184,7 @@ describe('DuplicationService', () => {
         date: new Date('2026-02-18'), // +3 days
         description: 'STARBUCKS COFFEE',
       });
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -209,7 +207,7 @@ describe('DuplicationService', () => {
         amount: -2599, // Negative (credit card charge stored as negative)
         description: 'AMAZON PURCHASE',
       });
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -231,7 +229,7 @@ describe('DuplicationService', () => {
         amount: 1000, // Different amount
         description: 'STARBUCKS COFFEE',
       });
-      mockFindMany.mockResolvedValueOnce([existing]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing]);
 
       const transactions = [
         mockParsedTransaction({
@@ -260,7 +258,7 @@ describe('DuplicationService', () => {
         description: 'STARBUCKS COFFEE',
       });
 
-      mockFindMany.mockResolvedValueOnce([weakMatch, strongMatch]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([weakMatch, strongMatch]);
 
       const transactions = [
         mockParsedTransaction({
@@ -278,19 +276,19 @@ describe('DuplicationService', () => {
     });
 
     it('should exclude soft-deleted transactions (deletedAt filter)', async () => {
-      mockFindMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([]);
 
       const transactions = [mockParsedTransaction()];
       await findDuplicates(transactions, ACCOUNT_ID);
 
       // Verify the query includes deletedAt: null filter
-      const queryArgs = mockFindMany.mock.calls[0][0];
+      const queryArgs = mockPrisma.transaction.findMany.mock.calls[0][0];
       expect(queryArgs.where.deletedAt).toBe(null);
       expect(queryArgs.where.accountId).toBe(ACCOUNT_ID);
     });
 
     it('should query with ±3 day date buffer for optimization', async () => {
-      mockFindMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([]);
 
       const transactions = [
         mockParsedTransaction({ date: '2026-02-15' }),
@@ -299,7 +297,7 @@ describe('DuplicationService', () => {
 
       await findDuplicates(transactions, ACCOUNT_ID);
 
-      const queryArgs = mockFindMany.mock.calls[0][0];
+      const queryArgs = mockPrisma.transaction.findMany.mock.calls[0][0];
       const minDate = new Date(queryArgs.where.date.gte);
       const maxDate = new Date(queryArgs.where.date.lte);
 
@@ -313,7 +311,7 @@ describe('DuplicationService', () => {
       const existing1 = mockExistingTransaction({ id: 'txn-1' });
       const existing2 = mockExistingTransaction({ id: 'txn-2', description: 'WALMART' });
 
-      mockFindMany.mockResolvedValueOnce([existing1, existing2]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([existing1, existing2]);
 
       const transactions = [
         mockParsedTransaction({ tempId: 'temp-1', description: 'STARBUCKS COFFEE' }),
@@ -330,7 +328,7 @@ describe('DuplicationService', () => {
 
   describe('deduplicateExistingTransactions', () => {
     it('should return 0 removed when no duplicates exist', async () => {
-      mockFindMany.mockResolvedValueOnce([
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([
         mockExistingTransaction({ id: 'txn-1' }),
         mockExistingTransaction({ id: 'txn-2', description: 'WALMART' }),
       ]);
@@ -339,7 +337,7 @@ describe('DuplicationService', () => {
 
       expect(result.removed).toBe(0);
       expect(result.groups).toBe(0);
-      expect(mockUpdateMany).not.toHaveBeenCalled();
+      expect(mockPrisma.transaction.updateMany).not.toHaveBeenCalled();
     });
 
     it('should soft-delete duplicates in a single group', async () => {
@@ -352,8 +350,8 @@ describe('DuplicationService', () => {
         createdAt: new Date('2026-02-11'), // Newer
       });
 
-      mockFindMany.mockResolvedValueOnce([duplicate1, duplicate2]);
-      mockUpdateMany.mockResolvedValueOnce({ count: 1 } as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([duplicate1, duplicate2]);
+      mockPrisma.transaction.updateMany.mockResolvedValueOnce({ count: 1 });
 
       const result = await deduplicateExistingTransactions(ACCOUNT_ID);
 
@@ -361,7 +359,7 @@ describe('DuplicationService', () => {
       expect(result.groups).toBe(1);
 
       // Verify soft delete call
-      const updateCall = mockUpdateMany.mock.calls[0][0];
+      const updateCall = mockPrisma.transaction.updateMany.mock.calls[0][0];
       expect(updateCall.where.id.in).toEqual(['txn-2']); // Newer one deleted
       expect(updateCall.data.deletedAt).toBeInstanceOf(Date);
     });
@@ -391,14 +389,14 @@ describe('DuplicationService', () => {
         createdAt: new Date('2026-02-13'),
       });
 
-      mockFindMany.mockResolvedValueOnce([group1_txn1, group1_txn2, group2_txn1, group2_txn2]);
-      mockUpdateMany.mockResolvedValue({ count: 1 } as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([group1_txn1, group1_txn2, group2_txn1, group2_txn2]);
+      mockPrisma.transaction.updateMany.mockResolvedValue({ count: 1 });
 
       const result = await deduplicateExistingTransactions(ACCOUNT_ID);
 
       expect(result.removed).toBe(2); // One from each group
       expect(result.groups).toBe(2);
-      expect(mockUpdateMany).toHaveBeenCalledTimes(2);
+      expect(mockPrisma.transaction.updateMany).toHaveBeenCalledTimes(2);
     });
 
     it('should prefer transaction with journalEntryId', async () => {
@@ -412,13 +410,13 @@ describe('DuplicationService', () => {
         createdAt: new Date('2026-02-10'), // Older
       });
 
-      mockFindMany.mockResolvedValueOnce([withoutJE, withJE]);
-      mockUpdateMany.mockResolvedValueOnce({ count: 1 } as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([withoutJE, withJE]);
+      mockPrisma.transaction.updateMany.mockResolvedValueOnce({ count: 1 });
 
       await deduplicateExistingTransactions(ACCOUNT_ID);
 
       // Should delete the one without JE
-      const updateCall = mockUpdateMany.mock.calls[0][0];
+      const updateCall = mockPrisma.transaction.updateMany.mock.calls[0][0];
       expect(updateCall.where.id.in).toEqual(['txn-without-je']);
     });
 
@@ -433,13 +431,13 @@ describe('DuplicationService', () => {
         createdAt: new Date('2026-02-10'), // Older
       });
 
-      mockFindMany.mockResolvedValueOnce([withoutCategory, withCategory]);
-      mockUpdateMany.mockResolvedValueOnce({ count: 1 } as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([withoutCategory, withCategory]);
+      mockPrisma.transaction.updateMany.mockResolvedValueOnce({ count: 1 });
 
       await deduplicateExistingTransactions(ACCOUNT_ID);
 
       // Should delete the one without category
-      const updateCall = mockUpdateMany.mock.calls[0][0];
+      const updateCall = mockPrisma.transaction.updateMany.mock.calls[0][0];
       expect(updateCall.where.id.in).toEqual(['txn-without-cat']);
     });
 
@@ -453,22 +451,22 @@ describe('DuplicationService', () => {
         createdAt: new Date('2026-02-11'),
       });
 
-      mockFindMany.mockResolvedValueOnce([oldest, newer]);
-      mockUpdateMany.mockResolvedValueOnce({ count: 1 } as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([oldest, newer]);
+      mockPrisma.transaction.updateMany.mockResolvedValueOnce({ count: 1 });
 
       await deduplicateExistingTransactions(ACCOUNT_ID);
 
       // Should delete the newer one
-      const updateCall = mockUpdateMany.mock.calls[0][0];
+      const updateCall = mockPrisma.transaction.updateMany.mock.calls[0][0];
       expect(updateCall.where.id.in).toEqual(['txn-newer']);
     });
 
     it('should only query active transactions (deletedAt: null)', async () => {
-      mockFindMany.mockResolvedValueOnce([]);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([]);
 
       await deduplicateExistingTransactions(ACCOUNT_ID);
 
-      const queryArgs = mockFindMany.mock.calls[0][0];
+      const queryArgs = mockPrisma.transaction.findMany.mock.calls[0][0];
       expect(queryArgs.where.accountId).toBe(ACCOUNT_ID);
       expect(queryArgs.where.deletedAt).toBe(null);
     });
@@ -486,8 +484,8 @@ describe('DuplicationService', () => {
         createdAt: new Date('2026-02-11'),
       });
 
-      mockFindMany.mockResolvedValueOnce([txn1, txn2]);
-      mockUpdateMany.mockResolvedValueOnce({ count: 1 } as never);
+      mockPrisma.transaction.findMany.mockResolvedValueOnce([txn1, txn2]);
+      mockPrisma.transaction.updateMany.mockResolvedValueOnce({ count: 1 });
 
       const result = await deduplicateExistingTransactions(ACCOUNT_ID);
 

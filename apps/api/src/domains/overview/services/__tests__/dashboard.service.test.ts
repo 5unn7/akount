@@ -1,13 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DashboardService } from '../dashboard.service';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
 
-// Mock Prisma client
-vi.mock('@akount/db', () => ({
-  prisma: {
-    account: {
-      findMany: vi.fn(),
-    },
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
 // Mock FxRateService - use a function constructor so `new` works
@@ -39,8 +40,6 @@ vi.mock('../../../invoicing/services/invoice.service', () => ({
   }),
 }));
 
-import { prisma } from '@akount/db';
-
 const TENANT_ID = 'tenant-abc-123';
 
 function mockAccount(overrides: Record<string, unknown> = {}) {
@@ -61,6 +60,7 @@ describe('DashboardService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
     mockGetRateBatchFn.mockResolvedValue(new Map([['USD_USD', 1.0]]));
     service = new DashboardService(TENANT_ID);
   });
@@ -73,7 +73,7 @@ describe('DashboardService', () => {
         mockAccount({ id: 'acc-3', type: 'CREDIT_CARD', currentBalance: 150000 }), // $1500
       ];
 
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce(accounts as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map([['USD_USD', 1.0]]));
 
       const metrics = await service.getMetrics(undefined, 'USD');
@@ -95,7 +95,7 @@ describe('DashboardService', () => {
         mockAccount({ id: 'acc-3', type: 'BANK', currency: 'USD', currentBalance: 50000 }),
       ];
 
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce(accounts as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
       mockGetRateBatchFn.mockResolvedValueOnce(
         new Map([
           ['CAD_USD', 0.74],
@@ -119,7 +119,7 @@ describe('DashboardService', () => {
         mockAccount({ id: 'acc-1', type: 'BANK', currency: 'CAD', currentBalance: 33333 }),
       ];
 
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce(accounts as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map([['CAD_USD', 0.74]]));
 
       const metrics = await service.getMetrics(undefined, 'USD');
@@ -129,12 +129,12 @@ describe('DashboardService', () => {
     });
 
     it('should filter by entityId when provided', async () => {
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce([]);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map());
 
       await service.getMetrics('entity-xyz', 'USD');
 
-      const whereArg = vi.mocked(prisma.account.findMany).mock.calls[0][0]!.where;
+      const whereArg = mockPrisma.account.findMany.mock.calls[0][0]!.where;
       expect(whereArg).toEqual(
         expect.objectContaining({
           entity: expect.objectContaining({
@@ -146,22 +146,22 @@ describe('DashboardService', () => {
     });
 
     it('should not include entity.id when entityId is not provided', async () => {
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce([]);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map());
 
       await service.getMetrics(undefined, 'USD');
 
-      const whereArg = vi.mocked(prisma.account.findMany).mock.calls[0][0]!.where;
+      const whereArg = mockPrisma.account.findMany.mock.calls[0][0]!.where;
       expect(whereArg!.entity).toEqual({ tenantId: TENANT_ID });
     });
 
     it('should always filter by tenantId', async () => {
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce([]);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map());
 
       await service.getMetrics(undefined, 'USD');
 
-      const whereArg = vi.mocked(prisma.account.findMany).mock.calls[0][0]!.where;
+      const whereArg = mockPrisma.account.findMany.mock.calls[0][0]!.where;
       expect(whereArg!.entity).toHaveProperty('tenantId', TENANT_ID);
     });
 
@@ -174,7 +174,7 @@ describe('DashboardService', () => {
         mockAccount({ id: 'acc-5', currency: 'USD', currentBalance: 500000 }),
       ];
 
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce(accounts as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
       mockGetRateBatchFn.mockResolvedValueOnce(
         new Map([
           ['CAD_USD', 0.74],
@@ -186,7 +186,7 @@ describe('DashboardService', () => {
       await service.getMetrics(undefined, 'USD');
 
       // Only 1 database query for accounts
-      expect(prisma.account.findMany).toHaveBeenCalledOnce();
+      expect(mockPrisma.account.findMany).toHaveBeenCalledOnce();
       // Only 1 batch FX rate fetch
       expect(mockGetRateBatchFn).toHaveBeenCalledOnce();
     });
@@ -196,7 +196,7 @@ describe('DashboardService', () => {
         mockAccount({ id: 'acc-1', type: 'INVESTMENT', currentBalance: 500000 }),
       ];
 
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce(accounts as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map([['USD_USD', 1.0]]));
 
       const metrics = await service.getMetrics(undefined, 'USD');
@@ -210,7 +210,7 @@ describe('DashboardService', () => {
         mockAccount({ id: 'acc-1', type: 'MORTGAGE', currentBalance: 200000 }),
       ];
 
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce(accounts as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map([['USD_USD', 1.0]]));
 
       const metrics = await service.getMetrics(undefined, 'USD');
@@ -220,7 +220,7 @@ describe('DashboardService', () => {
     });
 
     it('should return all zeros when no accounts exist', async () => {
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce([]);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map());
 
       const metrics = await service.getMetrics(undefined, 'USD');
@@ -237,7 +237,7 @@ describe('DashboardService', () => {
         mockAccount({ id: 'acc-1', type: 'BANK', currentBalance: -50000 }),
       ];
 
-      vi.mocked(prisma.account.findMany).mockResolvedValueOnce(accounts as never);
+      mockPrisma.account.findMany.mockResolvedValueOnce(accounts);
       mockGetRateBatchFn.mockResolvedValueOnce(new Map([['USD_USD', 1.0]]));
 
       const metrics = await service.getMetrics(undefined, 'USD');

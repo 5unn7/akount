@@ -6,6 +6,7 @@ import {
   mapFlinksAccountType,
   scrubPII,
 } from '../flinks.service';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
 
 // ─── Mock Prisma ─────────────────────────────────────────────────────
 
@@ -19,11 +20,13 @@ const mockTxClient = {
   auditLog: { findFirst: vi.fn(), create: vi.fn() },
 };
 
-vi.mock('@akount/db', () => ({
-  prisma: {
-    bankConnection: { findFirst: vi.fn(), findMany: vi.fn(), update: vi.fn() },
-    $transaction: vi.fn((fn: (tx: typeof mockTxClient) => Promise<unknown>) => fn(mockTxClient)),
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
 vi.mock('../../../../lib/env', () => ({
@@ -53,8 +56,6 @@ vi.mock('../account.service', () => ({
   getDefaultGLAccountForType: vi.fn().mockResolvedValue('gl-1100'),
 }));
 
-import { prisma } from '@akount/db';
-
 const TENANT_ID = 'tenant-abc-123';
 const ENTITY_ID = 'entity-1';
 const LOGIN_ID = '550e8400-e29b-41d4-a716-446655440000';
@@ -70,15 +71,16 @@ describe('FlinksService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (vi.mocked(prisma.$transaction) as any).mockImplementation(
-      (fn: (tx: typeof mockTxClient) => Promise<unknown>) => fn(mockTxClient) as never
+    rewirePrismaMock();
+    (mockPrisma.$transaction as any).mockImplementation(
+      (fn: (tx: typeof mockTxClient) => Promise<unknown>) => fn(mockTxClient)
     );
     service = new FlinksService(TENANT_ID);
   });
 
   describe('processConnection', () => {
     it('should verify entity belongs to tenant before creating', async () => {
-      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(null as never);
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(null);
 
       await expect(
         service.processConnection(LOGIN_ID, ENTITY_ID, CTX)
@@ -92,7 +94,7 @@ describe('FlinksService', () => {
 
     it('should return existing connection for duplicate loginId (idempotency)', async () => {
       const entity = { id: ENTITY_ID, name: 'Corp', functionalCurrency: 'CAD' };
-      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity);
 
       const existingConnection = {
         id: 'conn-existing',
@@ -101,7 +103,7 @@ describe('FlinksService', () => {
         accounts: [{ id: 'acc-1', name: 'Chequing', currentBalance: 500000, currency: 'CAD' }],
         feedTxns: [{ id: 'ft-1' }, { id: 'ft-2' }],
       };
-      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(existingConnection as never);
+      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(existingConnection);
 
       const result = await service.processConnection(LOGIN_ID, ENTITY_ID, CTX);
 
@@ -112,25 +114,25 @@ describe('FlinksService', () => {
 
     it('should create connection with demo data in dev mode', async () => {
       const entity = { id: ENTITY_ID, name: 'Corp', functionalCurrency: 'CAD' };
-      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(null as never);
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity);
+      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(null);
 
       const createdConnection = { id: 'conn-new', entityId: ENTITY_ID, provider: 'FLINKS', status: 'ACTIVE' };
-      vi.mocked(mockTxClient.bankConnection.create).mockResolvedValueOnce(createdConnection as never);
+      vi.mocked(mockTxClient.bankConnection.create).mockResolvedValueOnce(createdConnection);
 
       // Each demo account creates one account
       vi.mocked(mockTxClient.account.create)
-        .mockResolvedValueOnce({ id: 'acc-1', name: 'Personal Chequing', currentBalance: 543210, currency: 'CAD' } as never)
-        .mockResolvedValueOnce({ id: 'acc-2', name: 'High Interest Savings', currentBalance: 1250000, currency: 'CAD' } as never)
-        .mockResolvedValueOnce({ id: 'acc-3', name: 'Visa Infinite', currentBalance: -184732, currency: 'CAD' } as never);
+        .mockResolvedValueOnce({ id: 'acc-1', name: 'Personal Chequing', currentBalance: 543210, currency: 'CAD' })
+        .mockResolvedValueOnce({ id: 'acc-2', name: 'High Interest Savings', currentBalance: 1250000, currency: 'CAD' })
+        .mockResolvedValueOnce({ id: 'acc-3', name: 'Visa Infinite', currentBalance: -184732, currency: 'CAD' });
 
       // Feed transactions and posted transactions
-      vi.mocked(mockTxClient.bankFeedTransaction.create).mockResolvedValue({} as never);
-      vi.mocked(mockTxClient.transaction.create).mockResolvedValue({} as never);
+      vi.mocked(mockTxClient.bankFeedTransaction.create).mockResolvedValue({});
+      vi.mocked(mockTxClient.transaction.create).mockResolvedValue({});
 
       // Audit log mock
-      vi.mocked(mockTxClient.auditLog.findFirst).mockResolvedValue(null as never);
-      vi.mocked(mockTxClient.auditLog.create).mockResolvedValue({} as never);
+      vi.mocked(mockTxClient.auditLog.findFirst).mockResolvedValue(null);
+      vi.mocked(mockTxClient.auditLog.create).mockResolvedValue({});
 
       const result = await service.processConnection(LOGIN_ID, ENTITY_ID, CTX);
 
@@ -154,14 +156,14 @@ describe('FlinksService', () => {
 
     it('should create BankFeedTransactions with integer cents amounts', async () => {
       const entity = { id: ENTITY_ID, name: 'Corp', functionalCurrency: 'CAD' };
-      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(mockTxClient.bankConnection.create).mockResolvedValueOnce({ id: 'conn-1' } as never);
-      vi.mocked(mockTxClient.account.create).mockResolvedValue({ id: 'acc-1', name: 'Test', currentBalance: 0, currency: 'CAD' } as never);
-      vi.mocked(mockTxClient.bankFeedTransaction.create).mockResolvedValue({} as never);
-      vi.mocked(mockTxClient.transaction.create).mockResolvedValue({} as never);
-      vi.mocked(mockTxClient.auditLog.findFirst).mockResolvedValue(null as never);
-      vi.mocked(mockTxClient.auditLog.create).mockResolvedValue({} as never);
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity);
+      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(null);
+      vi.mocked(mockTxClient.bankConnection.create).mockResolvedValueOnce({ id: 'conn-1' });
+      vi.mocked(mockTxClient.account.create).mockResolvedValue({ id: 'acc-1', name: 'Test', currentBalance: 0, currency: 'CAD' });
+      vi.mocked(mockTxClient.bankFeedTransaction.create).mockResolvedValue({});
+      vi.mocked(mockTxClient.transaction.create).mockResolvedValue({});
+      vi.mocked(mockTxClient.auditLog.findFirst).mockResolvedValue(null);
+      vi.mocked(mockTxClient.auditLog.create).mockResolvedValue({});
 
       await service.processConnection(LOGIN_ID, ENTITY_ID, CTX);
 
@@ -177,14 +179,14 @@ describe('FlinksService', () => {
 
     it('should auto-post Transaction records from feed transactions', async () => {
       const entity = { id: ENTITY_ID, name: 'Corp', functionalCurrency: 'CAD' };
-      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity as never);
-      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(null as never);
-      vi.mocked(mockTxClient.bankConnection.create).mockResolvedValueOnce({ id: 'conn-1' } as never);
-      vi.mocked(mockTxClient.account.create).mockResolvedValue({ id: 'acc-1', name: 'Test', currentBalance: 0, currency: 'CAD' } as never);
-      vi.mocked(mockTxClient.bankFeedTransaction.create).mockResolvedValue({} as never);
-      vi.mocked(mockTxClient.transaction.create).mockResolvedValue({} as never);
-      vi.mocked(mockTxClient.auditLog.findFirst).mockResolvedValue(null as never);
-      vi.mocked(mockTxClient.auditLog.create).mockResolvedValue({} as never);
+      vi.mocked(mockTxClient.entity.findFirst).mockResolvedValueOnce(entity);
+      vi.mocked(mockTxClient.bankConnection.findFirst).mockResolvedValueOnce(null);
+      vi.mocked(mockTxClient.bankConnection.create).mockResolvedValueOnce({ id: 'conn-1' });
+      vi.mocked(mockTxClient.account.create).mockResolvedValue({ id: 'acc-1', name: 'Test', currentBalance: 0, currency: 'CAD' });
+      vi.mocked(mockTxClient.bankFeedTransaction.create).mockResolvedValue({});
+      vi.mocked(mockTxClient.transaction.create).mockResolvedValue({});
+      vi.mocked(mockTxClient.auditLog.findFirst).mockResolvedValue(null);
+      vi.mocked(mockTxClient.auditLog.create).mockResolvedValue({});
 
       await service.processConnection(LOGIN_ID, ENTITY_ID, CTX);
 
@@ -201,11 +203,11 @@ describe('FlinksService', () => {
 
   describe('listConnections', () => {
     it('should filter by entity and tenant', async () => {
-      vi.mocked(prisma.bankConnection.findMany).mockResolvedValueOnce([] as never);
+      mockPrisma.bankConnection.findMany.mockResolvedValueOnce([]);
 
       await service.listConnections(ENTITY_ID);
 
-      expect(prisma.bankConnection.findMany).toHaveBeenCalledWith(
+      expect(mockPrisma.bankConnection.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: {
             entityId: ENTITY_ID,
@@ -219,7 +221,7 @@ describe('FlinksService', () => {
 
   describe('disconnectConnection', () => {
     it('should return null for non-existent connection', async () => {
-      vi.mocked(prisma.bankConnection.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.bankConnection.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.disconnectConnection('conn-nonexistent');
 
@@ -227,20 +229,20 @@ describe('FlinksService', () => {
     });
 
     it('should set status DISCONNECTED and deletedAt', async () => {
-      vi.mocked(prisma.bankConnection.findFirst).mockResolvedValueOnce({
+      mockPrisma.bankConnection.findFirst.mockResolvedValueOnce({
         id: 'conn-1',
         entityId: ENTITY_ID,
-      } as never);
-      vi.mocked(prisma.bankConnection.update).mockResolvedValueOnce({
+      });
+      mockPrisma.bankConnection.update.mockResolvedValueOnce({
         id: 'conn-1',
         status: 'DISCONNECTED',
         deletedAt: new Date(),
-      } as never);
+      });
 
       const result = await service.disconnectConnection('conn-1');
 
       expect(result).toBeTruthy();
-      const updateCall = vi.mocked(prisma.bankConnection.update).mock.calls[0][0];
+      const updateCall = mockPrisma.bankConnection.update.mock.calls[0][0];
       expect(updateCall.data.status).toBe('DISCONNECTED');
       expect(updateCall.data.deletedAt).toBeTruthy();
     });
@@ -248,7 +250,7 @@ describe('FlinksService', () => {
 
   describe('refreshConnection', () => {
     it('should return null for non-existent connection', async () => {
-      vi.mocked(prisma.bankConnection.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.bankConnection.findFirst.mockResolvedValueOnce(null);
 
       const result = await service.refreshConnection('conn-nonexistent', CTX);
 
@@ -256,13 +258,13 @@ describe('FlinksService', () => {
     });
 
     it('should throw rate limit error if refreshed within an hour', async () => {
-      vi.mocked(prisma.bankConnection.findFirst).mockResolvedValueOnce({
+      mockPrisma.bankConnection.findFirst.mockResolvedValueOnce({
         id: 'conn-1',
         lastSyncAt: new Date(), // just now
         status: 'ACTIVE',
         providerItemId: LOGIN_ID,
         accounts: [],
-      } as never);
+      });
 
       await expect(
         service.refreshConnection('conn-1', CTX)

@@ -6,6 +6,7 @@ import {
   CategorizationService,
   CATEGORY_TO_COA_CODE,
 } from '../categorization.service';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
 
 // Mock logger
 vi.mock('../../../../lib/logger', () => ({
@@ -27,24 +28,20 @@ vi.mock('../ai.service', () => ({
   },
 }));
 
-// Mock Prisma
-const mockFindFirst = vi.fn();
-const mockFindMany = vi.fn();
-const mockGLFindFirst = vi.fn();
-const mockGLFindMany = vi.fn();
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
 
-vi.mock('@akount/db', () => ({
-  prisma: {
-    category: {
-      findFirst: (...args: unknown[]) => mockFindFirst(...args),
-      findMany: (...args: unknown[]) => mockFindMany(...args),
-    },
-    gLAccount: {
-      findFirst: (...args: unknown[]) => mockGLFindFirst(...args),
-      findMany: (...args: unknown[]) => mockGLFindMany(...args),
-    },
-  },
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
+
+// Local aliases for convenience (point to mockPrisma methods)
+let mockFindFirst: typeof mockPrisma.category.findFirst;
+let mockFindMany: typeof mockPrisma.category.findMany;
+let mockGLFindFirst: typeof mockPrisma.gLAccount.findFirst;
+let mockGLFindMany: typeof mockPrisma.gLAccount.findMany;
 
 const TENANT_ID = 'tenant-abc-123';
 const ENTITY_ID = 'entity-xyz-456';
@@ -72,6 +69,12 @@ function mockGLAccount(overrides: Record<string, unknown> = {}) {
 describe('CategorizationService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
+    // Re-bind local aliases after rewire
+    mockFindFirst = mockPrisma.category.findFirst;
+    mockFindMany = mockPrisma.category.findMany;
+    mockGLFindFirst = mockPrisma.gLAccount.findFirst;
+    mockGLFindMany = mockPrisma.gLAccount.findMany;
     mockIsProviderAvailable.mockReturnValue(false); // Default: no AI
   });
 

@@ -1,17 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FxRateService } from '../fx-rate.service';
+import { mockPrisma, rewirePrismaMock, TEST_IDS } from '../../../../test-utils';
 
-// Mock the Prisma client
-vi.mock('@akount/db', () => ({
-  prisma: {
-    fXRate: {
-      findFirst: vi.fn(),
-      findMany: vi.fn(),
-    },
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
-
-import { prisma } from '@akount/db';
 
 describe('FxRateService', () => {
   let service: FxRateService;
@@ -19,6 +17,7 @@ describe('FxRateService', () => {
   beforeEach(() => {
     service = new FxRateService();
     vi.clearAllMocks();
+    rewirePrismaMock();
   });
 
   describe('getRate', () => {
@@ -34,35 +33,35 @@ describe('FxRateService', () => {
 
     it('should fetch rate from database when available', async () => {
       const mockRate = { base: 'USD', quote: 'CAD', rate: 1.35, date: new Date() };
-      vi.mocked(prisma.fXRate.findFirst).mockResolvedValueOnce(mockRate as never);
+      mockPrisma.fXRate.findFirst.mockResolvedValueOnce(mockRate);
 
       const rate = await service.getRate('USD', 'CAD', new Date());
 
       expect(rate).toBe(1.35);
-      expect(prisma.fXRate.findFirst).toHaveBeenCalledOnce();
+      expect(mockPrisma.fXRate.findFirst).toHaveBeenCalledOnce();
     });
 
     it('should calculate inverse rate when direct rate not found', async () => {
       // First call (direct rate) returns null
-      vi.mocked(prisma.fXRate.findFirst).mockResolvedValueOnce(null as never);
+      mockPrisma.fXRate.findFirst.mockResolvedValueOnce(null);
       // Second call (inverse rate) returns a rate
-      vi.mocked(prisma.fXRate.findFirst).mockResolvedValueOnce({
+      mockPrisma.fXRate.findFirst.mockResolvedValueOnce({
         base: 'CAD',
         quote: 'USD',
         rate: 0.74,
         date: new Date(),
-      } as never);
+      });
 
       const rate = await service.getRate('USD', 'CAD', new Date());
 
       // 1 / 0.74 ≈ 1.35
       expect(rate).toBeCloseTo(1.35, 1);
-      expect(prisma.fXRate.findFirst).toHaveBeenCalledTimes(2);
+      expect(mockPrisma.fXRate.findFirst).toHaveBeenCalledTimes(2);
     });
 
     it('should use fallback rate for common pairs', async () => {
       // No rates in database
-      vi.mocked(prisma.fXRate.findFirst).mockResolvedValue(null as never);
+      mockPrisma.fXRate.findFirst.mockResolvedValue(null);
 
       const rate = await service.getRate('USD', 'CAD', new Date());
 
@@ -72,7 +71,7 @@ describe('FxRateService', () => {
 
     it('should throw error for unknown currency pair', async () => {
       // No rates in database
-      vi.mocked(prisma.fXRate.findFirst).mockResolvedValue(null as never);
+      mockPrisma.fXRate.findFirst.mockResolvedValue(null);
 
       await expect(service.getRate('XYZ', 'ABC', new Date())).rejects.toThrow(
         'FX Rate not found for XYZ/ABC'
@@ -88,7 +87,7 @@ describe('FxRateService', () => {
 
     it('should convert cents correctly', async () => {
       const mockRate = { base: 'USD', quote: 'CAD', rate: 1.35, date: new Date() };
-      vi.mocked(prisma.fXRate.findFirst).mockResolvedValueOnce(mockRate as never);
+      mockPrisma.fXRate.findFirst.mockResolvedValueOnce(mockRate);
 
       // $10.00 USD = 1000 cents
       const result = await service.convert(1000, 'USD', 'CAD');
@@ -99,7 +98,7 @@ describe('FxRateService', () => {
 
     it('should round result to nearest cent', async () => {
       const mockRate = { base: 'USD', quote: 'CAD', rate: 1.333333, date: new Date() };
-      vi.mocked(prisma.fXRate.findFirst).mockResolvedValueOnce(mockRate as never);
+      mockPrisma.fXRate.findFirst.mockResolvedValueOnce(mockRate);
 
       const result = await service.convert(1000, 'USD', 'CAD');
 
@@ -119,7 +118,7 @@ describe('FxRateService', () => {
 
       expect(rates.get('CAD_CAD')).toBe(1.0);
       expect(rates.get('USD_USD')).toBe(1.0);
-      expect(prisma.fXRate.findMany).not.toHaveBeenCalled();
+      expect(mockPrisma.fXRate.findMany).not.toHaveBeenCalled();
     });
 
     it('should fetch multiple rates in single query', async () => {
@@ -127,7 +126,7 @@ describe('FxRateService', () => {
         { base: 'USD', quote: 'CAD', rate: 1.35, date: new Date() },
         { base: 'EUR', quote: 'CAD', rate: 1.47, date: new Date() },
       ];
-      vi.mocked(prisma.fXRate.findMany).mockResolvedValueOnce(mockRates as never);
+      mockPrisma.fXRate.findMany.mockResolvedValueOnce(mockRates);
 
       const pairs = [
         { from: 'USD', to: 'CAD' },
@@ -138,13 +137,13 @@ describe('FxRateService', () => {
 
       expect(rates.get('USD_CAD')).toBe(1.35);
       expect(rates.get('EUR_CAD')).toBe(1.47);
-      expect(prisma.fXRate.findMany).toHaveBeenCalledOnce();
+      expect(mockPrisma.fXRate.findMany).toHaveBeenCalledOnce();
     });
 
     it('should calculate inverse rates from batch results', async () => {
       // Only inverse rate is in database
       const mockRates = [{ base: 'CAD', quote: 'USD', rate: 0.74, date: new Date() }];
-      vi.mocked(prisma.fXRate.findMany).mockResolvedValueOnce(mockRates as never);
+      mockPrisma.fXRate.findMany.mockResolvedValueOnce(mockRates);
 
       const pairs = [{ from: 'USD', to: 'CAD' }];
 

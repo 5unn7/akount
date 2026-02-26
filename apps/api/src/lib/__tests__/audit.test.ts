@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createHash } from 'crypto';
+import { mockPrisma, rewirePrismaMock } from '../../test-utils';
 
 // Mock prisma before imports
 const mockCreate = vi.fn();
@@ -7,8 +8,14 @@ const mockFindFirst = vi.fn();
 const mockFindMany = vi.fn();
 const mockCount = vi.fn();
 
-vi.mock('@akount/db', () => ({
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
   prisma: {
+    ...(await import('../../test-utils/prisma-mock')).mockPrisma,
     auditLog: {
       create: (...args: unknown[]) => mockCreate(...args),
       findFirst: (...args: unknown[]) => mockFindFirst(...args),
@@ -24,16 +31,6 @@ vi.mock('@akount/db', () => ({
         },
       };
       return fn(txClient);
-    },
-  },
-  AuditAction: {
-    CREATE: 'CREATE',
-    UPDATE: 'UPDATE',
-    DELETE: 'DELETE',
-  },
-  Prisma: {
-    TransactionIsolationLevel: {
-      Serializable: 'Serializable',
     },
   },
 }));
@@ -69,6 +66,7 @@ describe('Audit Log with Tamper Detection', () => {
     mockFindFirst.mockReset();
     mockFindMany.mockReset();
     mockCount.mockReset();
+    rewirePrismaMock();
   });
 
   describe('createAuditLog', () => {
@@ -246,7 +244,7 @@ describe('Audit Log with Tamper Detection', () => {
         model: 'Invoice',
         recordId: 'inv-1',
         action: 'CREATE' as const,
-      }, callerTx as never);
+      }, callerTx as any);
 
       // Should use caller's tx, not global prisma
       expect(txCreate).toHaveBeenCalledOnce();

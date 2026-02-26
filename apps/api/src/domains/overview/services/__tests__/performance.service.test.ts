@@ -1,15 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
 
-// Mock Prisma client BEFORE importing service
-vi.mock('@akount/db', () => ({
-  prisma: {
-    transaction: {
-      findMany: vi.fn(),
-    },
-    account: {
-      groupBy: vi.fn(),
-    },
-  },
+// ---------------------------------------------------------------------------
+// Prisma mock (dynamic import bypasses vi.mock hoisting constraint)
+// ---------------------------------------------------------------------------
+
+vi.mock('@akount/db', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  prisma: (await import('../../../../test-utils/prisma-mock')).mockPrisma,
 }));
 
 // Mock getInvoiceStats (now called in Promise.all with transactions)
@@ -23,13 +21,12 @@ vi.mock('../../../invoicing/services/invoice.service', () => ({
 }));
 
 import { PerformanceService } from '../performance.service';
-import { prisma } from '@akount/db';
 
 // Get typed mock references
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockFindMany = vi.mocked(prisma.transaction.findMany) as any;
+const mockFindMany = mockPrisma.transaction.findMany as any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockGroupBy = vi.mocked(prisma.account.groupBy) as any;
+const mockGroupBy = mockPrisma.account.groupBy as any;
 
 const TENANT_ID = 'tenant-abc-123';
 const ENTITY_ID = 'entity-xyz-456';
@@ -63,13 +60,14 @@ describe('PerformanceService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    rewirePrismaMock();
     service = new PerformanceService(TENANT_ID);
 
     // Default mock for account groupBy (PERF-6: replaces 2 aggregate calls)
     mockGroupBy.mockResolvedValue([
       { isActive: true, _count: { id: 4 } },
       { isActive: false, _count: { id: 1 } },
-    ] as never);
+    ]);
   });
 
   describe('getPerformanceMetrics', () => {
@@ -328,7 +326,7 @@ describe('PerformanceService', () => {
       mockGroupBy.mockResolvedValueOnce([
         { isActive: true, _count: { id: 6 } },
         { isActive: false, _count: { id: 2 } },
-      ] as never);
+      ]);
 
       const result = await service.getPerformanceMetrics(ENTITY_ID, 'CAD', '30d');
 

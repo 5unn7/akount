@@ -87,6 +87,10 @@ const models = {
   transaction: createMockModelDelegate(),
   importBatch: createMockModelDelegate(),
   transfer: createMockModelDelegate(),
+  fXRate: createMockModelDelegate(),
+  bankConnection: createMockModelDelegate(),
+  transactionMatch: createMockModelDelegate(),
+  bankFeedTransaction: createMockModelDelegate(),
 
   // Business
   invoice: createMockModelDelegate(),
