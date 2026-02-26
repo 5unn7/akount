@@ -33,6 +33,16 @@ vi.mock('@akount/db', () => ({
   Prisma: {},
 }));
 
+const mockExecute = vi.fn();
+const mockHandleRejection = vi.fn();
+
+vi.mock('../action-executor.service', () => ({
+  ActionExecutorService: function (this: Record<string, unknown>) {
+    this.execute = mockExecute;
+    this.handleRejection = mockHandleRejection;
+  },
+}));
+
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
@@ -73,6 +83,8 @@ describe('AIActionService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     service = new AIActionService(TENANT_ID, ENTITY_ID);
+    mockExecute.mockResolvedValue({ success: true, type: 'JE_DRAFT' });
+    mockHandleRejection.mockResolvedValue(undefined);
   });
 
   // -----------------------------------------------------------------------
@@ -251,13 +263,15 @@ describe('AIActionService', () => {
   // -----------------------------------------------------------------------
 
   describe('approveAction', () => {
-    it('should approve a PENDING action', async () => {
+    it('should approve a PENDING action and execute it', async () => {
       mockFindFirst.mockResolvedValue(mockAction());
       mockUpdate.mockResolvedValue(mockAction({ status: 'APPROVED' }));
 
       const result = await service.approveAction('act-001', 'user-001');
 
-      expect(result.status).toBe('APPROVED');
+      expect(result.action.status).toBe('APPROVED');
+      expect(result.execution).toBeDefined();
+      expect(result.execution?.success).toBe(true);
       expect(mockUpdate).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
@@ -265,6 +279,9 @@ describe('AIActionService', () => {
             reviewedBy: 'user-001',
           }),
         })
+      );
+      expect(mockExecute).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'act-001', type: 'JE_DRAFT' })
       );
     });
 
@@ -324,31 +341,41 @@ describe('AIActionService', () => {
   // -----------------------------------------------------------------------
 
   describe('batchApprove', () => {
-    it('should approve multiple actions', async () => {
-      mockUpdateMany.mockResolvedValue({ count: 1 });
+    it('should approve multiple actions and execute them', async () => {
+      mockFindFirst
+        .mockResolvedValueOnce(mockAction({ id: 'act-001' }))
+        .mockResolvedValueOnce(mockAction({ id: 'act-002' }));
+      mockUpdate.mockResolvedValue({});
 
       const result = await service.batchApprove(['act-001', 'act-002'], 'user-001');
 
       expect(result.succeeded).toEqual(['act-001', 'act-002']);
       expect(result.failed).toHaveLength(0);
+      // Executor called for each approved action
+      expect(mockExecute).toHaveBeenCalledTimes(2);
     });
 
-    it('should report failed actions (not pending)', async () => {
-      mockUpdateMany
-        .mockResolvedValueOnce({ count: 1 }) // act-001 succeeds
-        .mockResolvedValueOnce({ count: 0 }); // act-002 not pending
+    it('should report failed actions (not found or not pending)', async () => {
+      mockFindFirst
+        .mockResolvedValueOnce(mockAction({ id: 'act-001' })) // act-001 found & PENDING
+        .mockResolvedValueOnce(null); // act-002 not found
+      mockUpdate.mockResolvedValue({});
 
       const result = await service.batchApprove(['act-001', 'act-002'], 'user-001');
 
       expect(result.succeeded).toEqual(['act-001']);
       expect(result.failed).toHaveLength(1);
       expect(result.failed[0].id).toBe('act-002');
+      expect(result.failed[0].reason).toContain('Not found or not pending');
     });
 
     it('should handle database errors gracefully', async () => {
-      mockUpdateMany
-        .mockResolvedValueOnce({ count: 1 })
-        .mockRejectedValueOnce(new Error('DB error'));
+      mockFindFirst
+        .mockResolvedValueOnce(mockAction({ id: 'act-001' }))
+        .mockResolvedValueOnce(mockAction({ id: 'act-002' }));
+      mockUpdate
+        .mockResolvedValueOnce({}) // act-001 succeeds
+        .mockRejectedValueOnce(new Error('DB error')); // act-002 fails
 
       const result = await service.batchApprove(['act-001', 'act-002'], 'user-001');
 
@@ -363,13 +390,18 @@ describe('AIActionService', () => {
   // -----------------------------------------------------------------------
 
   describe('batchReject', () => {
-    it('should reject multiple actions', async () => {
-      mockUpdateMany.mockResolvedValue({ count: 1 });
+    it('should reject multiple actions and handle side-effects', async () => {
+      mockFindFirst
+        .mockResolvedValueOnce(mockAction({ id: 'act-001' }))
+        .mockResolvedValueOnce(mockAction({ id: 'act-002' }));
+      mockUpdate.mockResolvedValue({});
 
       const result = await service.batchReject(['act-001', 'act-002'], 'user-001');
 
       expect(result.succeeded).toEqual(['act-001', 'act-002']);
       expect(result.failed).toHaveLength(0);
+      // Rejection side-effects dispatched for each
+      expect(mockHandleRejection).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -407,7 +439,7 @@ describe('AIActionService', () => {
   // -----------------------------------------------------------------------
 
   describe('expireStaleActions', () => {
-    it('should expire actions past expiresAt', async () => {
+    it('should expire actions past expiresAt with tenant isolation', async () => {
       mockUpdateMany.mockResolvedValue({ count: 3 });
 
       const result = await service.expireStaleActions();
@@ -417,6 +449,7 @@ describe('AIActionService', () => {
         expect.objectContaining({
           where: expect.objectContaining({
             entityId: ENTITY_ID,
+            entity: { tenantId: TENANT_ID },
             status: 'PENDING',
             expiresAt: { lte: expect.any(Date) },
           }),
