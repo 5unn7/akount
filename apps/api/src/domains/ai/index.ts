@@ -26,4 +26,13 @@ export {
   ActionExecutorService,
   type ExecutionResult,
 } from './services/action-executor.service';
+export {
+  PatternDetectionService,
+  tokenizeDescription,
+  type DetectedPattern,
+} from './services/pattern-detection.service';
+export {
+  RuleSuggestionService,
+  type RuleSuggestionWithDetails,
+} from './services/rule-suggestion.service';
 export { AIError, handleAIError, type AIErrorCode } from './errors';

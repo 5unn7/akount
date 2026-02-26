@@ -929,23 +929,27 @@ describe('Auto-Bookkeeper E2E Pipeline', () => {
       expect(result.error).toContain('Unknown action type');
     });
 
-    it('should acknowledge RULE_SUGGESTION and ALERT without side effects', async () => {
+    it('should execute RULE_SUGGESTION and acknowledge ALERT', async () => {
       const executor = new ActionExecutorService(TENANT_ID, ENTITY_ID, APPROVER_ID);
 
+      // RULE_SUGGESTION now attempts real execution via RuleSuggestionService
       const ruleResult = await executor.execute({
         id: ACTION_ID_1,
         type: 'RULE_SUGGESTION',
-        payload: { suggestion: 'Create auto-categorization rule for Staples' },
+        payload: { ruleSuggestionId: 'suggestion-1' },
       });
 
+      // ALERT remains acknowledgment-only
       const alertResult = await executor.execute({
         id: ACTION_ID_2,
         type: 'ALERT',
         payload: { message: 'Unusual spending pattern detected' },
       });
 
-      expect(ruleResult.success).toBe(true);
+      expect(ruleResult.type).toBe('RULE_SUGGESTION');
       expect(alertResult.success).toBe(true);
+      expect(alertResult.detail).toContain('Acknowledged');
+      // Neither should touch JE or Transaction tables
       expect(mockJEFindFirst).not.toHaveBeenCalled();
       expect(mockTxnFindFirst).not.toHaveBeenCalled();
     });

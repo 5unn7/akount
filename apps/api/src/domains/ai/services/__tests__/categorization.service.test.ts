@@ -519,14 +519,28 @@ describe('CategorizationService', () => {
   });
 
   describe('learnFromCorrection', () => {
-    it('should log correction (placeholder)', async () => {
-      await learnFromCorrection('Test Description', 'cat-1', TENANT_ID);
-      expect(true).toBe(true);
+    it('should return suggestionCreated: false when no pattern detected', async () => {
+      const result = await learnFromCorrection({
+        transactionId: 'txn-1',
+        description: 'Test Description',
+        categoryId: 'cat-1',
+        entityId: 'entity-1',
+        tenantId: TENANT_ID,
+        userId: 'user-1',
+      });
+      expect(result.suggestionCreated).toBe(false);
     });
 
     it('should not throw errors for invalid inputs', async () => {
       await expect(
-        learnFromCorrection('', 'invalid-id', 'invalid-tenant')
+        learnFromCorrection({
+          transactionId: '',
+          description: '',
+          categoryId: 'invalid-id',
+          entityId: 'invalid-entity',
+          tenantId: 'invalid-tenant',
+          userId: 'invalid-user',
+        })
       ).resolves.not.toThrow();
     });
   });

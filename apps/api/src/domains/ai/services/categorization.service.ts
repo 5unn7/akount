@@ -672,11 +672,53 @@ export async function categorizeTransactions(
 
 /**
  * Learn from user's category corrections to improve future suggestions.
+ *
+ * When a user manually corrects a transaction's category, this function:
+ * 1. Calls PatternDetectionService.analyzeCorrection() to check for emerging patterns
+ * 2. If a pattern is detected (3+ similar transactions), creates a RuleSuggestion
+ *
+ * Non-critical: errors are logged but never thrown (fire-and-forget).
  */
-export async function learnFromCorrection(
-  description: string,
-  categoryId: string,
-  tenantId: string
-): Promise<void> {
-  logger.info({ description, categoryId, tenantId }, 'Learning correction logged');
+export async function learnFromCorrection(params: {
+  transactionId: string;
+  description: string;
+  categoryId: string;
+  entityId: string;
+  tenantId: string;
+  userId: string;
+}): Promise<{ suggestionCreated: boolean; suggestionId?: string }> {
+  const { transactionId, description, categoryId, entityId, tenantId, userId } = params;
+
+  try {
+    const { PatternDetectionService } = await import('./pattern-detection.service');
+    const patternService = new PatternDetectionService(tenantId, userId);
+    const pattern = await patternService.analyzeCorrection(transactionId, categoryId, entityId);
+
+    if (!pattern) {
+      logger.debug(
+        { transactionId, categoryId, entityId },
+        'No pattern detected from correction'
+      );
+      return { suggestionCreated: false };
+    }
+
+    // Pattern detected — create a RuleSuggestion + linked AIAction
+    const { RuleSuggestionService } = await import('./rule-suggestion.service');
+    const suggestionService = new RuleSuggestionService(tenantId, userId);
+    const result = await suggestionService.createSuggestion(pattern, entityId);
+
+    logger.info(
+      { transactionId, categoryId, entityId, suggestionId: result.suggestionId },
+      'Rule suggestion created from user correction'
+    );
+
+    return { suggestionCreated: true, suggestionId: result.suggestionId };
+  } catch (error) {
+    // Non-critical — log but never throw
+    logger.warn(
+      { err: error, transactionId, categoryId, entityId },
+      'Failed to learn from correction'
+    );
+    return { suggestionCreated: false };
+  }
 }

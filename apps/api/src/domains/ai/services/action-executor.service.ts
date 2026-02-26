@@ -27,6 +27,15 @@ interface CategorizationPayload {
   confidence: number;
 }
 
+/** Payload shape for RULE_SUGGESTION actions */
+interface RuleSuggestionPayload {
+  ruleSuggestionId: string;
+  suggestedRule: Record<string, unknown>;
+  patternSummary: string;
+  exampleTransactions: Array<{ id: string; description: string; amount: number }>;
+  estimatedImpact: number;
+}
+
 /** Payload shape for ALERT actions (created by InsightGeneratorService) */
 interface AlertPayload {
   insightType: string;
@@ -78,12 +87,14 @@ export class ActionExecutorService {
           return await this.executeCategorization(action.id, action.payload as CategorizationPayload);
 
         case 'RULE_SUGGESTION':
+          return await this.executeRuleSuggestion(action.id, action.payload as RuleSuggestionPayload);
+
         case 'ALERT':
-          // These types don't have automated execution — approval is just acknowledgment
+          // ALERT approval is just acknowledgment — no automated execution
           return {
             success: true,
             actionId: action.id,
-            type: action.type,
+            type: 'ALERT',
             detail: 'Acknowledged (no automated execution)',
           };
 
@@ -105,6 +116,60 @@ export class ActionExecutorService {
         success: false,
         actionId: action.id,
         type: action.type,
+        error: message,
+      };
+    }
+  }
+
+  /**
+   * Execute a RULE_SUGGESTION action: approve the linked RuleSuggestion,
+   * which creates an active Rule from the suggested data.
+   *
+   * Idempotent: if the suggestion was already approved, returns success.
+   */
+  private async executeRuleSuggestion(
+    actionId: string,
+    payload: RuleSuggestionPayload
+  ): Promise<ExecutionResult> {
+    const { ruleSuggestionId } = payload;
+
+    if (!ruleSuggestionId) {
+      return {
+        success: false,
+        actionId,
+        type: 'RULE_SUGGESTION',
+        error: 'Missing ruleSuggestionId in action payload',
+      };
+    }
+
+    try {
+      const { RuleSuggestionService } = await import('./rule-suggestion.service');
+      const service = new RuleSuggestionService(this.tenantId, this.userId);
+      const { ruleId } = await service.approveSuggestion(ruleSuggestionId);
+
+      return {
+        success: true,
+        actionId,
+        type: 'RULE_SUGGESTION',
+        detail: `Rule suggestion approved — created rule ${ruleId}`,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Rule suggestion approval failed';
+
+      // If already reviewed, treat as idempotent success
+      if (message.includes('already reviewed')) {
+        return {
+          success: true,
+          actionId,
+          type: 'RULE_SUGGESTION',
+          detail: 'Rule suggestion already reviewed (idempotent)',
+        };
+      }
+
+      return {
+        success: false,
+        actionId,
+        type: 'RULE_SUGGESTION',
         error: message,
       };
     }
@@ -286,6 +351,8 @@ export class ActionExecutorService {
     switch (action.type) {
       case 'JE_DRAFT':
         return this.handleJEDraftRejection(action.payload as JEDraftPayload);
+      case 'RULE_SUGGESTION':
+        return this.handleRuleSuggestionRejection(action.payload as RuleSuggestionPayload);
       case 'ALERT':
         return this.handleAlertRejection(action.payload as AlertPayload);
       default:
@@ -372,6 +439,31 @@ export class ActionExecutorService {
       logger.warn(
         { err: error, journalEntryId: payload.journalEntryId },
         'Failed to cleanup rejected draft JE'
+      );
+    }
+  }
+
+  /**
+   * RULE_SUGGESTION rejection: reject the linked RuleSuggestion.
+   * This updates its status to REJECTED so it doesn't resurface.
+   */
+  private async handleRuleSuggestionRejection(payload: RuleSuggestionPayload): Promise<void> {
+    if (!payload.ruleSuggestionId) return;
+
+    try {
+      const { RuleSuggestionService } = await import('./rule-suggestion.service');
+      const service = new RuleSuggestionService(this.tenantId, this.userId);
+      await service.rejectSuggestion(payload.ruleSuggestionId, 'Rejected via AI Action Feed');
+
+      logger.info(
+        { ruleSuggestionId: payload.ruleSuggestionId },
+        'Rejected rule suggestion linked to AI action'
+      );
+    } catch (error) {
+      // Non-critical: log but don't fail the rejection
+      logger.warn(
+        { err: error, ruleSuggestionId: payload.ruleSuggestionId },
+        'Failed to reject rule suggestion for rejected action'
       );
     }
   }

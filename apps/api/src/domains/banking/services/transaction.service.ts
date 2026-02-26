@@ -440,10 +440,11 @@ export class TransactionService {
     });
 
     // Audit log for bulk operation
+    const entityId = owned[0]?.account.entityId;
     await createAuditLog({
       tenantId: this.tenantId,
       userId: this.userId,
-      entityId: owned[0]?.account.entityId,
+      entityId,
       model: 'Transaction',
       recordId: 'bulk',
       action: 'UPDATE',
@@ -455,7 +456,51 @@ export class TransactionService {
       },
     });
 
+    // Fire-and-forget: learn from each correction to detect patterns
+    if (categoryId && entityId) {
+      this.triggerCorrectionLearning(owned, categoryId, entityId).catch(() => {
+        // Silently swallow — learning is non-critical
+      });
+    }
+
     return { updated: result.count };
+  }
+
+  /**
+   * Trigger correction learning for bulk categorize (fire-and-forget).
+   * Loads descriptions and calls learnFromCorrection for each transaction.
+   * @private
+   */
+  private async triggerCorrectionLearning(
+    transactions: Array<{ id: string; account: { entityId: string } }>,
+    categoryId: string,
+    entityId: string,
+  ): Promise<void> {
+    const { learnFromCorrection } = await import('../../ai/services/categorization.service');
+
+    // Load descriptions for the transactions
+    const withDescriptions = await prisma.transaction.findMany({
+      where: {
+        id: { in: transactions.map((t) => t.id) },
+        deletedAt: null,
+      },
+      select: { id: true, description: true },
+    });
+
+    // Analyze first 10 to avoid excessive DB queries
+    const batch = withDescriptions.slice(0, 10);
+    await Promise.allSettled(
+      batch.map((txn) =>
+        learnFromCorrection({
+          transactionId: txn.id,
+          description: txn.description,
+          categoryId,
+          entityId,
+          tenantId: this.tenantId,
+          userId: this.userId,
+        })
+      )
+    );
   }
 
   /**
