@@ -24,6 +24,9 @@ import { ProfitLossSummaryWidget } from "@/components/dashboard/ProfitLossSummar
 import { TrialBalanceStatusWidget } from "@/components/dashboard/TrialBalanceStatusWidget";
 import { TopRevenueClientsWidget } from "@/components/dashboard/TopRevenueClientsWidget";
 import { AIActionWidget } from "@/components/dashboard/AIActionWidget";
+import { GoalProgressWidget } from "@/components/dashboard/GoalProgressWidget";
+import { BudgetVsActualWidget } from "@/components/dashboard/BudgetVsActualWidget";
+import { ExpenseForecastWidget } from "@/components/dashboard/ExpenseForecastWidget";
 import { Building2, Landmark, Upload, PenLine } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -217,7 +220,22 @@ export default async function OverviewPage() {
                     </div>
                 </div>
 
-                {/* Row 5: Cash Flow + Recent Activity (height-capped) */}
+                {/* Row 5: Planning Widgets */}
+                <div className="xl:col-span-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <GlowCard variant="glass" className="p-4">
+                            <GoalProgressWidget entityId={entityId} />
+                        </GlowCard>
+                        <GlowCard variant="glass" className="p-4">
+                            <BudgetVsActualWidget entityId={entityId} />
+                        </GlowCard>
+                        <GlowCard variant="glass" className="p-4">
+                            <ExpenseForecastWidget entityId={entityId} />
+                        </GlowCard>
+                    </div>
+                </div>
+
+                {/* Row 6: Cash Flow + Recent Activity (height-capped) */}
                 <div className="xl:col-span-2 h-[300px]">
                     <DashboardCashFlowChart />
                 </div>
@@ -225,7 +243,7 @@ export default async function OverviewPage() {
                     <RecentTransactions transactions={recentTransactions.transactions} />
                 </div>
 
-                {/* Row 5: Expense Breakdown + Entity Matrix */}
+                {/* Row 7: Expense Breakdown + Entity Matrix */}
                 <div className="xl:col-span-2">
                     <DashboardExpenseChart />
                 </div>
