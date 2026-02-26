@@ -1,0 +1,165 @@
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { withPermission } from '../../../middleware/withPermission';
+import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
+import { BudgetService } from '../services/budget.service';
+import {
+  CreateBudgetSchema,
+  UpdateBudgetSchema,
+  ListBudgetsQuerySchema,
+  BudgetIdParamSchema,
+  type CreateBudgetInput,
+  type UpdateBudgetInput,
+  type ListBudgetsQuery,
+  type BudgetIdParam,
+} from '../schemas/budget.schema';
+
+/**
+ * Budget routes — /api/planning/budgets
+ *
+ * Manages financial budgets with spending limits per period.
+ * Auth + tenant middleware inherited from parent registration.
+ */
+export async function budgetRoutes(fastify: FastifyInstance) {
+  // GET /budgets — List budgets
+  fastify.get(
+    '/',
+    {
+      ...withPermission('planning', 'budgets', 'VIEW'),
+      preValidation: [validateQuery(ListBudgetsQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new BudgetService(request.tenantId);
+      const query = request.query as ListBudgetsQuery;
+
+      const result = await service.listBudgets({
+        entityId: query.entityId,
+        cursor: query.cursor,
+        limit: query.limit,
+        period: query.period,
+        categoryId: query.categoryId,
+      });
+
+      request.log.info({ count: result.budgets.length }, 'Listed budgets');
+      return reply.status(200).send(result);
+    }
+  );
+
+  // GET /budgets/:id — Get single budget
+  fastify.get(
+    '/:id',
+    {
+      ...withPermission('planning', 'budgets', 'VIEW'),
+      preValidation: [validateParams(BudgetIdParamSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new BudgetService(request.tenantId);
+      const params = request.params as BudgetIdParam;
+
+      const budget = await service.getBudget(params.id);
+      if (!budget) {
+        return reply.status(404).send({ error: 'Budget not found' });
+      }
+
+      request.log.info({ budgetId: params.id }, 'Retrieved budget');
+      return reply.status(200).send(budget);
+    }
+  );
+
+  // POST /budgets — Create budget
+  fastify.post(
+    '/',
+    {
+      ...withPermission('planning', 'budgets', 'ACT'),
+      preValidation: [validateBody(CreateBudgetSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new BudgetService(request.tenantId);
+      const body = request.body as CreateBudgetInput;
+
+      try {
+        const budget = await service.createBudget(body);
+        request.log.info({ budgetId: budget.id, name: body.name }, 'Created budget');
+        return reply.status(201).send(budget);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('not found or access denied')) {
+          return reply.status(404).send({ error: error.message });
+        }
+        throw error;
+      }
+    }
+  );
+
+  // PATCH /budgets/:id — Update budget
+  fastify.patch(
+    '/:id',
+    {
+      ...withPermission('planning', 'budgets', 'ACT'),
+      preValidation: [validateParams(BudgetIdParamSchema), validateBody(UpdateBudgetSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new BudgetService(request.tenantId);
+      const params = request.params as BudgetIdParam;
+      const body = request.body as UpdateBudgetInput;
+
+      try {
+        const budget = await service.updateBudget(params.id, body);
+        request.log.info({ budgetId: params.id }, 'Updated budget');
+        return reply.status(200).send(budget);
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error.message.includes('not found or access denied')) {
+            return reply.status(404).send({ error: error.message });
+          }
+          if (error.message.includes('End date must be after start date')) {
+            return reply.status(400).send({ error: error.message });
+          }
+        }
+        throw error;
+      }
+    }
+  );
+
+  // DELETE /budgets/:id — Soft delete budget
+  fastify.delete(
+    '/:id',
+    {
+      ...withPermission('planning', 'budgets', 'ACT'),
+      preValidation: [validateParams(BudgetIdParamSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new BudgetService(request.tenantId);
+      const params = request.params as BudgetIdParam;
+
+      try {
+        await service.deleteBudget(params.id);
+        request.log.info({ budgetId: params.id }, 'Deleted budget');
+        return reply.status(204).send();
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('not found or access denied')) {
+          return reply.status(404).send({ error: error.message });
+        }
+        throw error;
+      }
+    }
+  );
+}

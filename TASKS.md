@@ -3,7 +3,7 @@
 **Last Updated:** 2026-02-26
 **Current Phase:** Phase 6 — Launch MVP
 
-> **143 active tasks** · 🔴 1 critical · 🟠 16 high · 🟡 99 medium · ⚪ 27 low
+> **153 active tasks** · 🔴 2 critical · 🟠 23 high · 🟡 102 medium · ⚪ 27 low
 > 📦 114 backlog · 🟢 22 ready · 🔒 6 blocked · 🟡 1 deferred
 >
 > _Completed tasks (232) archived in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
@@ -26,7 +26,14 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
+| SEC-39 | Add userId authentication checks to 5 onboarding routes (/initialize, /complete, /status, /save-step, /resume) | 1h | 🔴 Critical | 🟢 | | audit:2026-02-26 |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
+| PERF-23 | Fix AI batch approval/rejection N+1 queries (batch fetch + batch update instead of loops) | 4-6h | 🟠 High | 🟢 | | audit:2026-02-26 |
+| PERF-24 | Add composite indexes (Transaction.accountId+createdAt, AuditLog.tenantId+createdAt, Invoice/Bill.status+createdAt) | 2h | 🟠 High | 🟢 | | audit:2026-02-26 |
+| FIN-32 | Migrate TaxRate.rate from Float to Int (basis points: 500 = 5%) | 4h | 🟠 High | 🟢 | | audit:2026-02-26 |
+| SEC-40 | Implement CSRF protection for state-changing endpoints | 2h | 🟠 High | 🟢 | | audit:2026-02-26 |
+| SEC-41 | Replace CORS wildcard in dev with explicit whitelist (localhost:3000, localhost:3001) | 1h | 🟠 High | 🟢 | | audit:2026-02-26 |
+| ARCH-9 | Configure Prisma connection pool (set connection_limit=50, pool_timeout=30) | 1h | 🟠 High | 🟢 | | audit:2026-02-26 |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
 | DEV-97 | Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
 | DEV-98 | Planning: Build Budget service + full CRUD (create/list/get/update/delete using Budget model) | 4-6h | 🟠 High | 📦 | | audit:fe-be-parity |
@@ -50,6 +57,9 @@
 | DEV-67 | Accounting: Add audit trail view (who approved/voided/created entries, timestamps) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-68 | Accounting: Add GL account merge/reclassify (move journal lines between accounts) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-69 | Accounting Reports: Add year-over-year comparison mode (multi-year P&L and BS trends) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| ARCH-10 | Split report.service.ts into focused modules (7 report types → 7 services + coordinator) | 2-3d | 🟡 Medium | 📦 | | audit:2026-02-26 |
+| TEST-21 | Fix 8 TypeScript errors (3 web + 5 API test files) | 2h | 🟡 Medium | 🟢 | | audit:2026-02-26 |
+| FIN-33 | Add PostgreSQL double-entry balance trigger (defense-in-depth for SUM(debits) = SUM(credits)) | 2h | 🟡 Medium | 🟢 | | audit:2026-02-26 |
 | PERF-7 | Lazy-loading heavy frontend components | 1h | 🟡 Medium | 🟢 | | roadmap |
 | DRY-10 | Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations | 1.5h | 🟡 Medium | 🟢 | | inline-bandaid-audit |
 | DRY-13 | Create `<EntitySelector>` component — wire API integration for 7 report views | 2h | 🟡 Medium | 🟢 | | inline-bandaid-audit |

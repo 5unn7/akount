@@ -178,9 +178,9 @@
 
 ---
 
-## Test Coverage (1,197 tests passing)
+## Test Coverage (2,169 tests passing)
 
-**Total:** 1,197 tests across all domains (all passing as of 2026-02-22)
+**Total:** 2,169 tests across all domains (all passing as of 2026-02-26)
 
 **Coverage by Domain:**
 - **Banking:** Largest test suite (accounts, transactions, imports, reconciliation, categories, connections)

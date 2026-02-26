@@ -96,6 +96,7 @@ model Entity {
   tenant             Tenant             @relation(fields: [tenantId], references: [id])
   fiscalCalendars    FiscalCalendar[]
   glAccounts         GLAccount[]
+  forecasts          Forecast[]
   goals              Goal[]
   importBatches      ImportBatch[]
   insights           Insight[]
@@ -138,6 +139,8 @@ model GLAccount {
   journalLines         JournalLine[]
   transactionSplits                  TransactionSplit[]
   categoriesAsDefault                Category[]         @relation("CategoryDefaultGL")
+  budgetsAsGLAccount                 Budget[]           @relation("BudgetGLAccount")
+  goalsAsGLAccount                   Goal[]             @relation("GoalGLAccount")
   fixedAssetsAsAsset                 FixedAsset[]       @relation("AssetGLAccount")
   fixedAssetsAsDepreciationExpense   FixedAsset[]       @relation("DepreciationExpenseGLAccount")
   fixedAssetsAsAccumulatedDepr       FixedAsset[]       @relation("AccumulatedDepreciationGLAccount")
@@ -476,6 +479,7 @@ model Account {
   bankConnection   BankConnection?       @relation(fields: [bankConnectionId], references: [id])
   feedTxns         BankFeedTransaction[]
   glAccount        GLAccount?            @relation(fields: [glAccountId], references: [id])
+  goals            Goal[]
   transactions     Transaction[]
 
   @@index([entityId])
@@ -653,15 +657,17 @@ model Budget {
   endDate     DateTime
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
   category    Category? @relation(fields: [categoryId], references: [id])
   entity      Entity    @relation(fields: [entityId], references: [id])
+  glAccount   GLAccount? @relation("BudgetGLAccount", fields: [glAccountId], references: [id])
 
   @@index([entityId])
   @@index([startDate, endDate])
 }
 
 model Goal {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   entityId      String
   name          String
   type          String
@@ -670,14 +676,37 @@ model Goal {
   targetDate    DateTime
   accountId     String?
   categoryId    String?
+  glAccountId   String?
   status        String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  category      Category? @relation(fields: [categoryId], references: [id])
-  entity        Entity    @relation(fields: [entityId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  deletedAt     DateTime?
+  account       Account?   @relation(fields: [accountId], references: [id])
+  category      Category?  @relation(fields: [categoryId], references: [id])
+  entity        Entity     @relation(fields: [entityId], references: [id])
+  glAccount     GLAccount? @relation("GoalGLAccount", fields: [glAccountId], references: [id])
 
   @@index([entityId])
   @@index([status])
+}
+
+model Forecast {
+  id          String    @id @default(cuid())
+  entityId    String
+  name        String
+  type        String    // CASH_FLOW, REVENUE, EXPENSE
+  scenario    String    // BASELINE, OPTIMISTIC, PESSIMISTIC
+  periodStart DateTime
+  periodEnd   DateTime
+  data        Json      // Array of {month, amount} projections
+  assumptions Json?     // User-provided assumptions
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  entity      Entity    @relation(fields: [entityId], references: [id])
+
+  @@index([entityId])
+  @@index([type, scenario])
 }
 
 model Insight {
