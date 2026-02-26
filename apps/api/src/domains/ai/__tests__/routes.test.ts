@@ -723,22 +723,24 @@ describe('AI Routes', () => {
   // -----------------------------------------------------------------------
 
   describe('Placeholder endpoints', () => {
-    it('GET /api/ai/insights should return 501', async () => {
+    it('GET /api/ai/insights should require entityId', async () => {
       const response = await app.inject({
         method: 'GET',
         url: '/api/ai/insights',
         headers: { authorization: 'Bearer test-token' },
       });
-      expect(response.statusCode).toBe(501);
+      // No longer 501 stub — requires entityId query param
+      expect(response.statusCode).toBe(400);
     });
 
-    it('GET /api/ai/recommendations should return 501', async () => {
+    it('GET /api/ai/recommendations is removed (merged into insights)', async () => {
       const response = await app.inject({
         method: 'GET',
         url: '/api/ai/recommendations',
         headers: { authorization: 'Bearer test-token' },
       });
-      expect(response.statusCode).toBe(501);
+      // Route removed in Phase 3 Sprint 3a
+      expect(response.statusCode).toBe(404);
     });
 
     it('POST /api/ai/rules/suggest should return 501', async () => {
