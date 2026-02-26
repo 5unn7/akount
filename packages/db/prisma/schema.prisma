@@ -5,6 +5,19 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+
+  // ARCH-9: Connection pool configuration (add to DATABASE_URL query params)
+  // Recommended for production:
+  //   DATABASE_URL="postgresql://user:pass@host:5432/db?connection_limit=50&pool_timeout=30"
+  //
+  // Defaults (if not specified):
+  //   connection_limit: num_physical_cpus * 2 + 1 (~9 on typical server)
+  //   pool_timeout: 10 seconds
+  //
+  // Scale targets:
+  //   - 10K users: connection_limit=20
+  //   - 50K users: connection_limit=50
+  //   - 100K+ users: connection_limit=100 + read replicas
 }
 
 model Tenant {
