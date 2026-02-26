@@ -21,6 +21,7 @@ import {
   TrendingUp,
   Sparkles,
   AlertTriangle,
+  ClipboardCheck,
   History,
   UserCog,
   FileStack,
@@ -277,8 +278,8 @@ export const navigationDomains: NavDomain[] = [
         href: '/insights',
       },
       {
-        label: 'Policy Alerts',
-        icon: AlertTriangle,
+        label: 'Monthly Close',
+        icon: ClipboardCheck,
         href: '/insights/policy-alerts',
       },
       {

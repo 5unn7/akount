@@ -16,6 +16,7 @@ import { listEntities } from "@/lib/api/entities";
 import { getDashboardMetrics, getIntents, getUpcomingPayments } from "@/lib/api/dashboard";
 import { getPerformanceMetrics } from "@/lib/api/performance";
 import { listTransactions } from "@/lib/api/transactions";
+import { getInsightCounts, listInsights } from "@/lib/api/ai";
 import { getEntitySelection, validateEntityId } from "@/lib/entity-cookies";
 import { getDashboardConfig } from "@/lib/dashboard-personalization";
 import { buildQuickStats, orderStats } from "@/lib/dashboard/transformers";
@@ -46,14 +47,18 @@ export default async function OverviewPage() {
     let recentTransactions: Awaited<ReturnType<typeof listTransactions>> = { transactions: [], hasMore: false };
     let intents: string[] = [];
     let upcomingPayments: Awaited<ReturnType<typeof getUpcomingPayments>> = { data: [] };
+    let insightCounts: Awaited<ReturnType<typeof getInsightCounts>> | null = null;
+    let topInsight: { title: string; type: string; priority: 'low' | 'medium' | 'high' | 'critical' } | null = null;
 
     try {
-        const [metricsResult, performanceResult, transactionsResult, intentsResult, upcomingResult] = await Promise.allSettled([
+        const [metricsResult, performanceResult, transactionsResult, intentsResult, upcomingResult, insightCountsResult, topInsightResult] = await Promise.allSettled([
             getDashboardMetrics(entityId, currency),
             getPerformanceMetrics(entityId, currency),
             listTransactions({ limit: 10, entityId }),
             getIntents(),
             getUpcomingPayments(entityId, 20), // UX-105: Fetch server-side
+            entityId ? getInsightCounts(entityId) : Promise.resolve(null),
+            entityId ? listInsights({ entityId, limit: 1, status: 'active' }) : Promise.resolve(null),
         ]);
 
         if (metricsResult.status === 'fulfilled') metrics = metricsResult.value;
@@ -61,6 +66,13 @@ export default async function OverviewPage() {
         if (transactionsResult.status === 'fulfilled') recentTransactions = transactionsResult.value;
         if (intentsResult.status === 'fulfilled') intents = intentsResult.value;
         if (upcomingResult.status === 'fulfilled') upcomingPayments = upcomingResult.value;
+        if (insightCountsResult.status === 'fulfilled') insightCounts = insightCountsResult.value;
+        if (topInsightResult.status === 'fulfilled' && topInsightResult.value) {
+            const insights = (topInsightResult.value as Awaited<ReturnType<typeof listInsights>>).insights;
+            if (insights.length > 0) {
+                topInsight = { title: insights[0].title, type: insights[0].type, priority: insights[0].priority };
+            }
+        }
     } catch {
         // Continue with defaults
     }
@@ -169,7 +181,7 @@ export default async function OverviewPage() {
 
                 {/* Row 2: AI Insights + AI Actions */}
                 <div className="xl:col-span-3">
-                    <InsightCards />
+                    <InsightCards counts={insightCounts} topInsight={topInsight} />
                 </div>
                 <div className="xl:col-span-1">
                     <AIActionWidget entityId={entityId} />
