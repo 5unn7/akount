@@ -17,53 +17,43 @@ describe('WelcomeStep', () => {
     expect(screen.getByText('Welcome to Akount')).toBeInTheDocument()
   })
 
-  it('renders all three account type cards', () => {
+  it('renders both account type cards', () => {
     render(<WelcomeStep onNext={mockOnNext} />)
-    expect(screen.getByText('Personal')).toBeInTheDocument()
-    expect(screen.getByText('Business')).toBeInTheDocument()
-    expect(screen.getByText('Accountant')).toBeInTheDocument()
+    expect(screen.getByText('Just me')).toBeInTheDocument()
+    expect(screen.getByText('Me + my business')).toBeInTheDocument()
   })
 
-  it('shows Recommended badge on Business card', () => {
+  it('renders descriptions for each card', () => {
     render(<WelcomeStep onNext={mockOnNext} />)
-    expect(screen.getByText('Recommended')).toBeInTheDocument()
+    expect(screen.getByText('Personal finances only')).toBeInTheDocument()
+    expect(screen.getByText('Personal and business together')).toBeInTheDocument()
   })
 
-  it('shows Coming soon badge on Accountant card', () => {
+  it('renders helper text about adding business later', () => {
     render(<WelcomeStep onNext={mockOnNext} />)
-    expect(screen.getByText('Coming soon')).toBeInTheDocument()
+    expect(screen.getByText('You can always add a business later.')).toBeInTheDocument()
   })
 
-  it('calls onNext when Personal is clicked', async () => {
+  it('calls onNext when "Just me" is clicked and sets personal', async () => {
     const user = userEvent.setup()
     render(<WelcomeStep onNext={mockOnNext} />)
 
-    await user.click(screen.getByText('Personal'))
+    await user.click(screen.getByText('Just me'))
     expect(mockOnNext).toHaveBeenCalledOnce()
     expect(useOnboardingStore.getState().accountType).toBe('personal')
   })
 
-  it('calls onNext when Business is clicked', async () => {
+  it('calls onNext when "Me + my business" is clicked and sets business', async () => {
     const user = userEvent.setup()
     render(<WelcomeStep onNext={mockOnNext} />)
 
-    await user.click(screen.getByText('Business'))
+    await user.click(screen.getByText('Me + my business'))
     expect(mockOnNext).toHaveBeenCalledOnce()
     expect(useOnboardingStore.getState().accountType).toBe('business')
   })
 
-  it('does not call onNext when disabled Accountant is clicked', async () => {
-    const user = userEvent.setup()
+  it('renders subheading text', () => {
     render(<WelcomeStep onNext={mockOnNext} />)
-
-    await user.click(screen.getByText('Accountant'))
-    expect(mockOnNext).not.toHaveBeenCalled()
-  })
-
-  it('renders feature lists for each card', () => {
-    render(<WelcomeStep onNext={mockOnNext} />)
-    expect(screen.getByText('Track income & expenses')).toBeInTheDocument()
-    expect(screen.getByText('Full bookkeeping suite')).toBeInTheDocument()
-    expect(screen.getByText('Client management')).toBeInTheDocument()
+    expect(screen.getByText(/Who are we helping today/)).toBeInTheDocument()
   })
 })
