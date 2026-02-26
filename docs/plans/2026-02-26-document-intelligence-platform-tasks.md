@@ -12,7 +12,7 @@
 
 | Phase | Scope | Tasks | Done | Status |
 |-------|-------|-------|------|--------|
-| **1** | Foundation (A + B core + E basics) | 22 | 4 | In progress (18%) |
+| **1** | Foundation (A + B core + E basics) | 22 | 7 | In progress (32%) |
 | **2** | Expand + Smart (B UIs + C1-C4) | 8 | 0 | Not started |
 | **3** | Compliance + Narration (C5-C9 + E6-E9) | 8 | 0 | Not started |
 | **4** | Matching + Learning (D + F) | 9 | 0 | Not started |
@@ -43,9 +43,9 @@
 
 | ID | Track | Task | Effort | Priority | Status | Deps | Source |
 |----|-------|------|--------|----------|--------|------|--------|
-| DEV-235 | B1 | DocumentExtractionService (shared Mistral vision core) | 4-6h | Critical | Ready | DEV-230, DEV-231, SEC-29, SEC-30 | plan:doc-intel |
+| DEV-235 | B1 | DocumentExtractionService (shared Mistral vision core) | 4-6h | Critical | ✅ Done | DEV-230, DEV-231, SEC-29, SEC-30 | plan:doc-intel |
 | DEV-236 | B2 | Bill extraction Zod schemas (vendor, amount, line items) | 1-2h | High | ✅ Done | — | plan:doc-intel |
-| DEV-237 | B3 | Invoice extraction Zod schemas (+ payment terms, client) | 1-2h | High | Ready | — | plan:doc-intel |
+| DEV-237 | B3 | Invoice extraction Zod schemas (+ payment terms, client) | 1-2h | High | ✅ Done | — | plan:doc-intel |
 | DEV-238 | B4 | BillScanWorker (AP flow: extract → validate → create Bill) | 4-6h | Critical | Ready | DEV-232, INFRA-61, DEV-235, DEV-236 | plan:doc-intel |
 | DEV-239 | B5 | InvoiceScanWorker (AR flow: extract → create Invoice) | 3-4h | Critical | Ready | DEV-232, INFRA-61, DEV-235, DEV-237 | plan:doc-intel |
 | DEV-240 | B6 | Bill scan API route (`POST /api/business/bills/scan`) | 2-3h | Critical | Ready | INFRA-61, SEC-31, DEV-238 | plan:doc-intel |
