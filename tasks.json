@@ -1,26 +1,26 @@
 {
   "$schema": "./tasks.schema.json",
   "version": "2.0",
-  "generated": "2026-02-26T16:22:49.805Z",
+  "generated": "2026-02-26T17:20:48.234Z",
   "generatedBy": "regenerate-task-index.js",
   "summary": {
-    "total": 188,
-    "active": 188,
+    "total": 185,
+    "active": 185,
     "done": 0,
     "stale": 11,
     "riskDistribution": {
       "low": 103,
-      "medium": 80,
+      "medium": 77,
       "high": 5
     },
     "byPriority": {
       "critical": 12,
-      "high": 42,
+      "high": 39,
       "medium": 107,
       "low": 27
     },
     "byStatus": {
-      "ready": 67,
+      "ready": 64,
       "blocked": 6,
       "backlog": 114
     }
@@ -1113,116 +1113,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-203": {
-      "id": "DEV-203",
-      "title": "AI Rules: Rule service — CRUD operations (list, create, update, delete, toggle, stats)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "plan:ai-auto-bookkeeper-phase2",
-      "created": "2026-02-26",
-      "line": 61,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-204": {
-      "id": "DEV-204",
-      "title": "AI Rules: Rule evaluation engine — condition evaluation, batch, first-match-wins, NO regex (contains/eq/gt/lt only), field allowlist",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [
-        "DEV-203"
-      ],
-      "domain": "development",
-      "source": "plan:ai-auto-bookkeeper-phase2",
-      "created": "2026-02-26",
-      "line": 62,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-205": {
-      "id": "DEV-205",
-      "title": "AI Rules: API routes + Zod schemas (CRUD, toggle, stats) + JSON payload size validation",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "plan:ai-auto-bookkeeper-phase2",
-      "created": "2026-02-26",
-      "line": 63,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 0,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "DEV-206": {
       "id": "DEV-206",
       "title": "AI Rules: Hook rules into autoCategorize pipeline (rules before keywords, backward compatible)",
@@ -1235,7 +1125,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 64,
+      "line": 61,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1273,7 +1163,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 65,
+      "line": 62,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1309,7 +1199,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 66,
+      "line": 63,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1345,7 +1235,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 67,
+      "line": 64,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1381,7 +1271,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 68,
+      "line": 65,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1417,7 +1307,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 69,
+      "line": 66,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1455,7 +1345,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 70,
+      "line": 67,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1494,7 +1384,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 71,
+      "line": 68,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1530,7 +1420,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase2",
       "created": "2026-02-26",
-      "line": 72,
+      "line": 69,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1566,7 +1456,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 73,
+      "line": 70,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1604,7 +1494,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 74,
+      "line": 71,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1640,7 +1530,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 75,
+      "line": 72,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1678,7 +1568,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 76,
+      "line": 73,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1714,7 +1604,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 77,
+      "line": 74,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1753,7 +1643,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 78,
+      "line": 75,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1791,7 +1681,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 79,
+      "line": 76,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1829,7 +1719,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 80,
+      "line": 77,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1865,7 +1755,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 81,
+      "line": 78,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1901,7 +1791,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 82,
+      "line": 79,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1940,7 +1830,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 83,
+      "line": 80,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1976,7 +1866,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 84,
+      "line": 81,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2014,7 +1904,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 85,
+      "line": 82,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2051,7 +1941,7 @@
       "domain": "development",
       "source": "plan:ai-auto-bookkeeper-phase3",
       "created": "2026-02-26",
-      "line": 86,
+      "line": 83,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2090,7 +1980,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 87,
+      "line": 84,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -2135,7 +2025,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 88,
+      "line": 85,
       "files": [],
       "verification": "Run: cd apps/api && npm test -- [domain]",
       "acceptanceCriteria": [
@@ -2180,7 +2070,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 89,
+      "line": 86,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2225,7 +2115,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-26",
-      "line": 90,
+      "line": 87,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2270,7 +2160,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 91,
+      "line": 88,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2317,7 +2207,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 92,
+      "line": 89,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2364,7 +2254,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 93,
+      "line": 90,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2412,7 +2302,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 94,
+      "line": 91,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2457,7 +2347,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 95,
+      "line": 92,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2502,7 +2392,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 96,
+      "line": 93,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2547,7 +2437,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 97,
+      "line": 94,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2591,7 +2481,7 @@
       "domain": "performance",
       "source": "roadmap",
       "created": "2026-02-26",
-      "line": 98,
+      "line": 95,
       "files": [
         "apps/web/src/app/(dashboard)/",
         "apps/web/src/components/"
@@ -2637,7 +2527,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-26",
-      "line": 99,
+      "line": 96,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2673,7 +2563,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-22",
-      "line": 100,
+      "line": 97,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2709,7 +2599,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-22",
-      "line": 101,
+      "line": 98,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2745,7 +2635,7 @@
       "domain": "code-quality",
       "source": "review:revie23feb",
       "created": "2026-02-24",
-      "line": 102,
+      "line": 99,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2781,7 +2671,7 @@
       "domain": "financial",
       "source": "review:revie23feb",
       "created": "2026-02-24",
-      "line": 103,
+      "line": 100,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2817,7 +2707,7 @@
       "domain": "financial",
       "source": "review:revie23feb",
       "created": "2026-02-24",
-      "line": 104,
+      "line": 101,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -2853,7 +2743,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 105,
+      "line": 102,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -2899,7 +2789,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 106,
+      "line": 103,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [],
@@ -2941,7 +2831,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 107,
+      "line": 104,
       "files": [
         "apps/web/src/components/help/",
         "apps/web/src/app/(dashboard)/layout.tsx"
@@ -2988,7 +2878,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 108,
+      "line": 105,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -3033,7 +2923,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 109,
+      "line": 106,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -3077,7 +2967,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 110,
+      "line": 107,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3124,7 +3014,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 111,
+      "line": 108,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3173,7 +3063,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 112,
+      "line": 109,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -3218,7 +3108,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 113,
+      "line": 110,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3267,7 +3157,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 114,
+      "line": 111,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [
@@ -3312,7 +3202,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 115,
+      "line": 112,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -3353,7 +3243,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 116,
+      "line": 113,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -3394,7 +3284,7 @@
       "domain": "testing",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 117,
+      "line": 114,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -3439,7 +3329,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 118,
+      "line": 115,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3484,7 +3374,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 119,
+      "line": 116,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3534,7 +3424,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 120,
+      "line": 117,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3580,7 +3470,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 121,
+      "line": 118,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3624,7 +3514,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 122,
+      "line": 119,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3669,7 +3559,7 @@
       "domain": "financial",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 123,
+      "line": 120,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3717,7 +3607,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 124,
+      "line": 121,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3765,7 +3655,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 125,
+      "line": 122,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3812,7 +3702,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 126,
+      "line": 123,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3857,7 +3747,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 127,
+      "line": 124,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -3902,7 +3792,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 128,
+      "line": 125,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -3949,7 +3839,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 129,
+      "line": 126,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -3993,7 +3883,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 130,
+      "line": 127,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4037,7 +3927,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 131,
+      "line": 128,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4084,7 +3974,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 132,
+      "line": 129,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4128,7 +4018,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 133,
+      "line": 130,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4172,7 +4062,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 134,
+      "line": 131,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -4220,7 +4110,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 135,
+      "line": 132,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -4266,7 +4156,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 136,
+      "line": 133,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4312,7 +4202,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 137,
+      "line": 134,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4358,7 +4248,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 138,
+      "line": 135,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4406,7 +4296,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 139,
+      "line": 136,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4450,7 +4340,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 140,
+      "line": 137,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4496,7 +4386,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 141,
+      "line": 138,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4540,7 +4430,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 142,
+      "line": 139,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4586,7 +4476,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 143,
+      "line": 140,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4630,7 +4520,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 144,
+      "line": 141,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4679,7 +4569,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 145,
+      "line": 142,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4723,7 +4613,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 146,
+      "line": 143,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4767,7 +4657,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 147,
+      "line": 144,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4813,7 +4703,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 148,
+      "line": 145,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4861,7 +4751,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 149,
+      "line": 146,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4906,7 +4796,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 150,
+      "line": 147,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4950,7 +4840,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 151,
+      "line": 148,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4998,7 +4888,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 152,
+      "line": 149,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5045,7 +4935,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 153,
+      "line": 150,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5092,7 +4982,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 154,
+      "line": 151,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5136,7 +5026,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 155,
+      "line": 152,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5181,7 +5071,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 156,
+      "line": 153,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5228,7 +5118,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 157,
+      "line": 154,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5273,7 +5163,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 158,
+      "line": 155,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5318,7 +5208,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 159,
+      "line": 156,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5367,7 +5257,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 160,
+      "line": 157,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5415,7 +5305,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 161,
+      "line": 158,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5460,7 +5350,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 162,
+      "line": 159,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5506,7 +5396,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 163,
+      "line": 160,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5553,7 +5443,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 164,
+      "line": 161,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5601,7 +5491,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 165,
+      "line": 162,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5650,7 +5540,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 166,
+      "line": 163,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5695,7 +5585,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 167,
+      "line": 164,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5742,7 +5632,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 168,
+      "line": 165,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5789,7 +5679,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 169,
+      "line": 166,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5835,7 +5725,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 170,
+      "line": 167,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5879,7 +5769,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 171,
+      "line": 168,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5925,7 +5815,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 172,
+      "line": 169,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5973,7 +5863,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 173,
+      "line": 170,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6021,7 +5911,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 174,
+      "line": 171,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -6065,7 +5955,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 175,
+      "line": 172,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -6110,7 +6000,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 176,
+      "line": 173,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -6155,7 +6045,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 177,
+      "line": 174,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6199,7 +6089,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 178,
+      "line": 175,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -6246,7 +6136,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 179,
+      "line": 176,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -6290,7 +6180,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 180,
+      "line": 177,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -6333,7 +6223,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-26",
-      "line": 181,
+      "line": 178,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6377,7 +6267,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-26",
-      "line": 182,
+      "line": 179,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -6413,7 +6303,7 @@
       "domain": "code-quality",
       "source": "review:typescript",
       "created": "2026-02-26",
-      "line": 183,
+      "line": 180,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -6452,7 +6342,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 184,
+      "line": 181,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -6496,7 +6386,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 185,
+      "line": 182,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -6543,7 +6433,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 186,
+      "line": 183,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -6589,7 +6479,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 187,
+      "line": 184,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6634,7 +6524,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 188,
+      "line": 185,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6678,7 +6568,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 189,
+      "line": 186,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -6722,7 +6612,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 190,
+      "line": 187,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -6766,7 +6656,7 @@
       "domain": "financial",
       "source": "review:financial",
       "created": "2026-02-18",
-      "line": 191,
+      "line": 188,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6810,7 +6700,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 192,
+      "line": 189,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6855,7 +6745,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 193,
+      "line": 190,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -6900,7 +6790,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 194,
+      "line": 191,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -6945,7 +6835,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 195,
+      "line": 192,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -6991,7 +6881,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 196,
+      "line": 193,
       "files": [],
       "verification": "Grep for related code: Grep \"dev\" apps/",
       "acceptanceCriteria": [],
@@ -7031,7 +6921,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 197,
+      "line": 194,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -7078,7 +6968,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 198,
+      "line": 195,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -7123,7 +7013,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 199,
+      "line": 196,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7169,7 +7059,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 200,
+      "line": 197,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7218,7 +7108,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 201,
+      "line": 198,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7266,7 +7156,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 202,
+      "line": 199,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7312,7 +7202,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 203,
+      "line": 200,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7358,7 +7248,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 204,
+      "line": 201,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7406,7 +7296,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 205,
+      "line": 202,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -7452,7 +7342,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 206,
+      "line": 203,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7502,7 +7392,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 207,
+      "line": 204,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -7548,7 +7438,7 @@
       "domain": "design-system",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 227,
+      "line": 224,
       "files": [
         "packages/ui/package.json",
         "packages/ui/src/ai/AIPanel.tsx",
@@ -7593,7 +7483,7 @@
       "domain": "design-system",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 228,
+      "line": 225,
       "files": [
         "packages/ui/",
         "packages/ui/.storybook/",
@@ -7641,7 +7531,7 @@
       "domain": "marketing",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 236,
+      "line": 233,
       "files": [
         "apps/web/src/app/(marketing)/",
         "apps/web/src/app/page.tsx"
@@ -7688,7 +7578,7 @@
       "domain": "marketing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 237,
+      "line": 234,
       "files": [],
       "verification": "Grep for related code: Grep \"mkt\" apps/",
       "acceptanceCriteria": [
@@ -7730,7 +7620,7 @@
       "domain": "content",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 238,
+      "line": 235,
       "files": [
         "brand/competitive-analysis.md"
       ],
@@ -7775,7 +7665,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 248,
+      "line": 245,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -7817,7 +7707,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 249,
+      "line": 246,
       "files": [
         "docker-compose.yml",
         "Dockerfile",
@@ -7866,7 +7756,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 250,
+      "line": 247,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -7907,7 +7797,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 251,
+      "line": 248,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -7950,7 +7840,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 252,
+      "line": 249,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -7996,7 +7886,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 253,
+      "line": 250,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -8040,7 +7930,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 254,
+      "line": 251,
       "files": [
         "Dockerfile",
         "docker-compose.yml",
@@ -8091,7 +7981,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 262,
+      "line": 259,
       "files": [
         "docs/operations/disaster-recovery.md",
         "packages/db/prisma/"
@@ -8140,7 +8030,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 263,
+      "line": 260,
       "files": [
         "docs/operations/deployment.md",
         "Dockerfile",
@@ -8238,9 +8128,6 @@
         "DEV-195",
         "DEV-196",
         "DEV-199",
-        "DEV-203",
-        "DEV-204",
-        "DEV-205",
         "DEV-206",
         "DEV-207",
         "DEV-208",
@@ -8428,9 +8315,6 @@
         "DEV-194",
         "DEV-195",
         "DEV-196",
-        "DEV-203",
-        "DEV-204",
-        "DEV-205",
         "DEV-207",
         "DEV-208",
         "DEV-210",
@@ -8748,9 +8632,6 @@
         "DEV-195",
         "DEV-196",
         "DEV-199",
-        "DEV-203",
-        "DEV-204",
-        "DEV-205",
         "DEV-206",
         "DEV-207",
         "DEV-208",
