@@ -57,38 +57,98 @@ export interface CategorySuggestion {
   matchReason: string;
 }
 
-/**
- * AI insight (placeholder for future implementation)
- */
+// ============================================================================
+// Insight Types (matches backend insight.types.ts)
+// ============================================================================
+
+export type InsightType =
+  | 'cash_flow_warning'
+  | 'spending_anomaly'
+  | 'duplicate_expense'
+  | 'overdue_alert'
+  | 'tax_estimate'
+  | 'revenue_trend'
+  | 'reconciliation_gap';
+
+export type InsightPriority = 'low' | 'medium' | 'high' | 'critical';
+export type InsightStatus = 'active' | 'dismissed' | 'snoozed' | 'resolved' | 'expired';
+
 export interface AIInsight {
   id: string;
-  type: string;
+  entityId: string;
+  triggerId: string;
   title: string;
   description: string;
-  priority: 'low' | 'medium' | 'high';
+  type: InsightType;
+  priority: InsightPriority;
+  impact: number | null;
+  confidence: number | null;
+  actionable: boolean;
+  status: InsightStatus;
+  deadline: string | null;
+  dismissedAt: string | null;
+  dismissedBy: string | null;
+  snoozedUntil: string | null;
+  metadata: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface InsightListResponse {
+  insights: AIInsight[];
+  nextCursor: string | undefined;
+  hasMore: boolean;
+}
+
+export interface InsightCounts {
+  total: number;
+  byPriority: Record<InsightPriority, number>;
+  byType: Record<InsightType, number>;
+}
+
+export interface InsightGenerationSummary {
+  generated: number;
+  skipped: number;
+  errors: number;
+}
+
+// ============================================================================
+// Monthly Close Types
+// ============================================================================
+
+export type ChecklistStatus = 'pass' | 'fail' | 'warn';
+
+export interface ChecklistItem {
+  label: string;
+  status: ChecklistStatus;
+  count: number;
+  details: string;
+  weight: number;
+}
+
+export interface CloseReadinessReport {
+  periodId: string;
+  periodName: string;
+  score: number;
+  canClose: boolean;
+  items: ChecklistItem[];
+  generatedAt: string;
+}
+
+export interface CloseHistoryItem {
+  id: string;
+  recordId: string;
+  action: string;
+  before: Record<string, unknown>;
+  after: Record<string, unknown>;
+  userId: string;
   createdAt: string;
 }
 
-/**
- * AI recommendation (placeholder for future implementation)
- */
-export interface AIRecommendation {
-  id: string;
-  action: string;
-  description: string;
-  impact: string;
-  priority: 'low' | 'medium' | 'high';
-}
-
-/**
- * AI categorization rule suggestion (placeholder for future implementation)
- */
-export interface AIRuleSuggestion {
-  pattern: string;
-  categoryId: string;
-  categoryName: string;
-  confidence: number;
-  matchCount: number;
+export interface CloseHistoryResponse {
+  items: CloseHistoryItem[];
+  nextCursor: string | undefined;
+  hasMore: boolean;
 }
 
 // ============================================================================
@@ -197,49 +257,132 @@ export async function categorizeTransaction(
   });
 }
 
+// ============================================================================
+// Insight API Functions
+// ============================================================================
+
 /**
- * Get AI-generated financial insights
+ * List insights with optional filters and cursor pagination.
  *
  * GET /api/ai/insights
- *
- * Note: Returns 501 (Not Implemented) - placeholder for future phase
- *
- * @returns Array of AI-generated insights
  */
-export async function getInsights(): Promise<AIInsight[]> {
-  return apiClient<AIInsight[]>('/api/ai/insights', {
-    method: 'GET',
-  });
+export async function listInsights(params: {
+  entityId: string;
+  type?: InsightType;
+  priority?: InsightPriority;
+  status?: InsightStatus;
+  cursor?: string;
+  limit?: number;
+}): Promise<InsightListResponse> {
+  const sp = new URLSearchParams({ entityId: params.entityId });
+  if (params.type) sp.set('type', params.type);
+  if (params.priority) sp.set('priority', params.priority);
+  if (params.status) sp.set('status', params.status);
+  if (params.cursor) sp.set('cursor', params.cursor);
+  if (params.limit) sp.set('limit', String(params.limit));
+
+  return apiClient<InsightListResponse>(`/api/ai/insights?${sp.toString()}`);
 }
 
 /**
- * Get AI-generated action recommendations
+ * Dismiss an insight.
  *
- * GET /api/ai/recommendations
- *
- * Note: Returns 501 (Not Implemented) - placeholder for future phase
- *
- * @returns Array of AI recommendations
+ * POST /api/ai/insights/:id/dismiss
  */
-export async function getRecommendations(): Promise<AIRecommendation[]> {
-  return apiClient<AIRecommendation[]>('/api/ai/recommendations', {
-    method: 'GET',
-  });
-}
-
-/**
- * Get AI-suggested categorization rules based on transaction patterns
- *
- * POST /api/ai/rules/suggest
- *
- * Note: Returns 501 (Not Implemented) - placeholder for future phase
- *
- * @returns Array of suggested categorization rules
- */
-export async function suggestRules(): Promise<AIRuleSuggestion[]> {
-  return apiClient<AIRuleSuggestion[]>('/api/ai/rules/suggest', {
+export async function dismissInsight(id: string): Promise<AIInsight> {
+  return apiClient<AIInsight>(`/api/ai/insights/${id}/dismiss`, {
     method: 'POST',
   });
+}
+
+/**
+ * Snooze an insight until a given date.
+ *
+ * POST /api/ai/insights/:id/snooze
+ */
+export async function snoozeInsight(id: string, snoozedUntil: string): Promise<AIInsight> {
+  return apiClient<AIInsight>(`/api/ai/insights/${id}/snooze`, {
+    method: 'POST',
+    body: JSON.stringify({ snoozedUntil }),
+  });
+}
+
+/**
+ * Trigger insight generation for an entity.
+ *
+ * POST /api/ai/insights/generate
+ */
+export async function generateInsights(
+  entityId: string,
+  types?: InsightType[],
+): Promise<InsightGenerationSummary> {
+  return apiClient<InsightGenerationSummary>('/api/ai/insights/generate', {
+    method: 'POST',
+    body: JSON.stringify({ entityId, ...(types && { types }) }),
+  });
+}
+
+/**
+ * Get insight counts by priority and type (for dashboard widget).
+ *
+ * GET /api/ai/insights/counts
+ */
+export async function getInsightCounts(entityId: string): Promise<InsightCounts> {
+  return apiClient<InsightCounts>(
+    `/api/ai/insights/counts?entityId=${encodeURIComponent(entityId)}`,
+  );
+}
+
+// ============================================================================
+// Monthly Close API Functions
+// ============================================================================
+
+/**
+ * Get close readiness report for a fiscal period.
+ *
+ * GET /api/ai/monthly-close/readiness
+ */
+export async function getCloseReadiness(
+  entityId: string,
+  periodId: string,
+): Promise<CloseReadinessReport> {
+  const sp = new URLSearchParams({ entityId, periodId });
+  return apiClient<CloseReadinessReport>(`/api/ai/monthly-close/readiness?${sp.toString()}`);
+}
+
+/**
+ * Execute monthly close (lock + close period).
+ *
+ * POST /api/ai/monthly-close/execute
+ */
+export async function executeClose(
+  entityId: string,
+  periodId: string,
+): Promise<{ success: true; periodId: string; periodName: string }> {
+  return apiClient<{ success: true; periodId: string; periodName: string }>(
+    '/api/ai/monthly-close/execute',
+    {
+      method: 'POST',
+      body: JSON.stringify({ entityId, periodId }),
+    },
+  );
+}
+
+/**
+ * Get monthly close history.
+ *
+ * GET /api/ai/monthly-close/history
+ */
+export async function getCloseHistory(params: {
+  entityId: string;
+  take?: number;
+  cursor?: string;
+}): Promise<CloseHistoryResponse> {
+  const sp = new URLSearchParams({ entityId: params.entityId });
+  if (params.take) sp.set('take', String(params.take));
+  if (params.cursor) sp.set('cursor', params.cursor);
+
+  return apiClient<CloseHistoryResponse>(`/api/ai/monthly-close/history?${sp.toString()}`);
 }
 
 // ============================================================================
