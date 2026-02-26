@@ -27,6 +27,7 @@ import { EmptyState } from '@akount/ui';
 import { Target, Plus, Pencil, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { GoalForm } from './goal-form';
+import { GoalTrajectory } from './goal-trajectory';
 
 const GOAL_STATUS_CONFIG: Record<GoalStatus, { label: string; className: string }> = {
     ACTIVE: { label: 'Active', className: 'bg-ak-green-dim text-ak-green border-transparent' },
@@ -131,6 +132,7 @@ export function GoalsList({ initialGoals, initialNextCursor, entityId }: GoalsLi
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground text-right">Target</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground text-right">Current</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Progress</TableHead>
+                                <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Trajectory</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Status</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground">Target Date</TableHead>
                                 <TableHead className="text-xs uppercase tracking-wider text-muted-foreground w-[80px]" />
@@ -162,6 +164,9 @@ export function GoalsList({ initialGoals, initialNextCursor, entityId }: GoalsLi
                                                 </div>
                                                 <span className="text-xs font-mono text-muted-foreground w-10 text-right">{progress}%</span>
                                             </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <GoalTrajectory goal={goal} compact />
                                         </TableCell>
                                         <TableCell>
                                             <Badge variant="outline" className={statusConfig.className}>

@@ -38,7 +38,12 @@ export const GoalIdParamSchema = z.object({
   id: z.string().cuid('Invalid goal ID'),
 });
 
+export const GoalTrackingQuerySchema = z.object({
+  entityId: z.string().cuid('Invalid entity ID'),
+});
+
 export type CreateGoalInput = z.infer<typeof CreateGoalSchema>;
 export type UpdateGoalInput = z.infer<typeof UpdateGoalSchema>;
 export type ListGoalsQuery = z.infer<typeof ListGoalsQuerySchema>;
 export type GoalIdParam = z.infer<typeof GoalIdParamSchema>;
+export type GoalTrackingQuery = z.infer<typeof GoalTrackingQuerySchema>;

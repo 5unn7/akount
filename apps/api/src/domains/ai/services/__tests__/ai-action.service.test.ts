@@ -362,46 +362,53 @@ describe('AIActionService', () => {
 
   describe('batchApprove', () => {
     it('should approve multiple actions and execute them', async () => {
-      mockFindFirst
-        .mockResolvedValueOnce(mockAction({ id: 'act-001' }))
-        .mockResolvedValueOnce(mockAction({ id: 'act-002' }));
-      mockUpdate.mockResolvedValue({});
+      // PERF-23: Mock findMany (batched query) instead of findFirst
+      mockFindMany.mockResolvedValueOnce([
+        mockAction({ id: 'act-001' }),
+        mockAction({ id: 'act-002' }),
+      ]);
+      mockUpdateMany.mockResolvedValue({ count: 2 });
+      mockExecute.mockResolvedValue({ success: true });
 
       const result = await service.batchApprove(['act-001', 'act-002'], 'user-001');
 
       expect(result.succeeded).toEqual(['act-001', 'act-002']);
       expect(result.failed).toHaveLength(0);
-      // Executor called for each approved action
+      // Executor called for each approved action (in parallel)
       expect(mockExecute).toHaveBeenCalledTimes(2);
     });
 
     it('should report failed actions (not found or not pending)', async () => {
-      mockFindFirst
-        .mockResolvedValueOnce(mockAction({ id: 'act-001' })) // act-001 found & PENDING
-        .mockResolvedValueOnce(null); // act-002 not found
-      mockUpdate.mockResolvedValue({});
+      // PERF-23: Mock findMany returning only one action
+      mockFindMany.mockResolvedValueOnce([
+        mockAction({ id: 'act-001' }), // act-001 found & PENDING
+        // act-002 not returned (not found or filtered out)
+      ]);
+      mockUpdateMany.mockResolvedValue({ count: 1 });
 
       const result = await service.batchApprove(['act-001', 'act-002'], 'user-001');
 
       expect(result.succeeded).toEqual(['act-001']);
       expect(result.failed).toHaveLength(1);
       expect(result.failed[0].id).toBe('act-002');
-      expect(result.failed[0].reason).toContain('Not found or not pending');
+      expect(result.failed[0].reason).toContain('Not found');
     });
 
-    it('should handle database errors gracefully', async () => {
-      mockFindFirst
-        .mockResolvedValueOnce(mockAction({ id: 'act-001' }))
-        .mockResolvedValueOnce(mockAction({ id: 'act-002' }));
-      mockUpdate
-        .mockResolvedValueOnce({}) // act-001 succeeds
-        .mockRejectedValueOnce(new Error('DB error')); // act-002 fails
+    it('should handle non-pending actions', async () => {
+      // PERF-23: Mock findMany with one action having wrong status
+      mockFindMany.mockResolvedValueOnce([
+        mockAction({ id: 'act-001', status: 'PENDING' }),
+        mockAction({ id: 'act-002', status: 'APPROVED' }), // Already approved
+      ]);
+      mockUpdateMany.mockResolvedValue({ count: 1 });
+      mockExecute.mockResolvedValue({ success: true });
 
       const result = await service.batchApprove(['act-001', 'act-002'], 'user-001');
 
       expect(result.succeeded).toEqual(['act-001']);
       expect(result.failed).toHaveLength(1);
-      expect(result.failed[0].reason).toBe('DB error');
+      expect(result.failed[0].id).toBe('act-002');
+      expect(result.failed[0].reason).toBe('Not pending');
     });
   });
 
@@ -411,16 +418,18 @@ describe('AIActionService', () => {
 
   describe('batchReject', () => {
     it('should reject multiple actions and handle side-effects', async () => {
-      mockFindFirst
-        .mockResolvedValueOnce(mockAction({ id: 'act-001' }))
-        .mockResolvedValueOnce(mockAction({ id: 'act-002' }));
-      mockUpdate.mockResolvedValue({});
+      // PERF-23: Mock findMany (batched query) instead of findFirst
+      mockFindMany.mockResolvedValueOnce([
+        mockAction({ id: 'act-001' }),
+        mockAction({ id: 'act-002' }),
+      ]);
+      mockUpdateMany.mockResolvedValue({ count: 2 });
 
       const result = await service.batchReject(['act-001', 'act-002'], 'user-001');
 
       expect(result.succeeded).toEqual(['act-001', 'act-002']);
       expect(result.failed).toHaveLength(0);
-      // Rejection side-effects dispatched for each
+      // Rejection side-effects dispatched for each (in parallel)
       expect(mockHandleRejection).toHaveBeenCalledTimes(2);
     });
   });

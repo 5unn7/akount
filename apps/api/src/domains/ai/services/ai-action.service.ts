@@ -262,65 +262,86 @@ export class AIActionService {
     const failed: Array<{ id: string; reason: string }> = [];
     const approvedActions: Array<{ id: string; type: string; payload: unknown }> = [];
 
+    // PERF-23: Batch fetch all actions in single query (fix N+1)
+    const actions = await prisma.aIAction.findMany({
+      where: {
+        id: { in: actionIds },
+        entityId: this.entityId,
+        entity: { tenantId: this.tenantId },
+      },
+      select: { id: true, type: true, payload: true, status: true, expiresAt: true },
+    });
+
+    // Create lookup map for O(1) access
+    const actionMap = new Map(actions.map(a => [a.id, a]));
+
+    // Validate and categorize actions
+    const now = new Date();
+    const validActionIds: string[] = [];
+    const expiredActionIds: string[] = [];
+
     for (const id of actionIds) {
-      try {
-        // Fetch the action first (need payload for execution)
-        const action = await prisma.aIAction.findFirst({
-          where: {
-            id,
-            entityId: this.entityId,
-            entity: { tenantId: this.tenantId },
-          },
-          select: { id: true, type: true, payload: true, status: true, expiresAt: true },
-        });
+      const action = actionMap.get(id);
 
-        if (!action || action.status !== 'PENDING') {
-          failed.push({ id, reason: 'Not found or not pending' });
-          continue;
-        }
-
-        if (action.expiresAt && action.expiresAt < new Date()) {
-          await prisma.aIAction.update({
-            where: { id },
-            data: { status: 'EXPIRED' },
-          });
-          failed.push({ id, reason: 'Action expired' });
-          continue;
-        }
-
-        // Update status to APPROVED
-        await prisma.aIAction.update({
-          where: { id },
-          data: {
-            status: 'APPROVED',
-            reviewedAt: new Date(),
-            reviewedBy: userId,
-          },
-        });
-
-        succeeded.push(id);
-        approvedActions.push({ id: action.id, type: action.type, payload: action.payload });
-      } catch (error) {
-        logger.error({ err: error, actionId: id }, 'Failed to approve action');
-        failed.push({
-          id,
-          reason: error instanceof Error ? error.message : 'Unknown error',
-        });
+      if (!action) {
+        failed.push({ id, reason: 'Not found' });
+        continue;
       }
+
+      if (action.status !== 'PENDING') {
+        failed.push({ id, reason: 'Not pending' });
+        continue;
+      }
+
+      if (action.expiresAt && action.expiresAt < now) {
+        expiredActionIds.push(id);
+        failed.push({ id, reason: 'Action expired' });
+        continue;
+      }
+
+      validActionIds.push(id);
+      succeeded.push(id);
+      approvedActions.push({ id: action.id, type: action.type, payload: action.payload });
     }
 
-    // Execute all approved actions
+    // Batch update expired actions (if any)
+    if (expiredActionIds.length > 0) {
+      await prisma.aIAction.updateMany({
+        where: { id: { in: expiredActionIds } },
+        data: { status: 'EXPIRED' },
+      });
+    }
+
+    // Batch update approved actions (single query)
+    if (validActionIds.length > 0) {
+      await prisma.aIAction.updateMany({
+        where: { id: { in: validActionIds } },
+        data: {
+          status: 'APPROVED',
+          reviewedAt: now,
+          reviewedBy: userId,
+        },
+      });
+    }
+
+    // PERF-23: Execute all approved actions in parallel (was sequential)
     if (approvedActions.length > 0) {
       const executor = new ActionExecutorService(this.tenantId, this.entityId, userId);
-      for (const action of approvedActions) {
-        const result = await executor.execute(action);
-        if (!result.success) {
-          logger.warn(
-            { actionId: action.id, executionError: result.error },
-            'Batch-approved action execution failed'
-          );
-        }
-      }
+      await Promise.all(
+        approvedActions.map(async (action) => {
+          try {
+            const result = await executor.execute(action);
+            if (!result.success) {
+              logger.warn(
+                { actionId: action.id, executionError: result.error },
+                'Batch-approved action execution failed'
+              );
+            }
+          } catch (error) {
+            logger.error({ err: error, actionId: action.id }, 'Action execution threw error');
+          }
+        })
+      );
     }
 
     return { succeeded, failed };
@@ -335,50 +356,59 @@ export class AIActionService {
     const failed: Array<{ id: string; reason: string }> = [];
     const rejectedActions: Array<{ id: string; type: string; payload: unknown }> = [];
 
+    // PERF-23: Batch fetch all actions in single query (fix N+1)
+    const actions = await prisma.aIAction.findMany({
+      where: {
+        id: { in: actionIds },
+        entityId: this.entityId,
+        entity: { tenantId: this.tenantId },
+        status: 'PENDING',
+      },
+      select: { id: true, type: true, payload: true },
+    });
+
+    // Create lookup map for O(1) access
+    const actionMap = new Map(actions.map(a => [a.id, a]));
+
+    // Validate actions
+    const validActionIds: string[] = [];
     for (const id of actionIds) {
-      try {
-        // Fetch action for rejection side-effects
-        const action = await prisma.aIAction.findFirst({
-          where: {
-            id,
-            entityId: this.entityId,
-            entity: { tenantId: this.tenantId },
-            status: 'PENDING',
-          },
-          select: { id: true, type: true, payload: true },
-        });
+      const action = actionMap.get(id);
 
-        if (!action) {
-          failed.push({ id, reason: 'Not found or not pending' });
-          continue;
-        }
-
-        await prisma.aIAction.update({
-          where: { id },
-          data: {
-            status: 'REJECTED',
-            reviewedAt: new Date(),
-            reviewedBy: userId,
-          },
-        });
-
-        succeeded.push(id);
-        rejectedActions.push({ id: action.id, type: action.type, payload: action.payload });
-      } catch (error) {
-        logger.error({ err: error, actionId: id }, 'Failed to reject action');
-        failed.push({
-          id,
-          reason: error instanceof Error ? error.message : 'Unknown error',
-        });
+      if (!action) {
+        failed.push({ id, reason: 'Not found or not pending' });
+        continue;
       }
+
+      validActionIds.push(id);
+      succeeded.push(id);
+      rejectedActions.push({ id: action.id, type: action.type, payload: action.payload });
     }
 
-    // Handle rejection side-effects for all rejected actions
+    // Batch update rejected actions (single query)
+    if (validActionIds.length > 0) {
+      await prisma.aIAction.updateMany({
+        where: { id: { in: validActionIds } },
+        data: {
+          status: 'REJECTED',
+          reviewedAt: new Date(),
+          reviewedBy: userId,
+        },
+      });
+    }
+
+    // PERF-23: Handle rejection side-effects in parallel (was sequential)
     if (rejectedActions.length > 0) {
       const executor = new ActionExecutorService(this.tenantId, this.entityId, userId);
-      for (const action of rejectedActions) {
-        await executor.handleRejection(action);
-      }
+      await Promise.all(
+        rejectedActions.map(async (action) => {
+          try {
+            await executor.handleRejection(action);
+          } catch (error) {
+            logger.error({ err: error, actionId: action.id }, 'Rejection side-effect failed');
+          }
+        })
+      );
     }
 
     return { succeeded, failed };

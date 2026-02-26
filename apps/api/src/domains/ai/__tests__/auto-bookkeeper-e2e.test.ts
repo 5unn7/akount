@@ -645,14 +645,9 @@ describe('Auto-Bookkeeper E2E Pipeline', () => {
         expiresAt: new Date(Date.now() + 86400000),
       };
 
-      let findFirstCallCount = 0;
-      mockAIActionFindFirst.mockImplementation(() => {
-        findFirstCallCount++;
-        return findFirstCallCount <= 2
-          ? [action1, action2][findFirstCallCount - 1]
-          : null;
-      });
-      mockAIActionUpdate.mockResolvedValue({});
+      // PERF-23: Mock findMany (batched query) instead of findFirst loop
+      mockAIActionFindMany.mockResolvedValueOnce([action1, action2]);
+      mockAIActionUpdateMany.mockResolvedValue({ count: 2 });
 
       // Executor mocks for JE approval after batch approve
       mockJEFindFirst.mockResolvedValue({
@@ -671,17 +666,18 @@ describe('Auto-Bookkeeper E2E Pipeline', () => {
       expect(result.succeeded).toHaveLength(2);
       expect(result.failed).toHaveLength(0);
 
-      // Verify status updates
-      expect(mockAIActionUpdate).toHaveBeenCalledTimes(2);
-      const updateCall = mockAIActionUpdate.mock.calls[0][0];
+      // Verify batch update was called (not individual updates)
+      expect(mockAIActionUpdateMany).toHaveBeenCalledTimes(1);
+      const updateCall = mockAIActionUpdateMany.mock.calls[0][0];
       expect(updateCall.data.status).toBe('APPROVED');
       expect(updateCall.data.reviewedBy).toBe(APPROVER_ID);
       expect(updateCall.data.reviewedAt).toBeInstanceOf(Date);
     });
 
     it('should handle partial failure in batch approve', async () => {
-      mockAIActionFindFirst
-        .mockResolvedValueOnce({
+      // PERF-23: Mock findMany returning only one action (second not found)
+      mockAIActionFindMany.mockResolvedValueOnce([
+        {
           id: ACTION_ID_1,
           type: 'JE_DRAFT',
           payload: {
@@ -691,10 +687,10 @@ describe('Auto-Bookkeeper E2E Pipeline', () => {
           },
           status: 'PENDING',
           expiresAt: new Date(Date.now() + 86400000),
-        })
-        .mockResolvedValueOnce(null); // Not found or not pending
-
-      mockAIActionUpdate.mockResolvedValue({});
+        },
+        // ACTION_ID_2 not returned (not found)
+      ]);
+      mockAIActionUpdateMany.mockResolvedValue({ count: 1 });
       mockJEFindFirst.mockResolvedValue({
         id: JE_ID_1,
         status: 'DRAFT',
@@ -712,7 +708,7 @@ describe('Auto-Bookkeeper E2E Pipeline', () => {
       expect(result.succeeded[0]).toBe(ACTION_ID_1);
       expect(result.failed).toHaveLength(1);
       expect(result.failed[0].id).toBe(ACTION_ID_2);
-      expect(result.failed[0].reason).toContain('Not found or not pending');
+      expect(result.failed[0].reason).toContain('Not found');
     });
   });
 

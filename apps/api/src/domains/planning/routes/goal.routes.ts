@@ -2,15 +2,18 @@ import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { withPermission } from '../../../middleware/withPermission';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { GoalService } from '../services/goal.service';
+import { GoalTrackingService } from '../services/goal-tracking.service';
 import {
   CreateGoalSchema,
   UpdateGoalSchema,
   ListGoalsQuerySchema,
   GoalIdParamSchema,
+  GoalTrackingQuerySchema,
   type CreateGoalInput,
   type UpdateGoalInput,
   type ListGoalsQuery,
   type GoalIdParam,
+  type GoalTrackingQuery,
 } from '../schemas/goal.schema';
 
 /**
@@ -127,6 +130,61 @@ export async function goalRoutes(fastify: FastifyInstance) {
         }
         throw error;
       }
+    }
+  );
+
+  // POST /goals/track — Trigger tracking for all active goals of an entity
+  fastify.post(
+    '/track',
+    {
+      ...withPermission('planning', 'goals', 'ACT'),
+      preValidation: [validateBody(GoalTrackingQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const trackingService = new GoalTrackingService(request.tenantId);
+      const body = request.body as GoalTrackingQuery;
+
+      const results = await trackingService.trackGoals(body.entityId);
+      const updated = results.filter((r) => r.updated).length;
+      const milestoneCount = results.reduce((sum, r) => sum + r.milestones.length, 0);
+
+      request.log.info(
+        { entityId: body.entityId, tracked: results.length, updated, milestones: milestoneCount },
+        'Tracked goals'
+      );
+      return reply.status(200).send({ results });
+    }
+  );
+
+  // POST /goals/:id/track — Trigger tracking for a single goal
+  fastify.post(
+    '/:id/track',
+    {
+      ...withPermission('planning', 'goals', 'ACT'),
+      preValidation: [validateParams(GoalIdParamSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const trackingService = new GoalTrackingService(request.tenantId);
+      const params = request.params as GoalIdParam;
+
+      const result = await trackingService.trackGoal(params.id);
+      if (!result) {
+        return reply.status(404).send({ error: 'Goal not found or not active' });
+      }
+
+      request.log.info(
+        { goalId: params.id, updated: result.updated, milestones: result.milestones.length },
+        'Tracked goal'
+      );
+      return reply.status(200).send(result);
     }
   );
 

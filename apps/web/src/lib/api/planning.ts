@@ -169,6 +169,27 @@ export async function deleteGoal(id: string): Promise<void> {
 }
 
 // ============================================================================
+// API Functions — Goal Tracking
+// ============================================================================
+
+export async function trackGoals(
+  entityId: string
+): Promise<TrackGoalsResponse> {
+  return apiClient<TrackGoalsResponse>('/api/planning/goals/track', {
+    method: 'POST',
+    body: JSON.stringify({ entityId }),
+  });
+}
+
+export async function trackGoal(
+  goalId: string
+): Promise<TrackingResult> {
+  return apiClient<TrackingResult>(`/api/planning/goals/${goalId}/track`, {
+    method: 'POST',
+  });
+}
+
+// ============================================================================
 // API Functions — Budgets
 // ============================================================================
 
@@ -212,6 +233,34 @@ export async function deleteBudget(id: string): Promise<void> {
   return apiClient<void>(`/api/planning/budgets/${id}`, {
     method: 'DELETE',
   });
+}
+
+// ============================================================================
+// Types — Goal Tracking
+// ============================================================================
+
+export interface MilestoneEvent {
+  goalId: string;
+  goalName: string;
+  threshold: number;
+  currentPercent: number;
+  currentAmount: number;
+  targetAmount: number;
+}
+
+export interface TrackingResult {
+  goalId: string;
+  goalName: string;
+  previousAmount: number;
+  currentAmount: number;
+  targetAmount: number;
+  progressPercent: number;
+  milestones: MilestoneEvent[];
+  updated: boolean;
+}
+
+export interface TrackGoalsResponse {
+  results: TrackingResult[];
 }
 
 // ============================================================================
