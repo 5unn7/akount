@@ -315,9 +315,9 @@ export function BSReportView({ initialData, initialParams, error, entities = [] 
 function BSSection({ items, showComparison, currency }: { items: ReportLineItem[]; showComparison: boolean; currency: string }) {
     return (
         <div className="space-y-1">
-            {items.map((item, idx) => (
+            {items.map((item) => (
                 <div
-                    key={idx}
+                    key={item.accountId}
                     className="flex justify-between items-center py-1.5"
                     style={{ paddingLeft: `${item.depth * 16}px` }}
                 >

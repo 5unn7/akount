@@ -143,8 +143,8 @@ export function RevenueReportView({ initialData, initialParams, error }: Revenue
                                     No revenue recorded in this period
                                 </p>
                             ) : (
-                                initialData.clients.map((client, idx) => (
-                                    <div key={idx} className="space-y-2">
+                                initialData.clients.map((client) => (
+                                    <div key={client.clientId ?? client.clientName} className="space-y-2">
                                         <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-3">
                                                 <span className="text-sm font-medium">{client.clientName}</span>

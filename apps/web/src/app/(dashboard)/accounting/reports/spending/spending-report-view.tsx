@@ -165,8 +165,8 @@ export function SpendingReportView({ initialData, initialParams, error }: Spendi
                                             paddingAngle={2}
                                             dataKey="value"
                                         >
-                                            {initialData.categories.slice(0, 8).map((_, idx) => (
-                                                <Cell key={idx} fill={CHART_COLORS[idx % CHART_COLORS.length]} />
+                                            {initialData.categories.slice(0, 8).map((cat, catIdx) => (
+                                                <Cell key={cat.category} fill={CHART_COLORS[catIdx % CHART_COLORS.length]} />
                                             ))}
                                         </Pie>
                                         <Tooltip
@@ -179,11 +179,11 @@ export function SpendingReportView({ initialData, initialParams, error }: Spendi
                                 </ResponsiveContainer>
                             </div>
                             <div className="flex flex-wrap gap-3 justify-center mt-2">
-                                {initialData.categories.slice(0, 8).map((cat, idx) => (
-                                    <div key={idx} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                {initialData.categories.slice(0, 8).map((cat, catIdx) => (
+                                    <div key={cat.category} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                         <div
                                             className="w-2.5 h-2.5 rounded-full"
-                                            style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }}
+                                            style={{ backgroundColor: CHART_COLORS[catIdx % CHART_COLORS.length] }}
                                         />
                                         {cat.category}
                                     </div>
@@ -203,8 +203,8 @@ export function SpendingReportView({ initialData, initialParams, error }: Spendi
                                     No spending recorded in this period
                                 </p>
                             ) : (
-                                initialData.categories.map((cat, idx) => (
-                                    <div key={idx} className="space-y-2">
+                                initialData.categories.map((cat) => (
+                                    <div key={cat.category} className="space-y-2">
                                         <div className="flex justify-between items-center">
                                             <span className="text-sm font-medium">{cat.category}</span>
                                             <div className="flex items-center gap-4">

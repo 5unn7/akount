@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TransferService } from '../transfer.service';
 import { AccountingError } from '../../../accounting/errors';
+import { assertIntegerCents } from '../../../../test-utils/financial-assertions';
 
 // Mock audit - all mocks must be inline
 vi.mock('../../../../lib/audit', () => ({
@@ -402,12 +403,12 @@ describe('TransferService', () => {
       expect(totalDebits).toBe(expectedBaseCurrency);
       expect(totalCredits).toBe(expectedBaseCurrency);
 
-      // Verify all amounts are integer cents
+      // Verify all amounts are integer cents (using shared financial assertion)
       je1Lines.forEach((line: { debitAmount: number; creditAmount: number; baseCurrencyDebit: number; baseCurrencyCredit: number }) => {
-        expect(Number.isInteger(line.debitAmount)).toBe(true);
-        expect(Number.isInteger(line.creditAmount)).toBe(true);
-        expect(Number.isInteger(line.baseCurrencyDebit)).toBe(true);
-        expect(Number.isInteger(line.baseCurrencyCredit)).toBe(true);
+        assertIntegerCents(line.debitAmount, 'debitAmount');
+        assertIntegerCents(line.creditAmount, 'creditAmount');
+        assertIntegerCents(line.baseCurrencyDebit, 'baseCurrencyDebit');
+        assertIntegerCents(line.baseCurrencyCredit, 'baseCurrencyCredit');
       });
 
       // Verify sourceDocument preserves original amount
@@ -497,6 +498,7 @@ describe('TransferService', () => {
 
       expect(result.transfers).toHaveLength(1);
       expect(result.transfers[0].amount).toBe(50000);
+      assertIntegerCents(result.transfers[0].amount, 'transfer.amount');
     });
 
     it('should reject access to other tenant entity', async () => {

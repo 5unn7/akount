@@ -26,10 +26,13 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
-| DEV-190 | AI: JE suggestion service — draft journal entries from categorized transactions | 4-6h | 🔴 Critical | 🟢 | [needs: DEV-185,DEV-186,DEV-187,DEV-189] | plan:ai-auto-bookkeeper-phase1 |
-| DEV-191 | AI: JE suggestion API routes + tests (draft, preview endpoints) | 3-4h | 🔴 Critical | 🟢 | [needs: DEV-190] | plan:ai-auto-bookkeeper-phase1 |
-| DEV-197 | Accounting: Batch JE approval endpoint with partial success handling | 2-3h | 🔴 Critical | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
-| DEV-198 | AI: Wire AIAction approval to execution (action-executor service) | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-193,DEV-195,DEV-197] | plan:ai-auto-bookkeeper-phase1 |
+| SEC-28 | AI: Add `ai:actions` + `ai:monthly-close` to PERMISSION_MATRIX (RBAC prerequisite for AI features) | 30m | 🔴 Critical | 🟢 | | review:ai-bookkeeper-review |
+| INFRA-60 | AI: Install `@fastify/rate-limit`, add per-endpoint limits to AI routes | 1h | 🟠 High | 🟢 | | review:ai-bookkeeper-review |
+| DEV-202 | AI: Extract `resolveGLAccountByCode` to shared utility (`domains/accounting/utils/gl-resolve.ts`) | 30m | 🟠 High | 🟢 | | review:ai-bookkeeper-review |
+| DEV-190 | AI: JE suggestion service — draft journal entries from categorized transactions + transfer detection guard (skip TRANSFER sourceType), zero-amount guard, conservation of value for multi-currency, Int 0-100 confidence | 4-6h | 🔴 Critical | 🟢 | [needs: DEV-185,DEV-186,DEV-187,DEV-189] | plan:ai-auto-bookkeeper-phase1 |
+| DEV-191 | AI: JE suggestion API routes + tests (draft, preview endpoints) + JSON payload size limits in Zod schemas | 3-4h | 🔴 Critical | 🟢 | [needs: DEV-190] | plan:ai-auto-bookkeeper-phase1 |
+| DEV-197 | Accounting: Batch JE approval endpoint — wrap each individual approval in `$transaction` for atomicity | 2-3h | 🔴 Critical | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
+| DEV-198 | AI: Wire AIAction approval to execution — DRAFT JE cleanup on rejection (soft-delete JE + clear txn.journalEntryId), re-fetch/re-validate JE from DB on approval (never trust payload), registry pattern for executor dispatch | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-193,DEV-195,DEV-197] | plan:ai-auto-bookkeeper-phase1 |
 | DEV-200 | AI: Integration test — full auto-bookkeeper workflow E2E | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-191,DEV-194,DEV-197,DEV-198] | plan:ai-auto-bookkeeper-phase1 |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
@@ -39,14 +42,14 @@
 | UX-58 | Planning: Build goals page — list goals, create form, progress tracking | 3-4h | 🟠 High | 📦 | [needs: DEV-97] | audit:fe-be-parity |
 | UX-59 | Planning: Build budgets page — list budgets, create form, budget vs actual bars | 3-4h | 🟠 High | 📦 | [needs: DEV-98] | audit:fe-be-parity |
 | UX-60 | Planning: Add planning landing page at `/planning` with summary cards | 2-3h | 🟠 High | 📦 | [needs: DEV-97, DEV-98] | audit:fe-be-parity |
-| DEV-185 | AI: Add `defaultGLAccountId` FK to Category model (schema migration) | 30m | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
+| DEV-185 | AI: Add `defaultGLAccountId` FK to Category model (schema migration) + document cross-scope FK (Category=tenant, GLAccount=entity), validate at runtime | 30m | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
 | DEV-186 | AI: Add `AI_SUGGESTION` to JournalEntrySourceType enum (schema migration) | 15m | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
-| DEV-187 | AI: Enhance categorization with GL resolution + confidence tiers | 2-3h | 🟠 High | 🟢 | [needs: DEV-185] | plan:ai-auto-bookkeeper-phase1 |
+| DEV-187 | AI: Enhance categorization with GL resolution + confidence tiers + sign-aware GL fallback (income→4990, expense→5990), refactor to class-based service, use extracted resolveGLAccountByCode | 2-3h | 🟠 High | 🟢 | [needs: DEV-185,DEV-202] | plan:ai-auto-bookkeeper-phase1 |
 | DEV-188 | AI: Batch categorize API endpoint + schema extraction | 1-2h | 🟠 High | 🟢 | [needs: DEV-187] | plan:ai-auto-bookkeeper-phase1 |
-| DEV-189 | AI: Add Claude (Anthropic) provider to AIService | 1-2h | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
-| DEV-192 | AI: Create AIAction Prisma model + enums (schema migration) | 30m | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
-| DEV-193 | AI: AIAction service + AI domain error handler (CRUD, batch, stats) | 3-4h | 🟠 High | 🟢 | [needs: DEV-192] | plan:ai-auto-bookkeeper-phase1 |
-| DEV-194 | AI: Action Feed API routes + tests (list, approve, reject, batch, stats) | 3-4h | 🟠 High | 🟢 | [needs: DEV-193] | plan:ai-auto-bookkeeper-phase1 |
+| DEV-189 | AI: Add Claude (Anthropic) provider to AIService + add ANTHROPIC_API_KEY to env.ts Zod schema, sanitize SDK errors | 1-2h | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
+| DEV-192 | AI: Create AIAction Prisma model + enums (schema migration) + remove INSIGHT from AIActionType enum (dead value), use confidence Int? (0-100 not Float 0-1) | 30m | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase1 |
+| DEV-193 | AI: AIAction service + AI domain error handler (CRUD, batch, stats) + validate expiresAt on approval | 3-4h | 🟠 High | 🟢 | [needs: DEV-192] | plan:ai-auto-bookkeeper-phase1 |
+| DEV-194 | AI: Action Feed API routes + tests (list, approve, reject, batch, stats) + entityId required in batch ops, RBAC uses SEC-28 permissions | 3-4h | 🟠 High | 🟢 | [needs: DEV-193,SEC-28] | plan:ai-auto-bookkeeper-phase1 |
 | DEV-195 | AI: Wire JE/categorization services to create AIActions on suggestions | 1-2h | 🟠 High | 🟢 | [needs: DEV-190,DEV-193] | plan:ai-auto-bookkeeper-phase1 |
 | DEV-196 | AI: Frontend Action Feed UI (page, components, navigation, confidence badges) | 4-6h | 🟠 High | 🟢 | [needs: DEV-194] | plan:ai-auto-bookkeeper-phase1 |
 
@@ -56,6 +59,32 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | DEV-199 | AI: Dashboard AI Action widget (glass card, pending count, quick-approve) | 1-2h | 🟡 Medium | 🟢 | [needs: DEV-194,DEV-196] | plan:ai-auto-bookkeeper-phase1 |
+| DEV-203 | AI Rules: Rule service — CRUD operations (list, create, update, delete, toggle, stats) | 2-3h | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase2 |
+| DEV-204 | AI Rules: Rule evaluation engine — condition evaluation, batch, first-match-wins, NO regex (contains/eq/gt/lt only), field allowlist | 2-3h | 🟠 High | 🟢 | [needs: DEV-203] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-205 | AI Rules: API routes + Zod schemas (CRUD, toggle, stats) + JSON payload size validation | 2-3h | 🟠 High | 🟢 | [needs: DEV-203,DEV-204] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-206 | AI Rules: Hook rules into autoCategorize pipeline (rules before keywords, backward compatible) | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-204,DEV-187] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-207 | AI Rules: Pattern detection service (3+ corrections threshold, keyword extraction, dedup) | 2-3h | 🟠 High | 🟢 | [needs: DEV-204] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-208 | AI Rules: Rule suggestion generation service (creates RuleSuggestion + AIAction) | 2-3h | 🟠 High | 🟢 | [needs: DEV-207,DEV-192,DEV-193] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-209 | AI Rules: Wire correction triggers + RULE_SUGGESTION executor handler | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-207,DEV-208,DEV-198] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-210 | AI Rules: Rule suggestion API routes + tests | 2-3h | 🟠 High | 🟢 | [needs: DEV-207,DEV-208,DEV-209] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-211 | AI Rules: Frontend API client + types for rules | 1-2h | 🟡 Medium | 🟢 | [needs: DEV-205,DEV-210] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-212 | AI Rules: Rules management page (`/insights/rules`) + Sheet + navigation | 3-4h | 🟡 Medium | 🟢 | [needs: DEV-211] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-213 | AI Rules: Rule condition builder component (visual AND/OR, field dropdowns) | 2-3h | 🟡 Medium | 🟢 | [needs: DEV-212] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-214 | AI Rules: Rule suggestions in Action Feed (card rendering, approve creates rule) | 2-3h | 🟡 Medium | 🟢 | [needs: DEV-211,DEV-212,DEV-196] | plan:ai-auto-bookkeeper-phase2 |
+| DEV-215 | AI Insights: Schema enhancement — add dismiss/snooze fields + @@unique([entityId,triggerId]) | 30m | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase3 |
+| DEV-216 | AI Insights: Types, constants, Zod schemas (7 types, 4 priorities, 5 statuses) | 1-2h | 🟠 High | 🟢 | [needs: DEV-215] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-217 | AI Insights: CRUD service (upsert dedup, dismiss, snooze, expire, counts) | 2-3h | 🟠 High | 🟢 | [needs: DEV-215,DEV-216] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-218 | AI Insights: API routes — replace 501 stubs (list, dismiss, snooze, generate, counts) | 2-3h | 🟠 High | 🟢 | [needs: DEV-217] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-219 | AI Insights: Generator orchestrator service (fan-out to analyzers, AIAction bridge for critical) | 3-4h | 🔴 Critical | 🟢 | [needs: DEV-217,DEV-218,DEV-193] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-220 | AI Insights: Cash flow + overdue analyzers (pure functions, integer cents thresholds) | 2-3h | 🟠 High | 🟢 | [needs: DEV-219] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-221 | AI Insights: Spending anomaly + duplicate expense analyzers (pure functions) | 2-3h | 🟠 High | 🟢 | [needs: DEV-219] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-222 | AI Insights: Revenue trend + reconciliation gap analyzers (DB-access) | 2-3h | 🟠 High | 🟢 | [needs: DEV-219] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-223 | AI Insights: Wire import trigger + optional generation timer (SYSTEM_USER_ID audit) | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-219,DEV-220,DEV-221,DEV-222,DEV-198] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-224 | AI Insights: Monthly close readiness service (weighted score, atomic executeClose with post-lock re-validation, APPROVE-level RBAC) | 3-4h | 🔴 Critical | 🟢 | [needs: DEV-192,SEC-28] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-225 | AI Insights: Monthly close API routes + tests (readiness, execute, history) | 2-3h | 🟠 High | 🟢 | [needs: DEV-224] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-226 | AI Insights: Frontend API client + types (insights + monthly close) | 1-2h | 🟡 Medium | 🟢 | [needs: DEV-218,DEV-225] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-227 | AI Insights: Insights list page — replace chat-only UI (tabs, filters, cards, dismiss/snooze) | 3-4h | 🟡 Medium | 🟢 | [needs: DEV-226] | plan:ai-auto-bookkeeper-phase3 |
+| DEV-228 | AI Insights: Monthly Close page + dashboard insight widget | 3-4h | 🟡 Medium | 🟢 | [needs: DEV-226,DEV-227] | plan:ai-auto-bookkeeper-phase3 |
 | UX-44 | Business: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
 | UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | 🟢 | | audit:acct-fe-be |
@@ -75,8 +104,6 @@
 | DRY-19 | Replace z.record(z.unknown()) in onboarding with typed schema | 30m | 🟡 Medium | 🟢 | | review:revie23feb |
 | FIN-29 | Re-validate totals against line items in updateInvoice/updateBill PATCH | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
 | FIN-30 | Add linkedEntryId deduplication filter to GL report queries | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
-| UX-104 | Fix static key="create" bug in ClientForm/VendorForm (stale data on switch) | 20m | 🟡 Medium | 🟢 | | review:revie23feb |
-| TEST-5 | Add assertIntegerCents to transfer.service.test.ts | 15m | 🟡 Medium | 🟢 | | review:revie23feb |
 | TEST-6 | Write tests for data-export and report-export services | 2h | 🟡 Medium | 🟢 | | review:revie23feb |
 | TEST-7 | Frontend: Fix WelcomeStep 7 failing tests (text mismatch) | 30m | 🟠 High | 🟢 | | plan:frontend-test-coverage |
 | TEST-8 | Frontend: Create test-utils/ dir + render helper | 30m | 🟠 High | 🟢 | | plan:frontend-test-coverage |
@@ -93,7 +120,6 @@
 | TEST-19 | Frontend: Test InvoiceForm line items + totals (financial calcs) | 2.5h | 🟠 High | 🟢 | [needs: TEST-8,TEST-9,TEST-10] | plan:frontend-test-coverage |
 | TEST-20 | Frontend: Test navigation components + E2E onboarding fix | 2h | ⚪ Low | 🟢 | | plan:frontend-test-coverage |
 | UX-3 | Report tables: add `aria-*` attributes, caption, scope, role="progressbar" | 45m | 🟡 Medium | 🟢 | | review:nextjs |
-| UX-4 | Report views: replace array index React keys with stable identifiers | 15m | 🟡 Medium | 🟢 | | review:nextjs |
 | DOC-3 | Archive .reviews/ temp workspace to docs/reviews/ or delete | 15m | 🟡 Medium | 🟢 | | review:smooth-floating-mountain |
 | DOC-4 | Elevate source preservation to explicit 5th invariant in guardrails.md | 15m | 🟡 Medium | 🟢 | | review:smooth-floating-mountain |
 | DOC-8 | Update domain status in apps/api/CLAUDE.md (Invoicing marked "stub" but is fully built) | 15m | ⚪ Low | 🟢 | | audit:2026-02-20 |
@@ -212,7 +238,9 @@
 | Plan | Tasks | Status |
 |------|-------|--------|
 | [Banking Command Center](docs/plans/banking-command-center_tasks.md) | 28 tasks (4 sprints) | Sprint 1 in progress |
-| [AI Auto-Bookkeeper Phase 1](docs/plans/2026-02-24-ai-auto-bookkeeper-phase1.md) | 16 tasks (4 sprints) | Ready |
+| [AI Auto-Bookkeeper Phase 1](docs/plans/2026-02-24-ai-auto-bookkeeper-phase1.md) | 16 tasks (4 sprints) | Ready (amended with review findings) |
+| [AI Auto-Bookkeeper Phase 2](docs/plans/2026-02-24-ai-auto-bookkeeper-phase2.md) | 12 tasks (3 sprints) | Ready |
+| [AI Auto-Bookkeeper Phase 3](docs/plans/2026-02-24-ai-auto-bookkeeper-phase3.md) | 14 tasks (4 sprints) | Ready |
 | [Frontend Test Coverage](docs/plans/2026-02-25-frontend-test-coverage.md) | 14 tasks (5 sprints) | Ready |
 
 ---
