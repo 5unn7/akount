@@ -23,7 +23,10 @@ vi.mock('../services/insight.service', () => ({
 vi.mock('../services/ai.service');
 vi.mock('../services/categorization.service');
 vi.mock('../services/je-suggestion.service');
-vi.mock('@akount/db');
+vi.mock('@akount/db', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>();
+  return { ...actual };
+});
 vi.mock('../../../lib/audit');
 vi.mock('../../../middleware/rate-limit', () => ({
   aiRateLimitConfig: () => ({}),

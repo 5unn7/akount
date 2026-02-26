@@ -2,7 +2,7 @@ import { prisma } from '@akount/db';
 import { parseCSV, parsePDF, parseXLSX } from './parser.service';
 import { findDuplicates, findInternalDuplicates } from './duplication.service';
 import { CategoryService } from './category.service';
-import { categorizeTransactions } from '../../ai/services/categorization.service';
+import { CategorizationService } from '../../ai/services/categorization.service';
 import { InsightGeneratorService } from '../../ai/services/insight-generator.service';
 import type { ColumnMappings } from '../../../schemas/import';
 import { logger } from '../../../lib/logger';
@@ -222,7 +222,7 @@ export class ImportService {
         });
 
         // 5b. Auto-categorize imported transactions
-        await this.autoCategorize(importBatch.id);
+        await this.autoCategorize(importBatch.id, account.entityId);
 
         // 5c. Generate insights (spending anomaly + duplicate detection)
         await this.generateImportInsights(importBatch.id, account.entityId);
@@ -355,7 +355,7 @@ export class ImportService {
           })),
         });
 
-        await this.autoCategorize(importBatch.id);
+        await this.autoCategorize(importBatch.id, account.entityId);
 
         // Generate insights (spending anomaly + duplicate detection)
         await this.generateImportInsights(importBatch.id, account.entityId);
@@ -505,7 +505,7 @@ export class ImportService {
         });
 
         // 5b. Auto-categorize imported transactions
-        await this.autoCategorize(importBatch.id);
+        await this.autoCategorize(importBatch.id, account.entityId);
 
         // 5c. Generate insights (spending anomaly + duplicate detection)
         await this.generateImportInsights(importBatch.id, account.entityId);
@@ -558,12 +558,13 @@ export class ImportService {
   }
 
   /**
-   * Auto-categorize transactions in an import batch using keyword matching
+   * Auto-categorize transactions in an import batch.
    *
+   * Priority: Rules (batch) → Keywords → AI fallback
    * Runs after transaction creation. Updates categoryId for high-confidence matches.
    * Non-critical — errors are logged but don't fail the import.
    */
-  private async autoCategorize(importBatchId: string): Promise<void> {
+  private async autoCategorize(importBatchId: string, entityId: string): Promise<void> {
     try {
       // Ensure categories exist before trying to match
       await this.ensureDefaultCategories();
@@ -575,9 +576,10 @@ export class ImportService {
 
       if (created.length === 0) return;
 
-      const suggestions = await categorizeTransactions(
-        created.map((t) => ({ description: t.description, amount: t.amount })),
-        this.tenantId
+      // Use class-based API with entityId for rule evaluation + GL resolution
+      const service = new CategorizationService(this.tenantId, entityId);
+      const suggestions = await service.categorizeBatch(
+        created.map((t) => ({ id: t.id, description: t.description, amount: t.amount }))
       );
 
       // Batch-update transactions that have a high-confidence category match

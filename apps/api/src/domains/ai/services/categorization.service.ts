@@ -1,5 +1,7 @@
 import { prisma } from '@akount/db';
 import { aiService } from './ai.service';
+import { RuleService } from './rule.service';
+import { RuleEngineService, type TransactionData } from './rule-engine.service';
 import { logger } from '../../../lib/logger';
 
 /**
@@ -25,6 +27,8 @@ export interface CategorySuggestion {
   resolvedGLAccountId: string | null;
   /** Resolved GL account code (e.g. '5800') */
   resolvedGLAccountCode: string | null;
+  /** Rule ID that matched (if categorized by a rule) */
+  ruleId?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -222,8 +226,36 @@ export class CategorizationService {
 
   /**
    * Categorize a single transaction.
+   *
+   * Priority: Rules (first-match) → Keywords → AI fallback → No match
    */
-  async categorize(description: string, amount: number): Promise<CategorySuggestion> {
+  async categorize(description: string, amount: number, transactionId?: string): Promise<CategorySuggestion> {
+    // Step 0: Rule evaluation (highest priority — skipped if no entityId)
+    if (this.entityId && transactionId) {
+      try {
+        const ruleService = new RuleService(this.tenantId, 'system');
+        const ruleEngine = new RuleEngineService(this.tenantId, ruleService);
+        const txnData: TransactionData = { id: transactionId, description, amount, accountId: '' };
+        const ruleMatch = await ruleEngine.evaluateRules(txnData, this.entityId);
+
+        if (ruleMatch) {
+          return {
+            categoryId: ruleMatch.categoryId,
+            categoryName: ruleMatch.ruleName,
+            confidence: ruleMatch.confidence,
+            confidenceTier: toConfidenceTier(ruleMatch.confidence),
+            matchReason: `Rule: ${ruleMatch.matchReason}`,
+            resolvedGLAccountId: ruleMatch.glAccountId,
+            resolvedGLAccountCode: null, // GL code resolved by rule action
+            ruleId: ruleMatch.ruleId,
+          };
+        }
+      } catch (error) {
+        // Non-critical — fall through to keyword matching
+        logger.warn({ err: error }, 'Rule evaluation failed, falling back to keywords');
+      }
+    }
+
     const normalizedDesc = description.toLowerCase().trim();
 
     // Step 1: Keyword matching (fast path)
@@ -358,10 +390,46 @@ export class CategorizationService {
   /**
    * Batch categorize multiple transactions efficiently.
    * Fetches categories once to avoid N+1.
+   *
+   * Priority: Rules (batch) → Keywords → No match (AI fallback not used in batch)
    */
   async categorizeBatch(
-    transactions: ReadonlyArray<{ description: string; amount: number }>
+    transactions: ReadonlyArray<{ id?: string; description: string; amount: number }>
   ): Promise<CategorySuggestion[]> {
+    // Step 0: Rule evaluation (batch) — single DB query for all rules
+    let ruleMatches = new Map<string, { ruleId: string; categoryId: string | null; glAccountId: string | null; confidence: number; matchReason: string; ruleName: string }>();
+    if (this.entityId) {
+      try {
+        const ruleService = new RuleService(this.tenantId, 'system');
+        const ruleEngine = new RuleEngineService(this.tenantId, ruleService);
+        const txnDataList: TransactionData[] = transactions
+          .filter((t): t is typeof t & { id: string } => !!t.id)
+          .map((t) => ({
+            id: t.id,
+            description: t.description,
+            amount: t.amount,
+            accountId: '',
+          }));
+
+        if (txnDataList.length > 0) {
+          const matches = await ruleEngine.evaluateRulesBatch(txnDataList, this.entityId);
+          ruleMatches = new Map(
+            Array.from(matches.entries()).map(([id, m]) => [id, {
+              ruleId: m.ruleId,
+              categoryId: m.categoryId,
+              glAccountId: m.glAccountId,
+              confidence: m.confidence,
+              matchReason: m.matchReason,
+              ruleName: m.ruleName,
+            }])
+          );
+        }
+      } catch (error) {
+        // Non-critical — fall through to keyword matching for all
+        logger.warn({ err: error }, 'Batch rule evaluation failed, falling back to keywords');
+      }
+    }
+
     // Pre-fetch all active categories for this tenant
     const categories = await prisma.category.findMany({
       where: { tenantId: this.tenantId, deletedAt: null },
@@ -388,6 +456,22 @@ export class CategorizationService {
     const suggestions: CategorySuggestion[] = [];
 
     for (const transaction of transactions) {
+      // Check if already matched by a rule
+      if (transaction.id && ruleMatches.has(transaction.id)) {
+        const match = ruleMatches.get(transaction.id)!;
+        suggestions.push({
+          categoryId: match.categoryId,
+          categoryName: match.ruleName,
+          confidence: match.confidence,
+          confidenceTier: toConfidenceTier(match.confidence),
+          matchReason: `Rule: ${match.matchReason}`,
+          resolvedGLAccountId: match.glAccountId,
+          resolvedGLAccountCode: null,
+          ruleId: match.ruleId,
+        });
+        continue; // Skip keyword matching
+      }
+
       const normalizedDesc = transaction.description.toLowerCase().trim();
       let bestMatch: { categoryName: string; confidence: number; keyword: string; type: string } | null = null;
 

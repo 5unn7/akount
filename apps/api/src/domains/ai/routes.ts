@@ -169,7 +169,7 @@ export async function aiRoutes(fastify: FastifyInstance) {
       // Run batch categorization with GL resolution
       const service = new CategorizationService(tenantId, entityId);
       const suggestions = await service.categorizeBatch(
-        transactions.map((t) => ({ description: t.description, amount: t.amount }))
+        transactions.map((t) => ({ id: t.id, description: t.description, amount: t.amount }))
       );
 
       // Pair transaction IDs with their suggestions

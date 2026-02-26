@@ -93,13 +93,17 @@ vi.mock('../../../lib/logger', () => ({
 // Mock Prisma
 const mockEntityFindFirst = vi.fn();
 const mockTransactionFindMany = vi.fn();
-vi.mock('@akount/db', () => ({
-  prisma: {
-    entity: { findFirst: (...args: unknown[]) => mockEntityFindFirst(...args) },
-    transaction: { findMany: (...args: unknown[]) => mockTransactionFindMany(...args) },
-    aIAction: { findFirst: vi.fn() },
-  },
-}));
+vi.mock('@akount/db', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>();
+  return {
+    ...actual,
+    prisma: {
+      entity: { findFirst: (...args: unknown[]) => mockEntityFindFirst(...args) },
+      transaction: { findMany: (...args: unknown[]) => mockTransactionFindMany(...args) },
+      aIAction: { findFirst: vi.fn() },
+    },
+  };
+});
 
 // ---------------------------------------------------------------------------
 // Test data

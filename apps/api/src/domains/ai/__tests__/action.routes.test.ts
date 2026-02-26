@@ -83,13 +83,17 @@ vi.mock('../services/ai-action.service', () => ({
 // Mock Prisma
 const mockEntityFindFirst = vi.fn();
 const mockAIActionFindFirst = vi.fn();
-vi.mock('@akount/db', () => ({
-  prisma: {
-    entity: { findFirst: (...args: unknown[]) => mockEntityFindFirst(...args) },
-    transaction: { findMany: vi.fn().mockResolvedValue([]) },
-    aIAction: { findFirst: (...args: unknown[]) => mockAIActionFindFirst(...args) },
-  },
-}));
+vi.mock('@akount/db', async (importOriginal) => {
+  const actual = await importOriginal<Record<string, unknown>>();
+  return {
+    ...actual,
+    prisma: {
+      entity: { findFirst: (...args: unknown[]) => mockEntityFindFirst(...args) },
+      transaction: { findMany: vi.fn().mockResolvedValue([]) },
+      aIAction: { findFirst: (...args: unknown[]) => mockAIActionFindFirst(...args) },
+    },
+  };
+});
 
 vi.mock('../../../lib/logger', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
