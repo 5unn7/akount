@@ -681,22 +681,27 @@ model Goal {
 }
 
 model Insight {
-  id          String    @id @default(cuid())
-  entityId    String
-  triggerId   String
-  title       String
-  description String
-  type        String
-  priority    String
-  impact      Int?
-  confidence  Float?
-  actionable  Boolean
-  status      String
-  deadline    DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  entity      Entity    @relation(fields: [entityId], references: [id])
+  id           String    @id @default(cuid())
+  entityId     String
+  triggerId    String
+  title        String
+  description  String
+  type         String
+  priority     String
+  impact       Int?
+  confidence   Float?
+  actionable   Boolean
+  status       String
+  deadline     DateTime?
+  dismissedAt  DateTime?
+  dismissedBy  String?
+  snoozedUntil DateTime?
+  metadata     Json?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  entity       Entity    @relation(fields: [entityId], references: [id])
 
+  @@unique([entityId, triggerId])
   @@index([entityId])
   @@index([status])
   @@index([priority])
