@@ -107,6 +107,7 @@ model Entity {
   fixedAssets         FixedAsset[]
   taxRates           TaxRate[]
   vendors            Vendor[]
+  aiActions          AIAction[]
 
   @@index([tenantId])
   @@index([tenantId, type])
@@ -1180,4 +1181,56 @@ enum AssetStatus {
   ACTIVE
   FULLY_DEPRECIATED
   DISPOSED
+}
+
+// ---------------------------------------------------------------------------
+// AI Action Feed
+// ---------------------------------------------------------------------------
+
+model AIAction {
+  id          String         @id @default(cuid())
+  entityId    String
+  type        AIActionType
+  title       String
+  description String?
+  status      AIActionStatus @default(PENDING)
+  confidence  Int?           // 0-100 integer (not float)
+  priority    AIActionPriority @default(MEDIUM)
+  payload     Json           // Type-specific data (JE lines, category suggestion, etc.)
+  aiProvider  String?        // e.g. "claude", "perplexity"
+  aiModel     String?        // e.g. "claude-haiku-4-5-20251001"
+  metadata    Json?          // Additional metadata (batch ID, timing, etc.)
+  reviewedAt  DateTime?
+  reviewedBy  String?
+  expiresAt   DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  entity      Entity         @relation(fields: [entityId], references: [id])
+
+  @@index([entityId, status])
+  @@index([entityId, type, status])
+  @@index([entityId, createdAt])
+  @@index([status, expiresAt])
+}
+
+enum AIActionType {
+  CATEGORIZATION
+  JE_DRAFT
+  RULE_SUGGESTION
+  ALERT
+}
+
+enum AIActionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  MODIFIED
+  EXPIRED
+}
+
+enum AIActionPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
