@@ -302,6 +302,7 @@ model Invoice {
   @@index([issueDate])
   @@index([entityId, deletedAt])
   @@index([entityId, status, dueDate, deletedAt]) // PERF-5: Composite for AR aging bucket queries
+  @@index([entityId, status, createdAt(sort: Desc), deletedAt]) // PERF-24: Optimized for paginated invoice lists
 }
 
 model InvoiceLine {
@@ -375,6 +376,7 @@ model Bill {
   @@index([issueDate])
   @@index([entityId, deletedAt])
   @@index([entityId, status, dueDate, deletedAt]) // PERF-5: Composite for AP aging bucket queries
+  @@index([entityId, status, createdAt(sort: Desc), deletedAt]) // PERF-24: Optimized for paginated bill lists
 }
 
 model BillLine {
@@ -568,7 +570,7 @@ model Transaction {
 
   @@index([accountId, date])
   @@index([accountId, date, id])
-  @@index([accountId, createdAt])
+  @@index([accountId, deletedAt, createdAt(sort: Desc)]) // PERF-24: Optimized for paginated list queries
   @@index([categoryId])
   @@index([sourceType, sourceId])
   @@index([accountId, deletedAt])
@@ -818,9 +820,9 @@ model AuditLog {
   tenant         Tenant      @relation(fields: [tenantId], references: [id])
   user           User?       @relation(fields: [userId], references: [id])
 
-  @@index([tenantId, createdAt])
-  @@index([entityId, createdAt])
-  @@index([userId, createdAt])
+  @@index([tenantId, createdAt(sort: Desc)]) // PERF-24: Optimized for paginated audit log queries
+  @@index([entityId, createdAt(sort: Desc)]) // PERF-24: Optimized for entity activity logs
+  @@index([userId, createdAt(sort: Desc)]) // PERF-24: Optimized for user activity logs
   @@index([model, recordId])
   @@index([tenantId, sequenceNumber])
 }

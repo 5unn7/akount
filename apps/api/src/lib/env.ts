@@ -39,6 +39,9 @@ const envSchema = z.object({
     // AI (Perplexity) — optional, fallback AI provider
     PERPLEXITY_API_KEY: z.string().optional(),
 
+    // AI (Mistral) — optional, document intelligence & vision
+    MISTRAL_API_KEY: z.string().optional(),
+
     // Insight generation timer (optional — 0 = disabled)
     INSIGHT_GENERATION_INTERVAL_MS: z.coerce.number().int().min(0).optional().default(0),
 

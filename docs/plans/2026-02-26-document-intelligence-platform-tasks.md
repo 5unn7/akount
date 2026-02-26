@@ -12,7 +12,7 @@
 
 | Phase | Scope | Tasks | Done | Status |
 |-------|-------|-------|------|--------|
-| **1** | Foundation (A + B core + E basics) | 22 | 0 | Not started |
+| **1** | Foundation (A + B core + E basics) | 22 | 2 | In progress (9%) |
 | **2** | Expand + Smart (B UIs + C1-C4) | 8 | 0 | Not started |
 | **3** | Compliance + Narration (C5-C9 + E6-E9) | 8 | 0 | Not started |
 | **4** | Matching + Learning (D + F) | 9 | 0 | Not started |
@@ -29,8 +29,8 @@
 
 | ID | Track | Task | Effort | Priority | Status | Deps | Source |
 |----|-------|------|--------|----------|--------|------|--------|
-| DEV-230 | A1 | Mistral API provider (`providers/mistral.provider.ts`) | 2-4h | Critical | Ready | — | plan:doc-intel |
-| DEV-231 | A2 | Mistral vision integration (`extractFromImage` + Zod) | 2-4h | Critical | Ready | DEV-230 | plan:doc-intel |
+| DEV-230 | A1 | Mistral API provider (`providers/mistral.provider.ts`) | 2-4h | Critical | ✅ Done | — | plan:doc-intel |
+| DEV-231 | A2 | Mistral vision integration (`extractFromImage` + Zod) | 2-4h | Critical | ✅ Done | DEV-230 | plan:doc-intel |
 | SEC-29 | A3 | PII redaction service (`lib/pii-redaction.ts`) | 4-6h | Critical | Ready | — | plan:doc-intel |
 | SEC-30 | A4 | Prompt injection defense (`lib/prompt-defense.ts`) | 3-4h | Critical | Ready | DEV-230 | plan:doc-intel |
 | DEV-232 | A5 | AIDecisionLog schema + service (Prisma + audit trail) | 3-4h | Critical | Ready | — | plan:doc-intel |

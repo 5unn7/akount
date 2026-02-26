@@ -1,5 +1,6 @@
 import { apiFetch } from './client-browser';
 import type { ProfitLossReport, TrialBalanceReport, RevenueReport } from '@akount/types/financial';
+import type { Goal, BudgetVariance, CashRunwayResult } from './planning';
 
 /**
  * Cash flow projection data point
@@ -280,4 +281,51 @@ export async function getTopRevenueClients(
     const endpoint = `/api/accounting/reports/revenue-by-client?${params.toString()}`;
 
     return apiFetch<RevenueReport>(endpoint);
+}
+
+// ============================================================================
+// Planning Domain — Browser-side API functions for overview widgets
+// ============================================================================
+
+/**
+ * Fetch active goals for overview widget
+ *
+ * @param entityId - Entity ID
+ * @param limit - Maximum goals to return (default: 5)
+ * @returns Array of active goals
+ */
+export async function getActiveGoals(
+    entityId: string,
+    limit: number = 5
+): Promise<{ goals: Goal[]; nextCursor: string | null }> {
+    const params = new URLSearchParams();
+    params.append('entityId', entityId);
+    params.append('status', 'ACTIVE');
+    params.append('limit', limit.toString());
+
+    return apiFetch(`/api/planning/goals?${params.toString()}`);
+}
+
+/**
+ * Fetch budget variances for overview widget
+ *
+ * @param entityId - Entity ID
+ * @returns Array of budget variances with utilization data
+ */
+export async function getBudgetVariances(
+    entityId: string
+): Promise<{ variances: BudgetVariance[] }> {
+    return apiFetch(`/api/planning/budgets/variance?entityId=${entityId}`);
+}
+
+/**
+ * Fetch cash runway for expense forecast widget
+ *
+ * @param entityId - Entity ID
+ * @returns Cash runway data with burn rate and projections
+ */
+export async function getCashRunwayData(
+    entityId: string
+): Promise<CashRunwayResult> {
+    return apiFetch(`/api/planning/forecasts/runway?entityId=${entityId}`);
 }
