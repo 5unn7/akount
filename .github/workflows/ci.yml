@@ -76,13 +76,23 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/akount_test
 
-      - name: Run tests
-        run: npm run test
+      - name: Run tests with coverage
+        run: npm run test:coverage
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/akount_test
           NODE_ENV: test
           CLERK_SECRET_KEY: sk_test_ci_placeholder
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ci_placeholder
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-reports
+          path: |
+            apps/api/coverage/
+            apps/web/coverage/
+          retention-days: 14
 
   security:
     name: Security Scanning

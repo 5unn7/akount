@@ -10,6 +10,22 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
     css: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'json-summary'],
+      exclude: [
+        'node_modules/',
+        '.next/',
+        'src/test/**',
+        'src/**/*.d.ts',
+      ],
+      thresholds: {
+        statements: 10,
+        branches: 5,
+        functions: 8,
+        lines: 10,
+      },
+    },
   },
   resolve: {
     alias: {

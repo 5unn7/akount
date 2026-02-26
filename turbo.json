@@ -33,6 +33,15 @@
                 "NODE_ENV"
             ]
         },
+        "test:coverage": {
+            "dependsOn": [
+                "^test:coverage"
+            ],
+            "env": [
+                "DATABASE_URL",
+                "NODE_ENV"
+            ]
+        },
         "dev": {
             "cache": false,
             "persistent": true
