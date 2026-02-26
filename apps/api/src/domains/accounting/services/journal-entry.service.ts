@@ -482,6 +482,95 @@ export class JournalEntryService {
   }
 
   /**
+   * Batch approve DRAFT journal entries.
+   *
+   * Each entry is approved independently — partial success is reported.
+   * Validates: tenant isolation, DRAFT status, fiscal period open, separation of duties.
+   * Each individual approval is wrapped in its own try/catch for partial success.
+   */
+  async batchApproveEntries(entryIds: string[]): Promise<{
+    succeeded: Array<{ id: string; entryNumber: string }>;
+    failed: Array<{ id: string; reason: string }>;
+  }> {
+    const succeeded: Array<{ id: string; entryNumber: string }> = [];
+    const failed: Array<{ id: string; reason: string }> = [];
+
+    for (const entryId of entryIds) {
+      try {
+        const entry = await prisma.journalEntry.findFirst({
+          where: {
+            id: entryId,
+            entity: { tenantId: this.tenantId },
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+            entityId: true,
+            entryNumber: true,
+            date: true,
+            status: true,
+            createdBy: true,
+          },
+        });
+
+        if (!entry) {
+          failed.push({ id: entryId, reason: 'Not found or access denied' });
+          continue;
+        }
+
+        if (entry.status !== 'DRAFT') {
+          failed.push({ id: entryId, reason: `Cannot approve entry in ${entry.status} status` });
+          continue;
+        }
+
+        // Fiscal period check
+        await this.checkFiscalPeriodDirect(entry.entityId, entry.date);
+
+        // Separation of duties: creator cannot approve own entry (except OWNER)
+        if (entry.createdBy === this.userId && this.userRole !== 'OWNER') {
+          failed.push({ id: entryId, reason: 'Creator cannot approve their own entry' });
+          continue;
+        }
+
+        await prisma.journalEntry.update({
+          where: { id: entryId },
+          data: {
+            status: 'POSTED',
+            updatedBy: this.userId,
+          },
+        });
+
+        await createAuditLog({
+          tenantId: this.tenantId,
+          userId: this.userId,
+          entityId: entry.entityId,
+          model: 'JournalEntry',
+          recordId: entryId,
+          action: 'UPDATE',
+          before: { status: 'DRAFT' },
+          after: { status: 'POSTED' },
+        });
+
+        succeeded.push({ id: entryId, entryNumber: entry.entryNumber });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        failed.push({ id: entryId, reason: message });
+      }
+    }
+
+    // Invalidate report cache once (not per-entry)
+    if (succeeded.length > 0) {
+      try {
+        reportCache.invalidate(this.tenantId, /^report:/);
+      } catch {
+        // Intentionally swallowed
+      }
+    }
+
+    return { succeeded, failed };
+  }
+
+  /**
    * Soft-delete a journal entry. Only DRAFT entries can be deleted.
    * POSTED/VOIDED entries must be voided instead.
    */

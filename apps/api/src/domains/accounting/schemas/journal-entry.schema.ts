@@ -139,3 +139,13 @@ export const PostSplitTransactionSchema = z.object({
 
 export type SplitLine = z.infer<typeof SplitLineSchema>;
 export type PostSplitTransactionInput = z.infer<typeof PostSplitTransactionSchema>;
+
+// ============================================================================
+// Batch Approve Journal Entries
+// ============================================================================
+
+export const BatchApproveEntriesSchema = z.object({
+  entryIds: z.array(z.string().cuid('Invalid journal entry ID')).min(1).max(100, 'Maximum 100 entries per batch'),
+});
+
+export type BatchApproveEntriesInput = z.infer<typeof BatchApproveEntriesSchema>;

@@ -11,12 +11,14 @@ import {
   PostTransactionSchema,
   PostBulkTransactionsSchema,
   PostSplitTransactionSchema,
+  BatchApproveEntriesSchema,
   type CreateJournalEntryInput,
   type ListJournalEntriesQuery,
   type JournalEntryParams,
   type PostTransactionInput,
   type PostBulkTransactionsInput,
   type PostSplitTransactionInput,
+  type BatchApproveEntriesInput,
 } from '../schemas/journal-entry.schema';
 
 /**
@@ -100,6 +102,44 @@ export async function journalEntryRoutes(fastify: FastifyInstance) {
           body.exchangeRate
         );
         return reply.status(201).send(result);
+      } catch (error) {
+        return handleAccountingError(error, reply);
+      }
+    }
+  );
+
+  // POST /journal-entries/batch/approve — Batch approve DRAFT entries
+  fastify.post(
+    '/batch/approve',
+    {
+      ...withPermission('accounting', 'journal-entries', 'APPROVE'),
+      preValidation: [validateBody(BatchApproveEntriesSchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Missing tenant context' });
+      }
+
+      const { entryIds } = request.body as BatchApproveEntriesInput;
+      const service = new JournalEntryService(
+        request.tenantId,
+        request.userId,
+        request.tenantRole
+      );
+
+      try {
+        const result = await service.batchApproveEntries(entryIds);
+
+        request.log.info(
+          {
+            requested: entryIds.length,
+            succeeded: result.succeeded.length,
+            failed: result.failed.length,
+          },
+          'Batch approved journal entries'
+        );
+
+        return reply.send(result);
       } catch (error) {
         return handleAccountingError(error, reply);
       }

@@ -48,6 +48,7 @@ const mockCreateEntry = vi.fn();
 const mockApproveEntry = vi.fn();
 const mockVoidEntry = vi.fn();
 const mockDeleteEntry = vi.fn();
+const mockBatchApproveEntries = vi.fn();
 
 vi.mock('../services/journal-entry.service', () => ({
   JournalEntryService: function (this: any) {
@@ -57,6 +58,7 @@ vi.mock('../services/journal-entry.service', () => ({
     this.approveEntry = mockApproveEntry;
     this.voidEntry = mockVoidEntry;
     this.deleteEntry = mockDeleteEntry;
+    this.batchApproveEntries = mockBatchApproveEntries;
   },
 }));
 
@@ -529,6 +531,84 @@ describe('JournalEntry Routes', () => {
 
       expect(response.statusCode).toBe(400);
       expect(response.json().error).toBe('MISSING_FX_RATE');
+    });
+  });
+
+  // ==========================================================================
+  // POST /journal-entries/batch/approve
+  // ==========================================================================
+
+  describe('POST /journal-entries/batch/approve', () => {
+    it('should batch approve entries and return results', async () => {
+      mockBatchApproveEntries.mockResolvedValue({
+        succeeded: [
+          { id: 'je-1', entryNumber: 'JE-001' },
+          { id: 'je-2', entryNumber: 'JE-002' },
+        ],
+        failed: [],
+      });
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/batch/approve',
+        headers: { authorization: 'Bearer test-token' },
+        payload: { entryIds: ['je-1', 'je-2'] },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json();
+      expect(body.succeeded).toHaveLength(2);
+      expect(body.failed).toHaveLength(0);
+      expect(body.succeeded[0].entryNumber).toBe('JE-001');
+    });
+
+    it('should report partial failures', async () => {
+      mockBatchApproveEntries.mockResolvedValue({
+        succeeded: [{ id: 'je-1', entryNumber: 'JE-001' }],
+        failed: [{ id: 'je-3', reason: 'Cannot approve entry in POSTED status' }],
+      });
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/batch/approve',
+        headers: { authorization: 'Bearer test-token' },
+        payload: { entryIds: ['je-1', 'je-3'] },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json();
+      expect(body.succeeded).toHaveLength(1);
+      expect(body.failed).toHaveLength(1);
+      expect(body.failed[0].reason).toContain('POSTED');
+    });
+
+    it('should call service with correct entryIds', async () => {
+      mockBatchApproveEntries.mockResolvedValue({ succeeded: [], failed: [] });
+
+      await app.inject({
+        method: 'POST',
+        url: '/journal-entries/batch/approve',
+        headers: { authorization: 'Bearer test-token' },
+        payload: { entryIds: ['je-1', 'je-2', 'je-3'] },
+      });
+
+      expect(mockBatchApproveEntries).toHaveBeenCalledWith(['je-1', 'je-2', 'je-3']);
+    });
+
+    it('should return error when service throws', async () => {
+      mockBatchApproveEntries.mockRejectedValue(
+        new AccountingError('Entity not found', 'ENTITY_NOT_FOUND', 403)
+      );
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/journal-entries/batch/approve',
+        headers: { authorization: 'Bearer test-token' },
+        payload: { entryIds: ['je-1'] },
+      });
+
+      expect(response.statusCode).toBe(403);
+      expect(response.json().error).toBe('ENTITY_NOT_FOUND');
     });
   });
 });
