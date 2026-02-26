@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, Ban, Trash2, Loader2, ExternalLink } from 'lucide-react';
+import { Check, Ban, Copy, Trash2, Loader2, ExternalLink } from 'lucide-react';
 import type { JournalEntry } from '@/lib/api/accounting';
 import { formatAmount } from '@/lib/api/transactions.types';
 import { Button } from '@/components/ui/button';
@@ -113,6 +113,12 @@ export function EntryDetail({
                             <Link href={`/accounting/journal-entries/${entry.id}`}>
                                 <ExternalLink className="h-3 w-3 mr-1" />
                                 View Full
+                            </Link>
+                        </Button>
+                        <Button size="sm" variant="outline" className="rounded-lg text-xs h-8" asChild>
+                            <Link href={`/accounting/journal-entries/new?duplicate=${entry.id}`}>
+                                <Copy className="h-3 w-3 mr-1" />
+                                Duplicate
                             </Link>
                         </Button>
                         {entry.status === 'DRAFT' && (

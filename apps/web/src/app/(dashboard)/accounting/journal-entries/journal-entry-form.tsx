@@ -25,9 +25,20 @@ interface FormLine {
     description: string;
 }
 
+export interface JournalEntryInitialData {
+    memo: string;
+    lines: Array<{
+        glAccountId: string;
+        debitAmount: string;
+        creditAmount: string;
+        description: string;
+    }>;
+}
+
 interface JournalEntryFormProps {
     glAccounts: GLAccount[];
     entityId: string;
+    initialData?: JournalEntryInitialData;
 }
 
 // ============================================================================
@@ -58,11 +69,23 @@ function parseCents(value: string): number {
 export function JournalEntryForm({
     glAccounts,
     entityId,
+    initialData,
 }: JournalEntryFormProps) {
     const router = useRouter();
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-    const [memo, setMemo] = useState('');
-    const [lines, setLines] = useState<FormLine[]>([newLine(), newLine()]);
+    const [memo, setMemo] = useState(initialData?.memo ?? '');
+    const [lines, setLines] = useState<FormLine[]>(() => {
+        if (initialData?.lines?.length) {
+            return initialData.lines.map((l) => ({
+                id: `line-${++lineIdCounter}`,
+                glAccountId: l.glAccountId,
+                debitAmount: l.debitAmount,
+                creditAmount: l.creditAmount,
+                description: l.description,
+            }));
+        }
+        return [newLine(), newLine()];
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 

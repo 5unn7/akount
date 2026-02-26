@@ -6,6 +6,7 @@ import Link from 'next/link';
 import {
     Check,
     Ban,
+    Copy,
     Trash2,
     Loader2,
     FileText,
@@ -124,6 +125,17 @@ export function JournalEntryDetailClient({ entry: initialEntry }: { entry: Journ
 
                 {/* Actions */}
                 <div className="flex items-center gap-2">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        className="rounded-lg border-ak-border-2"
+                        asChild
+                    >
+                        <Link href={`/accounting/journal-entries/new?duplicate=${entry.id}`}>
+                            <Copy className="h-3.5 w-3.5 mr-1.5" />
+                            Duplicate
+                        </Link>
+                    </Button>
                     {entry.status === 'DRAFT' && (
                         <>
                             <Button
