@@ -99,10 +99,11 @@ server.register(helmet, {
 // CORS configuration - environment-based origin whitelist
 const ALLOWED_ORIGINS = env.CORS_ORIGINS.split(',');
 
+// SEC-41: Development whitelist instead of wildcard (security best practice)
+const DEV_ORIGINS = ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'];
+
 server.register(cors, {
-    origin: env.NODE_ENV === 'production'
-        ? ALLOWED_ORIGINS
-        : true, // Allow all in development
+    origin: env.NODE_ENV === 'production' ? ALLOWED_ORIGINS : DEV_ORIGINS,
     credentials: true,
 });
 
