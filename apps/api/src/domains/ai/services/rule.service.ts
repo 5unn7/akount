@@ -506,6 +506,41 @@ export class RuleService {
   }
 
   /**
+   * Get rule statistics for an entity
+   *
+   * Returns total count, active count, and top 5 rules by execution count.
+   * Used for dashboard widgets and analytics.
+   */
+  async getRuleStats(entityId: string) {
+    const [total, active, topRules] = await Promise.all([
+      prisma.rule.count({
+        where: { entityId, entity: { tenantId: this.tenantId } },
+      }),
+      prisma.rule.count({
+        where: { entityId, entity: { tenantId: this.tenantId }, isActive: true },
+      }),
+      prisma.rule.findMany({
+        where: { entityId, entity: { tenantId: this.tenantId } },
+        orderBy: { executionCount: 'desc' },
+        take: 5,
+        select: {
+          id: true,
+          name: true,
+          executionCount: true,
+          successRate: true,
+        },
+      }),
+    ]);
+
+    return {
+      total,
+      active,
+      inactive: total - active,
+      topRules,
+    };
+  }
+
+  /**
    * Validate conditions JSON structure
    *
    * Security: allowlist-based field and operator validation

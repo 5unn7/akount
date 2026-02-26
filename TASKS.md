@@ -1,9 +1,9 @@
 # Akount — Task Board
 
-**Last Updated:** 2026-02-25
+**Last Updated:** 2026-02-26
 **Current Phase:** Phase 6 — Launch MVP
 
-> **188 active tasks** · 🔴 12 critical · 🟠 42 high · 🟡 107 medium · ⚪ 27 low
+> **185 active tasks** · 🔴 12 critical · 🟠 39 high · 🟡 107 medium · ⚪ 27 low
 > 📦 114 backlog · 🟢 67 ready · 🔒 6 blocked · 🟡 1 deferred
 >
 > _Completed tasks (223) archived in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
@@ -58,9 +58,6 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | DEV-199 | AI: Dashboard AI Action widget (glass card, pending count, quick-approve) | 1-2h | 🟡 Medium | 🟢 | [needs: DEV-194,DEV-196] | plan:ai-auto-bookkeeper-phase1 |
-| DEV-203 | AI Rules: Rule service — CRUD operations (list, create, update, delete, toggle, stats) | 2-3h | 🟠 High | 🟢 | | plan:ai-auto-bookkeeper-phase2 |
-| DEV-204 | AI Rules: Rule evaluation engine — condition evaluation, batch, first-match-wins, NO regex (contains/eq/gt/lt only), field allowlist | 2-3h | 🟠 High | 🟢 | [needs: DEV-203] | plan:ai-auto-bookkeeper-phase2 |
-| DEV-205 | AI Rules: API routes + Zod schemas (CRUD, toggle, stats) + JSON payload size validation | 2-3h | 🟠 High | 🟢 | [needs: DEV-203,DEV-204] | plan:ai-auto-bookkeeper-phase2 |
 | DEV-206 | AI Rules: Hook rules into autoCategorize pipeline (rules before keywords, backward compatible) | 2-3h | 🔴 Critical | 🟢 | [needs: DEV-204,DEV-187] | plan:ai-auto-bookkeeper-phase2 |
 | DEV-207 | AI Rules: Pattern detection service (3+ corrections threshold, keyword extraction, dedup) | 2-3h | 🟠 High | 🟢 | [needs: DEV-204] | plan:ai-auto-bookkeeper-phase2 |
 | DEV-208 | AI Rules: Rule suggestion generation service (creates RuleSuggestion + AIAction) | 2-3h | 🟠 High | 🟢 | [needs: DEV-207,DEV-192,DEV-193] | plan:ai-auto-bookkeeper-phase2 |
@@ -270,6 +267,9 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 
 | ID | Task | Completed |
 |----|------|-----------|
+| DEV-205 | AI Rules: API routes + Zod schemas (CRUD, toggle, stats) + JSON payload size validation | 2026-02-26 |
+| DEV-204 | AI Rules: Rule evaluation engine — condition evaluation, batch, first-match-wins, NO regex (contains/eq/gt/lt only), field allowlist | 2026-02-26 |
+| DEV-203 | AI Rules: Rule service — CRUD operations (list, create, update, delete, toggle, stats) | 2026-02-26 |
 | DEV-229 | AI: Address Phase 1 code review findings — cross-tenant test, extract constants (ACTION_EXPIRY_DAYS, HIGH_CONFIDENCE_THRESHOLD), widget error handling | 2026-02-26 |
 | SEC-25 | Global tax rate pollution: Make entityId required in create schema | 2026-02-24 |
 | SEC-26 | Derive tenantId server-side in onboarding /complete endpoint | 2026-02-24 |

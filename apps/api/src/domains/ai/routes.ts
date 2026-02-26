@@ -23,6 +23,7 @@ import {
 } from './schemas/je-suggestion.schema';
 import { JESuggestionService, type JESuggestionInput } from './services/je-suggestion.service';
 import { actionRoutes } from './routes/action.routes';
+import { rulesRoutes } from './routes/rules';
 import {
   ListInsightsSchema,
   DismissInsightSchema,
@@ -647,4 +648,9 @@ export async function aiRoutes(fastify: FastifyInstance) {
   // Action Feed Routes (sub-plugin)
   // -----------------------------------------------------------------------
   fastify.register(actionRoutes, { prefix: '/actions' });
+
+  // -----------------------------------------------------------------------
+  // Rules Routes (sub-plugin)
+  // -----------------------------------------------------------------------
+  fastify.register(rulesRoutes, { prefix: '/rules' });
 }
