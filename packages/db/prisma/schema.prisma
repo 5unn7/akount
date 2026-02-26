@@ -136,6 +136,7 @@ model GLAccount {
   invoiceLines         InvoiceLine[]
   journalLines         JournalLine[]
   transactionSplits                  TransactionSplit[]
+  categoriesAsDefault                Category[]         @relation("CategoryDefaultGL")
   fixedAssetsAsAsset                 FixedAsset[]       @relation("AssetGLAccount")
   fixedAssetsAsDepreciationExpense   FixedAsset[]       @relation("DepreciationExpenseGLAccount")
   fixedAssetsAsAccumulatedDepr       FixedAsset[]       @relation("AccumulatedDepreciationGLAccount")
@@ -607,31 +608,34 @@ model TransactionMatch {
 }
 
 model Category {
-  id                String             @id @default(cuid())
-  tenantId          String
-  tenant            Tenant             @relation(fields: [tenantId], references: [id])
-  name              String
-  type              CategoryType
-  parentCategoryId  String?
-  color             String?
-  isActive          Boolean            @default(true)
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  deletedAt         DateTime? // Soft delete - user-facing data preserved
-  billLines         BillLine[]
-  budgets           Budget[]
-  parentCategory    Category?          @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
-  childCategories   Category[]         @relation("CategoryHierarchy")
-  goals             Goal[]
-  invoiceLines      InvoiceLine[]
-  snapshots         Snapshot[]
-  transactions      Transaction[]
-  transactionSplits TransactionSplit[]
+  id                   String             @id @default(cuid())
+  tenantId             String
+  tenant               Tenant             @relation(fields: [tenantId], references: [id])
+  name                 String
+  type                 CategoryType
+  parentCategoryId     String?
+  color                String?
+  defaultGLAccountId   String?            // Optional GL account mapping for AI categorization
+  isActive             Boolean            @default(true)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  deletedAt            DateTime?          // Soft delete - user-facing data preserved
+  billLines            BillLine[]
+  budgets              Budget[]
+  defaultGLAccount     GLAccount?         @relation("CategoryDefaultGL", fields: [defaultGLAccountId], references: [id])
+  parentCategory       Category?          @relation("CategoryHierarchy", fields: [parentCategoryId], references: [id])
+  childCategories      Category[]         @relation("CategoryHierarchy")
+  goals                Goal[]
+  invoiceLines         InvoiceLine[]
+  snapshots            Snapshot[]
+  transactions         Transaction[]
+  transactionSplits    TransactionSplit[]
 
   @@index([tenantId])
   @@index([tenantId, type])
   @@index([tenantId, isActive])
   @@index([tenantId, deletedAt])
+  @@index([defaultGLAccountId])
   @@index([type])
   @@index([isActive])
 }
@@ -1023,6 +1027,7 @@ enum JournalEntrySourceType {
   ADJUSTMENT
   OPENING_BALANCE
   DEPRECIATION
+  AI_SUGGESTION
 }
 
 enum InvoiceStatus {

@@ -233,6 +233,7 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ❌ **NEVER accept FK references without ownership check** — validate glAccountId, categoryId etc. belong to tenant (IDOR prevention)
 - ❌ **NEVER add P2002 error handler without @@unique constraint** — verify Prisma schema first, dead handlers = false confidence
 - ❌ **NEVER chain `.optional()` on validation middleware** — `validateBody()` returns a function, not a Zod schema
+- ❌ **NEVER create JEs without validating double-entry balance** — `SUM(debitAmount) === SUM(creditAmount)` MUST be asserted before `prisma.journalEntry.create()`. Unbalanced entries corrupt the GL and violate Invariant #3.
 - ❌ **NEVER create JEs from documents without source preservation** — every JE from an Invoice, Bill, Payment, or Transfer MUST set `sourceType`, `sourceId`, and `sourceDocument` (JSON snapshot). Without this, GL rebuilds and audit trails are impossible.
 - ❌ **NEVER inline JE entry number generation** — use `generateEntryNumber()` from `domains/accounting/utils/entry-number.ts`. Inline `parseInt(str.replace('JE-', ''))` produces NaN on unexpected formats.
 - ❌ **NEVER duplicate private methods across services** — if 3+ services need the same function, extract to `domains/<domain>/utils/`

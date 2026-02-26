@@ -8,6 +8,11 @@
 
 | ID | Task | Completed | Commit/Source |
 |----|------|-----------|---------------|
+| UX-3 | Report tables: add `aria-*` attributes, caption, scope, role="progressbar" | 45m | 🟡 Medium | ✅ |  | review:nextjs |
+| UX-24 | Accounting JE: Add "Duplicate Entry" action to pre-fill form from existing entry | 1h | 🟡 Medium | ✅ | cb2174c | audit:acct-fe-be |
+| DOC-3 | Archive .reviews/ temp workspace to docs/reviews/ or delete | 15m | 🟡 Medium | ✅ | | review:smooth-floating-mountain |
+| DOC-4 | Elevate source preservation to explicit 5th invariant in guardrails.md | 15m | 🟡 Medium | ✅ | | review:smooth-floating-mountain |
+| UX-18 | Accounting: Add landing page at `/accounting` with summary stats (draft JEs, account count, recent activity) | 2-3h | 🟠 High | ✅ | already built | audit:acct-fe-be |
 | TEST-7 | Frontend: Fix WelcomeStep 7 failing tests (text mismatch) | 30m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
 | TEST-8 | Frontend: Create test-utils/ dir + render helper | 30m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |
 | TEST-9 | Frontend: Create mock data factories (Account, Invoice, etc.) | 45m | 🟠 High | ✅ done | 38cfde1 | plan:frontend-test-coverage |

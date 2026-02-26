@@ -102,7 +102,7 @@
 | DRY-19 | Replace z.record(z.unknown()) in onboarding with typed schema | 30m | 🟡 Medium | 🟢 | | review:revie23feb |
 | FIN-29 | Re-validate totals against line items in updateInvoice/updateBill PATCH | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
 | FIN-30 | Add linkedEntryId deduplication filter to GL report queries | 1h | 🟡 Medium | 🟢 | | review:revie23feb |
-| DOC-8 | Update domain status in apps/api/CLAUDE.md (Invoicing marked "stub" but is fully built) | 15m | ⚪ Low | 🟢 | | audit:2026-02-20 |
+| DOC-8 | Update domain status in apps/api/CLAUDE.md (Invoicing marked "stub" but is fully built) | 15m | ⚪ Low | ✅ | | audit:2026-02-20 |
 | SEC-10 | Row-Level Security (PostgreSQL) for production hardening | 3h | 🟡 Medium | 📦 | | roadmap |
 | UX-6 | Keyboard shortcuts for power users (command palette, table nav) | 2h | 🟡 Medium | 📦 | | roadmap |
 | UX-7 | Help overlay documenting keyboard shortcuts | 1h | 🟡 Medium | 🔒 | [needs: UX-6] | roadmap |
@@ -183,8 +183,8 @@
 | DEV-70 | Accounting Reports: One-click export all statements as ZIP | 1-2h | ⚪ Low | 📦 | | audit:acct-fe-be |
 | DRY-15 | Standardize table header styling — create `<TableHead variant="label">` | 30m | ⚪ Low | 🟢 | | inline-bandaid-audit |
 | DRY-5 | `window.Clerk` triple-cast in downloadReport: clean up type assertion | 30m | ⚪ Low | 📦 | | review:typescript |
-| DOC-5 | Add double-entry bookkeeping check to guardrails.md anti-patterns | 15m | ⚪ Low | 🟢 | | review:smooth-floating-mountain |
-| DOC-6 | Update version dates across CLAUDE.md files | 15m | ⚪ Low | 🟢 | | review:smooth-floating-mountain |
+| DOC-5 | Add double-entry bookkeeping check to guardrails.md anti-patterns | 15m | ⚪ Low | ✅ | | review:smooth-floating-mountain |
+| DOC-6 | Update version dates across CLAUDE.md files | 15m | ⚪ Low | ✅ | | review:smooth-floating-mountain |
 | DEV-40 | Overview: Onboarding Completion nudge widget — checklist of remaining steps | 1-2h | ⚪ Low | 📦 | | audit:fe-be-parity |
 | DEV-41 | Overview: Tax Liability Estimate widget | 4-6h | ⚪ Low | 📦 | | audit:fe-be-parity |
 | DEV-42 | Overview: Subscription MRR/ARR widget — recurring revenue detection | 4-6h | ⚪ Low | 📦 | | audit:fe-be-parity |
@@ -239,16 +239,16 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | MKT-1 | Landing page copy and design | 3h | 🟠 High | 📦 | | manual |
-| MKT-3 | Install 3D dependencies (`@react-three/fiber`, `@react-three/drei`, `three`) | 15m | 🟠 High | 🟢 | | plan:marketing-landing-page |
-| MKT-4 | Create hero section with 3D orb and parallax effect | 2-3h | 🟠 High | 🟢 | [needs: MKT-3] | plan:marketing-landing-page |
-| MKT-5 | Create problem statement section (3 pain point cards) | 1-2h | 🟠 High | 🟢 | | plan:marketing-landing-page |
-| MKT-6 | Create solution pillars section (3 GlowCard components) | 2h | 🟠 High | 🟢 | | plan:marketing-landing-page |
-| MKT-7 | Create 3D feature showcase (interactive card grid) | 3-4h | 🟠 High | 🟢 | [needs: MKT-3] | plan:marketing-landing-page |
-| MKT-8 | Create stats/social proof section (animated counters) | 1-2h | 🟠 High | 🟢 | | plan:marketing-landing-page |
-| MKT-9 | Create final CTA section (gradient background, glass container) | 1h | 🟠 High | 🟢 | | plan:marketing-landing-page |
-| MKT-10 | Create landing page layout (minimal nav + footer) | 1-2h | 🟠 High | 🟢 | | plan:marketing-landing-page |
-| MKT-11 | Replace root page with landing (remove redirect) | 30m | 🟠 High | 🟢 | [needs: MKT-4,MKT-5,MKT-6,MKT-7,MKT-8,MKT-9,MKT-10] | plan:marketing-landing-page |
-| MKT-12 | Add scroll animations and performance optimization (Lighthouse >90) | 2-3h | 🟠 High | 🟢 | [needs: MKT-11] | plan:marketing-landing-page |
+| MKT-3 | Install 3D dependencies (`@react-three/fiber`, `@react-three/drei`, `three`) | 15m | 🟠 High | ✅ done | | plan:marketing-landing-page |
+| MKT-4 | Create hero section with 3D orb and parallax effect | 2-3h | 🟠 High | ✅ done | [needs: MKT-3] | plan:marketing-landing-page |
+| MKT-5 | Create problem statement section (3 pain point cards) | 1-2h | 🟠 High | ✅ done | | plan:marketing-landing-page |
+| MKT-6 | Create solution pillars section (3 GlowCard components) | 2h | 🟠 High | ✅ done | | plan:marketing-landing-page |
+| MKT-7 | Create 3D feature showcase (interactive card grid) | 3-4h | 🟠 High | ✅ done | [needs: MKT-3] | plan:marketing-landing-page |
+| MKT-8 | Create stats/social proof section (animated counters) | 1-2h | 🟠 High | ✅ done | | plan:marketing-landing-page |
+| MKT-9 | Create final CTA section (gradient background, glass container) | 1h | 🟠 High | ✅ done | | plan:marketing-landing-page |
+| MKT-10 | Create landing page layout (minimal nav + footer) | 1-2h | 🟠 High | ✅ done | | plan:marketing-landing-page |
+| MKT-11 | Replace root page with landing (remove redirect) | 30m | 🟠 High | ✅ done | [needs: MKT-4,MKT-5,MKT-6,MKT-7,MKT-8,MKT-9,MKT-10] | plan:marketing-landing-page |
+| MKT-12 | Add scroll animations and performance optimization (Lighthouse >90) | 2-3h | 🟠 High | ✅ done | [needs: MKT-11] | plan:marketing-landing-page |
 | MKT-2 | User documentation / getting started guide | 2h | 🟡 Medium | 📦 | | roadmap |
 | CNT-1 | Competitive analysis update | 2h | 🟡 Medium | 📦 | | manual |
 

@@ -1,7 +1,7 @@
 # API Context (apps/api)
 
 > **Loaded automatically** when Claude accesses files in `apps/api/`
-> **Last verified:** 2026-02-21
+> **Last verified:** 2026-02-25
 
 **Conventions:** See `.claude/rules/api-conventions.md` (middleware chain, service pattern, error responses, SRP).
 **Financial rules:** See `.claude/rules/financial-rules.md` (integer cents, tenant isolation, soft delete).
@@ -25,17 +25,17 @@
 
 | Domain Folder | Route Prefix | Status | File Count |
 |---------------|--------------|--------|------------|
-| `domains/overview/` | `/api/overview` | Built (dashboard, net-worth, cash-flow) | 6 files |
-| `domains/banking/` | `/api/banking` | Built (accounts, transactions, imports, reconciliation, categories, connections) | 35 files |
-| `domains/business/` | `/api/business` | Built (unified route handler for invoices/bills/payments/clients/vendors) | 1 file |
-| `domains/invoicing/` | `/api/business/invoices` | Built (maps to business route) | 14 files |
-| `domains/clients/` | `/api/business/clients` | Built (maps to business route) | 4 files |
-| `domains/vendors/` | `/api/business/vendors` | Built (maps to business route) | 5 files |
-| `domains/accounting/` | `/api/accounting` | Built (chart of accounts, journal entries, posting, reports) | 16 files |
-| `domains/planning/` | `/api/planning` | Partial (goals built; budgets, forecasts stub) | 1 file |
-| `domains/ai/` | `/api/ai` | Partial (chat, categorization built; insights, rules stub) | 7 files |
+| `domains/overview/` | `/api/overview` | Built (dashboard, net-worth, cash-flow, P&L, trial balance, top clients) | 5 files |
+| `domains/banking/` | `/api/banking` | Built (accounts, transactions, imports, reconciliation, categories, transfers, connections) | 26 files |
+| `domains/business/` | `/api/business` | Built (unified route handler for invoices/bills/payments/clients/vendors) | 2 files |
+| `domains/invoicing/` | `/api/business/invoices` | Built (CRUD, send, void, GL posting, payments) | 10 files |
+| `domains/clients/` | `/api/business/clients` | Built (CRUD, search, stats) | 3 files |
+| `domains/vendors/` | `/api/business/vendors` | Built (CRUD, search, stats) | 4 files |
+| `domains/accounting/` | `/api/accounting` | Built (COA, journal entries, posting, reports, tax rates, fixed assets) | 31 files |
+| `domains/planning/` | `/api/planning` | Partial (goals built; budgets, forecasts stub) | 2 files |
+| `domains/ai/` | `/api/ai` | Partial (chat, categorization built; insights, rules stub) | 6 files |
 | `domains/services/` | `/api/services` | Stub (planned) | 2 files |
-| `domains/system/` | `/api/system` | Built (entities, onboarding, audit-log, users, settings) | 17 files |
+| `domains/system/` | `/api/system` | Built (entities, onboarding, audit-log, users, settings) | 12 files |
 
 ---
 

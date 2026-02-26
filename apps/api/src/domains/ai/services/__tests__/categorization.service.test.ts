@@ -3,12 +3,15 @@ import {
   categorizeTransaction,
   categorizeTransactions,
   learnFromCorrection,
+  CategorizationService,
+  CATEGORY_TO_COA_CODE,
 } from '../categorization.service';
 
 // Mock logger
 vi.mock('../../../../lib/logger', () => ({
   logger: {
     info: vi.fn(),
+    warn: vi.fn(),
     error: vi.fn(),
   },
 }));
@@ -27,6 +30,8 @@ vi.mock('../ai.service', () => ({
 // Mock Prisma
 const mockFindFirst = vi.fn();
 const mockFindMany = vi.fn();
+const mockGLFindFirst = vi.fn();
+const mockGLFindMany = vi.fn();
 
 vi.mock('@akount/db', () => ({
   prisma: {
@@ -34,10 +39,15 @@ vi.mock('@akount/db', () => ({
       findFirst: (...args: unknown[]) => mockFindFirst(...args),
       findMany: (...args: unknown[]) => mockFindMany(...args),
     },
+    gLAccount: {
+      findFirst: (...args: unknown[]) => mockGLFindFirst(...args),
+      findMany: (...args: unknown[]) => mockGLFindMany(...args),
+    },
   },
 }));
 
 const TENANT_ID = 'tenant-abc-123';
+const ENTITY_ID = 'entity-xyz-456';
 
 function mockCategory(overrides: Record<string, unknown> = {}) {
   return {
@@ -45,6 +55,16 @@ function mockCategory(overrides: Record<string, unknown> = {}) {
     tenantId: TENANT_ID,
     name: 'Meals & Entertainment',
     type: 'EXPENSE',
+    defaultGLAccountId: null,
+    ...overrides,
+  };
+}
+
+function mockGLAccount(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'gl-5800',
+    code: '5800',
+    name: 'Travel & Meals',
     ...overrides,
   };
 }
@@ -55,7 +75,7 @@ describe('CategorizationService', () => {
     mockIsProviderAvailable.mockReturnValue(false); // Default: no AI
   });
 
-  describe('categorizeTransaction', () => {
+  describe('categorizeTransaction (backward-compat)', () => {
     describe('keyword matching', () => {
       it('should categorize "Starbucks" as Meals & Entertainment', async () => {
         const category = mockCategory({ name: 'Meals & Entertainment' });
@@ -66,8 +86,11 @@ describe('CategorizationService', () => {
         expect(result.categoryId).toBe('cat-1');
         expect(result.categoryName).toBe('Meals & Entertainment');
         expect(result.confidence).toBe(85);
-        // Could match either "starbucks" or "coffee" - both are valid
+        expect(result.confidenceTier).toBe('high');
         expect(result.matchReason).toMatch(/Keyword match: "(starbucks|coffee)"/);
+        // No entityId → GL fields are null
+        expect(result.resolvedGLAccountId).toBeNull();
+        expect(result.resolvedGLAccountCode).toBeNull();
       });
 
       it('should categorize "Uber" as Transportation', async () => {
@@ -78,6 +101,7 @@ describe('CategorizationService', () => {
 
         expect(result.categoryName).toBe('Transportation');
         expect(result.confidence).toBe(85);
+        expect(result.confidenceTier).toBe('high');
       });
 
       it('should categorize "AWS" as Software & Subscriptions', async () => {
@@ -126,13 +150,14 @@ describe('CategorizationService', () => {
       });
 
       it('should return null categoryId when category not found in tenant', async () => {
-        mockFindFirst.mockResolvedValueOnce(null); // Category doesn't exist
+        mockFindFirst.mockResolvedValueOnce(null);
 
         const result = await categorizeTransaction('Starbucks', 500, TENANT_ID);
 
         expect(result.categoryId).toBeNull();
         expect(result.categoryName).toBe('Meals & Entertainment');
         expect(result.confidence).toBe(85);
+        expect(result.confidenceTier).toBe('high');
         expect(result.matchReason).toContain('category not found');
       });
 
@@ -142,11 +167,11 @@ describe('CategorizationService', () => {
         expect(result.categoryId).toBeNull();
         expect(result.categoryName).toBeNull();
         expect(result.confidence).toBe(0);
+        expect(result.confidenceTier).toBe('low');
         expect(result.matchReason).toBe('No match found');
       });
 
       it('should choose best match when multiple keywords match', async () => {
-        // Description contains both "restaurant" and "cafe"
         const category = mockCategory({ name: 'Meals & Entertainment' });
         mockFindFirst.mockResolvedValueOnce(category);
 
@@ -170,7 +195,6 @@ describe('CategorizationService', () => {
         const category = mockCategory({ name: 'Meals & Entertainment' });
         mockFindFirst.mockResolvedValueOnce(category);
 
-        // Use a description that truly doesn't match any keywords
         const result = await categorizeTransaction(
           'Acme Corp Store XYZ',
           500,
@@ -180,6 +204,7 @@ describe('CategorizationService', () => {
         expect(mockChat).toHaveBeenCalled();
         expect(result.categoryName).toBe('Meals & Entertainment');
         expect(result.confidence).toBe(75);
+        expect(result.confidenceTier).toBe('medium');
         expect(result.matchReason).toContain('AI suggested');
       });
 
@@ -196,7 +221,7 @@ describe('CategorizationService', () => {
       });
 
       it('should return null categoryId when AI-suggested category not found', async () => {
-        vi.clearAllMocks(); // Clear previous mocks
+        vi.clearAllMocks();
         mockIsProviderAvailable.mockReturnValue(true);
         mockChat.mockResolvedValueOnce({ content: 'Rare Category' });
         mockFindFirst.mockResolvedValueOnce(null);
@@ -206,6 +231,7 @@ describe('CategorizationService', () => {
         expect(result.categoryId).toBeNull();
         expect(result.categoryName).toBe('Rare Category');
         expect(result.confidence).toBe(60);
+        expect(result.confidenceTier).toBe('medium');
       });
 
       it('should skip AI when provider not available', async () => {
@@ -256,6 +282,7 @@ describe('CategorizationService', () => {
               mode: 'insensitive',
             },
           },
+          select: { id: true, name: true, defaultGLAccountId: true },
         });
       });
     });
@@ -281,9 +308,11 @@ describe('CategorizationService', () => {
 
       expect(results).toHaveLength(4);
       expect(results[0].categoryName).toBe('Meals & Entertainment');
+      expect(results[0].confidenceTier).toBe('high');
       expect(results[1].categoryName).toBe('Transportation');
       expect(results[2].categoryName).toBe('Software & Subscriptions');
-      expect(results[3].categoryName).toBeNull(); // No match
+      expect(results[3].categoryName).toBeNull();
+      expect(results[3].confidenceTier).toBe('low');
     });
 
     it('should fetch categories only once (avoid N+1)', async () => {
@@ -293,7 +322,6 @@ describe('CategorizationService', () => {
 
       await categorizeTransactions(transactions, TENANT_ID);
 
-      // Should only call findMany once, not 50 times
       expect(mockFindMany).toHaveBeenCalledTimes(1);
     });
 
@@ -303,9 +331,7 @@ describe('CategorizationService', () => {
       ];
       mockFindMany.mockResolvedValueOnce(categories);
 
-      const transactions = [
-        { description: 'Starbucks', amount: 500 },
-      ];
+      const transactions = [{ description: 'Starbucks', amount: 500 }];
 
       const results = await categorizeTransactions(transactions, TENANT_ID);
 
@@ -314,17 +340,14 @@ describe('CategorizationService', () => {
 
     it('should handle partial category name matches', async () => {
       const categories = [
-        mockCategory({ id: 'cat-1', name: 'Meals' }), // Shorter name
+        mockCategory({ id: 'cat-1', name: 'Meals' }),
       ];
       mockFindMany.mockResolvedValueOnce(categories);
 
-      const transactions = [
-        { description: 'Starbucks', amount: 500 }, // Keywords suggest "Meals & Entertainment"
-      ];
+      const transactions = [{ description: 'Starbucks', amount: 500 }];
 
       const results = await categorizeTransactions(transactions, TENANT_ID);
 
-      // Should match "Meals" even though keyword suggests "Meals & Entertainment"
       expect(results[0].categoryId).toBe('cat-1');
       expect(results[0].categoryName).toBe('Meals');
     });
@@ -359,17 +382,145 @@ describe('CategorizationService', () => {
       const results = await categorizeTransactions(transactions, TENANT_ID);
 
       expect(results).toHaveLength(150);
-      // Verify some matched, some didn't
       const matched = results.filter((r) => r.categoryId !== null);
       expect(matched.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('CategorizationService (class-based with GL resolution)', () => {
+    it('should resolve GL via Category.defaultGLAccountId', async () => {
+      const service = new CategorizationService(TENANT_ID, ENTITY_ID);
+      const category = mockCategory({
+        name: 'Meals & Entertainment',
+        defaultGLAccountId: 'gl-custom',
+      });
+      mockFindFirst.mockResolvedValueOnce(category);
+      // GL lookup for defaultGLAccountId
+      mockGLFindFirst.mockResolvedValueOnce({ id: 'gl-custom', code: '5801' });
+
+      const result = await service.categorize('Starbucks Coffee', -500);
+
+      expect(result.resolvedGLAccountId).toBe('gl-custom');
+      expect(result.resolvedGLAccountCode).toBe('5801');
+    });
+
+    it('should fall back to CATEGORY_TO_COA_CODE when no defaultGLAccountId', async () => {
+      const service = new CategorizationService(TENANT_ID, ENTITY_ID);
+      const category = mockCategory({
+        name: 'Meals & Entertainment',
+        defaultGLAccountId: null,
+      });
+      mockFindFirst
+        .mockResolvedValueOnce(category)  // category lookup
+      mockGLFindFirst
+        .mockResolvedValueOnce(mockGLAccount({ id: 'gl-5800', code: '5800' })); // COA code lookup
+
+      const result = await service.categorize('Starbucks Coffee', -500);
+
+      expect(result.resolvedGLAccountId).toBe('gl-5800');
+      expect(result.resolvedGLAccountCode).toBe('5800');
+    });
+
+    it('should use sign-aware fallback for expenses (5990)', async () => {
+      const service = new CategorizationService(TENANT_ID, ENTITY_ID);
+      // No keyword match, no AI → falls through to "No match found"
+      // Amount negative → expense → 5990
+      mockGLFindFirst.mockResolvedValueOnce(mockGLAccount({ id: 'gl-5990', code: '5990' }));
+
+      const result = await service.categorize('Unknown Vendor XYZ', -1000);
+
+      expect(result.resolvedGLAccountId).toBe('gl-5990');
+      expect(result.resolvedGLAccountCode).toBe('5990');
+    });
+
+    it('should use sign-aware fallback for income (4300)', async () => {
+      const service = new CategorizationService(TENANT_ID, ENTITY_ID);
+      mockGLFindFirst.mockResolvedValueOnce(mockGLAccount({ id: 'gl-4300', code: '4300' }));
+
+      const result = await service.categorize('Unknown Client Payment', 5000);
+
+      expect(result.resolvedGLAccountId).toBe('gl-4300');
+      expect(result.resolvedGLAccountCode).toBe('4300');
+    });
+
+    it('should return null GL when entityId not provided', async () => {
+      const service = new CategorizationService(TENANT_ID); // no entityId
+      const category = mockCategory({ name: 'Meals & Entertainment' });
+      mockFindFirst.mockResolvedValueOnce(category);
+
+      const result = await service.categorize('Starbucks', -500);
+
+      expect(result.resolvedGLAccountId).toBeNull();
+      expect(result.resolvedGLAccountCode).toBeNull();
+    });
+
+    it('should resolve GL in batch operations', async () => {
+      const service = new CategorizationService(TENANT_ID, ENTITY_ID);
+
+      mockFindMany.mockResolvedValueOnce([
+        mockCategory({ id: 'cat-1', name: 'Meals & Entertainment' }),
+      ]);
+      mockGLFindMany.mockResolvedValueOnce([
+        mockGLAccount({ id: 'gl-5800', code: '5800' }),
+        mockGLAccount({ id: 'gl-5990', code: '5990' }),
+        mockGLAccount({ id: 'gl-4300', code: '4300' }),
+      ]);
+
+      const results = await service.categorizeBatch([
+        { description: 'Starbucks', amount: -500 },
+        { description: 'Unknown', amount: -1000 },
+      ]);
+
+      expect(results).toHaveLength(2);
+      // Starbucks → Meals & Entertainment → COA code 5800
+      expect(results[0].resolvedGLAccountCode).toBe('5800');
+      // Unknown expense → fallback 5990
+      expect(results[1].resolvedGLAccountCode).toBe('5990');
+    });
+  });
+
+  describe('CATEGORY_TO_COA_CODE mapping', () => {
+    it('should have mappings for all common category names', () => {
+      expect(CATEGORY_TO_COA_CODE['meals & entertainment']).toBe('5800');
+      expect(CATEGORY_TO_COA_CODE['transportation']).toBe('5800');
+      expect(CATEGORY_TO_COA_CODE['office supplies']).toBe('5400');
+      expect(CATEGORY_TO_COA_CODE['software & subscriptions']).toBe('5400');
+      expect(CATEGORY_TO_COA_CODE['rent']).toBe('5600');
+      expect(CATEGORY_TO_COA_CODE['professional services']).toBe('5500');
+      expect(CATEGORY_TO_COA_CODE['marketing & advertising']).toBe('5100');
+      expect(CATEGORY_TO_COA_CODE['insurance']).toBe('5300');
+      expect(CATEGORY_TO_COA_CODE['bank fees']).toBe('5200');
+      expect(CATEGORY_TO_COA_CODE['sales revenue']).toBe('4000');
+      expect(CATEGORY_TO_COA_CODE['interest income']).toBe('4200');
+      expect(CATEGORY_TO_COA_CODE['payroll']).toBe('5700');
+    });
+
+    it('should use income codes (4xxx) for income categories', () => {
+      const incomeCodes = ['4000', '4200', '4300'];
+      const incomeCategories = ['sales revenue', 'interest income', 'investment income'];
+
+      for (const cat of incomeCategories) {
+        expect(incomeCodes).toContain(CATEGORY_TO_COA_CODE[cat]);
+      }
+    });
+
+    it('should use expense codes (5xxx) for expense categories', () => {
+      const expenseCategories = [
+        'meals & entertainment', 'office supplies', 'rent',
+        'professional services', 'insurance', 'payroll',
+      ];
+
+      for (const cat of expenseCategories) {
+        const code = CATEGORY_TO_COA_CODE[cat];
+        expect(Number(code)).toBeGreaterThanOrEqual(5000);
+        expect(Number(code)).toBeLessThan(6000);
+      }
     });
   });
 
   describe('learnFromCorrection', () => {
     it('should log correction (placeholder)', async () => {
       await learnFromCorrection('Test Description', 'cat-1', TENANT_ID);
-
-      // Currently just logs - verify no errors thrown
       expect(true).toBe(true);
     });
 
@@ -382,14 +533,12 @@ describe('CategorizationService', () => {
 
   describe('Bulk Operation Stress Tests', () => {
     it('should handle batch categorization of 100+ transactions efficiently', async () => {
-      // Generate 150 transactions (realistic bulk import scenario)
       const transactions = Array.from({ length: 150 }, (_, i) => ({
         id: `txn-${i}`,
         description: i % 3 === 0 ? 'STARBUCKS COFFEE' : i % 3 === 1 ? 'AMAZON.COM' : 'UBER RIDE',
         amount: -1000 * (i + 1),
       }));
 
-      // Mock categories (should be fetched once, not per transaction)
       mockFindMany.mockResolvedValueOnce([
         mockCategory({ id: 'cat-meals', name: 'Meals & Entertainment' }),
         mockCategory({ id: 'cat-software', name: 'Software & Subscriptions' }),
@@ -399,20 +548,16 @@ describe('CategorizationService', () => {
       const results = await categorizeTransactions(transactions as never, TENANT_ID);
 
       expect(results).toHaveLength(150);
-
-      // Verify categories were fetched only once (efficiency check)
       expect(mockFindMany).toHaveBeenCalledTimes(1);
 
-      // Verify categorization worked for bulk
       const categorized = results.filter((r) => r.categoryId !== null);
-      expect(categorized.length).toBeGreaterThanOrEqual(100); // Most should be categorized
+      expect(categorized.length).toBeGreaterThanOrEqual(100);
     });
 
     it('should maintain performance with 500 transactions', async () => {
-      // Stress test: 500 transactions (large CSV import)
       const transactions = Array.from({ length: 500 }, (_, i) => ({
         id: `txn-${i}`,
-        description: 'AWS Services', // All same category for simplicity
+        description: 'AWS Services',
         amount: -10000,
       }));
 
@@ -425,11 +570,7 @@ describe('CategorizationService', () => {
       const duration = Date.now() - startTime;
 
       expect(results).toHaveLength(500);
-
-      // Should complete in reasonable time (< 1 second for 500 items)
       expect(duration).toBeLessThan(1000);
-
-      // Single category fetch (N+1 query prevention)
       expect(mockFindMany).toHaveBeenCalledTimes(1);
     });
   });

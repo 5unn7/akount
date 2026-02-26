@@ -1,9 +1,9 @@
 # Database Context (packages/db)
 
 > **Loaded automatically** when Claude accesses files in `packages/db/`
-> **Last verified:** 2026-02-21
+> **Last verified:** 2026-02-25
 
-## Prisma Models (41 Total)
+## Prisma Models (43 Total)
 
 | Model | Scope | Key Fields | Soft Delete |
 |-------|-------|------------|-------------|
@@ -56,6 +56,9 @@
 | ImportBatch | Tenant | id, tenantId, entityId, sourceType, status | No |
 | AccountingPolicy | Tenant/Entity | id, tenantId, entityId, key, value | No |
 | ConsolidationElimination | Period | id, fiscalPeriodId, fromEntityId, toEntityId, amount | No |
+| **Fixed Assets** | | | |
+| FixedAsset | Entity | id, entityId, name, acquisitionDate, costBasis, usefulLifeMonths | No |
+| DepreciationEntry | Asset | id, fixedAssetId, periodDate, amount, accumulatedAmount | No |
 
 ## Schema Conventions
 

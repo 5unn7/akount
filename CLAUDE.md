@@ -1,6 +1,6 @@
 # Akount Project - Agent Context
 
-> **Last Updated:** 2026-02-21
+> **Last Updated:** 2026-02-25
 > **Context Architecture:** Hierarchical (root + directory-specific + rules)
 
 ---
@@ -13,7 +13,7 @@
 
 ---
 
-## Architecture Snapshot (verified: 2026-02-21)
+## Architecture Snapshot (verified: 2026-02-25)
 
 **Request Flow:** Browser → Next.js SSR → Fastify API → Middleware chain (Auth → Tenant → Validation) → Domain services → Prisma → PostgreSQL. Auth via Clerk JWT; tenant loaded from TenantUser membership; all queries filtered by tenantId. Frontend: Server Components (data fetch) + Client Components (interactivity). Backend: Route → Schema (Zod) → Service (business logic) → Prisma.
 
@@ -27,7 +27,7 @@
 
 ---
 
-## Core Model Hierarchy (verified: 2026-02-21)
+## Core Model Hierarchy (verified: 2026-02-25)
 
 ```
 Tenant (subscription account)
@@ -42,11 +42,11 @@ Tenant (subscription account)
     └── Category (for AI categorization)
 ```
 
-**41 Prisma models total.** Entity-scoped models require `entity: { tenantId }` filter. See `packages/db/CLAUDE.md` for full model table. See `docs/context-map.md` for comprehensive glossary.
+**43 Prisma models total.** Entity-scoped models require `entity: { tenantId }` filter. See `packages/db/CLAUDE.md` for full model table. See `docs/context-map.md` for comprehensive glossary.
 
 ---
 
-## Design System Reference (verified: 2026-02-21)
+## Design System Reference (verified: 2026-02-25)
 
 **Base:** shadcn/ui + shadcn-glass-ui@2.11.2 (glass morphism)
 **Styling:** Tailwind v4.1.18 (CSS config, NO tailwind.config.ts)

@@ -195,17 +195,19 @@ function parseDoneTable(content) {
   let inDoneSection = false;
 
   for (const line of lines) {
-    if (line.includes('## Done (Recent)')) {
+    if (line.includes('## Recently Completed') || line.includes('## Done (Recent)')) {
       inDoneSection = true;
       continue;
     }
-    if (inDoneSection && line.startsWith('## ')) {
+    if (inDoneSection && (line.startsWith('## ') || line.startsWith('---'))) {
       break; // Next section
     }
     if (!inDoneSection) continue;
 
-    // Match: | ✅ ID | Task | Date | Commit |
-    const match = line.match(/^\|\s*✅\s*([A-Z]+-\d+[a-z]?)\s*\|([^|]+)\|([^|]+)\|([^|]*)\|/);
+    // Match both formats:
+    // Old: | ✅ ID | Task | Date | Commit |
+    // New: | ID | Task | Completed |
+    const match = line.match(/^\|\s*✅?\s*([A-Z]+-\d+[a-z]?)\s*\|([^|]+)\|([^|]+)\|([^|]*)\|?/);
     if (match) {
       const [, id, title, completedAt, commit] = match.map(s => s.trim());
       done[id] = {
@@ -807,8 +809,17 @@ function processTaskInbox() {
 function main() {
   const args = process.argv.slice(2);
   const processInbox = args.includes('--process-inbox');
+  const autoArchive = args.includes('--archive');
 
   try {
+    // Auto-archive completed tasks first if requested
+    if (autoArchive) {
+      console.log('📦 Auto-archiving completed tasks...');
+      const { archiveDoneTasks } = require('./archive-done-tasks');
+      const result = archiveDoneTasks({ dryRun: false });
+      console.log(`   Archived ${result.archivedCount} tasks\n`);
+    }
+
     console.log('📊 Regenerating TASKS.md index (v2)...');
 
     // Process inbox first if requested

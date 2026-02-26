@@ -1,7 +1,7 @@
 # Web Context (apps/web)
 
 > **Loaded automatically** when Claude accesses files in `apps/web/`
-> **Last verified:** 2026-02-21
+> **Last verified:** 2026-02-25
 
 **Conventions:** See `.claude/rules/frontend-conventions.md` (Server/Client components, design system, Tailwind v4, SRP, **shared utilities**).
 **Design aesthetic:** See `.claude/rules/design-aesthetic.md` (Financial Clarity theme, glass morphism, colors).
