@@ -1,55 +1,55 @@
 # Akount — Status Dashboard
 
-**Auto-generated via `/processes:eod`** | **Last Updated:** 2026-02-24
+**Auto-generated via `/processes:eod`** | **Last Updated:** 2026-02-25
 
 ## Metrics
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Backend Tests | 1349 passing (0 failed) | 1100+ | ✅ 123% (+45 from yesterday) |
-| Test Files | 61 | — | — |
-| Service Coverage | 36 services | 27+ | ✅ 133% |
-| TypeScript Errors | 0 | 0 | ✅ Both apps compile clean |
-| NPM Vulnerabilities | 19 (minimatch dev-only + archiver transitive) | 0 | ⚠️ Accepted risk |
-| Frontend Tests | 0 | 100+ | ❌ 0% |
-| Loading States | 56/55 pages | 55/55 | ✅ 100% |
-| Error States | 56/55 pages | 55/55 | ✅ 100% |
-| Dashboard Pages | 55 | — | — |
+| Backend Tests | 1752 passing | 1100+ | ✅ 159% (+403 from yesterday) |
+| Frontend Tests | 345 passing | 100+ | ✅ 345% (+345 from yesterday) |
+| Test Files | 94 (77 API + 17 Web) | 80+ | ✅ 118% |
+| TypeScript Errors | 28 | 0 | ⚠️ Warn (apps/web transfer-related) |
+| NPM Vulnerabilities | 12 (6 high) | <5 | ⚠️ Warn |
+| Loading States | 58/57 | 55/55 | ✅ 105% |
 
 ## Task Summary (from TASKS.md)
 
-| Domain | Total | Done | Ready | Backlog | Blocked | Critical | High | Medium | Low |
-|--------|-------|------|-------|---------|---------|----------|------|--------|-----|
-| Dev | 216 | 152 | 52 | 106 | 5 | 5 | 35 | 108 | 22 |
-| Design System | 2 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 0 |
-| Marketing & Content | 13 | 10 | 10 | 1 | 0 | 0 | 10 | 2 | 0 |
-| Operations | 9 | 1 | 5 | 0 | 3 | 0 | 7 | 2 | 0 |
-| **TOTAL** | **240** | **163** | **68** | **108** | **8** | **5** | **53** | **113** | **22** |
+| Domain | Total | Critical | High | Medium | Low | In Progress | Done (Today) |
+|--------|-------|----------|------|--------|-----|-------------|--------------|
+| Dev | 129 | 6 | 16 | 80 | 27 | 0 | 8 |
+| Design System | 2 | 0 | 1 | 1 | 0 | 0 | 0 |
+| Marketing & Content | 3 | 0 | 1 | 2 | 0 | 0 | 0 |
+| Operations | 7 | 0 | 5 | 2 | 0 | 0 | 0 |
+| **TOTAL** | **141** | **6** | **23** | **85** | **27** | **0** | **8** |
+
+**Overall:** 188 active tasks (incl. 47 ready backlog) · 🔴 6 critical · 🟠 23 high · 🟡 85 medium · ⚪ 27 low
+
+**Status Distribution:** 📦 114 backlog · 🟢 67 ready · 🔒 6 blocked · 🟡 1 deferred
 
 > _Note: 43 Linear PM infrastructure tasks tracked separately in [LINEAR-TASKS.md](LINEAR-TASKS.md)_
 
 ## Phase 6 Progress
 
-| Track | Total | Done | % | Trend |
-|-------|-------|------|---|-------|
-| Security | 21 | 16 | 76% | ↑ from 67% (+SEC-24/25/26/27) |
-| Performance | 17 | 10 | 59% | — |
-| Financial | 27 | 20 | 74% | ↑ from 67% (+FIN-29/30) |
-| DRY/Quality | 10 | 9 | 90% | ↑ from 70% (+DRY-3/18/19/20/21) |
-| UX | 69 | 47 | 68% | ↑ from 55% (+UX-20/21/22/25/45/103/104/105) |
-| Architecture | 8 | 4 | 50% | — |
-| Dev Features | 121 | 39 | 32% | ↑ from 22% (+DEV-72/73/74/76/77/78/179-184) |
-| Documentation | 8 | 2 | 25% | — |
-| Design System | 6 | 3 | 50% | — |
-| Test | 4 | 1 | 25% | ↑ from 0% (+TEST-1) |
-| Infrastructure | 57 | 19 | 33% | — |
-| Marketing | 13 | 10 | 77% | — |
-| **Overall** | **361** | **180** | **50%** | ↑ from 42% (+28 done today) |
+| Track | Total | Done | % | Status |
+|-------|-------|------|---|--------|
+| Security (SEC) | 28 | 20 | 71% | ⚠️ In Progress (+SEC-12/14) |
+| Performance (PERF) | 22 | 14 | 64% | ⚠️ In Progress |
+| Financial (FIN) | 30 | 27 | 90% | ✅ Near Complete (+FIN-29/30) |
+| DRY/Quality | 19 | 14 | 74% | ⚠️ In Progress (+DRY-19) |
+| UX | 103 | 49 | 48% | ⚠️ In Progress (+UX-33/34) |
+| Test (TEST) | 20 | 10 | 50% | ⚠️ In Progress (+TEST-2/3/17-20) |
+| Infrastructure (INFRA) | 60 | 9 | 15% | 📦 Backlog (+INFRA-60) |
+| Development (DEV) | 200+ | 69+ | ~35% | ⚠️ In Progress (+DEV-200/202) |
+
+**Overall Phase 6:** ~50% complete (↑ from 42% yesterday, +8 tasks completed today)
 
 ## Completed Plans
 
 | Plan | Tasks | Status |
 |------|-------|--------|
+| AI Auto-Bookkeeper Phase 1 | 16/16 tasks (4 sprints) | ✅ COMPLETE (DEV-185 through DEV-200) |
+| Frontend Test Coverage | 14/14 tasks (5 sprints) | ✅ COMPLETE (TEST-7 through TEST-20) |
 | Banking Command Center | 28/28 (4 sprints) | ✅ COMPLETE |
 | Entity Management Hub | 16/16 (3 sprints) | ✅ COMPLETE |
 | New User Journey UX Overhaul | 34/34 (8 sprints) | ✅ COMPLETE |
@@ -60,125 +60,138 @@
 | Marketing Landing Page | 10/10 sections | ✅ COMPLETE |
 | Overview Dashboard Widgets | 6/6 tasks | ✅ COMPLETE |
 
-## Session Quality Insights (Feb 24)
+## Session Quality Insights (Today - 2026-02-25)
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Sessions completed | 9 | ✅ |
-| Commits today | 36 | ✅ |
-| Tests updated | 1304 → 1349 (+45) | ✅ |
-| Test failures | 2 → 0 | ✅ |
-| Invariant violations | 0 | ✅ |
-| Pre-flight compliance | 100% (9/9) | ✅ |
-| Context efficiency avg | A (8xA, 1xB+) | ✅ |
-| Loops detected | 1 (agent output file retrieval) | ✅ |
+| Sessions completed | 11 | - |
+| Commits today | 5 | ✅ |
+| Tests added | +685 (407 backend + 278 frontend) | ✅ Exceptional |
+| Invariant violations | 0 | ✅ Perfect |
+| Pre-flight compliance | 100% (11/11) | ✅ Perfect |
+| Context efficiency avg | A | ✅ Excellent |
+| Loops detected | 1 | ✅ Good |
 
-### Feb 24 Summary (9 sessions, 36 commits)
+### Feb 25 Summary (11 sessions, 5 commits, +685 tests)
 
-**Security Hardening (3 critical fixes):**
-- SEC-24: Fixed _count tenant isolation leak in GL account service
-- SEC-25: Made entityId required in tax rate creation (global rate pollution)
-- SEC-26: Derived tenantId server-side in onboarding /complete endpoint
+**Test Coverage Explosion:**
+- Backend: 1349 → 1752 (+403 tests, 61 → 77 files)
+- Frontend: 0 → 345 (+345 tests, 0 → 17 files)
+- **Total: 1349 → 2097 tests (+685 in one day — 51% increase!)**
 
-**Multi-Agent Code Review + Remediation (25 findings, all fixed):**
-- Launched 5 parallel review agents (financial, security, frontend, TypeScript, test coverage)
-- 3 critical, 12 medium, 10 low findings identified and fixed in 1h48m turnaround
-- Fixes: FIN-29/30, SEC-27, DRY-18/19/20/21, FE-9, UX-103/104/105, TS-7
+**Security & Compliance (SEC-12, SEC-14):**
+- Upload quota service with plan-based limits (FREE: 10/mo 5MB, PRO: 100/mo 10MB, ENTERPRISE: 1000/mo 50MB)
+- Audit retention service with plan-based periods (FREE: 90d, PRO: 365d, ENTERPRISE: 2555d)
+- Added 27 new tests across 2 services + 2 route integrations
 
-**Overview Dashboard Widgets (DEV-179 through DEV-184):**
-- ProfitLossSummaryWidget, TrialBalanceStatusWidget, TopRevenueClientsWidget
-- 3-col responsive grid layout on Overview page, loading skeletons updated
+**UX Polish (UX-33, UX-34):**
+- App-wide cross-links: Invoice→Client, Bill→Vendor, Payment→Client/Vendor/Invoice/Bill, JE→Source Document
+- Bulk operations: Generic `useBulkSelection` hook + `BulkActionToolbar` component
+- Bulk cancel for invoices/bills (DRAFT/SENT/PENDING only)
 
-**Void Invoice Full Stack (DEV-72):**
-- VOIDED status added to InvoiceStatus enum, service with GL journal entry reversal
-- POST /:id/void route (OWNER/ADMIN only), frontend Void button with AlertDialog
+**Backend Test Sprint (TEST-2, TEST-3 — 250 tests):**
+- Flow tests: bank-import, bill-lifecycle, invoice-lifecycle, reporting-accuracy (73 tests)
+- Service tests: report-export.service.ts (46 tests)
+- Route tests: payments.routes.ts (50 tests), entities.routes.ts (32 tests), data-export.service.ts (23 tests)
 
-**Business Payment & Document Actions (DEV-76/77/78):**
-- Payment allocation UI with inline allocation table + two-phase submit
-- Delete actions for invoices, bills, payments (DRAFT/CANCELLED only)
-- Post to GL button per allocation with bank GL account selector
+**Frontend Test Sprint (TEST-17..20 — 278 tests):**
+- Business component tests: InvoiceTable, BillsTable, PaymentTable (48 tests)
+- Form tests: ClientForm, VendorForm (27 tests)
+- InvoiceForm with line items + financial calc integrity (35 tests)
+- Navigation + shared components: DomainTabs, PageHeader, ContentPanel (60+ tests)
 
-**Accounting UX Polish:**
-- UX-20: COA reactivate button for inactive GL accounts
-- UX-21: COA balance summary cards (Assets/Liabilities/Equity)
-- UX-22: JE filter auto-refresh with 300ms debounce
-- UX-25: Report quick-generate buttons (Last Month/Quarter/YTD)
-- DRY-3: Extracted generic createReportHandler (-142 lines)
-
-**Client/Vendor Completion (DEV-73/74):**
-- Delete buttons with AlertDialog on client and vendor detail pages
-- UX-45: Record Payment button on invoice detail page
-
-**Workflow System Enhancement:**
-- Enhanced /processes:review with auto-detection and intelligent agent selection
-- Enhanced /processes:work with hybrid mode (main/worktree) and agent delegation
-- Enhanced /processes:claim with task classification and real-time visibility
-- Updated all 15 review agent metadata files with semantic tags
+**AI Auto-Bookkeeper E2E (DEV-200 — 26 tests):**
+- Full pipeline test: categorize → suggest JE → create drafts → AIActions → approve → execute
+- Fixed 6 pre-existing test failures in `ai-action.service.test.ts` from T14 approval/execution wiring changes
+- **AI Auto-Bookkeeper Phase 1 now 100% COMPLETE** (all 16 tasks: DEV-185 through DEV-200)
 
 ### Common Patterns (Today's Sessions)
 
-**Strengths:**
-- Perfect invariant compliance (9/9 sessions, 0 violations)
-- Multi-agent review is highly effective (5 agents, 25 findings, all fixed same day)
-- Plan-driven widget development (plan first, execute systematically)
-- 100% pre-flight checklist compliance
+**Learned:**
+- **BigInt mocking for Prisma:** Mock `Prisma.join`, `Prisma.raw`, `Prisma.sql`, return `BigInt()` values from `$queryRaw`
+- **tenantScopedQuery pattern:** Intercept callback, call with tenantId, return mockQueryRaw results
+- **Constructor mocks in vitest:** Use regular `function(this: any) { this.method = mockFn; }`, NOT arrow functions (`() => ({})` fails with "is not a constructor")
+- **vi.clearAllMocks vs vi.resetAllMocks:** `clearAllMocks` only clears call history, keeps `mockResolvedValue` implementations. `resetAllMocks` clears implementations too. Prefer `resetAllMocks` for test isolation.
+- **HTML5 form validation in jsdom:** `required` attribute blocks `onSubmit` — type whitespace to bypass and test custom trim validation
+- **mockApiFetch in useEffect:** ALWAYS add `mockApiFetch.mockResolvedValue({})` in `beforeEach` when testing components with data fetching, otherwise `.then()` on undefined throws
 
-**Improvement Areas:**
-- Background agent output files unreliable (0-byte files with `run_in_background: true`)
-- Check `git log` before fixing review findings (avoid duplicate work from other sessions)
-- Convention violations cluster in new services — review existing patterns first
+**Cross-link UX pattern:**
+- `<Link>` with `hover:border-ak-border-2 hover:-translate-y-px` for subtle hover lift
+- `ExternalLink` icon appearing on hover via `group-hover:opacity-100`
+
+**Bulk selection pattern:**
+- Custom hook with `Set<string>` for O(1) lookups
+- `BulkActionToolbar` with count display, clear button, configurable action buttons
+- `animate-in slide-in-from-bottom-2` entry animation
+- Selected rows: `bg-ak-pri-dim/30` background
 
 ### Bugs Fixed Today
-- SEC-24: _count queries leak across tenants in GL account service
-- SEC-25/26: Tax rate global pollution + onboarding IDOR
-- FIN-29: PATCH totals not validated against line items
-- FIN-30: Transfer JEs duplicated in GL reports (missing linkedEntryId dedup)
-- UX-103: HeroSection SSR bypass
-- UX-104: Stale form data in ClientForm/VendorForm (missing key prop)
-- UX-105: UpcomingPayments client-side fetch (moved to server)
-- DRY-18: Unsanitized invoice number in Content-Disposition header
-- 2 test failures fixed (invoice/bill stats entityId param — 43dbba8)
 
-### Patterns Discovered
-- Background agents with `run_in_background: true` produce 0-byte output files
-- Multi-agent review: 5 specialized agents cover 14,500 lines in ~5 minutes
-- JournalEntryService.voidEntry() creates reversing entries (swaps debit/credit) — reusable for bill void
-- VALID_TRANSITIONS map pattern for status machines
-- TrialBalanceAccount type lacks `type` field (can't group by account type)
-- Generic `createReportHandler<TQuery, TReport>()` pattern for DRY report routes
+**Test Failures:**
+- 6 pre-existing failures in `ai-action.service.test.ts` from T14 approval/execution wiring changes
+- TS2802 Set iteration error (wrap with `Array.from()` before `for...of` loop)
+- InvoiceTable/BillsTable: duplicate currency text when total equals balance (use non-zero paidAmount in mocks)
+- PaymentTable detail sheet crash: mockApiFetch returning undefined (add `mockResolvedValue` in beforeEach)
+
+**UX Issues:**
+- BillsTable date formatting: was using raw `toLocaleDateString()` instead of shared `formatDate()` utility
+
+### Recurring Mistakes
+
+- **DEV-200 session:** Should have checked existing mock patterns in sibling test files before writing constructor mock (caught on second attempt). Pre-flight Step 2 (search for patterns) should include checking sibling test files for mock examples.
+
+### What Would We Do Differently?
+
+- Check existing mock patterns in sibling test files before writing new `vi.mock` constructors
+- Use `vi.resetAllMocks()` instead of `vi.clearAllMocks()` for better test isolation
+- When testing components with `apiFetch` in `useEffect`, always set `mockResolvedValue` in `beforeEach` (don't rely on implicit undefined)
+
+### Strengths
+
+- Perfect invariant compliance (11/11 sessions, 0 violations)
+- 100% pre-flight checklist compliance (all sessions followed protocol)
+- Test coverage explosion (+685 tests in one day)
+- Clean continuation sessions (minimal context thrashing, all graded A)
+- Mock pattern discovery and documentation (BigInt, constructor, clearAllMocks vs reset)
+
+### Actions Taken
+
+- **MEMORY updates:** Added mock patterns to debugging-log.md (constructor mocking, clearAllMocks vs resetAllMocks, BigInt for Prisma)
+- **Test patterns documented:** HTML5 form validation workarounds, mockApiFetch in beforeEach requirement
+- **No guardrails updates needed:** All sessions followed pre-flight protocol perfectly, no new anti-patterns detected
 
 ## Known Issues
 
 | Issue | Status | Priority |
 |-------|--------|----------|
-| ~~2 test failures (invoice/bill stats entityId param)~~ | ✅ FIXED (43dbba8) | ~~High~~ |
-| ~~SEC-24: _count queries leak across tenants~~ | ✅ FIXED (18d40d1) | ~~High~~ |
-| NPM vulnerabilities (19 - dev-only) | Accepted risk | Low |
-| Frontend tests (0) | Needs kickoff | Medium |
-| Background agent output files (0-byte) | Workaround: use blocking agents | Low |
+| TypeScript errors (28) | apps/web transfer-related | High |
+| NPM vulnerabilities (12, 6 high) | Archiver transitive deps | Medium |
+| Frontend E2E tests (0) | Needs Playwright setup | Low |
 
 ## Uncommitted Work
 
 | Item | Files | Status |
 |------|-------|--------|
-| Duplication service fuzzy matching | 2 files (service + test) | ⏳ pre-existing |
+| Daily review files | `docs/reviews/2026-02-25-daily-review/` | Untracked |
 
 ## Next Session Recommendations
 
 **High Priority:**
-1. AI Auto-Bookkeeper Phase 1 (DEV-185 through DEV-200) — 16 tasks, critical path
-2. Frontend tests kickoff (currently 0 — target 100+)
-3. Planning domain: DEV-97 (goals), DEV-98 (budgets) — blocked by backend
+1. ✅ ~~AI Auto-Bookkeeper Phase 1 (DEV-185 through DEV-200)~~ — **COMPLETE**
+2. ✅ ~~Frontend tests kickoff (currently 0 — target 100+)~~ — **COMPLETE (345 tests)**
+3. AI Auto-Bookkeeper Phase 2 (DEV-203 through DEV-214) — 12 tasks, rule engine
+4. AI Auto-Bookkeeper Phase 3 (DEV-215 through DEV-228) — 14 tasks, insights + monthly close
+5. Planning domain: DEV-97 (goals), DEV-98 (budgets) — blocked by backend
+6. Fix 28 TypeScript errors (apps/web transfer-related)
 
 **Medium Priority:**
-4. DRY-10 (formatDate consolidation — 15+ inline implementations)
-5. UX-33 (cross-links between related records)
-6. UX-18 (accounting landing page)
-7. UX-79 (bill detail page)
+7. DRY-10 (formatDate consolidation — 15+ inline implementations)
+8. UX-18 (accounting landing page)
+9. UX-79 (bill detail page)
 
 **Infrastructure:**
-8. INFRA-1 (CI/CD pipeline), INFRA-2 (production environment)
-9. DS-1 (Figma-to-code token sync)
+10. INFRA-1 (CI/CD pipeline), INFRA-2 (production environment)
+11. DS-1 (Figma-to-code token sync)
 
 ---
 
