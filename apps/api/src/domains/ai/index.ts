@@ -9,3 +9,9 @@ export {
   type ConfidenceTier,
 } from './services/categorization.service';
 export type { AIMessage, AIChatOptions, AIChatResponse, AIProvider } from './services/types';
+export {
+  JESuggestionService,
+  type JESuggestionInput,
+  type JESuggestion,
+  type JESuggestionBatchResult,
+} from './services/je-suggestion.service';

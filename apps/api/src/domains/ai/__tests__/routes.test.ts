@@ -61,6 +61,16 @@ vi.mock('../services/categorization.service', () => ({
   },
 }));
 
+// Mock JESuggestionService
+const mockSuggestBatch = vi.fn();
+const mockCreateDraftJEs = vi.fn();
+vi.mock('../services/je-suggestion.service', () => ({
+  JESuggestionService: function (this: Record<string, unknown>) {
+    this.suggestBatch = mockSuggestBatch;
+    this.createDraftJEs = mockCreateDraftJEs;
+  },
+}));
+
 // Mock Prisma
 const mockEntityFindFirst = vi.fn();
 const mockTransactionFindMany = vi.fn();
@@ -380,6 +390,311 @@ describe('AI Routes', () => {
 
       expect(response.statusCode).toBe(500);
       expect(response.json().error).toBe('Provider down');
+    });
+  });
+
+  // -----------------------------------------------------------------------
+  // POST /api/ai/je-suggest — Preview JE suggestions
+  // -----------------------------------------------------------------------
+
+  describe('POST /api/ai/je-suggest', () => {
+    const ENTITY_ID = 'clent00000000000000001';
+
+    const MOCK_TXN_ROWS = [
+      {
+        id: 'cltx0000000000000000001',
+        description: 'Starbucks Coffee',
+        amount: -550,
+        currency: 'USD',
+        date: new Date('2026-02-25'),
+        sourceType: 'BANK_FEED',
+        accountId: 'clacct000000000000001',
+      },
+    ];
+
+    const MOCK_JE_RESULT = {
+      suggestions: [
+        {
+          transactionId: 'cltx0000000000000000001',
+          entryNumber: null,
+          date: '2026-02-25T00:00:00.000Z',
+          memo: 'AI-drafted: Starbucks Coffee — Meals & Entertainment',
+          sourceType: 'AI_SUGGESTION',
+          sourceId: 'cltx0000000000000000001',
+          status: 'DRAFT',
+          lines: [
+            { glAccountId: 'gl-exp', glAccountCode: '5800', debitAmount: 550, creditAmount: 0, memo: 'Expense' },
+            { glAccountId: 'gl-bank', glAccountCode: '1100', debitAmount: 0, creditAmount: 550, memo: 'Bank' },
+          ],
+          confidence: 92,
+          categorization: { confidenceTier: 'high' },
+        },
+      ],
+      skipped: [],
+      summary: {
+        total: 1,
+        suggested: 1,
+        skipped: 0,
+        highConfidence: 1,
+        mediumConfidence: 0,
+        lowConfidence: 0,
+      },
+    };
+
+    it('should return JE suggestions for eligible transactions', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce(MOCK_TXN_ROWS);
+      mockSuggestBatch.mockResolvedValueOnce(MOCK_JE_RESULT);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001'],
+          entityId: ENTITY_ID,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json();
+      expect(body.suggestions).toHaveLength(1);
+      expect(body.suggestions[0].sourceType).toBe('AI_SUGGESTION');
+      expect(body.suggestions[0].status).toBe('DRAFT');
+      expect(body.suggestions[0].lines).toHaveLength(2);
+      expect(body.summary.suggested).toBe(1);
+    });
+
+    it('should enforce entity tenant isolation (IDOR)', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce(null);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001'],
+          entityId: 'clent_other_tenant',
+        },
+      });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.json().error).toContain('Entity not found');
+    });
+
+    it('should only fetch un-booked transactions (journalEntryId null)', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce(MOCK_TXN_ROWS);
+      mockSuggestBatch.mockResolvedValueOnce(MOCK_JE_RESULT);
+
+      await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001'],
+          entityId: ENTITY_ID,
+        },
+      });
+
+      expect(mockTransactionFindMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            journalEntryId: null,
+            deletedAt: null,
+            account: { entity: { tenantId: 'tenant-abc-123' } },
+          }),
+        })
+      );
+    });
+
+    it('should return 404 when no eligible transactions found', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce([]);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx_no_match'],
+          entityId: ENTITY_ID,
+        },
+      });
+
+      expect(response.statusCode).toBe(404);
+      expect(response.json().error).toContain('No eligible transactions');
+    });
+
+    it('should return 500 on service error', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce(MOCK_TXN_ROWS);
+      mockSuggestBatch.mockRejectedValueOnce(new Error('Categorization engine down'));
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001'],
+          entityId: ENTITY_ID,
+        },
+      });
+
+      expect(response.statusCode).toBe(500);
+      expect(response.json().error).toBe('Categorization engine down');
+    });
+  });
+
+  // -----------------------------------------------------------------------
+  // POST /api/ai/je-suggest/create — Create draft JEs
+  // -----------------------------------------------------------------------
+
+  describe('POST /api/ai/je-suggest/create', () => {
+    const ENTITY_ID = 'clent00000000000000001';
+
+    const MOCK_TXN_ROWS = [
+      {
+        id: 'cltx0000000000000000001',
+        description: 'Coffee',
+        amount: -550,
+        currency: 'USD',
+        date: new Date('2026-02-25'),
+        sourceType: 'BANK_FEED',
+        accountId: 'clacct000000000000001',
+      },
+    ];
+
+    const highConfSuggestion = {
+      transactionId: 'cltx0000000000000000001',
+      confidence: 92,
+      categorization: { confidenceTier: 'high' },
+    };
+
+    const lowConfSuggestion = {
+      transactionId: 'cltx0000000000000000002',
+      confidence: 40,
+      categorization: { confidenceTier: 'low' },
+    };
+
+    it('should create draft JEs and return results', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce(MOCK_TXN_ROWS);
+      mockSuggestBatch.mockResolvedValueOnce({
+        suggestions: [highConfSuggestion],
+        skipped: [],
+        summary: { total: 1, suggested: 1, skipped: 0, highConfidence: 1, mediumConfidence: 0, lowConfidence: 0 },
+      });
+      mockCreateDraftJEs.mockResolvedValueOnce([
+        { transactionId: 'cltx0000000000000000001', journalEntryId: 'je-created-001' },
+      ]);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest/create',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001'],
+          entityId: ENTITY_ID,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json();
+      expect(body.created).toHaveLength(1);
+      expect(body.created[0].journalEntryId).toBe('je-created-001');
+      expect(body.suggestResult).toBeDefined();
+    });
+
+    it('should filter by minConfidence when provided', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce([
+        ...MOCK_TXN_ROWS,
+        { ...MOCK_TXN_ROWS[0], id: 'cltx0000000000000000002' },
+      ]);
+      mockSuggestBatch.mockResolvedValueOnce({
+        suggestions: [highConfSuggestion, lowConfSuggestion],
+        skipped: [],
+        summary: { total: 2, suggested: 2, skipped: 0, highConfidence: 1, mediumConfidence: 0, lowConfidence: 1 },
+      });
+      mockCreateDraftJEs.mockResolvedValueOnce([
+        { transactionId: 'cltx0000000000000000001', journalEntryId: 'je-high-conf' },
+      ]);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest/create',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001', 'cltx0000000000000000002'],
+          entityId: ENTITY_ID,
+          minConfidence: 80,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      // Only high-confidence suggestion passed to createDraftJEs
+      expect(mockCreateDraftJEs).toHaveBeenCalledWith([highConfSuggestion]);
+    });
+
+    it('should return message when no suggestions meet minConfidence', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce(MOCK_TXN_ROWS);
+      mockSuggestBatch.mockResolvedValueOnce({
+        suggestions: [lowConfSuggestion],
+        skipped: [],
+        summary: { total: 1, suggested: 1, skipped: 0, highConfidence: 0, mediumConfidence: 0, lowConfidence: 1 },
+      });
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest/create',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001'],
+          entityId: ENTITY_ID,
+          minConfidence: 80,
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const body = response.json();
+      expect(body.created).toHaveLength(0);
+      expect(body.message).toContain('minimum confidence');
+      expect(mockCreateDraftJEs).not.toHaveBeenCalled();
+    });
+
+    it('should enforce entity tenant isolation', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce(null);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest/create',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx0000000000000000001'],
+          entityId: 'clent_wrong_tenant',
+        },
+      });
+
+      expect(response.statusCode).toBe(404);
+    });
+
+    it('should return 404 when no eligible transactions found', async () => {
+      mockEntityFindFirst.mockResolvedValueOnce({ id: ENTITY_ID });
+      mockTransactionFindMany.mockResolvedValueOnce([]);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/ai/je-suggest/create',
+        headers: { authorization: 'Bearer test-token' },
+        payload: {
+          transactionIds: ['cltx_no_match'],
+          entityId: ENTITY_ID,
+        },
+      });
+
+      expect(response.statusCode).toBe(404);
     });
   });
 

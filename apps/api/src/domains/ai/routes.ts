@@ -15,6 +15,13 @@ import {
   type CategorizeSingleInput,
   type CategorizeBatchInput,
 } from './schemas/categorization.schema';
+import {
+  JESuggestSchema,
+  JECreateFromSuggestionsSchema,
+  type JESuggestInput,
+  type JECreateFromSuggestionsInput,
+} from './schemas/je-suggestion.schema';
+import { JESuggestionService, type JESuggestionInput } from './services/je-suggestion.service';
 
 /**
  * AI Domain Routes
@@ -173,6 +180,202 @@ export async function aiRoutes(fastify: FastifyInstance) {
       };
     }
   );
+
+  // -----------------------------------------------------------------------
+  // JE Suggestion Endpoints
+  // -----------------------------------------------------------------------
+
+  /**
+   * POST /api/ai/je-suggest
+   *
+   * Preview AI-generated journal entry suggestions for a batch of transactions.
+   * Does NOT persist anything — returns suggestions for user review.
+   */
+  fastify.post(
+    '/je-suggest',
+    {
+      ...withPermission('ai', 'categorize', 'ACT'),
+      preValidation: [validateBody(JESuggestSchema)],
+      config: { rateLimit: aiRateLimitConfig() },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { transactionIds, entityId } = request.body as JESuggestInput;
+      const tenantId = request.tenantId!;
+
+      // Validate entity ownership (IDOR prevention)
+      const entity = await prisma.entity.findFirst({
+        where: { id: entityId, tenantId },
+        select: { id: true },
+      });
+      if (!entity) {
+        return reply.status(404).send({ error: 'Entity not found or access denied' });
+      }
+
+      // Fetch transactions with tenant isolation
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          id: { in: transactionIds },
+          deletedAt: null,
+          journalEntryId: null, // Only suggest for un-booked transactions
+          account: { entity: { tenantId } },
+        },
+        select: {
+          id: true,
+          description: true,
+          amount: true,
+          currency: true,
+          date: true,
+          sourceType: true,
+          accountId: true,
+        },
+      });
+
+      if (transactions.length === 0) {
+        return reply.status(404).send({ error: 'No eligible transactions found' });
+      }
+
+      const service = new JESuggestionService(tenantId, entityId, request.userId!);
+      const inputs: JESuggestionInput[] = transactions.map((t) => ({
+        transactionId: t.id,
+        description: t.description,
+        amount: t.amount,
+        currency: t.currency,
+        date: t.date,
+        sourceType: t.sourceType,
+        accountId: t.accountId,
+      }));
+
+      try {
+        const result = await service.suggestBatch(inputs);
+
+        request.log.info(
+          {
+            entityId,
+            total: result.summary.total,
+            suggested: result.summary.suggested,
+            skipped: result.summary.skipped,
+          },
+          'Generated JE suggestions'
+        );
+
+        return result;
+      } catch (error: unknown) {
+        request.log.error({ error }, 'JE suggestion error');
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return reply.status(500).send({ error: message });
+      }
+    }
+  );
+
+  /**
+   * POST /api/ai/je-suggest/create
+   *
+   * Create actual DRAFT journal entries from AI suggestions.
+   * Re-runs suggestion pipeline, then persists approved suggestions.
+   * Optional minConfidence filter to only create high-confidence JEs.
+   */
+  fastify.post(
+    '/je-suggest/create',
+    {
+      ...withPermission('ai', 'categorize', 'ACT'),
+      preValidation: [validateBody(JECreateFromSuggestionsSchema)],
+      config: { rateLimit: aiRateLimitConfig() },
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { transactionIds, entityId, minConfidence } =
+        request.body as JECreateFromSuggestionsInput;
+      const tenantId = request.tenantId!;
+
+      // Validate entity ownership (IDOR prevention)
+      const entity = await prisma.entity.findFirst({
+        where: { id: entityId, tenantId },
+        select: { id: true },
+      });
+      if (!entity) {
+        return reply.status(404).send({ error: 'Entity not found or access denied' });
+      }
+
+      // Fetch transactions with tenant isolation (only un-booked)
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          id: { in: transactionIds },
+          deletedAt: null,
+          journalEntryId: null,
+          account: { entity: { tenantId } },
+        },
+        select: {
+          id: true,
+          description: true,
+          amount: true,
+          currency: true,
+          date: true,
+          sourceType: true,
+          accountId: true,
+        },
+      });
+
+      if (transactions.length === 0) {
+        return reply.status(404).send({ error: 'No eligible transactions found' });
+      }
+
+      const service = new JESuggestionService(tenantId, entityId, request.userId!);
+      const inputs: JESuggestionInput[] = transactions.map((t) => ({
+        transactionId: t.id,
+        description: t.description,
+        amount: t.amount,
+        currency: t.currency,
+        date: t.date,
+        sourceType: t.sourceType,
+        accountId: t.accountId,
+      }));
+
+      try {
+        // Re-run suggestion pipeline
+        const suggestResult = await service.suggestBatch(inputs);
+
+        // Apply confidence filter if provided
+        const eligible = minConfidence
+          ? suggestResult.suggestions.filter((s) => s.confidence >= minConfidence)
+          : suggestResult.suggestions;
+
+        if (eligible.length === 0) {
+          return {
+            created: [],
+            suggestResult,
+            message: minConfidence
+              ? `No suggestions met the minimum confidence of ${minConfidence}`
+              : 'No eligible suggestions to create',
+          };
+        }
+
+        // Create draft JEs
+        const created = await service.createDraftJEs(eligible);
+
+        request.log.info(
+          {
+            entityId,
+            created: created.length,
+            suggested: suggestResult.summary.suggested,
+            minConfidence,
+          },
+          'Created draft JEs from AI suggestions'
+        );
+
+        return {
+          created,
+          suggestResult,
+        };
+      } catch (error: unknown) {
+        request.log.error({ error }, 'JE creation error');
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return reply.status(500).send({ error: message });
+      }
+    }
+  );
+
+  // -----------------------------------------------------------------------
+  // Placeholder Endpoints
+  // -----------------------------------------------------------------------
 
   /**
    * GET /api/ai/insights
