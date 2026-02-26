@@ -198,6 +198,104 @@ export interface AIActionBatchResult {
 }
 
 // ============================================================================
+// Rule Types (matches backend rule.service.ts)
+// ============================================================================
+
+export type RuleSource = 'USER_MANUAL' | 'AI_SUGGESTED' | 'PATTERN_DETECTED' | 'CORRECTION_LEARNED';
+
+export interface RuleCondition {
+  field: 'description' | 'amount' | 'accountId';
+  op: 'contains' | 'eq' | 'gt' | 'gte' | 'lt' | 'lte';
+  value: string | number;
+}
+
+export interface RuleConditions {
+  operator: 'AND' | 'OR';
+  conditions: RuleCondition[];
+}
+
+export interface RuleAction {
+  setCategoryId?: string;
+  setGLAccountId?: string;
+  flagForReview?: boolean;
+}
+
+export interface AIRule {
+  id: string;
+  entityId: string;
+  name: string;
+  conditions: RuleConditions;
+  action: RuleAction;
+  isActive: boolean;
+  source: RuleSource;
+  executionCount: number;
+  successRate: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RuleListResponse {
+  rules: AIRule[];
+  nextCursor: string | null;
+}
+
+export interface RuleStats {
+  total: number;
+  active: number;
+  inactive: number;
+  topRules: Array<{
+    id: string;
+    name: string;
+    executionCount: number;
+    successRate: number;
+  }>;
+}
+
+// ============================================================================
+// Rule Suggestion Types (matches backend rule-suggestion.service.ts)
+// ============================================================================
+
+export type RuleSuggestionStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'EXPIRED';
+
+export interface RuleSuggestion {
+  id: string;
+  entityId: string;
+  triggeredBy: string;
+  suggestedRule: {
+    name: string;
+    conditions: RuleConditions;
+    action: RuleAction;
+    patternSummary: string;
+    exampleTransactions: Array<{ id: string; description: string; amount: number }>;
+    estimatedImpact: number;
+  };
+  aiReasoning: string;
+  aiConfidence: number;
+  aiModelVersion: string;
+  status: RuleSuggestionStatus;
+  createdAt: string;
+  reviewedAt: string | null;
+  reviewedBy: string | null;
+}
+
+export interface RuleSuggestionListResponse {
+  suggestions: RuleSuggestion[];
+  nextCursor: string | undefined;
+  hasMore: boolean;
+}
+
+export interface DetectedPattern {
+  keyword: string;
+  categoryId: string;
+  categoryName: string;
+  transactionCount: number;
+  patternStrength: number;
+  exampleTransactions: Array<{ id: string; description: string; amount: number }>;
+  suggestedConditions: RuleConditions;
+  suggestedAction: RuleAction;
+}
+
+// ============================================================================
 // Request/Response Interfaces
 // ============================================================================
 
@@ -480,5 +578,196 @@ export async function batchRejectAIActions(
   return apiClient<AIActionBatchResult>('/api/ai/actions/batch/reject', {
     method: 'POST',
     body: JSON.stringify({ entityId, actionIds }),
+  });
+}
+
+// ============================================================================
+// Rule API Functions
+// ============================================================================
+
+/**
+ * List rules with optional filters and cursor pagination.
+ *
+ * GET /api/ai/rules
+ */
+export async function listRules(params: {
+  entityId: string;
+  isActive?: boolean;
+  source?: RuleSource;
+  search?: string;
+  take?: number;
+  cursor?: string;
+}): Promise<RuleListResponse> {
+  const sp = new URLSearchParams({ entityId: params.entityId });
+  if (params.isActive !== undefined) sp.set('isActive', String(params.isActive));
+  if (params.source) sp.set('source', params.source);
+  if (params.search) sp.set('search', params.search);
+  if (params.take) sp.set('take', String(params.take));
+  if (params.cursor) sp.set('cursor', params.cursor);
+
+  return apiClient<RuleListResponse>(`/api/ai/rules?${sp.toString()}`);
+}
+
+/**
+ * Get a single rule by ID.
+ *
+ * GET /api/ai/rules/:id
+ */
+export async function getRule(id: string): Promise<AIRule> {
+  return apiClient<AIRule>(`/api/ai/rules/${id}`);
+}
+
+/**
+ * Create a new rule.
+ *
+ * POST /api/ai/rules
+ */
+export async function createRule(data: {
+  entityId: string;
+  name: string;
+  conditions: RuleConditions;
+  action: RuleAction;
+  isActive?: boolean;
+}): Promise<AIRule> {
+  return apiClient<AIRule>('/api/ai/rules', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Update a rule.
+ *
+ * PATCH /api/ai/rules/:id
+ */
+export async function updateRule(
+  id: string,
+  data: {
+    name?: string;
+    conditions?: RuleConditions;
+    action?: RuleAction;
+    isActive?: boolean;
+  }
+): Promise<AIRule> {
+  return apiClient<AIRule>(`/api/ai/rules/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Delete a rule.
+ *
+ * DELETE /api/ai/rules/:id
+ */
+export async function deleteRule(id: string): Promise<void> {
+  await apiClient<void>(`/api/ai/rules/${id}`, { method: 'DELETE' });
+}
+
+/**
+ * Toggle a rule's active state.
+ *
+ * POST /api/ai/rules/:id/toggle
+ */
+export async function toggleRule(id: string): Promise<AIRule> {
+  return apiClient<AIRule>(`/api/ai/rules/${id}/toggle`, { method: 'POST' });
+}
+
+/**
+ * Get rule statistics.
+ *
+ * GET /api/ai/rules/stats
+ */
+export async function getRuleStats(entityId: string): Promise<RuleStats> {
+  return apiClient<RuleStats>(
+    `/api/ai/rules/stats?entityId=${encodeURIComponent(entityId)}`
+  );
+}
+
+// ============================================================================
+// Rule Suggestion API Functions
+// ============================================================================
+
+/**
+ * List rule suggestions with optional filters.
+ *
+ * GET /api/ai/suggestions
+ */
+export async function listRuleSuggestions(params: {
+  entityId: string;
+  status?: RuleSuggestionStatus;
+  cursor?: string;
+  limit?: number;
+}): Promise<RuleSuggestionListResponse> {
+  const sp = new URLSearchParams({ entityId: params.entityId });
+  if (params.status) sp.set('status', params.status);
+  if (params.cursor) sp.set('cursor', params.cursor);
+  if (params.limit) sp.set('limit', String(params.limit));
+
+  return apiClient<RuleSuggestionListResponse>(`/api/ai/suggestions?${sp.toString()}`);
+}
+
+/**
+ * Get a single rule suggestion.
+ *
+ * GET /api/ai/suggestions/:id
+ */
+export async function getRuleSuggestion(id: string): Promise<RuleSuggestion> {
+  return apiClient<RuleSuggestion>(`/api/ai/suggestions/${id}`);
+}
+
+/**
+ * Approve a rule suggestion (creates active Rule).
+ *
+ * POST /api/ai/suggestions/:id/approve
+ */
+export async function approveRuleSuggestion(
+  id: string
+): Promise<{ approved: true; ruleId: string }> {
+  return apiClient<{ approved: true; ruleId: string }>(
+    `/api/ai/suggestions/${id}/approve`,
+    { method: 'POST' }
+  );
+}
+
+/**
+ * Reject a rule suggestion.
+ *
+ * POST /api/ai/suggestions/:id/reject
+ */
+export async function rejectRuleSuggestion(
+  id: string,
+  reason?: string
+): Promise<void> {
+  await apiClient<void>(`/api/ai/suggestions/${id}/reject`, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
+}
+
+/**
+ * Detect patterns on-demand.
+ *
+ * GET /api/ai/suggestions/patterns
+ */
+export async function detectPatterns(
+  entityId: string
+): Promise<{ patterns: DetectedPattern[]; count: number }> {
+  return apiClient<{ patterns: DetectedPattern[]; count: number }>(
+    `/api/ai/suggestions/patterns?entityId=${encodeURIComponent(entityId)}`
+  );
+}
+
+/**
+ * Expire stale suggestions (older than 30 days).
+ *
+ * POST /api/ai/suggestions/expire
+ */
+export async function expireRuleSuggestions(
+  entityId: string
+): Promise<{ expiredCount: number }> {
+  return apiClient<{ expiredCount: number }>('/api/ai/suggestions/expire', {
+    method: 'POST',
+    body: JSON.stringify({ entityId }),
   });
 }

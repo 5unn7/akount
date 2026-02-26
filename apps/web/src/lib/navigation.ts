@@ -33,6 +33,7 @@ import {
   ScrollText,
   Shield,
   Settings,
+  Lightbulb,
   type LucideIcon,
 } from 'lucide-react';
 import type { Role } from '@akount/types';
@@ -291,6 +292,11 @@ export const navigationDomains: NavDomain[] = [
         label: 'Actions',
         icon: Workflow,
         href: '/insights/actions',
+      },
+      {
+        label: 'Rules',
+        icon: Lightbulb,
+        href: '/insights/rules',
       },
     ],
   },

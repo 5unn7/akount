@@ -383,6 +383,28 @@ export function ActionsListClient({
                                                 </p>
                                             )}
 
+                                            {/* Rich detail for RULE_SUGGESTION */}
+                                            {action.type === 'RULE_SUGGESTION' && action.payload && (() => {
+                                                const payload = action.payload as Record<string, unknown>;
+                                                const summary = typeof payload.patternSummary === 'string' ? payload.patternSummary : null;
+                                                const impact = typeof payload.estimatedImpact === 'number' ? payload.estimatedImpact : null;
+                                                if (!summary && impact === null) return null;
+                                                return (
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        {summary && (
+                                                            <span className="text-xs text-ak-purple/80 truncate max-w-[300px]">
+                                                                {summary}
+                                                            </span>
+                                                        )}
+                                                        {impact !== null && (
+                                                            <span className="text-xs font-mono text-ak-green">
+                                                                ~{impact} txns
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })()}
+
                                             <p className="text-xs text-muted-foreground mt-1">
                                                 {formatDistanceToNow(new Date(action.createdAt), { addSuffix: true })}
                                             </p>
