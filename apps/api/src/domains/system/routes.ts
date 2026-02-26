@@ -7,6 +7,7 @@ import { withPermission, adminOnly } from '../../middleware/withPermission';
 import { auditQueryService } from './services/audit-query.service';
 import { streamDataBackup } from './services/data-export.service';
 import { createAuditLog } from '../../lib/audit';
+import { getRetentionStats, purgeExpiredLogs } from '../../lib/audit-retention';
 import { onboardingRoutes } from './routes/onboarding';
 import { onboardingProgressRoutes } from './routes/onboarding-progress';
 import { entityRoutes } from './routes/entity';
@@ -271,6 +272,87 @@ export async function systemRoutes(fastify: FastifyInstance) {
           return reply.status(500).send({
             error: 'Internal Server Error',
             message: 'Failed to query audit log',
+          });
+        }
+      }
+    );
+
+    // ============================================================================
+    // AUDIT LOG RETENTION — SEC-14
+    // ============================================================================
+
+    /**
+     * GET /api/system/audit-log/retention
+     *
+     * Get retention policy stats for the current tenant.
+     * Shows total entries, expired entries, and retention period.
+     */
+    tenantScope.get(
+      '/audit-log/retention',
+      {
+        ...adminOnly,
+      },
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+          const stats = await getRetentionStats(request.tenantId as string);
+          request.log.info({ tenantId: request.tenantId }, 'Retrieved audit retention stats');
+          return stats;
+        } catch (error) {
+          request.log.error({ error }, 'Error fetching retention stats');
+          return reply.status(500).send({
+            error: 'Internal Server Error',
+            message: 'Failed to fetch retention statistics',
+          });
+        }
+      }
+    );
+
+    /**
+     * POST /api/system/audit-log/retention/purge
+     *
+     * Purge expired audit log entries. OWNER/ADMIN only.
+     * Deletes entries older than the tenant's retention period.
+     * Rate limited to 1 request per 10 minutes to prevent abuse.
+     */
+    tenantScope.post(
+      '/audit-log/retention/purge',
+      {
+        ...adminOnly,
+        config: {
+          rateLimit: {
+            max: 1,
+            timeWindow: '10 minutes',
+          },
+        },
+      },
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+          const result = await purgeExpiredLogs(request.tenantId as string);
+
+          await createAuditLog({
+            tenantId: request.tenantId as string,
+            userId: request.userId as string,
+            model: 'AuditLog',
+            recordId: 'retention-purge',
+            action: 'DELETE',
+            after: {
+              purgedCount: result.purgedCount,
+              cutoffDate: result.cutoffDate.toISOString(),
+              remainingCount: result.remainingCount,
+            },
+          });
+
+          request.log.info(
+            { tenantId: request.tenantId, purgedCount: result.purgedCount },
+            'Audit log retention purge completed',
+          );
+
+          return result;
+        } catch (error) {
+          request.log.error({ error }, 'Error purging audit logs');
+          return reply.status(500).send({
+            error: 'Internal Server Error',
+            message: 'Failed to purge expired audit logs',
           });
         }
       }

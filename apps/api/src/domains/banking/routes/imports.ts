@@ -4,6 +4,7 @@ import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { scanFile } from '../../../lib/file-scanner';
 import { createAuditLog } from '../../../lib/audit';
+import { checkUploadQuota, getMaxFileSize } from '../../../lib/upload-quota';
 import { z } from 'zod';
 
 /**
@@ -47,6 +48,17 @@ export async function importsRoutes(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
+        // SEC-12: Check upload quota before processing
+        const quota = await checkUploadQuota(request.tenantId as string);
+        if (!quota.allowed) {
+          request.log.warn({ tenantId: request.tenantId, usage: quota.usage }, 'Upload quota exceeded');
+          return reply.status(429).send({
+            error: 'Upload Quota Exceeded',
+            message: quota.reason,
+            usage: quota.usage,
+          });
+        }
+
         // Get file from multipart/form-data
         const data = await request.file();
 
@@ -107,8 +119,8 @@ export async function importsRoutes(fastify: FastifyInstance) {
         // Get file buffer
         const fileBuffer = await data.toBuffer();
 
-        // Validate file size (10MB max - already enforced by multipart config)
-        const maxSize = 10 * 1024 * 1024;
+        // SEC-12: Enforce plan-specific file size limit
+        const maxSize = await getMaxFileSize(request.tenantId as string);
         if (fileBuffer.length > maxSize) {
           return reply.status(413).send({
             error: 'Payload Too Large',
@@ -200,6 +212,17 @@ export async function importsRoutes(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
+        // SEC-12: Check upload quota before processing
+        const quota = await checkUploadQuota(request.tenantId as string);
+        if (!quota.allowed) {
+          request.log.warn({ tenantId: request.tenantId, usage: quota.usage }, 'Upload quota exceeded');
+          return reply.status(429).send({
+            error: 'Upload Quota Exceeded',
+            message: quota.reason,
+            usage: quota.usage,
+          });
+        }
+
         const data = await request.file();
 
         if (!data) {
@@ -245,7 +268,8 @@ export async function importsRoutes(fastify: FastifyInstance) {
         }
 
         const fileBuffer = await data.toBuffer();
-        const maxSize = 10 * 1024 * 1024;
+        // SEC-12: Enforce plan-specific file size limit
+        const maxSize = await getMaxFileSize(request.tenantId as string);
         if (fileBuffer.length > maxSize) {
           return reply.status(413).send({
             error: 'Payload Too Large',
@@ -319,6 +343,17 @@ export async function importsRoutes(fastify: FastifyInstance) {
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
+        // SEC-12: Check upload quota before processing
+        const quota = await checkUploadQuota(request.tenantId as string);
+        if (!quota.allowed) {
+          request.log.warn({ tenantId: request.tenantId, usage: quota.usage }, 'Upload quota exceeded');
+          return reply.status(429).send({
+            error: 'Upload Quota Exceeded',
+            message: quota.reason,
+            usage: quota.usage,
+          });
+        }
+
         // Get file from multipart/form-data
         const data = await request.file();
 
@@ -365,8 +400,8 @@ export async function importsRoutes(fastify: FastifyInstance) {
         // Get file buffer
         const fileBuffer = await data.toBuffer();
 
-        // Validate file size (10MB max)
-        const maxSize = 10 * 1024 * 1024;
+        // SEC-12: Enforce plan-specific file size limit
+        const maxSize = await getMaxFileSize(request.tenantId as string);
         if (fileBuffer.length > maxSize) {
           return reply.status(413).send({
             error: 'Payload Too Large',
