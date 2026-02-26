@@ -27,6 +27,7 @@ import { EmptyState } from '@akount/ui';
 import { PiggyBank, Plus, Pencil, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { BudgetForm } from './budget-form';
+import { ExportPlanningButton } from '../export-planning';
 
 const PERIOD_CONFIG: Record<BudgetPeriod, { label: string; className: string }> = {
     monthly: { label: 'Monthly', className: 'bg-ak-blue-dim text-ak-blue border-transparent' },
@@ -101,10 +102,13 @@ export function BudgetsList({ initialBudgets, initialNextCursor, initialVariance
                         Create budgets and track spending against targets
                     </p>
                 </div>
-                <Button onClick={handleCreate} className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium gap-2">
-                    <Plus className="h-4 w-4" />
-                    Create Budget
-                </Button>
+                <div className="flex items-center gap-2">
+                    <ExportPlanningButton type="budgets" data={budgets} />
+                    <Button onClick={handleCreate} className="rounded-lg bg-primary hover:bg-ak-pri-hover text-black font-medium gap-2">
+                        <Plus className="h-4 w-4" />
+                        Create Budget
+                    </Button>
+                </div>
             </div>
 
             {/* Budgets Table */}

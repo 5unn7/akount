@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { ForecastForm } from './forecast-form';
+import { ScenarioComparison } from './scenario-comparison';
 
 // ---------------------------------------------------------------------------
 // Type badge configs
@@ -352,6 +353,9 @@ export function ForecastsList({
                     </Table>
                 </div>
             )}
+
+            {/* Scenario Comparison */}
+            <ScenarioComparison forecasts={forecasts} entityId={entityId} />
 
             {/* Forecast Form Sheet */}
             <ForecastForm

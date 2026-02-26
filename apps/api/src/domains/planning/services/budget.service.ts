@@ -190,6 +190,77 @@ export class BudgetService {
     });
   }
 
+  /**
+   * Roll over an expired budget to the next period.
+   * Creates a new budget carrying unused amount forward.
+   */
+  async rolloverBudget(id: string, carryUnusedAmount: boolean = true) {
+    const existing = await prisma.budget.findFirst({
+      where: { id, deletedAt: null, entity: { tenantId: this.tenantId } },
+      include: {
+        category: { select: { id: true, name: true } },
+        glAccount: { select: { id: true, code: true, name: true } },
+      },
+    });
+    if (!existing) {
+      throw new Error('Budget not found or access denied');
+    }
+
+    // Calculate next period dates
+    const start = new Date(existing.startDate);
+    const end = new Date(existing.endDate);
+    const durationMs = end.getTime() - start.getTime();
+
+    const newStart = new Date(end);
+    newStart.setDate(newStart.getDate() + 1);
+    const newEnd = new Date(newStart.getTime() + durationMs);
+
+    // Calculate unused amount if carrying forward
+    let newAmount = existing.amount;
+    if (carryUnusedAmount) {
+      // Get actual spend from journal lines for this budget's period
+      const whereClause: Record<string, unknown> = {
+        journalEntry: {
+          entityId: existing.entityId,
+          entity: { tenantId: this.tenantId },
+          status: 'POSTED',
+          date: { gte: existing.startDate, lte: existing.endDate },
+        },
+        debitAmount: { gt: 0 },
+      };
+
+      if (existing.glAccountId) {
+        whereClause.glAccountId = existing.glAccountId;
+      }
+
+      const result = await prisma.journalLine.aggregate({
+        where: whereClause,
+        _sum: { debitAmount: true },
+      });
+
+      const actualSpend = result._sum.debitAmount ?? 0;
+      const unused = Math.max(0, existing.amount - actualSpend);
+      newAmount = existing.amount + unused; // Original budget + unused carry-forward
+    }
+
+    return prisma.budget.create({
+      data: {
+        entityId: existing.entityId,
+        name: `${existing.name} (Rollover)`,
+        categoryId: existing.categoryId,
+        glAccountId: existing.glAccountId,
+        amount: newAmount,
+        period: existing.period,
+        startDate: newStart,
+        endDate: newEnd,
+      },
+      include: {
+        category: { select: { id: true, name: true } },
+        glAccount: { select: { id: true, code: true, name: true } },
+      },
+    });
+  }
+
   async deleteBudget(id: string) {
     // Verify budget exists and belongs to tenant
     const existing = await prisma.budget.findFirst({

@@ -27,6 +27,7 @@ import { EmptyState } from '@akount/ui';
 import { Target, Plus, Pencil, Trash2 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { GoalForm } from './goal-form';
+import { ExportPlanningButton } from '../export-planning';
 import { GoalTrajectory } from './goal-trajectory';
 
 const GOAL_STATUS_CONFIG: Record<GoalStatus, { label: string; className: string }> = {

@@ -217,7 +217,7 @@ describe('Monthly Close Routes', () => {
     });
 
     it('should handle service errors', async () => {
-      const { AIError } = await import('../errors');
+      const { AIError } = await import('../errors.js');
       mocks.getCloseReadiness.mockRejectedValue(
         new AIError('Period not found', 'PERIOD_NOT_FOUND', 404),
       );
@@ -257,7 +257,7 @@ describe('Monthly Close Routes', () => {
     });
 
     it('should return error when not ready', async () => {
-      const { AIError } = await import('../errors');
+      const { AIError } = await import('../errors.js');
       mocks.executeClose.mockRejectedValue(
         new AIError('Cannot close — score is 85%', 'PERIOD_NOT_READY', 400, {
           score: 85,

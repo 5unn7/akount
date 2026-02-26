@@ -49,8 +49,15 @@ export const ForecastAnalyticsQuerySchema = z.object({
   lookbackMonths: z.coerce.number().int().min(3).max(36).optional(),
 });
 
+export const AIForecastQuerySchema = z.object({
+  entityId: z.string().cuid('Invalid entity ID'),
+  forecastMonths: z.coerce.number().int().min(1).max(24).optional(),
+  type: ForecastTypeEnum.optional(),
+});
+
 export type CreateForecastInput = z.infer<typeof CreateForecastSchema>;
 export type UpdateForecastInput = z.infer<typeof UpdateForecastSchema>;
 export type ListForecastsQuery = z.infer<typeof ListForecastsQuerySchema>;
 export type ForecastIdParam = z.infer<typeof ForecastIdParamSchema>;
 export type ForecastAnalyticsQuery = z.infer<typeof ForecastAnalyticsQuerySchema>;
+export type AIForecastQuery = z.infer<typeof AIForecastQuerySchema>;

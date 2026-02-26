@@ -40,8 +40,19 @@ export const BudgetVarianceQuerySchema = z.object({
   entityId: z.string().cuid('Invalid entity ID'),
 });
 
+export const BudgetRolloverBodySchema = z.object({
+  carryUnusedAmount: z.boolean().optional().default(true),
+});
+
+export const BudgetSuggestionsQuerySchema = z.object({
+  entityId: z.string().cuid('Invalid entity ID'),
+  lookbackMonths: z.coerce.number().int().min(3).max(12).optional(),
+});
+
 export type CreateBudgetInput = z.infer<typeof CreateBudgetSchema>;
 export type UpdateBudgetInput = z.infer<typeof UpdateBudgetSchema>;
 export type ListBudgetsQuery = z.infer<typeof ListBudgetsQuerySchema>;
 export type BudgetIdParam = z.infer<typeof BudgetIdParamSchema>;
 export type BudgetVarianceQuery = z.infer<typeof BudgetVarianceQuerySchema>;
+export type BudgetRolloverBody = z.infer<typeof BudgetRolloverBodySchema>;
+export type BudgetSuggestionsQuery = z.infer<typeof BudgetSuggestionsQuerySchema>;

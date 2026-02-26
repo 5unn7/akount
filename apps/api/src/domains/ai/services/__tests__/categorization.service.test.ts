@@ -6,7 +6,7 @@ import {
   CategorizationService,
   CATEGORY_TO_COA_CODE,
 } from '../categorization.service';
-import { mockPrisma, rewirePrismaMock } from '../../../../test-utils';
+import { mockPrisma, rewirePrismaMock } from '../../../../test-utils/index.js';
 
 // Mock logger
 vi.mock('../../../../lib/logger', () => ({

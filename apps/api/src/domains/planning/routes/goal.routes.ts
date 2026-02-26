@@ -3,6 +3,7 @@ import { withPermission } from '../../../middleware/withPermission';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { GoalService } from '../services/goal.service';
 import { GoalTrackingService } from '../services/goal-tracking.service';
+import { GoalTemplateService } from '../services/goal-templates';
 import {
   CreateGoalSchema,
   UpdateGoalSchema,
@@ -185,6 +186,27 @@ export async function goalRoutes(fastify: FastifyInstance) {
         'Tracked goal'
       );
       return reply.status(200).send(result);
+    }
+  );
+
+  // GET /goals/templates — List goal templates with calculated targets
+  fastify.get(
+    '/templates',
+    {
+      ...withPermission('planning', 'goals', 'VIEW'),
+      preValidation: [validateQuery(GoalTrackingQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const templateService = new GoalTemplateService(request.tenantId);
+      const query = request.query as GoalTrackingQuery;
+
+      const templates = await templateService.listTemplates(query.entityId);
+      request.log.info({ count: templates.length, entityId: query.entityId }, 'Listed goal templates');
+      return reply.status(200).send({ templates });
     }
   );
 

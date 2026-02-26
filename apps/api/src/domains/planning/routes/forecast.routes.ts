@@ -4,17 +4,20 @@ import { validateQuery, validateParams, validateBody } from '../../../middleware
 import { ForecastService } from '../services/forecast.service';
 import { CashRunwayService } from '../services/cash-runway.service';
 import { SeasonalPatternsService } from '../services/seasonal-patterns.service';
+import { AIForecastService } from '../services/ai-forecast.service';
 import {
   CreateForecastSchema,
   UpdateForecastSchema,
   ListForecastsQuerySchema,
   ForecastIdParamSchema,
   ForecastAnalyticsQuerySchema,
+  AIForecastQuerySchema,
   type CreateForecastInput,
   type UpdateForecastInput,
   type ListForecastsQuery,
   type ForecastIdParam,
   type ForecastAnalyticsQuery,
+  type AIForecastQuery,
 } from '../schemas/forecast.schema';
 
 /**
@@ -180,6 +183,40 @@ export async function forecastRoutes(fastify: FastifyInstance) {
       request.log.info(
         { entityId: query.entityId, monthsAnalyzed: result.monthsAnalyzed, seasonality: result.seasonalityScore },
         'Analyzed seasonal patterns'
+      );
+      return reply.status(200).send(result);
+    }
+  );
+
+  // GET /forecasts/ai-forecast — AI-enhanced statistical forecast
+  fastify.get(
+    '/ai-forecast',
+    {
+      ...withPermission('planning', 'forecasts', 'VIEW'),
+      preValidation: [validateQuery(AIForecastQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const aiService = new AIForecastService(request.tenantId);
+      const query = request.query as AIForecastQuery;
+
+      const result = await aiService.generateForecast(
+        query.entityId,
+        query.forecastMonths,
+        query.type as 'EXPENSE' | 'REVENUE' | 'CASH_FLOW' | undefined
+      );
+
+      request.log.info(
+        {
+          entityId: query.entityId,
+          type: query.type ?? 'EXPENSE',
+          projections: result.projections.length,
+          dataQuality: result.dataQuality,
+        },
+        'Generated AI forecast'
       );
       return reply.status(200).send(result);
     }

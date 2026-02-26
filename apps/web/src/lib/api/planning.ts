@@ -489,3 +489,113 @@ export async function getSeasonalPatterns(
     `/api/planning/forecasts/seasonal?${searchParams.toString()}`
   );
 }
+
+// ============================================================================
+// Types — AI Forecast
+// ============================================================================
+
+export interface ForecastProjection {
+  month: string;
+  amount: number;
+  confidence: number;
+  components: {
+    trend: number;
+    seasonal: number;
+    base: number;
+  };
+}
+
+export interface AIForecastResult {
+  projections: ForecastProjection[];
+  methodology: string;
+  dataQuality: 'high' | 'medium' | 'low';
+  monthsOfHistory: number;
+}
+
+// ============================================================================
+// Types — Budget Suggestions
+// ============================================================================
+
+export interface BudgetSuggestion {
+  categoryId: string | null;
+  glAccountId: string | null;
+  categoryName: string;
+  averageMonthlySpend: number;
+  suggestedAmount: number;
+  monthsAnalyzed: number;
+  minMonthly: number;
+  maxMonthly: number;
+}
+
+// ============================================================================
+// Types — Goal Templates
+// ============================================================================
+
+export interface GoalTemplate {
+  id: string;
+  name: string;
+  description: string;
+  type: GoalType;
+  suggestedTarget: number;
+  suggestedMonths: number;
+}
+
+// ============================================================================
+// API Functions — AI Forecast
+// ============================================================================
+
+export async function getAIForecast(
+  entityId: string,
+  forecastMonths?: number,
+  type?: ForecastType
+): Promise<AIForecastResult> {
+  const searchParams = new URLSearchParams({ entityId });
+  if (forecastMonths) searchParams.append('forecastMonths', String(forecastMonths));
+  if (type) searchParams.append('type', type);
+
+  return apiClient<AIForecastResult>(
+    `/api/planning/forecasts/ai-forecast?${searchParams.toString()}`
+  );
+}
+
+// ============================================================================
+// API Functions — Budget Suggestions
+// ============================================================================
+
+export async function getBudgetSuggestions(
+  entityId: string,
+  lookbackMonths?: number
+): Promise<{ suggestions: BudgetSuggestion[] }> {
+  const searchParams = new URLSearchParams({ entityId });
+  if (lookbackMonths) searchParams.append('lookbackMonths', String(lookbackMonths));
+
+  return apiClient<{ suggestions: BudgetSuggestion[] }>(
+    `/api/planning/budgets/suggestions?${searchParams.toString()}`
+  );
+}
+
+// ============================================================================
+// API Functions — Budget Rollover
+// ============================================================================
+
+export async function rolloverBudget(
+  budgetId: string,
+  carryUnusedAmount: boolean = true
+): Promise<Budget> {
+  return apiClient<Budget>(`/api/planning/budgets/${budgetId}/rollover`, {
+    method: 'POST',
+    body: JSON.stringify({ carryUnusedAmount }),
+  });
+}
+
+// ============================================================================
+// API Functions — Goal Templates
+// ============================================================================
+
+export async function listGoalTemplates(
+  entityId: string
+): Promise<{ templates: GoalTemplate[] }> {
+  return apiClient<{ templates: GoalTemplate[] }>(
+    `/api/planning/goals/templates?entityId=${entityId}`
+  );
+}

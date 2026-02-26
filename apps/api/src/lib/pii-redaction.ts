@@ -244,6 +244,8 @@ function redactEmails(text: string, log: RedactionLogEntry[]): string {
  *
  * CRITICAL: Must not redact invoice amounts or dates that happen to be 8+ digits.
  * Uses context heuristics to avoid false positives.
+ *
+ * Only redacts if there's explicit bank account context nearby.
  */
 function redactBankAccounts(text: string, log: RedactionLogEntry[]): string {
   // Match 8-17 digit sequences NOT preceded by currency symbols
@@ -251,18 +253,26 @@ function redactBankAccounts(text: string, log: RedactionLogEntry[]): string {
   const accountPattern = /(?<![£$€¥₹])\b\d{8,17}\b(?!\s*(USD|CAD|EUR|GBP))/g;
 
   return text.replace(accountPattern, (match, offset) => {
+    // Skip if already redacted (contains *)
+    if (match.includes('*')) return match;
+
     // Additional heuristic: skip if it looks like a date (YYYYMMDD)
     if (/^(19|20)\d{6}$/.test(match)) return match;
 
-    // Skip if it looks like an amount in cents (e.g., 100000 = $1,000.00)
-    // Amounts typically have currency context nearby
-    const contextBefore = text.slice(Math.max(0, offset - 20), offset);
-    const contextAfter = text.slice(offset + match.length, offset + match.length + 20);
-    const hasMoneyContext =
-      /(\$|USD|CAD|EUR|total|amount|price|cost)/i.test(contextBefore) ||
-      /(\$|USD|CAD|EUR|total|amount|price|cost)/i.test(contextAfter);
+    // Check context for bank account keywords
+    const contextBefore = text.slice(Math.max(0, offset - 30), offset);
+    const contextAfter = text.slice(offset + match.length, offset + match.length + 30);
+    const context = (contextBefore + contextAfter).toLowerCase();
 
-    if (hasMoneyContext) return match; // Likely an amount, not account number
+    // Skip if has money context (likely an amount in cents)
+    const hasMoneyContext = /(\$|usd|cad|eur|total|amount|price|cost|invoice|bill|payment)/i.test(
+      context
+    );
+    if (hasMoneyContext) return match;
+
+    // Skip if looks like random number without bank context
+    const hasBankContext = /(account|routing|ach|iban|swift|bank|transit)/i.test(context);
+    if (!hasBankContext) return match; // Conservative: only redact with explicit bank context
 
     const replacement = '****' + match.slice(-4);
 

@@ -339,7 +339,7 @@ describe('AI Action Routes', () => {
     });
 
     it('should return error for non-PENDING action', async () => {
-      const { AIError } = await import('../errors');
+      const { AIError } = await import('../errors.js');
       mockApproveAction.mockRejectedValue(
         new AIError('Cannot approve action in APPROVED status', 'ACTION_NOT_PENDING', 409)
       );
@@ -356,7 +356,7 @@ describe('AI Action Routes', () => {
     });
 
     it('should return 410 for expired action', async () => {
-      const { AIError } = await import('../errors');
+      const { AIError } = await import('../errors.js');
       mockApproveAction.mockRejectedValue(
         new AIError('Action has expired', 'ACTION_EXPIRED', 410)
       );

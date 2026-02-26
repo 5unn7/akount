@@ -143,7 +143,7 @@ export class ActionExecutorService {
     }
 
     try {
-      const { RuleSuggestionService } = await import('./rule-suggestion.service');
+      const { RuleSuggestionService } = await import('./rule-suggestion.service.js');
       const service = new RuleSuggestionService(this.tenantId, this.userId);
       const { ruleId } = await service.approveSuggestion(ruleSuggestionId);
 
@@ -451,7 +451,7 @@ export class ActionExecutorService {
     if (!payload.ruleSuggestionId) return;
 
     try {
-      const { RuleSuggestionService } = await import('./rule-suggestion.service');
+      const { RuleSuggestionService } = await import('./rule-suggestion.service.js');
       const service = new RuleSuggestionService(this.tenantId, this.userId);
       await service.rejectSuggestion(payload.ruleSuggestionId, 'Rejected via AI Action Feed');
 

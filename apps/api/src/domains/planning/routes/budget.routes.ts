@@ -3,17 +3,22 @@ import { withPermission } from '../../../middleware/withPermission';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
 import { BudgetService } from '../services/budget.service';
 import { BudgetVarianceService } from '../services/budget-variance.service';
+import { BudgetSuggestionService } from '../services/budget-suggestions.service';
 import {
   CreateBudgetSchema,
   UpdateBudgetSchema,
   ListBudgetsQuerySchema,
   BudgetIdParamSchema,
   BudgetVarianceQuerySchema,
+  BudgetRolloverBodySchema,
+  BudgetSuggestionsQuerySchema,
   type CreateBudgetInput,
   type UpdateBudgetInput,
   type ListBudgetsQuery,
   type BudgetIdParam,
   type BudgetVarianceQuery,
+  type BudgetRolloverBody,
+  type BudgetSuggestionsQuery,
 } from '../schemas/budget.schema';
 
 /**
@@ -163,6 +168,66 @@ export async function budgetRoutes(fastify: FastifyInstance) {
         }
         throw error;
       }
+    }
+  );
+
+  // POST /budgets/:id/rollover — Create a new budget from an expired one
+  fastify.post(
+    '/:id/rollover',
+    {
+      ...withPermission('planning', 'budgets', 'ACT'),
+      preValidation: [validateParams(BudgetIdParamSchema), validateBody(BudgetRolloverBodySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const service = new BudgetService(request.tenantId);
+      const params = request.params as BudgetIdParam;
+      const body = request.body as BudgetRolloverBody;
+
+      try {
+        const newBudget = await service.rolloverBudget(params.id, body.carryUnusedAmount);
+        request.log.info(
+          { originalBudgetId: params.id, newBudgetId: newBudget.id, carryUnused: body.carryUnusedAmount },
+          'Rolled over budget'
+        );
+        return reply.status(201).send(newBudget);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('not found or access denied')) {
+          return reply.status(404).send({ error: error.message });
+        }
+        throw error;
+      }
+    }
+  );
+
+  // GET /budgets/suggestions — AI-powered budget suggestions based on spending
+  fastify.get(
+    '/suggestions',
+    {
+      ...withPermission('planning', 'budgets', 'VIEW'),
+      preValidation: [validateQuery(BudgetSuggestionsQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const suggestionService = new BudgetSuggestionService(request.tenantId);
+      const query = request.query as BudgetSuggestionsQuery;
+
+      const suggestions = await suggestionService.getSuggestions(
+        query.entityId,
+        query.lookbackMonths
+      );
+
+      request.log.info(
+        { entityId: query.entityId, count: suggestions.length },
+        'Generated budget suggestions'
+      );
+      return reply.status(200).send({ suggestions });
     }
   );
 
