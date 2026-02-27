@@ -311,7 +311,7 @@ export interface TaxRate {
     entityId: string | null;
     code: string;
     name: string;
-    rate: number; // 0-1 decimal (0.13 = 13%)
+    rateBasisPoints: number; // FIN-32: basis points (500 = 5%, 1300 = 13%)
     jurisdiction: string;
     isInclusive: boolean;
     glAccountId: string | null;
@@ -331,7 +331,7 @@ export interface CreateTaxRateInput {
     entityId?: string;
     code: string;
     name: string;
-    rate: number;
+    rateBasisPoints: number; // FIN-32: basis points (500 = 5%)
     jurisdiction: string;
     isInclusive?: boolean;
     glAccountId?: string;
@@ -341,7 +341,7 @@ export interface CreateTaxRateInput {
 
 export interface UpdateTaxRateInput {
     name?: string;
-    rate?: number;
+    rateBasisPoints?: number; // FIN-32: basis points
     jurisdiction?: string;
     isInclusive?: boolean;
     glAccountId?: string | null;

@@ -67,7 +67,7 @@ const MOCK_TAX_RATE = {
   entityId: 'entity-1',
   code: 'GST-5',
   name: 'GST 5%',
-  rate: 0.05,
+  rateBasisPoints: 500, // FIN-32: 5% in basis points
   jurisdiction: 'Canada - Federal',
   isInclusive: false,
   glAccountId: null,
@@ -176,7 +176,7 @@ describe('TaxRate Routes', () => {
         payload: {
           code: 'GST-5',
           name: 'GST 5%',
-          rate: 0.05,
+          rateBasisPoints: 500,
           jurisdiction: 'Canada - Federal',
           effectiveFrom: '2024-01-01T00:00:00.000Z',
         },
@@ -198,7 +198,7 @@ describe('TaxRate Routes', () => {
         payload: {
           code: 'GST-5',
           name: 'GST 5%',
-          rate: 0.05,
+          rateBasisPoints: 500,
           jurisdiction: 'Canada - Federal',
           effectiveFrom: '2024-01-01T00:00:00.000Z',
         },
@@ -220,7 +220,7 @@ describe('TaxRate Routes', () => {
         payload: {
           code: 'HST-13',
           name: 'HST 13%',
-          rate: 0.13,
+          rateBasisPoints: 1300,
           jurisdiction: 'Ontario',
           effectiveFrom: '2025-01-01T00:00:00.000Z',
           effectiveTo: '2024-01-01T00:00:00.000Z',
@@ -244,7 +244,7 @@ describe('TaxRate Routes', () => {
           entityId: 'wrong-entity',
           code: 'PST-7',
           name: 'PST 7%',
-          rate: 0.07,
+          rateBasisPoints: 700,
           jurisdiction: 'BC',
           effectiveFrom: '2024-01-01T00:00:00.000Z',
         },

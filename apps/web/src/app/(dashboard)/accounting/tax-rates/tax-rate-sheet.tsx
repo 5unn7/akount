@@ -70,7 +70,7 @@ export function TaxRateSheet({
         if (open && editingRate) {
             setCode(editingRate.code);
             setName(editingRate.name);
-            setRatePercent(String(editingRate.rate * 100));
+            setRatePercent(String(editingRate.rateBasisPoints / 100)); // FIN-32: Convert basis points to percentage
             setJurisdiction(editingRate.jurisdiction);
             setIsInclusive(editingRate.isInclusive);
             setEffectiveFrom(editingRate.effectiveFrom.split('T')[0]);
@@ -89,12 +89,12 @@ export function TaxRateSheet({
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
 
-        const rateDecimal = parseFloat(ratePercent) / 100;
+        const rateBasisPoints = Math.round(parseFloat(ratePercent) * 100); // FIN-32: Convert percentage to basis points
 
         if (isEdit) {
             const data: UpdateTaxRateInput = {
                 name,
-                rate: rateDecimal,
+                rateBasisPoints,
                 jurisdiction,
                 isInclusive,
                 effectiveFrom: new Date(effectiveFrom).toISOString(),
@@ -105,7 +105,7 @@ export function TaxRateSheet({
             const data: CreateTaxRateInput = {
                 code: code.toUpperCase(),
                 name,
-                rate: rateDecimal,
+                rateBasisPoints,
                 jurisdiction,
                 isInclusive,
                 effectiveFrom: new Date(effectiveFrom).toISOString(),

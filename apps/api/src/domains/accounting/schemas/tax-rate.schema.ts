@@ -21,10 +21,11 @@ export const CreateTaxRateSchema = z.object({
         .max(20, 'Code must be 20 characters or less')
         .regex(/^[A-Z0-9-]+$/, 'Code must contain only uppercase letters, numbers, and hyphens'),
     name: z.string().min(1, 'Name is required').max(255),
-    rate: z
+    rateBasisPoints: z
         .number()
+        .int('Rate must be an integer (basis points)')
         .min(0, 'Rate must be non-negative')
-        .max(1, 'Rate must be 1 (100%) or less'),
+        .max(10000, 'Rate must be 10000 (100%) or less'),
     jurisdiction: z.string().min(1, 'Jurisdiction is required').max(100),
     isInclusive: z.boolean().default(false),
     glAccountId: z.string().cuid('Invalid GL account ID').optional(),
@@ -39,7 +40,7 @@ export type CreateTaxRateInput = z.infer<typeof CreateTaxRateSchema>;
 
 export const UpdateTaxRateSchema = z.object({
     name: z.string().min(1).max(255).optional(),
-    rate: z.number().min(0).max(1).optional(),
+    rateBasisPoints: z.number().int().min(0).max(10000).optional(),
     jurisdiction: z.string().min(1).max(100).optional(),
     isInclusive: z.boolean().optional(),
     glAccountId: z.string().cuid('Invalid GL account ID').nullable().optional(),

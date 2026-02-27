@@ -211,7 +211,7 @@ export function LineItemBuilder({
                 <SelectItem value={NO_TAX_VALUE}>No tax</SelectItem>
                 {taxRates.map((rate) => (
                   <SelectItem key={rate.id} value={rate.id}>
-                    {rate.code} ({(rate.rate * 100).toFixed(rate.rate * 100 % 1 === 0 ? 0 : 1)}%)
+                    {rate.code} ({(rate.rateBasisPoints / 100).toFixed(rate.rateBasisPoints % 100 === 0 ? 0 : 1)}%)
                   </SelectItem>
                 ))}
               </SelectContent>

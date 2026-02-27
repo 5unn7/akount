@@ -48,7 +48,7 @@ function mockTaxRate(overrides: Record<string, unknown> = {}) {
         entityId: ENTITY_ID,
         code: 'HST-ON',
         name: 'Harmonized Sales Tax (Ontario)',
-        rate: 0.13,
+        rateBasisPoints: 1300, // FIN-32: 13% in basis points
         jurisdiction: 'Ontario',
         isInclusive: false,
         glAccountId: null,
@@ -189,7 +189,7 @@ describe('TaxRateService', () => {
             entityId: ENTITY_ID,
             code: 'GST',
             name: 'Goods & Services Tax',
-            rate: 0.05,
+            rateBasisPoints: 500, // FIN-32: 5% in basis points
             jurisdiction: 'Federal',
             isInclusive: false,
             effectiveFrom: '2024-01-01T00:00:00.000Z',
@@ -199,7 +199,7 @@ describe('TaxRateService', () => {
             const created = mockTaxRate({
                 code: 'GST',
                 name: 'Goods & Services Tax',
-                rate: 0.05,
+                rateBasisPoints: 500,
                 jurisdiction: 'Federal',
             });
             mockCreate.mockResolvedValue(created);
@@ -212,7 +212,7 @@ describe('TaxRateService', () => {
                     data: expect.objectContaining({
                         code: 'GST',
                         name: 'Goods & Services Tax',
-                        rate: 0.05,
+                        rateBasisPoints: 500,
                         jurisdiction: 'Federal',
                         isActive: true,
                     }),
@@ -284,12 +284,12 @@ describe('TaxRateService', () => {
             const existing = mockTaxRate();
             mockFindFirst.mockResolvedValue(existing);
 
-            const updated = mockTaxRate({ name: 'Updated HST', rate: 0.15 });
+            const updated = mockTaxRate({ name: 'Updated HST', rateBasisPoints: 1500 });
             mockUpdate.mockResolvedValue(updated);
 
             const result = await service.updateTaxRate('tax-rate-1', {
                 name: 'Updated HST',
-                rate: 0.15,
+                rateBasisPoints: 1500,
             });
 
             expect(result).toEqual(updated);
@@ -298,7 +298,7 @@ describe('TaxRateService', () => {
                     where: { id: 'tax-rate-1' },
                     data: expect.objectContaining({
                         name: 'Updated HST',
-                        rate: 0.15,
+                        rateBasisPoints: 1500,
                     }),
                 })
             );
@@ -430,7 +430,7 @@ describe('TaxRateService', () => {
                     entityId: 'foreign-entity',
                     code: 'GST',
                     name: 'GST',
-                    rate: 0.05,
+                    rateBasisPoints: 500,
                     jurisdiction: 'Federal',
                     isInclusive: false,
                     effectiveFrom: '2024-01-01T00:00:00.000Z',

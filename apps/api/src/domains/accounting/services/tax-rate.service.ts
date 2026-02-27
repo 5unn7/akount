@@ -14,7 +14,7 @@ const TAX_RATE_SELECT = {
     entityId: true,
     code: true,
     name: true,
-    rate: true,
+    rateBasisPoints: true, // FIN-32: basis points (500 = 5%)
     jurisdiction: true,
     isInclusive: true,
     glAccountId: true,
@@ -140,7 +140,8 @@ export class TaxRateService {
                     entityId: data.entityId,
                     code: data.code,
                     name: data.name,
-                    rate: data.rate,
+                    rateBasisPoints: data.rateBasisPoints,
+                    rate: data.rateBasisPoints / 10000, // FIN-32: Dual-write during migration (temporary)
                     jurisdiction: data.jurisdiction,
                     isInclusive: data.isInclusive,
                     glAccountId: data.glAccountId,
@@ -158,7 +159,7 @@ export class TaxRateService {
                 model: 'TaxRate',
                 recordId: taxRate.id,
                 action: 'CREATE',
-                after: { code: data.code, name: data.name, rate: data.rate },
+                after: { code: data.code, name: data.name, rateBasisPoints: data.rateBasisPoints },
             });
 
             return taxRate;
@@ -193,7 +194,7 @@ export class TaxRateService {
                 entityId: true,
                 code: true,
                 name: true,
-                rate: true,
+                rateBasisPoints: true,
                 isActive: true,
                 effectiveFrom: true,
                 effectiveTo: true,
@@ -226,7 +227,8 @@ export class TaxRateService {
             where: { id },
             data: {
                 name: data.name,
-                rate: data.rate,
+                rateBasisPoints: data.rateBasisPoints,
+                rate: data.rateBasisPoints ? data.rateBasisPoints / 10000 : undefined, // FIN-32: Dual-write (temporary)
                 jurisdiction: data.jurisdiction,
                 isInclusive: data.isInclusive,
                 glAccountId: data.glAccountId,
@@ -244,10 +246,10 @@ export class TaxRateService {
             model: 'TaxRate',
             recordId: id,
             action: 'UPDATE',
-            before: { name: existing.name, rate: existing.rate, isActive: existing.isActive },
+            before: { name: existing.name, rateBasisPoints: existing.rateBasisPoints, isActive: existing.isActive },
             after: {
                 ...(data.name !== undefined && { name: data.name }),
-                ...(data.rate !== undefined && { rate: data.rate }),
+                ...(data.rateBasisPoints !== undefined && { rateBasisPoints: data.rateBasisPoints }),
                 ...(data.isActive !== undefined && { isActive: data.isActive }),
             },
         });

@@ -18,7 +18,7 @@ interface TaxRatesEmptyProps {
 interface PresetRate {
     code: string;
     name: string;
-    rate: number;
+    rateBasisPoints: number; // FIN-32: basis points (500 = 5%)
     jurisdiction: string;
 }
 
@@ -35,42 +35,42 @@ const CANADIAN_PRESETS: PresetGroup = {
         {
             code: 'GST',
             name: 'Goods and Services Tax',
-            rate: 0.05,
+            rateBasisPoints: 500, // FIN-32
             jurisdiction: 'Federal (Canada)',
 
         },
         {
             code: 'HST-ON',
             name: 'Harmonized Sales Tax (Ontario)',
-            rate: 0.13,
+            rateBasisPoints: 1300,
             jurisdiction: 'Ontario',
 
         },
         {
             code: 'HST-NS',
             name: 'Harmonized Sales Tax (Nova Scotia)',
-            rate: 0.15,
+            rateBasisPoints: 1500,
             jurisdiction: 'Nova Scotia',
 
         },
         {
             code: 'HST-NB',
             name: 'Harmonized Sales Tax (New Brunswick)',
-            rate: 0.15,
+            rateBasisPoints: 1500,
             jurisdiction: 'New Brunswick',
 
         },
         {
             code: 'HST-NL',
             name: 'Harmonized Sales Tax (NL)',
-            rate: 0.15,
+            rateBasisPoints: 1500,
             jurisdiction: 'Newfoundland and Labrador',
 
         },
         {
             code: 'HST-PE',
             name: 'Harmonized Sales Tax (PEI)',
-            rate: 0.15,
+            rateBasisPoints: 1500,
             jurisdiction: 'Prince Edward Island',
 
         },
@@ -112,21 +112,21 @@ const US_PRESETS: PresetGroup = {
         {
             code: 'TX-CA',
             name: 'California Sales Tax',
-            rate: 0.0725,
+            rateBasisPoints: 725,
             jurisdiction: 'United States - Federal',
 
         },
         {
             code: 'TX-NY',
             name: 'New York Sales Tax',
-            rate: 0.08,
+            rateBasisPoints: 800,
             jurisdiction: 'United States - Federal',
 
         },
         {
             code: 'TX-TX',
             name: 'Texas Sales Tax',
-            rate: 0.0625,
+            rateBasisPoints: 625,
             jurisdiction: 'United States - Federal',
 
         },
@@ -269,8 +269,8 @@ export function TaxRatesEmpty({ entityId }: TaxRatesEmptyProps) {
                                                 variant="outline"
                                                 className="ml-2 shrink-0 font-mono text-xs text-ak-green border-ak-green/20"
                                             >
-                                                {(preset.rate * 100).toFixed(
-                                                    preset.rate * 100 % 1 === 0 ? 0 : 3
+                                                {(preset.rateBasisPoints / 100).toFixed(
+                                                    preset.rateBasisPoints % 100 === 0 ? 0 : 2
                                                 )}%
                                             </Badge>
                                         </button>

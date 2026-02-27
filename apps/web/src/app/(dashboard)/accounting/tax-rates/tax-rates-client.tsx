@@ -262,7 +262,7 @@ interface TaxRateCardProps {
 }
 
 function TaxRateCard({ rate, onEdit, onDeactivate }: TaxRateCardProps) {
-    const ratePercent = (rate.rate * 100).toFixed(rate.rate * 100 % 1 === 0 ? 0 : 3);
+    const ratePercent = (rate.rateBasisPoints / 100).toFixed(rate.rateBasisPoints % 100 === 0 ? 0 : 2); // FIN-32
 
     return (
         <div className="glass rounded-xl p-4 transition-all hover:border-ak-border-2 hover:-translate-y-px group">
@@ -301,7 +301,7 @@ function TaxRateCard({ rate, onEdit, onDeactivate }: TaxRateCardProps) {
             <div className="mt-3 h-1.5 rounded-full bg-ak-bg-3 overflow-hidden">
                 <div
                     className="h-full rounded-full bg-ak-green transition-all"
-                    style={{ width: `${Math.min(rate.rate * 100 * 4, 100)}%` }}
+                    style={{ width: `${Math.min(rate.rateBasisPoints / 25, 100)}%` }}
                 />
             </div>
 
