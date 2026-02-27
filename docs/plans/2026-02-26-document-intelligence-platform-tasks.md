@@ -12,7 +12,7 @@
 
 | Phase | Scope | Tasks | Done | Status |
 |-------|-------|-------|------|--------|
-| **1** | Foundation (A + B core + E basics) | 22 | 7 | In progress (32%) |
+| **1** | Foundation (A + B core + E basics) | 22 | 9 | In progress (41%) |
 | **2** | Expand + Smart (B UIs + C1-C4) | 8 | 0 | Not started |
 | **3** | Compliance + Narration (C5-C9 + E6-E9) | 8 | 0 | Not started |
 | **4** | Matching + Learning (D + F) | 9 | 0 | Not started |
@@ -33,8 +33,8 @@
 | DEV-231 | A2 | Mistral vision integration (`extractFromImage` + Zod) | 2-4h | Critical | ✅ Done | DEV-230 | plan:doc-intel |
 | SEC-29 | A3 | PII redaction service (`lib/pii-redaction.ts`) | 4-6h | Critical | ✅ Done | — | plan:doc-intel |
 | SEC-30 | A4 | Prompt injection defense (`lib/prompt-defense.ts`) | 3-4h | Critical | ✅ Done | DEV-230 | plan:doc-intel |
-| DEV-232 | A5 | AIDecisionLog schema + service (Prisma + audit trail) | 3-4h | Critical | Ready | — | plan:doc-intel |
-| INFRA-61 | A6 | Redis + BullMQ queue infrastructure (5 queues, TLS, DLQ) | 4-6h | Critical | Ready | — | plan:doc-intel |
+| DEV-232 | A5 | AIDecisionLog schema + service (Prisma + audit trail) | 3-4h | Critical | ✅ Done | — | plan:doc-intel |
+| INFRA-61 | A6 | Redis + BullMQ queue infrastructure (5 queues, TLS, DLQ) | 4-6h | Critical | ✅ Done | — | plan:doc-intel |
 | DEV-233 | A7 | SSE real-time job updates (`/api/ai/jobs/:jobId/stream`) | 2-3h | High | Ready | INFRA-61 | plan:doc-intel |
 | SEC-31 | A8 | File scanner extension (JPEG, PNG, HEIC, EXIF strip) | 2-3h | High | Ready | — | plan:doc-intel |
 | DEV-234 | A9 | SSE client hook (`useJobStream` React hook) | 2-3h | High | Ready | DEV-233 | plan:doc-intel |

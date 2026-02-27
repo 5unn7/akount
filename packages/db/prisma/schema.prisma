@@ -40,6 +40,7 @@ model Tenant {
   memberships           TenantUser[]
   categories            Category[]
   onboardingProgress    OnboardingProgress?
+  aiDecisionLogs        AIDecisionLog[]
 }
 
 model TenantUser {
@@ -122,6 +123,7 @@ model Entity {
   taxRates           TaxRate[]
   vendors            Vendor[]
   aiActions          AIAction[]
+  aiDecisionLogs     AIDecisionLog[]
 
   @@index([tenantId])
   @@index([tenantId, type])
@@ -1282,4 +1284,58 @@ enum AIActionPriority {
   MEDIUM
   HIGH
   CRITICAL
+}
+
+// ---------------------------------------------------------------------------
+// AI Decision Log (Audit Trail for AI Decisions)
+// ---------------------------------------------------------------------------
+
+/// AI Decision Log
+///
+/// Comprehensive audit trail for all AI-powered decisions in the platform.
+/// Used for compliance (GDPR, PIPEDA, EU AI Act), debugging, and model performance tracking.
+///
+/// **Tenant Isolation:** Every entry MUST have tenantId
+/// **Retention:** Follows audit retention policies (90 days for logs, documents per plan tier)
+model AIDecisionLog {
+  id                String              @id @default(cuid())
+  tenantId          String
+  entityId          String?             // Business entity (null for tenant-level decisions)
+  documentId        String?             // Source document ID (Bill, Invoice, Transaction, etc.)
+  decisionType      AIDecisionType
+  inputHash         String              // SHA256 hash of input (for duplicate detection, PII-safe)
+  modelVersion      String              // e.g. "pixtral-large-latest", "mistral-large-latest"
+  confidence        Int?                // Overall confidence 0-100 (null if not applicable)
+  extractedData     Json?               // Structured data extracted by AI (vendor, amount, etc.)
+  routingResult     AIRoutingResult     // Where was the decision routed (auto-create, review, manual)
+  aiExplanation     String?             // Human-readable explanation of the decision
+  consentStatus     String?             // Consent status at time of decision (from AIConsent)
+  processingTimeMs  Int?                // Processing time in milliseconds
+  createdAt         DateTime            @default(now())
+  tenant            Tenant              @relation(fields: [tenantId], references: [id])
+  entity            Entity?             @relation(fields: [entityId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, decisionType, createdAt])
+  @@index([tenantId, routingResult])
+  @@index([inputHash]) // For duplicate detection
+  @@index([documentId]) // For linking to source documents
+}
+
+enum AIDecisionType {
+  BILL_EXTRACTION       // Extracted bill data from receipt
+  INVOICE_EXTRACTION    // Extracted invoice data
+  STATEMENT_EXTRACTION  // Extracted transactions from bank statement
+  CATEGORIZATION        // Transaction categorization
+  MATCHING              // Bill/Invoice matched to transaction
+  ANOMALY_DETECTION     // Financial anomaly detected
+  NL_BOOKKEEPING        // Natural language transaction creation
+  NL_SEARCH             // Natural language search query
+}
+
+enum AIRoutingResult {
+  AUTO_CREATED          // High confidence, auto-created record
+  QUEUED_FOR_REVIEW     // Medium confidence, needs review
+  MANUAL_ENTRY          // Low confidence, manual entry with hints
+  REJECTED              // Failed validation or security checks
 }
