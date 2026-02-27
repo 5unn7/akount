@@ -1,6 +1,6 @@
 # Active Work Tracker
 
-**Last Updated:** 2026-02-27 00:10
+**Last Updated:** 2026-02-27 03:37
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Agent ID | Started | Task | Status | Branch |
 |----------|---------|------|--------|--------|
-| agent-fin32-migration | 2026-02-27 00:10 | FIN-32: Migrate TaxRate.rate from Float to Int (basis points: 500 = 5%) | in_progress | main |
+| agent-fin32-migration | 2026-02-27 00:10 | FIN-32: Migrate TaxRate.rate from Float to Int (basis points: 500 = 5%) - Phase 1 | completed | main |
 | agent-sec40-csrf | 2026-02-26 22:45 | SEC-40: Implement CSRF protection for state-changing endpoints | completed | main |
 | agent-widgets-c24 | 2026-02-24 15:51 | DEV-179: Overview Widgets — Add client-side API functions for P&L, Trial Balance, and Revenue reports | completed | main |
 | agent-flinks-244 | 2026-02-24 15:48 | INFRA-59: Flinks API production readiness — verify env vars, test demo mode, create deployment checklist | completed | main |
@@ -36,7 +36,7 @@
 
 | Task ID | Type | Reserved By | Reserved Until |
 |---------|------|-------------|----------------|
-| FIN-32 | financial | agent-fin32-migration | 2026-02-27 04:10 |
+| ~~FIN-32~~ | ~~financial~~ | ~~agent-fin32-migration~~ | ~~Phase 1 complete cc7021a, 86ed387~~ |
 | ~~SEC-40~~ | ~~security~~ | ~~agent-sec40-csrf~~ | ~~completed 185f3bd~~ |
 | ~~DEV-179~~ | ~~development~~ | ~~agent-widgets-c24~~ | ~~completed b6b09b1~~ |
 | ~~INFRA-59~~ | ~~infrastructure~~ | ~~agent-flinks-244~~ | ~~completed (docs only)~~ |
