@@ -1,0 +1,20 @@
+{
+  "$comment": "Domain adjacency matrix for multi-domain code index loading. When working in one domain, auto-load adjacent domains that commonly interact.",
+  "banking": ["accounting"],
+  "invoicing": ["accounting"],
+  "vendors": ["accounting"],
+  "accounting": [],
+  "planning": ["accounting", "banking"],
+  "ai": ["banking", "accounting"],
+  "web-pages": ["web-components"],
+  "web-components": [],
+  "packages": [],
+  "_rationale": {
+    "banking → accounting": "Transfers create journal entries, account reconciliation",
+    "invoicing → accounting": "Invoice posting to GL (revenue recognition)",
+    "vendors → accounting": "Bill payments create journal entries (AP)",
+    "planning → accounting + banking": "Budget vs actuals (GL), cash flow projections (accounts)",
+    "ai → banking + accounting": "Transaction categorization, auto-posting rules",
+    "web-pages → web-components": "Pages import shared components and utils"
+  }
+}
