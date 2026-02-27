@@ -3,6 +3,7 @@ import { Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataExportCard } from "./data-export-card";
+import { AIPreferencesCard } from "./ai-preferences-card";
 
 export const metadata: Metadata = {
     title: "Settings | Akount",
@@ -20,6 +21,8 @@ export default function SettingsPage() {
                     </Badge>
                 </div>
             </div>
+
+            <AIPreferencesCard />
 
             <DataExportCard />
 
