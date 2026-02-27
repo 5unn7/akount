@@ -223,6 +223,12 @@
 **Period Covered:** 2026-02-17 to 2026-02-24
 | ID | Task | Completed | Source |
 |----|------|-----------|--------|
+| SEC-44 | Add file size validation to DocumentExtractionService (10MB limit, prevent OOM) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
+| SEC-39 | Add userId authentication checks to 5 onboarding routes | 2026-02-26 | audit:2026-02-26 |
+| PERF-23 | Fix AI batch approval/rejection N+1 queries (batch fetch + batch update) | 2026-02-26 | audit:2026-02-26 |
+| PERF-24 | Add composite indexes for pagination (100x speedup) | 2026-02-26 | audit:2026-02-26 |
+| SEC-41 | Replace CORS wildcard in dev with explicit whitelist | 2026-02-26 | audit:2026-02-26 |
+| ARCH-9 | Configure Prisma connection pool documentation | 2026-02-26 | audit:2026-02-26 |
 | DEV-211 | AI Rules: Frontend API client + types for rules | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
 | DEV-212 | AI Rules: Rules management page + Sheet + navigation | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
 | DEV-213 | AI Rules: Rule condition builder component | 2026-02-26 | plan:ai-auto-bookkeeper-phase2 |
