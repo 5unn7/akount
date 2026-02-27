@@ -29,3 +29,6 @@ figmatoken
 .claude/.task-id-counters.json
 .claude/.task-id-counters.json.lock
 .claude/.task-id-counters.json.tmp
+
+# Local settings (may contain API keys)
+.claude/settings.local.json
