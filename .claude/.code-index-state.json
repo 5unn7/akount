@@ -1,0 +1,55 @@
+{
+  "lastBuild": "2026-02-27T22:28:22.679Z",
+  "gitCommit": "64834eeab49f9a9af56a42dae7ea1399495446d4",
+  "gitBranch": "main",
+  "domains": {
+    "banking": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 56,
+      "indexFile": "CODEBASE-BANKING.md",
+      "indexSize": 3612
+    },
+    "invoicing": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 18,
+      "indexFile": "CODEBASE-INVOICING.md",
+      "indexSize": 1934
+    },
+    "accounting": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 107,
+      "indexFile": "CODEBASE-ACCOUNTING.md",
+      "indexSize": 6926
+    },
+    "planning": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 40,
+      "indexFile": "CODEBASE-PLANNING.md",
+      "indexSize": 3256
+    },
+    "ai": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 65,
+      "indexFile": "CODEBASE-AI.md",
+      "indexSize": 5973
+    },
+    "web-pages": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 26,
+      "indexFile": "CODEBASE-WEB-PAGES.md",
+      "indexSize": 919
+    },
+    "web-components": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 180,
+      "indexFile": "CODEBASE-WEB-COMPONENTS.md",
+      "indexSize": 16901
+    },
+    "packages": {
+      "lastBuild": "2026-02-27T22:28:22.679Z",
+      "fileCount": 69,
+      "indexFile": "CODEBASE-PACKAGES.md",
+      "indexSize": 4453
+    }
+  }
+}

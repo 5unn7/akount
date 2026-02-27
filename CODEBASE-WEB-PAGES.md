@@ -1,0 +1,221 @@
+# WEB-PAGES Code Index
+
+**Auto-generated:** 2026-02-27
+**Files indexed:** 26
+**Estimated tokens:** ~919
+
+---
+
+## Decode Legend
+
+**Fields:**
+- `p` = path (relative from project root)
+- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
+- `e` = exports (array of function/class/const names)
+- `i` = imports (array of module paths)
+- `l` = LOC (lines of code)
+- `pt` = patterns (compact codes)
+- `v` = violations (detailed with fix suggestions)
+
+**Pattern Codes:**
+- `T` = tenant-isolation (includes tenantId filter)
+- `S` = soft-delete (uses deletedAt)
+- `L` = pino-logging (uses request.log/server.log)
+- `P` = prisma (uses prisma.*)
+- `C` = client-component (has 'use client')
+
+**Violation Codes:**
+- `F` = inline formatCurrency (not imported from canonical)
+- `H` = hardcoded color (text-[#...] or bg-[rgba...])
+- `L` = console.log in production
+- `A` = : any type annotation
+
+**Domain Codes:**
+- `bnk` = banking, `inv` = invoicing, `acc` = accounting
+- `pln` = planning, `ai` = ai, `pg` = pages
+- `cmp` = components/utils, `pkg` = packages
+
+---
+
+<!-- CODE-INDEX:START (auto-generated, do not edit manually)
+{
+  "_": "2026-02-27",
+  "n": 26,
+  "f": {
+    "error": {
+      "p": "apps/web/src/app/(dashboard)/business/vendors/error.tsx",
+      "e": [],
+      "i": [
+        "react",
+        "@/components/ui/card",
+        "@/components/ui/button",
+        "lucide-react"
+      ],
+      "l": 47,
+      "pt": "C",
+      "v": [],
+      "d": "pg"
+    },
+    "loading": {
+      "p": "apps/web/src/app/(dashboard)/business/vendors/loading.tsx",
+      "e": [],
+      "i": [
+        "@/components/ui/skeleton"
+      ],
+      "l": 46,
+      "pt": "",
+      "v": [],
+      "d": "pg"
+    },
+    "page": {
+      "p": "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
+      "e": [
+        "metadata"
+      ],
+      "i": [
+        "next",
+        "@/components/shared/StatsGrid",
+        "@/lib/api/vendors",
+        "./vendors-list-client",
+        "@/lib/api/entities",
+        "@/lib/entity-cookies",
+        "@/lib/utils/currency"
+      ],
+      "l": 84,
+      "pt": "",
+      "v": [],
+      "d": "pg"
+    },
+    "layout": {
+      "p": "apps/web/src/app/(dashboard)/overview/layout.tsx",
+      "e": [],
+      "i": [],
+      "l": 10,
+      "pt": "",
+      "v": [],
+      "d": "pg"
+    },
+    "client-detail-client": {
+      "p": "apps/web/src/app/(dashboard)/business/clients/[id]/client-detail-client.tsx",
+      "e": [
+        "ClientDetailClient"
+      ],
+      "i": [
+        "react",
+        "next/navigation",
+        "@/lib/api/clients",
+        "@/lib/api/invoices",
+        "@/lib/api/client-browser",
+        "@/lib/utils/currency",
+        "@/lib/utils/date",
+        "@/components/ui/card",
+        "@/components/ui/button",
+        "@/components/business/ClientForm"
+      ],
+      "l": 348,
+      "pt": "C",
+      "v": [],
+      "d": "pg"
+    },
+    "clients-list-client": {
+      "p": "apps/web/src/app/(dashboard)/business/clients/clients-list-client.tsx",
+      "e": [
+        "ClientsListClient"
+      ],
+      "i": [
+        "react",
+        "@/lib/api/clients",
+        "@/components/business/ClientsTable",
+        "@/components/ui/button",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/components/ui/card",
+        "lucide-react",
+        "../actions",
+        "@/components/business/ClientForm"
+      ],
+      "l": 240,
+      "pt": "C",
+      "v": [],
+      "d": "pg"
+    },
+    "vendor-detail-client": {
+      "p": "apps/web/src/app/(dashboard)/business/vendors/[id]/vendor-detail-client.tsx",
+      "e": [
+        "VendorDetailClient"
+      ],
+      "i": [
+        "react",
+        "next/navigation",
+        "next/link",
+        "@/lib/api/vendors",
+        "@/lib/api/bills",
+        "@/lib/api/client-browser",
+        "@/lib/utils/currency",
+        "@/lib/utils/date",
+        "@/components/ui/card",
+        "@/components/ui/button"
+      ],
+      "l": 381,
+      "pt": "C",
+      "v": [],
+      "d": "pg"
+    },
+    "vendors-list-client": {
+      "p": "apps/web/src/app/(dashboard)/business/vendors/vendors-list-client.tsx",
+      "e": [
+        "VendorsListClient"
+      ],
+      "i": [
+        "react",
+        "@/lib/api/vendors",
+        "@/components/business/VendorsTable",
+        "@/components/ui/button",
+        "@/components/ui/input",
+        "@/components/ui/label",
+        "@/components/ui/card",
+        "lucide-react",
+        "../actions",
+        "@/components/business/VendorForm"
+      ],
+      "l": 240,
+      "pt": "C",
+      "v": [],
+      "d": "pg"
+    }
+  },
+  "d": {
+    "pg": {
+      "n": 26,
+      "l": 2853
+    }
+  },
+  "p": {
+    "C": [
+      "error",
+      "client-detail-client",
+      "clients-list-client",
+      "vendor-detail-client",
+      "vendors-list-client"
+    ]
+  },
+  "v": {}
+}
+CODE-INDEX:END -->
+
+---
+
+## Quick Stats
+
+**Files by domain:**
+- pg: 26 files, 2,853 LOC
+
+**Patterns found:**
+- C: 5 files
+
+**Violations found:**
+- None ✅
+
+---
+
+_Generated by: .claude/scripts/regenerate-code-index.js_

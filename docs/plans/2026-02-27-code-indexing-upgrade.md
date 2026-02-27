@@ -1,8 +1,29 @@
 # Code Indexing & Context Management Upgrade
 
 **Created:** 2026-02-27
-**Status:** Draft
+**Updated:** 2026-02-27 (post-SPIKE 1 & 2)
+**Status:** Ready for Implementation
 **Inspired by:** VectifyAI/PageIndex (vectorless indexing approach)
+
+---
+
+## What Changed After SPIKE 1 & 2
+
+| Aspect | Original Plan | After SPIKE 1 | After SPIKE 2 | Impact |
+|--------|---------------|---------------|---------------|--------|
+| **Architecture** | Single CODEBASE.md | 8 domain indexes | ✓ Same | Architecture redesign |
+| **Token Budget** | Assumed fits | 3,160 tokens/domain | **10,150 tokens/domain** | Validated (49% headroom) |
+| **Index Format** | Verbose | Fully compressed | **Semi-compressed** | Better readability |
+| **Hallucination Prevention** | Not addressed | Counts only | **Export NAMES visible** | 60% → 90% confidence |
+| **Multi-Domain** | Not addressed | 4 loading strategies | 2 domains = 20K tokens | New complexity |
+| **Freshness** | Post-commit hook | + Staleness detection | ✓ Same | More robust |
+| **Effort** | 4 weeks | 4 weeks | ✓ Same | No change |
+
+**Key Additions:**
+1. **Task 1.2:** Multi-domain index loader (new)
+2. **Task 1.4:** Freshness state tracking (enhanced)
+3. **Architecture doc:** 4 loading strategies, edge cases, token analysis
+4. **SPIKE 2 Result:** Semi-compressed format chosen (export names prevent hallucination)
 
 ---
 
@@ -10,7 +31,9 @@
 
 Upgrade Claude Code's architecture with PageIndex-style code indexing to reduce context exhaustion, prevent hallucinations, and improve cross-session knowledge persistence. Currently, all code discovery is manual (Grep → Read on every access). This plan implements **domain-split HTML comment-based indexes** for instant code lookup.
 
-**SPIKE 1 Result (2026-02-27):** Single monolithic index won't fit (92K tokens). **Solution: 8 domain-specific indexes** (~3K tokens each, 84% under budget).
+**SPIKE 1 Result (2026-02-27):** Single monolithic index won't fit (92K tokens). **Solution: 8 domain-specific indexes**.
+
+**SPIKE 2 Result (2026-02-27):** Semi-compressed format chosen (~10K tokens/domain, 49% headroom). **Export NAMES visible** (prevents hallucination), **import PATHS visible** (verifiable context), **detailed violations** (actionable fixes).
 
 ## Success Criteria
 
@@ -69,9 +92,9 @@ Upgrade Claude Code's architecture with PageIndex-style code indexing to reduce 
 - NEW: `CODEBASE-WEB-COMPONENTS.md`
 - NEW: `CODEBASE-PACKAGES.md`
 
-**What:** Build script that scans codebase and generates **8 domain-specific indexes** using compressed format. Each index covers ~80 files (~3,160 tokens, well under 20K budget).
+**What:** Build script that scans codebase and generates **8 domain-specific indexes** using **semi-compressed format**. Each index covers ~80 files (~10,150 tokens, 49% under 20K budget).
 
-**Index Structure (Compressed Format — 73% smaller):**
+**Index Structure (Semi-Compressed Format — SPIKE 2 validated):**
 ```html
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
@@ -81,20 +104,26 @@ Upgrade Claude Code's architecture with PageIndex-style code indexing to reduce 
     "account.service": {
       "p": "domains/banking/services/account.service.ts",
       "d": "bnk",
-      "e": 4,
-      "i": 1,
+      "e": ["AccountService", "createAccount", "listAccounts", "getAccount"],
+      "i": ["@akount/db", "TenantContext"],
       "l": 375,
       "pt": "TSP",
-      "v": ""
+      "v": []
     },
     "transfer.service": {
       "p": "domains/banking/services/transfer.service.ts",
       "d": "bnk",
-      "e": 6,
-      "i": 3,
+      "e": ["TransferService", "createTransfer", "listTransfers", "cancelTransfer"],
+      "i": ["@akount/db", "../../accounting/services/journal-entry.service", "../utils/entry-number"],
       "l": 412,
       "pt": "TSPL",
-      "v": ""
+      "v": [
+        {
+          "code": "H",
+          "msg": "Hardcoded color: text-[#34D399]",
+          "fix": "Use text-ak-green from globals.css"
+        }
+      ]
     }
   },
   "d": {
@@ -106,36 +135,49 @@ Upgrade Claude Code's architecture with PageIndex-style code indexing to reduce 
     "P": ["account.service", "transfer.service"],
     "L": ["transfer.service"]
   },
-  "v": {}
+  "v": {
+    "H": [
+      {
+        "file": "transfer.service",
+        "path": "domains/banking/services/transfer.service.ts",
+        "msg": "Hardcoded color: text-[#34D399]",
+        "fix": "Use text-ak-green from globals.css"
+      }
+    ]
+  }
 }
 CODE-INDEX:END -->
 
 **Decode Legend:**
-- Fields: p=path, d=domain, e=exports, i=imports, l=LOC, pt=patterns, v=violations
+- Fields: p=path, d=domain, e=exports(NAMES), i=imports(PATHS), l=LOC, pt=patterns, v=violations(detailed)
 - Patterns: T=tenant, S=soft-delete, L=logging, P=prisma, C=client
 - Violations: F=formatCurrency, H=hardcoded-color, L=console.log, A=any-type
 - Domains: bnk=banking, inv=invoicing, acc=accounting, pln=planning, ai=ai, pg=pages, cmp=components, pkg=packages
 ```
 
-**Compression techniques:**
-- Single-letter fields (p, d, e vs path, domain, exports)
-- Pattern codes (T, S, P vs full strings)
-- Violation codes (F, H, L, A vs full strings)
-- Short domain codes (bnk vs banking)
-- Counts instead of arrays (exportCount vs list of names)
-- Shortened paths (relative from domain root)
-CODE-INDEX:END -->
-```
+**Semi-Compressed Benefits (vs Fully Compressed):**
+- ✅ **Export NAMES visible** — Agent verifies exact functions exist (prevents hallucination)
+- ✅ **Import PATHS visible** — Agent sees dependencies for better context
+- ✅ **Detailed violations** — Actionable fix messages (not just codes)
+- ✅ **Still fits budget** — 10,150 tokens (49% headroom per domain)
+- ✅ **Human-readable** — Easier debugging and verification
+
+**Trade-offs:**
+- 3.2x larger than fully compressed (10K vs 3K tokens)
+- Fewer domains fit simultaneously (2 = 20K vs 6 = 18K)
+- Quality > quantity — hallucination prevention worth token cost
 
 **Success:**
 - Script generates 8 domain-specific indexes
-- Each index <5K tokens (target: ~3,160 tokens)
+- Each index ~10K tokens (validated via SPIKE 2, 49% headroom)
 - Pattern detection works (T, S, P, L, C codes)
-- Violation detection works (F, H, L, A codes)
+- Violation detection works with detailed messages (F, H, L, A + fix suggestions)
 - All 642 files indexed
+- Export names visible (hallucination prevention)
+- Import paths visible (dependency verification)
 
 **Depends on:** none
-**Effort:** 2 days (add 1 day for domain-split logic)
+**Effort:** 2 days (domain-split + semi-compressed format)
 
 **Review:** `architecture-strategist`
 
@@ -172,7 +214,7 @@ CODE-INDEX:END -->
 2. **Adjacency-Based (Smart)**
    - Working in banking → auto-load accounting (transfers create JEs)
    - Working in invoicing → auto-load accounting + clients
-   - Max 3 domains loaded simultaneously (~9,500 tokens)
+   - Max 2 domains loaded simultaneously (~20,300 tokens with semi-compressed)
 
 3. **Task-Based (Explicit)**
    - Task in TASKS.md tagged with domain: "Banking: Implement transfers"
@@ -203,7 +245,7 @@ const indexes = loadIndexes({ keywords: ['invoice', 'payment', 'GL posting'] });
 **Success:**
 - Script loads relevant domain indexes automatically
 - Adjacency matrix prevents loading unnecessary domains
-- Max 3-4 domains loaded per session (~12K tokens max)
+- Max 2-3 domains loaded per session (~20-30K tokens with semi-compressed)
 - Fallback to Grep if no domains match
 
 **Depends on:** Task 1.1
@@ -236,7 +278,8 @@ Load relevant domain indexes (auto-detected from task/keywords):
 Example: "Implement bank transfers"
   → Loads: CODEBASE-BANKING.md + CODEBASE-ACCOUNTING.md (adjacency)
   → Finds: transfer.service.ts, entry-number.ts (shared utility)
-  → ~6,320 tokens (2 domains × ~3,160 tokens)
+  → ~20,300 tokens (2 domains × ~10,150 tokens)
+  → Agent can verify exact export names (createTransfer, generateEntryNumber)
 
 ### Fallback to Manual Discovery
 If index lookup fails or returns no results:
@@ -253,7 +296,7 @@ If index lookup fails or returns no results:
 - Workflows auto-load relevant domain indexes
 - Multi-domain work loads adjacent domains automatically
 - Fallback to Grep if index stale or incomplete
-- Plan skill shows "Loaded banking + accounting indexes (6,320 tokens), found 3 similar services"
+- Plan skill shows "Loaded banking + accounting indexes (20,300 tokens), found createTransfer, generateEntryNumber (verified exports)"
 
 **Depends on:** Task 1.2 (multi-domain loader)
 **Effort:** 2-3 hours
@@ -681,6 +724,16 @@ Propose appending to MEMORY files? [Y/n]
 
 ---
 
+## Architecture Deep-Dive
+
+**See:** `docs/plans/2026-02-27-code-indexing-upgrade-ARCH.md` for detailed design of:
+- Multi-domain index loading (4 strategies: path, adjacency, task, keyword)
+- Index freshness system (staleness detection, auto-rebuild)
+- Edge cases (parallel agents, branch switches, budget overflow)
+- Token budget analysis (semi-compressed: 2 domains = 20K tokens, 3 domains = 30K tokens)
+
+---
+
 ## Reference Files
 
 **Existing Infrastructure:**
@@ -688,6 +741,16 @@ Propose appending to MEMORY files? [Y/n]
 - `.claude/task-enrichments.json` — pattern for metadata storage
 - `.claude/hooks/task-complete-sync.sh` — pattern for auto-rebuild hooks
 - `.claude/rules/guardrails.md` — anti-pattern reference
+
+**SPIKE 1 Results:**
+- `docs/spikes/2026-02-27-code-index-spike1.md` — domain-split validation
+- `.claude/scripts/spike-code-index.js` — verbose prototype (won't fit)
+- `.claude/scripts/spike-code-index-compressed.js` — fully compressed (3K tokens/domain)
+
+**SPIKE 2 Results:**
+- `.claude/scripts/spike-code-index-readable.js` — semi-compressed prototype (CHOSEN)
+- Semi-compressed: 10K tokens/domain, export names visible, 49% headroom
+- Hallucination prevention: Agent verifies exact function names before claiming
 
 **Documentation to Update:**
 - `CLAUDE.md` (root) — add code index reference
