@@ -1,8 +1,9 @@
 # Akount Context Map
 
 > **Deep reference** — Read this file when you need comprehensive context
-> **Last updated:** 2026-02-09
+> **Last updated:** 2026-02-27
 > **Replaces:** architecture.mmd, repo-map.md, domain-glossary.md
+> **Note:** For code discovery, see CODEBASE-*.md domain indexes (auto-generated)
 
 ---
 
