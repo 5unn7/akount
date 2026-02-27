@@ -39,13 +39,34 @@ Before reading any files or investigating code, check if this work is tracked in
 
 ### Step 1: Understand What Exists (before ANY edit)
 
+**NEW: Check Code Index First (Fast Path)**
+
+```javascript
+// Use multi-domain loader to find relevant files instantly
+const { loadIndexes } = require('.claude/scripts/load-code-index');
+
+// Option A: Load based on file paths
+const indexes = loadIndexes({ filePaths: ['apps/api/src/domains/banking/...'] });
+
+// Option B: Load based on keywords
+const indexes = loadIndexes({ keywords: 'implement bank transfers' });
+
+// Search index for patterns
+const accountService = indexes.banking.f['account.service'];
+console.log('Exports:', accountService.e); // ["AccountService", "createAccount", ...]
+console.log('Imports:', accountService.i); // ["@akount/db", "TenantContext", ...]
+console.log('Patterns:', accountService.pt); // "TSP" (tenant, soft-delete, prisma)
+```
+
+**Fallback: Manual Discovery (if index lookup fails)**
+
 ```
 Read [the file you plan to change]
 Grep "[function/component name]" apps/   -- find all callers
 Grep "[related concept]" memory/         -- check if encountered before
 ```
 
-Ask yourself:
+**Ask yourself:**
 - WHY was this code written this way?
 - What ELSE depends on this code?
 - Has this problem been encountered before? (check MEMORY topic files)
