@@ -230,7 +230,9 @@ export class BudgetService {
       };
 
       if (existing.glAccountId) {
+        // FIN-35: Validate GL account ownership before query
         whereClause.glAccountId = existing.glAccountId;
+        whereClause.glAccount = { entity: { tenantId: this.tenantId } };
       }
 
       const result = await prisma.journalLine.aggregate({

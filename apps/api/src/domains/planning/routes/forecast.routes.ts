@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { withPermission } from '../../../middleware/withPermission';
 import { validateQuery, validateParams, validateBody } from '../../../middleware/validation';
+import { statsRateLimitConfig, aiRateLimitConfig } from '../../../middleware/rate-limit';
 import { ForecastService } from '../services/forecast.service';
 import { CashRunwayService } from '../services/cash-runway.service';
 import { SeasonalPatternsService } from '../services/seasonal-patterns.service';
@@ -143,6 +144,7 @@ export async function forecastRoutes(fastify: FastifyInstance) {
     {
       ...withPermission('planning', 'forecasts', 'VIEW'),
       preValidation: [validateQuery(ForecastAnalyticsQuerySchema)],
+      config: { rateLimit: statsRateLimitConfig() }, // SEC-42: Expensive analytics query
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId) {
@@ -167,6 +169,7 @@ export async function forecastRoutes(fastify: FastifyInstance) {
     {
       ...withPermission('planning', 'forecasts', 'VIEW'),
       preValidation: [validateQuery(ForecastAnalyticsQuerySchema)],
+      config: { rateLimit: statsRateLimitConfig() }, // SEC-42: Expensive multi-month aggregation
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId) {
@@ -194,6 +197,7 @@ export async function forecastRoutes(fastify: FastifyInstance) {
     {
       ...withPermission('planning', 'forecasts', 'VIEW'),
       preValidation: [validateQuery(AIForecastQuerySchema)],
+      config: { rateLimit: aiRateLimitConfig() }, // SEC-42: AI-powered endpoint (20 req/min)
     },
     async (request: FastifyRequest, reply: FastifyReply) => {
       if (!request.tenantId) {

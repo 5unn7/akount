@@ -74,9 +74,15 @@ export class CashRunwayService {
     sixMonthsAgo.setDate(1); // Start of month
     sixMonthsAgo.setHours(0, 0, 0, 0);
 
-    const result = await prisma.journalLine.aggregate({
+    // FIN-34: Filter by GL account type for accurate burn rate
+    // Only include EXPENSE accounts for burn, INCOME accounts for revenue
+    const expenseResult = await prisma.journalLine.aggregate({
       where: {
         deletedAt: null,
+        glAccount: {
+          type: 'EXPENSE',
+          entity: { tenantId: this.tenantId },
+        },
         journalEntry: {
           entityId,
           entity: { tenantId: this.tenantId },
@@ -91,8 +97,26 @@ export class CashRunwayService {
       },
     });
 
-    const totalDebits = result._sum.debitAmount ?? 0;
-    const totalCredits = result._sum.creditAmount ?? 0;
+    const revenueResult = await prisma.journalLine.aggregate({
+      where: {
+        deletedAt: null,
+        glAccount: {
+          type: 'INCOME',
+          entity: { tenantId: this.tenantId },
+        },
+        journalEntry: {
+          entityId,
+          entity: { tenantId: this.tenantId },
+          date: { gte: sixMonthsAgo },
+          deletedAt: null,
+          status: 'POSTED',
+        },
+      },
+      _sum: {
+        debitAmount: true,
+        creditAmount: true,
+      },
+    });
 
     // Calculate months elapsed (at least 1 to avoid division by zero)
     const now = new Date();
@@ -102,10 +126,14 @@ export class CashRunwayService {
         (now.getMonth() - sixMonthsAgo.getMonth())
     );
 
-    // In double-entry: expenses = debits, revenue = credits (simplified)
-    // A more precise approach would filter by GL account type, but this gives a reasonable approximation
-    const monthlyExpenses = Math.round(totalDebits / monthsDiff);
-    const monthlyRevenue = Math.round(totalCredits / monthsDiff);
+    // For EXPENSE accounts: debits increase expense, credits decrease
+    const totalExpenses = (expenseResult._sum.debitAmount ?? 0) - (expenseResult._sum.creditAmount ?? 0);
+
+    // For INCOME accounts: credits increase revenue, debits decrease
+    const totalRevenue = (revenueResult._sum.creditAmount ?? 0) - (revenueResult._sum.debitAmount ?? 0);
+
+    const monthlyExpenses = Math.round(totalExpenses / monthsDiff);
+    const monthlyRevenue = Math.round(totalRevenue / monthsDiff);
 
     return {
       monthlyExpenses,
