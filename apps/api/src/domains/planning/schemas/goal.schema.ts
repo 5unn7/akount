@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-export const GoalTypeEnum = z.enum(['REVENUE', 'SAVINGS', 'EXPENSE_REDUCTION', 'CUSTOM']);
-export const GoalStatusEnum = z.enum(['ACTIVE', 'PAUSED', 'COMPLETED', 'ABANDONED']);
+export const GoalTypeEnum = z.enum(['SAVINGS', 'REVENUE', 'EXPENSE_REDUCTION', 'DEBT_PAYOFF', 'OTHER']);
+export const GoalStatusEnum = z.enum(['ACTIVE', 'PAUSED', 'ACHIEVED', 'MISSED', 'CANCELLED']);
 
 export const CreateGoalSchema = z.object({
   name: z.string().min(1, 'Name is required').max(200),

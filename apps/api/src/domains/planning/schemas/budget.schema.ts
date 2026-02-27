@@ -6,7 +6,7 @@ export const CreateBudgetSchema = z.object({
   categoryId: z.string().cuid('Invalid category ID').optional(),
   glAccountId: z.string().cuid('Invalid GL account ID').optional(),
   amount: z.number().int('Amount must be integer cents').min(1, 'Amount must be positive'),
-  period: z.enum(['monthly', 'quarterly', 'yearly']),
+  period: z.enum(['MONTHLY', 'QUARTERLY', 'YEARLY']),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
 }).refine(
@@ -19,7 +19,7 @@ export const UpdateBudgetSchema = z.object({
   categoryId: z.string().cuid('Invalid category ID').nullable().optional(),
   glAccountId: z.string().cuid('Invalid GL account ID').nullable().optional(),
   amount: z.number().int('Amount must be integer cents').min(1).optional(),
-  period: z.enum(['monthly', 'quarterly', 'yearly']).optional(),
+  period: z.enum(['MONTHLY', 'QUARTERLY', 'YEARLY']).optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
 });
@@ -28,7 +28,7 @@ export const ListBudgetsQuerySchema = z.object({
   entityId: z.string().cuid('Invalid entity ID'),
   cursor: z.string().cuid().optional(),
   limit: z.coerce.number().int().min(1).max(100).optional(),
-  period: z.enum(['monthly', 'quarterly', 'yearly']).optional(),
+  period: z.enum(['MONTHLY', 'QUARTERLY', 'YEARLY']).optional(),
   categoryId: z.string().cuid().optional(),
 });
 
