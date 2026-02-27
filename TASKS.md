@@ -26,6 +26,7 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
+| SEC-44 | Add file size validation to DocumentExtractionService (10MB limit, prevent OOM) | 1h | 🟠 High | 🟢 | | review:doc-intel-phase1 |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | FIN-32 | Migrate TaxRate.rate from Float to Int (basis points: 500 = 5%) | 4h | 🟠 High | 🟢 | | audit:2026-02-26 |
 | SEC-40 | Implement CSRF protection for state-changing endpoints | 2h | 🟠 High | 🟢 | | audit:2026-02-26 |
@@ -48,6 +49,9 @@
 | DEV-63 | Accounting: Add recurring journal entry templates (monthly depreciation, rent, etc.) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-64 | Accounting: Add journal entry CSV import (bulk import from external accounting software) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-65 | Accounting: Add account reconciliation page (compare GL vs bank statement balances) | 4-6h | 🟡 Medium | 📦 | | audit:acct-fe-be |
+| INFRA-63 | Add rate limiting to queue manager (prevent DoS via unbounded job submission) | 2h | 🟡 Medium | 🟢 | | review:doc-intel-phase1 |
+| TEST-22 | Add DocumentExtractionService integration tests (E2E: PII → Defense → Extraction → Validation) | 3h | 🟡 Medium | 🟢 | | review:doc-intel-phase1 |
+| ARCH-13 | Add circuit breaker to MistralProvider (prevent cascading failures on rate limits) | 2h | 🟡 Medium | 🟢 | | review:doc-intel-phase1 |
 | DEV-66 | Accounting: Add aged receivables/payables report (AR/AP aging 30/60/90+ day buckets) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-67 | Accounting: Add audit trail view (who approved/voided/created entries, timestamps) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-68 | Accounting: Add GL account merge/reclassify (move journal lines between accounts) | 3-4h | 🟡 Medium | 📦 | | audit:acct-fe-be |

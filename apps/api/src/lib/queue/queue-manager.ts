@@ -32,6 +32,18 @@ export type QueueName =
   | 'anomaly-detection';
 
 /**
+ * Rate limit configuration (INFRA-63).
+ *
+ * Prevents DoS attacks via unbounded job submission.
+ */
+export const RATE_LIMIT_CONFIG = {
+  /** Maximum jobs per tenant per minute */
+  JOBS_PER_MINUTE: 100,
+  /** Window size in milliseconds (60 seconds) */
+  WINDOW_MS: 60 * 1000,
+};
+
+/**
  * Redis connection configuration.
  *
  * In production: TLS + password auth
@@ -82,6 +94,67 @@ const DEFAULT_QUEUE_OPTIONS: QueueOptions = {
 };
 
 /**
+ * Simple in-memory rate limiter using sliding window.
+ *
+ * Tracks job submission timestamps per tenant.
+ * For distributed systems, migrate to Redis-backed limiter (PERF-11).
+ */
+class RateLimiter {
+  // Map: tenantId -> array of submission timestamps
+  private submissions: Map<string, number[]> = new Map();
+
+  /**
+   * Check if tenant can submit a job without exceeding rate limit.
+   *
+   * @param tenantId - Tenant ID
+   * @returns true if allowed, false if rate limit exceeded
+   */
+  checkLimit(tenantId: string): boolean {
+    const now = Date.now();
+    const windowStart = now - RATE_LIMIT_CONFIG.WINDOW_MS;
+
+    // Get tenant's submission timestamps
+    let timestamps = this.submissions.get(tenantId) || [];
+
+    // Remove timestamps outside the sliding window
+    timestamps = timestamps.filter((ts) => ts > windowStart);
+
+    // Check if under limit
+    if (timestamps.length >= RATE_LIMIT_CONFIG.JOBS_PER_MINUTE) {
+      return false; // Rate limit exceeded
+    }
+
+    // Record this submission
+    timestamps.push(now);
+    this.submissions.set(tenantId, timestamps);
+
+    return true; // Allowed
+  }
+
+  /**
+   * Get current submission count for a tenant within the window.
+   */
+  getCurrentCount(tenantId: string): number {
+    const now = Date.now();
+    const windowStart = now - RATE_LIMIT_CONFIG.WINDOW_MS;
+
+    const timestamps = this.submissions.get(tenantId) || [];
+    return timestamps.filter((ts) => ts > windowStart).length;
+  }
+
+  /**
+   * Clear rate limit data for a tenant (for testing).
+   */
+  clear(tenantId?: string): void {
+    if (tenantId) {
+      this.submissions.delete(tenantId);
+    } else {
+      this.submissions.clear();
+    }
+  }
+}
+
+/**
  * Queue Manager Singleton
  *
  * Manages all BullMQ queues for the application.
@@ -89,6 +162,7 @@ const DEFAULT_QUEUE_OPTIONS: QueueOptions = {
 class QueueManagerClass {
   private queues: Map<QueueName, Queue> = new Map();
   private initialized = false;
+  private rateLimiter = new RateLimiter();
 
   /**
    * Initialize all queues.
@@ -168,6 +242,51 @@ class QueueManagerClass {
    */
   getQueueNames(): QueueName[] {
     return Array.from(this.queues.keys());
+  }
+
+  /**
+   * Check if tenant can submit a job without exceeding rate limit.
+   *
+   * @param tenantId - Tenant ID
+   * @returns true if allowed, false if rate limit exceeded
+   *
+   * @example
+   * ```typescript
+   * if (!queueManager.checkRateLimit(tenantId)) {
+   *   throw new Error('Rate limit exceeded. Please try again later.');
+   * }
+   * await queueManager.getQueue('bill-scan').add('scan-bill', { ... });
+   * ```
+   */
+  checkRateLimit(tenantId: string): boolean {
+    return this.rateLimiter.checkLimit(tenantId);
+  }
+
+  /**
+   * Get current job count for tenant within rate limit window.
+   *
+   * Useful for API responses: "You have submitted 95/100 jobs in the last minute."
+   */
+  getRateLimitStatus(tenantId: string): {
+    current: number;
+    limit: number;
+    remaining: number;
+  } {
+    const current = this.rateLimiter.getCurrentCount(tenantId);
+    const limit = RATE_LIMIT_CONFIG.JOBS_PER_MINUTE;
+
+    return {
+      current,
+      limit,
+      remaining: Math.max(0, limit - current),
+    };
+  }
+
+  /**
+   * Clear rate limit data for a tenant (for testing).
+   */
+  clearRateLimit(tenantId?: string): void {
+    this.rateLimiter.clear(tenantId);
   }
 
   /**

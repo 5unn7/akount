@@ -18,6 +18,7 @@ import { env } from '../../../lib/env';
  * Mistral vision AI with integrated security pipeline.
  *
  * **Security Pipeline:**
+ * 0. File Size Validation (SEC-44) — Prevent OOM attacks via large files
  * 1. PII Redaction (SEC-29) — Remove credit cards, SSN, emails before AI inference
  * 2. Prompt Defense (SEC-30) — Detect adversarial content, validate amounts
  * 3. Mistral Vision (DEV-230/231) — OCR + structured extraction
@@ -28,6 +29,12 @@ import { env } from '../../../lib/env';
  *
  * @module document-extraction
  */
+
+/**
+ * Maximum allowed file size for document uploads (10 MB).
+ * Prevents out-of-memory attacks and ensures reasonable processing times.
+ */
+export const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export interface ExtractionOptions {
   /** Tenant ID for logging and context */
@@ -87,6 +94,26 @@ export class DocumentExtractionService {
     const startTime = Date.now();
 
     try {
+      // Step 0: File Size Validation (SEC-44)
+      if (imageBuffer.length > MAX_FILE_SIZE_BYTES) {
+        const fileSizeMB = (imageBuffer.length / (1024 * 1024)).toFixed(2);
+        const maxSizeMB = (MAX_FILE_SIZE_BYTES / (1024 * 1024)).toFixed(0);
+
+        logger.warn(
+          {
+            tenantId: options.tenantId,
+            fileSize: imageBuffer.length,
+            fileSizeMB,
+            maxSizeMB,
+          },
+          'File size exceeds maximum allowed'
+        );
+
+        throw new Error(
+          `File size (${fileSizeMB} MB) exceeds maximum allowed (${maxSizeMB} MB)`
+        );
+      }
+
       // Step 1: PII Redaction (SEC-29)
       const piiResult = options.skipSecurityChecks
         ? { redactedBuffer: imageBuffer, redactionLog: [], hadPII: false }
@@ -213,6 +240,26 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
     const startTime = Date.now();
 
     try {
+      // Step 0: File Size Validation (SEC-44)
+      if (imageBuffer.length > MAX_FILE_SIZE_BYTES) {
+        const fileSizeMB = (imageBuffer.length / (1024 * 1024)).toFixed(2);
+        const maxSizeMB = (MAX_FILE_SIZE_BYTES / (1024 * 1024)).toFixed(0);
+
+        logger.warn(
+          {
+            tenantId: options.tenantId,
+            fileSize: imageBuffer.length,
+            fileSizeMB,
+            maxSizeMB,
+          },
+          'File size exceeds maximum allowed'
+        );
+
+        throw new Error(
+          `File size (${fileSizeMB} MB) exceeds maximum allowed (${maxSizeMB} MB)`
+        );
+      }
+
       // Step 1: PII Redaction (SEC-29)
       const piiResult = options.skipSecurityChecks
         ? { redactedBuffer: imageBuffer, redactionLog: [], hadPII: false }

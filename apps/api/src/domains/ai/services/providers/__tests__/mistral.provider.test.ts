@@ -32,9 +32,14 @@ vi.mock('../../../../../lib/logger', () => ({
 describe('MistralProvider', () => {
   let provider: MistralProvider;
 
+  function resetProvider() {
+    provider = new MistralProvider('test-api-key');
+    provider.resetCircuitBreaker(); // Reset circuit breaker state
+  }
+
   beforeEach(() => {
     vi.clearAllMocks();
-    provider = new MistralProvider('test-api-key');
+    resetProvider();
   });
 
   describe('instantiation', () => {
@@ -423,6 +428,131 @@ describe('MistralProvider', () => {
       await expect(
         provider.extractFromImage(imageBuffer, schema)
       ).rejects.toThrow('No response from Mistral vision API');
+    });
+  });
+
+  describe('circuit breaker (ARCH-13)', () => {
+    it('should allow requests when circuit is closed', async () => {
+      const messages: AIMessage[] = [{ role: 'user', content: 'Hello' }];
+
+      mockComplete.mockResolvedValueOnce({
+        model: 'mistral-large-latest',
+        choices: [{ message: { content: 'Response' } }],
+      });
+
+      const result = await provider.chat(messages);
+
+      expect(result.content).toBe('Response');
+    });
+
+    it('should open circuit after 5 consecutive failures', async () => {
+      const messages: AIMessage[] = [{ role: 'user', content: 'Test' }];
+
+      // Simulate 5 consecutive failures
+      for (let i = 0; i < 5; i++) {
+        mockComplete.mockRejectedValueOnce(new Error('API Error'));
+
+        try {
+          await provider.chat(messages);
+        } catch {
+          // Expected
+        }
+      }
+
+      // 6th request should be rejected by circuit breaker (without calling API)
+      await expect(provider.chat(messages)).rejects.toThrow(
+        /Circuit breaker OPEN/
+      );
+
+      // Verify API was NOT called for 6th request
+      expect(mockComplete).toHaveBeenCalledTimes(5);
+    });
+
+    it('should close circuit after successful request in half-open state', async () => {
+      const messages: AIMessage[] = [{ role: 'user', content: 'Test' }];
+
+      // Open the circuit (5 failures)
+      for (let i = 0; i < 5; i++) {
+        mockComplete.mockRejectedValueOnce(new Error('API Error'));
+        try {
+          await provider.chat(messages);
+        } catch {
+          // Expected
+        }
+      }
+
+      // Reset the provider to simulate time passing (60 seconds timeout)
+      // In production, this happens naturally after 60 seconds
+      provider.resetCircuitBreaker();
+
+      // Now the circuit is closed, next request should succeed
+      mockComplete.mockResolvedValueOnce({
+        model: 'mistral-large-latest',
+        choices: [{ message: { content: 'Success' } }],
+      });
+
+      const result = await provider.chat(messages);
+
+      expect(result.content).toBe('Success');
+
+      // Circuit should be closed (failures reset)
+      const status = provider.getCircuitBreakerStatus();
+      expect(status.state).toBe('closed');
+      expect(status.failureCount).toBe(0);
+    });
+
+    it('should track circuit breaker state', () => {
+      const status = provider.getCircuitBreakerStatus();
+
+      expect(status.state).toBe('closed');
+      expect(status.failureCount).toBe(0);
+      expect(status.lastFailureTime).toBeNull();
+    });
+
+    it('should apply circuit breaker to extractFromImage', async () => {
+      const schema = z.object({ test: z.string() });
+      const imageBuffer = Buffer.from([0xff, 0xd8, 0xff]);
+
+      // Open the circuit (5 failures)
+      for (let i = 0; i < 5; i++) {
+        mockComplete.mockRejectedValueOnce(new Error('Vision API Error'));
+        try {
+          await provider.extractFromImage(imageBuffer, schema);
+        } catch {
+          // Expected
+        }
+      }
+
+      // 6th request should be rejected by circuit breaker
+      await expect(
+        provider.extractFromImage(imageBuffer, schema)
+      ).rejects.toThrow(/Circuit breaker OPEN/);
+    });
+
+    it('should increment failure count on each error', async () => {
+      const messages: AIMessage[] = [{ role: 'user', content: 'Test' }];
+
+      // 1 failure
+      mockComplete.mockRejectedValueOnce(new Error('Error 1'));
+      try {
+        await provider.chat(messages);
+      } catch {
+        // Expected
+      }
+
+      let status = provider.getCircuitBreakerStatus();
+      expect(status.failureCount).toBe(1);
+
+      // 2 failures
+      mockComplete.mockRejectedValueOnce(new Error('Error 2'));
+      try {
+        await provider.chat(messages);
+      } catch {
+        // Expected
+      }
+
+      status = provider.getCircuitBreakerStatus();
+      expect(status.failureCount).toBe(2);
     });
   });
 });

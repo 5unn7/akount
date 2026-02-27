@@ -3,6 +3,115 @@ import type { AIProvider, AIMessage, AIChatOptions, AIChatResponse } from '../ty
 import { logger } from '../../../../lib/logger';
 import type { z } from 'zod';
 
+/**
+ * Circuit Breaker Pattern (ARCH-13)
+ *
+ * Prevents cascading failures when Mistral API is unavailable or rate-limited.
+ * After N consecutive failures, the circuit "opens" and rejects requests immediately
+ * without calling the API, giving the service time to recover.
+ */
+class CircuitBreaker {
+  private failureCount = 0;
+  private lastFailureTime: number | null = null;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
+
+  /** Number of consecutive failures before opening the circuit */
+  private readonly failureThreshold = 5;
+
+  /** Time to wait before attempting to close the circuit (ms) */
+  private readonly resetTimeout = 60000; // 60 seconds
+
+  /**
+   * Check if circuit allows request.
+   *
+   * @throws Error if circuit is open
+   */
+  checkState(): void {
+    if (this.state === 'closed') {
+      // Normal operation
+      return;
+    }
+
+    if (this.state === 'open') {
+      // Check if enough time has passed to try again
+      const now = Date.now();
+      const timeSinceFailure = this.lastFailureTime ? now - this.lastFailureTime : 0;
+
+      if (timeSinceFailure >= this.resetTimeout) {
+        // Try half-open state (one request allowed to test)
+        this.state = 'half-open';
+        logger.info('Circuit breaker entering half-open state (testing recovery)');
+        return;
+      }
+
+      // Circuit still open, reject immediately
+      throw new Error(
+        `Circuit breaker OPEN: Mistral API has failed ${this.failureCount} times. Please try again in ${Math.ceil((this.resetTimeout - timeSinceFailure) / 1000)} seconds.`
+      );
+    }
+
+    // Half-open state: allow request through to test recovery
+  }
+
+  /**
+   * Record a successful request.
+   * Closes the circuit and resets failure count.
+   */
+  recordSuccess(): void {
+    if (this.state !== 'closed') {
+      logger.info('Circuit breaker closing (API recovered)');
+    }
+
+    this.state = 'closed';
+    this.failureCount = 0;
+    this.lastFailureTime = null;
+  }
+
+  /**
+   * Record a failed request.
+   * Opens the circuit if failure threshold is reached.
+   */
+  recordFailure(): void {
+    this.failureCount++;
+    this.lastFailureTime = Date.now();
+
+    if (this.state === 'half-open') {
+      // Failed during recovery test, reopen circuit
+      this.state = 'open';
+      logger.warn('Circuit breaker reopening (API still failing)');
+      return;
+    }
+
+    if (this.failureCount >= this.failureThreshold) {
+      this.state = 'open';
+      logger.error(
+        { failureCount: this.failureCount },
+        'Circuit breaker OPENED: Too many consecutive failures'
+      );
+    }
+  }
+
+  /**
+   * Get current circuit breaker state (for monitoring).
+   */
+  getStatus() {
+    return {
+      state: this.state,
+      failureCount: this.failureCount,
+      lastFailureTime: this.lastFailureTime,
+    };
+  }
+
+  /**
+   * Reset circuit breaker (for testing).
+   */
+  reset(): void {
+    this.state = 'closed';
+    this.failureCount = 0;
+    this.lastFailureTime = null;
+  }
+}
+
 export interface MistralChatOptions extends AIChatOptions {
   /**
    * Optional Zod schema for structured JSON output.
@@ -18,12 +127,16 @@ export interface MistralChatOptions extends AIChatOptions {
 export class MistralProvider implements AIProvider {
   readonly name = 'mistral';
   private client: Mistral;
+  private circuitBreaker = new CircuitBreaker();
 
   constructor(apiKey: string) {
     this.client = new Mistral({ apiKey });
   }
 
   async chat(messages: AIMessage[], options?: MistralChatOptions): Promise<AIChatResponse> {
+    // Circuit breaker check (ARCH-13)
+    this.circuitBreaker.checkState();
+
     // Model selection: mistral-large-latest for text, pixtral-large-latest for vision (A2)
     const model = options?.model || 'mistral-large-latest';
 
@@ -92,6 +205,9 @@ export class MistralProvider implements AIProvider {
         }
       }
 
+      // Record success (close circuit if it was open)
+      this.circuitBreaker.recordSuccess();
+
       return {
         content,
         model: response.model || model,
@@ -104,6 +220,8 @@ export class MistralProvider implements AIProvider {
           : undefined,
       };
     } catch (error: unknown) {
+      // Record failure (may open circuit if threshold reached)
+      this.circuitBreaker.recordFailure();
       // Sanitize SDK errors — don't leak API keys or internal details
       if (error instanceof Error) {
         logger.error(
@@ -156,6 +274,9 @@ export class MistralProvider implements AIProvider {
     schema: z.ZodType<T>,
     prompt?: string
   ): Promise<T> {
+    // Circuit breaker check (ARCH-13)
+    this.circuitBreaker.checkState();
+
     // Use pixtral-large-latest for vision (pinned version as per A2 requirements)
     const model = 'pixtral-large-latest';
 
@@ -218,6 +339,9 @@ export class MistralProvider implements AIProvider {
           'Mistral vision extraction successful'
         );
 
+        // Record success
+        this.circuitBreaker.recordSuccess();
+
         return validated;
       } catch (validationError: unknown) {
         logger.error(
@@ -233,6 +357,9 @@ export class MistralProvider implements AIProvider {
         );
       }
     } catch (error: unknown) {
+      // Record failure
+      this.circuitBreaker.recordFailure();
+
       if (error instanceof Error) {
         logger.error(
           { message: error.message, name: error.name, model },
@@ -281,5 +408,19 @@ export class MistralProvider implements AIProvider {
     // Default to JPEG if unknown
     logger.warn({ first4Bytes: buffer.slice(0, 4) }, 'Unknown image format, defaulting to JPEG');
     return 'image/jpeg';
+  }
+
+  /**
+   * Get circuit breaker status (for monitoring/debugging).
+   */
+  getCircuitBreakerStatus() {
+    return this.circuitBreaker.getStatus();
+  }
+
+  /**
+   * Reset circuit breaker (for testing).
+   */
+  resetCircuitBreaker(): void {
+    this.circuitBreaker.reset();
   }
 }

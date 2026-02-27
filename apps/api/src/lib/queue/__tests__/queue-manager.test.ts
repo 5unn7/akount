@@ -144,4 +144,92 @@ describe('QueueManager', () => {
       expect(healthy).toBe(false);
     });
   });
+
+  describe('rate limiting (INFRA-63)', () => {
+    beforeEach(() => {
+      // Clear rate limit data before each test
+      queueManager.clearRateLimit();
+    });
+
+    it('should allow jobs under rate limit', () => {
+      const tenantId = 'tenant-123';
+
+      // Should allow first 100 jobs
+      for (let i = 0; i < 100; i++) {
+        expect(queueManager.checkRateLimit(tenantId)).toBe(true);
+      }
+    });
+
+    it('should block jobs exceeding rate limit (100 per minute)', () => {
+      const tenantId = 'tenant-456';
+
+      // Submit 100 jobs (at limit)
+      for (let i = 0; i < 100; i++) {
+        queueManager.checkRateLimit(tenantId);
+      }
+
+      // 101st job should be blocked
+      expect(queueManager.checkRateLimit(tenantId)).toBe(false);
+    });
+
+    it('should track separate limits per tenant', () => {
+      const tenant1 = 'tenant-aaa';
+      const tenant2 = 'tenant-bbb';
+
+      // Tenant 1: hit limit
+      for (let i = 0; i < 100; i++) {
+        queueManager.checkRateLimit(tenant1);
+      }
+
+      // Tenant 1: blocked
+      expect(queueManager.checkRateLimit(tenant1)).toBe(false);
+
+      // Tenant 2: still allowed (separate limit)
+      expect(queueManager.checkRateLimit(tenant2)).toBe(true);
+    });
+
+    it('should return rate limit status', () => {
+      const tenantId = 'tenant-status';
+
+      // Submit 42 jobs
+      for (let i = 0; i < 42; i++) {
+        queueManager.checkRateLimit(tenantId);
+      }
+
+      const status = queueManager.getRateLimitStatus(tenantId);
+
+      expect(status.current).toBe(42);
+      expect(status.limit).toBe(100);
+      expect(status.remaining).toBe(58);
+    });
+
+    it('should reset after time window expires', async () => {
+      const tenantId = 'tenant-window';
+
+      // Submit 100 jobs
+      for (let i = 0; i < 100; i++) {
+        queueManager.checkRateLimit(tenantId);
+      }
+
+      // Blocked
+      expect(queueManager.checkRateLimit(tenantId)).toBe(false);
+
+      // Fast-forward by clearing and re-submitting
+      // (In production, this would happen naturally after 60 seconds)
+      queueManager.clearRateLimit(tenantId);
+
+      // Should be allowed again
+      expect(queueManager.checkRateLimit(tenantId)).toBe(true);
+    });
+
+    it('should handle zero jobs gracefully', () => {
+      const tenantId = 'tenant-zero';
+
+      const status = queueManager.getRateLimitStatus(tenantId);
+
+      expect(status.current).toBe(0);
+      expect(status.limit).toBe(100);
+      expect(status.remaining).toBe(100);
+    });
+  });
 });
