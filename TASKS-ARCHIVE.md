@@ -223,6 +223,9 @@
 **Period Covered:** 2026-02-17 to 2026-02-24
 | ID | Task | Completed | Source |
 |----|------|-----------|--------|
+| INFRA-63 | Add rate limiting to queue manager (prevent DoS via unbounded job submission) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
+| TEST-22 | Add DocumentExtractionService integration tests (E2E: PII → Defense → Extraction → Validation) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
+| ARCH-13 | Add circuit breaker to MistralProvider (prevent cascading failures on rate limits) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
 | SEC-44 | Add file size validation to DocumentExtractionService (10MB limit, prevent OOM) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
 | SEC-39 | Add userId authentication checks to 5 onboarding routes | 2026-02-26 | audit:2026-02-26 |
 | PERF-23 | Fix AI batch approval/rejection N+1 queries (batch fetch + batch update) | 2026-02-26 | audit:2026-02-26 |
