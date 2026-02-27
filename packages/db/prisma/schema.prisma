@@ -41,6 +41,7 @@ model Tenant {
   categories            Category[]
   onboardingProgress    OnboardingProgress?
   aiDecisionLogs        AIDecisionLog[]
+  aiConsents            AIConsent[]
 }
 
 model TenantUser {
@@ -68,10 +69,35 @@ model User {
   clerkUserId String?      @unique
   auditLogs   AuditLog[]
   memberships TenantUser[]
+  aiConsent   AIConsent?
 
   @@index([email])
   @@index([clerkUserId])
 }
+
+// SEC-32: AI Consent Management (GDPR Article 22, PIPEDA 4.3)
+model AIConsent {
+  id                         String   @id @default(cuid())
+  userId                     String   @unique
+  tenantId                   String
+  // Granular consent toggles (default: ALL OFF for new users)
+  autoCreateBills            Boolean  @default(false)
+  autoCreateInvoices         Boolean  @default(false)
+  autoMatchTransactions      Boolean  @default(false)
+  autoCategorize             Boolean  @default(false)
+  useCorrectionsForLearning  Boolean  @default(false)
+  // Metadata
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+  // Relations
+  user                       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant                     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([userId, tenantId])
+}
+
 
 model Entity {
   id                 String             @id @default(cuid())

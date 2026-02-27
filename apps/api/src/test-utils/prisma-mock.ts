@@ -78,6 +78,7 @@ const models = {
   // System
   tenant: createMockModelDelegate(),
   tenantUser: createMockModelDelegate(),
+  user: createMockModelDelegate(),
   entity: createMockModelDelegate(),
   auditLog: createMockModelDelegate(),
   onboarding: createMockModelDelegate(),
@@ -114,6 +115,8 @@ const models = {
 
   // AI
   aIAction: createMockModelDelegate(),
+  aIConsent: createMockModelDelegate(),
+  aIDecisionLog: createMockModelDelegate(),
   insight: createMockModelDelegate(),
   rule: createMockModelDelegate(),
   ruleSuggestion: createMockModelDelegate(),
