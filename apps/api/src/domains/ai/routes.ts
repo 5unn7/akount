@@ -26,6 +26,7 @@ import { actionRoutes } from './routes/action.routes';
 import { rulesRoutes } from './routes/rules';
 import { ruleSuggestionRoutes } from './routes/rule-suggestions';
 import { monthlyCloseRoutes } from './routes/monthly-close';
+import { jobStreamRoutes } from './routes/jobs';
 import {
   ListInsightsSchema,
   DismissInsightSchema,
@@ -665,4 +666,9 @@ export async function aiRoutes(fastify: FastifyInstance) {
   // Monthly Close Routes (sub-plugin)
   // -----------------------------------------------------------------------
   fastify.register(monthlyCloseRoutes, { prefix: '/monthly-close' });
+
+  // -----------------------------------------------------------------------
+  // Job Stream Routes (sub-plugin) — DEV-233
+  // -----------------------------------------------------------------------
+  fastify.register(jobStreamRoutes, { prefix: '/jobs' });
 }
