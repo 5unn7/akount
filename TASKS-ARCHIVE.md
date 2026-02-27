@@ -223,6 +223,12 @@
 **Period Covered:** 2026-02-17 to 2026-02-24
 | ID | Task | Completed | Source |
 |----|------|-----------|--------|
+| FIN-29 | Re-validate totals against line items in updateInvoice/updateBill PATCH | 2026-02-27 | review:revie23feb |
+| FIN-30 | Add linkedEntryId deduplication filter to GL report queries | 2026-02-27 | review:revie23feb |
+| DRY-19 | Replace z.record(z.unknown()) in onboarding with typed schema | 2026-02-27 | review:revie23feb |
+| DRY-10 | Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations | 2026-02-27 | inline-bandaid-audit |
+| DRY-13 | Create `<EntitySelector>` component — wire API integration for 7 report views | 2026-02-27 | inline-bandaid-audit |
+| DRY-14 | Create global error tracking util — integrate Sentry in 3+ error.tsx files | 2026-02-27 | inline-bandaid-audit |
 | DEV-11 | Overview: Add upcoming payments endpoint — bills due + expected invoice payments | 2026-02-27 | audit:fe-be-parity |
 | DEV-12 | Overview: Add action items endpoint — unreconciled txns, overdue invoices, overdue bills | 2026-02-27 | audit:fe-be-parity |
 | DEV-13 | Overview: Add cash flow time-series chart endpoint — historical cash position by day/week | 2026-02-27 | audit:fe-be-parity |
