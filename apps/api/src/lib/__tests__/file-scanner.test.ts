@@ -66,6 +66,52 @@ describe('file-scanner', () => {
       const result = await scanFile(csvBuffer, 'csv');
       expect(result.magicBytesValid).toBe(true);
     });
+
+    // SEC-31: Image format support
+    it('should accept valid JPEG files', async () => {
+      // FF D8 FF (JPEG magic bytes)
+      const jpegBuffer = Buffer.alloc(100);
+      jpegBuffer[0] = 0xff;
+      jpegBuffer[1] = 0xd8;
+      jpegBuffer[2] = 0xff;
+
+      const result = await scanFile(jpegBuffer, 'jpeg');
+      expect(result.magicBytesValid).toBe(true);
+    });
+
+    it('should accept valid PNG files', async () => {
+      // 89 50 4E 47 0D 0A 1A 0A (PNG signature)
+      const pngBuffer = Buffer.alloc(100);
+      const pngSig = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+      pngSig.forEach((byte, i) => { pngBuffer[i] = byte; });
+
+      const result = await scanFile(pngBuffer, 'png');
+      expect(result.magicBytesValid).toBe(true);
+    });
+
+    it('should accept valid HEIC files', async () => {
+      // HEIC: ftyp box with 'heic' brand at offset 4
+      const heicBuffer = Buffer.alloc(100);
+      heicBuffer[4] = 0x66; // f
+      heicBuffer[5] = 0x74; // t
+      heicBuffer[6] = 0x79; // y
+      heicBuffer[7] = 0x70; // p
+      heicBuffer[8] = 0x68; // h
+      heicBuffer[9] = 0x65; // e
+      heicBuffer[10] = 0x69; // i
+      heicBuffer[11] = 0x63; // c
+
+      const result = await scanFile(heicBuffer, 'heic');
+      expect(result.magicBytesValid).toBe(true);
+    });
+
+    it('should reject JPEG with wrong magic bytes', async () => {
+      const fakeBuffer = Buffer.from('Not a JPEG file');
+
+      const result = await scanFile(fakeBuffer, 'jpeg');
+      expect(result.magicBytesValid).toBe(false);
+      expect(result.safe).toBe(false);
+    });
   });
 
   describe('Content pattern scanning', () => {
@@ -172,6 +218,68 @@ describe('file-scanner', () => {
         // In well-formed CSV, amounts are mid-line (after commas), not at line start
         expect(result.magicBytesValid).toBe(true);
       });
+    });
+
+    // SEC-31: Image polyglot detection
+    describe('Image threats (polyglots)', () => {
+      it('should detect JPEG + HTML polyglot', async () => {
+        const polyglotJpeg = Buffer.concat([
+          Buffer.from([0xff, 0xd8, 0xff]), // JPEG magic
+          Buffer.from('<script>alert("xss")</script>', 'latin1'),
+        ]);
+
+        const result = await scanFile(polyglotJpeg, 'jpeg');
+        expect(result.safe).toBe(false);
+        expect(result.threats.some((t) => t.includes('script'))).toBe(true);
+      });
+
+      it('should detect PNG + PHP polyglot', async () => {
+        const polyglotPng = Buffer.concat([
+          Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), // PNG signature
+          Buffer.from('<?php system($_GET["cmd"]); ?>', 'latin1'),
+        ]);
+
+        const result = await scanFile(polyglotPng, 'png');
+        expect(result.safe).toBe(false);
+        expect(result.threats.some((t) => t.includes('php'))).toBe(true);
+      });
+
+      it('should accept clean JPEG image', async () => {
+        const cleanJpeg = Buffer.concat([
+          Buffer.from([0xff, 0xd8, 0xff, 0xe0]), // JPEG magic + APP0
+          Buffer.from('JFIF\x00', 'latin1'),
+        ]);
+
+        const result = await scanFile(cleanJpeg, 'jpeg');
+        expect(result.safe).toBe(true);
+        expect(result.threats).toHaveLength(0);
+      });
+    });
+  });
+
+  // SEC-44: File size validation
+  describe('File size validation', () => {
+    it('should reject files larger than 10MB', async () => {
+      // Create a buffer larger than 10MB
+      const largeBuffer = Buffer.alloc(11 * 1024 * 1024);
+      largeBuffer[0] = 0xff; // JPEG magic
+      largeBuffer[1] = 0xd8;
+      largeBuffer[2] = 0xff;
+
+      const result = await scanFile(largeBuffer, 'jpeg');
+      expect(result.safe).toBe(false);
+      expect(result.threats.some((t) => t.includes('10MB'))).toBe(true);
+    });
+
+    it('should accept files under 10MB', async () => {
+      // 5MB file
+      const validSizeBuffer = Buffer.alloc(5 * 1024 * 1024);
+      validSizeBuffer[0] = 0xff; // JPEG magic
+      validSizeBuffer[1] = 0xd8;
+      validSizeBuffer[2] = 0xff;
+
+      const result = await scanFile(validSizeBuffer, 'jpeg');
+      expect(result.threats.some((t) => t.includes('10MB'))).toBe(false);
     });
   });
 

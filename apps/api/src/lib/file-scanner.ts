@@ -2,15 +2,21 @@ import { logger } from './logger';
 import * as net from 'net';
 
 /**
- * File Scanner Service — SEC-11
+ * File Scanner Service — SEC-11, SEC-31
  *
  * Validates uploaded files for security threats:
- * 1. Magic bytes verification (file type matches claimed extension)
- * 2. Content pattern scanning (embedded scripts, macros, suspicious patterns)
- * 3. ClamAV integration (optional, enabled via CLAMAV_HOST env var)
+ * 1. File size validation (prevent DoS via huge files)
+ * 2. Magic bytes verification (file type matches claimed extension)
+ * 3. Content pattern scanning (embedded scripts, macros, polyglots, suspicious patterns)
+ * 4. ClamAV integration (optional, enabled via CLAMAV_HOST env var)
+ *
+ * Supports: PDF, XLSX, XLS, CSV, JPEG, PNG, HEIC
  *
  * @module file-scanner
  */
+
+// Maximum file size: 10MB (SEC-44 - prevent OOM attacks)
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 // Magic bytes signatures for supported file types
 const MAGIC_BYTES: Record<string, { bytes: number[]; offset: number }[]> = {
@@ -22,6 +28,16 @@ const MAGIC_BYTES: Record<string, { bytes: number[]; offset: number }[]> = {
   xls: [{ bytes: [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1], offset: 0 }],
   // CSV: no magic bytes — validated by content structure
   csv: [],
+  // JPEG: starts with FF D8 FF
+  jpeg: [{ bytes: [0xff, 0xd8, 0xff], offset: 0 }],
+  jpg: [{ bytes: [0xff, 0xd8, 0xff], offset: 0 }],
+  // PNG: 8-byte signature
+  png: [{ bytes: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], offset: 0 }],
+  // HEIC: ftyp box with 'heic' or 'mif1' brand at offset 4
+  heic: [
+    { bytes: [0x66, 0x74, 0x79, 0x70, 0x68, 0x65, 0x69, 0x63], offset: 4 },
+    { bytes: [0x66, 0x74, 0x79, 0x70, 0x6d, 0x69, 0x66, 0x31], offset: 4 },
+  ],
 };
 
 // Dangerous patterns to detect in file content
@@ -58,6 +74,35 @@ const DANGEROUS_PATTERNS = {
     /=HYPERLINK\(/i,
     // PowerShell/cmd execution via DDE
     /DDE\s*\(/i,
+  ],
+  jpeg: [
+    // Polyglot: JPEG + HTML (FFD8FF followed by HTML tags)
+    /<(?:html|script|iframe|object|embed)/i,
+    // Polyglot: JPEG + PHP/JSP
+    /<\?php/i,
+    /<%[@=]?/,
+    // Suspicious comment blocks that could hide code
+    /<!--[\s\S]{200,}-->/,
+  ],
+  jpg: [
+    // Same as JPEG
+    /<(?:html|script|iframe|object|embed)/i,
+    /<\?php/i,
+    /<%[@=]?/,
+    /<!--[\s\S]{200,}-->/,
+  ],
+  png: [
+    // Polyglot: PNG + HTML/script in tEXt/iTXt chunks
+    /<(?:html|script|iframe|object|embed)/i,
+    // Polyglot: PNG + PHP
+    /<\?php/i,
+    /<%[@=]?/,
+    // Suspicious text chunks with encoded scripts
+    /tEXt.*(?:javascript|eval|document\.)/i,
+  ],
+  heic: [
+    // HEIC with suspicious metadata (rare, but possible)
+    /<(?:script|iframe)/i,
   ],
 };
 
@@ -96,7 +141,7 @@ function scanContentPatterns(buffer: Buffer, fileType: string): string[] {
 
   if (!patterns) return threats;
 
-  // For binary files (PDF, XLSX), convert to string for pattern matching
+  // For binary files (PDF, XLSX, images), convert to string for pattern matching
   // Use latin1 encoding to preserve byte values while making them searchable
   const content = fileType === 'csv'
     ? buffer.toString('utf-8')
@@ -188,18 +233,19 @@ async function scanWithClamAV(buffer: Buffer): Promise<{ scanned: boolean; threa
 /**
  * Scan an uploaded file for security threats.
  *
- * Performs three layers of validation:
- * 1. Magic bytes check (is this really a PDF/XLSX/CSV?)
- * 2. Content pattern scan (embedded scripts, macros, CSV injection?)
- * 3. ClamAV virus scan (if configured)
+ * Performs four layers of validation:
+ * 1. File size check (prevent DoS via huge files)
+ * 2. Magic bytes check (is this really a PDF/XLSX/JPEG/PNG/HEIC?)
+ * 3. Content pattern scan (embedded scripts, macros, polyglots, CSV injection?)
+ * 4. ClamAV virus scan (if configured)
  *
  * @param buffer - File content as Buffer
- * @param fileType - Expected file type ('pdf' | 'csv' | 'xlsx' | 'xls')
+ * @param fileType - Expected file type ('pdf' | 'csv' | 'xlsx' | 'xls' | 'jpeg' | 'jpg' | 'png' | 'heic')
  * @returns ScanResult with safety verdict and threat details
  *
  * @example
  * ```typescript
- * const result = await scanFile(fileBuffer, 'pdf');
+ * const result = await scanFile(fileBuffer, 'jpeg');
  * if (!result.safe) {
  *   return reply.status(422).send({
  *     error: 'File rejected',
@@ -212,17 +258,22 @@ export async function scanFile(buffer: Buffer, fileType: string): Promise<ScanRe
   const normalizedType = fileType.toLowerCase();
   const threats: string[] = [];
 
-  // Layer 1: Magic bytes validation
+  // Layer 1: File size validation (SEC-44 - prevent OOM)
+  if (buffer.length > MAX_FILE_SIZE) {
+    threats.push(`File size (${(buffer.length / 1024 / 1024).toFixed(2)}MB) exceeds maximum (10MB)`);
+  }
+
+  // Layer 2: Magic bytes validation
   const magicBytesValid = validateMagicBytes(buffer, normalizedType);
   if (!magicBytesValid) {
     threats.push(`File content does not match expected ${normalizedType.toUpperCase()} format`);
   }
 
-  // Layer 2: Content pattern scanning
+  // Layer 3: Content pattern scanning
   const contentThreats = scanContentPatterns(buffer, normalizedType);
   threats.push(...contentThreats);
 
-  // Layer 3: ClamAV virus scan (optional)
+  // Layer 4: ClamAV virus scan (optional)
   const clamResult = await scanWithClamAV(buffer);
   threats.push(...clamResult.threats);
 
