@@ -1,28 +1,28 @@
 {
   "$schema": "./tasks.schema.json",
   "version": "2.0",
-  "generated": "2026-02-27T03:49:56.045Z",
+  "generated": "2026-02-27T21:27:46.866Z",
   "generatedBy": "regenerate-task-index.js",
   "summary": {
-    "total": 148,
-    "active": 148,
+    "total": 126,
+    "active": 126,
     "done": 0,
-    "stale": 18,
+    "stale": 16,
     "riskDistribution": {
-      "low": 96,
-      "medium": 47,
+      "low": 79,
+      "medium": 42,
       "high": 5
     },
     "byPriority": {
       "critical": 1,
-      "high": 18,
-      "medium": 102,
-      "low": 27
+      "high": 11,
+      "medium": 88,
+      "low": 26
     },
     "byStatus": {
-      "ready": 26,
+      "ready": 19,
       "blocked": 6,
-      "backlog": 115
+      "backlog": 100
     }
   },
   "agentInstructions": {
@@ -116,80 +116,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "FIN-32": {
-      "id": "FIN-32",
-      "title": "Migrate TaxRate.rate from Float to Int (basis points: 500 = 5%)",
-      "effort": "4h",
-      "effortMinutes": 240,
-      "effortCategory": "medium",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "financial",
-      "source": "audit:2026-02-26",
-      "created": "2026-02-26",
-      "line": 30,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 4,
-      "riskFactors": [
-        "no_files",
-        "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "SEC-40": {
-      "id": "SEC-40",
-      "title": "Implement CSRF protection for state-changing endpoints",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "high",
-      "status": "ready",
-      "deps": [],
-      "domain": "security",
-      "source": "audit:2026-02-26",
-      "created": "2026-02-26",
-      "line": 31,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 5,
-      "riskFactors": [
-        "no_files",
-        "vague_title",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "INFRA-13": {
       "id": "INFRA-13",
       "title": "Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import",
@@ -202,7 +128,7 @@
       "domain": "infrastructure",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 32,
+      "line": 30,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -239,256 +165,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-97": {
-      "id": "DEV-97",
-      "title": "Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model)",
-      "effort": "4-6h",
-      "effortMinutes": 300,
-      "effortCategory": "long",
-      "priority": "high",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 33,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [
-        "Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model",
-        "migrate from Entity.metadata)",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 5,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-98": {
-      "id": "DEV-98",
-      "title": "Planning: Build Budget service + full CRUD (create/list/get/update/delete using Budget model)",
-      "effort": "4-6h",
-      "effortMinutes": 300,
-      "effortCategory": "long",
-      "priority": "high",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 34,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": true,
-        "daysSinceVerified": 8,
-        "staleAfterDays": 5,
-        "recommendation": "verify_before_executing"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 4,
-      "riskFactors": [
-        "age_stale",
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-58": {
-      "id": "UX-58",
-      "title": "Planning: Build goals page — list goals, create form, progress tracking",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "high",
-      "status": "backlog",
-      "deps": [
-        "DEV-97"
-      ],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 35,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Planning: Build goals page",
-        "progress tracking",
-        "status updates",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-59": {
-      "id": "UX-59",
-      "title": "Planning: Build budgets page — list budgets, create form, budget vs actual bars",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "high",
-      "status": "backlog",
-      "deps": [
-        "DEV-98"
-      ],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-19",
-      "line": 36,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Planning: Build budgets page",
-        "list budgets",
-        "budget vs actual bars",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": true,
-        "daysSinceVerified": 8,
-        "staleAfterDays": 7,
-        "recommendation": "verify_before_executing"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 4,
-      "riskFactors": [
-        "age_stale",
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "UX-60": {
-      "id": "UX-60",
-      "title": "Planning: Add planning landing page at `/planning` with summary cards",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "high",
-      "status": "backlog",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 37,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Planning: Add planning landing page at `/planning` with summary cards (active goals",
-        "budget utilization",
-        "forecast status)",
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
     "UX-44": {
       "id": "UX-44",
       "title": "Business: Add invoice/client list CSV/PDF export buttons",
@@ -501,7 +177,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 44,
+      "line": 37,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -546,7 +222,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 45,
+      "line": 38,
       "files": [],
       "verification": "Run: cd apps/api && npm test -- [domain]",
       "acceptanceCriteria": [
@@ -591,7 +267,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 46,
+      "line": 39,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -636,7 +312,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-26",
-      "line": 47,
+      "line": 40,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -681,7 +357,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 48,
+      "line": 41,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -729,7 +405,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 49,
+      "line": 42,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -777,7 +453,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 50,
+      "line": 43,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -825,7 +501,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 51,
+      "line": 44,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -871,7 +547,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 52,
+      "line": 45,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -916,7 +592,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 53,
+      "line": 46,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -962,7 +638,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 54,
+      "line": 47,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1006,7 +682,7 @@
       "domain": "architecture",
       "source": "audit:2026-02-26",
       "created": "2026-02-26",
-      "line": 55,
+      "line": 48,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1030,43 +706,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "TEST-21": {
-      "id": "TEST-21",
-      "title": "Fix TypeScript errors (63 total, 6 fixed, 57 remaining)",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "testing",
-      "source": "audit:2026-02-26",
-      "created": "2026-02-26",
-      "line": 56,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 4,
-      "riskFactors": [
-        "no_files",
-        "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "FIN-33": {
       "id": "FIN-33",
       "title": "Add PostgreSQL double-entry balance trigger (defense-in-depth for SUM(debits) = SUM(credits))",
@@ -1079,7 +718,7 @@
       "domain": "financial",
       "source": "audit:2026-02-26",
       "created": "2026-02-26",
-      "line": 57,
+      "line": 49,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1115,7 +754,7 @@
       "domain": "performance",
       "source": "roadmap",
       "created": "2026-02-26",
-      "line": 58,
+      "line": 50,
       "files": [
         "apps/web/src/app/(dashboard)/",
         "apps/web/src/components/"
@@ -1161,7 +800,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-26",
-      "line": 59,
+      "line": 51,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1197,7 +836,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-22",
-      "line": 60,
+      "line": 52,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1233,7 +872,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-22",
-      "line": 61,
+      "line": 53,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1269,7 +908,7 @@
       "domain": "code-quality",
       "source": "review:revie23feb",
       "created": "2026-02-24",
-      "line": 62,
+      "line": 54,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1305,7 +944,7 @@
       "domain": "financial",
       "source": "review:revie23feb",
       "created": "2026-02-24",
-      "line": 63,
+      "line": 55,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1341,7 +980,7 @@
       "domain": "financial",
       "source": "review:revie23feb",
       "created": "2026-02-24",
-      "line": 64,
+      "line": 56,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -1377,7 +1016,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 65,
+      "line": 57,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -1423,7 +1062,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 66,
+      "line": 58,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [],
@@ -1465,7 +1104,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 67,
+      "line": 59,
       "files": [
         "apps/web/src/components/help/",
         "apps/web/src/app/(dashboard)/layout.tsx"
@@ -1512,7 +1151,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 68,
+      "line": 60,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -1557,7 +1196,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 69,
+      "line": 61,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -1601,7 +1240,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 70,
+      "line": 62,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -1648,7 +1287,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 71,
+      "line": 63,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -1697,7 +1336,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 72,
+      "line": 64,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -1742,7 +1381,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 73,
+      "line": 65,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1791,7 +1430,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 74,
+      "line": 66,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [
@@ -1836,7 +1475,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 75,
+      "line": 67,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -1877,7 +1516,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 76,
+      "line": 68,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -1918,7 +1557,7 @@
       "domain": "testing",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 77,
+      "line": 69,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -1951,191 +1590,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-11": {
-      "id": "DEV-11",
-      "title": "Overview: Add upcoming payments endpoint — bills due + expected invoice payments",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 78,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Amount stored as integer cents",
-        "Soft delete implemented (deletedAt field)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-12": {
-      "id": "DEV-12",
-      "title": "Overview: Add action items endpoint — unreconciled txns, overdue invoices, overdue bills",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 79,
-      "files": [
-        "apps/api/src/domains/invoicing/services/invoice.service.ts",
-        "apps/api/src/domains/invoicing/routes/invoices.ts",
-        "apps/api/src/domains/invoicing/services/bill.service.ts",
-        "apps/api/src/domains/invoicing/routes/bills.ts",
-        "apps/api/src/domains/invoicing/schemas/bill.schema.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Overview: Add action items endpoint",
-        "unreconciled txns",
-        "overdue invoices",
-        "overdue bills (RightRail placeholder)",
-        "Amount stored as integer cents"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "invoicing",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-13": {
-      "id": "DEV-13",
-      "title": "Overview: Add cash flow time-series chart endpoint — historical cash position by day/week",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 80,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "historical cash position by day/week (CashFlowChart placeholder)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-14": {
-      "id": "DEV-14",
-      "title": "Overview: Add expense breakdown by category endpoint for ExpenseChart",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 81,
-      "files": [
-        "apps/web/src/app/(dashboard)/overview/page.tsx",
-        "apps/api/src/domains/overview/services/dashboard.service.ts",
-        "apps/api/src/domains/overview/services/__tests__/dashboard.service.test.ts",
-        "apps/api/src/domains/overview/services/__tests__/performance.service.test.ts",
-        "apps/api/src/domains/overview/routes.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "overview",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "DEV-18": {
       "id": "DEV-18",
       "title": "Overview: Balance Sheet Snapshot widget — asset:liability donut + equity trend",
@@ -2148,7 +1602,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 82,
+      "line": 70,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2193,7 +1647,7 @@
       "domain": "financial",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 83,
+      "line": 71,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2241,7 +1695,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 84,
+      "line": 72,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -2289,7 +1743,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 85,
+      "line": 73,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -2336,7 +1790,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 86,
+      "line": 74,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -2381,7 +1835,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 87,
+      "line": 75,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -2426,7 +1880,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 88,
+      "line": 76,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -2473,7 +1927,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 89,
+      "line": 77,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -2517,7 +1971,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 90,
+      "line": 78,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2561,7 +2015,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 91,
+      "line": 79,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2608,7 +2062,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 92,
+      "line": 80,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2652,7 +2106,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 93,
+      "line": 81,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2696,7 +2150,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 94,
+      "line": 82,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -2744,7 +2198,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 95,
+      "line": 83,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -2790,7 +2244,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 96,
+      "line": 84,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2824,144 +2278,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-34": {
-      "id": "DEV-34",
-      "title": "Overview: Goal Progress widget — progress bars for active goals, days to deadline",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 97,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Overview: Goal Progress widget",
-        "progress bars for active goals",
-        "days to deadline (Goal model)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-35": {
-      "id": "DEV-35",
-      "title": "Overview: Budget vs Actual widget — % of budget used this month, over-budget alerts",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 98,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Overview: Budget vs Actual widget",
-        "% of budget used this month",
-        "over-budget alerts (Budget model)"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-36": {
-      "id": "DEV-36",
-      "title": "Overview: Expense Forecast widget — projected monthly spend at current 3-month run rate",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 99,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "projected monthly spend at current 3-month run rate"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
     "DEV-37": {
       "id": "DEV-37",
       "title": "Overview: Cash Runway widget — days of cash remaining at burn rate",
@@ -2974,7 +2290,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 100,
+      "line": 85,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3020,7 +2336,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 101,
+      "line": 86,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3064,7 +2380,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 102,
+      "line": 87,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -3110,7 +2426,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 103,
+      "line": 88,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3154,7 +2470,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 104,
+      "line": 89,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3204,7 +2520,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 105,
+      "line": 90,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3248,7 +2564,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 106,
+      "line": 91,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3292,7 +2608,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 107,
+      "line": 92,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3339,7 +2655,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 108,
+      "line": 93,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3387,7 +2703,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 109,
+      "line": 94,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3432,7 +2748,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 110,
+      "line": 95,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3476,7 +2792,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 111,
+      "line": 96,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3524,7 +2840,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 112,
+      "line": 97,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3571,7 +2887,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 113,
+      "line": 98,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3618,7 +2934,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 114,
+      "line": 99,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3662,7 +2978,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 115,
+      "line": 100,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3707,7 +3023,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 116,
+      "line": 101,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3754,7 +3070,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 117,
+      "line": 102,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3799,7 +3115,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 118,
+      "line": 103,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3844,7 +3160,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 119,
+      "line": 104,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3893,7 +3209,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 120,
+      "line": 105,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3941,7 +3257,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 121,
+      "line": 106,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3986,7 +3302,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 122,
+      "line": 107,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4032,7 +3348,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 123,
+      "line": 108,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4065,54 +3381,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-99": {
-      "id": "DEV-99",
-      "title": "Planning: Add budget variance analysis endpoint — compare budget vs actual from GL",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [
-        "DEV-98"
-      ],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 124,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "compare budget amount vs actual spend from GL/transactions"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "DEV-100": {
       "id": "DEV-100",
       "title": "Planning: Add goal auto-tracking + milestone notifications",
@@ -4127,7 +3395,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 125,
+      "line": 109,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4176,7 +3444,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 126,
+      "line": 110,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4209,98 +3477,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "UX-61": {
-      "id": "UX-61",
-      "title": "Planning: Build forecasts page — cash flow projection chart",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 127,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [
-        "Page renders without errors",
-        "Loading and error states implemented"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-102": {
-      "id": "DEV-102",
-      "title": "Planning: Add Forecast model to Prisma + CRUD service (scenario modeling)",
-      "effort": "4-6h",
-      "effortMinutes": 300,
-      "effortCategory": "long",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 128,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Run: cd apps/api && npm test -- [domain]",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 5,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 2,
-      "riskFactors": [
-        "large_effort",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "UX-62": {
       "id": "UX-62",
       "title": "Planning: Add budget period selector with visual spend-rate indicator",
@@ -4315,7 +3491,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 129,
+      "line": 111,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4361,7 +3537,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 130,
+      "line": 112,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4393,146 +3569,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "DEV-103": {
-      "id": "DEV-103",
-      "title": "Planning: Add cash runway calculator — months remaining at burn rate",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 131,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Planning: Add cash runway calculator",
-        "months remaining at current burn rate",
-        "healthy/warning/critical indicator"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-104": {
-      "id": "DEV-104",
-      "title": "Planning: Add seasonal pattern detection — highlight high/low revenue months",
-      "effort": "3-4h",
-      "effortMinutes": 210,
-      "effortCategory": "medium",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 132,
-      "files": [
-        "apps/api/src/domains/banking/routes.ts",
-        "apps/api/src/domains/banking/services/account.service.ts",
-        "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
-        "apps/api/src/domains/banking/routes/transactions.ts",
-        "apps/api/src/domains/banking/services/transaction.service.ts"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "highlight historically high/low revenue months from transaction data"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "banking",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 7,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "large_effort"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DEV-105": {
-      "id": "DEV-105",
-      "title": "Planning: Add budget alerts — threshold warnings at 80%/100% utilization",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "medium",
-      "status": "backlog",
-      "deps": [
-        "DEV-99"
-      ],
-      "domain": "development",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 133,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Grep for related code: Grep \"dev\" apps/",
-      "acceptanceCriteria": [
-        "Planning: Add budget alerts",
-        "threshold warnings at 80%/100% utilization",
-        "surfaced to dashboard action items"
-      ],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "dev"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 0,
-      "riskFactors": [],
-      "claimed": false,
-      "claimedBy": null
-    },
     "UX-64": {
       "id": "UX-64",
       "title": "Planning: Add goal trajectory projection — \"on pace\" vs \"behind\" trend line",
@@ -4547,7 +3583,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 134,
+      "line": 113,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4591,7 +3627,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 135,
+      "line": 114,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -4636,7 +3672,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 136,
+      "line": 115,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -4681,7 +3717,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 137,
+      "line": 116,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4725,7 +3761,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 138,
+      "line": 117,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -4772,7 +3808,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 139,
+      "line": 118,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -4816,7 +3852,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 140,
+      "line": 119,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -4859,7 +3895,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-26",
-      "line": 141,
+      "line": 120,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4903,7 +3939,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-26",
-      "line": 142,
+      "line": 121,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -4939,7 +3975,7 @@
       "domain": "code-quality",
       "source": "review:typescript",
       "created": "2026-02-26",
-      "line": 143,
+      "line": 122,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -4978,7 +4014,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 144,
+      "line": 123,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5022,7 +4058,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 145,
+      "line": 124,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5069,7 +4105,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 146,
+      "line": 125,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -5115,7 +4151,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 147,
+      "line": 126,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5160,7 +4196,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 148,
+      "line": 127,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5204,7 +4240,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 149,
+      "line": 128,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -5248,7 +4284,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 150,
+      "line": 129,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -5292,7 +4328,7 @@
       "domain": "financial",
       "source": "review:financial",
       "created": "2026-02-18",
-      "line": 151,
+      "line": 130,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5336,7 +4372,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 152,
+      "line": 131,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5381,7 +4417,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 153,
+      "line": 132,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -5426,7 +4462,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 154,
+      "line": 133,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -5471,7 +4507,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 155,
+      "line": 134,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -5517,7 +4553,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 156,
+      "line": 135,
       "files": [],
       "verification": "Grep for related code: Grep \"dev\" apps/",
       "acceptanceCriteria": [],
@@ -5557,7 +4593,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 157,
+      "line": 136,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5604,7 +4640,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 158,
+      "line": 137,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -5649,7 +4685,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 159,
+      "line": 138,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5695,7 +4731,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 160,
+      "line": 139,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5744,7 +4780,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 161,
+      "line": 140,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5780,50 +4816,6 @@
       "claimed": false,
       "claimedBy": null
     },
-    "UX-65": {
-      "id": "UX-65",
-      "title": "Planning: Add budget/goal export (CSV/PDF)",
-      "effort": "2-3h",
-      "effortMinutes": 150,
-      "effortCategory": "unknown",
-      "priority": "low",
-      "status": "backlog",
-      "deps": [],
-      "domain": "ux",
-      "source": "audit:fe-be-parity",
-      "created": "2026-02-26",
-      "line": 162,
-      "files": [
-        "apps/api/src/domains/planning/routes.ts",
-        "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/loading.tsx",
-        "apps/web/src/app/(dashboard)/planning/reports/page.tsx",
-        "apps/web/src/app/(dashboard)/planning/budgets/error.tsx"
-      ],
-      "verification": "Check: Navigate to page in browser, verify UI renders correctly",
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [
-        "planning",
-        "ux"
-      ],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "low",
-      "riskScore": 1,
-      "riskFactors": [
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
     "DEV-109": {
       "id": "DEV-109",
       "title": "Planning: Add budget rollover — carry unused budget forward to next period",
@@ -5838,7 +4830,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 163,
+      "line": 141,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5884,7 +4876,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 164,
+      "line": 142,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5932,7 +4924,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 165,
+      "line": 143,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -5978,7 +4970,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 166,
+      "line": 144,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -6028,7 +5020,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 167,
+      "line": 145,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -6074,7 +5066,7 @@
       "domain": "design-system",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 187,
+      "line": 165,
       "files": [
         "packages/ui/package.json",
         "packages/ui/src/ai/AIPanel.tsx",
@@ -6119,7 +5111,7 @@
       "domain": "design-system",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 188,
+      "line": 166,
       "files": [
         "packages/ui/",
         "packages/ui/.storybook/",
@@ -6167,7 +5159,7 @@
       "domain": "marketing",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 196,
+      "line": 174,
       "files": [
         "apps/web/src/app/(marketing)/",
         "apps/web/src/app/page.tsx"
@@ -6214,7 +5206,7 @@
       "domain": "marketing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 197,
+      "line": 175,
       "files": [],
       "verification": "Grep for related code: Grep \"mkt\" apps/",
       "acceptanceCriteria": [
@@ -6256,7 +5248,7 @@
       "domain": "content",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 198,
+      "line": 176,
       "files": [
         "brand/competitive-analysis.md"
       ],
@@ -6301,7 +5293,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 208,
+      "line": 186,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -6343,7 +5335,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 209,
+      "line": 187,
       "files": [
         "docker-compose.yml",
         "Dockerfile",
@@ -6392,7 +5384,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 210,
+      "line": 188,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -6433,7 +5425,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 211,
+      "line": 189,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -6476,7 +5468,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 212,
+      "line": 190,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -6522,7 +5514,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 213,
+      "line": 191,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -6566,7 +5558,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 214,
+      "line": 192,
       "files": [
         "Dockerfile",
         "docker-compose.yml",
@@ -6617,7 +5609,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 222,
+      "line": 200,
       "files": [
         "docs/operations/disaster-recovery.md",
         "packages/db/prisma/"
@@ -6666,7 +5658,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 223,
+      "line": 201,
       "files": [
         "docs/operations/deployment.md",
         "Dockerfile",
@@ -6708,41 +5700,21 @@
     "byDomain": {
       "ux": [
         "UX-103",
-        "UX-58",
-        "UX-59",
-        "UX-60",
         "UX-44",
         "UX-6",
         "UX-7",
         "UX-52",
         "UX-55",
-        "UX-61",
         "UX-62",
         "UX-63",
         "UX-64",
-        "UX-57",
-        "UX-65"
+        "UX-57"
       ],
       "security": [
         "SEC-8",
-        "SEC-40",
         "SEC-10",
         "SEC-16",
         "SEC-15"
-      ],
-      "financial": [
-        "FIN-32",
-        "FIN-33",
-        "FIN-29",
-        "FIN-30",
-        "FIN-7",
-        "FIN-8",
-        "FIN-9",
-        "FIN-10",
-        "FIN-16",
-        "FIN-6",
-        "FIN-11",
-        "FIN-12"
       ],
       "infrastructure": [
         "INFRA-13",
@@ -6758,8 +5730,6 @@
         "INFRA-6"
       ],
       "development": [
-        "DEV-97",
-        "DEV-98",
         "DEV-83",
         "DEV-61",
         "DEV-62",
@@ -6770,10 +5740,6 @@
         "DEV-67",
         "DEV-68",
         "DEV-69",
-        "DEV-11",
-        "DEV-12",
-        "DEV-13",
-        "DEV-14",
         "DEV-18",
         "DEV-21",
         "DEV-22",
@@ -6788,9 +5754,6 @@
         "DEV-31",
         "DEV-32",
         "DEV-33",
-        "DEV-34",
-        "DEV-35",
-        "DEV-36",
         "DEV-37",
         "DEV-38",
         "DEV-39",
@@ -6813,13 +5776,8 @@
         "DEV-89",
         "DEV-90",
         "DEV-91",
-        "DEV-99",
         "DEV-100",
         "DEV-101",
-        "DEV-102",
-        "DEV-103",
-        "DEV-104",
-        "DEV-105",
         "DEV-115",
         "DEV-116",
         "DEV-117",
@@ -6848,9 +5806,18 @@
         "ARCH-4",
         "ARCH-3"
       ],
-      "testing": [
-        "TEST-21",
-        "TEST-4"
+      "financial": [
+        "FIN-33",
+        "FIN-29",
+        "FIN-30",
+        "FIN-7",
+        "FIN-8",
+        "FIN-9",
+        "FIN-10",
+        "FIN-16",
+        "FIN-6",
+        "FIN-11",
+        "FIN-12"
       ],
       "performance": [
         "PERF-7",
@@ -6866,6 +5833,9 @@
         "DRY-19",
         "DRY-15",
         "DRY-5"
+      ],
+      "testing": [
+        "TEST-4"
       ],
       "design-system": [
         "DS-1",
@@ -6885,14 +5855,7 @@
       ],
       "high": [
         "SEC-8",
-        "FIN-32",
-        "SEC-40",
         "INFRA-13",
-        "DEV-97",
-        "DEV-98",
-        "UX-58",
-        "UX-59",
-        "UX-60",
         "DS-1",
         "MKT-1",
         "INFRA-1",
@@ -6916,7 +5879,6 @@
         "DEV-68",
         "DEV-69",
         "ARCH-10",
-        "TEST-21",
         "FIN-33",
         "PERF-7",
         "DRY-10",
@@ -6938,10 +5900,6 @@
         "ARCH-1",
         "ARCH-4",
         "TEST-4",
-        "DEV-11",
-        "DEV-12",
-        "DEV-13",
-        "DEV-14",
         "DEV-18",
         "FIN-16",
         "DEV-21",
@@ -6957,9 +5915,6 @@
         "DEV-31",
         "DEV-32",
         "DEV-33",
-        "DEV-34",
-        "DEV-35",
-        "DEV-36",
         "DEV-37",
         "DEV-38",
         "DEV-39",
@@ -6984,16 +5939,10 @@
         "UX-55",
         "DEV-90",
         "DEV-91",
-        "DEV-99",
         "DEV-100",
         "DEV-101",
-        "UX-61",
-        "DEV-102",
         "UX-62",
         "UX-63",
-        "DEV-103",
-        "DEV-104",
-        "DEV-105",
         "UX-64",
         "DEV-115",
         "DEV-116",
@@ -7029,7 +5978,6 @@
         "DEV-106",
         "DEV-107",
         "DEV-108",
-        "UX-65",
         "DEV-109",
         "DEV-110",
         "DEV-111",
@@ -7042,7 +5990,6 @@
         "UX-103"
       ],
       "short": [
-        "SEC-40",
         "FIN-33",
         "PERF-7",
         "DRY-13",
@@ -7093,14 +6040,10 @@
       ],
       "medium": [
         "SEC-8",
-        "FIN-32",
-        "UX-58",
-        "UX-59",
         "DEV-63",
         "DEV-64",
         "DEV-66",
         "DEV-68",
-        "TEST-21",
         "SEC-10",
         "PERF-10",
         "FIN-7",
@@ -7111,19 +6054,13 @@
         "ARCH-1",
         "ARCH-4",
         "TEST-4",
-        "DEV-12",
-        "DEV-13",
         "DEV-33",
-        "DEV-35",
         "DEV-39",
         "DEV-48",
         "DEV-51",
         "DEV-55",
         "DEV-56",
-        "DEV-99",
         "DEV-100",
-        "UX-61",
-        "DEV-104",
         "DEV-118",
         "DEV-94",
         "DEV-119",
@@ -7136,14 +6073,11 @@
       ],
       "long": [
         "INFRA-13",
-        "DEV-97",
-        "DEV-98",
         "DEV-83",
         "DEV-65",
         "DRY-10",
         "DRY-14",
         "DEV-89",
-        "DEV-102",
         "DEV-41",
         "DEV-42",
         "FIN-11",
@@ -7155,9 +6089,6 @@
     "byStatus": {
       "ready": [
         "UX-103",
-        "FIN-32",
-        "SEC-40",
-        "TEST-21",
         "FIN-33",
         "PERF-7",
         "DRY-10",
@@ -7166,10 +6097,6 @@
         "DRY-19",
         "FIN-29",
         "FIN-30",
-        "DEV-11",
-        "DEV-12",
-        "DEV-13",
-        "DEV-14",
         "DEV-115",
         "DEV-116",
         "DRY-15",
@@ -7191,11 +6118,6 @@
       ],
       "backlog": [
         "INFRA-13",
-        "DEV-97",
-        "DEV-98",
-        "UX-58",
-        "UX-59",
-        "UX-60",
         "UX-44",
         "DEV-83",
         "DEV-61",
@@ -7235,9 +6157,6 @@
         "DEV-31",
         "DEV-32",
         "DEV-33",
-        "DEV-34",
-        "DEV-35",
-        "DEV-36",
         "DEV-37",
         "DEV-38",
         "DEV-39",
@@ -7262,16 +6181,10 @@
         "UX-55",
         "DEV-90",
         "DEV-91",
-        "DEV-99",
         "DEV-100",
         "DEV-101",
-        "UX-61",
-        "DEV-102",
         "UX-62",
         "UX-63",
-        "DEV-103",
-        "DEV-104",
-        "DEV-105",
         "UX-64",
         "DEV-117",
         "DEV-118",
@@ -7295,7 +6208,6 @@
         "DEV-106",
         "DEV-107",
         "DEV-108",
-        "UX-65",
         "DEV-109",
         "DEV-110",
         "DEV-111",
@@ -7309,15 +6221,12 @@
     },
     "quickWins": [
       "UX-103",
-      "SEC-40",
       "DS-1",
       "INFRA-2",
       "INFRA-3"
     ],
     "stale": [
       "INFRA-13",
-      "DEV-98",
-      "UX-59",
       "DEV-83",
       "DEV-63",
       "DEV-64",

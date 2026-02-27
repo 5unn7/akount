@@ -223,6 +223,28 @@
 **Period Covered:** 2026-02-17 to 2026-02-24
 | ID | Task | Completed | Source |
 |----|------|-----------|--------|
+| DEV-11 | Overview: Add upcoming payments endpoint — bills due + expected invoice payments | 2026-02-27 | audit:fe-be-parity |
+| DEV-12 | Overview: Add action items endpoint — unreconciled txns, overdue invoices, overdue bills | 2026-02-27 | audit:fe-be-parity |
+| DEV-13 | Overview: Add cash flow time-series chart endpoint — historical cash position by day/week | 2026-02-27 | audit:fe-be-parity |
+| DEV-14 | Overview: Add expense breakdown by category endpoint for ExpenseChart | 2026-02-27 | audit:fe-be-parity |
+| FIN-32 | Migrate TaxRate.rate from Float to Int (basis points: 500 = 5%) — Phase 1 | 2026-02-27 | audit:2026-02-26 |
+| SEC-40 | Implement CSRF protection for state-changing endpoints | 2026-02-27 | audit:2026-02-26 |
+| DEV-97 | Planning: Build Goal service + full CRUD (create/list/get/update/delete using Goal model) | 2026-02-27 | audit:fe-be-parity |
+| DEV-98 | Planning: Build Budget service + full CRUD (create/list/get/update/delete using Budget model) | 2026-02-27 | audit:fe-be-parity |
+| UX-58 | Planning: Build goals page — list goals, create form, progress tracking | 2026-02-27 | audit:fe-be-parity |
+| UX-59 | Planning: Build budgets page — list budgets, create form, budget vs actual bars | 2026-02-27 | audit:fe-be-parity |
+| UX-60 | Planning: Add planning landing page at `/planning` with summary cards | 2026-02-27 | audit:fe-be-parity |
+| TEST-21 | Fix TypeScript errors (63 total, 6 fixed, 57 remaining) | 2026-02-27 | audit:2026-02-26 |
+| DEV-34 | Overview: Goal Progress widget — progress bars for active goals, days to deadline | 2026-02-27 | audit:fe-be-parity |
+| DEV-35 | Overview: Budget vs Actual widget — % of budget used this month, over-budget alerts | 2026-02-27 | audit:fe-be-parity |
+| DEV-36 | Overview: Expense Forecast widget — projected monthly spend at current 3-month run rate | 2026-02-27 | audit:fe-be-parity |
+| DEV-99 | Planning: Add budget variance analysis endpoint — compare budget vs actual from GL | 2026-02-27 | audit:fe-be-parity |
+| UX-61 | Planning: Build forecasts page — cash flow projection chart | 2026-02-27 | audit:fe-be-parity |
+| DEV-102 | Planning: Add Forecast model to Prisma + CRUD service (scenario modeling) | 2026-02-27 | audit:fe-be-parity |
+| DEV-103 | Planning: Add cash runway calculator — months remaining at burn rate | 2026-02-27 | audit:fe-be-parity |
+| DEV-104 | Planning: Add seasonal pattern detection — highlight high/low revenue months | 2026-02-27 | audit:fe-be-parity |
+| DEV-105 | Planning: Add budget alerts — threshold warnings at 80%/100% utilization | 2026-02-27 | audit:fe-be-parity |
+| UX-65 | Planning: Add budget/goal export (CSV/PDF) | 2026-02-27 | audit:fe-be-parity |
 | INFRA-63 | Add rate limiting to queue manager (prevent DoS via unbounded job submission) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
 | TEST-22 | Add DocumentExtractionService integration tests (E2E: PII → Defense → Extraction → Validation) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
 | ARCH-13 | Add circuit breaker to MistralProvider (prevent cascading failures on rate limits) | 2026-02-27 | review:doc-intel-phase1 (db84898) |
