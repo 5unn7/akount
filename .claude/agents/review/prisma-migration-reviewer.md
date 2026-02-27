@@ -79,6 +79,8 @@ When reviewing Prisma schema changes or migrations, you MUST:
 - [ ] For multi-column queries, are compound indexes defined?
 - [ ] Are unique constraints properly set (e.g., `@@unique([tenantId, code])`)?
 - [ ] Will the migration lock tables for extended periods on large datasets?
+- [ ] For large tables (>100K rows), does the migration use `CREATE INDEX CONCURRENTLY`?
+- [ ] Are CHECK constraints used for validation (e.g., `ownershipBasisPoints <= 10000`)?
 
 ### ✓ Data Type Changes
 
@@ -113,6 +115,8 @@ When reviewing `prisma/migrations/*/migration.sql` files:
 - [ ] Are column additions using `ADD COLUMN ... DEFAULT ... NOT NULL` (can lock table)?
 - [ ] For adding NOT NULL constraints, is it done in two steps (add nullable, backfill, add constraint)?
 - [ ] Are `CASCADE` options explicitly stated (not implicit)?
+- [ ] If multiple migrations on same day, do indexes come AFTER column creation (timestamp ordering)?
+- [ ] Does the migration avoid P3006 shadow DB errors (indexes referencing non-existent columns)?
 
 ### ✓ Rollback Strategy
 

@@ -98,6 +98,69 @@ fastify.post('/invoices', {
 - [ ] Array sizes limited (prevent DoS)
 - [ ] Enums used for fixed values
 
+**Advanced Zod Quality Checks:**
+
+- [ ] Is `.strict()` used to reject unknown keys? (Prevents extra field injection)
+- [ ] Are error messages customized for user-facing fields? (`.min(1, "Name is required")`)
+- [ ] Are transformations used for normalization? (`.transform(v => v.trim().toLowerCase())`)
+- [ ] Are refinements used for complex validation? (`.refine(validateBusinessLogic)`)
+- [ ] Are schemas reused (DRY) or duplicated across files?
+- [ ] Are optional fields truly optional or should they have defaults?
+- [ ] Are discriminated unions used for polymorphic data? (`.discriminatedUnion()`)
+
+**Example Advanced Schema:**
+```typescript
+// ✅ EXCELLENT - Strict, normalized, validated
+const createInvoiceSchema = z.object({
+  invoiceNumber: z.string()
+    .min(1, "Invoice number is required")
+    .max(50, "Invoice number too long")
+    .transform(v => v.trim().toUpperCase()),
+  amount: z.number()
+    .int("Amount must be in cents")
+    .positive("Amount must be greater than zero"),
+  dueDate: z.string()
+    .datetime("Invalid date format")
+    .refine(d => new Date(d) > new Date(), "Due date must be in the future"),
+}).strict(); // Reject unknown keys
+
+// ❌ WEAK - No strict, no limits, no error messages
+const createInvoiceSchema = z.object({
+  invoiceNumber: z.string(),
+  amount: z.number(),
+  dueDate: z.string(),
+});
+```
+
+**Schema Validation Bypass Detection:**
+
+Real issue from past reviews: **P0-3 (phase5-reports)** - `format` query parameter unvalidated
+
+- [ ] Are ALL query parameters in Zod schema? (Not just body)
+- [ ] Are path parameters (`:id`) validated via params schema?
+- [ ] Are headers validated if used for business logic?
+- [ ] Check for manual type casts bypassing Zod (e.g., `as ExportFormat`)
+
+```typescript
+// ❌ WRONG - Query param bypasses Zod
+fastify.get('/export', {
+  schema: { body: ExportSchema } // Missing query!
+}, async (req) => {
+  const format = req.query.format as ExportFormat; // UNSAFE CAST
+});
+
+// ✅ CORRECT - All params validated
+fastify.get('/export', {
+  schema: {
+    querystring: z.object({
+      format: z.enum(['pdf', 'csv', 'xlsx']),
+    }).strict(),
+  }
+}, async (req) => {
+  const { format } = req.query; // Type-safe!
+});
+```
+
 ### Authentication & Authorization
 
 **Required Pattern:**
@@ -180,6 +243,85 @@ for (const invoice of invoices) {
 const invoices = await prisma.invoice.findMany({
   include: { client: true }
 })
+```
+
+### Security: Rate Limiting & CSRF
+
+**Rate Limiting (@fastify/rate-limit):**
+
+- [ ] Are expensive endpoints rate-limited? (AI calls, exports, imports)
+- [ ] Is rate limit per-user or per-tenant (not global)?
+- [ ] Are rate limit headers returned (`X-RateLimit-*`)?
+- [ ] Is there a higher limit for authenticated users vs anonymous?
+
+```typescript
+// ✅ CORRECT - Per-user rate limiting on expensive endpoint
+fastify.post('/ai/categorize', {
+  onRequest: [authMiddleware],
+  config: {
+    rateLimit: {
+      max: 100, // 100 requests
+      timeWindow: '1 minute',
+      keyGenerator: (req) => req.userId, // Per-user
+    }
+  }
+}, handler);
+
+// ❌ WRONG - No rate limiting on AI endpoint (cost bomb!)
+fastify.post('/ai/categorize', handler);
+```
+
+**CSRF Protection (@fastify/csrf-protection):**
+
+- [ ] Are state-changing endpoints (POST/PATCH/DELETE) CSRF-protected?
+- [ ] Is CSRF token validated from header or cookie?
+- [ ] Are GET requests exempt from CSRF (safe methods only)?
+- [ ] Is CSRF configured in `index.ts`?
+
+```typescript
+// CSRF should be enabled globally in apps/api/src/index.ts
+await fastify.register(csrf, {
+  cookieOpts: { signed: true, sameSite: 'strict' },
+  sessionPlugin: '@fastify/cookie'
+});
+```
+
+**File Upload Security (@fastify/multipart):**
+
+- [ ] Are file size limits enforced? (e.g., 10MB max)
+- [ ] Are MIME types validated (not just file extension)?
+- [ ] Are uploaded files scanned for malware (if user-uploaded)?
+- [ ] Are filenames sanitized before storage?
+- [ ] Is there upload quota per tenant (prevent storage abuse)?
+
+```typescript
+// ✅ CORRECT - File upload with limits
+import { checkUploadQuota, getMaxFileSize } from '../../../lib/upload-quota';
+
+fastify.post('/import', {
+  onRequest: [authMiddleware],
+}, async (req, reply) => {
+  const data = await req.file({
+    limits: {
+      fileSize: getMaxFileSize(req.tenantId), // Per-tenant limit
+      files: 1,
+    }
+  });
+
+  if (!data) {
+    return reply.status(400).send({ error: 'No file uploaded' });
+  }
+
+  // Check quota before processing
+  await checkUploadQuota(req.tenantId, data.file.bytesRead);
+
+  // Validate MIME type
+  if (!['text/csv', 'application/vnd.ms-excel'].includes(data.mimetype)) {
+    return reply.status(400).send({ error: 'Invalid file type' });
+  }
+
+  // Process file...
+});
 ```
 
 ### Response Formatting

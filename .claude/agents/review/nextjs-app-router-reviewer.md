@@ -541,6 +541,115 @@ export default async function DashboardPage() {
 }
 ```
 
+**Exception: When Client-Side Fetching IS Needed**
+
+For mutations, real-time updates, or interactive features, use **React Query (@tanstack/react-query)** with proper patterns:
+
+```tsx
+// ✓ CORRECT: React Query for mutations
+'use client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+function InvoiceActions({ invoiceId }: { invoiceId: string }) {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteInvoice, isPending } = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/invoices/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Delete failed');
+    },
+    onSuccess: () => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({ queryKey: ['invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['invoice', invoiceId] });
+    },
+  });
+
+  return (
+    <Button onClick={() => deleteInvoice(invoiceId)} disabled={isPending}>
+      {isPending ? 'Deleting...' : 'Delete'}
+    </Button>
+  );
+}
+
+// ❌ WRONG: No cache invalidation
+const { mutate } = useMutation({
+  mutationFn: deleteInvoice,
+  // Missing onSuccess - cache stays stale!
+});
+```
+
+**React Query Best Practices:**
+
+- [ ] Are query keys specific and hierarchical? (`['invoices', { status: 'paid' }]`)
+- [ ] Is cache invalidation handled after mutations? (`queryClient.invalidateQueries`)
+- [ ] Are optimistic updates used for better UX?
+- [ ] Is `staleTime` configured appropriately? (default: 0 = always stale)
+- [ ] Are parallel queries avoided in favor of Server Component data fetch?
+- [ ] Are dependent queries using `enabled` option correctly?
+- [ ] Are errors handled with `onError` or `error` state?
+
+**Query Key Specificity:**
+
+```tsx
+// ❌ TOO BROAD - Invalidates ALL invoices on any change
+const queryKey = ['invoices'];
+
+// ✓ SPECIFIC - Only invalidates matching queries
+const queryKey = ['invoices', { tenantId, status: 'draft', page: 1 }];
+```
+
+**Stale Time Configuration:**
+
+```tsx
+// ❌ WRONG - Refetches on every focus (wasteful)
+const { data } = useQuery({
+  queryKey: ['invoice', id],
+  queryFn: fetchInvoice,
+  // staleTime: 0 (default)
+});
+
+// ✓ CORRECT - 5 minutes stale time for stable data
+const { data } = useQuery({
+  queryKey: ['invoice', id],
+  queryFn: fetchInvoice,
+  staleTime: 5 * 60 * 1000, // 5 minutes
+});
+```
+
+**Dependent Queries:**
+
+```tsx
+// ✅ CORRECT - Second query waits for first
+const { data: user } = useQuery({
+  queryKey: ['user'],
+  queryFn: fetchUser,
+});
+
+const { data: invoices } = useQuery({
+  queryKey: ['invoices', user?.tenantId],
+  queryFn: () => fetchInvoices(user!.tenantId),
+  enabled: !!user, // Only run if user exists
+});
+
+// ❌ WRONG - Race condition, user might be undefined
+const { data: invoices } = useQuery({
+  queryKey: ['invoices', user?.tenantId],
+  queryFn: () => fetchInvoices(user.tenantId), // Crash if user is undefined!
+});
+```
+
+**When to Use React Query vs Server Components:**
+
+| Use Case | Recommended Approach |
+|----------|---------------------|
+| Initial page load | ✅ Server Component (faster, SEO-friendly) |
+| Mutations (create, update, delete) | ✅ React Query `useMutation` |
+| Real-time updates (polling) | ✅ React Query with `refetchInterval` |
+| Infinite scroll | ✅ React Query `useInfiniteQuery` |
+| Search/filter with debounce | ✅ React Query (avoid server refetch) |
+| Static content | ✅ Server Component (no need for client state) |
+
 ### ❌ Pattern 3: Not Using Route Groups
 
 ```tsx

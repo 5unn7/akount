@@ -564,12 +564,126 @@ export async function GET(request: NextRequest) {
 - [ ] API responses don't expose internal fields
 - [ ] Error messages don't leak implementation details
 
-### Configuration
+### Configuration & Environment Variables
 
-- [ ] No hardcoded secrets (use environment variables)
-- [ ] Security headers set (X-Frame-Options, CSP, etc.)
-- [ ] CORS configured properly (no wildcard *)
-- [ ] HTTPS enforced (Strict-Transport-Security)
+**Environment Variable Security:**
+
+- [ ] No hardcoded secrets (API keys, passwords, tokens)
+- [ ] All secrets loaded from `process.env` or secure vault
+- [ ] `.env.example` exists and is in sync with code
+- [ ] Required env vars validated on boot (fail-fast)
+- [ ] Sensitive env vars never logged or exposed in errors
+- [ ] Different `.env` files for dev/staging/prod
+- [ ] `.env` and `.env.local` in `.gitignore`
+
+**Required Pattern:**
+```typescript
+// ✅ CORRECT - Validated on boot with Zod
+import { z } from 'zod';
+
+const envSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  CLERK_SECRET_KEY: z.string().startsWith('sk_'),
+  ANTHROPIC_API_KEY: z.string().startsWith('sk-ant-'),
+  NODE_ENV: z.enum(['development', 'staging', 'production']),
+  PORT: z.coerce.number().int().positive().default(3000),
+});
+
+export const env = envSchema.parse(process.env);
+// App will not start if any required var is missing
+
+// ❌ WRONG - No validation, runtime errors
+const API_KEY = process.env.ANTHROPIC_API_KEY; // Could be undefined!
+```
+
+**12-Factor App Compliance:**
+
+- [ ] Config stored in environment (not code)
+- [ ] No config files committed to repo (except examples)
+- [ ] Env vars follow naming convention (SCREAMING_SNAKE_CASE)
+- [ ] Secrets rotatable without code changes
+- [ ] No environment-specific code branches (`if (NODE_ENV === 'prod')`)
+
+**.env File Patterns to Flag:**
+
+```bash
+# ❌ DANGEROUS - Secrets in repository
+DATABASE_URL="postgresql://user:password@localhost/db"
+CLERK_SECRET_KEY="sk_live_..."
+
+# ✅ SAFE - Example file with placeholders
+# .env.example
+DATABASE_URL="postgresql://user:password@host/db"
+CLERK_SECRET_KEY="sk_test_..."
+```
+
+**Config Drift Detection:**
+
+- [ ] Check if `.env.example` lists all vars used in code
+- [ ] Check if code references vars not in `.env.example`
+- [ ] Warn if different var names across frontend/backend
+
+```bash
+# Audit command to find all process.env usage
+Grep "process.env\." apps/ packages/ --output_mode=content
+# Compare against .env.example
+```
+
+**Security Headers:**
+
+- [ ] `X-Frame-Options: DENY` or `SAMEORIGIN` (prevent clickjacking)
+- [ ] `X-Content-Type-Options: nosniff` (prevent MIME sniffing)
+- [ ] `Strict-Transport-Security` with long max-age (HTTPS enforcement)
+- [ ] `Content-Security-Policy` defined (XSS protection)
+- [ ] `X-XSS-Protection: 1; mode=block` (legacy browsers)
+- [ ] `Referrer-Policy: strict-origin-when-cross-origin`
+
+```typescript
+// Fastify Helmet configuration
+import helmet from '@fastify/helmet';
+
+await fastify.register(helmet, {
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"], // Minimize unsafe-inline
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      connectSrc: ["'self'", 'https://api.clerk.com'],
+    },
+  },
+  hsts: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true,
+  },
+});
+```
+
+**CORS Configuration:**
+
+- [ ] CORS configured properly (no wildcard `*` in production)
+- [ ] Allowed origins explicitly listed
+- [ ] Credentials allowed only for trusted origins
+- [ ] Preflight requests handled correctly
+
+```typescript
+// ✅ CORRECT - Explicit origins
+await fastify.register(cors, {
+  origin: [
+    'https://app.akount.com',
+    'https://staging.akount.com',
+    /^https:\/\/.*\.akount\.com$/, // Subdomains
+  ],
+  credentials: true,
+});
+
+// ❌ WRONG - Wildcard in production
+await fastify.register(cors, {
+  origin: '*', // Allows any domain!
+  credentials: true, // Especially dangerous with credentials
+});
+```
 
 ### Data Protection
 
