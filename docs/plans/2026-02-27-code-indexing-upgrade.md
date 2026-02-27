@@ -8,16 +8,20 @@
 
 ## Overview
 
-Upgrade Claude Code's architecture with PageIndex-style code indexing to reduce context exhaustion, prevent hallucinations, and improve cross-session knowledge persistence. Currently, all code discovery is manual (Grep → Read on every access). This plan implements HTML comment-based indexing for instant code lookup.
+Upgrade Claude Code's architecture with PageIndex-style code indexing to reduce context exhaustion, prevent hallucinations, and improve cross-session knowledge persistence. Currently, all code discovery is manual (Grep → Read on every access). This plan implements **domain-split HTML comment-based indexes** for instant code lookup.
+
+**SPIKE 1 Result (2026-02-27):** Single monolithic index won't fit (92K tokens). **Solution: 8 domain-specific indexes** (~3K tokens each, 84% under budget).
 
 ## Success Criteria
 
-- [ ] Code index covers 100% of TypeScript files (642 files)
-- [ ] Discovery time reduced by 80% (1 lookup vs 5-10 Grep calls)
+- [ ] Code index covers 100% of TypeScript files (642 files across 8 domains)
+- [ ] Discovery time reduced by 80% (1 index lookup vs 5-10 Grep calls)
 - [ ] Hallucination incidents reduced by 60% (proactive verification)
 - [ ] Context documentation staleness < 7 days (automated freshness)
 - [ ] Pattern violations caught at commit time (zero drift)
 - [ ] Review learnings auto-propagate to MEMORY.md
+- [ ] Multi-domain index loading works seamlessly (auto-detect adjacent domains)
+- [ ] Indexes stay fresh (<1 commit lag via post-commit hook)
 
 ---
 
@@ -53,121 +57,277 @@ Upgrade Claude Code's architecture with PageIndex-style code indexing to reduce 
 
 ### Sprint 1: Code Index Foundation (Priority 1, Week 1)
 
-#### Task 1.1: Create Code Index Generator
+#### Task 1.1: Create Code Index Generator (Domain-Split)
 **Files:**
 - NEW: `.claude/scripts/regenerate-code-index.js`
-- UPDATE: `CODEBASE.md` (new file with HTML comment index)
+- NEW: `CODEBASE-BANKING.md`
+- NEW: `CODEBASE-INVOICING.md`
+- NEW: `CODEBASE-ACCOUNTING.md`
+- NEW: `CODEBASE-PLANNING.md`
+- NEW: `CODEBASE-AI.md`
+- NEW: `CODEBASE-WEB-PAGES.md`
+- NEW: `CODEBASE-WEB-COMPONENTS.md`
+- NEW: `CODEBASE-PACKAGES.md`
 
-**What:** Build script similar to regenerate-task-index.js but for TypeScript files. Scans apps/api, apps/web, packages/ and generates JSON metadata embedded as HTML comment in CODEBASE.md.
+**What:** Build script that scans codebase and generates **8 domain-specific indexes** using compressed format. Each index covers ~80 files (~3,160 tokens, well under 20K budget).
 
-**Index Structure:**
+**Index Structure (Compressed Format — 73% smaller):**
 ```html
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "services": {
-    "account.service.ts": {
-      "path": "apps/api/src/domains/banking/services/account.service.ts",
-      "domain": "banking",
-      "exports": ["AccountService", "createAccount", "listAccounts"],
-      "imports": ["@akount/db", "TenantContext"],
-      "patterns": ["tenant-isolation", "soft-delete", "pino-logging"],
-      "loc": 234,
-      "testFile": "__tests__/account.service.test.ts",
-      "testCoverage": 85,
-      "lastModified": "2026-02-24"
-    }
-  },
-  "routes": { /* similar structure */ },
-  "components": { /* similar structure */ },
-  "patterns": {
-    "tenant-isolation": {
-      "files": ["account.service.ts", "invoice.service.ts"],
-      "canonical": "See .claude/rules/financial-rules.md",
-      "violations": []
+  "_": "2026-02-27",
+  "n": 80,
+  "f": {
+    "account.service": {
+      "p": "domains/banking/services/account.service.ts",
+      "d": "bnk",
+      "e": 4,
+      "i": 1,
+      "l": 375,
+      "pt": "TSP",
+      "v": ""
     },
-    "formatCurrency": {
-      "canonical": "apps/web/src/lib/utils/currency.ts",
-      "usages": 47,
-      "violations": ["components/old-widget.tsx:23"]
+    "transfer.service": {
+      "p": "domains/banking/services/transfer.service.ts",
+      "d": "bnk",
+      "e": 6,
+      "i": 3,
+      "l": 412,
+      "pt": "TSPL",
+      "v": ""
     }
   },
-  "domains": {
-    "banking": { "services": 8, "routes": 12, "tests": 24 }
+  "d": {
+    "bnk": { "n": 80, "l": 15234 }
   },
-  "staleness": {
-    "staleFiles": ["context-map.md"],
-    "threshold": 7
-  }
+  "p": {
+    "T": ["account.service", "transfer.service"],
+    "S": ["account.service"],
+    "P": ["account.service", "transfer.service"],
+    "L": ["transfer.service"]
+  },
+  "v": {}
 }
+CODE-INDEX:END -->
+
+**Decode Legend:**
+- Fields: p=path, d=domain, e=exports, i=imports, l=LOC, pt=patterns, v=violations
+- Patterns: T=tenant, S=soft-delete, L=logging, P=prisma, C=client
+- Violations: F=formatCurrency, H=hardcoded-color, L=console.log, A=any-type
+- Domains: bnk=banking, inv=invoicing, acc=accounting, pln=planning, ai=ai, pg=pages, cmp=components, pkg=packages
+```
+
+**Compression techniques:**
+- Single-letter fields (p, d, e vs path, domain, exports)
+- Pattern codes (T, S, P vs full strings)
+- Violation codes (F, H, L, A vs full strings)
+- Short domain codes (bnk vs banking)
+- Counts instead of arrays (exportCount vs list of names)
+- Shortened paths (relative from domain root)
 CODE-INDEX:END -->
 ```
 
 **Success:**
-- Script generates valid JSON index from codebase scan
-- Index covers all 642 TypeScript files
-- Pattern violations detected (inline utils, hardcoded colors)
-- Staleness tracking for documentation files
+- Script generates 8 domain-specific indexes
+- Each index <5K tokens (target: ~3,160 tokens)
+- Pattern detection works (T, S, P, L, C codes)
+- Violation detection works (F, H, L, A codes)
+- All 642 files indexed
 
 **Depends on:** none
-**Effort:** 1-2 days
+**Effort:** 2 days (add 1 day for domain-split logic)
+
+**Review:** `architecture-strategist`
 
 ---
 
-#### Task 1.2: Update Discovery Workflows
+#### Task 1.2: Build Multi-Domain Index Loader
+**Files:**
+- NEW: `.claude/scripts/load-code-index.js`
+- NEW: `.claude/domain-adjacency.json`
+
+**What:** Helper script that determines which domain indexes to load based on context (file paths, task description, or explicit domains).
+
+**Domain Adjacency Matrix:**
+```json
+{
+  "banking": ["accounting"],
+  "invoicing": ["accounting", "clients"],
+  "vendors": ["accounting"],
+  "accounting": [],
+  "planning": ["accounting", "banking"],
+  "ai": ["banking", "accounting"],
+  "web-pages": ["web-components"],
+  "web-components": [],
+  "packages": []
+}
+```
+
+**Loading Strategies:**
+
+1. **Path-Based (Automatic)**
+   - Working in `apps/api/src/domains/banking/` → load CODEBASE-BANKING.md
+   - Editing `apps/web/src/app/(dashboard)/` → load CODEBASE-WEB-PAGES.md
+
+2. **Adjacency-Based (Smart)**
+   - Working in banking → auto-load accounting (transfers create JEs)
+   - Working in invoicing → auto-load accounting + clients
+   - Max 3 domains loaded simultaneously (~9,500 tokens)
+
+3. **Task-Based (Explicit)**
+   - Task in TASKS.md tagged with domain: "Banking: Implement transfers"
+   - Load banking + adjacent domains from adjacency matrix
+
+4. **Keyword-Based (Fallback)**
+   - User message contains "invoice payment matching"
+   - Detect keywords: invoice, payment, matching
+   - Load: invoicing + banking + accounting
+
+**API:**
+```javascript
+const { loadIndexes } = require('.claude/scripts/load-code-index');
+
+// Automatic (infer from file paths)
+const indexes = loadIndexes({ filePaths: ['apps/api/src/domains/banking/services/transfer.service.ts'] });
+// Returns: { banking: {...}, accounting: {...} }
+
+// Explicit
+const indexes = loadIndexes({ domains: ['invoicing', 'clients'] });
+// Returns: { invoicing: {...}, clients: {...}, accounting: {...} } (+ adjacent)
+
+// Keyword-based
+const indexes = loadIndexes({ keywords: ['invoice', 'payment', 'GL posting'] });
+// Returns: { invoicing: {...}, accounting: {...} }
+```
+
+**Success:**
+- Script loads relevant domain indexes automatically
+- Adjacency matrix prevents loading unnecessary domains
+- Max 3-4 domains loaded per session (~12K tokens max)
+- Fallback to Grep if no domains match
+
+**Depends on:** Task 1.1
+**Effort:** 1 day
+
+**Review:** `architecture-strategist`
+
+---
+
+#### Task 1.3: Update Discovery Workflows
 **Files:**
 - UPDATE: `.claude/commands/processes/plan.md`
 - UPDATE: `.claude/commands/processes/work.md`
 - UPDATE: `.claude/commands/processes/claim.md`
 - UPDATE: `.claude/rules/product-thinking.md`
 
-**What:** Modify workflows to check code index BEFORE manual Grep/Read. Add "Index Lookup" phase:
-1. Read CODEBASE.md index (fast, ~3K tokens)
-2. Filter to relevant domain/pattern
-3. Only Grep if index lookup fails
+**What:** Modify workflows to use multi-domain index loader BEFORE manual Grep/Read.
 
 **Example Change (plan.md):**
 ```markdown
 ## Phase 1: Research
 
 ### Check Code Index First
-Read CODEBASE.md index to find:
-- Services in target domain
-- Similar pattern implementations
-- Canonical utility locations
+Load relevant domain indexes (auto-detected from task/keywords):
+- Use load-code-index.js to get banking + accounting indexes
+- Search for similar services/patterns
+- Find canonical utility locations
+- Check for existing implementations
+
+Example: "Implement bank transfers"
+  → Loads: CODEBASE-BANKING.md + CODEBASE-ACCOUNTING.md (adjacency)
+  → Finds: transfer.service.ts, entry-number.ts (shared utility)
+  → ~6,320 tokens (2 domains × ~3,160 tokens)
 
 ### Fallback to Manual Discovery
-If index lookup fails, use traditional Grep/Read.
+If index lookup fails or returns no results:
+- Use traditional Grep/Read
+- Update index if file missing (stale index warning)
 ```
 
-**Success:**
-- Workflows reference code index before Grep
-- Plan skill shows "Found 3 similar services via index"
-- Work skill verifies pattern via index before implementing
+**Workflow Integration:**
+- /processes:plan → loads indexes based on feature keywords
+- /processes:work → loads indexes based on current task domain tags
+- /processes:claim → loads indexes based on task enrichments (files field)
 
-**Depends on:** Task 1.1
+**Success:**
+- Workflows auto-load relevant domain indexes
+- Multi-domain work loads adjacent domains automatically
+- Fallback to Grep if index stale or incomplete
+- Plan skill shows "Loaded banking + accounting indexes (6,320 tokens), found 3 similar services"
+
+**Depends on:** Task 1.2 (multi-domain loader)
 **Effort:** 2-3 hours
 
 **Review:** `architecture-strategist`
 
 ---
 
-#### Task 1.3: Add Auto-Rebuild Hooks
+#### Task 1.4: Add Auto-Rebuild Hooks with Freshness Tracking
 **Files:**
 - NEW: `.claude/hooks/rebuild-code-index.sh`
+- NEW: `.claude/.code-index-state.json`
 - UPDATE: `.claude/hooks/hard-rules.sh`
 
-**What:** Hook that triggers code index rebuild on TS file changes (similar to task-complete-sync.sh for TASKS.md).
+**What:** Post-commit hook that rebuilds domain indexes when TS files change, with freshness tracking and staleness detection.
 
-**Trigger:** post-commit if `git diff --name-only HEAD~1 HEAD | grep '\.tsx\?$'`
-**Action:** `node .claude/scripts/regenerate-code-index.js`
+**Freshness State Tracking:**
+```json
+{
+  "lastBuild": "2026-02-27T21:30:00.000Z",
+  "domains": {
+    "banking": {
+      "lastBuild": "2026-02-27T21:30:00.000Z",
+      "fileCount": 80,
+      "newestFile": "transfer.service.ts",
+      "newestMtime": "2026-02-27T20:15:00.000Z"
+    },
+    "invoicing": { ... }
+  },
+  "gitCommit": "abc1234"
+}
+```
+
+**Rebuild Logic:**
+```bash
+# Post-commit hook
+CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '\.tsx\?$')
+
+if [ -n "$CHANGED_FILES" ]; then
+  # Determine affected domains
+  for file in $CHANGED_FILES; do
+    if [[ $file == *"/banking/"* ]]; then
+      DOMAINS="$DOMAINS banking"
+    fi
+    # ... (check all 8 domains)
+  done
+
+  # Rebuild only affected domains
+  node .claude/scripts/regenerate-code-index.js --domains "$DOMAINS"
+
+  # Update freshness state
+  node .claude/scripts/update-index-state.js
+fi
+```
+
+**Staleness Detection:**
+- On workflow start (/processes:begin), check freshness state
+- Compare index lastBuild vs newest file mtime per domain
+- Warn if index >1 hour older than newest file
+- Provide manual rebuild command: `node .claude/scripts/regenerate-code-index.js --force`
+
+**Performance:**
+- Rebuild 1 domain (~80 files): <2 seconds
+- Rebuild all 8 domains: <10 seconds (rare)
+- Hook runs async (doesn't block commit)
 
 **Success:**
-- Code index auto-updates after commits touching .ts/.tsx files
-- Hook runs in <2 seconds (no commit slowdown)
-- Index stays fresh within 1 commit lag
+- Hook rebuilds only affected domains (fast)
+- Freshness state tracks per-domain staleness
+- Workflows warn if index stale
+- Manual rebuild available for emergency
 
 **Depends on:** Task 1.1
-**Effort:** 1 hour
+**Effort:** 2 hours (add freshness tracking)
 
 ---
 
