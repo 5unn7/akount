@@ -220,20 +220,21 @@ model JournalLine {
 }
 
 model TaxRate {
-  id            String    @id @default(cuid())
-  entityId      String?
-  code          String
-  name          String
-  rate          Float
-  jurisdiction  String
-  isInclusive   Boolean
-  glAccountId   String?
-  isActive      Boolean
-  effectiveFrom DateTime
-  effectiveTo   DateTime?
-  entity        Entity?       @relation(fields: [entityId], references: [id])
-  invoiceLines  InvoiceLine[] @relation("InvoiceLineTaxRate")
-  billLines     BillLine[]    @relation("BillLineTaxRate")
+  id              String    @id @default(cuid())
+  entityId        String?
+  code            String
+  name            String
+  rate            Float     // FIN-32: OLD - will be removed after migration completes
+  rateBasisPoints Int       // FIN-32: NEW - basis points (500 = 5%, 1300 = 13%)
+  jurisdiction    String
+  isInclusive     Boolean
+  glAccountId     String?
+  isActive        Boolean
+  effectiveFrom   DateTime
+  effectiveTo     DateTime?
+  entity          Entity?       @relation(fields: [entityId], references: [id])
+  invoiceLines    InvoiceLine[] @relation("InvoiceLineTaxRate")
+  billLines       BillLine[]    @relation("BillLineTaxRate")
 
   @@unique([entityId, code])
   @@index([entityId, isActive])
@@ -698,10 +699,10 @@ model Goal {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   deletedAt     DateTime?
-  account       Account?   @relation(fields: [accountId], references: [id])
-  category      Category?  @relation(fields: [categoryId], references: [id])
-  entity        Entity     @relation(fields: [entityId], references: [id])
-  glAccount     GLAccount? @relation("GoalGLAccount", fields: [glAccountId], references: [id])
+  account       Account?   @relation(fields: [accountId], references: [id], onDelete: Restrict)
+  category      Category?  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  entity        Entity     @relation(fields: [entityId], references: [id], onDelete: Restrict)
+  glAccount     GLAccount? @relation("GoalGLAccount", fields: [glAccountId], references: [id], onDelete: Restrict)
 
   @@index([entityId])
   @@index([status])
