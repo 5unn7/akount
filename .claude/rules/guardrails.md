@@ -136,23 +136,28 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 2. ✅ **Read existing files first** — ALWAYS Read before Edit (never edit blindly)
    - **For multi-file refactoring:** Read ONE file completely, verify pattern, THEN replicate
    - **Copy exact strings:** Use actual file content for Edit old_string (not grep snippets)
-3. ✅ **Search for patterns** — `Grep "similar-feature" apps/`
-4. ✅ **Search for existing utilities** — BEFORE creating helper functions:
+3. ✅ **Verify imports before claiming** — NEW: Use code indexes or verify-import.js
+   - Before claiming "I'll import X from Y", verify export exists
+   - Index lookup (fast): Load relevant domain index, check exports array
+   - Grep fallback (if index miss): Search file for export
+   - Block edit if import doesn't exist (hallucination prevention)
+4. ✅ **Search for patterns** — `Grep "similar-feature" apps/` or check code indexes
+5. ✅ **Search for existing utilities** — BEFORE creating helper functions:
    - Currency/money: `Grep "formatCurrency|cents.*100" apps/web/src/lib/utils/`
    - Dates: `Grep "formatDate|toLocaleString.*Date" apps/web/src/lib/utils/`
    - Status badges: `Grep "StatusBadge|STATUS_CONFIG" packages/ui/`
    - Empty states: `Grep "EmptyState|No.*found" packages/ui/`
-5. ✅ **Search MEMORY for prior learnings** — `Grep "[concept]" memory/`
-6. ✅ **Trace the impact** — what imports/calls this code? What could break?
-7. ✅ **Apply review lens** — will this pass security, financial integrity, type safety?
-8. ✅ **Verify schema** — check Prisma models match intent
-9. ✅ **Check tokens** — design tokens exist before using
-10. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
-11. ✅ **Verify labels/paths** — search before creating new
-12. ✅ **Validate test vs production** — mocks stay in `__tests__/`
-13. ✅ **For UI changes: minimal first** — change ONE visual thing, verify, then expand (see `frontend-conventions.md`)
-14. ✅ **Check loading/error states** — every new page.tsx needs loading.tsx + error.tsx (Invariant #6)
-15. ✅ **Check server/client separation** — no mixing `'use client'` with server-only imports (Invariant #7)
+6. ✅ **Search MEMORY for prior learnings** — `Grep "[concept]" memory/`
+7. ✅ **Trace the impact** — what imports/calls this code? What could break?
+8. ✅ **Apply review lens** — will this pass security, financial integrity, type safety?
+9. ✅ **Verify schema** — check Prisma models match intent
+10. ✅ **Check tokens** — design tokens exist before using
+11. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
+12. ✅ **Verify labels/paths** — search before creating new
+13. ✅ **Validate test vs production** — mocks stay in `__tests__/`
+14. ✅ **For UI changes: minimal first** — change ONE visual thing, verify, then expand (see `frontend-conventions.md`)
+15. ✅ **Check loading/error states** — every new page.tsx needs loading.tsx + error.tsx (Invariant #6)
+16. ✅ **Check server/client separation** — no mixing `'use client'` with server-only imports (Invariant #7)
 
 **For bug fixes:** Follow Investigation Protocol in `product-thinking.md`, or run `/processes:diagnose` for complex bugs.
 
@@ -237,6 +242,18 @@ The following rules are **BLOCKED** by hooks and will fail commits:
 - ❌ **NEVER create JEs from documents without source preservation** — every JE from an Invoice, Bill, Payment, or Transfer MUST set `sourceType`, `sourceId`, and `sourceDocument` (JSON snapshot). Without this, GL rebuilds and audit trails are impossible.
 - ❌ **NEVER inline JE entry number generation** — use `generateEntryNumber()` from `domains/accounting/utils/entry-number.ts`. Inline `parseInt(str.replace('JE-', ''))` produces NaN on unexpected formats.
 - ❌ **NEVER duplicate private methods across services** — if 3+ services need the same function, extract to `domains/<domain>/utils/`
+
+### Prisma Migrations (CRITICAL — See prisma-workflow.md)
+- ❌ **NEVER run `prisma migrate dev` non-interactively** — it requires human to name migration, agents cannot respond to prompts
+- ❌ **NEVER use `db push` for permanent changes** — creates invisible drift, no migration files, breaks shadow DB
+- ❌ **NEVER manually write migration SQL** — breaks checksums, causes "migration modified" errors
+- ❌ **NEVER run `migrate deploy` in development** — this is for production CI/CD only, skips validation
+- ❌ **NEVER make schema changes without asking user to run migration** — agents CANNOT handle interactive prompts
+- ✅ **DO ask user to run migration after schema edits** — provide exact command with suggested name
+- ✅ **DO verify migration applied** — check migration folder exists before continuing
+- ✅ **DO suggest descriptive migration names** — `add_ai_consent_model`, not `update_schema`
+
+**See `.claude/rules/prisma-workflow.md` for full agent-friendly workflow and error recovery.**
 
 ### Code Quality
 - ❌ **NEVER use mock data in implementation** — mocks are for tests
