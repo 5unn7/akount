@@ -1,89 +1,27 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, AlertTriangle, Scale } from 'lucide-react';
 import { getTrialBalanceStatus } from '@/lib/api/dashboard-client';
 import { formatCurrency } from '@/lib/utils/currency';
 import type { TrialBalanceReport } from '@akount/types/financial';
+import { useWidgetData } from '@/hooks/useWidgetData';
+import { WidgetLoadingSkeleton, WidgetErrorState, WidgetEmptyState } from './WidgetPrimitives';
 
 interface TrialBalanceStatusWidgetProps {
     entityId?: string;
 }
 
 export function TrialBalanceStatusWidget({ entityId }: TrialBalanceStatusWidgetProps) {
-    const [data, setData] = useState<TrialBalanceReport | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const { data, loading, error } = useWidgetData<TrialBalanceReport>(
+        () => getTrialBalanceStatus(entityId),
+        [entityId]
+    );
 
-    useEffect(() => {
-        getTrialBalanceStatus(entityId)
-            .then((report) => {
-                setData(report);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError(true);
-                setLoading(false);
-            });
-    }, [entityId]);
-
-    // Loading state
-    if (loading) {
-        return (
-            <div>
-                <div className="flex items-center justify-between mb-3">
-                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
-                        Trial Balance
-                    </p>
-                </div>
-                <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 rounded-full bg-muted/30 animate-pulse shrink-0" />
-                    <div className="space-y-1.5 flex-1">
-                        <div className="h-3.5 w-24 bg-muted/30 animate-pulse rounded" />
-                        <div className="h-2.5 w-16 bg-muted/20 animate-pulse rounded" />
-                    </div>
-                </div>
-                <div className="space-y-2">
-                    {[1, 2].map((i) => (
-                        <div key={i} className="flex justify-between">
-                            <div className="h-2.5 w-20 bg-muted/20 animate-pulse rounded" />
-                            <div className="h-2.5 w-24 bg-muted/20 animate-pulse rounded" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    // Error state
-    if (error) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
-                    Trial Balance
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <Scale className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">Failed to load trial balance</p>
-                </div>
-            </div>
-        );
-    }
-
-    // Empty state
+    if (loading) return <WidgetLoadingSkeleton title="Trial Balance" items={4} />;
+    if (error) return <WidgetErrorState icon={Scale} title="Trial Balance" message="Failed to load trial balance" />;
     if (!data || data.accounts.length === 0) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
-                    Trial Balance
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <Scale className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">No trial balance data</p>
-                </div>
-            </div>
-        );
+        return <WidgetEmptyState icon={Scale} title="Trial Balance" message="No trial balance data" />;
     }
 
     const { isBalanced, severity, totalDebits, totalCredits, accounts, currency } = data;

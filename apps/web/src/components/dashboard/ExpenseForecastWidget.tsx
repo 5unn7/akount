@@ -1,89 +1,30 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
 import { getCashRunwayData } from '@/lib/api/dashboard-client';
 import { formatCurrency } from '@/lib/utils/currency';
 import type { CashRunwayResult } from '@/lib/api/planning';
+import { useWidgetData } from '@/hooks/useWidgetData';
+import { WidgetLoadingSkeleton, WidgetErrorState, WidgetEmptyState } from './WidgetPrimitives';
 
 interface ExpenseForecastWidgetProps {
     entityId?: string;
 }
 
 export function ExpenseForecastWidget({ entityId }: ExpenseForecastWidgetProps) {
-    const [data, setData] = useState<CashRunwayResult | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const { data, loading, error } = useWidgetData<CashRunwayResult>(
+        () => {
+            if (!entityId) return Promise.resolve(null as unknown as CashRunwayResult);
+            return getCashRunwayData(entityId);
+        },
+        [entityId]
+    );
 
-    useEffect(() => {
-        if (!entityId) {
-            setLoading(false);
-            return;
-        }
-
-        getCashRunwayData(entityId)
-            .then((result) => {
-                setData(result);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError(true);
-                setLoading(false);
-            });
-    }, [entityId]);
-
-    // Loading state
-    if (loading) {
-        return (
-            <div>
-                <div className="flex items-center justify-between mb-3">
-                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
-                        Expense Forecast
-                    </p>
-                </div>
-                <div className="space-y-3">
-                    <div className="space-y-1">
-                        <div className="h-2.5 w-20 bg-muted/30 animate-pulse rounded" />
-                        <div className="h-6 w-28 bg-muted/20 animate-pulse rounded" />
-                    </div>
-                    <div className="space-y-1">
-                        <div className="h-2.5 w-16 bg-muted/30 animate-pulse rounded" />
-                        <div className="h-6 w-24 bg-muted/20 animate-pulse rounded" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Error state
-    if (error) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
-                    Expense Forecast
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <Wallet className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">Failed to load forecast data</p>
-                </div>
-            </div>
-        );
-    }
-
-    // Empty/no data state
+    if (loading) return <WidgetLoadingSkeleton title="Expense Forecast" items={2} itemHeight="h-6" />;
+    if (error) return <WidgetErrorState icon={Wallet} title="Expense Forecast" message="Failed to load forecast data" />;
     if (!data) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
-                    Expense Forecast
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <Wallet className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">No expense data available</p>
-                </div>
-            </div>
-        );
+        return <WidgetEmptyState icon={Wallet} title="Expense Forecast" message="No expense data available" />;
     }
 
     // Net position: positive means revenue > expenses (good)

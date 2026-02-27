@@ -1,86 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 import { getProfitLossSummary } from '@/lib/api/dashboard-client';
 import { formatCurrency } from '@/lib/utils/currency';
 import type { ProfitLossReport } from '@akount/types/financial';
+import { useWidgetData } from '@/hooks/useWidgetData';
+import { WidgetTitle, WidgetLoadingSkeleton, WidgetErrorState, WidgetEmptyState } from './WidgetPrimitives';
 
 interface ProfitLossSummaryWidgetProps {
     entityId?: string;
 }
 
 export function ProfitLossSummaryWidget({ entityId }: ProfitLossSummaryWidgetProps) {
-    const [data, setData] = useState<ProfitLossReport | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const { data, loading, error } = useWidgetData<ProfitLossReport>(
+        () => {
+            const now = new Date();
+            const startDate = new Date(now.getFullYear(), 0, 1).toISOString();
+            const endDate = now.toISOString();
+            return getProfitLossSummary(entityId, startDate, endDate);
+        },
+        [entityId]
+    );
 
-    useEffect(() => {
-        const now = new Date();
-        const startDate = new Date(now.getFullYear(), 0, 1).toISOString();
-        const endDate = now.toISOString();
-
-        getProfitLossSummary(entityId, startDate, endDate)
-            .then((report) => {
-                setData(report);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError(true);
-                setLoading(false);
-            });
-    }, [entityId]);
-
-    // Loading state
-    if (loading) {
-        return (
-            <div>
-                <div className="flex items-center justify-between mb-3">
-                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
-                        P&L Summary
-                    </p>
-                </div>
-                <div className="space-y-3">
-                    {[1, 2, 3].map((i) => (
-                        <div key={i} className="space-y-1">
-                            <div className="h-2.5 w-16 bg-muted/30 animate-pulse rounded" />
-                            <div className="h-5 w-full bg-muted/20 animate-pulse rounded" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    // Error state
-    if (error) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
-                    P&L Summary
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <BarChart3 className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">Failed to load P&L data</p>
-                </div>
-            </div>
-        );
-    }
-
-    // Empty state
+    if (loading) return <WidgetLoadingSkeleton title="P&L Summary" />;
+    if (error) return <WidgetErrorState icon={BarChart3} title="P&L Summary" message="Failed to load P&L data" />;
     if (!data || (data.revenue.total === 0 && data.expenses.total === 0)) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-3">
-                    P&L Summary
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <BarChart3 className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">No P&L data for this period</p>
-                </div>
-            </div>
-        );
+        return <WidgetEmptyState icon={BarChart3} title="P&L Summary" message="No P&L data for this period" />;
     }
 
     const { revenue, expenses, netIncome } = data;

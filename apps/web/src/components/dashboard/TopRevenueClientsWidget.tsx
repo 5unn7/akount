@@ -1,87 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Users } from 'lucide-react';
 import { getTopRevenueClients } from '@/lib/api/dashboard-client';
 import { formatCurrency } from '@/lib/utils/currency';
 import type { RevenueReport } from '@akount/types/financial';
+import { useWidgetData } from '@/hooks/useWidgetData';
+import { WidgetLoadingSkeleton, WidgetErrorState, WidgetEmptyState } from './WidgetPrimitives';
 
 interface TopRevenueClientsWidgetProps {
     entityId?: string;
 }
 
 export function TopRevenueClientsWidget({ entityId }: TopRevenueClientsWidgetProps) {
-    const [data, setData] = useState<RevenueReport | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const { data, loading, error } = useWidgetData<RevenueReport>(
+        () => {
+            const now = new Date();
+            const startDate = new Date(now.getFullYear(), 0, 1).toISOString();
+            const endDate = now.toISOString();
+            return getTopRevenueClients(entityId, startDate, endDate, 5);
+        },
+        [entityId]
+    );
 
-    useEffect(() => {
-        const now = new Date();
-        const startDate = new Date(now.getFullYear(), 0, 1).toISOString();
-        const endDate = now.toISOString();
-
-        getTopRevenueClients(entityId, startDate, endDate, 5)
-            .then((report) => {
-                setData(report);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError(true);
-                setLoading(false);
-            });
-    }, [entityId]);
-
-    // Loading state
-    if (loading) {
-        return (
-            <div>
-                <div className="flex items-center justify-between mb-2">
-                    <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
-                        Top Revenue Clients
-                    </p>
-                </div>
-                <div className="space-y-0">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="flex items-center gap-2 py-1.5 px-1">
-                            <div className="w-0.5 h-4 rounded-full bg-muted/30 animate-pulse shrink-0" />
-                            <div className="h-3 w-24 bg-muted/30 animate-pulse rounded" />
-                            <div className="h-2.5 w-16 bg-muted/20 animate-pulse rounded ml-auto" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
-
-    // Error state
-    if (error) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-2">
-                    Top Revenue Clients
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <Users className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">Failed to load revenue data</p>
-                </div>
-            </div>
-        );
-    }
-
-    // Empty state
+    if (loading) return <WidgetLoadingSkeleton title="Top Revenue Clients" items={5} itemHeight="h-6" />;
+    if (error) return <WidgetErrorState icon={Users} title="Top Revenue Clients" message="Failed to load revenue data" />;
     if (!data || data.clients.length === 0) {
-        return (
-            <div>
-                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium mb-2">
-                    Top Revenue Clients
-                </p>
-                <div className="flex flex-col items-center gap-2 py-4 text-center">
-                    <Users className="h-8 w-8 text-muted-foreground/20" />
-                    <p className="text-xs text-muted-foreground">No revenue data for this period</p>
-                </div>
-            </div>
-        );
+        return <WidgetEmptyState icon={Users} title="Top Revenue Clients" message="No revenue data for this period" />;
     }
 
     const { clients, totalRevenue, currency } = data;
