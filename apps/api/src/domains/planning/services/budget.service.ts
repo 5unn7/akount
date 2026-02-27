@@ -130,6 +130,9 @@ export class BudgetService {
         glAccount: { select: { id: true, code: true, name: true } },
       },
     });
+
+    logger.info({ budgetId: budget.id, entityId: data.entityId, amount: data.amount }, 'Created budget');
+    return budget;
   }
 
   async updateBudget(id: string, data: {
