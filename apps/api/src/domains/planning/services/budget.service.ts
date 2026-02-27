@@ -1,4 +1,5 @@
 import { prisma } from '@akount/db';
+import { logger } from '../../../lib/logger';
 
 const DEFAULT_PAGE_SIZE = 50;
 const MAX_PAGE_SIZE = 100;
@@ -113,7 +114,7 @@ export class BudgetService {
       if (!gl) throw new Error('GL account not found or access denied');
     }
 
-    return prisma.budget.create({
+    const budget = await prisma.budget.create({
       data: {
         entityId: data.entityId,
         name: data.name,

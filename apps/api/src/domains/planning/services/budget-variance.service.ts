@@ -1,4 +1,5 @@
 import { prisma } from '@akount/db';
+import { logger } from '../../../lib/logger';
 
 /**
  * Budget Variance Service
@@ -150,6 +151,12 @@ export class BudgetVarianceService {
         categoryId: budget.categoryId,
       };
     });
+
+    logger.info({
+      entityId,
+      budgetCount: results.length,
+      overBudgetCount: results.filter(r => r.alertLevel === 'over-budget').length
+    }, 'Calculated budget variances');
 
     return results;
   }

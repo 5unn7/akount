@@ -1,4 +1,5 @@
 import { prisma } from '@akount/db';
+import { logger } from '../../../lib/logger';
 
 export interface CashRunwayResult {
   cashBalance: number; // Total cash from BANK accounts (cents)
@@ -37,7 +38,7 @@ export class CashRunwayService {
       runwayDate = date.toISOString();
     }
 
-    return {
+    const result = {
       cashBalance,
       monthlyBurnRate: monthlyExpenses,
       monthlyRevenue,
@@ -46,6 +47,15 @@ export class CashRunwayService {
       runwayDate,
       monthsAnalyzed,
     };
+
+    logger.info({
+      entityId,
+      runwayMonths: result.runwayMonths,
+      cashBalance: result.cashBalance,
+      netBurnRate: result.netBurnRate
+    }, 'Calculated cash runway');
+
+    return result;
   }
 
   private async getTotalCashBalance(entityId: string): Promise<number> {
