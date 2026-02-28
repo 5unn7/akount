@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 40
-**Estimated tokens:** ~3,658
+**Estimated tokens:** ~4,426
 
 ---
 
@@ -34,7 +34,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "budget.routes": {
       "p": "apps/api/src/domains/planning/routes/budget.routes.ts",
@@ -55,7 +56,12 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "budgetRoutes": [
+          "index"
+        ]
+      }
     },
     "forecast.routes": {
       "p": "apps/api/src/domains/planning/routes/forecast.routes.ts",
@@ -78,7 +84,12 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "forecastRoutes": [
+          "index"
+        ]
+      }
     },
     "goal.routes": {
       "p": "apps/api/src/domains/planning/routes/goal.routes.ts",
@@ -99,7 +110,12 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "goalRoutes": [
+          "index"
+        ]
+      }
     },
     "budget.schema": {
       "p": "apps/api/src/domains/planning/schemas/budget.schema.ts",
@@ -124,7 +140,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "forecast.schema": {
       "p": "apps/api/src/domains/planning/schemas/forecast.schema.ts",
@@ -149,7 +166,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "goal.schema": {
       "p": "apps/api/src/domains/planning/schemas/goal.schema.ts",
@@ -174,7 +192,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "ai-forecast.service": {
       "p": "apps/api/src/domains/planning/services/ai-forecast.service.ts",
@@ -193,7 +212,18 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "ForecastProjection": [
+          "forecast.routes"
+        ],
+        "AIForecastResult": [
+          "forecast.routes"
+        ],
+        "AIForecastService": [
+          "forecast.routes"
+        ]
+      }
     },
     "budget-suggestions.service": {
       "p": "apps/api/src/domains/planning/services/budget-suggestions.service.ts",
@@ -210,7 +240,15 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "BudgetSuggestion": [
+          "budget.routes"
+        ],
+        "BudgetSuggestionService": [
+          "budget.routes"
+        ]
+      }
     },
     "budget-variance.service": {
       "p": "apps/api/src/domains/planning/services/budget-variance.service.ts",
@@ -229,7 +267,18 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "BudgetVarianceResult": [
+          "budget.routes"
+        ],
+        "BudgetVarianceDetail": [
+          "budget.routes"
+        ],
+        "BudgetVarianceService": [
+          "budget.routes"
+        ]
+      }
     },
     "budget.service": {
       "p": "apps/api/src/domains/planning/services/budget.service.ts",
@@ -250,7 +299,18 @@
         "file": "apps/api/src/domains/planning/services/__tests__/budget.service.test.ts",
         "testCount": 19
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "ListBudgetsParams": [
+          "budget.routes"
+        ],
+        "PaginatedBudgets": [
+          "budget.routes"
+        ],
+        "BudgetService": [
+          "budget.routes"
+        ]
+      }
     },
     "cash-runway.service": {
       "p": "apps/api/src/domains/planning/services/cash-runway.service.ts",
@@ -268,7 +328,15 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "CashRunwayResult": [
+          "forecast.routes"
+        ],
+        "CashRunwayService": [
+          "forecast.routes"
+        ]
+      }
     },
     "forecast.service": {
       "p": "apps/api/src/domains/planning/services/forecast.service.ts",
@@ -286,7 +354,18 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "ListForecastsParams": [
+          "forecast.routes"
+        ],
+        "PaginatedForecasts": [
+          "forecast.routes"
+        ],
+        "ForecastService": [
+          "forecast.routes"
+        ]
+      }
     },
     "goal-templates": {
       "p": "apps/api/src/domains/planning/services/goal-templates.ts",
@@ -304,7 +383,18 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "GoalTemplate": [
+          "goal.routes"
+        ],
+        "GoalTemplateResult": [
+          "goal.routes"
+        ],
+        "GoalTemplateService": [
+          "goal.routes"
+        ]
+      }
     },
     "goal-tracking.service": {
       "p": "apps/api/src/domains/planning/services/goal-tracking.service.ts",
@@ -322,7 +412,18 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "MilestoneEvent": [
+          "goal.routes"
+        ],
+        "TrackingResult": [
+          "goal.routes"
+        ],
+        "GoalTrackingService": [
+          "goal.routes"
+        ]
+      }
     },
     "goal.service": {
       "p": "apps/api/src/domains/planning/services/goal.service.ts",
@@ -342,7 +443,18 @@
         "file": "apps/api/src/domains/planning/services/__tests__/goal.service.test.ts",
         "testCount": 17
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "ListGoalsParams": [
+          "goal.routes"
+        ],
+        "PaginatedGoals": [
+          "goal.routes"
+        ],
+        "GoalService": [
+          "goal.routes"
+        ]
+      }
     },
     "seasonal-patterns.service": {
       "p": "apps/api/src/domains/planning/services/seasonal-patterns.service.ts",
@@ -360,7 +472,21 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "MonthlyDataPoint": [
+          "forecast.routes",
+          "ai-forecast.service"
+        ],
+        "SeasonalAnalysis": [
+          "forecast.routes",
+          "ai-forecast.service"
+        ],
+        "SeasonalPatternsService": [
+          "forecast.routes",
+          "ai-forecast.service"
+        ]
+      }
     },
     "budget-form": {
       "p": "apps/web/src/app/(dashboard)/planning/budgets/budget-form.tsx",
@@ -382,7 +508,12 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "BudgetForm": [
+          "budgets-list"
+        ]
+      }
     },
     "budgets-list": {
       "p": "apps/web/src/app/(dashboard)/planning/budgets/budgets-list.tsx",
@@ -407,7 +538,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "error": {
       "p": "apps/web/src/app/(dashboard)/planning/goals/error.tsx",
@@ -424,7 +556,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "loading": {
       "p": "apps/web/src/app/(dashboard)/planning/loading.tsx",
@@ -438,7 +571,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "page": {
       "p": "apps/web/src/app/(dashboard)/planning/page.tsx",
@@ -463,7 +597,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "export-planning": {
       "p": "apps/web/src/app/(dashboard)/planning/export-planning.tsx",
@@ -481,7 +616,13 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "ExportPlanningButton": [
+          "budgets-list",
+          "goals-list"
+        ]
+      }
     },
     "forecast-form": {
       "p": "apps/web/src/app/(dashboard)/planning/forecasts/forecast-form.tsx",
@@ -502,7 +643,12 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "ForecastForm": [
+          "forecasts-list"
+        ]
+      }
     },
     "forecasts-list": {
       "p": "apps/web/src/app/(dashboard)/planning/forecasts/forecasts-list.tsx",
@@ -525,7 +671,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "scenario-comparison": {
       "p": "apps/web/src/app/(dashboard)/planning/forecasts/scenario-comparison.tsx",
@@ -545,7 +692,12 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "ScenarioComparison": [
+          "forecasts-list"
+        ]
+      }
     },
     "goal-form": {
       "p": "apps/web/src/app/(dashboard)/planning/goals/goal-form.tsx",
@@ -567,7 +719,12 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {
+        "GoalForm": [
+          "goals-list"
+        ]
+      }
     },
     "goal-trajectory": {
       "p": "apps/web/src/app/(dashboard)/planning/goals/goal-trajectory.tsx",
@@ -584,7 +741,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "goals-list": {
       "p": "apps/web/src/app/(dashboard)/planning/goals/goals-list.tsx",
@@ -609,7 +767,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     },
     "layout": {
       "p": "apps/web/src/app/(dashboard)/planning/layout.tsx",
@@ -621,7 +780,8 @@
       "t": {
         "exists": false
       },
-      "d": "pln"
+      "d": "pln",
+      "c": {}
     }
   },
   "d": {

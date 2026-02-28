@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 57
-**Estimated tokens:** ~4,458
+**Estimated tokens:** ~5,653
 
 ---
 
@@ -25,7 +25,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "routes": {
       "p": "apps/api/src/domains/banking/routes.ts",
@@ -52,7 +53,8 @@
         "file": "apps/api/src/domains/banking/__tests__/routes.test.ts",
         "testCount": 11
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "categories": {
       "p": "apps/api/src/domains/banking/routes/categories.ts",
@@ -73,7 +75,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "connections": {
       "p": "apps/api/src/domains/banking/routes/connections.ts",
@@ -94,7 +97,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "imports": {
       "p": "apps/api/src/domains/banking/routes/imports.ts",
@@ -117,7 +121,12 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "importsRoutes": [
+          "routes"
+        ]
+      }
     },
     "reconciliation": {
       "p": "apps/api/src/domains/banking/routes/reconciliation.ts",
@@ -138,7 +147,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "transactions": {
       "p": "apps/api/src/domains/banking/routes/transactions.ts",
@@ -163,7 +173,12 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "transactionRoutes": [
+          "routes"
+        ]
+      }
     },
     "transfers": {
       "p": "apps/api/src/domains/banking/routes/transfers.ts",
@@ -185,7 +200,12 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "transferRoutes": [
+          "page"
+        ]
+      }
     },
     "category.schema": {
       "p": "apps/api/src/domains/banking/schemas/category.schema.ts",
@@ -208,7 +228,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "reconciliation.schema": {
       "p": "apps/api/src/domains/banking/schemas/reconciliation.schema.ts",
@@ -233,7 +254,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "transaction.schema": {
       "p": "apps/api/src/domains/banking/schemas/transaction.schema.ts",
@@ -258,7 +280,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "transfer.schema": {
       "p": "apps/api/src/domains/banking/schemas/transfer.schema.ts",
@@ -279,7 +302,27 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "CreateTransferSchema": [
+          "transfer.service"
+        ],
+        "CreateTransferInput": [
+          "transfer.service"
+        ],
+        "ListTransfersQuerySchema": [
+          "transfer.service"
+        ],
+        "ListTransfersQuery": [
+          "transfer.service"
+        ],
+        "TransferIdParamSchema": [
+          "transfer.service"
+        ],
+        "TransferIdParam": [
+          "transfer.service"
+        ]
+      }
     },
     "account-matcher.service": {
       "p": "apps/api/src/domains/banking/services/account-matcher.service.ts",
@@ -302,7 +345,8 @@
         "file": "apps/api/src/domains/banking/services/__tests__/account-matcher.service.test.ts",
         "testCount": 15
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "account.service": {
       "p": "apps/api/src/domains/banking/services/account.service.ts",
@@ -323,7 +367,25 @@
         "file": "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
         "testCount": 39
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "getDefaultGLAccountForType": [
+          "routes",
+          "flinks.service"
+        ],
+        "ListAccountsParams": [
+          "routes",
+          "flinks.service"
+        ],
+        "PaginatedAccounts": [
+          "routes",
+          "flinks.service"
+        ],
+        "AccountService": [
+          "routes",
+          "flinks.service"
+        ]
+      }
     },
     "category.service": {
       "p": "apps/api/src/domains/banking/services/category.service.ts",
@@ -346,7 +408,25 @@
         "file": "apps/api/src/domains/banking/services/__tests__/category.service.test.ts",
         "testCount": 45
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "CreateCategoryInput": [
+          "categories",
+          "import.service"
+        ],
+        "UpdateCategoryInput": [
+          "categories",
+          "import.service"
+        ],
+        "ListCategoriesParams": [
+          "categories",
+          "import.service"
+        ],
+        "CategoryService": [
+          "categories",
+          "import.service"
+        ]
+      }
     },
     "duplication.service": {
       "p": "apps/api/src/domains/banking/services/duplication.service.ts",
@@ -369,7 +449,25 @@
         "file": "apps/api/src/domains/banking/services/__tests__/duplication.service.test.ts",
         "testCount": 34
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "DuplicateResult": [
+          "transactions",
+          "import.service"
+        ],
+        "findDuplicates": [
+          "transactions",
+          "import.service"
+        ],
+        "deduplicateExistingTransactions": [
+          "transactions",
+          "import.service"
+        ],
+        "findInternalDuplicates": [
+          "transactions",
+          "import.service"
+        ]
+      }
     },
     "flinks.service": {
       "p": "apps/api/src/domains/banking/services/flinks.service.ts",
@@ -395,7 +493,27 @@
         "file": "apps/api/src/domains/banking/services/__tests__/flinks.service.test.ts",
         "testCount": 21
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "toCents": [
+          "connections"
+        ],
+        "mapFlinksAccountType": [
+          "connections"
+        ],
+        "scrubPII": [
+          "connections"
+        ],
+        "TenantContext": [
+          "connections"
+        ],
+        "FlinksService": [
+          "connections"
+        ],
+        "FlinksError": [
+          "connections"
+        ]
+      }
     },
     "fx-rate.service": {
       "p": "apps/api/src/domains/banking/services/fx-rate.service.ts",
@@ -414,7 +532,8 @@
         "file": "apps/api/src/domains/banking/services/__tests__/fx-rate.service.test.ts",
         "testCount": 12
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "import.service": {
       "p": "apps/api/src/domains/banking/services/import.service.ts",
@@ -446,7 +565,33 @@
         "file": "apps/api/src/domains/banking/services/__tests__/import.service.test.ts",
         "testCount": 19
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "CreateCSVImportParams": [
+          "imports"
+        ],
+        "CreatePDFImportParams": [
+          "imports"
+        ],
+        "CreateXLSXImportParams": [
+          "imports"
+        ],
+        "ImportBatchWithStats": [
+          "imports"
+        ],
+        "ImportBatchWithTransactions": [
+          "imports"
+        ],
+        "ListImportBatchesParams": [
+          "imports"
+        ],
+        "PaginatedImportBatches": [
+          "imports"
+        ],
+        "ImportService": [
+          "imports"
+        ]
+      }
     },
     "parser-csv": {
       "p": "apps/api/src/domains/banking/services/parser-csv.ts",
@@ -465,7 +610,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "parser-pdf-mistral": {
       "p": "apps/api/src/domains/banking/services/parser-pdf-mistral.ts",
@@ -486,7 +632,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "parser-pdf": {
       "p": "apps/api/src/domains/banking/services/parser-pdf.ts",
@@ -503,7 +650,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "parser-shared": {
       "p": "apps/api/src/domains/banking/services/parser-shared.ts",
@@ -528,7 +676,37 @@
         "file": "apps/api/src/domains/banking/services/__tests__/parser-shared.test.ts",
         "testCount": 42
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "ParseResult": [
+          "parser-pdf-mistral",
+          "parser-pdf"
+        ],
+        "sanitizeCSVInjection": [
+          "parser-pdf-mistral",
+          "parser-pdf"
+        ],
+        "parseDate": [
+          "parser-pdf-mistral",
+          "parser-pdf"
+        ],
+        "parseAmount": [
+          "parser-pdf-mistral",
+          "parser-pdf"
+        ],
+        "parseAmountValue": [
+          "parser-pdf-mistral",
+          "parser-pdf"
+        ],
+        "generateTempId": [
+          "parser-pdf-mistral",
+          "parser-pdf"
+        ],
+        "normalizeInstitutionName": [
+          "parser-pdf-mistral",
+          "parser-pdf"
+        ]
+      }
     },
     "parser.service": {
       "p": "apps/api/src/domains/banking/services/parser.service.ts",
@@ -540,7 +718,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "reconciliation.service": {
       "p": "apps/api/src/domains/banking/services/reconciliation.service.ts",
@@ -565,7 +744,27 @@
         "file": "apps/api/src/domains/banking/services/__tests__/reconciliation.service.test.ts",
         "testCount": 25
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "MatchSuggestion": [
+          "reconciliation"
+        ],
+        "ReconciliationStatus": [
+          "reconciliation"
+        ],
+        "CreateMatchInput": [
+          "reconciliation"
+        ],
+        "ListMatchesParams": [
+          "reconciliation"
+        ],
+        "PaginatedMatches": [
+          "reconciliation"
+        ],
+        "ReconciliationService": [
+          "reconciliation"
+        ]
+      }
     },
     "transaction.service": {
       "p": "apps/api/src/domains/banking/services/transaction.service.ts",
@@ -588,7 +787,24 @@
         "file": "apps/api/src/domains/banking/services/__tests__/transaction.service.test.ts",
         "testCount": 35
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "ListTransactionsParams": [
+          "transactions"
+        ],
+        "PaginatedTransactions": [
+          "transactions"
+        ],
+        "CreateTransactionInput": [
+          "transactions"
+        ],
+        "UpdateTransactionInput": [
+          "transactions"
+        ],
+        "TransactionService": [
+          "transactions"
+        ]
+      }
     },
     "transfer.service": {
       "p": "apps/api/src/domains/banking/services/transfer.service.ts",
@@ -609,7 +825,12 @@
         "file": "apps/api/src/domains/banking/services/__tests__/transfer.service.test.ts",
         "testCount": 20
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "TransferService": [
+          "transfers"
+        ]
+      }
     },
     "error": {
       "p": "apps/web/src/app/(dashboard)/banking/transfers/error.tsx",
@@ -626,7 +847,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "loading": {
       "p": "apps/web/src/app/(dashboard)/banking/transfers/loading.tsx",
@@ -641,7 +863,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "page": {
       "p": "apps/web/src/app/(dashboard)/banking/transfers/page.tsx",
@@ -662,7 +885,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "categories-client": {
       "p": "apps/web/src/app/(dashboard)/banking/categories/categories-client.tsx",
@@ -687,7 +911,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "layout": {
       "p": "apps/web/src/app/(dashboard)/banking/layout.tsx",
@@ -699,7 +924,8 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {}
     },
     "transfers-client": {
       "p": "apps/web/src/app/(dashboard)/banking/transfers/transfers-client.tsx",
@@ -724,7 +950,12 @@
       "t": {
         "exists": false
       },
-      "d": "bnk"
+      "d": "bnk",
+      "c": {
+        "TransfersClient": [
+          "page"
+        ]
+      }
     }
   },
   "d": {

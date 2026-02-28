@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 18
-**Estimated tokens:** ~2,345
+**Estimated tokens:** ~2,448
 
 ---
 
@@ -34,7 +34,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "BillForm": {
       "p": "apps/web/src/components/business/BillForm.tsx",
@@ -59,7 +60,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "BillsTable": {
       "p": "apps/web/src/components/business/BillsTable.tsx",
@@ -84,7 +86,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ClientDetailPanel": {
       "p": "apps/web/src/components/business/ClientDetailPanel.tsx",
@@ -104,7 +107,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ClientForm": {
       "p": "apps/web/src/components/business/ClientForm.tsx",
@@ -129,7 +133,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ClientsTable": {
       "p": "apps/web/src/components/business/ClientsTable.tsx",
@@ -150,7 +155,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "InvoiceDetailPanel": {
       "p": "apps/web/src/components/business/InvoiceDetailPanel.tsx",
@@ -171,7 +177,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "InvoiceForm": {
       "p": "apps/web/src/components/business/InvoiceForm.tsx",
@@ -196,7 +203,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "InvoiceTable": {
       "p": "apps/web/src/components/business/InvoiceTable.tsx",
@@ -221,7 +229,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "InvoicingActions": {
       "p": "apps/web/src/components/business/InvoicingActions.tsx",
@@ -241,7 +250,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "PaymentForm": {
       "p": "apps/web/src/components/business/PaymentForm.tsx",
@@ -265,7 +275,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "PaymentTable": {
       "p": "apps/web/src/components/business/PaymentTable.tsx",
@@ -290,7 +301,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "VendorDetailPanel": {
       "p": "apps/web/src/components/business/VendorDetailPanel.tsx",
@@ -310,7 +322,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "VendorDetailPanel": [
+          "VendorsTable"
+        ]
+      }
     },
     "VendorForm": {
       "p": "apps/web/src/components/business/VendorForm.tsx",
@@ -335,7 +352,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "VendorsTable": {
       "p": "apps/web/src/components/business/VendorsTable.tsx",
@@ -357,7 +375,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "EntityCard": {
       "p": "apps/web/src/components/entities/EntityCard.tsx",
@@ -374,7 +393,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "EntityCard": [
+          "EntityHubClient"
+        ]
+      }
     },
     "EntityDetailClient": {
       "p": "apps/web/src/components/entities/EntityDetailClient.tsx",
@@ -395,7 +419,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "EntityHubClient": {
       "p": "apps/web/src/components/entities/EntityHubClient.tsx",
@@ -415,7 +440,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     }
   },
   "d": {

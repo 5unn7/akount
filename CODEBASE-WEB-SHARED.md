@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 114
-**Estimated tokens:** ~11,349
+**Estimated tokens:** ~12,872
 
 ---
 
@@ -30,7 +30,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "avatar": {
       "p": "apps/web/src/components/ui/avatar.tsx",
@@ -46,7 +47,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "badge": {
       "p": "apps/web/src/components/ui/badge.tsx",
@@ -64,7 +66,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "breadcrumb": {
       "p": "apps/web/src/components/ui/breadcrumb.tsx",
@@ -86,7 +89,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "button": {
       "p": "apps/web/src/components/ui/button.tsx",
@@ -105,7 +109,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "card": {
       "p": "apps/web/src/components/ui/card.tsx",
@@ -121,7 +126,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "checkbox": {
       "p": "apps/web/src/components/ui/checkbox.tsx",
@@ -138,7 +144,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "circular-progress": {
       "p": "apps/web/src/components/ui/circular-progress.tsx",
@@ -154,7 +161,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "collapsible": {
       "p": "apps/web/src/components/ui/collapsible.tsx",
@@ -168,7 +176,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "country-select": {
       "p": "apps/web/src/components/ui/country-select.tsx",
@@ -188,7 +197,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "dialog": {
       "p": "apps/web/src/components/ui/dialog.tsx",
@@ -205,7 +215,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "dropdown-menu": {
       "p": "apps/web/src/components/ui/dropdown-menu.tsx",
@@ -222,7 +233,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "glow-card": {
       "p": "apps/web/src/components/ui/glow-card.tsx",
@@ -239,7 +251,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "hover-card": {
       "p": "apps/web/src/components/ui/hover-card.tsx",
@@ -255,7 +268,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "input": {
       "p": "apps/web/src/components/ui/input.tsx",
@@ -270,7 +284,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "label": {
       "p": "apps/web/src/components/ui/label.tsx",
@@ -287,7 +302,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "scroll-area": {
       "p": "apps/web/src/components/ui/scroll-area.tsx",
@@ -303,7 +319,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "select": {
       "p": "apps/web/src/components/ui/select.tsx",
@@ -320,7 +337,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "separator": {
       "p": "apps/web/src/components/ui/separator.tsx",
@@ -336,7 +354,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "sheet": {
       "p": "apps/web/src/components/ui/sheet.tsx",
@@ -354,7 +373,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "skeleton": {
       "p": "apps/web/src/components/ui/skeleton.tsx",
@@ -368,7 +388,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "switch": {
       "p": "apps/web/src/components/ui/switch.tsx",
@@ -382,7 +403,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "table": {
       "p": "apps/web/src/components/ui/table.tsx",
@@ -397,7 +419,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "textarea": {
       "p": "apps/web/src/components/ui/textarea.tsx",
@@ -412,7 +435,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "theme-toggle": {
       "p": "apps/web/src/components/ui/theme-toggle.tsx",
@@ -430,7 +454,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "tooltip": {
       "p": "apps/web/src/components/ui/tooltip.tsx",
@@ -446,7 +471,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "AgingBar": {
       "p": "apps/web/src/components/shared/AgingBar.tsx",
@@ -463,7 +489,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "BulkActionToolbar": {
       "p": "apps/web/src/components/shared/BulkActionToolbar.tsx",
@@ -480,7 +507,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ContentPanel": {
       "p": "apps/web/src/components/shared/ContentPanel.tsx",
@@ -496,7 +524,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "DetailPanel": {
       "p": "apps/web/src/components/shared/DetailPanel.tsx",
@@ -516,7 +545,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "DomainTabs": {
       "p": "apps/web/src/components/shared/DomainTabs.tsx",
@@ -535,7 +565,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "KeyboardShortcutsModal": {
       "p": "apps/web/src/components/shared/KeyboardShortcutsModal.tsx",
@@ -552,7 +583,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "PageHeader": {
       "p": "apps/web/src/components/shared/PageHeader.tsx",
@@ -566,7 +598,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "SectionHeader": {
       "p": "apps/web/src/components/shared/SectionHeader.tsx",
@@ -582,7 +615,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "StatPill": {
       "p": "apps/web/src/components/shared/StatPill.tsx",
@@ -599,7 +633,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "StatsGrid": {
       "p": "apps/web/src/components/shared/StatsGrid.tsx",
@@ -616,7 +651,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "TwoColumnLayout": {
       "p": "apps/web/src/components/shared/TwoColumnLayout.tsx",
@@ -632,7 +668,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "Navbar": {
       "p": "apps/web/src/components/layout/Navbar.tsx",
@@ -654,7 +691,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "Sidebar": {
       "p": "apps/web/src/components/layout/Sidebar.tsx",
@@ -680,7 +718,15 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "Sidebar": [
+          "Navbar"
+        ],
+        "MobileSidebar": [
+          "Navbar"
+        ]
+      }
     },
     "SidebarProgressIndicator": {
       "p": "apps/web/src/components/layout/SidebarProgressIndicator.tsx",
@@ -700,7 +746,8 @@
         "file": "apps/web/src/components/layout/__tests__/SidebarProgressIndicator.test.tsx",
         "testCount": 4
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ActionItems": {
       "p": "apps/web/src/components/dashboard/ActionItems.tsx",
@@ -719,7 +766,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "ActionItems": [
+          "DashboardRightRail"
+        ]
+      }
     },
     "AIActionWidget": {
       "p": "apps/web/src/components/dashboard/AIActionWidget.tsx",
@@ -740,7 +792,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "AIBrief": {
       "p": "apps/web/src/components/dashboard/AIBrief.tsx",
@@ -756,7 +809,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "AIBrief": [
+          "DashboardRightRail"
+        ]
+      }
     },
     "BudgetVsActualWidget": {
       "p": "apps/web/src/components/dashboard/BudgetVsActualWidget.tsx",
@@ -778,7 +836,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "CashFlowChart": {
       "p": "apps/web/src/components/dashboard/CashFlowChart.tsx",
@@ -796,7 +855,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "CircularProgress": {
       "p": "apps/web/src/components/dashboard/CircularProgress.tsx",
@@ -812,7 +872,8 @@
         "file": "apps/web/src/components/dashboard/__tests__/CircularProgress.test.tsx",
         "testCount": 5
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "CircularProgressDynamic": {
       "p": "apps/web/src/components/dashboard/CircularProgressDynamic.tsx",
@@ -824,7 +885,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "CommandCenterRightPanel": {
       "p": "apps/web/src/components/dashboard/CommandCenterRightPanel.tsx",
@@ -842,7 +904,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "DashboardCharts": {
       "p": "apps/web/src/components/dashboard/DashboardCharts.tsx",
@@ -862,7 +925,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "DashboardFilters": {
       "p": "apps/web/src/components/dashboard/DashboardFilters.tsx",
@@ -880,7 +944,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "DashboardLeftRail": {
       "p": "apps/web/src/components/dashboard/DashboardLeftRail.tsx",
@@ -897,7 +962,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "DashboardMetrics": {
       "p": "apps/web/src/components/dashboard/DashboardMetrics.tsx",
@@ -917,7 +983,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "DashboardRightRail": {
       "p": "apps/web/src/components/dashboard/DashboardRightRail.tsx",
@@ -937,7 +1004,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "EntitiesList": {
       "p": "apps/web/src/components/dashboard/EntitiesList.tsx",
@@ -957,7 +1025,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "EntitiesList": [
+          "EntitiesSection"
+        ]
+      }
     },
     "EntitiesSection": {
       "p": "apps/web/src/components/dashboard/EntitiesSection.tsx",
@@ -980,7 +1053,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "EntityAccountCards": {
       "p": "apps/web/src/components/dashboard/EntityAccountCards.tsx",
@@ -999,7 +1073,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "EntityFormSheet": {
       "p": "apps/web/src/components/dashboard/EntityFormSheet.tsx",
@@ -1022,7 +1097,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "EntityFormSheet": [
+          "EntitiesList"
+        ]
+      }
     },
     "ExpenseChart": {
       "p": "apps/web/src/components/dashboard/ExpenseChart.tsx",
@@ -1040,7 +1120,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ExpenseForecastWidget": {
       "p": "apps/web/src/components/dashboard/ExpenseForecastWidget.tsx",
@@ -1062,7 +1143,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "GoalProgressWidget": {
       "p": "apps/web/src/components/dashboard/GoalProgressWidget.tsx",
@@ -1084,7 +1166,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "InsightCards": {
       "p": "apps/web/src/components/dashboard/InsightCards.tsx",
@@ -1104,7 +1187,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "LiquidityHero": {
       "p": "apps/web/src/components/dashboard/LiquidityHero.tsx",
@@ -1123,7 +1207,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "MiniSparkline": {
       "p": "apps/web/src/components/dashboard/MiniSparkline.tsx",
@@ -1140,7 +1225,13 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "MiniSparkline": [
+          "SparkCards",
+          "StatCard"
+        ]
+      }
     },
     "NetWorthHero": {
       "p": "apps/web/src/components/dashboard/NetWorthHero.tsx",
@@ -1159,7 +1250,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ProfitLossSummaryWidget": {
       "p": "apps/web/src/components/dashboard/ProfitLossSummaryWidget.tsx",
@@ -1181,7 +1273,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "QuickActionPills": {
       "p": "apps/web/src/components/dashboard/QuickActionPills.tsx",
@@ -1197,7 +1290,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "QuickActionPills": [
+          "CommandCenterRightPanel"
+        ]
+      }
     },
     "QuickActions": {
       "p": "apps/web/src/components/dashboard/QuickActions.tsx",
@@ -1214,7 +1312,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "QuickActions": [
+          "DashboardRightRail"
+        ]
+      }
     },
     "QuickStats": {
       "p": "apps/web/src/components/dashboard/QuickStats.tsx",
@@ -1230,7 +1333,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "RecentTransactions": {
       "p": "apps/web/src/components/dashboard/RecentTransactions.tsx",
@@ -1250,7 +1354,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "SparkCards": {
       "p": "apps/web/src/components/dashboard/SparkCards.tsx",
@@ -1269,7 +1374,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "StatCard": {
       "p": "apps/web/src/components/dashboard/StatCard.tsx",
@@ -1289,7 +1395,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "StatCard": [
+          "DashboardLeftRail"
+        ]
+      }
     },
     "TopRevenueClientsWidget": {
       "p": "apps/web/src/components/dashboard/TopRevenueClientsWidget.tsx",
@@ -1311,7 +1422,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "TrialBalanceStatusWidget": {
       "p": "apps/web/src/components/dashboard/TrialBalanceStatusWidget.tsx",
@@ -1333,7 +1445,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "UpcomingPayments": {
       "p": "apps/web/src/components/dashboard/UpcomingPayments.tsx",
@@ -1354,7 +1467,13 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "UpcomingPayments": [
+          "CommandCenterRightPanel",
+          "DashboardRightRail"
+        ]
+      }
     },
     "WidgetPrimitives": {
       "p": "apps/web/src/components/dashboard/WidgetPrimitives.tsx",
@@ -1375,7 +1494,49 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "WidgetTitle": [
+          "BudgetVsActualWidget",
+          "ExpenseForecastWidget",
+          "GoalProgressWidget",
+          "ProfitLossSummaryWidget",
+          "TopRevenueClientsWidget",
+          "TrialBalanceStatusWidget"
+        ],
+        "WidgetLoadingSkeleton": [
+          "BudgetVsActualWidget",
+          "ExpenseForecastWidget",
+          "GoalProgressWidget",
+          "ProfitLossSummaryWidget",
+          "TopRevenueClientsWidget",
+          "TrialBalanceStatusWidget"
+        ],
+        "WidgetErrorState": [
+          "BudgetVsActualWidget",
+          "ExpenseForecastWidget",
+          "GoalProgressWidget",
+          "ProfitLossSummaryWidget",
+          "TopRevenueClientsWidget",
+          "TrialBalanceStatusWidget"
+        ],
+        "WidgetEmptyState": [
+          "BudgetVsActualWidget",
+          "ExpenseForecastWidget",
+          "GoalProgressWidget",
+          "ProfitLossSummaryWidget",
+          "TopRevenueClientsWidget",
+          "TrialBalanceStatusWidget"
+        ],
+        "ProgressBar": [
+          "BudgetVsActualWidget",
+          "ExpenseForecastWidget",
+          "GoalProgressWidget",
+          "ProfitLossSummaryWidget",
+          "TopRevenueClientsWidget",
+          "TrialBalanceStatusWidget"
+        ]
+      }
     },
     "accounting": {
       "p": "apps/web/src/lib/api/accounting.ts",
@@ -1400,7 +1561,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "accounts": {
       "p": "apps/web/src/lib/api/accounts.ts",
@@ -1427,7 +1589,8 @@
         "file": "apps/web/src/lib/api/__tests__/accounts.test.ts",
         "testCount": 14
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "ai": {
       "p": "apps/web/src/lib/api/ai.ts",
@@ -1452,7 +1615,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "bills": {
       "p": "apps/web/src/lib/api/bills.ts",
@@ -1477,7 +1641,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "categories": {
       "p": "apps/web/src/lib/api/categories.ts",
@@ -1502,7 +1667,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "client-browser": {
       "p": "apps/web/src/lib/api/client-browser.ts",
@@ -1518,7 +1684,13 @@
         "file": "apps/web/src/lib/api/__tests__/client-browser.test.ts",
         "testCount": 15
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "apiFetch": [
+          "dashboard-client",
+          "onboarding"
+        ]
+      }
     },
     "client": {
       "p": "apps/web/src/lib/api/client.ts",
@@ -1534,7 +1706,31 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "apiClient": [
+          "accounting",
+          "accounts",
+          "ai",
+          "bills",
+          "categories",
+          "clients",
+          "dashboard-client",
+          "dashboard",
+          "entities",
+          "imports",
+          "invoices",
+          "onboarding",
+          "payments",
+          "performance",
+          "planning",
+          "reconciliation",
+          "reports",
+          "transactions",
+          "transfers",
+          "vendors"
+        ]
+      }
     },
     "clients": {
       "p": "apps/web/src/lib/api/clients.ts",
@@ -1559,7 +1755,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "dashboard-client": {
       "p": "apps/web/src/lib/api/dashboard-client.ts",
@@ -1586,7 +1783,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "dashboard": {
       "p": "apps/web/src/lib/api/dashboard.ts",
@@ -1610,7 +1808,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "entities": {
       "p": "apps/web/src/lib/api/entities.ts",
@@ -1635,7 +1834,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "imports": {
       "p": "apps/web/src/lib/api/imports.ts",
@@ -1657,7 +1857,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "invoices": {
       "p": "apps/web/src/lib/api/invoices.ts",
@@ -1684,7 +1885,8 @@
         "file": "apps/web/src/lib/api/__tests__/invoices.test.ts",
         "testCount": 18
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "onboarding": {
       "p": "apps/web/src/lib/api/onboarding.ts",
@@ -1709,7 +1911,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "payments": {
       "p": "apps/web/src/lib/api/payments.ts",
@@ -1734,7 +1937,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "performance": {
       "p": "apps/web/src/lib/api/performance.ts",
@@ -1754,7 +1958,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "planning": {
       "p": "apps/web/src/lib/api/planning.ts",
@@ -1779,7 +1984,39 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "GoalType": [
+          "dashboard-client"
+        ],
+        "GoalStatus": [
+          "dashboard-client"
+        ],
+        "Goal": [
+          "dashboard-client"
+        ],
+        "ListGoalsParams": [
+          "dashboard-client"
+        ],
+        "ListGoalsResponse": [
+          "dashboard-client"
+        ],
+        "CreateGoalInput": [
+          "dashboard-client"
+        ],
+        "UpdateGoalInput": [
+          "dashboard-client"
+        ],
+        "BudgetPeriod": [
+          "dashboard-client"
+        ],
+        "Budget": [
+          "dashboard-client"
+        ],
+        "ListBudgetsParams": [
+          "dashboard-client"
+        ]
+      }
     },
     "reconciliation": {
       "p": "apps/web/src/lib/api/reconciliation.ts",
@@ -1799,7 +2036,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "reconciliation.types": {
       "p": "apps/web/src/lib/api/reconciliation.types.ts",
@@ -1817,7 +2055,24 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "MatchSuggestion": [
+          "reconciliation"
+        ],
+        "ReconciliationStatus": [
+          "reconciliation"
+        ],
+        "TransactionMatch": [
+          "reconciliation"
+        ],
+        "getConfidenceLevel": [
+          "reconciliation"
+        ],
+        "formatConfidence": [
+          "reconciliation"
+        ]
+      }
     },
     "reports-client": {
       "p": "apps/web/src/lib/api/reports-client.ts",
@@ -1831,7 +2086,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "reports-types": {
       "p": "apps/web/src/lib/api/reports-types.ts",
@@ -1843,7 +2099,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "reports": {
       "p": "apps/web/src/lib/api/reports.ts",
@@ -1865,7 +2122,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "transactions": {
       "p": "apps/web/src/lib/api/transactions.ts",
@@ -1891,7 +2149,8 @@
         "file": "apps/web/src/lib/api/__tests__/transactions.test.ts",
         "testCount": 18
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "transactions.types": {
       "p": "apps/web/src/lib/api/transactions.types.ts",
@@ -1913,7 +2172,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "transfers": {
       "p": "apps/web/src/lib/api/transfers.ts",
@@ -1935,7 +2195,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "vendors": {
       "p": "apps/web/src/lib/api/vendors.ts",
@@ -1960,7 +2221,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "browser": {
       "p": "apps/web/src/lib/browser.ts",
@@ -1975,7 +2237,17 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "isBrowser": [
+          "dashboard-client",
+          "onboarding"
+        ],
+        "prefersReducedMotion": [
+          "dashboard-client",
+          "onboarding"
+        ]
+      }
     },
     "dashboard-personalization": {
       "p": "apps/web/src/lib/dashboard-personalization.ts",
@@ -1992,7 +2264,8 @@
         "file": "apps/web/src/lib/__tests__/dashboard-personalization.test.ts",
         "testCount": 9
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "constants": {
       "p": "apps/web/src/lib/dashboard/constants.ts",
@@ -2013,7 +2286,33 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "SparkColor": [
+          "transformers"
+        ],
+        "TrendDirection": [
+          "transformers"
+        ],
+        "TrendData": [
+          "transformers"
+        ],
+        "StatCardData": [
+          "transformers"
+        ],
+        "sparkColorMap": [
+          "transformers"
+        ],
+        "trendColorMap": [
+          "transformers"
+        ],
+        "glowColorMap": [
+          "transformers"
+        ],
+        "colorMap": [
+          "transformers"
+        ]
+      }
     },
     "transformers": {
       "p": "apps/web/src/lib/dashboard/transformers.ts",
@@ -2033,7 +2332,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "countries": {
       "p": "apps/web/src/lib/data/countries.ts",
@@ -2051,7 +2351,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "entity-cookies": {
       "p": "apps/web/src/lib/entity-cookies.ts",
@@ -2069,7 +2370,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "error-tracking": {
       "p": "apps/web/src/lib/error-tracking.ts",
@@ -2087,7 +2389,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "logger": {
       "p": "apps/web/src/lib/logger.ts",
@@ -2101,7 +2404,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "navigation": {
       "p": "apps/web/src/lib/navigation.ts",
@@ -2122,7 +2426,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "utils": {
       "p": "apps/web/src/lib/utils.ts",
@@ -2139,7 +2444,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "account-helpers": {
       "p": "apps/web/src/lib/utils/account-helpers.ts",
@@ -2163,7 +2469,8 @@
         "file": "apps/web/src/lib/utils/__tests__/account-helpers.test.ts",
         "testCount": 19
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "currency": {
       "p": "apps/web/src/lib/utils/currency.ts",
@@ -2182,7 +2489,8 @@
         "file": "apps/web/src/lib/utils/__tests__/currency.test.ts",
         "testCount": 32
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "date": {
       "p": "apps/web/src/lib/utils/date.ts",
@@ -2203,7 +2511,8 @@
         "file": "apps/web/src/lib/utils/__tests__/date.test.ts",
         "testCount": 17
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     }
   },
   "d": {

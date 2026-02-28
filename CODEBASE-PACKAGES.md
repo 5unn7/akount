@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 70
-**Estimated tokens:** ~5,280
+**Estimated tokens:** ~6,516
 
 ---
 
@@ -27,7 +27,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "seed": {
       "p": "packages/db/prisma/seed.ts",
@@ -41,7 +42,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "link-dev-user": {
       "p": "packages/db/scripts/link-dev-user.ts",
@@ -55,7 +57,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "tailwind-preset": {
       "p": "packages/design-tokens/src/tailwind-preset.ts",
@@ -71,7 +74,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "ai": {
       "p": "packages/types/src/ai.ts",
@@ -89,7 +93,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "currency": {
       "p": "packages/types/src/financial/currency.ts",
@@ -109,7 +114,30 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {
+        "CURRENCIES": [
+          "format"
+        ],
+        "Currency": [
+          "format"
+        ],
+        "CurrencyInfo": [
+          "format"
+        ],
+        "CURRENCY_INFO": [
+          "format"
+        ],
+        "isCurrency": [
+          "format"
+        ],
+        "getCurrencyInfo": [
+          "format"
+        ],
+        "DEFAULT_CURRENCY": [
+          "format"
+        ]
+      }
     },
     "format": {
       "p": "packages/types/src/financial/format.ts",
@@ -131,7 +159,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "money": {
       "p": "packages/types/src/financial/money.ts",
@@ -154,7 +183,39 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {
+        "Cents": [
+          "format"
+        ],
+        "cents": [
+          "format"
+        ],
+        "ZERO_CENTS": [
+          "format"
+        ],
+        "addCents": [
+          "format"
+        ],
+        "subtractCents": [
+          "format"
+        ],
+        "multiplyCents": [
+          "format"
+        ],
+        "divideCents": [
+          "format"
+        ],
+        "dollarsToCents": [
+          "format"
+        ],
+        "centsToDollars": [
+          "format"
+        ],
+        "absCents": [
+          "format"
+        ]
+      }
     },
     "reports": {
       "p": "packages/types/src/financial/reports.ts",
@@ -177,7 +238,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "jurisdiction": {
       "p": "packages/types/src/jurisdiction.ts",
@@ -193,7 +255,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "permissions": {
       "p": "packages/types/src/rbac/permissions.ts",
@@ -218,7 +281,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "roles": {
       "p": "packages/types/src/rbac/roles.ts",
@@ -241,7 +305,39 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {
+        "ROLES": [
+          "permissions"
+        ],
+        "Role": [
+          "permissions"
+        ],
+        "RoleInfo": [
+          "permissions"
+        ],
+        "ROLE_INFO": [
+          "permissions"
+        ],
+        "isRole": [
+          "permissions"
+        ],
+        "getRoleInfo": [
+          "permissions"
+        ],
+        "ADMIN_ROLES": [
+          "permissions"
+        ],
+        "ACCOUNTING_ROLES": [
+          "permissions"
+        ],
+        "TRANSACTING_ROLES": [
+          "permissions"
+        ],
+        "VIEWER_ROLES": [
+          "permissions"
+        ]
+      }
     },
     "setup": {
       "p": "packages/ui/src/test/setup.ts",
@@ -256,7 +352,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "utils": {
       "p": "packages/ui/src/utils.ts",
@@ -273,7 +370,43 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {
+        "cn": [
+          "AIPanel",
+          "ConfidenceBadge",
+          "CriticalAlert",
+          "FeedbackComponent",
+          "InsightCard",
+          "SuggestionChip",
+          "EntitySelector",
+          "Card",
+          "DataTable",
+          "LoadingState",
+          "Alert",
+          "ConfirmDialog",
+          "Modal",
+          "Progress",
+          "Toast",
+          "AccountCard",
+          "BudgetCard",
+          "EntityBadge",
+          "GLAccountSelector",
+          "JournalEntryPreview",
+          "KPICard",
+          "MoneyAmount",
+          "MoneyInput",
+          "TransactionRow",
+          "EmptyState",
+          "Sidebar",
+          "TopCommandBar",
+          "Badge",
+          "Button",
+          "Chip",
+          "Input",
+          "Select"
+        ]
+      }
     },
     "vitest.config": {
       "p": "packages/ui/vitest.config.ts",
@@ -288,7 +421,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "AIBadge": {
       "p": "packages/ui/src/ai/AIBadge.tsx",
@@ -307,7 +441,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "AIPanel": {
       "p": "packages/ui/src/ai/AIPanel.tsx",
@@ -327,7 +462,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "ConfidenceBadge": {
       "p": "packages/ui/src/ai/ConfidenceBadge.tsx",
@@ -344,7 +480,17 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ConfidenceBadgeProps": [
+          "InsightCard",
+          "SuggestionChip"
+        ],
+        "ConfidenceBadge": [
+          "InsightCard",
+          "SuggestionChip"
+        ]
+      }
     },
     "CriticalAlert": {
       "p": "packages/ui/src/ai/CriticalAlert.tsx",
@@ -362,7 +508,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "FeedbackComponent": {
       "p": "packages/ui/src/ai/FeedbackComponent.tsx",
@@ -382,7 +529,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "InsightCard": {
       "p": "packages/ui/src/ai/InsightCard.tsx",
@@ -402,7 +550,18 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "InsightType": [
+          "AIPanel"
+        ],
+        "InsightCardProps": [
+          "AIPanel"
+        ],
+        "InsightCard": [
+          "AIPanel"
+        ]
+      }
     },
     "SuggestionChip": {
       "p": "packages/ui/src/ai/SuggestionChip.tsx",
@@ -422,7 +581,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "AccountStatusBadge": {
       "p": "packages/ui/src/business/AccountStatusBadge.tsx",
@@ -438,7 +598,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "AIActionStatusBadge": {
       "p": "packages/ui/src/business/AIActionStatusBadge.tsx",
@@ -454,7 +615,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "BillStatusBadge": {
       "p": "packages/ui/src/business/BillStatusBadge.tsx",
@@ -471,7 +633,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "ClientStatusBadge": {
       "p": "packages/ui/src/business/ClientStatusBadge.tsx",
@@ -487,7 +650,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "EntitySelector": {
       "p": "packages/ui/src/business/EntitySelector.tsx",
@@ -504,7 +668,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "InvoiceStatusBadge": {
       "p": "packages/ui/src/business/InvoiceStatusBadge.tsx",
@@ -521,7 +686,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "JournalEntryStatusBadge": {
       "p": "packages/ui/src/business/JournalEntryStatusBadge.tsx",
@@ -537,7 +703,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "VendorStatusBadge": {
       "p": "packages/ui/src/business/VendorStatusBadge.tsx",
@@ -553,7 +720,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Card": {
       "p": "packages/ui/src/data-display/Card.tsx",
@@ -576,7 +744,24 @@
         "file": "packages/ui/src/data-display/__tests__/Card.test.tsx",
         "testCount": 23
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {
+        "CardVariant": [
+          "AIPanel"
+        ],
+        "CardProps": [
+          "AIPanel"
+        ],
+        "Card": [
+          "AIPanel"
+        ],
+        "CardHeaderProps": [
+          "AIPanel"
+        ],
+        "CardHeader": [
+          "AIPanel"
+        ]
+      }
     },
     "DataTable": {
       "p": "packages/ui/src/data-display/DataTable.tsx",
@@ -594,7 +779,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "LoadingState": {
       "p": "packages/ui/src/data-display/LoadingState.tsx",
@@ -619,7 +805,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Alert": {
       "p": "packages/ui/src/feedback/Alert.tsx",
@@ -638,7 +825,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "ConfirmDialog": {
       "p": "packages/ui/src/feedback/ConfirmDialog.tsx",
@@ -659,7 +847,8 @@
         "file": "packages/ui/src/feedback/__tests__/ConfirmDialog.test.tsx",
         "testCount": 10
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Modal": {
       "p": "packages/ui/src/feedback/Modal.tsx",
@@ -676,7 +865,15 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {
+        "ModalProps": [
+          "ConfirmDialog"
+        ],
+        "Modal": [
+          "ConfirmDialog"
+        ]
+      }
     },
     "Progress": {
       "p": "packages/ui/src/feedback/Progress.tsx",
@@ -697,7 +894,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Toast": {
       "p": "packages/ui/src/feedback/Toast.tsx",
@@ -718,7 +916,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "AccountCard": {
       "p": "packages/ui/src/financial/AccountCard.tsx",
@@ -736,7 +935,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "BudgetCard": {
       "p": "packages/ui/src/financial/BudgetCard.tsx",
@@ -753,7 +953,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "EntityBadge": {
       "p": "packages/ui/src/financial/EntityBadge.tsx",
@@ -772,7 +973,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "GLAccountSelector": {
       "p": "packages/ui/src/financial/GLAccountSelector.tsx",
@@ -791,7 +993,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "JournalEntryPreview": {
       "p": "packages/ui/src/financial/JournalEntryPreview.tsx",
@@ -812,7 +1015,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "KPICard": {
       "p": "packages/ui/src/financial/KPICard.tsx",
@@ -830,7 +1034,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "MoneyAmount": {
       "p": "packages/ui/src/financial/MoneyAmount.tsx",
@@ -848,7 +1053,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "MoneyInput": {
       "p": "packages/ui/src/financial/MoneyInput.tsx",
@@ -867,7 +1073,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "TransactionRow": {
       "p": "packages/ui/src/financial/TransactionRow.tsx",
@@ -891,7 +1098,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "EmptyState": {
       "p": "packages/ui/src/patterns/EmptyState.tsx",
@@ -912,7 +1120,8 @@
         "file": "packages/ui/src/patterns/__tests__/EmptyState.test.tsx",
         "testCount": 16
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Sidebar": {
       "p": "packages/ui/src/patterns/navigation/Sidebar.tsx",
@@ -930,7 +1139,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "TopCommandBar": {
       "p": "packages/ui/src/patterns/navigation/TopCommandBar.tsx",
@@ -949,7 +1159,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Badge": {
       "p": "packages/ui/src/primitives/Badge.tsx",
@@ -970,7 +1181,45 @@
         "file": "packages/ui/src/primitives/__tests__/Badge.test.tsx",
         "testCount": 8
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {
+        "BadgeVariant": [
+          "AIBadge",
+          "InsightCard",
+          "SuggestionChip",
+          "AccountStatusBadge",
+          "AIActionStatusBadge",
+          "BillStatusBadge",
+          "ClientStatusBadge",
+          "InvoiceStatusBadge",
+          "JournalEntryStatusBadge",
+          "VendorStatusBadge"
+        ],
+        "BadgeProps": [
+          "AIBadge",
+          "InsightCard",
+          "SuggestionChip",
+          "AccountStatusBadge",
+          "AIActionStatusBadge",
+          "BillStatusBadge",
+          "ClientStatusBadge",
+          "InvoiceStatusBadge",
+          "JournalEntryStatusBadge",
+          "VendorStatusBadge"
+        ],
+        "Badge": [
+          "AIBadge",
+          "InsightCard",
+          "SuggestionChip",
+          "AccountStatusBadge",
+          "AIActionStatusBadge",
+          "BillStatusBadge",
+          "ClientStatusBadge",
+          "InvoiceStatusBadge",
+          "JournalEntryStatusBadge",
+          "VendorStatusBadge"
+        ]
+      }
     },
     "Button": {
       "p": "packages/ui/src/primitives/Button.tsx",
@@ -992,7 +1241,8 @@
         "file": "packages/ui/src/primitives/__tests__/Button.test.tsx",
         "testCount": 22
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Chip": {
       "p": "packages/ui/src/primitives/Chip.tsx",
@@ -1011,7 +1261,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Input": {
       "p": "packages/ui/src/primitives/Input.tsx",
@@ -1028,7 +1279,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     },
     "Select": {
       "p": "packages/ui/src/primitives/Select.tsx",
@@ -1046,7 +1298,8 @@
       "t": {
         "exists": false
       },
-      "d": "pkg"
+      "d": "pkg",
+      "c": {}
     }
   },
   "d": {

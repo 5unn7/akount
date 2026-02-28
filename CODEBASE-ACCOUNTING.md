@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 107
-**Estimated tokens:** ~7,717
+**Estimated tokens:** ~9,524
 
 ---
 
@@ -29,7 +29,66 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "AccountingErrorCode": [
+          "asset",
+          "fiscal-period",
+          "gl-account",
+          "journal-entry",
+          "report",
+          "tax-rate",
+          "asset.service",
+          "coa-template",
+          "document-posting.service",
+          "fiscal-period.service",
+          "gl-account.service",
+          "journal-entry.service",
+          "posting.service",
+          "report.service",
+          "tax-rate.service",
+          "gl-resolve",
+          "validate-ownership"
+        ],
+        "AccountingError": [
+          "asset",
+          "fiscal-period",
+          "gl-account",
+          "journal-entry",
+          "report",
+          "tax-rate",
+          "asset.service",
+          "coa-template",
+          "document-posting.service",
+          "fiscal-period.service",
+          "gl-account.service",
+          "journal-entry.service",
+          "posting.service",
+          "report.service",
+          "tax-rate.service",
+          "gl-resolve",
+          "validate-ownership"
+        ],
+        "handleAccountingError": [
+          "asset",
+          "fiscal-period",
+          "gl-account",
+          "journal-entry",
+          "report",
+          "tax-rate",
+          "asset.service",
+          "coa-template",
+          "document-posting.service",
+          "fiscal-period.service",
+          "gl-account.service",
+          "journal-entry.service",
+          "posting.service",
+          "report.service",
+          "tax-rate.service",
+          "gl-resolve",
+          "validate-ownership"
+        ]
+      }
     },
     "index": {
       "p": "apps/api/src/domains/accounting/routes/index.ts",
@@ -53,7 +112,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "routes": {
       "p": "apps/api/src/domains/accounting/routes.ts",
@@ -65,7 +125,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "asset": {
       "p": "apps/api/src/domains/accounting/routes/asset.ts",
@@ -85,7 +146,14 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "assetRoutes": [
+          "index",
+          "assets-client",
+          "assets-empty"
+        ]
+      }
     },
     "fiscal-period": {
       "p": "apps/api/src/domains/accounting/routes/fiscal-period.ts",
@@ -105,7 +173,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "fiscalPeriodRoutes": [
+          "index"
+        ]
+      }
     },
     "gl-account": {
       "p": "apps/api/src/domains/accounting/routes/gl-account.ts",
@@ -126,7 +199,14 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "glAccountRoutes": [
+          "index",
+          "gl-account.service",
+          "chart-of-accounts-client"
+        ]
+      }
     },
     "journal-entry": {
       "p": "apps/api/src/domains/accounting/routes/journal-entry.ts",
@@ -147,7 +227,14 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "journalEntryRoutes": [
+          "index",
+          "journal-entry.service",
+          "journal-entries-client"
+        ]
+      }
     },
     "report": {
       "p": "apps/api/src/domains/accounting/routes/report.ts",
@@ -172,7 +259,15 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "reportRoutes": [
+          "index",
+          "document-posting.service",
+          "journal-entry.service",
+          "report.service"
+        ]
+      }
     },
     "tax-rate": {
       "p": "apps/api/src/domains/accounting/routes/tax-rate.ts",
@@ -192,7 +287,15 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "taxRateRoutes": [
+          "index",
+          "page",
+          "tax-rates-client",
+          "tax-rates-empty"
+        ]
+      }
     },
     "asset.schema": {
       "p": "apps/api/src/domains/accounting/schemas/asset.schema.ts",
@@ -217,7 +320,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "fiscal-period.schema": {
       "p": "apps/api/src/domains/accounting/schemas/fiscal-period.schema.ts",
@@ -242,7 +346,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "gl-account.schema": {
       "p": "apps/api/src/domains/accounting/schemas/gl-account.schema.ts",
@@ -268,7 +373,39 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "GLAccountParamsSchema": [
+          "gl-account.service"
+        ],
+        "GLAccountParams": [
+          "gl-account.service"
+        ],
+        "CreateGLAccountSchema": [
+          "gl-account.service"
+        ],
+        "CreateGLAccountInput": [
+          "gl-account.service"
+        ],
+        "UpdateGLAccountSchema": [
+          "gl-account.service"
+        ],
+        "UpdateGLAccountInput": [
+          "gl-account.service"
+        ],
+        "ListGLAccountsSchema": [
+          "gl-account.service"
+        ],
+        "ListGLAccountsQuery": [
+          "gl-account.service"
+        ],
+        "SeedCOASchema": [
+          "gl-account.service"
+        ],
+        "SeedCOAInput": [
+          "gl-account.service"
+        ]
+      }
     },
     "journal-entry.schema": {
       "p": "apps/api/src/domains/accounting/schemas/journal-entry.schema.ts",
@@ -294,7 +431,39 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "JournalEntryParamsSchema": [
+          "journal-entry.service"
+        ],
+        "JournalEntryParams": [
+          "journal-entry.service"
+        ],
+        "JournalLineInputSchema": [
+          "journal-entry.service"
+        ],
+        "JournalLineInput": [
+          "journal-entry.service"
+        ],
+        "CreateJournalEntrySchema": [
+          "journal-entry.service"
+        ],
+        "CreateJournalEntryInput": [
+          "journal-entry.service"
+        ],
+        "ListJournalEntriesSchema": [
+          "journal-entry.service"
+        ],
+        "ListJournalEntriesQuery": [
+          "journal-entry.service"
+        ],
+        "PostTransactionSchema": [
+          "journal-entry.service"
+        ],
+        "PostTransactionInput": [
+          "journal-entry.service"
+        ]
+      }
     },
     "report.schema": {
       "p": "apps/api/src/domains/accounting/schemas/report.schema.ts",
@@ -321,7 +490,8 @@
         "file": "apps/api/src/domains/accounting/schemas/__tests__/report.schema.test.ts",
         "testCount": 17
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "tax-rate.schema": {
       "p": "apps/api/src/domains/accounting/schemas/tax-rate.schema.ts",
@@ -346,7 +516,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "asset.service": {
       "p": "apps/api/src/domains/accounting/services/asset.service.ts",
@@ -366,7 +537,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "AssetService": [
+          "asset"
+        ]
+      }
     },
     "coa-template": {
       "p": "apps/api/src/domains/accounting/services/coa-template.ts",
@@ -384,7 +560,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "seedDefaultCOA": [
+          "gl-account"
+        ]
+      }
     },
     "document-posting.service": {
       "p": "apps/api/src/domains/accounting/services/document-posting.service.ts",
@@ -406,7 +587,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "fiscal-period.service": {
       "p": "apps/api/src/domains/accounting/services/fiscal-period.service.ts",
@@ -425,7 +607,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "FiscalPeriodService": [
+          "fiscal-period"
+        ]
+      }
     },
     "gl-account.service": {
       "p": "apps/api/src/domains/accounting/services/gl-account.service.ts",
@@ -444,7 +631,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "GLAccountService": [
+          "gl-account"
+        ]
+      }
     },
     "journal-entry.service": {
       "p": "apps/api/src/domains/accounting/services/journal-entry.service.ts",
@@ -465,7 +657,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "JournalEntryService": [
+          "journal-entry"
+        ]
+      }
     },
     "posting.service": {
       "p": "apps/api/src/domains/accounting/services/posting.service.ts",
@@ -484,7 +681,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "PostingService": [
+          "journal-entry"
+        ]
+      }
     },
     "report-cache": {
       "p": "apps/api/src/domains/accounting/services/report-cache.ts",
@@ -501,7 +703,19 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "ReportCache": [
+          "document-posting.service",
+          "journal-entry.service",
+          "report.service"
+        ],
+        "reportCache": [
+          "document-posting.service",
+          "journal-entry.service",
+          "report.service"
+        ]
+      }
     },
     "report-export.service": {
       "p": "apps/api/src/domains/accounting/services/report-export.service.ts",
@@ -520,7 +734,15 @@
         "file": "apps/api/src/domains/accounting/services/__tests__/report-export.service.test.ts",
         "testCount": 46
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "ReportExportService": [
+          "report"
+        ],
+        "reportExportService": [
+          "report"
+        ]
+      }
     },
     "report.service": {
       "p": "apps/api/src/domains/accounting/services/report.service.ts",
@@ -541,7 +763,12 @@
         "file": "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
         "testCount": 38
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "ReportService": [
+          "report"
+        ]
+      }
     },
     "tax-rate.service": {
       "p": "apps/api/src/domains/accounting/services/tax-rate.service.ts",
@@ -560,7 +787,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "TaxRateService": [
+          "tax-rate"
+        ]
+      }
     },
     "shared-styles": {
       "p": "apps/api/src/domains/accounting/templates/shared-styles.ts",
@@ -582,7 +814,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "entry-number": {
       "p": "apps/api/src/domains/accounting/utils/entry-number.ts",
@@ -598,7 +831,15 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "generateEntryNumber": [
+          "asset.service",
+          "document-posting.service",
+          "journal-entry.service",
+          "posting.service"
+        ]
+      }
     },
     "gl-resolve": {
       "p": "apps/api/src/domains/accounting/utils/gl-resolve.ts",
@@ -616,7 +857,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "resolveGLAccountByCode": [
+          "document-posting.service"
+        ]
+      }
     },
     "validate-ownership": {
       "p": "apps/api/src/domains/accounting/utils/validate-ownership.ts",
@@ -634,7 +880,19 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "validateEntityOwnership": [
+          "asset.service",
+          "fiscal-period.service",
+          "tax-rate.service"
+        ],
+        "validateGLAccountOwnership": [
+          "asset.service",
+          "fiscal-period.service",
+          "tax-rate.service"
+        ]
+      }
     },
     "accounting-empty": {
       "p": "apps/web/src/app/(dashboard)/accounting/accounting-empty.tsx",
@@ -652,7 +910,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "asset-sheet": {
       "p": "apps/web/src/app/(dashboard)/accounting/assets/asset-sheet.tsx",
@@ -675,7 +934,13 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "AssetSheet": [
+          "assets-client",
+          "assets-empty"
+        ]
+      }
     },
     "assets-client": {
       "p": "apps/web/src/app/(dashboard)/accounting/assets/assets-client.tsx",
@@ -700,7 +965,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "assets-empty": {
       "p": "apps/web/src/app/(dashboard)/accounting/assets/assets-empty.tsx",
@@ -720,7 +986,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "error": {
       "p": "apps/web/src/app/(dashboard)/accounting/tax-rates/error.tsx",
@@ -737,7 +1004,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "loading": {
       "p": "apps/web/src/app/(dashboard)/accounting/tax-rates/loading.tsx",
@@ -751,7 +1019,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "page": {
       "p": "apps/web/src/app/(dashboard)/accounting/tax-rates/page.tsx",
@@ -772,7 +1041,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "balance-equation": {
       "p": "apps/web/src/app/(dashboard)/accounting/balance-equation.tsx",
@@ -789,7 +1059,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "account-row": {
       "p": "apps/web/src/app/(dashboard)/accounting/chart-of-accounts/account-row.tsx",
@@ -814,7 +1085,27 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "AccountNode": [
+          "chart-of-accounts-client"
+        ],
+        "AccountGroup": [
+          "chart-of-accounts-client"
+        ],
+        "buildTree": [
+          "chart-of-accounts-client"
+        ],
+        "buildGroupedTree": [
+          "chart-of-accounts-client"
+        ],
+        "GroupHeaderRow": [
+          "chart-of-accounts-client"
+        ],
+        "AccountRow": [
+          "chart-of-accounts-client"
+        ]
+      }
     },
     "chart-of-accounts-client": {
       "p": "apps/web/src/app/(dashboard)/accounting/chart-of-accounts/chart-of-accounts-client.tsx",
@@ -844,7 +1135,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "gl-account-sheet": {
       "p": "apps/web/src/app/(dashboard)/accounting/chart-of-accounts/gl-account-sheet.tsx",
@@ -863,7 +1155,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "GLAccountSheet": [
+          "chart-of-accounts-client"
+        ]
+      }
     },
     "coa-snapshot": {
       "p": "apps/web/src/app/(dashboard)/accounting/coa-snapshot.tsx",
@@ -882,7 +1179,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "fiscal-periods-client": {
       "p": "apps/web/src/app/(dashboard)/accounting/fiscal-periods/fiscal-periods-client.tsx",
@@ -904,7 +1202,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "fiscal-periods-empty": {
       "p": "apps/web/src/app/(dashboard)/accounting/fiscal-periods/fiscal-periods-empty.tsx",
@@ -926,7 +1225,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "income-summary": {
       "p": "apps/web/src/app/(dashboard)/accounting/income-summary.tsx",
@@ -945,7 +1245,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "journal-entry-detail-client": {
       "p": "apps/web/src/app/(dashboard)/accounting/journal-entries/[id]/journal-entry-detail-client.tsx",
@@ -969,7 +1270,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "journal-entries-client": {
       "p": "apps/web/src/app/(dashboard)/accounting/journal-entries/journal-entries-client.tsx",
@@ -992,7 +1294,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "journal-entry-detail": {
       "p": "apps/web/src/app/(dashboard)/accounting/journal-entries/journal-entry-detail.tsx",
@@ -1013,7 +1316,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "EntryDetail": [
+          "journal-entries-client"
+        ]
+      }
     },
     "journal-entry-form": {
       "p": "apps/web/src/app/(dashboard)/accounting/journal-entries/journal-entry-form.tsx",
@@ -1039,7 +1347,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "layout": {
       "p": "apps/web/src/app/(dashboard)/accounting/layout.tsx",
@@ -1051,7 +1360,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "recent-entries": {
       "p": "apps/web/src/app/(dashboard)/accounting/recent-entries.tsx",
@@ -1072,7 +1382,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "bs-report-view": {
       "p": "apps/web/src/app/(dashboard)/accounting/reports/balance-sheet/bs-report-view.tsx",
@@ -1097,7 +1408,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "cf-report-view": {
       "p": "apps/web/src/app/(dashboard)/accounting/reports/cash-flow/cf-report-view.tsx",
@@ -1121,7 +1433,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "gl-report-view": {
       "p": "apps/web/src/app/(dashboard)/accounting/reports/general-ledger/gl-report-view.tsx",
@@ -1145,7 +1458,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "pl-report-view": {
       "p": "apps/web/src/app/(dashboard)/accounting/reports/profit-loss/pl-report-view.tsx",
@@ -1170,7 +1484,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "revenue-report-view": {
       "p": "apps/web/src/app/(dashboard)/accounting/reports/revenue/revenue-report-view.tsx",
@@ -1194,7 +1509,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "spending-report-view": {
       "p": "apps/web/src/app/(dashboard)/accounting/reports/spending/spending-report-view.tsx",
@@ -1218,7 +1534,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "tb-report-view": {
       "p": "apps/web/src/app/(dashboard)/accounting/reports/trial-balance/tb-report-view.tsx",
@@ -1242,7 +1559,8 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {}
     },
     "tax-rate-sheet": {
       "p": "apps/web/src/app/(dashboard)/accounting/tax-rates/tax-rate-sheet.tsx",
@@ -1263,7 +1581,13 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "TaxRateSheet": [
+          "tax-rates-client",
+          "tax-rates-empty"
+        ]
+      }
     },
     "tax-rates-client": {
       "p": "apps/web/src/app/(dashboard)/accounting/tax-rates/tax-rates-client.tsx",
@@ -1287,7 +1611,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "TaxRatesClient": [
+          "page"
+        ]
+      }
     },
     "tax-rates-empty": {
       "p": "apps/web/src/app/(dashboard)/accounting/tax-rates/tax-rates-empty.tsx",
@@ -1312,7 +1641,12 @@
       "t": {
         "exists": false
       },
-      "d": "acc"
+      "d": "acc",
+      "c": {
+        "TaxRatesEmpty": [
+          "page"
+        ]
+      }
     }
   },
   "d": {

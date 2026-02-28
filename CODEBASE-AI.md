@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 73
-**Estimated tokens:** ~8,437
+**Estimated tokens:** ~12,620
 
 ---
 
@@ -29,7 +29,42 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "AIErrorCode": [
+          "action.routes",
+          "monthly-close",
+          "natural-bookkeeping.routes",
+          "natural-search.routes",
+          "rule-suggestions",
+          "rules",
+          "action-executor.service",
+          "ai-action.service",
+          "monthly-close.service"
+        ],
+        "AIError": [
+          "action.routes",
+          "monthly-close",
+          "natural-bookkeeping.routes",
+          "natural-search.routes",
+          "rule-suggestions",
+          "rules",
+          "action-executor.service",
+          "ai-action.service",
+          "monthly-close.service"
+        ],
+        "handleAIError": [
+          "action.routes",
+          "monthly-close",
+          "natural-bookkeeping.routes",
+          "natural-search.routes",
+          "rule-suggestions",
+          "rules",
+          "action-executor.service",
+          "ai-action.service",
+          "monthly-close.service"
+        ]
+      }
     },
     "index": {
       "p": "apps/api/src/domains/ai/index.ts",
@@ -41,7 +76,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "routes": {
       "p": "apps/api/src/domains/ai/routes.ts",
@@ -68,7 +104,8 @@
         "file": "apps/api/src/domains/ai/__tests__/routes.test.ts",
         "testCount": 24
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "action.routes": {
       "p": "apps/api/src/domains/ai/routes/action.routes.ts",
@@ -89,7 +126,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "jobs": {
       "p": "apps/api/src/domains/ai/routes/jobs.ts",
@@ -116,7 +154,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "monthly-close": {
       "p": "apps/api/src/domains/ai/routes/monthly-close.ts",
@@ -137,7 +176,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "natural-bookkeeping.routes": {
       "p": "apps/api/src/domains/ai/routes/natural-bookkeeping.routes.ts",
@@ -162,7 +202,8 @@
         "file": "apps/api/src/domains/ai/routes/__tests__/natural-bookkeeping.routes.test.ts",
         "testCount": 8
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "natural-search.routes": {
       "p": "apps/api/src/domains/ai/routes/natural-search.routes.ts",
@@ -187,7 +228,8 @@
         "file": "apps/api/src/domains/ai/routes/__tests__/natural-search.routes.test.ts",
         "testCount": 7
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "rule-suggestions": {
       "p": "apps/api/src/domains/ai/routes/rule-suggestions.ts",
@@ -208,7 +250,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "rules": {
       "p": "apps/api/src/domains/ai/routes/rules.ts",
@@ -228,7 +271,12 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "rulesRoutes": [
+          "page"
+        ]
+      }
     },
     "action.schema": {
       "p": "apps/api/src/domains/ai/schemas/action.schema.ts",
@@ -253,7 +301,39 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ActionIdParamsSchema": [
+          "document-extraction.service"
+        ],
+        "ActionIdParams": [
+          "document-extraction.service"
+        ],
+        "ListActionsQuerySchema": [
+          "document-extraction.service"
+        ],
+        "ListActionsQuery": [
+          "document-extraction.service"
+        ],
+        "ReviewActionBodySchema": [
+          "document-extraction.service"
+        ],
+        "ReviewActionBody": [
+          "document-extraction.service"
+        ],
+        "BatchReviewBodySchema": [
+          "document-extraction.service"
+        ],
+        "BatchReviewBody": [
+          "document-extraction.service"
+        ],
+        "StatsQuerySchema": [
+          "document-extraction.service"
+        ],
+        "StatsQuery": [
+          "document-extraction.service"
+        ]
+      }
     },
     "bank-statement-extraction.schema": {
       "p": "apps/api/src/domains/ai/schemas/bank-statement-extraction.schema.ts",
@@ -276,7 +356,33 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "TransactionTypeSchema": [
+          "document-extraction.service"
+        ],
+        "BankStatementTransactionSchema": [
+          "document-extraction.service"
+        ],
+        "BankStatementTransaction": [
+          "document-extraction.service"
+        ],
+        "StatementAccountInfoSchema": [
+          "document-extraction.service"
+        ],
+        "StatementAccountInfo": [
+          "document-extraction.service"
+        ],
+        "BankStatementExtractionSchema": [
+          "document-extraction.service"
+        ],
+        "BankStatementExtraction": [
+          "document-extraction.service"
+        ],
+        "validateStatementBalances": [
+          "document-extraction.service"
+        ]
+      }
     },
     "bill-extraction.schema": {
       "p": "apps/api/src/domains/ai/schemas/bill-extraction.schema.ts",
@@ -302,7 +408,36 @@
         "file": "apps/api/src/domains/ai/schemas/__tests__/bill-extraction.schema.test.ts",
         "testCount": 19
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "LineItemSchema": [
+          "document-extraction.service"
+        ],
+        "LineItem": [
+          "document-extraction.service"
+        ],
+        "TaxBreakdownSchema": [
+          "document-extraction.service"
+        ],
+        "TaxBreakdown": [
+          "document-extraction.service"
+        ],
+        "PaymentTermsSchema": [
+          "document-extraction.service"
+        ],
+        "PaymentTerms": [
+          "document-extraction.service"
+        ],
+        "BillExtractionSchema": [
+          "document-extraction.service"
+        ],
+        "BillExtraction": [
+          "document-extraction.service"
+        ],
+        "validateBillTotals": [
+          "document-extraction.service"
+        ]
+      }
     },
     "categorization.schema": {
       "p": "apps/api/src/domains/ai/schemas/categorization.schema.ts",
@@ -323,7 +458,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "insight.schema": {
       "p": "apps/api/src/domains/ai/schemas/insight.schema.ts",
@@ -348,7 +484,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "invoice-extraction.schema": {
       "p": "apps/api/src/domains/ai/schemas/invoice-extraction.schema.ts",
@@ -374,7 +511,36 @@
         "file": "apps/api/src/domains/ai/schemas/__tests__/invoice-extraction.schema.test.ts",
         "testCount": 13
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "InvoiceLineItemSchema": [
+          "document-extraction.service"
+        ],
+        "InvoiceLineItem": [
+          "document-extraction.service"
+        ],
+        "InvoiceTaxBreakdownSchema": [
+          "document-extraction.service"
+        ],
+        "InvoiceTaxBreakdown": [
+          "document-extraction.service"
+        ],
+        "InvoicePaymentTermsSchema": [
+          "document-extraction.service"
+        ],
+        "InvoicePaymentTerms": [
+          "document-extraction.service"
+        ],
+        "InvoiceExtractionSchema": [
+          "document-extraction.service"
+        ],
+        "InvoiceExtraction": [
+          "document-extraction.service"
+        ],
+        "validateInvoiceTotals": [
+          "document-extraction.service"
+        ]
+      }
     },
     "je-suggestion.schema": {
       "p": "apps/api/src/domains/ai/schemas/je-suggestion.schema.ts",
@@ -393,7 +559,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "monthly-close.schema": {
       "p": "apps/api/src/domains/ai/schemas/monthly-close.schema.ts",
@@ -414,7 +581,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "natural-bookkeeping.schema": {
       "p": "apps/api/src/domains/ai/schemas/natural-bookkeeping.schema.ts",
@@ -434,7 +602,24 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ParseNaturalLanguageSchema": [
+          "natural-bookkeeping.service"
+        ],
+        "ParseNaturalLanguageInput": [
+          "natural-bookkeeping.service"
+        ],
+        "ParsedTransactionSchema": [
+          "natural-bookkeeping.service"
+        ],
+        "ParsedTransaction": [
+          "natural-bookkeeping.service"
+        ],
+        "mistralTransactionFunctionSchema": [
+          "natural-bookkeeping.service"
+        ]
+      }
     },
     "natural-search.schema": {
       "p": "apps/api/src/domains/ai/schemas/natural-search.schema.ts",
@@ -452,7 +637,18 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "NaturalSearchQuerySchema": [
+          "natural-search.service"
+        ],
+        "NaturalSearchQueryInput": [
+          "natural-search.service"
+        ],
+        "mistralSearchFunctionSchema": [
+          "natural-search.service"
+        ]
+      }
     },
     "rule-suggestion.schema": {
       "p": "apps/api/src/domains/ai/schemas/rule-suggestion.schema.ts",
@@ -477,7 +673,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "rule.schema": {
       "p": "apps/api/src/domains/ai/schemas/rule.schema.ts",
@@ -503,7 +700,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "action-executor.service": {
       "p": "apps/api/src/domains/ai/services/action-executor.service.ts",
@@ -524,7 +722,15 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ExecutionResult": [
+          "ai-action.service"
+        ],
+        "ActionExecutorService": [
+          "ai-action.service"
+        ]
+      }
     },
     "ai-action.service": {
       "p": "apps/api/src/domains/ai/services/ai-action.service.ts",
@@ -551,7 +757,51 @@
         "file": "apps/api/src/domains/ai/services/__tests__/ai-action.service.test.ts",
         "testCount": 22
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ACTION_EXPIRY_DAYS": [
+          "action.routes",
+          "insight-generator.service",
+          "je-suggestion.service",
+          "rule-suggestion.service"
+        ],
+        "HIGH_CONFIDENCE_THRESHOLD": [
+          "action.routes",
+          "insight-generator.service",
+          "je-suggestion.service",
+          "rule-suggestion.service"
+        ],
+        "CreateActionInput": [
+          "action.routes",
+          "insight-generator.service",
+          "je-suggestion.service",
+          "rule-suggestion.service"
+        ],
+        "ListActionsFilter": [
+          "action.routes",
+          "insight-generator.service",
+          "je-suggestion.service",
+          "rule-suggestion.service"
+        ],
+        "ActionStats": [
+          "action.routes",
+          "insight-generator.service",
+          "je-suggestion.service",
+          "rule-suggestion.service"
+        ],
+        "BatchResult": [
+          "action.routes",
+          "insight-generator.service",
+          "je-suggestion.service",
+          "rule-suggestion.service"
+        ],
+        "AIActionService": [
+          "action.routes",
+          "insight-generator.service",
+          "je-suggestion.service",
+          "rule-suggestion.service"
+        ]
+      }
     },
     "ai-decision-log.service": {
       "p": "apps/api/src/domains/ai/services/ai-decision-log.service.ts",
@@ -573,7 +823,21 @@
         "file": "apps/api/src/domains/ai/services/__tests__/ai-decision-log.service.test.ts",
         "testCount": 10
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "LogDecisionInput": [
+          "natural-bookkeeping.service",
+          "natural-search.service"
+        ],
+        "QueryDecisionsInput": [
+          "natural-bookkeeping.service",
+          "natural-search.service"
+        ],
+        "AIDecisionLogService": [
+          "natural-bookkeeping.service",
+          "natural-search.service"
+        ]
+      }
     },
     "ai.service": {
       "p": "apps/api/src/domains/ai/services/ai.service.ts",
@@ -594,7 +858,17 @@
         "file": "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
         "testCount": 23
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "AIService": [
+          "routes",
+          "categorization.service"
+        ],
+        "aiService": [
+          "routes",
+          "categorization.service"
+        ]
+      }
     },
     "cash-flow.analyzer": {
       "p": "apps/api/src/domains/ai/services/analyzers/cash-flow.analyzer.ts",
@@ -613,7 +887,12 @@
         "file": "apps/api/src/domains/ai/services/analyzers/__tests__/cash-flow.analyzer.test.ts",
         "testCount": 9
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "analyzeCashFlow": [
+          "insight-generator.service"
+        ]
+      }
     },
     "duplicate.analyzer": {
       "p": "apps/api/src/domains/ai/services/analyzers/duplicate.analyzer.ts",
@@ -632,7 +911,12 @@
         "file": "apps/api/src/domains/ai/services/analyzers/__tests__/duplicate.analyzer.test.ts",
         "testCount": 11
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "analyzeDuplicates": [
+          "insight-generator.service"
+        ]
+      }
     },
     "overdue.analyzer": {
       "p": "apps/api/src/domains/ai/services/analyzers/overdue.analyzer.ts",
@@ -651,7 +935,12 @@
         "file": "apps/api/src/domains/ai/services/analyzers/__tests__/overdue.analyzer.test.ts",
         "testCount": 10
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "analyzeOverdue": [
+          "insight-generator.service"
+        ]
+      }
     },
     "reconciliation.analyzer": {
       "p": "apps/api/src/domains/ai/services/analyzers/reconciliation.analyzer.ts",
@@ -670,7 +959,8 @@
         "file": "apps/api/src/domains/ai/services/analyzers/__tests__/reconciliation.analyzer.test.ts",
         "testCount": 13
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "revenue.analyzer": {
       "p": "apps/api/src/domains/ai/services/analyzers/revenue.analyzer.ts",
@@ -689,7 +979,12 @@
         "file": "apps/api/src/domains/ai/services/analyzers/__tests__/revenue.analyzer.test.ts",
         "testCount": 11
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "analyzeRevenue": [
+          "insight-generator.service"
+        ]
+      }
     },
     "spending.analyzer": {
       "p": "apps/api/src/domains/ai/services/analyzers/spending.analyzer.ts",
@@ -708,7 +1003,12 @@
         "file": "apps/api/src/domains/ai/services/analyzers/__tests__/spending.analyzer.test.ts",
         "testCount": 11
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "analyzeSpending": [
+          "insight-generator.service"
+        ]
+      }
     },
     "categorization.service": {
       "p": "apps/api/src/domains/ai/services/categorization.service.ts",
@@ -736,7 +1036,37 @@
         "file": "apps/api/src/domains/ai/services/__tests__/categorization.service.test.ts",
         "testCount": 36
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ConfidenceTier": [
+          "routes",
+          "je-suggestion.service"
+        ],
+        "CategorySuggestion": [
+          "routes",
+          "je-suggestion.service"
+        ],
+        "CATEGORY_TO_COA_CODE": [
+          "routes",
+          "je-suggestion.service"
+        ],
+        "CategorizationService": [
+          "routes",
+          "je-suggestion.service"
+        ],
+        "categorizeTransaction": [
+          "routes",
+          "je-suggestion.service"
+        ],
+        "categorizeTransactions": [
+          "routes",
+          "je-suggestion.service"
+        ],
+        "learnFromCorrection": [
+          "routes",
+          "je-suggestion.service"
+        ]
+      }
     },
     "document-extraction.service": {
       "p": "apps/api/src/domains/ai/services/document-extraction.service.ts",
@@ -763,7 +1093,25 @@
         "file": "apps/api/src/domains/ai/services/__tests__/document-extraction.service.test.ts",
         "testCount": 16
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "MAX_FILE_SIZE_BYTES": [
+          "bill-scan.worker",
+          "invoice-scan.worker"
+        ],
+        "ExtractionOptions": [
+          "bill-scan.worker",
+          "invoice-scan.worker"
+        ],
+        "ExtractionResult": [
+          "bill-scan.worker",
+          "invoice-scan.worker"
+        ],
+        "DocumentExtractionService": [
+          "bill-scan.worker",
+          "invoice-scan.worker"
+        ]
+      }
     },
     "insight-generator.service": {
       "p": "apps/api/src/domains/ai/services/insight-generator.service.ts",
@@ -792,7 +1140,24 @@
         "file": "apps/api/src/domains/ai/services/__tests__/insight-generator.service.test.ts",
         "testCount": 14
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "GenerationSummary": [
+          "cash-flow.analyzer",
+          "overdue.analyzer",
+          "spending.analyzer"
+        ],
+        "SharedAnalysisData": [
+          "cash-flow.analyzer",
+          "overdue.analyzer",
+          "spending.analyzer"
+        ],
+        "InsightGeneratorService": [
+          "cash-flow.analyzer",
+          "overdue.analyzer",
+          "spending.analyzer"
+        ]
+      }
     },
     "insight.service": {
       "p": "apps/api/src/domains/ai/services/insight.service.ts",
@@ -813,7 +1178,21 @@
         "file": "apps/api/src/domains/ai/services/__tests__/insight.service.test.ts",
         "testCount": 15
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ListInsightsParams": [
+          "action-executor.service",
+          "insight-generator.service"
+        ],
+        "InsightCounts": [
+          "action-executor.service",
+          "insight-generator.service"
+        ],
+        "InsightService": [
+          "action-executor.service",
+          "insight-generator.service"
+        ]
+      }
     },
     "je-suggestion.service": {
       "p": "apps/api/src/domains/ai/services/je-suggestion.service.ts",
@@ -839,7 +1218,24 @@
         "file": "apps/api/src/domains/ai/services/__tests__/je-suggestion.service.test.ts",
         "testCount": 28
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "JESuggestionInput": [
+          "routes"
+        ],
+        "JournalLineSuggestion": [
+          "routes"
+        ],
+        "JESuggestion": [
+          "routes"
+        ],
+        "JESuggestionBatchResult": [
+          "routes"
+        ],
+        "JESuggestionService": [
+          "routes"
+        ]
+      }
     },
     "monthly-close.service": {
       "p": "apps/api/src/domains/ai/services/monthly-close.service.ts",
@@ -863,7 +1259,21 @@
         "file": "apps/api/src/domains/ai/services/__tests__/monthly-close.service.test.ts",
         "testCount": 17
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ChecklistStatus": [
+          "monthly-close"
+        ],
+        "ChecklistItem": [
+          "monthly-close"
+        ],
+        "CloseReadinessReport": [
+          "monthly-close"
+        ],
+        "MonthlyCloseService": [
+          "monthly-close"
+        ]
+      }
     },
     "natural-bookkeeping.service": {
       "p": "apps/api/src/domains/ai/services/natural-bookkeeping.service.ts",
@@ -885,7 +1295,18 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ParsedTransactionData": [
+          "natural-bookkeeping.routes"
+        ],
+        "ParseResult": [
+          "natural-bookkeeping.routes"
+        ],
+        "NaturalBookkeepingService": [
+          "natural-bookkeeping.routes"
+        ]
+      }
     },
     "natural-search.service": {
       "p": "apps/api/src/domains/ai/services/natural-search.service.ts",
@@ -908,7 +1329,21 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "FilterChip": [
+          "natural-search.routes"
+        ],
+        "ParsedSearchFilters": [
+          "natural-search.routes"
+        ],
+        "SearchParseResult": [
+          "natural-search.routes"
+        ],
+        "NaturalSearchService": [
+          "natural-search.routes"
+        ]
+      }
     },
     "pattern-detection.service": {
       "p": "apps/api/src/domains/ai/services/pattern-detection.service.ts",
@@ -930,7 +1365,18 @@
         "file": "apps/api/src/domains/ai/services/__tests__/pattern-detection.service.test.ts",
         "testCount": 31
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "DetectedPattern": [
+          "rule-suggestions"
+        ],
+        "tokenizeDescription": [
+          "rule-suggestions"
+        ],
+        "PatternDetectionService": [
+          "rule-suggestions"
+        ]
+      }
     },
     "claude.provider": {
       "p": "apps/api/src/domains/ai/services/providers/claude.provider.ts",
@@ -948,7 +1394,12 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "ClaudeProvider": [
+          "ai.service"
+        ]
+      }
     },
     "mistral.provider": {
       "p": "apps/api/src/domains/ai/services/providers/mistral.provider.ts",
@@ -970,7 +1421,19 @@
         "file": "apps/api/src/domains/ai/services/providers/__tests__/mistral.provider.test.ts",
         "testCount": 25
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "MistralChatOptions": [
+          "document-extraction.service",
+          "natural-bookkeeping.service",
+          "natural-search.service"
+        ],
+        "MistralProvider": [
+          "document-extraction.service",
+          "natural-bookkeeping.service",
+          "natural-search.service"
+        ]
+      }
     },
     "perplexity.provider": {
       "p": "apps/api/src/domains/ai/services/providers/perplexity.provider.ts",
@@ -988,7 +1451,12 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "PerplexityProvider": [
+          "ai.service"
+        ]
+      }
     },
     "rule-engine.service": {
       "p": "apps/api/src/domains/ai/services/rule-engine.service.ts",
@@ -1009,7 +1477,18 @@
         "file": "apps/api/src/domains/ai/services/__tests__/rule-engine.service.test.ts",
         "testCount": 28
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "TransactionData": [
+          "categorization.service"
+        ],
+        "RuleMatch": [
+          "categorization.service"
+        ],
+        "RuleEngineService": [
+          "categorization.service"
+        ]
+      }
     },
     "rule-suggestion.service": {
       "p": "apps/api/src/domains/ai/services/rule-suggestion.service.ts",
@@ -1031,7 +1510,18 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "DetectedPattern": [
+          "rule-suggestions"
+        ],
+        "RuleSuggestionWithDetails": [
+          "rule-suggestions"
+        ],
+        "RuleSuggestionService": [
+          "rule-suggestions"
+        ]
+      }
     },
     "rule.service": {
       "p": "apps/api/src/domains/ai/services/rule.service.ts",
@@ -1058,7 +1548,65 @@
         "file": "apps/api/src/domains/ai/services/__tests__/rule.service.test.ts",
         "testCount": 37
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "RuleCondition": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ],
+        "RuleConditions": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ],
+        "RuleAction": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ],
+        "CreateRuleInput": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ],
+        "UpdateRuleInput": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ],
+        "ListRulesParams": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ],
+        "ListRulesResult": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ],
+        "RuleService": [
+          "rules",
+          "categorization.service",
+          "pattern-detection.service",
+          "rule-engine.service",
+          "rule-suggestion.service"
+        ]
+      }
     },
     "types": {
       "p": "apps/api/src/domains/ai/services/types.ts",
@@ -1070,7 +1618,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "insight.types": {
       "p": "apps/api/src/domains/ai/types/insight.types.ts",
@@ -1093,7 +1642,99 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {
+        "INSIGHT_TYPES": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "InsightType": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "INSIGHT_PRIORITIES": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "InsightPriority": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "INSIGHT_STATUSES": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "InsightStatus": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "INSIGHT_TYPE_CONFIG": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "CashFlowMetadata": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "SpendingAnomalyMetadata": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ],
+        "DuplicateExpenseMetadata": [
+          "cash-flow.analyzer",
+          "duplicate.analyzer",
+          "overdue.analyzer",
+          "reconciliation.analyzer",
+          "revenue.analyzer",
+          "spending.analyzer",
+          "insight-generator.service"
+        ]
+      }
     },
     "bill-scan.worker": {
       "p": "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
@@ -1117,7 +1758,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "invoice-scan.worker": {
       "p": "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
@@ -1141,7 +1783,8 @@
       "t": {
         "exists": false
       },
-      "d": "ai"
+      "d": "ai",
+      "c": {}
     },
     "actions-list-client": {
       "p": "apps/web/src/app/(dashboard)/insights/actions/actions-list-client.tsx",
@@ -1164,7 +1807,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "error": {
       "p": "apps/web/src/app/(dashboard)/insights/rules/error.tsx",
@@ -1181,7 +1825,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "loading": {
       "p": "apps/web/src/app/(dashboard)/insights/rules/loading.tsx",
@@ -1196,7 +1841,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "page": {
       "p": "apps/web/src/app/(dashboard)/insights/rules/page.tsx",
@@ -1215,7 +1861,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "chat-interface": {
       "p": "apps/web/src/app/(dashboard)/insights/chat-interface.tsx",
@@ -1236,7 +1883,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "insight-card": {
       "p": "apps/web/src/app/(dashboard)/insights/insight-card.tsx",
@@ -1258,7 +1906,12 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {
+        "InsightCard": [
+          "insights-client"
+        ]
+      }
     },
     "insights-client": {
       "p": "apps/web/src/app/(dashboard)/insights/insights-client.tsx",
@@ -1279,7 +1932,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "monthly-close-client": {
       "p": "apps/web/src/app/(dashboard)/insights/policy-alerts/monthly-close-client.tsx",
@@ -1301,7 +1955,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "rule-condition-builder": {
       "p": "apps/web/src/app/(dashboard)/insights/rules/rule-condition-builder.tsx",
@@ -1321,7 +1976,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "rules-client": {
       "p": "apps/web/src/app/(dashboard)/insights/rules/rules-client.tsx",
@@ -1346,7 +2002,12 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {
+        "RulesClient": [
+          "page"
+        ]
+      }
     }
   },
   "d": {

@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 5
-**Estimated tokens:** ~645
+**Estimated tokens:** ~706
 
 ---
 
@@ -38,7 +38,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "AddAccountModal": {
       "p": "apps/web/src/components/accounts/AddAccountModal.tsx",
@@ -63,7 +64,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "TransactionsList": {
       "p": "apps/web/src/components/accounts/TransactionsList.tsx",
@@ -81,7 +83,8 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {}
     },
     "TransactionsTableClient": {
       "p": "apps/web/src/components/accounts/TransactionsTableClient.tsx",
@@ -103,7 +106,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "TransactionsTableClient": [
+          "TransactionsList"
+        ]
+      }
     },
     "TransactionsToolbar": {
       "p": "apps/web/src/components/accounts/TransactionsToolbar.tsx",
@@ -119,7 +127,12 @@
       "t": {
         "exists": false
       },
-      "d": "cmp"
+      "d": "cmp",
+      "c": {
+        "TransactionsToolbar": [
+          "TransactionsTableClient"
+        ]
+      }
     }
   },
   "d": {

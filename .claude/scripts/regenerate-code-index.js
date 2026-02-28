@@ -337,7 +337,59 @@ function buildDomainIndex(domainKey) {
   console.log(`  Patterns: ${Object.keys(index.p).length}`);
   console.log(`  Violations: ${Object.keys(index.v).length}`);
 
+  // Second pass: Build caller graph (PERF-29)
+  buildCallerGraph(index);
+
   return index;
+}
+
+/**
+ * Build caller graph - reverse import map (PERF-29)
+ * For each export, find which files import it
+ */
+function buildCallerGraph(index) {
+  // Build export map: exportName → fileName
+  const exportMap = {};
+  for (const [fileName, metadata] of Object.entries(index.f)) {
+    for (const exportName of metadata.e) {
+      if (!exportMap[exportName]) exportMap[exportName] = [];
+      exportMap[exportName].push(fileName);
+    }
+  }
+
+  // For each file, match imports to exports and build callers
+  for (const [fileName, metadata] of Object.entries(index.f)) {
+    metadata.c = {}; // Callers map: exportName → [callerFile1, callerFile2]
+
+    // For each import, find files that import this file's exports
+    for (const [otherFileName, otherMetadata] of Object.entries(index.f)) {
+      if (fileName === otherFileName) continue;
+
+      // Check if otherFile imports from this file
+      const importsThisFile = otherMetadata.i.some(importPath => {
+        // Match relative imports
+        if (importPath.startsWith('.') || importPath.startsWith('../')) {
+          // Simple heuristic: if import path ends with this fileName
+          return importPath.includes(fileName.replace('.ts', '').replace('.tsx', ''));
+        }
+
+        // Match package imports (@akount/db, @akount/ui, etc.)
+        // Not implemented yet - would need package.json resolution
+
+        return false;
+      });
+
+      if (importsThisFile) {
+        // Add this file as a caller for all exports
+        for (const exportName of metadata.e) {
+          if (!metadata.c[exportName]) metadata.c[exportName] = [];
+          if (!metadata.c[exportName].includes(otherFileName)) {
+            metadata.c[exportName].push(otherFileName);
+          }
+        }
+      }
+    }
+  }
 }
 
 /**

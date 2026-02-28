@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 19
-**Estimated tokens:** ~2,340
+**Estimated tokens:** ~2,985
 
 ---
 
@@ -38,7 +38,8 @@
       "t": {
         "exists": false
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {}
     },
     "invoices": {
       "p": "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -63,7 +64,12 @@
       "t": {
         "exists": false
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {
+        "invoiceRoutes": [
+          "page"
+        ]
+      }
     },
     "payments": {
       "p": "apps/api/src/domains/invoicing/routes/payments.ts",
@@ -87,7 +93,8 @@
       "t": {
         "exists": false
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {}
     },
     "bill.schema": {
       "p": "apps/api/src/domains/invoicing/schemas/bill.schema.ts",
@@ -110,7 +117,8 @@
       "t": {
         "exists": false
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {}
     },
     "invoice.schema": {
       "p": "apps/api/src/domains/invoicing/schemas/invoice.schema.ts",
@@ -133,7 +141,8 @@
       "t": {
         "exists": false
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {}
     },
     "payment.schema": {
       "p": "apps/api/src/domains/invoicing/schemas/payment.schema.ts",
@@ -158,7 +167,8 @@
       "t": {
         "exists": false
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {}
     },
     "bill.service": {
       "p": "apps/api/src/domains/invoicing/services/bill.service.ts",
@@ -186,7 +196,49 @@
         "file": "apps/api/src/domains/invoicing/services/__tests__/bill.service.test.ts",
         "testCount": 46
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {
+        "createBill": [
+          "bills",
+          "payment.service"
+        ],
+        "listBills": [
+          "bills",
+          "payment.service"
+        ],
+        "getBill": [
+          "bills",
+          "payment.service"
+        ],
+        "updateBill": [
+          "bills",
+          "payment.service"
+        ],
+        "deleteBill": [
+          "bills",
+          "payment.service"
+        ],
+        "getBillStats": [
+          "bills",
+          "payment.service"
+        ],
+        "approveBill": [
+          "bills",
+          "payment.service"
+        ],
+        "cancelBill": [
+          "bills",
+          "payment.service"
+        ],
+        "markBillOverdue": [
+          "bills",
+          "payment.service"
+        ],
+        "applyPaymentToBill": [
+          "bills",
+          "payment.service"
+        ]
+      }
     },
     "invoice.service": {
       "p": "apps/api/src/domains/invoicing/services/invoice.service.ts",
@@ -217,7 +269,49 @@
         "file": "apps/api/src/domains/invoicing/services/__tests__/invoice.service.test.ts",
         "testCount": 46
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {
+        "createInvoice": [
+          "invoices",
+          "payment.service"
+        ],
+        "listInvoices": [
+          "invoices",
+          "payment.service"
+        ],
+        "getInvoice": [
+          "invoices",
+          "payment.service"
+        ],
+        "updateInvoice": [
+          "invoices",
+          "payment.service"
+        ],
+        "deleteInvoice": [
+          "invoices",
+          "payment.service"
+        ],
+        "getInvoiceStats": [
+          "invoices",
+          "payment.service"
+        ],
+        "sendInvoice": [
+          "invoices",
+          "payment.service"
+        ],
+        "getInvoicePdf": [
+          "invoices",
+          "payment.service"
+        ],
+        "cancelInvoice": [
+          "invoices",
+          "payment.service"
+        ],
+        "voidInvoice": [
+          "invoices",
+          "payment.service"
+        ]
+      }
     },
     "payment.service": {
       "p": "apps/api/src/domains/invoicing/services/payment.service.ts",
@@ -244,7 +338,30 @@
         "file": "apps/api/src/domains/invoicing/services/__tests__/payment.service.test.ts",
         "testCount": 22
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {
+        "createPayment": [
+          "payments"
+        ],
+        "getPayment": [
+          "payments"
+        ],
+        "listPayments": [
+          "payments"
+        ],
+        "updatePayment": [
+          "payments"
+        ],
+        "deletePayment": [
+          "payments"
+        ],
+        "allocatePayment": [
+          "payments"
+        ],
+        "deallocatePayment": [
+          "payments"
+        ]
+      }
     },
     "pdf.service": {
       "p": "apps/api/src/domains/invoicing/services/pdf.service.ts",
@@ -262,7 +379,12 @@
         "file": "apps/api/src/domains/invoicing/services/__tests__/pdf.service.test.ts",
         "testCount": 9
       },
-      "d": "inv"
+      "d": "inv",
+      "c": {
+        "generateInvoicePdf": [
+          "invoice.service"
+        ]
+      }
     },
     "error": {
       "p": "apps/web/src/app/(dashboard)/business/invoices/error.tsx",
@@ -279,7 +401,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "invoice-actions": {
       "p": "apps/web/src/app/(dashboard)/business/invoices/[id]/invoice-actions.tsx",
@@ -303,7 +426,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "loading": {
       "p": "apps/web/src/app/(dashboard)/business/invoices/loading.tsx",
@@ -317,7 +441,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "page": {
       "p": "apps/web/src/app/(dashboard)/business/invoices/page.tsx",
@@ -342,7 +467,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "invoice-scan-upload": {
       "p": "apps/web/src/app/(dashboard)/business/invoices/invoice-scan-upload.tsx",
@@ -365,7 +491,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "invoices-list-client": {
       "p": "apps/web/src/app/(dashboard)/business/invoices/invoices-list-client.tsx",
@@ -389,7 +516,12 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {
+        "InvoicesListClient": [
+          "page"
+        ]
+      }
     }
   },
   "d": {

@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 26
-**Estimated tokens:** ~993
+**Estimated tokens:** ~1,039
 
 ---
 
@@ -30,7 +30,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "loading": {
       "p": "apps/web/src/app/(dashboard)/business/vendors/loading.tsx",
@@ -44,7 +45,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "page": {
       "p": "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -66,7 +68,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "layout": {
       "p": "apps/web/src/app/(dashboard)/overview/layout.tsx",
@@ -78,7 +81,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "client-detail-client": {
       "p": "apps/web/src/app/(dashboard)/business/clients/[id]/client-detail-client.tsx",
@@ -103,7 +107,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "clients-list-client": {
       "p": "apps/web/src/app/(dashboard)/business/clients/clients-list-client.tsx",
@@ -128,7 +133,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "vendor-detail-client": {
       "p": "apps/web/src/app/(dashboard)/business/vendors/[id]/vendor-detail-client.tsx",
@@ -153,7 +159,8 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {}
     },
     "vendors-list-client": {
       "p": "apps/web/src/app/(dashboard)/business/vendors/vendors-list-client.tsx",
@@ -178,7 +185,12 @@
       "t": {
         "exists": false
       },
-      "d": "pg"
+      "d": "pg",
+      "c": {
+        "VendorsListClient": [
+          "page"
+        ]
+      }
     }
   },
   "d": {
