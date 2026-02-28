@@ -15,10 +15,10 @@
 | **1** | Foundation (A + B core + E basics) | 22 | 22 | **✅ Complete (100%)** |
 | **1.5** | **Security Hardening (Review Follow-Up)** | **4** | **4** | **✅ Complete (100%)** |
 | **2** | Expand + Smart (B UIs + C1-C4) | 8 | 8 | **✅ Complete (100%)** |
-| **3** | Compliance + Narration (C5-C9 + E6-E9) | 9 | 4 | **IN PROGRESS (44%)** |
+| **3** | Compliance + Narration (C5-C9 + E6-E9) | 9 | 5 | **IN PROGRESS (56%)** |
 | **4** | Matching + Learning (D + F) | 9 | 0 | Not started |
 | **5** | Polish + Scale | — | — | Not started |
-| **Total** | | **51** | **38** | **75%** |
+| **Total** | | **51** | **39** | **76%** |
 
 ---
 
@@ -121,7 +121,7 @@
 
 | ID | Track | Task | Effort | Priority | Status | Deps | Source |
 |----|-------|------|--------|----------|--------|------|--------|
-| DEV-250 | C5 | Financial report narration endpoint (P&L, BS, CF) | 3-4h | Medium | Ready | DEV-230, DEV-232 | plan:doc-intel |
+| DEV-250 | C5 | Financial report narration endpoint (P&L, BS, CF) | 3-4h | Medium | ✅ Done (1173221) | DEV-230, DEV-232 | plan:doc-intel |
 | DEV-251 | C6 | Report narration UI (Newsreader italic, collapsible) | 2-3h | Medium | Ready | DEV-250 | plan:doc-intel |
 | DEV-252 | C7 | Anomaly detection enhancement (Mistral-powered) | 4-6h | Medium | Ready | DEV-230, DEV-232, INFRA-61 | plan:doc-intel |
 | DEV-253 | C8 | Client communication drafts (payment reminders) | 3-4h | Low | Ready | DEV-230 | plan:doc-intel |
