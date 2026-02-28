@@ -1,7 +1,7 @@
 import { Worker, Job } from 'bullmq';
 import { prisma, BillStatus, AIRoutingResult, Prisma } from '@akount/db';
 import { createHash } from 'crypto';
-import { queueManager } from '../../../lib/queue/queue-manager';
+import { queueManager, getRedisConnection } from '../../../lib/queue/queue-manager';
 import { DocumentExtractionService } from '../services/document-extraction.service';
 import { logger } from '../../../lib/logger';
 import { env } from '../../../lib/env';
@@ -294,13 +294,8 @@ async function processBillScan(job: Job<BillScanJobData>): Promise<BillScanJobRe
  * @returns Worker instance (for graceful shutdown)
  */
 export function startBillScanWorker(): Worker {
-  const connection = {
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-    db: env.REDIS_DB,
-    password: env.REDIS_PASSWORD,
-    tls: env.REDIS_TLS_ENABLED ? { rejectUnauthorized: env.NODE_ENV === 'production' } : undefined,
-  };
+  // ARCH-16: Use shared Redis config (DRY)
+  const connection = getRedisConnection();
 
   const worker = new Worker<BillScanJobData, BillScanJobResult>(
     'bill-scan',

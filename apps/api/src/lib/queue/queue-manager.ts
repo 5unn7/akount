@@ -48,8 +48,10 @@ export const RATE_LIMIT_CONFIG = {
  *
  * In production: TLS + password auth
  * In development: localhost, no auth
+ *
+ * Exported for use in workers (ARCH-16: DRY principle)
  */
-function getRedisConnection(): ConnectionOptions {
+export function getRedisConnection(): ConnectionOptions {
   const config: ConnectionOptions = {
     host: env.REDIS_HOST,
     port: env.REDIS_PORT,

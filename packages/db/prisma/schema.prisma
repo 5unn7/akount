@@ -90,8 +90,9 @@ model AIConsent {
   createdAt                  DateTime @default(now())
   updatedAt                  DateTime @updatedAt
   // Relations
-  user                       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant                     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  // ARCH-15: Restrict instead of Cascade to preserve consent audit trail (GDPR requirement)
+  user                       User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  tenant                     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Restrict)
 
   @@index([userId])
   @@index([tenantId])

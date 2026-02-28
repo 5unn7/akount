@@ -7,6 +7,7 @@ import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { requireConsent } from '../../../middleware/consent-gate';
 import { validateBody } from '../../../middleware/validation';
+import { handleBusinessError } from '../errors';
 import { logger } from '../../../lib/logger';
 
 /**
@@ -89,6 +90,15 @@ export async function billScanRoutes(fastify: FastifyInstance) {
           return reply.status(400).send({ error: 'entityId required' });
         }
 
+        // SEC-47: Validate entityId format with Zod
+        const entityIdValidation = z.string().cuid().safeParse(entityId);
+        if (!entityIdValidation.success) {
+          return reply.status(400).send({
+            error: 'Invalid entityId format',
+            details: entityIdValidation.error.errors,
+          });
+        }
+
         // Validate entityId belongs to tenant (IDOR prevention)
         const entity = await prisma.entity.findFirst({
           where: { id: entityId, tenantId },
@@ -149,9 +159,10 @@ export async function billScanRoutes(fastify: FastifyInstance) {
           mimeType,
         });
 
-        logger.info(
+        // UX-107: Use request.log for request-scoped logging (includes request ID)
+        request.log.info(
           { tenantId, entityId, jobId: job.id, filename },
-          'Bill scan job enqueued'
+          'Bill scan job enqueued successfully'
         );
 
         return reply.status(202).send({
@@ -162,8 +173,7 @@ export async function billScanRoutes(fastify: FastifyInstance) {
         });
       } catch (error: unknown) {
         logger.error({ err: error, tenantId }, 'Bill scan endpoint error');
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        return reply.status(500).send({ error: message });
+        return handleBusinessError(error, reply);
       }
     }
   );
