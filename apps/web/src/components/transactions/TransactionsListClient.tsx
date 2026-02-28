@@ -9,6 +9,7 @@ import type { Category } from '@/lib/api/categories';
 import { TransactionsTable } from './TransactionsTable';
 import { TransactionsFilters } from './TransactionsFilters';
 import { BulkActionBar } from './BulkActionBar';
+import { NLSearchBar, type SearchFilters } from '@/components/shared/NLSearchBar';
 import { Button } from '@/components/ui/button';
 import {
     Select,
@@ -44,6 +45,7 @@ interface TransactionsListClientProps {
     hasMore: boolean;
     nextCursor?: string;
     accounts: Account[];
+    entityId?: string;
 }
 
 export function TransactionsListClient({
@@ -51,6 +53,7 @@ export function TransactionsListClient({
     hasMore: initialHasMore,
     nextCursor: initialNextCursor,
     accounts,
+    entityId,
 }: TransactionsListClientProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -60,6 +63,7 @@ export function TransactionsListClient({
     const [nextCursor, setNextCursor] = useState(initialNextCursor);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [nlSearchFilters, setNlSearchFilters] = useState<SearchFilters>({});
 
     // Categories state
     const [categories, setCategories] = useState<Category[]>([]);
@@ -90,11 +94,38 @@ export function TransactionsListClient({
     const startDate = searchParams.get('startDate') || undefined;
     const endDate = searchParams.get('endDate') || undefined;
 
+    /**
+     * Handle NL search filter changes from AI search
+     * Merges with existing URL params
+     */
+    function handleNLSearchFiltersChange(filters: SearchFilters) {
+        setNlSearchFilters(filters);
+
+        // Convert NL search filters to URL params
+        const params = new URLSearchParams();
+
+        // NL search filters take precedence
+        if (filters.accountId) params.set('accountId', filters.accountId);
+        if (filters.dateFrom) params.set('startDate', filters.dateFrom);
+        if (filters.dateTo) params.set('endDate', filters.dateTo);
+        if (filters.description) params.set('search', filters.description);
+        if (filters.categoryId) params.set('categoryId', filters.categoryId);
+
+        // Add amount filters (if backend supports them)
+        if (filters.amountMin) params.set('amountMin', filters.amountMin.toString());
+        if (filters.amountMax) params.set('amountMax', filters.amountMax.toString());
+
+        router.push(`?${params.toString()}`);
+    }
+
     function handleFilterChange(filters: {
         accountId?: string;
         startDate?: string;
         endDate?: string;
     }) {
+        // Clear NL filters when using manual filters
+        setNlSearchFilters({});
+
         const params = new URLSearchParams();
         if (filters.accountId) params.set('accountId', filters.accountId);
         if (filters.startDate) params.set('startDate', filters.startDate);
@@ -317,22 +348,39 @@ export function TransactionsListClient({
         (id) => !transactions.find((t) => t.id === id)?.journalEntryId
     ).length;
 
+    const hasNLFilters = Object.keys(nlSearchFilters).length > 0;
+
     if (transactions.length === 0) {
         return (
             <div className="space-y-4">
-                <TransactionsFilters
-                    accounts={accounts}
-                    selectedAccountId={accountId}
-                    startDate={startDate}
-                    endDate={endDate}
-                    onFilterChange={handleFilterChange}
-                    onClearFilters={handleClearFilters}
-                />
+                {/* Natural Language Search (if entityId available) */}
+                {entityId && (
+                    <div className="glass rounded-[14px] p-4">
+                        <NLSearchBar
+                            entityId={entityId}
+                            onFiltersChange={handleNLSearchFiltersChange}
+                            scope="transactions"
+                        />
+                    </div>
+                )}
+
+                {/* Traditional Filters (hidden when NL search active) */}
+                {!hasNLFilters && (
+                    <TransactionsFilters
+                        accounts={accounts}
+                        selectedAccountId={accountId}
+                        startDate={startDate}
+                        endDate={endDate}
+                        onFilterChange={handleFilterChange}
+                        onClearFilters={handleClearFilters}
+                    />
+                )}
+
                 <div className="glass rounded-xl p-5">
                     <div className="flex flex-col items-center justify-center py-10 gap-2 text-center">
                         <FileText className="h-8 w-8 text-muted-foreground/20" />
                         <p className="text-xs text-muted-foreground">
-                            {accountId || startDate || endDate
+                            {accountId || startDate || endDate || hasNLFilters
                                 ? 'No transactions match your filters'
                                 : 'No transactions yet'}
                         </p>
@@ -346,14 +394,28 @@ export function TransactionsListClient({
 
     return (
         <div className="space-y-4">
-            <TransactionsFilters
-                accounts={accounts}
-                selectedAccountId={accountId}
-                startDate={startDate}
-                endDate={endDate}
-                onFilterChange={handleFilterChange}
-                onClearFilters={handleClearFilters}
-            />
+            {/* Natural Language Search (if entityId available) */}
+            {entityId && (
+                <div className="glass rounded-[14px] p-4">
+                    <NLSearchBar
+                        entityId={entityId}
+                        onFiltersChange={handleNLSearchFiltersChange}
+                        scope="transactions"
+                    />
+                </div>
+            )}
+
+            {/* Traditional Filters (hidden when NL search active) */}
+            {!hasNLFilters && (
+                <TransactionsFilters
+                    accounts={accounts}
+                    selectedAccountId={accountId}
+                    startDate={startDate}
+                    endDate={endDate}
+                    onFilterChange={handleFilterChange}
+                    onClearFilters={handleClearFilters}
+                />
+            )}
 
             {/* Uncategorized urgency banner */}
             {uncategorizedCount > 0 && (

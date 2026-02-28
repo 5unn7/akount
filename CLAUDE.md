@@ -1,6 +1,6 @@
 # Akount Project - Agent Context
 
-> **Last Updated:** 2026-02-25
+> **Last Updated:** 2026-02-28
 > **Context Architecture:** Hierarchical (root + directory-specific + rules)
 
 ---
@@ -13,9 +13,9 @@
 
 ---
 
-## Architecture Snapshot (verified: 2026-02-25)
+## Architecture Snapshot (verified: 2026-02-28)
 
-**Request Flow:** Browser → Next.js SSR → Fastify API → Middleware chain (Auth → Tenant → Validation) → Domain services → Prisma → PostgreSQL. Auth via Clerk JWT; tenant loaded from TenantUser membership; all queries filtered by tenantId. Frontend: Server Components (data fetch) + Client Components (interactivity). Backend: Route → Schema (Zod) → Service (business logic) → Prisma.
+**Request Flow:** Browser → Next.js SSR → Fastify API → Middleware chain (Auth → CSRF → Tenant → Consent → Validation) → Domain services → Prisma → PostgreSQL. Auth via Clerk JWT; tenant loaded from TenantUser membership; all queries filtered by tenantId. Frontend: Server Components (data fetch) + Client Components (interactivity). Backend: Route → Schema (Zod) → Service (business logic) → Prisma. Background jobs: BullMQ workers (bill-scan, invoice-scan) for async document processing.
 
 **8 Domains (User-Facing):** Overview (dashboard), Banking (accounts, transactions), Business (invoices, bills, clients, vendors, payments), Accounting (GL, journal entries, reports), Planning (budgets, forecasts, goals), Insights (AI-powered insights, rules), Services (accountant, bookkeeping, documents), System (entities, settings, users, audit).
 
@@ -27,10 +27,11 @@
 
 ---
 
-## Core Model Hierarchy (verified: 2026-02-25)
+## Core Model Hierarchy (verified: 2026-02-28)
 
 ```
 Tenant (subscription account)
+├── AIConsent (user AI preferences)
 └── Entity (business unit)
     ├── GLAccount (chart of accounts)
     ├── JournalEntry (debits = credits)
@@ -39,14 +40,16 @@ Tenant (subscription account)
     ├── Account (bank, credit card)
     ├── Transaction (bank feed or manual)
     ├── Client/Vendor
-    └── Category (for AI categorization)
+    ├── Category (for AI categorization)
+    ├── Budget/Forecast/Goal (planning)
+    └── AIAction/AIDecisionLog (AI ops)
 ```
 
-**43 Prisma models total.** Entity-scoped models require `entity: { tenantId }` filter. See `packages/db/CLAUDE.md` for full model table. See `docs/context-map.md` for comprehensive glossary.
+**47 Prisma models, 40 enums.** Entity-scoped models require `entity: { tenantId }` filter. See `packages/db/CLAUDE.md` for full model table. See `docs/context-map.md` for comprehensive glossary.
 
 ---
 
-## Design System Reference (verified: 2026-02-25)
+## Design System Reference (verified: 2026-02-28)
 
 **Base:** shadcn/ui + shadcn-glass-ui@2.11.2 (glass morphism)
 **Styling:** Tailwind v4.1.18 (CSS config, NO tailwind.config.ts)
@@ -205,6 +208,8 @@ Glob "**/*similar*.ts*"
 | Frontend conventions | `.claude/rules/frontend-conventions.md` |
 | Investigation protocol | `.claude/rules/product-thinking.md` |
 | Debugging learnings | MEMORY.md > `debugging-log.md` topic file |
+| Code indexes (domain discovery) | `CODEBASE-*.md` (project root) — **read BEFORE any Grep/Read exploration** |
+| Code index field legend | `.claude/code-index-legend.md` — pattern codes, field abbreviations |
 
 **Multi-agent coordination:** "Active Now" table at top of TASKS.md tracks which agent is working on what. Updated by `/processes:begin` (claim) and `/processes:end-session` (release).
 

@@ -25,16 +25,16 @@
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
-| SEC-45 | Add consent gate middleware to bill/invoice scan routes | 15m | 🔴 Critical | 🟢 | SEC-33 | review:doc-intel-phase1 |
-| SEC-46 | Fix cross-tenant IDOR in worker vendor/client lookups (use entityId not tenantId) | 10m | 🔴 Critical | 🟢 | DEV-238, DEV-239 | review:doc-intel-phase1 |
-| PERF-27 | Add compound indexes for Client/Vendor name lookups (entityId, name, deletedAt) | 5m | 🔴 Critical | 🟢 | | review:doc-intel-phase1 |
-| ARCH-14 | Fix worker initialization race condition (await ready events) | 10m | 🔴 Critical | 🟢 | | review:doc-intel-phase1 |
-| SEC-47 | Add Zod validation for multipart entityId field in scan routes | 15m | 🟠 High | 🟢 | | review:doc-intel-phase1 |
-| ARCH-15 | Change AIConsent CASCADE delete to Restrict (preserve audit trail) | 30m | 🟠 High | 🟢 | SEC-32 | review:doc-intel-phase1 |
-| ARCH-16 | Extract Redis connection config to shared module (DRY) | 20m | 🟠 High | 🟢 | | review:doc-intel-phase1 |
-| ARCH-17 | Migrate rate limiter to Redis-backed (multi-instance support) | 2-3h | 🟠 High | 🔒 | [needs: PERF-11] | review:doc-intel-phase1 |
-| DRY-22 | Create domain error handler for business routes (eliminate duplication) | 20m | 🟠 High | 🟢 | | review:doc-intel-phase1 |
-| UX-107 | Add success logging to scan routes (job enqueued successfully) | 5m | 🟠 High | 🟢 | | review:doc-intel-phase1 |
+| ~~SEC-45~~ | Add consent gate middleware to bill/invoice scan routes | 15m | 🔴 Critical | ✅ done (80c7330) | SEC-33 | review:doc-intel-phase1 |
+| ~~SEC-46~~ | Fix cross-tenant IDOR in worker vendor/client lookups (use entityId not tenantId) | 10m | 🔴 Critical | ✅ done (80c7330) | DEV-238, DEV-239 | review:doc-intel-phase1 |
+| ~~PERF-27~~ | Add compound indexes for Client/Vendor name lookups (entityId, name, deletedAt) | 5m | 🔴 Critical | ✅ done (80c7330) | | review:doc-intel-phase1 |
+| ~~ARCH-14~~ | Fix worker initialization race condition (await ready events) | 10m | 🔴 Critical | ✅ done (80c7330) | | review:doc-intel-phase1 |
+| ~~SEC-47~~ | Add Zod validation for multipart entityId field in scan routes | 15m | 🟠 High | ✅ done (2b9df4f) | | review:doc-intel-phase1 |
+| ~~ARCH-15~~ | Change AIConsent CASCADE delete to Restrict (preserve audit trail) | 30m | 🟠 High | ✅ done (2b9df4f) | SEC-32 | review:doc-intel-phase1 |
+| ~~ARCH-16~~ | Extract Redis connection config to shared module (DRY) | 20m | 🟠 High | ✅ done (2b9df4f) | | review:doc-intel-phase1 |
+| ARCH-17 | Migrate rate limiter to Redis-backed (multi-instance support) | 2-3h | 🟠 High | 🟢 | merged PERF-11 | review:doc-intel-phase1 |
+| ~~DRY-22~~ | Create domain error handler for business routes (eliminate duplication) | 20m | 🟠 High | ✅ done (2b9df4f) | | review:doc-intel-phase1 |
+| ~~UX-107~~ | Add success logging to scan routes (job enqueued successfully) | 5m | 🟠 High | ✅ done (2b9df4f) | | review:doc-intel-phase1 |
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
@@ -44,10 +44,10 @@
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
-| DRY-23 | Update job-progress.tsx callback types to allow async (onComplete/onError) | 5m | ⚪ Low | 🟢 | | review:doc-intel-phase1 |
-| DRY-24 | Add JSDoc to useJobStream progress type check (explain defense) | 5m | ⚪ Low | 🟢 | | review:doc-intel-phase1 |
-| UX-108 | Standardize error format across scan routes (always include message field) | 10m | 🟡 Medium | 🟢 | | review:doc-intel-phase1 |
-| UX-109 | Add Retry-After header to 429 rate limit responses | 5m | ⚪ Low | 🟢 | | review:doc-intel-phase1 |
+| ~~DRY-23~~ | Update job-progress.tsx callback types to allow async (onComplete/onError) | 5m | ⚪ Low | ✅ done (9753f0e) | | review:doc-intel-phase1 |
+| ~~DRY-24~~ | Add JSDoc to useJobStream progress type check (explain defense) | 5m | ⚪ Low | ✅ done (9753f0e) | | review:doc-intel-phase1 |
+| ~~UX-108~~ | Standardize error format across scan routes (always include message field) | 10m | 🟡 Medium | ✅ done (9753f0e) | | review:doc-intel-phase1 |
+| ~~UX-109~~ | Add Retry-After header to 429 rate limit responses | 5m | ⚪ Low | ✅ done (9753f0e) | | review:doc-intel-phase1 |
 | UX-44 | Business: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-61 | Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
@@ -133,7 +133,7 @@
 | DEV-15 | Overview: Add top expense categories widget | 1-2h | ⚪ Low | 🟢 | | audit:fe-be-parity |
 | DEV-16 | Overview: Add unreconciled transaction count badge to dashboard | 1h | ⚪ Low | 🟢 | | audit:fe-be-parity |
 | PERF-4 | PDF generation: move to worker thread (unblock event loop) | 2h | ⚪ Low | 📦 | | review:performance |
-| PERF-11 | Distributed rate limiting (Redis-backed) for multi-instance | 2h | ⚪ Low | 📦 | | review:smooth-floating-mountain |
+| ~~PERF-11~~ | Distributed rate limiting (Redis-backed) for multi-instance | 2h | ⚪ Low | ✅ merged → ARCH-17 | | review:smooth-floating-mountain |
 | FIN-6 | Cash Flow: document hardcoded account code ranges for categorization | doc | ⚪ Low | 📦 | | review:financial |
 | FIN-11 | Consolidation/elimination accounting (multi-entity) | 8h | ⚪ Low | 📦 | | review:smooth-floating-mountain |
 | FIN-12 | GAAP-compliant GL export format (XBRL/ixBRL regulatory reporting) | 6h | ⚪ Low | 📦 | | review:smooth-floating-mountain |

@@ -5,13 +5,14 @@ import { TransactionsListClient } from "./TransactionsListClient";
 
 interface TransactionsListProps {
     filters?: ListTransactionsParams;
+    entityId?: string;
 }
 
 /**
  * Transactions list - Server Component
  * Fetches and displays all transactions with pagination support
  */
-export async function TransactionsList({ filters }: TransactionsListProps): Promise<React.ReactElement> {
+export async function TransactionsList({ filters, entityId }: TransactionsListProps): Promise<React.ReactElement> {
     try {
         const [result, { accounts }] = await Promise.all([
             listTransactions(filters),
@@ -24,6 +25,7 @@ export async function TransactionsList({ filters }: TransactionsListProps): Prom
                 hasMore={result.hasMore}
                 nextCursor={result.nextCursor}
                 accounts={accounts}
+                entityId={entityId}
             />
         );
     } catch {

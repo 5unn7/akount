@@ -1,7 +1,7 @@
 # Web Context (apps/web)
 
 > **Loaded automatically** when Claude accesses files in `apps/web/`
-> **Last verified:** 2026-02-25
+> **Last verified:** 2026-02-28
 
 **Conventions:** See `.claude/rules/frontend-conventions.md` (Server/Client components, design system, Tailwind v4, SRP, **shared utilities**).
 **Design aesthetic:** See `.claude/rules/design-aesthetic.md` (Financial Clarity theme, glass morphism, colors).
@@ -15,7 +15,7 @@
 src/app/
 ├── (dashboard)/      # Authenticated pages (shell with sidebar)
 ├── (auth)/           # Login, signup (Clerk)
-├── (marketing)/      # Public pages
+├── (marketing)/      # Public pages (landing page)
 └── onboarding/       # Onboarding wizard
 ```
 
@@ -23,10 +23,10 @@ src/app/
 
 ---
 
-## Built Pages (55 dashboard pages across 8 domains)
+## Built Pages (59 dashboard pages across 8 domains)
 
 ### Overview (3 pages)
-- `/overview` — Dashboard home
+- `/overview` — Dashboard home (P&L widget, trial balance, top clients, KPIs)
 - `/overview/cash-flow` — Cash flow analysis
 - `/overview/net-worth` — Net worth breakdown
 
@@ -41,10 +41,10 @@ src/app/
 - `/banking/reconciliation` — Bank feed matching
 - `/banking/transfers` — Transfer management
 
-### Business (10 pages)
+### Business (12 pages)
 - `/business` — Business hub
 - `/business/invoices` — Invoice list
-- `/business/invoices/[id]` — Invoice detail
+- `/business/invoices/[id]` — Invoice detail (with void, record payment, post to GL)
 - `/business/bills` — Bill list
 - `/business/bills/[id]` — Bill detail
 - `/business/clients` — Client directory
@@ -52,6 +52,7 @@ src/app/
 - `/business/vendors` — Vendor directory
 - `/business/vendors/[id]` — Vendor detail
 - `/business/payments` — Payment tracking
+- `/business/payments/[id]` — Payment detail
 
 ### Accounting (16 pages)
 - `/accounting` — Accounting hub
@@ -71,15 +72,18 @@ src/app/
 - `/accounting/tax-rates` — Tax rate configuration
 - `/accounting/assets` — Asset tracking
 
-### Planning (3 pages)
+### Planning (4 pages)
+- `/planning` — Planning hub
 - `/planning/budgets` — Budget management
 - `/planning/goals` — Financial goals
 - `/planning/forecasts` — Forecasting
 
-### Insights (3 pages)
-- `/insights/insights` — AI-generated insights
+### Insights (5 pages)
+- `/insights` — AI insights dashboard
+- `/insights/policy-alerts` — Monthly close / policy alerts
 - `/insights/history` — Chat history
-- `/insights/policy-alerts` — Policy alerts
+- `/insights/actions` — AI action queue
+- `/insights/rules` — Automation rules
 
 ### Services (3 pages)
 - `/services/accountant` — Accountant portal
@@ -89,7 +93,7 @@ src/app/
 ### System (8 pages)
 - `/system/entities` — Entity management
 - `/system/entities/[id]` — Entity detail
-- `/system/settings` — Tenant settings
+- `/system/settings` — Tenant settings (includes AI consent)
 - `/system/users` — User management
 - `/system/audit-log` — Audit trail
 - `/system/integrations` — Integration setup
@@ -105,16 +109,27 @@ src/app/
 
 | Domain | Label | Items | Status |
 |--------|-------|-------|--------|
-| **overview** | Overview | Dashboard, Net Worth, Cash Flow | ✅ Built (3 pages) |
-| **banking** | Banking | Accounts, Transactions, Categories, Reconciliation, Imports, Transfers | ✅ Built (9 pages) |
-| **business** | Business | Clients, Vendors, Invoices, Bills, Payments (with detail pages) | ✅ Built (10 pages) |
-| **accounting** | Accounting | Journal Entries, Chart of Accounts, Reports (×7), Assets, Tax Rates, Fiscal Periods | ✅ Built (16 pages) |
-| **planning** | Planning | Budgets, Goals, Forecasts | ✅ Built (3 pages) |
-| **insights** | Insights | Insights, Policy Alerts, History | ✅ Built (3 pages) |
-| **services** | Services | Accountant, Bookkeeping, Documents | ✅ Built (3 pages) |
-| **system** | System | Entities, Integrations, Rules, Users, Audit Log, Security, Settings | ✅ Built (8 pages) |
+| **overview** | Overview | Dashboard, Net Worth, Cash Flow | Built (3 pages) |
+| **banking** | Banking | Accounts, Transactions, Reconciliation, Imports, Transfers | Built (9 pages) |
+| **business** | Business | Clients, Vendors, Invoices, Bills, Payments (with detail pages) | Built (12 pages) |
+| **accounting** | Accounting | Overview, Chart of Accounts, Journal Entries, Reports (×7), Assets, Tax Rates, Fiscal Periods | Built (16 pages) |
+| **planning** | Planning | Budgets, Goals, Forecasts | Built (4 pages) |
+| **insights** | Insights | Insights, Monthly Close, History, Actions, Rules | Built (5 pages) |
+| **services** | Services | Accountant, Bookkeeping, Documents | Built (3 pages) |
+| **system** | System | Entities, Integrations, Rules, Users, Audit Log, Security, Settings | Built (8 pages) |
 
-**Total Pages:** 55 dashboard + 7 system (auth, onboarding, brand) = 62 total
+**Total Pages:** 59 dashboard + 7 system (auth, onboarding, marketing) = 66 total
+
+---
+
+## Notable UI Components (Added Feb 25-28)
+
+- **Natural Language Bookkeeping Input** — `NLBookkeepingBar` component for conversational transaction entry
+- **Natural Language Search** — `NLSearchBar` component for semantic search
+- **Bill/Invoice Scan Upload** — Upload UI with drag-drop + SSE progress tracking
+- **AI Transparency Labels** — `AIBadge` component for EU AI Act compliance
+- **AI Consent Settings** — AI Preferences card with 5 consent toggles
+- **Job Progress Component** — `JobProgress` using `useJobStream` SSE hook
 
 ---
 
@@ -168,6 +183,8 @@ export const metadata: Metadata = {
 |------|---------|
 | `src/app/(dashboard)/layout.tsx` | Shell with sidebar, user menu |
 | `src/app/globals.css` | Tailwind v4 theme tokens, utilities |
-| `src/lib/api/client.ts` | API client with Clerk auth |
+| `src/lib/api/client.ts` | API client with Clerk auth (server-side) |
+| `src/lib/api/client-browser.ts` | API client for client components (browser-side) |
+| `src/lib/navigation.ts` | 8-domain navigation structure |
 | `src/components/` | App-specific components by domain |
 | `src/actions/` | Server actions for mutations |

@@ -217,7 +217,7 @@ export default async function TransactionsPage({
                     key={`${params.accountId}-${params.startDate}-${params.endDate}`}
                     fallback={<TransactionsListSkeleton />}
                 >
-                    <TransactionsList filters={params} />
+                    <TransactionsList filters={params} entityId={entityId} />
                 </Suspense>
             </div>
         </div>

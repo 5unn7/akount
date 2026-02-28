@@ -133,31 +133,53 @@ The following rules are **BLOCKED** by hooks and will fail commits:
    - Answering questions without code changes
 
 1. ✅ **Classify the change** — Bug fix, feature, refactor, or config? (see `product-thinking.md`)
-2. ✅ **Read existing files first** — ALWAYS Read before Edit (never edit blindly)
+2. ✅ **Load the code index (MANDATORY)** — Read the relevant `CODEBASE-*.md` file BEFORE any Grep/Read exploration:
+   - Identify domain(s) from the task context, then `Read CODEBASE-<DOMAIN>.md` from project root
+   - Extract: exports (`e`), imports (`i`), patterns (`pt`), violations (`v`), test coverage (`t`), callers (`c`)
+   - Use this to know WHAT exists, WHERE it lives, and WHO calls it — before touching any source files
+   - **Domain → Index file mapping:**
+
+     | Domain | Index File |
+     |--------|-----------|
+     | Banking (accounts, transactions, transfers) | `CODEBASE-BANKING.md` |
+     | Invoicing (invoices, credit notes, bills) | `CODEBASE-INVOICING.md` |
+     | Accounting (GL, journal entries, reports) | `CODEBASE-ACCOUNTING.md` |
+     | Planning (budgets, forecasts, goals) | `CODEBASE-PLANNING.md` |
+     | AI (categorization, insights, rules) | `CODEBASE-AI.md` |
+     | Web pages (dashboard route pages) | `CODEBASE-WEB-PAGES.md` |
+     | Web business components | `CODEBASE-WEB-BUSINESS.md` |
+     | Web shared (components, lib, hooks) | `CODEBASE-WEB-SHARED.md` |
+     | Web forms | `CODEBASE-WEB-FORMS.md` |
+     | Packages (ui, db, types, tokens) | `CODEBASE-PACKAGES.md` |
+
+   - **Field legend:** See `.claude/code-index-legend.md` for pattern codes (T=tenant, S=soft-delete, L=pino, P=prisma, C=client-component)
+   - **Multiple domains:** If task spans domains (e.g., invoice payment touches invoicing + banking + accounting), read up to 3 index files
+   - **Fallback:** ONLY use Grep/Read discovery if the index file doesn't exist or is >1 hour stale
+3. ✅ **Read existing files first** — ALWAYS Read before Edit (never edit blindly)
    - **For multi-file refactoring:** Read ONE file completely, verify pattern, THEN replicate
    - **Copy exact strings:** Use actual file content for Edit old_string (not grep snippets)
-3. ✅ **Verify imports before claiming** — NEW: Use code indexes or verify-import.js
-   - Before claiming "I'll import X from Y", verify export exists
-   - Index lookup (fast): Load relevant domain index, check exports array
-   - Grep fallback (if index miss): Search file for export
+4. ✅ **Verify imports before claiming** — Check the code index `e` (exports) array first
+   - Before claiming "I'll import X from Y", verify the export exists in the index
+   - Index lookup (fast): Check `f["filename"].e` array in the loaded domain index
+   - Grep fallback (if index miss): `Grep "export.*FunctionName" path/to/file`
    - Block edit if import doesn't exist (hallucination prevention)
-4. ✅ **Search for patterns** — `Grep "similar-feature" apps/` or check code indexes
-5. ✅ **Search for existing utilities** — BEFORE creating helper functions:
+5. ✅ **Search for patterns** — Check code index `p` (patterns) section, then Grep if needed
+6. ✅ **Search for existing utilities** — BEFORE creating helper functions:
    - Currency/money: `Grep "formatCurrency|cents.*100" apps/web/src/lib/utils/`
    - Dates: `Grep "formatDate|toLocaleString.*Date" apps/web/src/lib/utils/`
    - Status badges: `Grep "StatusBadge|STATUS_CONFIG" packages/ui/`
    - Empty states: `Grep "EmptyState|No.*found" packages/ui/`
-6. ✅ **Search MEMORY for prior learnings** — `Grep "[concept]" memory/`
-7. ✅ **Trace the impact** — what imports/calls this code? What could break?
-8. ✅ **Apply review lens** — will this pass security, financial integrity, type safety?
-9. ✅ **Verify schema** — check Prisma models match intent
-10. ✅ **Check tokens** — design tokens exist before using
-11. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
-12. ✅ **Verify labels/paths** — search before creating new
-13. ✅ **Validate test vs production** — mocks stay in `__tests__/`
-14. ✅ **For UI changes: minimal first** — change ONE visual thing, verify, then expand (see `frontend-conventions.md`)
-15. ✅ **Check loading/error states** — every new page.tsx needs loading.tsx + error.tsx (Invariant #6)
-16. ✅ **Check server/client separation** — no mixing `'use client'` with server-only imports (Invariant #7)
+7. ✅ **Search MEMORY for prior learnings** — `Grep "[concept]" memory/`
+8. ✅ **Trace the impact** — use index `c` (callers) to see what imports/calls this code
+9. ✅ **Apply review lens** — will this pass security, financial integrity, type safety?
+10. ✅ **Verify schema** — check Prisma models match intent
+11. ✅ **Check tokens** — design tokens exist before using
+12. ✅ **Scan for anti-patterns** — see "Explicit Anti-Patterns" below
+13. ✅ **Verify labels/paths** — search before creating new
+14. ✅ **Validate test vs production** — mocks stay in `__tests__/`
+15. ✅ **For UI changes: minimal first** — change ONE visual thing, verify, then expand (see `frontend-conventions.md`)
+16. ✅ **Check loading/error states** — every new page.tsx needs loading.tsx + error.tsx (Invariant #6)
+17. ✅ **Check server/client separation** — no mixing `'use client'` with server-only imports (Invariant #7)
 
 **For bug fixes:** Follow Investigation Protocol in `product-thinking.md`, or run `/processes:diagnose` for complex bugs.
 

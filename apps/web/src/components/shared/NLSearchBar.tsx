@@ -257,7 +257,7 @@ export function NLSearchBar({
           {filterChips.map((chip, i) => (
             <Badge
               key={`${chip.field}-${i}`}
-              variant="secondary"
+              variant="ai"
               className="gap-1 bg-ak-pri-dim text-ak-pri-text border-ak-border rounded-lg px-3 py-1"
             >
               {chip.label}

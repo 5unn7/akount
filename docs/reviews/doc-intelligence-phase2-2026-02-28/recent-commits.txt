@@ -1,0 +1,204 @@
+7ae9b5b docs: EOD status update 2026-02-28 — Epic 16h period (204 commits, ~38 tasks)
+5935c60 chore: Cleanup from Phase 2 work
+32b6d93 docs: End session capture 2026-02-27 20:03 — Document Intelligence Phase 2 (87.5% complete)
+083ee67 docs: End session capture 2026-02-27 20:48 — Feedback loops complete
+738fe1c feat(web): DEV-249 (C4) - Natural Language Search bar component
+2526532 feat(web): DEV-247 (C2) - Natural Language Bookkeeping input bar
+15f4f1d docs: End session capture 2026-02-27 22:38 — Parallel execution complete
+8204b6f docs: Mark INFRA-67, ARCH-27, PERF-29, INFRA-68 as complete
+3a1c3de feat(perf): PERF-29 - Add caller graph to code indexes
+c5c7ab9 feat(infra): INFRA-68 - Add test coverage map to code indexes
+33443ba feat(web): DEV-244 (B10) - Invoice scan upload UI component
+d426f22 feat(arch): ARCH-27 - Split WEB-COMPONENTS into 3 sub-indexes
+c26435b feat(infra): INFRA-67 - Deduplicate code index legend
+d8b3a3b feat(web): DEV-243 (B9) - Bill scan upload UI component
+a843598 docs: Mark INFRA-64, INFRA-65, INFRA-66 as complete
+352c133 feat(infra): INFRA-64, INFRA-65, INFRA-66 - Production signals system
+57529ff docs: Mark ARCH-24, ARCH-25, ARCH-26 as complete
+e7e8c79 feat(docs): ARCH-25, ARCH-26 - Decision capture & indexing
+800da6d feat(ai): DEV-248 (C3) - Natural Language Search endpoint
+06762dd feat(docs): ARCH-24 - Decision journal format & storage
+57874f8 docs: Mark ARCH-21, ARCH-22, ARCH-23 as complete
+aa81153 feat(learning): ARCH-22, ARCH-23 - Auto-capture learning system
+708a671 feat(ai): DEV-246 (C1) - Natural Language Bookkeeping endpoint
+33a9c98 chore(infra): Gitignore .claude/runtime/ directory
+d733b6c Merge general-purpose/ARCH-21: ARCH-21 complete
+86f9f1b feat(tooling): ARCH-21 - Add git diff pattern extractor
+9c3a732 fix(ai): DEV-242 - Implement extractStatement and enforce required tenantId
+b7d18d7 docs: Mark ARCH-18, PERF-28, ARCH-19, ARCH-20 as complete
+4cd9a5b feat(tooling): ARCH-20 - Add runtime summary script
+740e3cc docs: Epic session capture — Document Intelligence Phase 1 complete (22 tasks + review + fixes)
+b966393 Merge api-agent/ARCH-19: ARCH-19 complete
+c4fe654 Merge branch 'db-agent/PERF-28'
+eb54097 refactor(.claude): Enhance domain adjacency matrix to v2 with semantic relationships
+2b9df4f fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes
+dd48006 feat(infra): Feedback loops & code indexing V2 — Plan + Quick Wins
+97e746e feat(db): PERF-28 - Add Prisma query observer
+22dddc5 feat(api): ARCH-19 - Add runtime error collector
+0281726 perf(db): PERF-27 - Add Client/Vendor name lookup indexes
+1160ccf perf(web): PERF-7 — Drop recharts, lazy load modals/sheets
+80c7330 fix(ai): SEC-45, SEC-46, ARCH-14 - Critical security and architecture fixes
+b12b7c4 docs: End session capture 2026-02-27 18:49 — Compliance reviewer added (GDPR/PIPEDA/SOC2)
+6ce8e20 docs: Document Intelligence Phase 1 review complete + 14 tasks created
+71c1a11 docs: End session capture 2026-02-27 18:28 — Review coverage upgrade (68% → 95%)
+16ea791 docs: Update Phase 1 Foundation progress (100% complete)
+18cb251 feat(ai): Initialize BullMQ workers on app startup
+2420a32 feat(ai): DEV-261 - AI transparency labels
+566545f docs(compliance): SEC-34 - EU AI Act risk classification assessment
+0566980 feat(ai): DEV-260 - Consent settings UI
+324c0c3 docs: Code indexing system implementation complete — 5/7 sprints done
+0c244d5 docs: Update context-map.md last-verified date + code index reference
+78da5a1 feat(ai): SEC-33 - Consent gate middleware
+7270f87 feat: Context documentation freshness checker — Sprint 6 partial
+b2452d3 docs: End session capture 2026-02-27 15:12 — Task audit + widget DRY cleanup (300 lines eliminated)
+3d2e76a feat: Auto-learning from reviews — Sprint 5 complete
+2603651 chore: Session cleanup — agent metadata updates + planning reviews
+b5965cc feat: Proactive hallucination blocker — Sprint 3 complete
+8c83dec docs: Archive 28 completed tasks from last 24 hours
+535413e refactor(web): Dashboard widget DRY cleanup — eliminate 300+ duplicate lines
+28003db feat(ai): DEV-240/241 - Bill & Invoice scan API routes
+c70b5f3 feat: Pattern violation detector + pre-commit hook — Sprint 2 complete
+4b1b2d6 feat(ai): DEV-239 - InvoiceScanWorker (AR flow)
+9a23ca2 feat: Update discovery protocol with code indexes — Sprint 1 Task 1.3 complete
+902a44c feat: Auto-rebuild hooks + freshness tracking — Sprint 1 Task 1.4 complete
+fcb2c3e feat: Multi-domain code index loader — Sprint 1 Task 1.2 complete
+3cdfd8a feat(ai): DEV-238 - BillScanWorker (AP flow)
+f24b41b feat: Code indexing system — Sprint 1 Task 1.1 complete
+ba799ef feat(ai): SEC-32 - Consent management service + schema
+b09abab feat(ai): DEV-234 - SSE client hook (useJobStream)
+0c66f37 feat(ai): DEV-233 - SSE real-time job updates endpoint
+6105d60 docs: Add code indexing upgrade plan
+63a07a8 feat(ai): SEC-31 - File scanner extension (JPEG, PNG, HEIC, EXIF strip)
+84ebfb7 chore: Add .claude/settings.local.json to .gitignore to prevent secret leaks
+c2136ba chore: Task archival and index regeneration - 22 tasks completed
+fb88baf docs: EOD status update 2026-02-27 (14-hour epic work period)
+c15d158 docs: EOD status update 2026-02-27
+b1b5776 docs: End session capture 2026-02-26 21:48 — Planning domain review complete (9/9 tasks)
+5457bd3 docs: End session capture 2026-02-27 21:24 — Document Intelligence Phase 1 security hardening (4 tasks)
+967e01b chore: Update ACTIVE-WORK.md - mark SEC-40 and FIN-32 Phase 1 complete
+a50f371 fix(SEC-43): Add logging to budget.service createBudget + fix return
+680d3f7 docs: Mark SEC-44, INFRA-63, ARCH-13, TEST-22 as complete
+aa97530 docs: End session capture 2026-02-27 03:37 - SEC-40 + FIN-32 Phase 1 complete
+4b1c8de fix(ARCH-11): Update Zod schemas to match Prisma planning enums
+85cb493 migrate(ARCH-11): Apply planning domain enum migration
+8023943 docs: Update Document Intelligence tasks - Phase 1.5 security hardening complete
+e630cd5 feat(SEC-44,INFRA-63,ARCH-13,TEST-22): Harden Document Intelligence security and resilience
+a5b71e6 fix(FIN-32): Simplify migration SQL - remove complex logging that caused syntax errors
+d14c3d5 feat(ARCH-11): Convert planning domain string fields to enums
+9116508 feat(SEC-43): Add structured logging to planning analytics services
+6c7068e feat(FIN-32): Migrate TaxRate.rate from Float to Int (basis points) - Phase 1
+669be2b fix(ARCH-12): Add explicit onDelete: Restrict to Goal model relations
+e9dc24d fix(PERF-25,FIN-34,FIN-35,FIN-36,SEC-42): Planning domain critical fixes
+f78b851 docs: End session capture 2026-02-26 18:00 — Document Intelligence Phase 1 (9 tasks)
+63140bb feat(INFRA-61,DEV-232): Queue infrastructure + AI decision audit trail
+628f95f feat(SEC-40): Implement CSRF protection for state-changing endpoints
+2363b6d feat(DEV-230,DEV-231,SEC-29,SEC-30,DEV-235,DEV-236,DEV-237): Document Intelligence Platform Phase 1 - Core Infrastructure
+0017351 docs: Planning domain full build session capture (7 sprints, 22 tasks)
+a4fa4de docs: End session capture 2026-02-26 16:30
+c273db1 feat(UX-65): Add export CSV button to goals page header
+e263c35 chore: Mark 5 audit tasks complete in TASKS.md
+fda30ba fix(TEST-21): Fix NodeNext module resolution errors — 6 TS errors resolved
+47bb786 docs(ARCH-9): Complete Prisma connection pool documentation
+ea1b1e2 feat(DEV-34,DEV-35,DEV-36): Planning overview widgets — goal progress, budget vs actual, expense forecast
+e4e4519 docs(ARCH-9): Configure Prisma connection pool documentation
+caa13d4 fix(SEC-41): Replace CORS wildcard with explicit dev whitelist
+f79021f feat: Add PII redaction utility for secure logging
+f637ca2 perf(PERF-24): Add composite indexes for 100x pagination speedup
+b6c2f91 feat(DEV-102,DEV-103,DEV-104,UX-61): Forecasts system — CRUD, cash runway, seasonal patterns, frontend
+a14117c perf(PERF-23): Fix AI batch N+1 queries — 90% reduction in DB queries
+2d58dfb feat(DEV-99,DEV-105): Budget variance analysis — service, routes, frontend integration
+3613c46 fix(SEC-39): Add defensive auth checks to onboarding routes
+9b69061 feat(UX-58,UX-59,UX-60): Planning domain frontend — API client, goals, budgets, landing page
+3001fb9 docs: Document Intelligence Platform plan + task list (47 tasks, 6 tracks)
+d86e84b test(DEV-97,DEV-98): Planning domain service tests — 36 tests (goal + budget)
+dac3744 audit: Weekly health audit 2026-02-26 — Grade B+ (84/100)
+c9265b0 docs: LLM Document Intelligence brainstorm expansion + session capture
+f2409b7 docs: End session capture 2026-02-26 21:30
+8e36e2a docs: End session capture 2026-02-26 14:15
+1519bb7 test: E2E CI job + packages/ui test suite — 121 UI tests, 49 E2E specs (Phase 7-8)
+26a5343 test: Frontend test expansion — 243 new tests across 10 files (Phase 6)
+1c61845 test: Migrate 16 service tests to centralized mocks, eliminate as-never (Phase 5)
+b5053a2 docs: Mark DEV-211-214 done, archive completed tasks
+b2a4ee6 feat(DEV-211,DEV-212,DEV-213,DEV-214): AI Rules — Sprint 2b frontend (rules page, condition builder, suggestions)
+a690c89 ci: Coverage infrastructure + CI enforcement (Phase 4)
+5cd7666 test: Centralized mock factory + 156 middleware tests (Phase 2-3)
+b1e5130 docs: End session capture 2026-02-26 20:00
+b10a263 feat(DEV-206,DEV-209,DEV-210): AI Rules — Sprint 2b complete (correction triggers, executor, API routes)
+4c4729f docs: End session capture 2026-02-26 18:00
+f0946f0 feat(DEV-228): Monthly close page + AI insights dashboard widget
+803d275 feat(DEV-219,DEV-220,DEV-221): Sprint 3b leftovers — analyzers, pattern detection, test utils
+e3edcc9 feat(DEV-227): Insights list page with filters, counts, and glass cards
+6922ae7 feat(DEV-226): Wire frontend API client for insights + monthly close
+09ba9d4 docs: End session capture 2026-02-26 11:20
+412b7f5 feat(DEV-224,DEV-225): Monthly close service, schemas, and API routes
+fbc43f1 feat(DEV-223): Wire import trigger, ALERT rejection, and generation timer
+b8f2887 feat(DEV-203,DEV-204,DEV-205): AI Rules — Sprint 2a complete (CRUD, engine, API)
+ddfc43b feat(DEV-222): Revenue trend + reconciliation gap analyzers with tests
+08e2d67 feat(DEV-221): Spending anomaly + duplicate expense analyzers with tests
+65150e8 docs: End session capture 2026-02-26 16:30
+dd589ab fix(ai): address Phase 1 code review findings (DEV-229)
+c88cca8 feat(DEV-220): Cash flow + overdue analyzers
+c5a3576 feat(DEV-219): Insight generator orchestrator service
+98fb1a0 feat(DEV-218): Replace Insight 501 stubs with full API routes
+54255b0 feat(DEV-217): Add Insight CRUD service with deduplication
+508cbe2 feat(DEV-216): Add Insight types, constants, and Zod schemas
+5d51cee feat(DEV-215): Add Insight dismiss/snooze fields + deduplication
+e97918f docs: EOD status update 2026-02-25
+1b99c5b docs: End session capture 2026-02-25 23:15
+117c247 test(DEV-200): Auto-Bookkeeper E2E integration test + fix T14 test regressions
+3a52a37 feat(DEV-199): Dashboard AI Action widget with pending count and quick-approve
+4f62a1d feat(DEV-198): Wire AIAction approval to execution with ActionExecutorService
+9917452 feat(DEV-197): Batch JE approval endpoint with partial success
+e981089 feat(DEV-196): Frontend Action Feed UI — page, client, badges, navigation
+c40b169 feat(DEV-195): Wire JE suggestion service to create AIActions
+bf6953a feat(DEV-194): Action Feed API routes + tests
+aced7a6 feat(DEV-193): AIAction service + AI domain error handler
+f81e9bc feat(DEV-192): AIAction Prisma model + enums for Action Feed
+3adad67 feat(DEV-191): JE suggestion API routes + tests + Zod schemas
+66aefb3 feat(DEV-190): JE suggestion service — AI-drafted journal entries from categorized transactions
+1267fb3 feat(DEV-189): add Claude (Anthropic) provider to AIService
+728dee6 docs: End session capture 2026-02-25 21:45
+b1e7afc feat: TASKS.md auto-archive system + cleanup overhaul
+2a5d4c9 feat(DEV-188): batch categorize API + schema extraction + route tests
+ef25c41 docs: End session capture 2026-02-25 21:04
+615b0ed docs: End session capture 2026-02-25 21:03
+a361deb docs: complete DOC-3,4,5,6,8 housekeeping tasks
+515926a feat(UX-79,UX-81): mark bill detail complete + add payment detail page
+5b2484a feat(UX-3): add WCAG a11y attributes to accounting report tables
+df845f9 feat(SEC-28,INFRA-60,DEV-202,UX-4): AI bookkeeper prerequisites + report key fixes
+62d2003 feat(UX-24): add Duplicate Entry action to journal entries
+f614d5d docs: End session capture 2026-02-25 20:20
+c6947e8 docs: archive completed TEST-7..20 tasks + frontend test coverage plan
+dbb7552 docs: update TASKS.md — mark TEST-7 to TEST-20 complete (frontend test coverage)
+71545a1 feat(plans): amend AI Auto-Bookkeeper plans with multi-agent review findings
+6cba357 fix(UX-4,TEST-5): stable React keys in report views + assertIntegerCents in transfer tests
+ffd1347 docs: End session capture 2026-02-25 22:00
+ab0e453 docs: End session capture 2026-02-25 21:30
+ee48be0 feat(UX-33/34): cross-links between records + bulk operations on lists
+be9e404 test(TEST-2/TEST-3): add 250 new API tests across 8 files
+b31c405 test(TEST-20): navigation + shared component tests — DomainTabs, PageHeader, ContentPanel
+7683dac test(TEST-17..19): business component tests — tables, forms, invoice form
+95a708c docs: End session capture 2026-02-25 19:20
+bd31118 test(TEST-14..16): dashboard component tests — presentational, server, widgets
+af089f7 feat(security): SEC-12 upload quota + SEC-14 audit retention
+47042fa test(TEST-7..13): frontend test infrastructure + utility tests
+6b820a9 docs: EOD status update 2026-02-24
+e356c1e docs: update TASKS.md header stats and commit hashes (DEV-73/74/76/77/78)
+ce1a384 docs: End session capture 2026-02-24 23:45
+2e16c85 refactor(DRY-21): replace inline parseCentsInput with shared import
+863b43f docs: End session capture 2026-02-24 23:28
+b7a17d2 fix(banking): use fuzzy matching for internal duplicate detection on PDF import
+454a734 feat(business): add delete buttons to client/vendor detail pages (DEV-73/74)
+7064323 docs: End session capture 2026-02-24 23:00
+863c40f feat(accounting): COA balance cards, JE filter refresh, report quick-gen (UX-21, UX-22, UX-25)
+496b7d3 docs: End session capture 2026-02-24 22:15
+8f37279 feat(business): payment allocation UI, delete actions, Post to GL (DEV-76/77/78)
+25b6bcb feat(invoicing): add void invoice full stack (DEV-72)
+38b971b feat(accounting): COA reactivate button + DRY report handlers (UX-20, DRY-3)
+ee05277 feat(business): add Record Payment button on invoice detail (UX-45)
+1ce4c0d test(invoicing): update mocks for FIN-29 validation logic
+0636ef6 fix(api): resolve TypeScript errors (arg count + duplicate import)
+8992622 docs: End session capture 2026-02-24 12:47
+d33afbd cleanup(accounting): remove orphaned code from asset.service.ts
+b2c2b99 fix(accounting): add timestamps to SELECT constants (TS-7)
+3656f1f refactor(utils): extract formatCents/parseCentsInput to shared utility (DRY-21)

@@ -39,26 +39,34 @@ Before reading any files or investigating code, check if this work is tracked in
 
 ### Step 1: Understand What Exists (before ANY edit)
 
-**NEW: Check Code Index First (Fast Path)**
+**MANDATORY: Load Code Index First**
 
-```javascript
-// Use multi-domain loader to find relevant files instantly
-const { loadIndexes } = require('.claude/scripts/load-code-index');
+Before any Grep or Read exploration, load the domain index for the area you're working in:
 
-// Option A: Load based on file paths
-const indexes = loadIndexes({ filePaths: ['apps/api/src/domains/banking/...'] });
-
-// Option B: Load based on keywords
-const indexes = loadIndexes({ keywords: 'implement bank transfers' });
-
-// Search index for patterns
-const accountService = indexes.banking.f['account.service'];
-console.log('Exports:', accountService.e); // ["AccountService", "createAccount", ...]
-console.log('Imports:', accountService.i); // ["@akount/db", "TenantContext", ...]
-console.log('Patterns:', accountService.pt); // "TSP" (tenant, soft-delete, prisma)
+```
+Read CODEBASE-BANKING.md       # For banking domain work
+Read CODEBASE-ACCOUNTING.md    # For accounting domain work
+Read CODEBASE-INVOICING.md     # For invoicing domain work
+# etc. — see guardrails.md Step 2 for full domain→file mapping
 ```
 
-**Fallback: Manual Discovery (if index lookup fails)**
+**What the index gives you (instantly, no searching):**
+- `f["filename"].e` — Exports (what can be imported from this file)
+- `f["filename"].i` — Imports (what this file depends on)
+- `f["filename"].pt` — Pattern codes: T=tenant isolation, S=soft-delete, L=pino logging, P=prisma, C=client-component
+- `f["filename"].v` — Violations detected (inline formatCurrency, hardcoded colors, console.log, `: any`)
+- `f["filename"].t` — Test coverage (exists? file path? test count?)
+- `f["filename"].c` — Callers (which files import this file's exports)
+- `p` (top-level) — Pattern summary across all files in the domain
+
+**Use this to answer BEFORE touching source files:**
+- Does this function/export exist? → Check `e` arrays
+- Who calls it? → Check `c` (callers) map
+- Does it follow our patterns? → Check `pt` codes
+- Are there existing violations? → Check `v` arrays
+- Is it tested? → Check `t` object
+
+**Fallback: Manual Discovery (ONLY if index file doesn't exist or is stale)**
 
 ```
 Read [the file you plan to change]
