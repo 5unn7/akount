@@ -8,6 +8,7 @@ import {
 } from '../../../lib/prompt-defense';
 import { BillExtractionSchema, validateBillTotals, type BillExtraction } from '../schemas/bill-extraction.schema';
 import { InvoiceExtractionSchema, validateInvoiceTotals, type InvoiceExtraction } from '../schemas/invoice-extraction.schema';
+import { BankStatementExtractionSchema, validateStatementBalances, type BankStatementExtraction } from '../schemas/bank-statement-extraction.schema';
 import { logger } from '../../../lib/logger';
 import { env } from '../../../lib/env';
 
@@ -202,7 +203,7 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
       return {
         data: extracted,
         confidence: extracted.confidence,
-        modelVersion: extracted.modelVersion,
+        modelVersion: extracted.modelVersion || 'unknown',
         security: {
           piiRedacted: piiResult.hadPII,
           threats: promptDefense,
@@ -347,7 +348,7 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
       return {
         data: extracted,
         confidence: extracted.confidence,
-        modelVersion: extracted.modelVersion,
+        modelVersion: extracted.modelVersion || 'unknown',
         security: {
           piiRedacted: piiResult.hadPII,
           threats: promptDefense,
@@ -384,17 +385,120 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
   async extractStatement(
     pdfBuffer: Buffer,
     options: ExtractionOptions
-  ): Promise<ExtractionResult<{ transactions: unknown[] }>> {
+  ): Promise<ExtractionResult<BankStatementExtraction>> {
     const startTime = Date.now();
 
-    logger.info(
-      { tenantId: options.tenantId },
-      'Statement extraction: Not yet implemented (planned for B8)'
-    );
+    try {
+      // Step 0: File Size Validation (SEC-44)
+      if (pdfBuffer.length > MAX_FILE_SIZE_BYTES) {
+        throw new Error(
+          `File size exceeds maximum allowed size of ${MAX_FILE_SIZE_BYTES / 1024 / 1024}MB. Got ${pdfBuffer.length / 1024 / 1024}MB. This prevents potential OOM attacks (SEC-44).`
+        );
+      }
 
-    // Placeholder response for B8
-    throw new Error(
-      'Statement extraction not yet implemented. Will be completed in Task B8 (Bank Statement Parsing - Mistral Primary)'
-    );
+      // Step 1: PII Redaction (SEC-29)
+      const piiResult = options.skipSecurityChecks
+        ? { redactedBuffer: pdfBuffer, redactionLog: [], hadPII: false }
+        : redactImage(pdfBuffer);
+
+      if (piiResult.hadPII) {
+        logger.warn(
+          { tenantId: options.tenantId, redactionCount: piiResult.redactionLog.length },
+          'PII detected and redacted from bank statement before AI inference'
+        );
+      }
+
+      // Step 2: Mistral Vision Extraction
+      const extractionPrompt = createSecureSystemPrompt(`
+Extract all transactions from this bank statement PDF.
+
+Required fields per transaction:
+- date: ISO 8601 format (YYYY-MM-DD)
+- description: Merchant or payee name
+- amount: Integer cents (always positive number, regardless of debit/credit)
+- type: Either "DEBIT" or "CREDIT"
+- balance: Running balance after this transaction (integer cents, optional)
+
+Account metadata:
+- institutionName: Bank name (e.g., "TD Canada Trust", "RBC Royal Bank")
+- accountNumber: Last 4 digits only (e.g., "****1234")
+- accountType: "CHECKING", "SAVINGS", or "CREDIT_CARD"
+- currency: ISO currency code (e.g., "CAD", "USD")
+- periodStart: Statement start date (YYYY-MM-DD)
+- periodEnd: Statement end date (YYYY-MM-DD)
+- openingBalance: Balance at start of period (integer cents)
+- closingBalance: Balance at end of period (integer cents)
+
+CRITICAL RULES:
+1. Amounts MUST be integers (cents). Convert $10.50 → 1050
+2. Amounts are ALWAYS positive. Use "type" field to indicate DEBIT or CREDIT.
+3. Dates MUST be YYYY-MM-DD format.
+4. Extract ALL transactions visible in the statement.
+
+Return JSON matching BankStatementExtractionSchema.
+      `.trim());
+
+      const extracted = await this.mistralProvider.extractFromImage(
+        piiResult.redactedBuffer,
+        BankStatementExtractionSchema,
+        extractionPrompt
+      );
+
+      // Step 3: Prompt Defense Analysis (SEC-30)
+      const promptDefense = options.skipSecurityChecks
+        ? { safe: true, riskLevel: 'safe' as const, threats: [], requiresReview: false }
+        : analyzePromptInjection(extracted.ocrText || '');
+
+      if (!promptDefense.safe) {
+        logger.warn(
+          {
+            tenantId: options.tenantId,
+            threats: promptDefense.threats,
+            riskLevel: promptDefense.riskLevel,
+          },
+          'Potential prompt injection detected in bank statement'
+        );
+      }
+
+      // Step 4: Business Rule Validation (Balance Reconciliation)
+      validateStatementBalances(extracted);
+
+      const processingTimeMs = Date.now() - startTime;
+
+      logger.info(
+        {
+          tenantId: options.tenantId,
+          institution: extracted.accountInfo.institutionName,
+          transactionCount: extracted.transactions.length,
+          confidence: extracted.confidence,
+          processingTimeMs,
+        },
+        'Bank statement extraction complete'
+      );
+
+      return {
+        data: extracted,
+        confidence: extracted.confidence,
+        modelVersion: extracted.modelVersion || 'unknown',
+        security: {
+          piiRedacted: piiResult.hadPII,
+          threats: promptDefense,
+          amountValidation: {
+            safe: true,
+            riskLevel: 'safe',
+            threats: [],
+            requiresReview: false,
+          },
+        },
+        processingTimeMs,
+      };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logger.error(
+        { err: error, tenantId: options.tenantId },
+        'Bank statement extraction failed'
+      );
+      throw new Error(`Statement extraction failed: ${errorMessage}`);
+    }
   }
 }

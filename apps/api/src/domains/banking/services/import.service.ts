@@ -434,8 +434,8 @@ export class ImportService {
     });
 
     try {
-      // 3. Parse PDF file
-      const parseResult = await parsePDF(file, dateFormat);
+      // 3. Parse PDF file (DEV-242: now using Mistral vision extraction)
+      const parseResult = await parsePDF(file, this.tenantId, dateFormat, account.entityId);
 
       if (parseResult.transactions.length === 0) {
         // Update batch with error
