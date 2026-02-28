@@ -1,0 +1,96 @@
+{
+  "sessionId": "session-1772245226334",
+  "timestamp": "2026-02-28T02:20:26.334Z",
+  "commitCount": 10,
+  "commitRange": "22dddc5..b7d18d7",
+  "patterns": [
+    {
+      "type": "bug-fix",
+      "description": "feat(tooling): ARCH-20 - Add runtime summary script",
+      "files": [
+        ".claude/commands/processes/begin.md",
+        ".claude/scripts/runtime-summary.js"
+      ],
+      "taskIds": "ARCH-20",
+      "confidence": 0.85,
+      "commit": "4cd9a5b",
+      "message": "feat(tooling): ARCH-20 - Add runtime summary script"
+    },
+    {
+      "type": "bug-fix",
+      "description": "docs: Epic session capture — Document Intelligence Phase 1 complete (22 tasks + review + fixes)",
+      "files": [
+        "docs/archive/sessions/2026-02-27-1849-document-intelligence-epic.md"
+      ],
+      "confidence": 0.85,
+      "commit": "740e3cc",
+      "message": "docs: Epic session capture — Document Intelligence Phase 1 complete (22 tasks + review + fixes)"
+    },
+    {
+      "type": "cross-domain",
+      "description": "Commit touches 2 domains: ai, business",
+      "domains": [
+        "ai",
+        "business"
+      ],
+      "files": [
+        "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+        "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
+        "apps/api/src/domains/business/errors.ts",
+        "apps/api/src/domains/business/routes/bill-scan.ts",
+        "apps/api/src/domains/business/routes/invoice-scan.ts"
+      ],
+      "confidence": 0.9,
+      "commit": "2b9df4f",
+      "message": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes"
+    },
+    {
+      "type": "bug-fix",
+      "description": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes",
+      "files": [
+        "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+        "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
+        "apps/api/src/domains/business/errors.ts",
+        "apps/api/src/domains/business/routes/bill-scan.ts",
+        "apps/api/src/domains/business/routes/invoice-scan.ts",
+        "apps/api/src/lib/queue/queue-manager.ts",
+        "packages/db/prisma/migrations/20260227185000_change_aiconsent_cascade_to_restrict/migration.sql",
+        "packages/db/prisma/schema.prisma"
+      ],
+      "taskIds": "SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107",
+      "confidence": 0.85,
+      "commit": "2b9df4f",
+      "message": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes"
+    },
+    {
+      "type": "schema-change",
+      "description": "Added index/constraint, Modified relations, 1 migration file(s)",
+      "files": [
+        "packages/db/prisma/migrations/20260227185000_change_aiconsent_cascade_to_restrict/migration.sql",
+        "packages/db/prisma/schema.prisma"
+      ],
+      "confidence": 1,
+      "commit": "2b9df4f",
+      "message": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes"
+    },
+    {
+      "type": "bug-fix",
+      "description": "feat(api): ARCH-19 - Add runtime error collector",
+      "files": [
+        "apps/api/src/middleware/error-collector.ts",
+        "apps/api/src/middleware/errorHandler.ts"
+      ],
+      "taskIds": "ARCH-19",
+      "confidence": 0.85,
+      "commit": "22dddc5",
+      "message": "feat(api): ARCH-19 - Add runtime error collector"
+    }
+  ],
+  "newExports": [],
+  "schemaChanges": [
+    {
+      "description": "Added index/constraint, Modified relations, 1 migration file(s)",
+      "commit": "2b9df4f"
+    }
+  ]
+}
