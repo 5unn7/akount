@@ -43,7 +43,7 @@ describe('Bill Extraction Schemas', () => {
       expect(() => LineItemSchema.parse(invalidLine)).toThrow();
     });
 
-    it('should default quantity to 1', () => {
+    it('should allow omitting quantity (optional)', () => {
       const line = {
         description: 'Item',
         unitPrice: 100,
@@ -52,7 +52,7 @@ describe('Bill Extraction Schemas', () => {
 
       const result = LineItemSchema.parse(line);
 
-      expect(result.quantity).toBe(1);
+      expect(result.quantity).toBeUndefined();
     });
 
     it('should allow optional fields', () => {

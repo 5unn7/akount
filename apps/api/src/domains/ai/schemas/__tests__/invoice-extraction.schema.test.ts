@@ -31,7 +31,7 @@ describe('Invoice Extraction Schemas', () => {
       expect(() => InvoiceLineItemSchema.parse(invalidLine)).toThrow();
     });
 
-    it('should default quantity to 1', () => {
+    it('should allow omitting quantity (optional)', () => {
       const line = {
         description: 'One-time setup fee',
         unitPrice: 5000,
@@ -40,7 +40,7 @@ describe('Invoice Extraction Schemas', () => {
 
       const result = InvoiceLineItemSchema.parse(line);
 
-      expect(result.quantity).toBe(1);
+      expect(result.quantity).toBeUndefined();
     });
   });
 

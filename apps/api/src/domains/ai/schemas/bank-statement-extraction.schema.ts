@@ -90,7 +90,7 @@ export const BankStatementExtractionSchema = z.object({
   confidence: z.number().int().min(0).max(100),
 
   /** Model version used for extraction */
-  modelVersion: z.string().default('pixtral-large-latest'),
+  modelVersion: z.string().optional(),
 
   /** Raw OCR text (for debugging and fallback validation) */
   ocrText: z.string().optional(),

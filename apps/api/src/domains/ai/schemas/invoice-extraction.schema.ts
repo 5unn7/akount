@@ -20,8 +20,8 @@ export const InvoiceLineItemSchema = z.object({
   /** Item description (e.g., "Consulting Services - 10 hours") */
   description: z.string().min(1, 'Description required'),
 
-  /** Quantity billed */
-  quantity: z.number().positive().default(1),
+  /** Quantity billed (defaults to 1 if AI omits) */
+  quantity: z.number().positive().optional(),
 
   /** Unit price in integer cents (e.g., 10000 = $100.00/hour) */
   unitPrice: z.number().int().positive(),

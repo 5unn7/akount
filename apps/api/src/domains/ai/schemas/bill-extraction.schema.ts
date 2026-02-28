@@ -20,8 +20,8 @@ export const LineItemSchema = z.object({
   /** Item description (e.g., "Large Latte", "Office Supplies") */
   description: z.string().min(1, 'Description required'),
 
-  /** Quantity purchased */
-  quantity: z.number().positive().default(1),
+  /** Quantity purchased (defaults to 1 if AI omits) */
+  quantity: z.number().positive().optional(),
 
   /** Unit price in integer cents (e.g., 550 = $5.50) */
   unitPrice: z.number().int().positive(),
