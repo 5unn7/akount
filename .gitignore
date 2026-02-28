@@ -33,5 +33,5 @@ figmatoken
 # Local settings (may contain API keys)
 .claude/settings.local.json
 
-# Runtime logs (generated at runtime, not committed)
-.claude/runtime/query-log.json
+# Runtime logs (dev-only, machine-local)
+.claude/runtime/
