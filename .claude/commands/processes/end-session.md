@@ -73,6 +73,27 @@ This ensures:
 
 ---
 
+### Step 1c: Auto-Extract Learning Patterns (20 seconds)
+
+**NEW:** Extract learning patterns from session commits automatically:
+
+```bash
+# Extract patterns from git commits (auto-populates session summary)
+node .claude/scripts/extract-session-patterns.js
+```
+
+This analyzes recent commits and generates `.claude/session-patterns.json` with:
+- **Cross-domain changes** — when one commit touches 2+ domains
+- **New utilities** — detects `lib/utils/` or `domains/*/utils/` additions
+- **New shared components** — detects `packages/ui/` or `apps/web/src/components/shared/` additions
+- **Bug fixes** — commits with "fix", "bug", "crash", etc. keywords
+- **Schema changes** — Prisma schema or migration file changes
+- **New test files** — test files added (not modified)
+
+**Output will be used in Step 3 to auto-populate "Patterns Discovered" and "Bugs Fixed" sections.**
+
+---
+
 ### Step 2: Auto-Gather from Git (30 seconds)
 ```bash
 # Recent commits (last 2 hours or since session started)
@@ -89,6 +110,13 @@ git status --short
 
 Save to `docs/archive/sessions/YYYY-MM-DD-HHMM-session.md`:
 
+**Auto-populate from `.claude/session-patterns.json`:**
+
+1. Read `.claude/session-patterns.json` (generated in Step 1c)
+2. Auto-populate "Bugs Fixed" from patterns with `type: "bug-fix"`
+3. Auto-populate "Patterns Discovered" from patterns with types: `new-utility`, `new-component`, `cross-domain`, `schema-change`
+4. **Review auto-filled content** — remove false positives, add manual entries
+
 ```markdown
 # Session Summary — YYYY-MM-DD HH:MM
 
@@ -102,11 +130,19 @@ Save to `docs/archive/sessions/YYYY-MM-DD-HHMM-session.md`:
 - [From git log --oneline]
 
 ## Bugs Fixed / Issues Hit
-- [Description, root cause, fix applied — ONLY if bugs were encountered]
+<!-- AUTO-POPULATED from session-patterns.json (type: bug-fix) -->
+<!-- Review and remove false positives below -->
+- [Task ID if present] [Description from commit message] (commit: [hash])
+- [Add manual entries here if not detected]
 - [Skip this section entirely if no bugs]
 
 ## Patterns Discovered
-- [New gotchas, non-obvious behaviors — ONLY if something was learned]
+<!-- AUTO-POPULATED from session-patterns.json (types: new-utility, new-component, cross-domain, schema-change) -->
+<!-- Review and remove false positives below -->
+- **[Pattern type]:** [Description] (commit: [hash])
+  - Files: [affected files]
+  - Exports: [new functions/components] (if applicable)
+- [Add manual entries here if patterns not detected]
 - [Skip this section entirely if nothing new]
 
 ## New Systems / Features Built
