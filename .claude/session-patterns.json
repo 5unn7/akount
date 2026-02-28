@@ -1,82 +1,34 @@
 {
-  "sessionId": "session-1772254021402",
-  "timestamp": "2026-02-28T04:47:01.402Z",
-  "commitCount": 15,
-  "commitRange": "aa81153..8204b6f",
+  "sessionId": "session-1772261428769",
+  "timestamp": "2026-02-28T06:50:28.769Z",
+  "commitCount": 1,
+  "commitRange": "738fe1c..738fe1c",
   "patterns": [
     {
-      "type": "bug-fix",
-      "description": "feat(web): DEV-244 (B10) - Invoice scan upload UI component",
+      "type": "new-component",
+      "description": "New shared component: NLSearchBar.example, NLSearchBar, NLSearchBar.types",
       "files": [
-        "apps/web/src/app/(dashboard)/business/invoices/invoice-scan-upload.tsx"
+        "apps/web/src/components/shared/NLSearchBar.example.tsx",
+        "apps/web/src/components/shared/NLSearchBar.tsx",
+        "apps/web/src/components/shared/NLSearchBar.types.ts"
       ],
-      "taskIds": "DEV-244",
-      "confidence": 0.85,
-      "commit": "33443ba",
-      "message": "feat(web): DEV-244 (B10) - Invoice scan upload UI component"
+      "confidence": 0.95,
+      "commit": "738fe1c",
+      "message": "feat(web): DEV-249 (C4) - Natural Language Search bar component"
     },
     {
       "type": "bug-fix",
-      "description": "feat(web): DEV-243 (B9) - Bill scan upload UI component",
+      "description": "feat(web): DEV-249 (C4) - Natural Language Search bar component",
       "files": [
-        "apps/web/package.json",
-        "apps/web/src/app/(dashboard)/business/bills/bill-scan-upload.tsx"
+        "apps/web/src/components/shared/NLSearchBar.README.md",
+        "apps/web/src/components/shared/NLSearchBar.example.tsx",
+        "apps/web/src/components/shared/NLSearchBar.tsx",
+        "apps/web/src/components/shared/NLSearchBar.types.ts"
       ],
-      "taskIds": "DEV-243",
+      "taskIds": "DEV-249",
       "confidence": 0.85,
-      "commit": "d8b3a3b",
-      "message": "feat(web): DEV-243 (B9) - Bill scan upload UI component"
-    },
-    {
-      "type": "bug-fix",
-      "description": "feat(infra): INFRA-64, INFRA-65, INFRA-66 - Production signals system",
-      "files": [
-        ".claude/commands/processes/begin.md",
-        ".claude/production/README.md",
-        ".claude/production/signals.json",
-        ".claude/scripts/add-production-signal.js",
-        ".claude/scripts/read-production-signals.js"
-      ],
-      "confidence": 0.85,
-      "commit": "352c133",
-      "message": "feat(infra): INFRA-64, INFRA-65, INFRA-66 - Production signals system"
-    },
-    {
-      "type": "bug-fix",
-      "description": "feat(ai): DEV-248 (C3) - Natural Language Search endpoint",
-      "files": [
-        "apps/api/src/domains/ai/routes.ts",
-        "apps/api/src/domains/ai/routes/__tests__/natural-search.routes.test.ts",
-        "apps/api/src/domains/ai/routes/natural-search.routes.ts",
-        "apps/api/src/domains/ai/schemas/natural-search.schema.ts",
-        "apps/api/src/domains/ai/services/natural-search.service.ts"
-      ],
-      "taskIds": "DEV-248",
-      "confidence": 0.85,
-      "commit": "800da6d",
-      "message": "feat(ai): DEV-248 (C3) - Natural Language Search endpoint"
-    },
-    {
-      "type": "new-tests",
-      "description": "1 new test file(s) added",
-      "files": [
-        "apps/api/src/domains/ai/routes/__tests__/natural-search.routes.test.ts"
-      ],
-      "confidence": 1,
-      "commit": "800da6d",
-      "message": "feat(ai): DEV-248 (C3) - Natural Language Search endpoint"
-    },
-    {
-      "type": "bug-fix",
-      "description": "feat(learning): ARCH-22, ARCH-23 - Auto-capture learning system",
-      "files": [
-        ".claude/commands/processes/end-session.md",
-        ".claude/scripts/route-to-memory.js"
-      ],
-      "taskIds": "ARCH-22, ARCH-23",
-      "confidence": 0.85,
-      "commit": "aa81153",
-      "message": "feat(learning): ARCH-22, ARCH-23 - Auto-capture learning system"
+      "commit": "738fe1c",
+      "message": "feat(web): DEV-249 (C4) - Natural Language Search bar component"
     }
   ],
   "newExports": [],
