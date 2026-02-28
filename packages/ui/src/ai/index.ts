@@ -13,3 +13,4 @@ export * from './SuggestionChip';
 export * from './AIPanel';
 export * from './CriticalAlert';
 export * from './FeedbackComponent';
+export * from './AIBadge';
