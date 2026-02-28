@@ -1,0 +1,12 @@
+18cb251 - feat(ai): Initialize BullMQ workers on app startup
+2420a32 - feat(ai): DEV-261 - AI transparency labels
+566545f - docs(compliance): SEC-34 - EU AI Act risk classification assessment
+0566980 - feat(ai): DEV-260 - Consent settings UI
+78da5a1 - feat(ai): SEC-33 - Consent gate middleware
+28003db - feat(ai): DEV-240/241 - Bill & Invoice scan API routes
+4b1b2d6 - feat(ai): DEV-239 - InvoiceScanWorker (AR flow)
+3cdfd8a - feat(ai): DEV-238 - BillScanWorker (AP flow)
+ba799ef - feat(ai): SEC-32 - Consent management service + schema
+b09abab - feat(ai): DEV-234 - SSE client hook (useJobStream)
+0c66f37 - feat(ai): DEV-233 - SSE real-time job updates endpoint
+63a07a8 - feat(ai): SEC-31 - File scanner extension (JPEG, PNG, HEIC, EXIF strip)
