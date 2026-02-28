@@ -313,6 +313,7 @@ model Client {
   @@index([entityId])
   @@index([entityId, status])
   @@index([entityId, deletedAt])
+  @@index([entityId, name, deletedAt]) // PERF-27: Optimize AI worker client lookups
 }
 
 model Invoice {
@@ -387,6 +388,7 @@ model Vendor {
   @@index([entityId])
   @@index([entityId, status])
   @@index([entityId, deletedAt])
+  @@index([entityId, name, deletedAt]) // PERF-27: Optimize AI worker vendor lookups
 }
 
 model Bill {

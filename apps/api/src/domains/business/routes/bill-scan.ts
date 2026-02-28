@@ -5,6 +5,7 @@ import { queueManager } from '../../../lib/queue/queue-manager';
 import { scanFile } from '../../../lib/file-scanner';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
+import { requireConsent } from '../../../middleware/consent-gate';
 import { validateBody } from '../../../middleware/validation';
 import { logger } from '../../../lib/logger';
 
@@ -65,6 +66,9 @@ export async function billScanRoutes(fastify: FastifyInstance) {
    */
   fastify.post(
     '/scan',
+    {
+      preHandler: [requireConsent('autoCreateBills')],
+    },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const tenantId = request.tenantId!;
       const userId = request.userId!;

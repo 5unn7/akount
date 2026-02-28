@@ -158,10 +158,10 @@ async function processBillScan(job: Job<BillScanJobData>): Promise<BillScanJobRe
     // Update progress: 60%
     await job.updateProgress(60);
 
-    // Find or create vendor
+    // Find or create vendor (SEC-46: Use entityId directly for tenant isolation)
     let vendor = await prisma.vendor.findFirst({
       where: {
-        entity: { tenantId },
+        entityId,
         name: extraction.data.vendor,
         deletedAt: null,
       },

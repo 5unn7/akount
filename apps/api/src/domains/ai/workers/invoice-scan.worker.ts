@@ -158,10 +158,10 @@ async function processInvoiceScan(job: Job<InvoiceScanJobData>): Promise<Invoice
     // Update progress: 60%
     await job.updateProgress(60);
 
-    // Find or create client
+    // Find or create client (SEC-46: Use entityId directly for tenant isolation)
     let client = await prisma.client.findFirst({
       where: {
-        entity: { tenantId },
+        entityId,
         name: extraction.data.clientName,
         deletedAt: null,
       },

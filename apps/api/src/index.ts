@@ -353,7 +353,11 @@ const start = async () => {
         // Start BullMQ workers (DEV-238, DEV-239)
         billScanWorker = startBillScanWorker();
         invoiceScanWorker = startInvoiceScanWorker();
-        server.log.info('✓ AI workers started (bill-scan, invoice-scan)');
+
+        // ARCH-14: Wait for workers to be ready before proceeding
+        await billScanWorker.waitUntilReady();
+        await invoiceScanWorker.waitUntilReady();
+        server.log.info('✓ AI workers started and ready (bill-scan, invoice-scan)');
 
         // Start optional background insight generation
         startInsightTimer();
