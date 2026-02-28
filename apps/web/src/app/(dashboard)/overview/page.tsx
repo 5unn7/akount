@@ -28,6 +28,7 @@ import { GoalProgressWidget } from "@/components/dashboard/GoalProgressWidget";
 import { BudgetVsActualWidget } from "@/components/dashboard/BudgetVsActualWidget";
 import { ExpenseForecastWidget } from "@/components/dashboard/ExpenseForecastWidget";
 import { Building2, Landmark, Upload, PenLine } from "lucide-react";
+import { NLBookkeepingBar } from "./nl-bookkeeping-bar";
 
 export const metadata: Metadata = {
     title: "Overview | Akount",
@@ -164,6 +165,9 @@ export default async function OverviewPage() {
 
             {/* Onboarding hero — conditional, above grid */}
             <OnboardingHeroCard />
+
+            {/* Natural Language Bookkeeping Input */}
+            {entityId && <NLBookkeepingBar entityId={entityId} />}
 
             {/* Command Center Grid */}
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
