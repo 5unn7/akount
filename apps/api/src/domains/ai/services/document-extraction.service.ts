@@ -6,9 +6,13 @@ import { redactImage, redactText } from '../../../lib/pii-redaction';
 import {
   analyzePromptInjection,
   validateExtractedAmount,
-  createSecureSystemPrompt,
   type DefenseResult,
 } from '../../../lib/prompt-defense';
+import {
+  buildBillExtractionPrompt,
+  buildInvoiceExtractionPrompt,
+  buildStatementExtractionPrompt,
+} from './extraction-prompts';
 import { BillExtractionSchema, validateBillTotals, type BillExtraction } from '../schemas/bill-extraction.schema';
 import { InvoiceExtractionSchema, validateInvoiceTotals, type InvoiceExtraction } from '../schemas/invoice-extraction.schema';
 import { BankStatementExtractionSchema, validateStatementBalances, type BankStatementExtraction } from '../schemas/bank-statement-extraction.schema';
@@ -164,6 +168,15 @@ export class DocumentExtractionService {
       // Step 2: Prompt Defense - will be checked post-extraction on OCR text
 
       // Step 3: Mistral Vision Extraction (DEV-230/231)
+      const extractionPrompt = buildBillExtractionPrompt();
+
+      const extractionResult = await this.mistralProvider.extractFromImage(
+        piiResult.redactedBuffer,
+        BillExtractionSchema,
+        extractionPrompt
+      );
+
+      /* REPLACED WITH EXTRACTED PROMPT:
       const extractionPrompt = createSecureSystemPrompt(`
 Extract structured bill/receipt data from this image.
 

@@ -9,6 +9,11 @@ import { env } from '../../../lib/env';
 /**
  * Bill Scan Worker (DEV-238)
  *
+ * P1-18 TODO: Extract BaseDocumentScanWorker to eliminate 258-line duplication (93% identical to invoice-scan.worker.ts)
+ * - Common: entity validation, hash calculation, extraction, idempotency, decision logging
+ * - Unique: vendor vs client lookup, Bill vs Invoice creation (30 lines each)
+ * - Refactor: abstract class BaseDocumentScanWorker<TData, TResult> with template methods
+ *
  * BullMQ worker for processing bill/receipt uploads via Mistral vision AI.
  *
  * **Processing Flow (AP):**

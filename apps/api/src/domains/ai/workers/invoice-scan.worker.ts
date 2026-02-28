@@ -9,6 +9,9 @@ import { env } from '../../../lib/env';
 /**
  * Invoice Scan Worker (DEV-239)
  *
+ * P1-18 TODO: 93% identical to bill-scan.worker.ts - extract BaseDocumentScanWorker class
+ * - See bill-scan.worker.ts for full refactoring plan
+ *
  * BullMQ worker for processing invoice uploads via Mistral vision AI.
  *
  * **Processing Flow (AR):**
