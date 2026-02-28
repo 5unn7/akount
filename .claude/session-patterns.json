@@ -1,96 +1,84 @@
 {
-  "sessionId": "session-1772245226334",
-  "timestamp": "2026-02-28T02:20:26.334Z",
-  "commitCount": 10,
-  "commitRange": "22dddc5..b7d18d7",
+  "sessionId": "session-1772254021402",
+  "timestamp": "2026-02-28T04:47:01.402Z",
+  "commitCount": 15,
+  "commitRange": "aa81153..8204b6f",
   "patterns": [
     {
       "type": "bug-fix",
-      "description": "feat(tooling): ARCH-20 - Add runtime summary script",
+      "description": "feat(web): DEV-244 (B10) - Invoice scan upload UI component",
+      "files": [
+        "apps/web/src/app/(dashboard)/business/invoices/invoice-scan-upload.tsx"
+      ],
+      "taskIds": "DEV-244",
+      "confidence": 0.85,
+      "commit": "33443ba",
+      "message": "feat(web): DEV-244 (B10) - Invoice scan upload UI component"
+    },
+    {
+      "type": "bug-fix",
+      "description": "feat(web): DEV-243 (B9) - Bill scan upload UI component",
+      "files": [
+        "apps/web/package.json",
+        "apps/web/src/app/(dashboard)/business/bills/bill-scan-upload.tsx"
+      ],
+      "taskIds": "DEV-243",
+      "confidence": 0.85,
+      "commit": "d8b3a3b",
+      "message": "feat(web): DEV-243 (B9) - Bill scan upload UI component"
+    },
+    {
+      "type": "bug-fix",
+      "description": "feat(infra): INFRA-64, INFRA-65, INFRA-66 - Production signals system",
       "files": [
         ".claude/commands/processes/begin.md",
-        ".claude/scripts/runtime-summary.js"
+        ".claude/production/README.md",
+        ".claude/production/signals.json",
+        ".claude/scripts/add-production-signal.js",
+        ".claude/scripts/read-production-signals.js"
       ],
-      "taskIds": "ARCH-20",
       "confidence": 0.85,
-      "commit": "4cd9a5b",
-      "message": "feat(tooling): ARCH-20 - Add runtime summary script"
+      "commit": "352c133",
+      "message": "feat(infra): INFRA-64, INFRA-65, INFRA-66 - Production signals system"
     },
     {
       "type": "bug-fix",
-      "description": "docs: Epic session capture — Document Intelligence Phase 1 complete (22 tasks + review + fixes)",
+      "description": "feat(ai): DEV-248 (C3) - Natural Language Search endpoint",
       "files": [
-        "docs/archive/sessions/2026-02-27-1849-document-intelligence-epic.md"
+        "apps/api/src/domains/ai/routes.ts",
+        "apps/api/src/domains/ai/routes/__tests__/natural-search.routes.test.ts",
+        "apps/api/src/domains/ai/routes/natural-search.routes.ts",
+        "apps/api/src/domains/ai/schemas/natural-search.schema.ts",
+        "apps/api/src/domains/ai/services/natural-search.service.ts"
       ],
+      "taskIds": "DEV-248",
       "confidence": 0.85,
-      "commit": "740e3cc",
-      "message": "docs: Epic session capture — Document Intelligence Phase 1 complete (22 tasks + review + fixes)"
+      "commit": "800da6d",
+      "message": "feat(ai): DEV-248 (C3) - Natural Language Search endpoint"
     },
     {
-      "type": "cross-domain",
-      "description": "Commit touches 2 domains: ai, business",
-      "domains": [
-        "ai",
-        "business"
-      ],
+      "type": "new-tests",
+      "description": "1 new test file(s) added",
       "files": [
-        "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
-        "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
-        "apps/api/src/domains/business/errors.ts",
-        "apps/api/src/domains/business/routes/bill-scan.ts",
-        "apps/api/src/domains/business/routes/invoice-scan.ts"
-      ],
-      "confidence": 0.9,
-      "commit": "2b9df4f",
-      "message": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes"
-    },
-    {
-      "type": "bug-fix",
-      "description": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes",
-      "files": [
-        "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
-        "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
-        "apps/api/src/domains/business/errors.ts",
-        "apps/api/src/domains/business/routes/bill-scan.ts",
-        "apps/api/src/domains/business/routes/invoice-scan.ts",
-        "apps/api/src/lib/queue/queue-manager.ts",
-        "packages/db/prisma/migrations/20260227185000_change_aiconsent_cascade_to_restrict/migration.sql",
-        "packages/db/prisma/schema.prisma"
-      ],
-      "taskIds": "SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107",
-      "confidence": 0.85,
-      "commit": "2b9df4f",
-      "message": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes"
-    },
-    {
-      "type": "schema-change",
-      "description": "Added index/constraint, Modified relations, 1 migration file(s)",
-      "files": [
-        "packages/db/prisma/migrations/20260227185000_change_aiconsent_cascade_to_restrict/migration.sql",
-        "packages/db/prisma/schema.prisma"
+        "apps/api/src/domains/ai/routes/__tests__/natural-search.routes.test.ts"
       ],
       "confidence": 1,
-      "commit": "2b9df4f",
-      "message": "fix(ai): SEC-47, ARCH-15, ARCH-16, DRY-22, UX-107 - P1 important fixes"
+      "commit": "800da6d",
+      "message": "feat(ai): DEV-248 (C3) - Natural Language Search endpoint"
     },
     {
       "type": "bug-fix",
-      "description": "feat(api): ARCH-19 - Add runtime error collector",
+      "description": "feat(learning): ARCH-22, ARCH-23 - Auto-capture learning system",
       "files": [
-        "apps/api/src/middleware/error-collector.ts",
-        "apps/api/src/middleware/errorHandler.ts"
+        ".claude/commands/processes/end-session.md",
+        ".claude/scripts/route-to-memory.js"
       ],
-      "taskIds": "ARCH-19",
+      "taskIds": "ARCH-22, ARCH-23",
       "confidence": 0.85,
-      "commit": "22dddc5",
-      "message": "feat(api): ARCH-19 - Add runtime error collector"
+      "commit": "aa81153",
+      "message": "feat(learning): ARCH-22, ARCH-23 - Auto-capture learning system"
     }
   ],
   "newExports": [],
-  "schemaChanges": [
-    {
-      "description": "Added index/constraint, Modified relations, 1 migration file(s)",
-      "commit": "2b9df4f"
-    }
-  ]
+  "schemaChanges": []
 }
