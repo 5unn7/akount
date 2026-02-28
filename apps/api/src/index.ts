@@ -2,6 +2,9 @@ import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
+import Redis from 'ioredis';
+import { getRedisConnection } from './lib/queue/queue-manager';
+import { closeRateLimitRedis } from './middleware/rate-limit';
 import multipart from '@fastify/multipart';
 import { prisma } from '@akount/db';
 import { env } from './lib/env';
@@ -47,9 +50,17 @@ const userService = new UserService();
 server.setErrorHandler(errorHandler);
 
 // Rate limiting - Protect against brute force and API abuse
+// ARCH-17: Redis-backed for distributed rate limiting across instances
+const rateLimitRedis = new Redis({
+    ...getRedisConnection(),
+    connectTimeout: 500,
+    maxRetriesPerRequest: 1,
+    lazyConnect: true,
+});
 server.register(rateLimit, {
     max: 100, // 100 requests per minute
     timeWindow: '1 minute',
+    redis: rateLimitRedis,
     keyGenerator: (request) => {
         // Rate limit by authenticated user ID if available, otherwise by IP
         return request.userId || request.ip;
@@ -281,9 +292,14 @@ const gracefulShutdown = async () => {
             server.log.info('✓ Invoice scan worker closed');
         }
 
-        // Close queue manager
+        // Close queue manager (includes job rate limiter Redis)
         await queueManager.close();
         server.log.info('✓ Queue manager closed');
+
+        // Close HTTP rate-limit Redis connections (ARCH-17)
+        await rateLimitRedis.quit();
+        await closeRateLimitRedis();
+        server.log.info('✓ Rate limit Redis closed');
 
         // Cleanup caches
         reportCache.destroy();

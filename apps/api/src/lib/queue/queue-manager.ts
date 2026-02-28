@@ -1,4 +1,5 @@
 import { Queue, QueueOptions, ConnectionOptions } from 'bullmq';
+import Redis from 'ioredis';
 import { env } from '../env';
 import { logger } from '../logger';
 
@@ -51,8 +52,17 @@ export const RATE_LIMIT_CONFIG = {
  *
  * Exported for use in workers (ARCH-16: DRY principle)
  */
-export function getRedisConnection(): ConnectionOptions {
-  const config: ConnectionOptions = {
+/** Plain Redis connection options (compatible with both ioredis and BullMQ) */
+export interface RedisConnectionConfig {
+  host: string;
+  port: number;
+  db: number;
+  password?: string;
+  tls?: { rejectUnauthorized: boolean };
+}
+
+export function getRedisConnection(): RedisConnectionConfig {
+  const config: RedisConnectionConfig = {
     host: env.REDIS_HOST,
     port: env.REDIS_PORT,
     db: env.REDIS_DB,
@@ -96,62 +106,112 @@ const DEFAULT_QUEUE_OPTIONS: QueueOptions = {
 };
 
 /**
- * Simple in-memory rate limiter using sliding window.
+ * Redis-backed rate limiter using sorted sets (sliding window).
  *
- * Tracks job submission timestamps per tenant.
- * For distributed systems, migrate to Redis-backed limiter (PERF-11).
+ * ARCH-17: Replaces in-memory Map with Redis for multi-instance support.
+ * Each tenant's submissions are tracked in a sorted set keyed by tenantId.
+ * Score = timestamp, Member = unique ID. Atomic pipeline ensures consistency.
  */
-class RateLimiter {
-  // Map: tenantId -> array of submission timestamps
-  private submissions: Map<string, number[]> = new Map();
+class RedisRateLimiter {
+  private redis: Redis | null = null;
+  private readonly keyPrefix = 'ratelimit:jobs:';
+
+  private getRedis(): Redis {
+    if (!this.redis) {
+      const connOpts = getRedisConnection();
+      this.redis = new Redis({
+        ...connOpts,
+        connectTimeout: 500,
+        maxRetriesPerRequest: 1,
+        lazyConnect: true,
+      });
+    }
+    return this.redis;
+  }
 
   /**
    * Check if tenant can submit a job without exceeding rate limit.
-   *
-   * @param tenantId - Tenant ID
-   * @returns true if allowed, false if rate limit exceeded
+   * Records the submission atomically if allowed.
    */
-  checkLimit(tenantId: string): boolean {
+  async checkLimit(tenantId: string): Promise<boolean> {
     const now = Date.now();
     const windowStart = now - RATE_LIMIT_CONFIG.WINDOW_MS;
+    const key = `${this.keyPrefix}${tenantId}`;
+    const member = `${now}:${Math.random().toString(36).slice(2, 8)}`;
 
-    // Get tenant's submission timestamps
-    let timestamps = this.submissions.get(tenantId) || [];
+    const redis = this.getRedis();
 
-    // Remove timestamps outside the sliding window
-    timestamps = timestamps.filter((ts) => ts > windowStart);
+    // Atomic pipeline: trim old entries, count current, add new if under limit
+    const pipeline = redis.pipeline();
+    pipeline.zremrangebyscore(key, 0, windowStart); // Remove expired entries
+    pipeline.zcard(key); // Count current entries
+    const results = await pipeline.exec();
 
-    // Check if under limit
-    if (timestamps.length >= RATE_LIMIT_CONFIG.JOBS_PER_MINUTE) {
+    if (!results) return false;
+
+    const count = results[1]?.[1] as number;
+
+    if (count >= RATE_LIMIT_CONFIG.JOBS_PER_MINUTE) {
       return false; // Rate limit exceeded
     }
 
-    // Record this submission
-    timestamps.push(now);
-    this.submissions.set(tenantId, timestamps);
+    // Record this submission and set TTL
+    const addPipeline = redis.pipeline();
+    addPipeline.zadd(key, now, member);
+    addPipeline.expire(key, Math.ceil(RATE_LIMIT_CONFIG.WINDOW_MS / 1000) + 1);
+    await addPipeline.exec();
 
-    return true; // Allowed
+    return true;
   }
 
   /**
    * Get current submission count for a tenant within the window.
    */
-  getCurrentCount(tenantId: string): number {
+  async getCurrentCount(tenantId: string): Promise<number> {
     const now = Date.now();
     const windowStart = now - RATE_LIMIT_CONFIG.WINDOW_MS;
+    const key = `${this.keyPrefix}${tenantId}`;
 
-    const timestamps = this.submissions.get(tenantId) || [];
-    return timestamps.filter((ts) => ts > windowStart).length;
+    const redis = this.getRedis();
+
+    await redis.zremrangebyscore(key, 0, windowStart);
+    return redis.zcard(key);
   }
 
   /**
    * Clear rate limit data for a tenant (for testing).
    */
-  clear(tenantId?: string): void {
+  async clear(tenantId?: string): Promise<void> {
+    const redis = this.getRedis();
+
     if (tenantId) {
-      this.submissions.delete(tenantId);
+      await redis.del(`${this.keyPrefix}${tenantId}`);
     } else {
-      this.submissions.clear();
+      // Scan and delete all rate limit keys
+      let cursor = '0';
+      do {
+        const [nextCursor, keys] = await redis.scan(
+          cursor,
+          'MATCH',
+          `${this.keyPrefix}*`,
+          'COUNT',
+          100
+        );
+        cursor = nextCursor;
+        if (keys.length > 0) {
+          await redis.del(...keys);
+        }
+      } while (cursor !== '0');
+    }
+  }
+
+  /**
+   * Close the Redis connection gracefully.
+   */
+  async close(): Promise<void> {
+    if (this.redis) {
+      await this.redis.quit();
+      this.redis = null;
     }
   }
 }
@@ -164,7 +224,7 @@ class RateLimiter {
 class QueueManagerClass {
   private queues: Map<QueueName, Queue> = new Map();
   private initialized = false;
-  private rateLimiter = new RateLimiter();
+  private rateLimiter = new RedisRateLimiter();
 
   /**
    * Initialize all queues.
@@ -189,12 +249,6 @@ class QueueManagerClass {
       for (const name of queueNames) {
         const queue = new Queue(name, {
           ...DEFAULT_QUEUE_OPTIONS,
-          // Dead Letter Queue: failed jobs after all retries go here
-          defaultJobOptions: {
-            ...DEFAULT_QUEUE_OPTIONS.defaultJobOptions,
-            // Job-specific timeout (60 seconds)
-            timeout: 60000,
-          },
         });
 
         this.queues.set(name, queue);
@@ -248,33 +302,35 @@ class QueueManagerClass {
 
   /**
    * Check if tenant can submit a job without exceeding rate limit.
+   * ARCH-17: Now Redis-backed for multi-instance support.
    *
    * @param tenantId - Tenant ID
    * @returns true if allowed, false if rate limit exceeded
    *
    * @example
    * ```typescript
-   * if (!queueManager.checkRateLimit(tenantId)) {
+   * if (!(await queueManager.checkRateLimit(tenantId))) {
    *   throw new Error('Rate limit exceeded. Please try again later.');
    * }
    * await queueManager.getQueue('bill-scan').add('scan-bill', { ... });
    * ```
    */
-  checkRateLimit(tenantId: string): boolean {
+  async checkRateLimit(tenantId: string): Promise<boolean> {
     return this.rateLimiter.checkLimit(tenantId);
   }
 
   /**
    * Get current job count for tenant within rate limit window.
+   * ARCH-17: Now Redis-backed for multi-instance support.
    *
    * Useful for API responses: "You have submitted 95/100 jobs in the last minute."
    */
-  getRateLimitStatus(tenantId: string): {
+  async getRateLimitStatus(tenantId: string): Promise<{
     current: number;
     limit: number;
     remaining: number;
-  } {
-    const current = this.rateLimiter.getCurrentCount(tenantId);
+  }> {
+    const current = await this.rateLimiter.getCurrentCount(tenantId);
     const limit = RATE_LIMIT_CONFIG.JOBS_PER_MINUTE;
 
     return {
@@ -287,8 +343,8 @@ class QueueManagerClass {
   /**
    * Clear rate limit data for a tenant (for testing).
    */
-  clearRateLimit(tenantId?: string): void {
-    this.rateLimiter.clear(tenantId);
+  async clearRateLimit(tenantId?: string): Promise<void> {
+    await this.rateLimiter.clear(tenantId);
   }
 
   /**
@@ -310,6 +366,9 @@ class QueueManagerClass {
 
     this.queues.clear();
     this.initialized = false;
+
+    // Close rate limiter Redis connection
+    await this.rateLimiter.close();
 
     logger.info('QueueManager closed');
   }

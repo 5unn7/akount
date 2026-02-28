@@ -1,12 +1,45 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import rateLimit from '@fastify/rate-limit';
+import Redis from 'ioredis';
+import { getRedisConnection } from '../lib/queue/queue-manager';
 
 /**
  * Rate Limiting Configuration
  *
  * Protects API from abuse and DDoS attacks.
  * Required for SOC 2 security controls.
+ *
+ * ARCH-17: Uses Redis-backed store for multi-instance support.
+ * In-memory fallback is NOT used — all instances share the same Redis counters.
  */
+
+/** Lazy singleton Redis client for rate limiting */
+let rateLimitRedisClient: Redis | null = null;
+
+function getRateLimitRedis(): Redis {
+  if (!rateLimitRedisClient) {
+    const connOpts = getRedisConnection();
+    rateLimitRedisClient = new Redis({
+      ...connOpts,
+      // Optimized for rate limiting (low latency)
+      connectTimeout: 500,
+      maxRetriesPerRequest: 1,
+      lazyConnect: true,
+    });
+  }
+  return rateLimitRedisClient;
+}
+
+/**
+ * Close the rate-limit Redis client gracefully.
+ * Call during application shutdown.
+ */
+export async function closeRateLimitRedis(): Promise<void> {
+  if (rateLimitRedisClient) {
+    await rateLimitRedisClient.quit();
+    rateLimitRedisClient = null;
+  }
+}
 
 /**
  * Global rate limit configuration.
@@ -79,6 +112,9 @@ export async function rateLimitMiddleware(
     global: true,
     max: GLOBAL_RATE_LIMIT.max,
     timeWindow: GLOBAL_RATE_LIMIT.timeWindow,
+
+    // ARCH-17: Redis-backed store for distributed rate limiting
+    redis: getRateLimitRedis(),
 
     // Rate limit by tenant + user for authenticated requests
     // Falls back to IP for unauthenticated requests

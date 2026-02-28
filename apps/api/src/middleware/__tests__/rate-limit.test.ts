@@ -20,6 +20,23 @@ vi.mock('@fastify/rate-limit', () => ({
   default: vi.fn(),
 }));
 
+// Mock ioredis (ARCH-17: Redis-backed rate limiting)
+vi.mock('ioredis', () => {
+  const MockRedis = vi.fn(function (this: Record<string, unknown>) {
+    this.quit = vi.fn().mockResolvedValue('OK');
+  });
+  return { default: MockRedis };
+});
+
+// Mock queue-manager getRedisConnection
+vi.mock('../../lib/queue/queue-manager', () => ({
+  getRedisConnection: vi.fn().mockReturnValue({
+    host: 'localhost',
+    port: 6379,
+    db: 0,
+  }),
+}));
+
 import rateLimit from '@fastify/rate-limit';
 
 const mockRateLimit = vi.mocked(rateLimit);
@@ -129,6 +146,17 @@ describe('rate-limit', () => {
           },
         },
       });
+    });
+
+    it('should pass Redis client for distributed rate limiting (ARCH-17)', async () => {
+      const mockFastify = {
+        register: vi.fn(),
+      };
+
+      await rateLimitMiddleware(mockFastify as never);
+
+      const options = mockFastify.register.mock.calls[0][1];
+      expect(options.redis).toBeDefined();
     });
 
     it('should include rate limit headers', async () => {

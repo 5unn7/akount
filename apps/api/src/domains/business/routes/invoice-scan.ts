@@ -134,9 +134,9 @@ export async function invoiceScanRoutes(fastify: FastifyInstance) {
           });
         }
 
-        // Check rate limit (INFRA-63)
-        if (!queueManager.checkRateLimit(tenantId)) {
-          const rateLimitStatus = queueManager.getRateLimitStatus(tenantId);
+        // Check rate limit (INFRA-63, ARCH-17: Redis-backed)
+        if (!(await queueManager.checkRateLimit(tenantId))) {
+          const rateLimitStatus = await queueManager.getRateLimitStatus(tenantId);
 
           return reply.status(429).send({
             error: 'Rate limit exceeded',
