@@ -186,9 +186,9 @@ export function AIPreferencesCard() {
         {/* Privacy notice */}
         <div className="pt-6 border-t border-ak-border">
           <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong className="text-foreground">Privacy:</strong> AI processing uses Mistral AI with PII redaction.
-            No sensitive data (credit cards, SSN, emails) is sent to external services.
-            All AI decisions are logged for audit compliance (GDPR, PIPEDA, CCPA).
+            <strong className="text-foreground">Privacy:</strong> AI processing uses Anthropic Claude and Mistral AI as third-party processors.
+            PII redaction removes sensitive data (credit cards, SSN, emails) before sending to AI services.
+            All AI decisions are logged for audit compliance (GDPR Article 22, PIPEDA 4.3, CCPA ADMT).
           </p>
         </div>
       </div>

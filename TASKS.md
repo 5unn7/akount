@@ -26,16 +26,16 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
-| DEV-268 | AI: Add timeout (30s) to all AI provider calls (Anthropic, Mistral) — stuck requests cost $50-100 | 2h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| DEV-269 | AI: Implement token tracking — log tokensUsed to AIDecisionLog after every AI call | 2h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| DEV-270 | AI: Add per-tenant AI budget caps — check budget before AI calls, 402 when exceeded | 3h | 🔴 Critical | 🟢 | [needs: DEV-269] | review:doc-intel-p2 |
-| SEC-48 | AI: Add service-layer consent re-verification in all AI service methods (GDPR Article 22 defense-in-depth) | 1h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| SEC-49 | AI: Fix PII leak — redact OCR text BEFORE logging/analysis (currently logs raw PII) | 1h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| DEV-271 | Workers: Add idempotency checks — check AIDecisionLog.inputHash before creating entities on retry | 2h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| SEC-50 | Workers: Add entity ownership validation — verify entityId belongs to tenantId before processing | 1h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| ARCH-28 | Workers: Refactor to call business domain services instead of raw Prisma (domain boundary fix) | 4h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| PERF-30 | Schema: Add Vendor.name composite index `[entityId, name, deletedAt]` (166x speedup) | 30m | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
-| PERF-31 | Schema: Add AIDecisionLog composite indexes (3 indexes: entityId+createdAt, feature+createdAt, inputHash) | 30m | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| DEV-268 | AI: Add timeout (30s) to all AI provider calls (Anthropic, Mistral) — stuck requests cost $50-100 | 2h | 🔴 Critical | ✅ | | review:doc-intel-p2 (commit c121a0e) |
+| DEV-269 | AI: Implement token tracking — log tokensUsed to AIDecisionLog after every AI call | 2h | 🔴 Critical | ✅ | | review:doc-intel-p2 (commit c121a0e) |
+| DEV-270 | AI: Add per-tenant AI budget caps — check budget before AI calls, 402 when exceeded | 3h | 🔴 Critical | ✅ | [needs: DEV-269] | review:doc-intel-p2 (commit c121a0e) |
+| SEC-48 | AI: Add service-layer consent re-verification in all AI service methods (GDPR Article 22 defense-in-depth) | 1h | 🔴 Critical | ✅ | | review:doc-intel-p2 (commit c121a0e) |
+| SEC-49 | AI: Fix PII leak — redact OCR text BEFORE logging/analysis (currently logs raw PII) | 1h | 🔴 Critical | ✅ | | review:doc-intel-p2 (commit c121a0e) |
+| DEV-271 | Workers: Add idempotency checks — check AIDecisionLog.inputHash before creating entities on retry | 2h | 🔴 Critical | ✅ | | review:doc-intel-p2 (commit c121a0e) |
+| SEC-50 | Workers: Add entity ownership validation — verify entityId belongs to tenantId before processing | 1h | 🔴 Critical | ✅ | | review:doc-intel-p2 (commit c121a0e) |
+| ARCH-28 | Workers: Refactor to call business domain services instead of raw Prisma (domain boundary fix) | 4h | 🔴 Critical | 🟡 | | review:doc-intel-p2 (TODO markers added, full refactor in P1-18) |
+| PERF-30 | Schema: Add Vendor.name composite index `[entityId, name, deletedAt]` (166x speedup) | 30m | 🔴 Critical | ✅ | | review:doc-intel-p2 (already exists) |
+| PERF-31 | Schema: Add AIDecisionLog composite indexes (3 indexes: entityId+createdAt, feature+createdAt, inputHash) | 30m | 🔴 Critical | ✅ | | review:doc-intel-p2 (commit c121a0e) |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
 | DEV-272 | AI: Add AIDecisionLog entries in natural-search and auto-bookkeeper services (GDPR Article 30) | 2h | 🟠 High | 🟢 | [needs: DEV-269] | review:doc-intel-p2 |

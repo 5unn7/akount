@@ -1,9 +1,26 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { Job } from 'bullmq';
+import { Job, QueueEvents } from 'bullmq';
 import { queueManager, type QueueName } from '../../../lib/queue/queue-manager';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
 import { logger } from '../../../lib/logger';
+
+// P1-19: Connection registry for SSE memory leak prevention
+const activeConnections = new Map<string, { queueEvents: QueueEvents; createdAt: number }>();
+
+// P1-19: Cleanup stale connections every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  const staleThreshold = 6 * 60 * 1000; // 6 minutes (1 minute past auto-disconnect)
+
+  for (const [connectionId, conn] of activeConnections.entries()) {
+    if (now - conn.createdAt > staleThreshold) {
+      logger.warn({ connectionId, age: now - conn.createdAt }, 'Cleaning up stale SSE connection');
+      conn.queueEvents.removeAllListeners();
+      activeConnections.delete(connectionId);
+    }
+  }
+}, 5 * 60 * 1000);
 
 /**
  * Job Stream Routes (DEV-233)
@@ -119,7 +136,7 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
         // Set up BullMQ event listeners using QueueEvents (correct API for job state changes)
         const queueEvents = queueManager.getQueueEvents(queueName);
 
-        const onProgress = async (args: { jobId: string; data: number | object }, id: string) => {
+        const onProgress = (args: { jobId: string; data: number | object }, id: string) => {
           if (args.jobId === jobId) {
             reply.raw.write(
               `data: ${JSON.stringify({ event: 'progress', progress: args.data, jobId })}\n\n`
@@ -127,7 +144,7 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
           }
         };
 
-        const onCompleted = async (args: { jobId: string; returnvalue: string; prev?: string }, id: string) => {
+        const onCompleted = (args: { jobId: string; returnvalue: string; prev?: string }, id: string) => {
           if (args.jobId === jobId) {
             const result = JSON.parse(args.returnvalue);
             reply.raw.write(
@@ -137,7 +154,7 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
           }
         };
 
-        const onFailed = async (args: { jobId: string; failedReason: string; prev?: string }, id: string) => {
+        const onFailed = (args: { jobId: string; failedReason: string; prev?: string }, id: string) => {
           if (args.jobId === jobId) {
             reply.raw.write(
               `data: ${JSON.stringify({ event: 'failed', error: args.failedReason, jobId })}\n\n`
@@ -146,7 +163,7 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
           }
         };
 
-        const onActive = async (args: { jobId: string; prev?: string }, id: string) => {
+        const onActive = (args: { jobId: string; prev?: string }, id: string) => {
           if (args.jobId === jobId) {
             reply.raw.write(
               `data: ${JSON.stringify({ event: 'active', jobId })}\n\n`
@@ -154,13 +171,17 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
           }
         };
 
-        const onStalled = async (args: { jobId: string }, id: string) => {
+        const onStalled = (args: { jobId: string }, id: string) => {
           if (args.jobId === jobId) {
             reply.raw.write(
               `data: ${JSON.stringify({ event: 'stalled', jobId })}\n\n`
             );
           }
         };
+
+        // P1-19: Register connection in registry
+        const connectionId = `${tenantId}:${jobId}:${Date.now()}`;
+        activeConnections.set(connectionId, { queueEvents, createdAt: Date.now() });
 
         // Attach listeners to QueueEvents (not Queue)
         queueEvents.on('progress', onProgress);
@@ -190,6 +211,9 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
           queueEvents.off('failed', onFailed);
           queueEvents.off('active', onActive);
           queueEvents.off('stalled', onStalled);
+
+          // P1-19: Remove from connection registry
+          activeConnections.delete(connectionId);
 
           if (!reply.raw.destroyed) {
             reply.raw.end();

@@ -383,5 +383,16 @@ export function startInvoiceScanWorker(): Worker {
 
   logger.info({ concurrency: 5 }, 'Invoice scan worker started');
 
+  // P1-16: Graceful shutdown - wait for in-progress jobs before exit
+  const shutdownHandler = async (signal: string) => {
+    logger.info({ signal }, 'Invoice scan worker received shutdown signal');
+    await worker.close();
+    logger.info('Invoice scan worker shut down gracefully');
+    process.exit(0);
+  };
+
+  process.on('SIGTERM', () => shutdownHandler('SIGTERM'));
+  process.on('SIGINT', () => shutdownHandler('SIGINT'));
+
   return worker;
 }

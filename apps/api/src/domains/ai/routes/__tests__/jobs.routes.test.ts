@@ -34,6 +34,9 @@ vi.mock('../../../../lib/queue/queue-manager', () => {
 
   const mockQueue = {
     getJob: vi.fn().mockResolvedValue(mockJob),
+  };
+
+  const mockQueueEvents = {
     on: vi.fn(),
     off: vi.fn(),
   };
@@ -42,6 +45,7 @@ vi.mock('../../../../lib/queue/queue-manager', () => {
     queueManager: {
       getQueueNames: vi.fn().mockReturnValue(['bill-scan', 'invoice-scan']),
       getQueue: vi.fn().mockReturnValue(mockQueue),
+      getQueueEvents: vi.fn().mockReturnValue(mockQueueEvents),
     },
   };
 });
@@ -82,7 +86,6 @@ describe('Job Stream Routes (DEV-233)', () => {
       const response = await app.inject({
         method: 'GET',
         url: '/jobs/99999/stream',
-        simulateError: true,
       });
 
       // The endpoint will start SSE but send error event immediately
@@ -108,7 +111,6 @@ describe('Job Stream Routes (DEV-233)', () => {
       const response = await app.inject({
         method: 'GET',
         url: '/jobs/12345/stream',
-        simulateError: true,
       });
 
       expect(response.statusCode).toBe(200);
@@ -120,7 +122,6 @@ describe('Job Stream Routes (DEV-233)', () => {
       const response = await app.inject({
         method: 'GET',
         url: '/jobs/12345/stream',
-        simulateError: true,
       });
 
       expect(queueManager.getQueue).toHaveBeenCalled();
@@ -131,7 +132,6 @@ describe('Job Stream Routes (DEV-233)', () => {
       await app.inject({
         method: 'GET',
         url: '/jobs/12345/stream',
-        simulateError: true,
       });
 
       expect(queueManager.getQueueNames).toHaveBeenCalled();
@@ -169,7 +169,6 @@ describe('Job Stream Routes (DEV-233)', () => {
       const response = await app.inject({
         method: 'GET',
         url: '/jobs/12345/stream',
-        simulateError: true,
       });
 
       expect(response.statusCode).toBe(200);

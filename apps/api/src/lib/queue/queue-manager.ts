@@ -97,7 +97,7 @@ const DEFAULT_QUEUE_OPTIONS: QueueOptions = {
     },
     removeOnComplete: {
       age: 86400, // Keep completed jobs for 24 hours
-      count: 1000, // Keep max 1000 completed jobs
+      count: 100, // P1-17: Reduced from 1000 (after S3 migration, payloads are ~1KB not 13MB)
     },
     removeOnFail: {
       age: 604800, // Keep failed jobs for 7 days (debugging)

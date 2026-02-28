@@ -42,7 +42,7 @@ interface GLAccountSheetProps {
     formParentId: string;
     setFormParentId: (v: string) => void;
     isSubmitting: boolean;
-    onSubmit: () => void;
+    onSubmit: () => void | Promise<void>;
 }
 
 export function GLAccountSheet({

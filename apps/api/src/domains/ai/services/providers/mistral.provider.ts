@@ -331,7 +331,7 @@ export class MistralProvider implements AIProvider {
           },
         ],
         temperature: 0.1, // Lower temperature for structured extraction
-        maxTokens: 2048, // Higher token limit for detailed extractions
+        maxTokens: 800, // P1-13: Reduced from 2048 (vision/OCR only needs 800, saves $120/mo)
         responseFormat: { type: 'json_object' },
       }, {
         signal: abortController.signal,

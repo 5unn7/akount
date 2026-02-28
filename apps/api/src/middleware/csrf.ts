@@ -101,7 +101,7 @@ export async function csrfProtection(fastify: FastifyInstance): Promise<void> {
  * });
  * ```
  */
-export function getCsrfToken(request: any): string {
+export function getCsrfToken(request: FastifyRequest & { generateCsrf: () => string }): string {
   // @fastify/csrf-protection adds generateCsrf method to request
   return request.generateCsrf();
 }

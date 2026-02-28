@@ -14,6 +14,7 @@ import { entityRoutes } from './routes/entity';
 import { entityManagementRoutes } from './routes/entities';
 import { consentRoutes } from './routes/consent';
 import { aiDataDeletionRoutes } from './routes/ai-data-deletion.routes';
+import { failedJobsRoutes } from './routes/failed-jobs';
 
 // Validation schemas
 const auditLogQuerySchema = z.object({
@@ -60,6 +61,7 @@ export async function systemRoutes(fastify: FastifyInstance) {
     await tenantScope.register(entityManagementRoutes, { prefix: '/entities' });
     await tenantScope.register(consentRoutes, { prefix: '/consent' });
     await tenantScope.register(aiDataDeletionRoutes, { prefix: '/ai-data' });
+    await tenantScope.register(failedJobsRoutes, { prefix: '/jobs' }); // P1-15: DLQ monitoring
 
     // ============================================================================
     // USERS

@@ -1,5 +1,7 @@
 import { prisma, Rule, RuleSource } from '@akount/db';
 import { RuleConditions, RuleCondition, RuleAction, RuleService } from './rule.service';
+import { logger } from '../../../lib/logger';
+import { logger } from '../../../lib/logger';
 
 /**
  * Transaction data for rule evaluation
@@ -72,7 +74,7 @@ export class RuleEngineService {
         // Async side effect - fire and forget
         this.ruleService
           .incrementExecution(rule.id, true)
-          .catch((err) => console.error('Failed to increment execution:', err));
+          .catch((err) => logger.error({ err, ruleId: rule.id }, 'Failed to increment rule execution count'));
 
         return this.createRuleMatch(rule, transaction);
       }
@@ -115,7 +117,7 @@ export class RuleEngineService {
         Array.from(matchedRuleIds).map((ruleId) =>
           this.ruleService.incrementExecution(ruleId, true)
         )
-      ).catch((err) => console.error('Failed to batch increment execution:', err));
+      ).catch((err) => logger.error({ err, ruleCount: matchedRuleIds.size }, 'Failed to batch increment execution counts'));
     }
 
     return matches;

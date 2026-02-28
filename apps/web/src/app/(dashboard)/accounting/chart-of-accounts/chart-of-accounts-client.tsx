@@ -86,7 +86,7 @@ export function ChartOfAccountsClient({
     // Debounced search - refetch when search or filterType changes
     useEffect(() => {
         const timer = setTimeout(async () => {
-            const params: any = { entityId };
+            const params: { entityId: string; search?: string; type?: string } = { entityId };
             if (search) params.search = search;
             if (filterType !== 'all') params.type = filterType;
 
