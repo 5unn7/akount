@@ -1,46 +1,19 @@
 # PACKAGES Code Index
 
-**Auto-generated:** 2026-02-27
-**Files indexed:** 69
-**Estimated tokens:** ~4,453
+**Auto-generated:** 2026-02-28
+**Files indexed:** 70
+**Estimated tokens:** ~4,526
 
 ---
 
-## Decode Legend
-
-**Fields:**
-- `p` = path (relative from project root)
-- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
-- `e` = exports (array of function/class/const names)
-- `i` = imports (array of module paths)
-- `l` = LOC (lines of code)
-- `pt` = patterns (compact codes)
-- `v` = violations (detailed with fix suggestions)
-
-**Pattern Codes:**
-- `T` = tenant-isolation (includes tenantId filter)
-- `S` = soft-delete (uses deletedAt)
-- `L` = pino-logging (uses request.log/server.log)
-- `P` = prisma (uses prisma.*)
-- `C` = client-component (has 'use client')
-
-**Violation Codes:**
-- `F` = inline formatCurrency (not imported from canonical)
-- `H` = hardcoded color (text-[#...] or bg-[rgba...])
-- `L` = console.log in production
-- `A` = : any type annotation
-
-**Domain Codes:**
-- `bnk` = banking, `inv` = invoicing, `acc` = accounting
-- `pln` = planning, `ai` = ai, `pg` = pages
-- `cmp` = components/utils, `pkg` = packages
+<!-- Legend: .claude/code-index-legend.md -->
 
 ---
 
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "_": "2026-02-27",
-  "n": 69,
+  "_": "2026-02-28",
+  "n": 70,
   "f": {
     "index": {
       "p": "packages/ui/src/primitives/index.ts",
@@ -271,6 +244,22 @@
       "pt": "",
       "v": [],
       "d": "pkg"
+    },
+    "AIBadge": {
+      "p": "packages/ui/src/ai/AIBadge.tsx",
+      "e": [
+        "AIBadgeProps",
+        "AIBadge",
+        "isAICreated"
+      ],
+      "i": [
+        "../primitives/Badge",
+        "lucide-react"
+      ],
+      "l": 91,
+      "pt": "",
+      "v": [],
+      "d": "ai"
     },
     "AIPanel": {
       "p": "packages/ui/src/ai/AIPanel.tsx",
@@ -888,11 +877,11 @@
   "d": {
     "pkg": {
       "n": 62,
-      "l": 8491
+      "l": 8495
     },
     "ai": {
-      "n": 7,
-      "l": 1093
+      "n": 8,
+      "l": 1185
     }
   },
   "p": {
@@ -963,8 +952,8 @@ CODE-INDEX:END -->
 ## Quick Stats
 
 **Files by domain:**
-- pkg: 62 files, 8,491 LOC
-- ai: 7 files, 1,093 LOC
+- pkg: 62 files, 8,495 LOC
+- ai: 8 files, 1,185 LOC
 
 **Patterns found:**
 - T: 1 files

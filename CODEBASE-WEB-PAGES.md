@@ -1,45 +1,18 @@
 # WEB-PAGES Code Index
 
-**Auto-generated:** 2026-02-27
+**Auto-generated:** 2026-02-28
 **Files indexed:** 26
-**Estimated tokens:** ~919
+**Estimated tokens:** ~901
 
 ---
 
-## Decode Legend
-
-**Fields:**
-- `p` = path (relative from project root)
-- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
-- `e` = exports (array of function/class/const names)
-- `i` = imports (array of module paths)
-- `l` = LOC (lines of code)
-- `pt` = patterns (compact codes)
-- `v` = violations (detailed with fix suggestions)
-
-**Pattern Codes:**
-- `T` = tenant-isolation (includes tenantId filter)
-- `S` = soft-delete (uses deletedAt)
-- `L` = pino-logging (uses request.log/server.log)
-- `P` = prisma (uses prisma.*)
-- `C` = client-component (has 'use client')
-
-**Violation Codes:**
-- `F` = inline formatCurrency (not imported from canonical)
-- `H` = hardcoded color (text-[#...] or bg-[rgba...])
-- `L` = console.log in production
-- `A` = : any type annotation
-
-**Domain Codes:**
-- `bnk` = banking, `inv` = invoicing, `acc` = accounting
-- `pln` = planning, `ai` = ai, `pg` = pages
-- `cmp` = components/utils, `pkg` = packages
+<!-- Legend: .claude/code-index-legend.md -->
 
 ---
 
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "_": "2026-02-27",
+  "_": "2026-02-28",
   "n": 26,
   "f": {
     "error": {
@@ -103,16 +76,16 @@
       "i": [
         "react",
         "next/navigation",
+        "next/dynamic",
         "@/lib/api/clients",
         "@/lib/api/invoices",
         "@/lib/api/client-browser",
         "@/lib/utils/currency",
         "@/lib/utils/date",
         "@/components/ui/card",
-        "@/components/ui/button",
-        "@/components/business/ClientForm"
+        "@/components/ui/button"
       ],
-      "l": 348,
+      "l": 353,
       "pt": "C",
       "v": [],
       "d": "pg"
@@ -124,6 +97,7 @@
       ],
       "i": [
         "react",
+        "next/dynamic",
         "@/lib/api/clients",
         "@/components/business/ClientsTable",
         "@/components/ui/button",
@@ -131,10 +105,9 @@
         "@/components/ui/label",
         "@/components/ui/card",
         "lucide-react",
-        "../actions",
-        "@/components/business/ClientForm"
+        "../actions"
       ],
-      "l": 240,
+      "l": 245,
       "pt": "C",
       "v": [],
       "d": "pg"
@@ -147,16 +120,16 @@
       "i": [
         "react",
         "next/navigation",
+        "next/dynamic",
         "next/link",
         "@/lib/api/vendors",
         "@/lib/api/bills",
         "@/lib/api/client-browser",
         "@/lib/utils/currency",
         "@/lib/utils/date",
-        "@/components/ui/card",
-        "@/components/ui/button"
+        "@/components/ui/card"
       ],
-      "l": 381,
+      "l": 386,
       "pt": "C",
       "v": [],
       "d": "pg"
@@ -168,6 +141,7 @@
       ],
       "i": [
         "react",
+        "next/dynamic",
         "@/lib/api/vendors",
         "@/components/business/VendorsTable",
         "@/components/ui/button",
@@ -175,10 +149,9 @@
         "@/components/ui/label",
         "@/components/ui/card",
         "lucide-react",
-        "../actions",
-        "@/components/business/VendorForm"
+        "../actions"
       ],
-      "l": 240,
+      "l": 245,
       "pt": "C",
       "v": [],
       "d": "pg"
@@ -187,7 +160,7 @@
   "d": {
     "pg": {
       "n": 26,
-      "l": 2853
+      "l": 2873
     }
   },
   "p": {
@@ -208,7 +181,7 @@ CODE-INDEX:END -->
 ## Quick Stats
 
 **Files by domain:**
-- pg: 26 files, 2,853 LOC
+- pg: 26 files, 2,873 LOC
 
 **Patterns found:**
 - C: 5 files

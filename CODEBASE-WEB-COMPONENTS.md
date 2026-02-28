@@ -1,46 +1,19 @@
 # WEB-COMPONENTS Code Index
 
-**Auto-generated:** 2026-02-27
-**Files indexed:** 180
-**Estimated tokens:** ~16,901
+**Auto-generated:** 2026-02-28
+**Files indexed:** 183
+**Estimated tokens:** ~17,154
 
 ---
 
-## Decode Legend
-
-**Fields:**
-- `p` = path (relative from project root)
-- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
-- `e` = exports (array of function/class/const names)
-- `i` = imports (array of module paths)
-- `l` = LOC (lines of code)
-- `pt` = patterns (compact codes)
-- `v` = violations (detailed with fix suggestions)
-
-**Pattern Codes:**
-- `T` = tenant-isolation (includes tenantId filter)
-- `S` = soft-delete (uses deletedAt)
-- `L` = pino-logging (uses request.log/server.log)
-- `P` = prisma (uses prisma.*)
-- `C` = client-component (has 'use client')
-
-**Violation Codes:**
-- `F` = inline formatCurrency (not imported from canonical)
-- `H` = hardcoded color (text-[#...] or bg-[rgba...])
-- `L` = console.log in production
-- `A` = : any type annotation
-
-**Domain Codes:**
-- `bnk` = banking, `inv` = invoicing, `acc` = accounting
-- `pln` = planning, `ai` = ai, `pg` = pages
-- `cmp` = components/utils, `pkg` = packages
+<!-- Legend: .claude/code-index-legend.md -->
 
 ---
 
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "_": "2026-02-27",
-  "n": 180,
+  "_": "2026-02-28",
+  "n": 183,
   "f": {
     "gl-account-combobox": {
       "p": "apps/web/src/components/accounting/gl-account-combobox.tsx",
@@ -96,7 +69,7 @@
         "lucide-react",
         "@/lib/api/entities"
       ],
-      "l": 244,
+      "l": 248,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -673,13 +646,11 @@
       "i": [
         "react",
         "next/navigation",
+        "next/dynamic",
         "@/components/ui/button",
-        "./InvoiceForm",
-        "./BillForm",
-        "./PaymentForm",
         "lucide-react"
       ],
-      "l": 79,
+      "l": 90,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -785,6 +756,20 @@
       "v": [],
       "d": "cmp"
     },
+    "SimpleBarChart": {
+      "p": "apps/web/src/components/charts/SimpleBarChart.tsx",
+      "e": [
+        "SimpleBarChart"
+      ],
+      "i": [
+        "react",
+        "@/lib/utils/currency"
+      ],
+      "l": 93,
+      "pt": "C",
+      "v": [],
+      "d": "cmp"
+    },
     "ActionItems": {
       "p": "apps/web/src/components/dashboard/ActionItems.tsx",
       "e": [
@@ -838,14 +823,15 @@
         "BudgetVsActualWidget"
       ],
       "i": [
-        "react",
         "next/link",
         "lucide-react",
         "@/lib/api/dashboard-client",
         "@/lib/utils/currency",
-        "@/lib/api/planning"
+        "@/lib/api/planning",
+        "@/hooks/useWidgetData",
+        "./WidgetPrimitives"
       ],
-      "l": 158,
+      "l": 79,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -870,11 +856,18 @@
       "e": [
         "CircularProgress"
       ],
-      "i": [
-        "recharts"
-      ],
-      "l": 52,
+      "i": [],
+      "l": 55,
       "pt": "C",
+      "v": [],
+      "d": "cmp"
+    },
+    "CircularProgressDynamic": {
+      "p": "apps/web/src/components/dashboard/CircularProgressDynamic.tsx",
+      "e": [],
+      "i": [],
+      "l": 8,
+      "pt": "",
       "v": [],
       "d": "cmp"
     },
@@ -1067,14 +1060,15 @@
         "ExpenseForecastWidget"
       ],
       "i": [
-        "react",
         "next/link",
         "lucide-react",
         "@/lib/api/dashboard-client",
         "@/lib/utils/currency",
-        "@/lib/api/planning"
+        "@/lib/api/planning",
+        "@/hooks/useWidgetData",
+        "./WidgetPrimitives"
       ],
-      "l": 162,
+      "l": 103,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -1085,14 +1079,15 @@
         "GoalProgressWidget"
       ],
       "i": [
-        "react",
         "next/link",
         "lucide-react",
         "@/lib/api/dashboard-client",
         "@/lib/utils/currency",
-        "@/lib/api/planning"
+        "@/lib/api/planning",
+        "@/hooks/useWidgetData",
+        "./WidgetPrimitives"
       ],
-      "l": 178,
+      "l": 100,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -1166,14 +1161,15 @@
         "ProfitLossSummaryWidget"
       ],
       "i": [
-        "react",
         "next/link",
         "lucide-react",
         "@/lib/api/dashboard-client",
         "@/lib/utils/currency",
-        "@akount/types/financial"
+        "@akount/types/financial",
+        "@/hooks/useWidgetData",
+        "./WidgetPrimitives"
       ],
-      "l": 157,
+      "l": 103,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -1274,14 +1270,15 @@
         "TopRevenueClientsWidget"
       ],
       "i": [
-        "react",
         "next/link",
         "lucide-react",
         "@/lib/api/dashboard-client",
         "@/lib/utils/currency",
-        "@akount/types/financial"
+        "@akount/types/financial",
+        "@/hooks/useWidgetData",
+        "./WidgetPrimitives"
       ],
-      "l": 143,
+      "l": 88,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -1292,14 +1289,15 @@
         "TrialBalanceStatusWidget"
       ],
       "i": [
-        "react",
         "next/link",
         "lucide-react",
         "@/lib/api/dashboard-client",
         "@/lib/utils/currency",
-        "@akount/types/financial"
+        "@akount/types/financial",
+        "@/hooks/useWidgetData",
+        "./WidgetPrimitives"
       ],
-      "l": 152,
+      "l": 90,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -1319,6 +1317,24 @@
       ],
       "l": 114,
       "pt": "C",
+      "v": [],
+      "d": "cmp"
+    },
+    "WidgetPrimitives": {
+      "p": "apps/web/src/components/dashboard/WidgetPrimitives.tsx",
+      "e": [
+        "WidgetTitle",
+        "WidgetLoadingSkeleton",
+        "WidgetErrorState",
+        "WidgetEmptyState",
+        "ProgressBar"
+      ],
+      "i": [
+        "@/lib/utils",
+        "lucide-react"
+      ],
+      "l": 236,
+      "pt": "",
       "v": [],
       "d": "cmp"
     },
@@ -1361,12 +1377,12 @@
       ],
       "i": [
         "react",
+        "next/dynamic",
         "lucide-react",
         "@/lib/api/entities",
-        "./EntityCard",
-        "@/components/dashboard/EntityFormSheet"
+        "./EntityCard"
       ],
-      "l": 92,
+      "l": 97,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -1568,15 +1584,15 @@
         "Navbar"
       ],
       "i": [
+        "next/dynamic",
         "@/hooks/use-sync-status",
         "@/providers/entity-provider",
         "./Sidebar",
         "@/components/ui/button",
         "@/components/ui/theme-toggle",
-        "@/components/dashboard/EntityFormSheet",
         "@/lib/api/entities"
       ],
-      "l": 218,
+      "l": 223,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -1661,10 +1677,10 @@
       ],
       "i": [
         "react",
-        "lucide-react",
-        "@/app/onboarding/components/OnboardingWizard"
+        "next/dynamic",
+        "lucide-react"
       ],
-      "l": 51,
+      "l": 56,
       "pt": "C",
       "v": [],
       "d": "cmp"
@@ -3042,8 +3058,8 @@
       "l": 169
     },
     "cmp": {
-      "n": 160,
-      "l": 24225
+      "n": 163,
+      "l": 24208
     },
     "ai": {
       "n": 1,
@@ -3088,6 +3104,7 @@
       "VendorDetailPanel",
       "VendorForm",
       "VendorsTable",
+      "SimpleBarChart",
       "ActionItems",
       "AIActionWidget",
       "BudgetVsActualWidget",
@@ -3182,12 +3199,12 @@ CODE-INDEX:END -->
 
 **Files by domain:**
 - acc: 1 files, 169 LOC
-- cmp: 160 files, 24,225 LOC
+- cmp: 163 files, 24,208 LOC
 - ai: 1 files, 130 LOC
 - bnk: 18 files, 2,697 LOC
 
 **Patterns found:**
-- C: 95 files
+- C: 96 files
 - S: 8 files
 
 **Violations found:**

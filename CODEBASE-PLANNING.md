@@ -1,45 +1,18 @@
 # PLANNING Code Index
 
-**Auto-generated:** 2026-02-27
+**Auto-generated:** 2026-02-28
 **Files indexed:** 40
 **Estimated tokens:** ~3,256
 
 ---
 
-## Decode Legend
-
-**Fields:**
-- `p` = path (relative from project root)
-- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
-- `e` = exports (array of function/class/const names)
-- `i` = imports (array of module paths)
-- `l` = LOC (lines of code)
-- `pt` = patterns (compact codes)
-- `v` = violations (detailed with fix suggestions)
-
-**Pattern Codes:**
-- `T` = tenant-isolation (includes tenantId filter)
-- `S` = soft-delete (uses deletedAt)
-- `L` = pino-logging (uses request.log/server.log)
-- `P` = prisma (uses prisma.*)
-- `C` = client-component (has 'use client')
-
-**Violation Codes:**
-- `F` = inline formatCurrency (not imported from canonical)
-- `H` = hardcoded color (text-[#...] or bg-[rgba...])
-- `L` = console.log in production
-- `A` = : any type annotation
-
-**Domain Codes:**
-- `bnk` = banking, `inv` = invoicing, `acc` = accounting
-- `pln` = planning, `ai` = ai, `pg` = pages
-- `cmp` = components/utils, `pkg` = packages
+<!-- Legend: .claude/code-index-legend.md -->
 
 ---
 
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "_": "2026-02-27",
+  "_": "2026-02-28",
   "n": 40,
   "f": {
     "index": {

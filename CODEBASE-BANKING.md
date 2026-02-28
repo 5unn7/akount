@@ -1,46 +1,19 @@
 # BANKING Code Index
 
-**Auto-generated:** 2026-02-27
-**Files indexed:** 56
-**Estimated tokens:** ~3,612
+**Auto-generated:** 2026-02-28
+**Files indexed:** 57
+**Estimated tokens:** ~3,733
 
 ---
 
-## Decode Legend
-
-**Fields:**
-- `p` = path (relative from project root)
-- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
-- `e` = exports (array of function/class/const names)
-- `i` = imports (array of module paths)
-- `l` = LOC (lines of code)
-- `pt` = patterns (compact codes)
-- `v` = violations (detailed with fix suggestions)
-
-**Pattern Codes:**
-- `T` = tenant-isolation (includes tenantId filter)
-- `S` = soft-delete (uses deletedAt)
-- `L` = pino-logging (uses request.log/server.log)
-- `P` = prisma (uses prisma.*)
-- `C` = client-component (has 'use client')
-
-**Violation Codes:**
-- `F` = inline formatCurrency (not imported from canonical)
-- `H` = hardcoded color (text-[#...] or bg-[rgba...])
-- `L` = console.log in production
-- `A` = : any type annotation
-
-**Domain Codes:**
-- `bnk` = banking, `inv` = invoicing, `acc` = accounting
-- `pln` = planning, `ai` = ai, `pg` = pages
-- `cmp` = components/utils, `pkg` = packages
+<!-- Legend: .claude/code-index-legend.md -->
 
 ---
 
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "_": "2026-02-27",
-  "n": 56,
+  "_": "2026-02-28",
+  "n": 57,
   "f": {
     "index": {
       "p": "apps/api/src/domains/banking/index.ts",
@@ -418,6 +391,24 @@
       "v": [],
       "d": "bnk"
     },
+    "parser-pdf-mistral": {
+      "p": "apps/api/src/domains/banking/services/parser-pdf-mistral.ts",
+      "e": [
+        "parsePDF"
+      ],
+      "i": [
+        "../../../schemas/import",
+        "./parser-shared",
+        "../../ai/services/document-extraction.service",
+        "../../ai/schemas/bank-statement-extraction.schema",
+        "../../../lib/logger",
+        "../../../lib/file-scanner"
+      ],
+      "l": 318,
+      "pt": "",
+      "v": [],
+      "d": "bnk"
+    },
     "parser-pdf": {
       "p": "apps/api/src/domains/banking/services/parser-pdf.ts",
       "e": [
@@ -456,7 +447,7 @@
       "p": "apps/api/src/domains/banking/services/parser.service.ts",
       "e": [],
       "i": [],
-      "l": 11,
+      "l": 12,
       "pt": "",
       "v": [],
       "d": "bnk"
@@ -615,8 +606,8 @@
   },
   "d": {
     "bnk": {
-      "n": 56,
-      "l": 10992
+      "n": 57,
+      "l": 11311
     }
   },
   "p": {
@@ -670,7 +661,7 @@ CODE-INDEX:END -->
 ## Quick Stats
 
 **Files by domain:**
-- bnk: 56 files, 10,992 LOC
+- bnk: 57 files, 11,311 LOC
 
 **Patterns found:**
 - L: 3 files

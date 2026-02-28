@@ -1,46 +1,19 @@
 # AI Code Index
 
-**Auto-generated:** 2026-02-27
-**Files indexed:** 65
-**Estimated tokens:** ~5,973
+**Auto-generated:** 2026-02-28
+**Files indexed:** 73
+**Estimated tokens:** ~7,037
 
 ---
 
-## Decode Legend
-
-**Fields:**
-- `p` = path (relative from project root)
-- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
-- `e` = exports (array of function/class/const names)
-- `i` = imports (array of module paths)
-- `l` = LOC (lines of code)
-- `pt` = patterns (compact codes)
-- `v` = violations (detailed with fix suggestions)
-
-**Pattern Codes:**
-- `T` = tenant-isolation (includes tenantId filter)
-- `S` = soft-delete (uses deletedAt)
-- `L` = pino-logging (uses request.log/server.log)
-- `P` = prisma (uses prisma.*)
-- `C` = client-component (has 'use client')
-
-**Violation Codes:**
-- `F` = inline formatCurrency (not imported from canonical)
-- `H` = hardcoded color (text-[#...] or bg-[rgba...])
-- `L` = console.log in production
-- `A` = : any type annotation
-
-**Domain Codes:**
-- `bnk` = banking, `inv` = invoicing, `acc` = accounting
-- `pln` = planning, `ai` = ai, `pg` = pages
-- `cmp` = components/utils, `pkg` = packages
+<!-- Legend: .claude/code-index-legend.md -->
 
 ---
 
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "_": "2026-02-27",
-  "n": 65,
+  "_": "2026-02-28",
+  "n": 73,
   "f": {
     "errors": {
       "p": "apps/api/src/domains/ai/errors.ts",
@@ -81,7 +54,7 @@
         "../../middleware/rate-limit",
         "./services/je-suggestion.service"
       ],
-      "l": 675,
+      "l": 687,
       "pt": "TSLP",
       "v": [],
       "d": "ai"
@@ -146,6 +119,46 @@
       "v": [],
       "d": "ai"
     },
+    "natural-bookkeeping.routes": {
+      "p": "apps/api/src/domains/ai/routes/natural-bookkeeping.routes.ts",
+      "e": [
+        "naturalBookkeepingRoutes"
+      ],
+      "i": [
+        "fastify",
+        "../services/natural-bookkeeping.service",
+        "../../../middleware/auth",
+        "../../../middleware/tenant",
+        "../../../middleware/validation",
+        "../../../middleware/consent-gate",
+        "../../../middleware/rate-limit",
+        "../errors"
+      ],
+      "l": 124,
+      "pt": "L",
+      "v": [],
+      "d": "ai"
+    },
+    "natural-search.routes": {
+      "p": "apps/api/src/domains/ai/routes/natural-search.routes.ts",
+      "e": [
+        "naturalSearchRoutes"
+      ],
+      "i": [
+        "fastify",
+        "../services/natural-search.service",
+        "../../../middleware/auth",
+        "../../../middleware/tenant",
+        "../../../middleware/validation",
+        "../../../middleware/consent-gate",
+        "../../../middleware/rate-limit",
+        "../errors"
+      ],
+      "l": 125,
+      "pt": "L",
+      "v": [],
+      "d": "ai"
+    },
     "rule-suggestions": {
       "p": "apps/api/src/domains/ai/routes/rule-suggestions.ts",
       "e": [
@@ -199,6 +212,26 @@
         "zod"
       ],
       "l": 64,
+      "pt": "",
+      "v": [],
+      "d": "ai"
+    },
+    "bank-statement-extraction.schema": {
+      "p": "apps/api/src/domains/ai/schemas/bank-statement-extraction.schema.ts",
+      "e": [
+        "TransactionTypeSchema",
+        "BankStatementTransactionSchema",
+        "BankStatementTransaction",
+        "StatementAccountInfoSchema",
+        "StatementAccountInfo",
+        "BankStatementExtractionSchema",
+        "BankStatementExtraction",
+        "validateStatementBalances"
+      ],
+      "i": [
+        "zod"
+      ],
+      "l": 157,
       "pt": "",
       "v": [],
       "d": "ai"
@@ -315,6 +348,38 @@
         "zod"
       ],
       "l": 33,
+      "pt": "",
+      "v": [],
+      "d": "ai"
+    },
+    "natural-bookkeeping.schema": {
+      "p": "apps/api/src/domains/ai/schemas/natural-bookkeeping.schema.ts",
+      "e": [
+        "ParseNaturalLanguageSchema",
+        "ParseNaturalLanguageInput",
+        "ParsedTransactionSchema",
+        "ParsedTransaction",
+        "mistralTransactionFunctionSchema"
+      ],
+      "i": [
+        "zod"
+      ],
+      "l": 73,
+      "pt": "",
+      "v": [],
+      "d": "ai"
+    },
+    "natural-search.schema": {
+      "p": "apps/api/src/domains/ai/schemas/natural-search.schema.ts",
+      "e": [
+        "NaturalSearchQuerySchema",
+        "NaturalSearchQueryInput",
+        "mistralSearchFunctionSchema"
+      ],
+      "i": [
+        "zod"
+      ],
+      "l": 71,
       "pt": "",
       "v": [],
       "d": "ai"
@@ -557,10 +622,11 @@
         "../../../lib/pii-redaction",
         "../schemas/bill-extraction.schema",
         "../schemas/invoice-extraction.schema",
+        "../schemas/bank-statement-extraction.schema",
         "../../../lib/logger",
         "../../../lib/env"
       ],
-      "l": 401,
+      "l": 505,
       "pt": "",
       "v": [],
       "d": "ai"
@@ -642,6 +708,45 @@
       ],
       "l": 387,
       "pt": "TSP",
+      "v": [],
+      "d": "ai"
+    },
+    "natural-bookkeeping.service": {
+      "p": "apps/api/src/domains/ai/services/natural-bookkeeping.service.ts",
+      "e": [
+        "ParsedTransactionData",
+        "ParseResult",
+        "NaturalBookkeepingService"
+      ],
+      "i": [
+        "@akount/db",
+        "./providers/mistral.provider",
+        "./ai-decision-log.service",
+        "../../../lib/logger",
+        "../schemas/natural-bookkeeping.schema"
+      ],
+      "l": 444,
+      "pt": "SP",
+      "v": [],
+      "d": "ai"
+    },
+    "natural-search.service": {
+      "p": "apps/api/src/domains/ai/services/natural-search.service.ts",
+      "e": [
+        "FilterChip",
+        "ParsedSearchFilters",
+        "SearchParseResult",
+        "NaturalSearchService"
+      ],
+      "i": [
+        "@akount/db",
+        "./providers/mistral.provider",
+        "./ai-decision-log.service",
+        "../../../lib/logger",
+        "../schemas/natural-search.schema"
+      ],
+      "l": 558,
+      "pt": "SP",
       "v": [],
       "d": "ai"
     },
@@ -805,12 +910,34 @@
       "i": [
         "bullmq",
         "@akount/db",
+        "crypto",
         "../../../lib/queue/queue-manager",
         "../services/document-extraction.service",
         "../../../lib/logger",
         "../../../lib/env"
       ],
-      "l": 339,
+      "l": 335,
+      "pt": "SP",
+      "v": [],
+      "d": "ai"
+    },
+    "invoice-scan.worker": {
+      "p": "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
+      "e": [
+        "InvoiceScanJobData",
+        "InvoiceScanJobResult",
+        "startInvoiceScanWorker"
+      ],
+      "i": [
+        "bullmq",
+        "@akount/db",
+        "crypto",
+        "../../../lib/queue/queue-manager",
+        "../services/document-extraction.service",
+        "../../../lib/logger",
+        "../../../lib/env"
+      ],
+      "l": 338,
       "pt": "SP",
       "v": [],
       "d": "ai"
@@ -993,8 +1120,8 @@
   },
   "d": {
     "ai": {
-      "n": 43,
-      "l": 9999
+      "n": 51,
+      "l": 12001
     },
     "pg": {
       "n": 22,
@@ -1020,14 +1147,19 @@
       "categorization.service",
       "je-suggestion.service",
       "monthly-close.service",
+      "natural-bookkeeping.service",
+      "natural-search.service",
       "pattern-detection.service",
       "rule.service",
-      "bill-scan.worker"
+      "bill-scan.worker",
+      "invoice-scan.worker"
     ],
     "L": [
       "routes",
       "action.routes",
       "monthly-close",
+      "natural-bookkeeping.routes",
+      "natural-search.routes",
       "rule-suggestions",
       "rules"
     ],
@@ -1044,11 +1176,14 @@
       "insight.service",
       "je-suggestion.service",
       "monthly-close.service",
+      "natural-bookkeeping.service",
+      "natural-search.service",
       "pattern-detection.service",
       "rule-engine.service",
       "rule-suggestion.service",
       "rule.service",
-      "bill-scan.worker"
+      "bill-scan.worker",
+      "invoice-scan.worker"
     ],
     "C": [
       "actions-list-client",
@@ -1079,14 +1214,14 @@ CODE-INDEX:END -->
 ## Quick Stats
 
 **Files by domain:**
-- ai: 43 files, 9,999 LOC
+- ai: 51 files, 12,001 LOC
 - pg: 22 files, 3,226 LOC
 
 **Patterns found:**
 - T: 8 files
-- S: 10 files
-- L: 5 files
-- P: 17 files
+- S: 13 files
+- L: 7 files
+- P: 20 files
 - C: 8 files
 
 **Violations found:**

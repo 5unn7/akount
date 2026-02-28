@@ -1,45 +1,18 @@
 # ACCOUNTING Code Index
 
-**Auto-generated:** 2026-02-27
+**Auto-generated:** 2026-02-28
 **Files indexed:** 107
-**Estimated tokens:** ~6,926
+**Estimated tokens:** ~6,927
 
 ---
 
-## Decode Legend
-
-**Fields:**
-- `p` = path (relative from project root)
-- `d` = domain code (bnk, inv, acc, pln, ai, pg, cmp, pkg)
-- `e` = exports (array of function/class/const names)
-- `i` = imports (array of module paths)
-- `l` = LOC (lines of code)
-- `pt` = patterns (compact codes)
-- `v` = violations (detailed with fix suggestions)
-
-**Pattern Codes:**
-- `T` = tenant-isolation (includes tenantId filter)
-- `S` = soft-delete (uses deletedAt)
-- `L` = pino-logging (uses request.log/server.log)
-- `P` = prisma (uses prisma.*)
-- `C` = client-component (has 'use client')
-
-**Violation Codes:**
-- `F` = inline formatCurrency (not imported from canonical)
-- `H` = hardcoded color (text-[#...] or bg-[rgba...])
-- `L` = console.log in production
-- `A` = : any type annotation
-
-**Domain Codes:**
-- `bnk` = banking, `inv` = invoicing, `acc` = accounting
-- `pln` = planning, `ai` = ai, `pg` = pages
-- `cmp` = components/utils, `pkg` = packages
+<!-- Legend: .claude/code-index-legend.md -->
 
 ---
 
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
-  "_": "2026-02-27",
+  "_": "2026-02-28",
   "n": 107,
   "f": {
     "errors": {
@@ -951,15 +924,15 @@
         "react",
         "next/navigation",
         "lucide-react",
-        "recharts",
         "@/components/ui/button",
         "@/components/ui/input",
         "@/components/ui/label",
         "@/components/ui/checkbox",
         "@akount/ui/business",
-        "@/lib/api/reports-client"
+        "@/lib/api/reports-client",
+        "@/lib/utils/currency"
       ],
-      "l": 338,
+      "l": 310,
       "pt": "C",
       "v": [],
       "d": "acc"
@@ -1015,15 +988,15 @@
         "react",
         "next/navigation",
         "lucide-react",
-        "recharts",
         "@/components/ui/button",
         "@/components/ui/input",
         "@/components/ui/label",
         "@/components/ui/checkbox",
         "@akount/ui/business",
-        "@/lib/api/reports-client"
+        "@/lib/api/reports-client",
+        "@/lib/utils/currency"
       ],
-      "l": 295,
+      "l": 267,
       "pt": "C",
       "v": [],
       "d": "acc"
@@ -1058,7 +1031,6 @@
         "react",
         "next/navigation",
         "lucide-react",
-        "recharts",
         "@/components/ui/button",
         "@/components/ui/input",
         "@/components/ui/label",
@@ -1066,7 +1038,7 @@
         "@/lib/api/reports-client",
         "@/lib/utils/currency"
       ],
-      "l": 235,
+      "l": 290,
       "pt": "C",
       "v": [],
       "d": "acc"
@@ -1157,7 +1129,7 @@
   "d": {
     "acc": {
       "n": 107,
-      "l": 18764
+      "l": 18763
     }
   },
   "p": {
@@ -1239,7 +1211,7 @@ CODE-INDEX:END -->
 ## Quick Stats
 
 **Files by domain:**
-- acc: 107 files, 18,764 LOC
+- acc: 107 files, 18,763 LOC
 
 **Patterns found:**
 - L: 3 files
