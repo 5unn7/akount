@@ -161,7 +161,7 @@ export function RevenueReportView({ initialData, initialParams, error }: Revenue
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="w-full bg-ak-bg-3 rounded-full h-2" role="progressbar" aria-valuenow={Math.round(client.percentage)} aria-valuemin={0} aria-valuemax={100} aria-label={`${client.name} revenue share`}>
+                                        <div className="w-full bg-ak-bg-3 rounded-full h-2" role="progressbar" aria-valuenow={Math.round(client.percentage)} aria-valuemin={0} aria-valuemax={100} aria-label={`${client.clientName} revenue share`}>
                                             <div
                                                 className="bg-ak-green h-2 rounded-full transition-all"
                                                 style={{ width: `${Math.min(client.percentage, 100)}%` }}

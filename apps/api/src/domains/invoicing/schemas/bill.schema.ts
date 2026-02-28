@@ -32,7 +32,7 @@ const CreateBillBaseSchema = z.object({
   subtotal: z.number().int().min(0).max(100_000_000_000), // SECURITY FIX M-1: Max $1B
   taxAmount: z.number().int().min(0).max(100_000_000_000),
   total: z.number().int().min(0).max(100_000_000_000),
-  status: z.enum(['DRAFT', 'PENDING', 'PAID', 'OVERDUE', 'CANCELLED']),
+  status: z.enum(['DRAFT', 'PENDING', 'PAID', 'OVERDUE', 'CANCELLED']).optional().default('DRAFT'), // Default to DRAFT on creation
   notes: z.string().max(1000).optional(),
   lines: z.array(BillLineSchema).min(1),
 });
@@ -57,7 +57,10 @@ export const ListBillsSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
-export type CreateBillInput = z.infer<typeof CreateBillSchema>;
+// Override inferred type to make status optional (Zod applies default at runtime)
+export type CreateBillInput = Omit<z.infer<typeof CreateBillSchema>, 'status'> & {
+  status?: 'DRAFT' | 'PENDING' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+};
 export type UpdateBillInput = z.infer<typeof UpdateBillSchema>;
 export type ListBillsInput = z.infer<typeof ListBillsSchema>;
 export type BillLine = z.infer<typeof BillLineSchema>;

@@ -271,7 +271,7 @@ export function SpendingReportView({ initialData, initialParams, error }: Spendi
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="w-full bg-ak-bg-3 rounded-full h-2" role="progressbar" aria-valuenow={Math.round(cat.percentage)} aria-valuemin={0} aria-valuemax={100} aria-label={`${cat.name} spending share`}>
+                                        <div className="w-full bg-ak-bg-3 rounded-full h-2" role="progressbar" aria-valuenow={Math.round(cat.percentage)} aria-valuemin={0} aria-valuemax={100} aria-label={`${cat.category} spending share`}>
                                             <div
                                                 className="bg-ak-red h-2 rounded-full transition-all"
                                                 style={{ width: `${Math.min(cat.percentage, 100)}%` }}

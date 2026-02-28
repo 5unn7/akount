@@ -287,6 +287,7 @@
 
 | ID | Task | Completed | Source |
 |----|------|-----------|--------|
+| UX-44 | Business: Add invoice/client list CSV export buttons | 2026-02-28 | audit:app-ux |
 | SEC-45 | Add consent gate middleware to bill/invoice scan routes | 2026-02-28 | review:doc-intel-phase1 |
 | SEC-46 | Fix cross-tenant IDOR in worker vendor/client lookups (use entityId not tenantId) | 2026-02-28 | review:doc-intel-phase1 |
 | PERF-27 | Add compound indexes for Client/Vendor name lookups (entityId, name, deletedAt) | 2026-02-28 | review:doc-intel-phase1 |

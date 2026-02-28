@@ -1,4 +1,4 @@
-import { prisma, AIDecisionType, AIRoutingResult } from '@akount/db';
+import { prisma, AIDecisionType, AIRoutingResult, Prisma } from '@akount/db';
 import { createHash } from 'crypto';
 import { logger } from '../../../lib/logger';
 
@@ -89,7 +89,7 @@ export class AIDecisionLogService {
           inputHash,
           modelVersion: input.modelVersion,
           confidence: input.confidence,
-          extractedData: input.extractedData || null,
+          extractedData: input.extractedData ? (input.extractedData as Prisma.InputJsonValue) : Prisma.JsonNull,
           routingResult: input.routingResult,
           aiExplanation: input.aiExplanation,
           consentStatus: input.consentStatus,

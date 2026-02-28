@@ -166,6 +166,11 @@ export const navigationDomains: NavDomain[] = [
         icon: CreditCard,
         href: '/business/payments',
       },
+      {
+        label: 'Credit Notes',
+        icon: ScrollText,
+        href: '/business/credit-notes',
+      },
     ],
   },
 

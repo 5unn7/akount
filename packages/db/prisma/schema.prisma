@@ -21,27 +21,31 @@ datasource db {
 }
 
 model Tenant {
-  id                    String              @id @default(cuid())
-  name                  String
-  region                TenantRegion
-  status                TenantStatus
-  plan                  TenantPlan
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
-  onboardingStatus      OnboardingStatus    @default(NEW)
-  onboardingStep        String?
-  onboardingData        Json?
-  onboardingCompletedAt DateTime?
-  accountingPolicies    AccountingPolicy[]
-  auditLogs             AuditLog[]
-  events                DomainEvent[]
-  entities              Entity[]
-  importBatches         ImportBatch[]
-  memberships           TenantUser[]
-  categories            Category[]
-  onboardingProgress    OnboardingProgress?
-  aiDecisionLogs        AIDecisionLog[]
-  aiConsents            AIConsent[]
+  id                       String              @id @default(cuid())
+  name                     String
+  region                   TenantRegion
+  status                   TenantStatus
+  plan                     TenantPlan
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @updatedAt
+  onboardingStatus         OnboardingStatus    @default(NEW)
+  onboardingStep           String?
+  onboardingData           Json?
+  onboardingCompletedAt    DateTime?
+  // P0-3: AI Budget Controls (prevent runaway costs)
+  aiMonthlyBudgetCents     Int?                // Monthly token spend limit in cents (null = no limit, default: $100 = 10000)
+  aiCurrentMonthSpendCents Int                 @default(0) // Current month's spend in cents
+  aiSpendResetDate         DateTime?           // Last budget reset date (typically first of month)
+  accountingPolicies       AccountingPolicy[]
+  auditLogs                AuditLog[]
+  events                   DomainEvent[]
+  entities                 Entity[]
+  importBatches            ImportBatch[]
+  memberships              TenantUser[]
+  categories               Category[]
+  onboardingProgress       OnboardingProgress?
+  aiDecisionLogs           AIDecisionLog[]
+  aiConsents               AIConsent[]
 }
 
 model TenantUser {
@@ -1367,6 +1371,10 @@ model AIDecisionLog {
   @@index([tenantId, routingResult])
   @@index([inputHash]) // For duplicate detection
   @@index([documentId]) // For linking to source documents
+  // P0-11: Add entity-scoped indexes for faster queries (2s -> <100ms at 100K+ decisions)
+  @@index([entityId, createdAt])
+  @@index([entityId, decisionType, createdAt])
+  @@index([entityId, inputHash])
 }
 
 enum AIDecisionType {

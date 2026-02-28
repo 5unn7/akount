@@ -268,7 +268,7 @@ describe('Invoice Lifecycle Flow', () => {
           subtotal: 100000,
           taxAmount: 13000,
           total: 113000,
-          entityId: ENTITY_ID,
+          // entityId derived from CTX (TenantContext), not from payload
           lines: [
             {
               description: 'Consulting',
@@ -310,9 +310,9 @@ describe('Invoice Lifecycle Flow', () => {
             subtotal: 50000, // Wrong!
             taxAmount: 13000,
             total: 63000,
-            entityId: ENTITY_ID,
+            // entityId derived from CTX (TenantContext), not from payload
             lines: [
-              { description: 'A', quantity: 10, unitPrice: 10000, amount: 100000 },
+              { description: 'A', quantity: 10, unitPrice: 10000, amount: 100000, taxAmount: 0 },
             ],
           },
           CTX,
@@ -334,9 +334,9 @@ describe('Invoice Lifecycle Flow', () => {
             subtotal: 100000,
             taxAmount: 0,
             total: 100000,
-            entityId: ENTITY_ID,
+            // entityId derived from CTX (TenantContext), not from payload
             lines: [
-              { description: 'A', quantity: 1, unitPrice: 100000, amount: 100000 },
+              { description: 'A', quantity: 1, unitPrice: 100000, amount: 100000, taxAmount: 0 },
             ],
           },
           CTX,

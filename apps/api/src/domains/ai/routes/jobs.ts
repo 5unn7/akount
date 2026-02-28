@@ -116,19 +116,20 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
           `data: ${JSON.stringify({ event: 'initial', state, progress, jobId })}\n\n`
         );
 
-        // Set up BullMQ event listeners
-        const queue = queueManager.getQueue(queueName);
+        // Set up BullMQ event listeners using QueueEvents (correct API for job state changes)
+        const queueEvents = queueManager.getQueueEvents(queueName);
 
-        const onProgress = async (updatedJob: Job, progressValue: number | object) => {
-          if (updatedJob.id === jobId) {
+        const onProgress = async (args: { jobId: string; data: number | object }, id: string) => {
+          if (args.jobId === jobId) {
             reply.raw.write(
-              `data: ${JSON.stringify({ event: 'progress', progress: progressValue, jobId })}\n\n`
+              `data: ${JSON.stringify({ event: 'progress', progress: args.data, jobId })}\n\n`
             );
           }
         };
 
-        const onCompleted = async (completedJob: Job, result: unknown) => {
-          if (completedJob.id === jobId) {
+        const onCompleted = async (args: { jobId: string; returnvalue: string; prev?: string }, id: string) => {
+          if (args.jobId === jobId) {
+            const result = JSON.parse(args.returnvalue);
             reply.raw.write(
               `data: ${JSON.stringify({ event: 'completed', result, jobId })}\n\n`
             );
@@ -136,37 +137,37 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
           }
         };
 
-        const onFailed = async (failedJob: Job | undefined, error: Error) => {
-          if (failedJob?.id === jobId) {
+        const onFailed = async (args: { jobId: string; failedReason: string; prev?: string }, id: string) => {
+          if (args.jobId === jobId) {
             reply.raw.write(
-              `data: ${JSON.stringify({ event: 'failed', error: error.message, jobId })}\n\n`
+              `data: ${JSON.stringify({ event: 'failed', error: args.failedReason, jobId })}\n\n`
             );
             reply.raw.end();
           }
         };
 
-        const onActive = async (activeJob: Job) => {
-          if (activeJob.id === jobId) {
+        const onActive = async (args: { jobId: string; prev?: string }, id: string) => {
+          if (args.jobId === jobId) {
             reply.raw.write(
               `data: ${JSON.stringify({ event: 'active', jobId })}\n\n`
             );
           }
         };
 
-        const onStalled = async (stalledJobId: string) => {
-          if (stalledJobId === jobId) {
+        const onStalled = async (args: { jobId: string }, id: string) => {
+          if (args.jobId === jobId) {
             reply.raw.write(
               `data: ${JSON.stringify({ event: 'stalled', jobId })}\n\n`
             );
           }
         };
 
-        // Attach listeners
-        queue.on('progress', onProgress);
-        queue.on('completed', onCompleted);
-        queue.on('failed', onFailed);
-        queue.on('active', onActive);
-        queue.on('stalled', onStalled);
+        // Attach listeners to QueueEvents (not Queue)
+        queueEvents.on('progress', onProgress);
+        queueEvents.on('completed', onCompleted);
+        queueEvents.on('failed', onFailed);
+        queueEvents.on('active', onActive);
+        queueEvents.on('stalled', onStalled);
 
         // Send heartbeat every 15 seconds to keep connection alive
         heartbeatInterval = setInterval(() => {
@@ -183,12 +184,12 @@ export async function jobStreamRoutes(fastify: FastifyInstance) {
             clearInterval(heartbeatInterval);
           }
 
-          // Remove event listeners
-          queue.off('progress', onProgress);
-          queue.off('completed', onCompleted);
-          queue.off('failed', onFailed);
-          queue.off('active', onActive);
-          queue.off('stalled', onStalled);
+          // Remove event listeners from QueueEvents
+          queueEvents.off('progress', onProgress);
+          queueEvents.off('completed', onCompleted);
+          queueEvents.off('failed', onFailed);
+          queueEvents.off('active', onActive);
+          queueEvents.off('stalled', onStalled);
 
           if (!reply.raw.destroyed) {
             reply.raw.end();

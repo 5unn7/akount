@@ -59,12 +59,14 @@ export async function naturalBookkeepingRoutes(fastify: FastifyInstance) {
     },
     async (request, reply) => {
       const { text, entityId } = request.body;
+      const userId = request.userId!;
       const tenantId = request.tenantId!;
       const consentStatus = request.aiConsentGranted ? 'granted' : 'not_granted';
 
       try {
         const result = await service.parseNaturalLanguage(
           text,
+          userId,
           tenantId,
           entityId,
           consentStatus

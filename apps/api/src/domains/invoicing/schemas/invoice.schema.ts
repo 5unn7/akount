@@ -29,7 +29,7 @@ const CreateInvoiceBaseSchema = z.object({
   subtotal: z.number().int().min(0).max(100_000_000_000), // SECURITY FIX M-1: Max $1B
   taxAmount: z.number().int().min(0).max(100_000_000_000),
   total: z.number().int().min(0).max(100_000_000_000),
-  status: z.enum(['DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCELLED']),
+  status: z.enum(['DRAFT', 'SENT', 'PAID', 'OVERDUE', 'CANCELLED']).optional().default('DRAFT'), // Default to DRAFT on creation
   notes: z.string().max(1000).optional(),
   lines: z.array(InvoiceLineSchema).min(1),
 });
@@ -54,7 +54,10 @@ export const ListInvoicesSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
-export type CreateInvoiceInput = z.infer<typeof CreateInvoiceSchema>;
+// Override inferred type to make status optional (Zod applies default at runtime)
+export type CreateInvoiceInput = Omit<z.infer<typeof CreateInvoiceSchema>, 'status'> & {
+  status?: 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED';
+};
 export type UpdateInvoiceInput = z.infer<typeof UpdateInvoiceSchema>;
 export type ListInvoicesInput = z.infer<typeof ListInvoicesSchema>;
 export type InvoiceLine = z.infer<typeof InvoiceLineSchema>;

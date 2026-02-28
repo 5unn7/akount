@@ -184,8 +184,8 @@ export class MistralProvider implements AIProvider {
       } else if (Array.isArray(rawContent)) {
         // Extract text from content chunks
         content = rawContent
-          .filter((chunk: { type: string; text?: string }) => chunk.type === 'text')
-          .map((chunk: { text?: string }) => chunk.text || '')
+          .filter((chunk) => typeof chunk === 'object' && chunk !== null && 'type' in chunk && chunk.type === 'text')
+          .map((chunk) => (typeof chunk === 'object' && chunk !== null && 'text' in chunk && typeof chunk.text === 'string' ? chunk.text : ''))
           .join('');
       } else {
         content = '';

@@ -141,7 +141,8 @@ describe('Bill Lifecycle Flow', () => {
           subtotal: 50000,
           taxAmount: 6500,
           total: 56500,
-          entityId: ENTITY_ID,
+          // status defaults to 'DRAFT' (schema default)
+          // entityId derived from CTX (TenantContext), not from payload
           lines: [
             {
               description: 'Office Supplies',
@@ -182,7 +183,8 @@ describe('Bill Lifecycle Flow', () => {
             subtotal: 99999, // Wrong!
             taxAmount: 6500,
             total: 106499,
-            entityId: ENTITY_ID,
+            // status defaults to 'DRAFT' (schema default)
+            // entityId derived from CTX (TenantContext), not from payload
             lines: [
               {
                 description: 'Item',
@@ -212,7 +214,7 @@ describe('Bill Lifecycle Flow', () => {
             subtotal: 50000,
             taxAmount: 6500,
             total: 56500,
-            entityId: ENTITY_ID,
+            // entityId derived from CTX (TenantContext), not from payload
             lines: [
               {
                 description: 'Item',

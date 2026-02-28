@@ -1,5 +1,7 @@
 import { MistralProvider } from './providers/mistral.provider';
 import { AIDecisionLogService } from './ai-decision-log.service';
+import { AIBudgetService } from './ai-budget.service';
+import { checkConsent } from '../../system/services/ai-consent.service';
 import { redactImage, redactText } from '../../../lib/pii-redaction';
 import {
   analyzePromptInjection,
@@ -12,7 +14,6 @@ import { InvoiceExtractionSchema, validateInvoiceTotals, type InvoiceExtraction 
 import { BankStatementExtractionSchema, validateStatementBalances, type BankStatementExtraction } from '../schemas/bank-statement-extraction.schema';
 import { logger } from '../../../lib/logger';
 import { env } from '../../../lib/env';
-import crypto from 'crypto';
 
 /**
  * Document Extraction Service
@@ -40,6 +41,8 @@ import crypto from 'crypto';
 export const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export interface ExtractionOptions {
+  /** User ID for consent verification */
+  userId: string;
   /** Tenant ID for logging and context */
   tenantId: string;
   /** Entity ID for business context (optional) */
@@ -68,6 +71,7 @@ export interface ExtractionResult<T> {
 export class DocumentExtractionService {
   private mistralProvider: MistralProvider;
   private decisionLogService: AIDecisionLogService;
+  private budgetService: AIBudgetService;
 
   constructor() {
     const apiKey = env.MISTRAL_API_KEY;
@@ -76,6 +80,7 @@ export class DocumentExtractionService {
     }
     this.mistralProvider = new MistralProvider(apiKey);
     this.decisionLogService = new AIDecisionLogService();
+    this.budgetService = new AIBudgetService();
   }
 
   /**
@@ -97,6 +102,28 @@ export class DocumentExtractionService {
     options: ExtractionOptions
   ): Promise<ExtractionResult<BillExtraction>> {
     const startTime = Date.now();
+
+    // P0-4: Defense-in-depth consent check (service layer)
+    const hasConsent = await checkConsent(options.userId, options.tenantId, 'autoCreateBills');
+    if (!hasConsent) {
+      logger.warn(
+        { userId: options.userId, tenantId: options.tenantId, feature: 'bill-extraction' },
+        'Service-layer consent check failed: Bill auto-creation not enabled'
+      );
+      throw new Error('AI bill extraction is not enabled. Enable in Settings > AI Preferences.');
+    }
+
+    // P0-3: Check AI budget before making expensive AI call
+    const budgetCheck = await this.budgetService.checkBudget(options.tenantId, 2000); // Estimate 2K tokens for vision
+    if (!budgetCheck.allowed) {
+      logger.warn(
+        { tenantId: options.tenantId, budgetStatus: budgetCheck.status },
+        'AI budget exceeded for bill extraction'
+      );
+      const error = new Error(budgetCheck.reason || 'AI budget exceeded') as Error & { statusCode?: number };
+      error.statusCode = 402; // Payment Required
+      throw error;
+    }
 
     try {
       // Step 0: File Size Validation (SEC-44)
@@ -184,6 +211,11 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
         tokensUsed: extractionResult.usage?.totalTokens,
         processingTimeMs: Date.now() - startTime,
       });
+
+      // P0-3: Track AI spend for budget enforcement
+      if (extractionResult.usage?.totalTokens) {
+        await this.budgetService.trackSpend(options.tenantId, extractionResult.usage.totalTokens);
+      }
 
       // Step 5: Redact PII from OCR text (P0-5)
       // Even though image was redacted, OCR text might contain PII if redaction missed something
@@ -280,6 +312,28 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
   ): Promise<ExtractionResult<InvoiceExtraction>> {
     const startTime = Date.now();
 
+    // P0-4: Defense-in-depth consent check (service layer)
+    const hasConsent = await checkConsent(options.userId, options.tenantId, 'autoCreateInvoices');
+    if (!hasConsent) {
+      logger.warn(
+        { userId: options.userId, tenantId: options.tenantId, feature: 'invoice-extraction' },
+        'Service-layer consent check failed: Invoice auto-creation not enabled'
+      );
+      throw new Error('AI invoice extraction is not enabled. Enable in Settings > AI Preferences.');
+    }
+
+    // P0-3: Check AI budget before making expensive AI call
+    const budgetCheck = await this.budgetService.checkBudget(options.tenantId, 2000);
+    if (!budgetCheck.allowed) {
+      logger.warn(
+        { tenantId: options.tenantId, budgetStatus: budgetCheck.status },
+        'AI budget exceeded for invoice extraction'
+      );
+      const error = new Error(budgetCheck.reason || 'AI budget exceeded') as Error & { statusCode?: number };
+      error.statusCode = 402;
+      throw error;
+    }
+
     try {
       // Step 0: File Size Validation (SEC-44)
       if (imageBuffer.length > MAX_FILE_SIZE_BYTES) {
@@ -365,6 +419,11 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
         tokensUsed: extractionResult.usage?.totalTokens,
         processingTimeMs: Date.now() - startTime,
       });
+
+      // P0-3: Track AI spend for budget enforcement
+      if (extractionResult.usage?.totalTokens) {
+        await this.budgetService.trackSpend(options.tenantId, extractionResult.usage.totalTokens);
+      }
 
       // Step 4: Redact PII from OCR text (P0-5)
       const ocrText = extracted.ocrText || '';
@@ -463,6 +522,29 @@ Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
   ): Promise<ExtractionResult<BankStatementExtraction>> {
     const startTime = Date.now();
 
+    // P0-4: Defense-in-depth consent check (service layer)
+    // Note: Statement extraction uses autoMatchTransactions consent
+    const hasConsent = await checkConsent(options.userId, options.tenantId, 'autoMatchTransactions');
+    if (!hasConsent) {
+      logger.warn(
+        { userId: options.userId, tenantId: options.tenantId, feature: 'statement-extraction' },
+        'Service-layer consent check failed: Bank statement extraction not enabled'
+      );
+      throw new Error('AI statement extraction is not enabled. Enable in Settings > AI Preferences.');
+    }
+
+    // P0-3: Check AI budget before making expensive AI call
+    const budgetCheck = await this.budgetService.checkBudget(options.tenantId, 2000);
+    if (!budgetCheck.allowed) {
+      logger.warn(
+        { tenantId: options.tenantId, budgetStatus: budgetCheck.status },
+        'AI budget exceeded for statement extraction'
+      );
+      const error = new Error(budgetCheck.reason || 'AI budget exceeded') as Error & { statusCode?: number };
+      error.statusCode = 402;
+      throw error;
+    }
+
     try {
       // Step 0: File Size Validation (SEC-44)
       if (pdfBuffer.length > MAX_FILE_SIZE_BYTES) {
@@ -522,26 +604,28 @@ Return JSON matching BankStatementExtractionSchema.
       const extracted = extractionResult.data;
 
       // Step 3: Log token usage to AIDecisionLog (P0-2)
-      if (extractionResult.usage) {
-        const inputHash = crypto
-          .createHash('sha256')
-          .update(piiResult.redactedBuffer)
-          .digest('hex');
+      await this.decisionLogService.logDecision({
+        tenantId: options.tenantId,
+        entityId: options.entityId,
+        decisionType: 'STATEMENT_EXTRACTION',
+        input: piiResult.redactedBuffer,
+        modelVersion: extractionResult.model,
+        confidence: extracted.confidence,
+        extractedData: {
+          institutionName: extracted.accountInfo.institutionName,
+          accountType: extracted.accountInfo.accountType,
+          transactionCount: extracted.transactions.length,
+          periodStart: extracted.accountInfo.periodStart,
+          periodEnd: extracted.accountInfo.periodEnd,
+        },
+        routingResult: 'AUTO_CREATED',
+        tokensUsed: extractionResult.usage?.totalTokens,
+        processingTimeMs: Date.now() - startTime,
+      });
 
-        await this.decisionLogService.logDecision({
-          tenantId: options.tenantId,
-          userId: options.tenantId,
-          entityId: options.entityId,
-          feature: 'document-extraction-statement',
-          model: extractionResult.model,
-          inputHash,
-          tokensUsed: extractionResult.usage.totalTokens,
-          metadata: {
-            confidence: extracted.confidence,
-            institutionName: extracted.accountInfo.institutionName,
-            transactionCount: extracted.transactions.length,
-          },
-        });
+      // P0-3: Track AI spend for budget enforcement
+      if (extractionResult.usage?.totalTokens) {
+        await this.budgetService.trackSpend(options.tenantId, extractionResult.usage.totalTokens);
       }
 
       // Step 4: Redact PII from OCR text (P0-5)

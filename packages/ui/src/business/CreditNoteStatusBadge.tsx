@@ -1,6 +1,7 @@
 import { Badge } from '../primitives/Badge';
 import type { BadgeVariant } from '../primitives/Badge';
-import type { CreditNoteStatus } from '@akount/db';
+
+type CreditNoteStatus = 'DRAFT' | 'APPROVED' | 'APPLIED' | 'VOIDED';
 
 const CREDIT_NOTE_STATUS_CONFIG: Record<CreditNoteStatus, { label: string; variant: BadgeVariant }> = {
     DRAFT: { label: 'Draft', variant: 'default' },

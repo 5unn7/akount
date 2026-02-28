@@ -78,11 +78,11 @@ export function InvoiceForm({ open, onOpenChange, clients, onSuccess, editInvoic
   // Fetch active tax rates when form opens (browser-side)
   useEffect(() => {
     if (!open) return;
-    apiFetch<Array<{ id: string; code: string; name: string; rate: number }>>(
+    apiFetch<Array<{ id: string; code: string; name: string; rateBasisPoints: number }>>(
       '/api/accounting/tax-rates?isActive=true'
     )
       .then((rates) =>
-        setTaxRates(rates.map((r) => ({ id: r.id, code: r.code, name: r.name, rate: r.rate })))
+        setTaxRates(rates.map((r) => ({ id: r.id, code: r.code, name: r.name, rateBasisPoints: r.rateBasisPoints })))
       )
       .catch(() => setTaxRates([])); // Graceful fallback — manual tax entry
   }, [open]);

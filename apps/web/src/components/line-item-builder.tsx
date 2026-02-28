@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
 import { formatCents, parseCentsInput } from '@/lib/utils/currency';
+import { formatTaxRate } from '@/lib/utils/tax';
 
 /**
  * Line Item Builder — Reusable component for invoice/bill line items.
@@ -38,7 +39,7 @@ export interface TaxRateOption {
   id: string;
   code: string;
   name: string;
-  rate: number; // 0-1 decimal (0.13 = 13%)
+  rateBasisPoints: number; // FIN-32: basis points (1300 = 13%, 500 = 5%)
 }
 
 interface LineItemBuilderProps {
@@ -50,8 +51,14 @@ interface LineItemBuilderProps {
 
 // DRY-21: formatCents and parseCentsInput now imported from @/lib/utils/currency
 
-function calcTaxAmount(amount: number, rate: number): number {
-  return Math.round(amount * rate);
+/**
+ * Calculate tax amount from line amount and tax rate in basis points
+ * @param amount - Line amount in cents
+ * @param rateBasisPoints - Tax rate in basis points (1300 = 13%)
+ * @returns Tax amount in cents
+ */
+function calcTaxAmount(amount: number, rateBasisPoints: number): number {
+  return Math.round((amount * rateBasisPoints) / 10000);
 }
 
 const EMPTY_LINE: LineItem = {
@@ -78,7 +85,7 @@ export function LineItemBuilder({
     (taxRateId: string | undefined): number | null => {
       if (!taxRateId) return null;
       const found = taxRates.find((r) => r.id === taxRateId);
-      return found ? found.rate : null;
+      return found ? found.rateBasisPoints : null;
     },
     [taxRates]
   );
@@ -211,7 +218,7 @@ export function LineItemBuilder({
                 <SelectItem value={NO_TAX_VALUE}>No tax</SelectItem>
                 {taxRates.map((rate) => (
                   <SelectItem key={rate.id} value={rate.id}>
-                    {rate.code} ({(rate.rateBasisPoints / 100).toFixed(rate.rateBasisPoints % 100 === 0 ? 0 : 1)}%)
+                    {rate.code} ({formatTaxRate(rate.rateBasisPoints, rate.rateBasisPoints % 100 === 0 ? 0 : 1)})
                   </SelectItem>
                 ))}
               </SelectContent>

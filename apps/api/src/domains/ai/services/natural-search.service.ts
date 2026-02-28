@@ -1,6 +1,8 @@
 import { prisma } from '@akount/db';
 import { MistralProvider } from './providers/mistral.provider';
 import { AIDecisionLogService } from './ai-decision-log.service';
+import { AIBudgetService } from './ai-budget.service';
+import { checkConsent } from '../../system/services/ai-consent.service';
 import { logger } from '../../../lib/logger';
 import { mistralSearchFunctionSchema } from '../schemas/natural-search.schema';
 
@@ -49,6 +51,7 @@ export interface SearchParseResult {
 export class NaturalSearchService {
   private mistralProvider: MistralProvider;
   private decisionLogService: AIDecisionLogService;
+  private budgetService: AIBudgetService;
 
   constructor() {
     const mistralApiKey = process.env.MISTRAL_API_KEY;
@@ -58,12 +61,14 @@ export class NaturalSearchService {
 
     this.mistralProvider = new MistralProvider(mistralApiKey);
     this.decisionLogService = new AIDecisionLogService();
+    this.budgetService = new AIBudgetService();
   }
 
   /**
    * Parse natural language search query into filter parameters.
    *
    * @param query - Natural language search query
+   * @param userId - User ID (for consent verification)
    * @param tenantId - Tenant ID (for isolation and category lookup)
    * @param entityId - Entity ID (business context)
    * @param consentStatus - Consent status from middleware
@@ -73,11 +78,34 @@ export class NaturalSearchService {
    */
   async parseSearchQuery(
     query: string,
+    userId: string,
     tenantId: string,
     entityId: string,
     consentStatus?: string
   ): Promise<SearchParseResult> {
     const startTime = Date.now();
+
+    // P0-4: Defense-in-depth consent check (service layer)
+    const hasConsent = await checkConsent(userId, tenantId, 'autoCategorize');
+    if (!hasConsent) {
+      logger.warn(
+        { userId, tenantId, feature: 'natural-search' },
+        'Service-layer consent check failed: AI search not enabled'
+      );
+      throw new Error('AI natural language search is not enabled. Enable in Settings > AI Preferences.');
+    }
+
+    // P0-3: Check AI budget before making AI call
+    const budgetCheck = await this.budgetService.checkBudget(tenantId, 500);
+    if (!budgetCheck.allowed) {
+      logger.warn(
+        { tenantId, budgetStatus: budgetCheck.status },
+        'AI budget exceeded for natural search'
+      );
+      const error = new Error(budgetCheck.reason || 'AI budget exceeded') as Error & { statusCode?: number };
+      error.statusCode = 402;
+      throw error;
+    }
 
     try {
       // Call Mistral with function calling to extract structured filters
@@ -214,7 +242,7 @@ export class NaturalSearchService {
       await this.decisionLogService.logDecision({
         tenantId,
         entityId,
-        decisionType: 'NL_SEARCH_PARSE',
+        decisionType: 'NL_SEARCH',
         input: query,
         modelVersion: 'mistral-large-latest',
         confidence,
@@ -223,7 +251,13 @@ export class NaturalSearchService {
         aiExplanation: explanation,
         consentStatus,
         processingTimeMs,
+        tokensUsed: response.usage?.totalTokens,
       });
+
+      // P0-3: Track AI spend for budget enforcement
+      if (response.usage?.totalTokens) {
+        await this.budgetService.trackSpend(tenantId, response.usage.totalTokens);
+      }
 
       logger.info(
         {
@@ -256,7 +290,7 @@ export class NaturalSearchService {
       await this.decisionLogService.logDecision({
         tenantId,
         entityId,
-        decisionType: 'NL_SEARCH_PARSE',
+        decisionType: 'NL_SEARCH',
         input: query,
         modelVersion: 'mistral-large-latest',
         confidence: 0,

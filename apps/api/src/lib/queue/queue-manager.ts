@@ -1,4 +1,4 @@
-import { Queue, QueueOptions, ConnectionOptions } from 'bullmq';
+import { Queue, QueueEvents, QueueOptions, ConnectionOptions } from 'bullmq';
 import Redis from 'ioredis';
 import { env } from '../env';
 import { logger } from '../logger';
@@ -223,6 +223,7 @@ class RedisRateLimiter {
  */
 class QueueManagerClass {
   private queues: Map<QueueName, Queue> = new Map();
+  private queueEvents: Map<QueueName, QueueEvents> = new Map();
   private initialized = false;
   private rateLimiter = new RedisRateLimiter();
 
@@ -251,9 +252,14 @@ class QueueManagerClass {
           ...DEFAULT_QUEUE_OPTIONS,
         });
 
-        this.queues.set(name, queue);
+        const queueEvents = new QueueEvents(name, {
+          connection: DEFAULT_QUEUE_OPTIONS.connection,
+        });
 
-        logger.info({ queueName: name }, 'Queue initialized');
+        this.queues.set(name, queue);
+        this.queueEvents.set(name, queueEvents);
+
+        logger.info({ queueName: name }, 'Queue and QueueEvents initialized');
       }
 
       this.initialized = true;
@@ -291,6 +297,24 @@ class QueueManagerClass {
     }
 
     return queue;
+  }
+
+  /**
+   * Get a QueueEvents instance for listening to job state changes.
+   *
+   * @throws {Error} If queue not found or manager not initialized
+   */
+  getQueueEvents(name: QueueName): QueueEvents {
+    if (!this.initialized) {
+      throw new Error('QueueManager not initialized. Call initialize() first.');
+    }
+
+    const queueEvents = this.queueEvents.get(name);
+    if (!queueEvents) {
+      throw new Error(`QueueEvents for "${name}" not found`);
+    }
+
+    return queueEvents;
   }
 
   /**
@@ -364,7 +388,17 @@ class QueueManagerClass {
       }
     }
 
+    for (const [name, queueEvents] of this.queueEvents.entries()) {
+      try {
+        await queueEvents.close();
+        logger.info({ queueName: name }, 'QueueEvents closed');
+      } catch (error: unknown) {
+        logger.error({ err: error, queueName: name }, 'Error closing QueueEvents');
+      }
+    }
+
     this.queues.clear();
+    this.queueEvents.clear();
     this.initialized = false;
 
     // Close rate limiter Redis connection

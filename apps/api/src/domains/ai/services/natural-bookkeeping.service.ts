@@ -1,6 +1,8 @@
 import { prisma } from '@akount/db';
 import { MistralProvider } from './providers/mistral.provider';
 import { AIDecisionLogService } from './ai-decision-log.service';
+import { AIBudgetService } from './ai-budget.service';
+import { checkConsent } from '../../system/services/ai-consent.service';
 import { logger } from '../../../lib/logger';
 import { mistralTransactionFunctionSchema } from '../schemas/natural-bookkeeping.schema';
 
@@ -41,6 +43,7 @@ export interface ParseResult {
 export class NaturalBookkeepingService {
   private mistralProvider: MistralProvider;
   private decisionLogService: AIDecisionLogService;
+  private budgetService: AIBudgetService;
 
   constructor() {
     const mistralApiKey = process.env.MISTRAL_API_KEY;
@@ -50,12 +53,14 @@ export class NaturalBookkeepingService {
 
     this.mistralProvider = new MistralProvider(mistralApiKey);
     this.decisionLogService = new AIDecisionLogService();
+    this.budgetService = new AIBudgetService();
   }
 
   /**
    * Parse natural language input into structured transaction data.
    *
    * @param text - Natural language input
+   * @param userId - User ID (for consent verification)
    * @param tenantId - Tenant ID (for isolation)
    * @param entityId - Entity ID (business context)
    * @param consentStatus - Consent status from middleware
@@ -65,11 +70,34 @@ export class NaturalBookkeepingService {
    */
   async parseNaturalLanguage(
     text: string,
+    userId: string,
     tenantId: string,
     entityId: string,
     consentStatus?: string
   ): Promise<ParseResult> {
     const startTime = Date.now();
+
+    // P0-4: Defense-in-depth consent check (service layer)
+    const hasConsent = await checkConsent(userId, tenantId, 'autoCategorize');
+    if (!hasConsent) {
+      logger.warn(
+        { userId, tenantId, feature: 'natural-bookkeeping' },
+        'Service-layer consent check failed: AI bookkeeping not enabled'
+      );
+      throw new Error('AI natural language bookkeeping is not enabled. Enable in Settings > AI Preferences.');
+    }
+
+    // P0-3: Check AI budget before making AI call
+    const budgetCheck = await this.budgetService.checkBudget(tenantId, 500);
+    if (!budgetCheck.allowed) {
+      logger.warn(
+        { tenantId, budgetStatus: budgetCheck.status },
+        'AI budget exceeded for natural bookkeeping'
+      );
+      const error = new Error(budgetCheck.reason || 'AI budget exceeded') as Error & { statusCode?: number };
+      error.statusCode = 402;
+      throw error;
+    }
 
     try {
       // Call Mistral with function calling to extract structured data
@@ -162,7 +190,13 @@ export class NaturalBookkeepingService {
         aiExplanation: explanation,
         consentStatus,
         processingTimeMs,
+        tokensUsed: response.usage?.totalTokens,
       });
+
+      // P0-3: Track AI spend for budget enforcement
+      if (response.usage?.totalTokens) {
+        await this.budgetService.trackSpend(tenantId, response.usage.totalTokens);
+      }
 
       logger.info(
         {

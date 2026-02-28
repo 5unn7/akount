@@ -59,12 +59,14 @@ export async function naturalSearchRoutes(fastify: FastifyInstance) {
     },
     async (request, reply) => {
       const { query, entityId } = request.body;
+      const userId = request.userId!;
       const tenantId = request.tenantId!;
       const consentStatus = request.aiConsentGranted ? 'granted' : 'not_granted';
 
       try {
         const result = await service.parseSearchQuery(
           query,
+          userId,
           tenantId,
           entityId,
           consentStatus

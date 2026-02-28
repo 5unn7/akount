@@ -80,6 +80,20 @@ async function processInvoiceScan(job: Job<InvoiceScanJobData>): Promise<Invoice
   // Update progress: 10%
   await job.updateProgress(10);
 
+  // P0-9: Entity ownership validation - prevent cross-tenant pollution
+  const entity = await prisma.entity.findFirst({
+    where: { id: entityId, tenantId },
+    select: { id: true },
+  });
+
+  if (!entity) {
+    logger.error(
+      { jobId: job.id, entityId, tenantId },
+      'Entity ownership validation failed: Entity does not belong to tenant'
+    );
+    throw new Error(`Entity ${entityId} not found or access denied for tenant ${tenantId}`);
+  }
+
   try {
     // Decode base64 image
     const imageBuffer = Buffer.from(imageBase64, 'base64');
@@ -98,6 +112,7 @@ async function processInvoiceScan(job: Job<InvoiceScanJobData>): Promise<Invoice
     // Extract invoice data via DocumentExtractionService (DEV-235)
     const extractionService = new DocumentExtractionService();
     const extraction = await extractionService.extractInvoice(imageBuffer, {
+      userId,
       tenantId,
       entityId,
     });
@@ -114,6 +129,39 @@ async function processInvoiceScan(job: Job<InvoiceScanJobData>): Promise<Invoice
 
     // Update progress: 50%
     await job.updateProgress(50);
+
+    // P0-6: Idempotency check - prevent duplicate invoice creation on retry
+    const existingDecision = await prisma.aIDecisionLog.findFirst({
+      where: {
+        inputHash,
+        decisionType: 'INVOICE_EXTRACTION',
+        tenantId,
+      },
+      select: {
+        id: true,
+        documentId: true,
+        createdAt: true,
+      },
+    });
+
+    if (existingDecision && existingDecision.documentId) {
+      logger.info(
+        {
+          jobId: job.id,
+          existingDecisionId: existingDecision.id,
+          existingInvoiceId: existingDecision.documentId,
+          originalCreatedAt: existingDecision.createdAt,
+        },
+        'Invoice already processed (idempotency check) - skipping creation'
+      );
+
+      return {
+        confidence: extraction.confidence,
+        status: 'ALREADY_PROCESSED',
+        invoiceId: existingDecision.documentId,
+        decisionLogId: existingDecision.id,
+      };
+    }
 
     // Determine routing based on confidence
     let invoiceStatus: InvoiceStatus;
@@ -172,6 +220,7 @@ async function processInvoiceScan(job: Job<InvoiceScanJobData>): Promise<Invoice
     let clientCreated = false;
 
     if (!client) {
+      // P0-8: TODO - Replace with clientService.findOrCreate() (P1-18)
       // Create new client
       client = await prisma.client.create({
         data: {
@@ -194,6 +243,7 @@ async function processInvoiceScan(job: Job<InvoiceScanJobData>): Promise<Invoice
     // Update progress: 75%
     await job.updateProgress(75);
 
+    // P0-8: TODO - Replace with invoiceService.create() (consolidates validation, P1-18)
     // Create Invoice
     const invoice = await prisma.invoice.create({
       data: {
