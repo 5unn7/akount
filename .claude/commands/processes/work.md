@@ -200,6 +200,12 @@ else:
 
 **3. Implement** — Follow existing patterns
 
+**3a. Capture Decisions** (if applicable) — If making non-trivial implementation choice:
+- Multiple ways to solve the problem → document why you chose one
+- Trade-offs between approaches → capture alternatives considered
+- Use `.claude/decisions/TEMPLATE.md` to create decision file
+- Only for significant choices, not routine coding
+
 **4. Test** — Run tests after implementation
 
 **5. Verify** — Check success criteria

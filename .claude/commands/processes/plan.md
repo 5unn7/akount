@@ -111,6 +111,30 @@ Before finalizing the plan:
 
 Reference the Domain Adjacency Map in `.claude/rules/product-thinking.md`.
 
+### Capture Key Decisions
+
+**If choosing between 2+ valid approaches**, create a decision entry:
+
+```bash
+# Use template
+cp .claude/decisions/TEMPLATE.md .claude/decisions/$(date +%Y-%m-%d)-<short-description>.md
+```
+
+**When to capture:**
+- Architecture decisions (service layer vs direct Prisma, state management patterns)
+- Schema design choices (relation types, cascade rules, soft delete scope)
+- Performance trade-offs (caching strategy, index design)
+- Security choices (auth flow, tenant isolation approach)
+
+**Include:**
+- Alternatives considered with rejection reasons
+- Trade-offs and consequences
+- Files that will implement this decision
+
+**Don't capture:** Following established patterns (no decision needed), obvious fixes.
+
+Decision files help future agents understand WHY code is structured a certain way.
+
 ### Identify Reference Files
 
 List files to read for pattern-matching (don't duplicate the file paths already in tasks):
