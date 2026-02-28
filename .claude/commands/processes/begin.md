@@ -152,6 +152,26 @@ git diff --check
 
 ---
 
+### Phase 2.5: Runtime Signals (10 seconds)
+
+Check for runtime performance and error signals:
+
+```bash
+# Run runtime summary script
+node .claude/scripts/runtime-summary.js
+```
+
+**Output includes:**
+
+- Slow requests (>500ms)
+- Slow queries (>100ms)
+- N+1 query patterns
+- Unhandled errors since last session
+
+**If no runtime logs exist:** Display "_No runtime signals (logs not yet generated)._"
+
+---
+
 ### Phase 3: Recent Context from Memory (15 seconds)
 
 Read MEMORY.md from auto memory directory for:
@@ -323,6 +343,11 @@ Consolidate everything into a concise dashboard:
 
 ## Blockers
 [None detected / List of blockers]
+
+---
+
+## Runtime Signals
+[Output from runtime-summary.js script]
 
 ---
 
