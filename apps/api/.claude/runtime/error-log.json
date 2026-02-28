@@ -1,5 +1,47 @@
 [
   {
+    "timestamp": "2026-02-28T19:13:43.310Z",
+    "message": "Database connection failed",
+    "stack": [
+      "Error: Database connection failed",
+      "    at W:/Marakana Corp/Companies/akount/Development/Brand/aggoogle/product-plan/apps/api/src/middleware/__tests__/errorHandler.test.ts:146:19",
+      "    at file:///W:/Marakana%20Corp/Companies/akount/Development/Brand/aggoogle/product-plan/node_modules/@vitest/runner/dist/index.js:145:11",
+      "    at file:///W:/Marakana%20Corp/Companies/akount/Development/Brand/aggoogle/product-plan/node_modules/@vitest/runner/dist/index.js:915:26",
+      "    at file:///W:/Marakana%20Corp/Companies/akount/Development/Brand/aggoogle/product-plan/node_modules/@vitest/runner/dist/index.js:1243:20",
+      "    at new Promise (<anonymous>)",
+      "    at runWithTimeout (file:///W:/Marakana%20Corp/Companies/akount/Development/Brand/aggoogle/product-plan/node_modules/@vitest/runner/dist/index.js:1209:10)",
+      "    at file:///W:/Marakana%20Corp/Companies/akount/Development/Brand/aggoogle/product-plan/node_modules/@vitest/runner/dist/index.js:1653:37",
+      "    at Traces.$ (file:///W:/Marakana%20Corp/Companies/akount/Development/Brand/aggoogle/product-plan/node_modules/vitest/dist/chunks/traces.CCmnQaNT.js:142:27)",
+      "    at trace (file:///W:/Marakana%20Corp/Companies/akount/Development/Brand/aggoogle/product-plan/node_modules/vitest/dist/chunks/test.B8ej_ZHS.js:239:21)"
+    ],
+    "request": {
+      "url": "/api/test",
+      "method": "GET"
+    },
+    "count": 1
+  },
+  {
+    "timestamp": "2026-02-28T19:13:43.295Z",
+    "message": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"number\",\n    \"path\": [\n      \"name\"\n    ],\n    \"message\": \"Expected string\"\n  }\n]",
+    "stack": [
+      "ZodError: [",
+      "  {",
+      "    \"code\": \"invalid_type\",",
+      "    \"expected\": \"string\",",
+      "    \"received\": \"number\",",
+      "    \"path\": [",
+      "      \"name\"",
+      "    ],",
+      "    \"message\": \"Expected string\"",
+      "  }"
+    ],
+    "request": {
+      "url": "/api/test",
+      "method": "GET"
+    },
+    "count": 1
+  },
+  {
     "timestamp": "2026-02-28T15:08:57.645Z",
     "message": "Database connection failed",
     "stack": [

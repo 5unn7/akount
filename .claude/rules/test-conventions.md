@@ -71,7 +71,9 @@ vi.mock('@akount/db', async (importOriginal) => ({
 | `mockPrisma` | `test-utils/prisma-mock` | Singleton mock Prisma client |
 | `rewirePrismaMock()` | `test-utils/prisma-mock` | Re-wire `$transaction` after `clearAllMocks` |
 | `TEST_IDS` | `test-utils/mock-factories` | Standard test IDs (TENANT_ID, ENTITY_ID, USER_ID) |
-| `mockAccount()`, `mockInvoice()`, etc. | `test-utils/mock-factories` | Type-safe mock data factories |
+| `mockAccount()`, `mockInvoice()`, etc. | `test-utils/mock-factories` | Prisma model mock data |
+| `mockTaxRateInput()`, `mockInvoiceInput()`, etc. | `test-utils/input-factories` | Zod-validated API inputs |
+| `createInputFactory()` | `test-utils/zod-input-factories` | Create new input factories |
 | `assertIntegerCents()`, etc. | `test-utils/financial-assertions` | Financial invariant assertions |
 | `AUTH_HEADERS`, `TEST_AUTH` | `test-utils/middleware-mocks` | Standard auth headers for route tests |
 
@@ -79,7 +81,52 @@ vi.mock('@akount/db', async (importOriginal) => ({
 
 - **Service tests** mock Prisma directly via `mockPrisma` (the pattern above)
 - **Route tests** mock the SERVICE layer (not Prisma) — they don't need `mockPrisma`
+- **Route tests** should use `mockTaxRateInput()` etc. from `input-factories` for Zod-validated API inputs
 - Middleware mocks (auth, tenant, validation) must be copy-pasted per route test file because `vi.mock()` inside imported functions is NOT hoisted
+
+## Zod Input Factories (RECOMMENDED for Route Tests)
+
+Use Zod input factories to create validated API input data. These catch schema drift at test-write time because they validate against the Zod schema.
+
+```typescript
+import { mockTaxRateInput, mockInvoiceInput } from '../../test-utils';
+
+// Override specific fields — rest gets sensible defaults
+const input = mockTaxRateInput({ code: 'HST', rateBasisPoints: 1300 });
+// ✅ Validated against CreateTaxRateSchema
+
+const invoice = mockInvoiceInput({ invoiceNumber: 'INV-100' });
+// ✅ Validated against CreateInvoiceSchema (includes line items)
+```
+
+### Creating New Input Factories
+
+```typescript
+// In test-utils/input-factories.ts
+import { createInputFactory } from './zod-input-factories';
+import { CreateResourceSchema } from '../domains/resource/schemas/resource.schema';
+import { TEST_IDS } from './mock-factories';
+
+export const mockResourceInput = createInputFactory(CreateResourceSchema, {
+  entityId: TEST_IDS.ENTITY_ID,
+  name: 'Default Resource',
+  amount: 10000,
+});
+```
+
+### Available Input Factories
+
+| Factory | Schema | Domain |
+|---------|--------|--------|
+| `mockTaxRateInput()` | `CreateTaxRateSchema` | Accounting |
+| `mockGLAccountInput()` | `CreateGLAccountSchema` | Accounting |
+| `mockJournalEntryInput()` | `CreateJournalEntrySchema` | Accounting |
+| `mockInvoiceInput()` | `CreateInvoiceSchema` | Invoicing |
+| `mockBillInput()` | `CreateBillSchema` | Invoicing |
+| `mockClientInput()` | `CreateClientSchema` | Clients |
+| `mockVendorInput()` | `CreateVendorSchema` | Vendors |
+| `mockTransactionInput()` | `CreateTransactionSchema` | Banking |
+| `mockTransferInput()` | `CreateTransferSchema` | Banking |
 
 ## Financial Invariant Assertions (REQUIRED)
 

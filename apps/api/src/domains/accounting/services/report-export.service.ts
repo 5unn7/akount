@@ -105,7 +105,7 @@ export class ReportExportService {
     // Net Income
     rows.push(this.buildRow(['', 'Net Income', '', formatCentsForCsv(report.netIncome)]));
 
-    return rows.join('\n');
+    return '\uFEFF' + rows.join('\n'); // P2-33: UTF-8 BOM for Excel compatibility
   }
 
   /**
@@ -157,7 +157,7 @@ export class ReportExportService {
     // Grand total
     rows.push(this.buildRow(['', 'Total Liabilities & Equity', '', formatCentsForCsv(report.totalLiabilitiesAndEquity)]));
 
-    return rows.join('\n');
+    return '\uFEFF' + rows.join('\n'); // P2-33: UTF-8 BOM for Excel compatibility
   }
 
   /**
@@ -204,7 +204,7 @@ export class ReportExportService {
     rows.push(this.buildRow(['', 'Net Cash Change', formatCentsForCsv(report.netCashChange)]));
     rows.push(this.buildRow(['', 'Closing Cash Balance', formatCentsForCsv(report.closingCash)]));
 
-    return rows.join('\n');
+    return '\uFEFF' + rows.join('\n'); // P2-33: UTF-8 BOM for Excel compatibility
   }
 
   /**
@@ -226,7 +226,7 @@ export class ReportExportService {
 
     rows.push(this.buildRow(['', 'Totals', formatCentsForCsv(report.totalDebits), formatCentsForCsv(report.totalCredits)]));
 
-    return rows.join('\n');
+    return '\uFEFF' + rows.join('\n'); // P2-33: UTF-8 BOM for Excel compatibility
   }
 
   /**
@@ -254,7 +254,7 @@ export class ReportExportService {
       ]));
     }
 
-    return rows.join('\n');
+    return '\uFEFF' + rows.join('\n'); // P2-33: UTF-8 BOM for Excel compatibility
   }
 }
 

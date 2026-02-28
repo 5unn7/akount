@@ -1,12 +1,23 @@
 /**
  * Centralized Mock Data Factories
  *
- * Provides consistent, type-safe mock data for all API tests.
+ * Provides consistent mock data for unit tests (Prisma model mocking).
  * All monetary values use integer cents. All records include
  * createdAt/updatedAt. Soft-deletable records default to deletedAt: null.
  *
+ * MIGRATION NOTE (2026-02-28):
+ * For NEW tests, prefer:
+ * - Prisma model mocks: Use define*Factory from __generated__/fabbrica/
+ *   (for integration tests with real DB)
+ * - API route inputs: Use mock*Input from ./input-factories
+ *   (validated against Zod schemas, catches schema drift)
+ *
+ * These manual factories remain valid for unit tests that mock Prisma
+ * responses, since fabbrica's build() returns CreateInput types
+ * (not model types). Future work: type these with Prisma model types.
+ *
  * Usage:
- *   import { TEST_IDS, mockAccount, mockInvoice } from '../../test-utils/mock-factories';
+ *   import { TEST_IDS, mockAccount, mockInvoice } from '../../test-utils';
  */
 
 // ---------------------------------------------------------------------------

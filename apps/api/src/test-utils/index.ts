@@ -3,6 +3,10 @@
  *
  * Import from '../../test-utils' (or appropriate relative path) to get
  * all test utilities in one import.
+ *
+ * Two factory layers:
+ *   1. Prisma model factories (mock-factories.ts) — for mocking Prisma responses
+ *   2. Zod input factories (input-factories.ts) — for validated API inputs
  */
 
 // Financial assertion helpers
@@ -22,7 +26,7 @@ export {
   type MockModelDelegate,
 } from './prisma-mock';
 
-// Mock data factories
+// Mock data factories (Prisma model shapes for unit tests)
 export {
   TEST_IDS,
   mockEntity,
@@ -43,6 +47,22 @@ export {
   mockInsight,
   mockAIAction,
 } from './mock-factories';
+
+// Zod input factories (validated API inputs for route tests)
+export {
+  mockTaxRateInput,
+  mockGLAccountInput,
+  mockJournalEntryInput,
+  mockInvoiceInput,
+  mockBillInput,
+  mockClientInput,
+  mockVendorInput,
+  mockTransactionInput,
+  mockTransferInput,
+} from './input-factories';
+
+// Zod input factory generator utility
+export { createInputFactory } from './zod-input-factories';
 
 // Middleware mock constants
 export {

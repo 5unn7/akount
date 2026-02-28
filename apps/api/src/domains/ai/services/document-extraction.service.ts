@@ -197,6 +197,7 @@ Optional fields:
 
 Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
       `.trim());
+      */
 
       const extractionResult = await this.mistralProvider.extractFromImage(
         piiResult.redactedBuffer,

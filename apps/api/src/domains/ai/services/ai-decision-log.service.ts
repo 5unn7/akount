@@ -60,10 +60,10 @@ export interface QueryDecisionsInput {
   dateFrom?: Date;
   /** Date range: to */
   dateTo?: Date;
-  /** Limit results */
+  /** Limit results (default: 50, max: 100) - P2-29 */
   limit?: number;
-  /** Offset for pagination */
-  offset?: number;
+  /** Cursor for pagination (decision log ID) - P2-29 */
+  cursor?: string;
 }
 
 export class AIDecisionLogService {
@@ -167,12 +167,16 @@ export class AIDecisionLogService {
       if (query.dateTo) where.createdAt.lte = query.dateTo;
     }
 
+    // P2-29: Cursor-based pagination (more efficient than offset for large datasets)
+    const limit = Math.min(query.limit || 50, 100); // Cap at 100
+
     try {
       const entries = await prisma.aIDecisionLog.findMany({
-        where,
+        where: query.cursor
+          ? { ...where, id: { lt: query.cursor } } // Cursor: get records before this ID
+          : where,
         orderBy: { createdAt: 'desc' },
-        take: query.limit || 100,
-        skip: query.offset || 0,
+        take: limit + 1, // Fetch one extra to detect if there are more results
         select: {
           id: true,
           tenantId: true,
@@ -190,10 +194,17 @@ export class AIDecisionLogService {
         },
       });
 
+      // P2-29: Check if there are more results for cursor pagination
+      const hasMore = entries.length > limit;
+      const results = hasMore ? entries.slice(0, limit) : entries;
+      const nextCursor = hasMore && results.length > 0 ? results[results.length - 1].id : null;
+
       logger.info(
         {
           tenantId: query.tenantId,
-          count: entries.length,
+          count: results.length,
+          hasMore,
+          cursor: query.cursor,
           filters: {
             decisionType: query.decisionType,
             routingResult: query.routingResult,
@@ -203,7 +214,14 @@ export class AIDecisionLogService {
         'Queried AI decision logs'
       );
 
-      return entries;
+      return {
+        data: results,
+        pagination: {
+          hasMore,
+          nextCursor,
+          limit,
+        },
+      };
     } catch (error: unknown) {
       logger.error(
         {
