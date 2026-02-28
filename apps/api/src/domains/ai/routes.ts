@@ -30,6 +30,9 @@ import { jobStreamRoutes } from './routes/jobs';
 import { naturalBookkeepingRoutes } from './routes/natural-bookkeeping.routes';
 import { naturalSearchRoutes } from './routes/natural-search.routes';
 import { reportNarrationRoutes } from './routes/report-narration.routes';
+import { taxSuggestionsRoutes } from './routes/tax-suggestions.routes';
+import { communicationDraftsRoutes } from './routes/communication-drafts.routes';
+import anomalyDetectionRoutes from './routes/anomaly-detection.routes';
 import {
   ListInsightsSchema,
   DismissInsightSchema,
@@ -689,4 +692,19 @@ export async function aiRoutes(fastify: FastifyInstance) {
   // Financial Report Narration Routes (sub-plugin) — DEV-250
   // -----------------------------------------------------------------------
   fastify.register(reportNarrationRoutes, { prefix: '/reports' });
+
+  // -----------------------------------------------------------------------
+  // Communication Drafts Routes (sub-plugin) — DEV-253
+  // -----------------------------------------------------------------------
+  fastify.register(communicationDraftsRoutes, { prefix: '/communications' });
+
+  // -----------------------------------------------------------------------
+  // Anomaly Detection Routes (sub-plugin) — DEV-252
+  // -----------------------------------------------------------------------
+  fastify.register(anomalyDetectionRoutes, { prefix: '/anomaly-detection' });
+
+  // -----------------------------------------------------------------------
+  // Tax Optimization Suggestions Routes (sub-plugin) — DEV-254
+  // -----------------------------------------------------------------------
+  fastify.register(taxSuggestionsRoutes, { prefix: '/tax-suggestions' });
 }

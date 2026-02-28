@@ -166,17 +166,18 @@ export class AnomalyDetectionService {
   private async createAlertAction(insight: InsightResult): Promise<void> {
     try {
       await this.actionService.createAction({
-        type: 'SEND_ALERT',
+        entityId: this.entityId,
+        type: 'ALERT',
+        title: insight.title,
+        description: insight.description,
         priority: insight.priority === 'critical' ? 'CRITICAL' : 'HIGH',
+        confidence: insight.confidence ? Math.round(insight.confidence) : undefined,
         payload: {
           insightId: insight.triggerId,
-          title: insight.title,
-          description: insight.description,
           type: insight.type,
         },
         metadata: {
           source: 'anomaly_detection',
-          confidence: insight.confidence,
           impact: insight.impact,
         },
       });

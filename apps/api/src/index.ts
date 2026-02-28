@@ -17,6 +17,7 @@ import { UserService, UserNotFoundError } from './domains/system/services/user.s
 import { queueManager } from './lib/queue/queue-manager';
 import { startBillScanWorker } from './domains/ai/workers/bill-scan.worker';
 import { startInvoiceScanWorker } from './domains/ai/workers/invoice-scan.worker';
+import { startAnomalyDetectionWorker } from './domains/ai/workers/anomaly-detection.worker';
 import { attachPrismaObserver } from './lib/prisma-observer';
 
 // Domain routes (Phase 4 restructure)
@@ -34,6 +35,7 @@ import { InsightGeneratorService } from './domains/ai/services/insight-generator
 let insightTimer: ReturnType<typeof setInterval> | undefined;
 let billScanWorker: ReturnType<typeof startBillScanWorker> | undefined;
 let invoiceScanWorker: ReturnType<typeof startInvoiceScanWorker> | undefined;
+let anomalyDetectionWorker: ReturnType<typeof startAnomalyDetectionWorker> | undefined;
 
 const server: FastifyInstance = Fastify({
     logger: true,
@@ -291,6 +293,10 @@ const gracefulShutdown = async () => {
             await invoiceScanWorker.close();
             server.log.info('✓ Invoice scan worker closed');
         }
+        if (anomalyDetectionWorker) {
+            await anomalyDetectionWorker.close();
+            server.log.info('✓ Anomaly detection worker closed');
+        }
 
         // Close queue manager (includes job rate limiter Redis)
         await queueManager.close();
@@ -370,14 +376,16 @@ const start = async () => {
         await queueManager.initialize();
         server.log.info('✓ Queue manager initialized');
 
-        // Start BullMQ workers (DEV-238, DEV-239)
+        // Start BullMQ workers (DEV-238, DEV-239, DEV-252)
         billScanWorker = startBillScanWorker();
         invoiceScanWorker = startInvoiceScanWorker();
+        anomalyDetectionWorker = startAnomalyDetectionWorker();
 
         // ARCH-14: Wait for workers to be ready before proceeding
         await billScanWorker.waitUntilReady();
         await invoiceScanWorker.waitUntilReady();
-        server.log.info('✓ AI workers started and ready (bill-scan, invoice-scan)');
+        await anomalyDetectionWorker.waitUntilReady();
+        server.log.info('✓ AI workers started and ready (bill-scan, invoice-scan, anomaly-detection)');
 
         // Start optional background insight generation
         startInsightTimer();
