@@ -11,6 +11,9 @@ import { csrfProtection, getCsrfToken } from './middleware/csrf';
 // Validation middleware available for routes (removed debug endpoints for security)
 import { HealthService } from './domains/system/services/health.service';
 import { UserService, UserNotFoundError } from './domains/system/services/user.service';
+import { queueManager } from './lib/queue/queue-manager';
+import { startBillScanWorker } from './domains/ai/workers/bill-scan.worker';
+import { startInvoiceScanWorker } from './domains/ai/workers/invoice-scan.worker';
 
 // Domain routes (Phase 4 restructure)
 import { overviewRoutes } from './domains/overview';
@@ -25,6 +28,8 @@ import { reportCache } from './domains/accounting/services/report-cache';
 import { InsightGeneratorService } from './domains/ai/services/insight-generator.service';
 
 let insightTimer: ReturnType<typeof setInterval> | undefined;
+let billScanWorker: ReturnType<typeof startBillScanWorker> | undefined;
+let invoiceScanWorker: ReturnType<typeof startInvoiceScanWorker> | undefined;
 
 const server: FastifyInstance = Fastify({
     logger: true,
@@ -259,11 +264,33 @@ server.get<{ Reply: UserMeResponse | UserNotFoundResponse | InternalServerError 
 const gracefulShutdown = async () => {
     server.log.info('Shutting down gracefully...');
     try {
+        // Stop accepting new requests
         await server.close();
+
+        // Stop background timers
         if (insightTimer) clearInterval(insightTimer);
-        reportCache.destroy(); // Cleanup report cache
+
+        // Stop workers (allow current jobs to finish)
+        if (billScanWorker) {
+            await billScanWorker.close();
+            server.log.info('✓ Bill scan worker closed');
+        }
+        if (invoiceScanWorker) {
+            await invoiceScanWorker.close();
+            server.log.info('✓ Invoice scan worker closed');
+        }
+
+        // Close queue manager
+        await queueManager.close();
+        server.log.info('✓ Queue manager closed');
+
+        // Cleanup caches
+        reportCache.destroy();
+
+        // Close database
         await prisma.$disconnect();
-        server.log.info('✓ Server and database connections closed gracefully');
+
+        server.log.info('✓ Graceful shutdown complete');
         process.exit(0);
     } catch (error) {
         server.log.error(
@@ -319,11 +346,21 @@ const start = async () => {
         await server.listen({ port: env.PORT, host: env.HOST });
         server.log.info(`✓ Server listening on ${env.HOST}:${env.PORT}`);
 
+        // Initialize queue manager (INFRA-61)
+        await queueManager.initialize();
+        server.log.info('✓ Queue manager initialized');
+
+        // Start BullMQ workers (DEV-238, DEV-239)
+        billScanWorker = startBillScanWorker();
+        invoiceScanWorker = startInvoiceScanWorker();
+        server.log.info('✓ AI workers started (bill-scan, invoice-scan)');
+
         // Start optional background insight generation
         startInsightTimer();
     } catch (err) {
         server.log.error(err);
         await prisma.$disconnect();
+        await queueManager.close().catch((e) => server.log.error(e, 'Error closing queue manager'));
         process.exit(1);
     }
 };
