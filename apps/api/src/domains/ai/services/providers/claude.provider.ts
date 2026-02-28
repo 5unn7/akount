@@ -30,6 +30,10 @@ export class ClaudeProvider implements AIProvider {
       ...systemMessages.map((m) => m.content),
     ].join('\n\n') || undefined;
 
+    // P0-1: Add 30s timeout to prevent stuck requests (cost $50-100 each)
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 30000); // 30 seconds
+
     try {
       const response = await this.client.messages.create({
         model,
@@ -37,6 +41,8 @@ export class ClaudeProvider implements AIProvider {
         temperature: options?.temperature ?? 0.2,
         ...(fullSystemPrompt ? { system: fullSystemPrompt } : {}),
         messages: chatMessages,
+      }, {
+        signal: abortController.signal,
       });
 
       // Extract text from content blocks
@@ -44,6 +50,8 @@ export class ClaudeProvider implements AIProvider {
         .filter((block): block is Anthropic.TextBlock => block.type === 'text')
         .map((block) => block.text)
         .join('');
+
+      clearTimeout(timeoutId);
 
       return {
         content: textContent,
@@ -55,6 +63,14 @@ export class ClaudeProvider implements AIProvider {
         },
       };
     } catch (error: unknown) {
+      clearTimeout(timeoutId);
+
+      // Handle timeout errors specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        logger.error('Claude API call timed out after 30s');
+        throw new Error('Claude API Error: Request timed out after 30 seconds');
+      }
+
       // Sanitize SDK errors — don't leak API keys or internal details
       if (error instanceof Anthropic.APIError) {
         logger.error(
