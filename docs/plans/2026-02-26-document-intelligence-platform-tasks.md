@@ -15,10 +15,10 @@
 | **1** | Foundation (A + B core + E basics) | 22 | 22 | **✅ Complete (100%)** |
 | **1.5** | **Security Hardening (Review Follow-Up)** | **4** | **4** | **✅ Complete (100%)** |
 | **2** | Expand + Smart (B UIs + C1-C4) | 8 | 8 | **✅ Complete (100%)** |
-| **3** | Compliance + Narration (C5-C9 + E6-E9) | 9 | 1 | **IN PROGRESS (11%)** |
+| **3** | Compliance + Narration (C5-C9 + E6-E9) | 9 | 2 | **IN PROGRESS (22%)** |
 | **4** | Matching + Learning (D + F) | 9 | 0 | Not started |
 | **5** | Polish + Scale | — | — | Not started |
-| **Total** | | **51** | **35** | **69%** |
+| **Total** | | **51** | **36** | **71%** |
 
 ---
 
@@ -132,7 +132,7 @@
 | ID | Track | Task | Effort | Priority | Status | Deps | Source |
 |----|-------|------|--------|----------|--------|------|--------|
 | SEC-35 | E6 | GDPR right to erasure (`deleteUserAIData` cascade) | 4-6h | Critical | ✅ Done (fc1e1fd) | DEV-232, SEC-32 | plan:doc-intel |
-| SEC-36 | E7 | Data retention policies (extend audit-retention.ts) | 2-3h | High | Ready | DEV-232 | plan:doc-intel |
+| SEC-36 | E7 | Data retention policies (extend audit-retention.ts) | 2-3h | High | ✅ Done (5cfcc74) | DEV-232 | plan:doc-intel |
 | DEV-262 | E8 | CCPA ADMT pre-use notice (California users) | 2-3h | High | Ready | SEC-32, DEV-260 | plan:doc-intel |
 | SEC-37 | E9 | SOC 2 AI controls documentation | 2-3h | High | Ready | DEV-232, SEC-32 | plan:doc-intel |
 
