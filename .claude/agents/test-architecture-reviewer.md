@@ -12,19 +12,36 @@
 
 #### ✅ Required Patterns
 
-- [ ] **Prisma mocks use fabbrica factories**
+- [ ] **Prisma mocks use type-safe model factories**
   ```typescript
-  // ✅ CORRECT
-  import { AccountFactory } from '../__generated__/fabbrica';
-  const account = await AccountFactory.build();
+  // ✅ CORRECT - For mocking Prisma query responses
+  import { mockAccount, mockInvoice } from '../../../test-utils';
+  const account = mockAccount({ name: 'Checking' });
   mockPrisma.account.findFirst.mockResolvedValue(account);
   ```
 
-- [ ] **API inputs use validated factories**
+- [ ] **API inputs use validated Zod factories**
   ```typescript
-  // ✅ CORRECT
-  import { mockTaxRateInput } from '../../test-utils/input-factories';
+  // ✅ CORRECT - For testing API route inputs
+  import { mockTaxRateInput } from '../../../test-utils';
   const input = mockTaxRateInput({ code: 'HST' });
+  // ✅ Validated against CreateTaxRateSchema
+  ```
+
+- [ ] **Centralized mockPrisma pattern**
+  ```typescript
+  // ✅ CORRECT - Preserves enum re-exports
+  import { mockPrisma, rewirePrismaMock } from '../../../test-utils';
+
+  vi.mock('@akount/db', async (importOriginal) => ({
+    ...(await importOriginal<Record<string, unknown>>()),
+    prisma: (await import('../../../test-utils/prisma-mock')).mockPrisma,
+  }));
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    rewirePrismaMock();
+  });
   ```
 
 #### ❌ Violations to Flag
@@ -52,13 +69,13 @@
   });
   ```
 
-- [ ] **Deprecated factory usage**
+- [ ] **Local helper files instead of centralized factories**
   ```typescript
-  // ❌ DEPRECATED
-  import { mockAccount } from '../../test-utils/mock-factories';
+  // ❌ WRONG - Domain-specific helpers cause duplication
+  import { mockAccount } from './helpers';
 
-  // ✅ CORRECT
-  import { AccountFactory } from '../__generated__/fabbrica';
+  // ✅ CORRECT - Centralized type-safe factories
+  import { mockAccount } from '../../../test-utils';
   ```
 
 ---
@@ -66,13 +83,14 @@
 ### 2. Import Hygiene
 
 - [ ] **Correct import paths**
-  - Prisma factories: `from '../__generated__/fabbrica'`
-  - Input factories: `from '../../test-utils/input-factories'`
-  - Not from: `test-utils/mock-factories` (deprecated)
+  - Model factories: `from '../../../test-utils'` (mockAccount, mockInvoice, etc.)
+  - Input factories: `from '../../../test-utils'` (mockTaxRateInput, mockInvoiceInput, etc.)
+  - mockPrisma: `from '../../../test-utils'`
+  - **NOT** from: `./helpers` or local domain-specific helpers
 
-- [ ] **No direct fabbrica imports in production code**
+- [ ] **No test utilities in production code**
   - Factories only in `__tests__/` or `*.test.ts` files
-  - Production code never imports from `__generated__/`
+  - Production code never imports from `test-utils/` or `__generated__/`
 
 ---
 

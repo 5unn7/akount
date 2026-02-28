@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { journalEntryRoutes } from '../routes/journal-entry';
 import { AccountingError } from '../errors';
+import { mockJournalEntry, mockJournalEntryInput } from '../../../test-utils';
 
 // Mock middleware
 vi.mock('../../../middleware/auth', () => ({
@@ -75,28 +76,20 @@ vi.mock('../services/posting.service', () => ({
   },
 }));
 
-const MOCK_ENTRY = {
-  id: 'je-1',
-  entryNumber: 'JE-001',
-  date: '2026-01-15',
-  memo: 'Test entry',
-  status: 'DRAFT',
-  createdBy: 'test-user-id',
-  journalLines: [
-    { id: 'jl-1', glAccountId: 'gl-1', debitAmount: 1000, creditAmount: 0 },
-    { id: 'jl-2', glAccountId: 'gl-2', debitAmount: 0, creditAmount: 1000 },
-  ],
-};
+// ✅ MIGRATION: Replaced inline mock with type-safe factory
+// Before: MOCK_ENTRY object literal (9 lines, manual journalLines, breaks on schema change)
+// After: mockJournalEntry() from test-utils (type-safe, auto-updates with schema)
 
 describe('JournalEntry Routes', () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    mockListEntries.mockResolvedValue({ items: [MOCK_ENTRY], nextCursor: null });
-    mockGetEntry.mockResolvedValue(MOCK_ENTRY);
-    mockCreateEntry.mockResolvedValue(MOCK_ENTRY);
-    mockApproveEntry.mockResolvedValue({ ...MOCK_ENTRY, status: 'POSTED' });
+    const entry = mockJournalEntry({ entryNumber: 'JE-001', memo: 'Test entry' });
+    mockListEntries.mockResolvedValue({ items: [entry], nextCursor: null });
+    mockGetEntry.mockResolvedValue(entry);
+    mockCreateEntry.mockResolvedValue(entry);
+    mockApproveEntry.mockResolvedValue({ ...entry, status: 'POSTED' });
     mockVoidEntry.mockResolvedValue({ voidedEntryId: 'je-1', reversalEntryId: 'je-2' });
     mockDeleteEntry.mockResolvedValue({ deleted: true });
     mockPostTransaction.mockResolvedValue({
@@ -174,19 +167,14 @@ describe('JournalEntry Routes', () => {
 
   describe('POST /journal-entries', () => {
     it('should return 201 on successful creation', async () => {
+      // ✅ Using validated input factory
+      const input = mockJournalEntryInput({ memo: 'Test entry' });
+
       const response = await app.inject({
         method: 'POST',
         url: '/journal-entries',
         headers: { authorization: 'Bearer test-token' },
-        payload: {
-          entityId: 'entity-1',
-          date: '2026-01-15T00:00:00.000Z',
-          memo: 'Test entry',
-          lines: [
-            { glAccountId: 'gl-1', debitAmount: 1000, creditAmount: 0 },
-            { glAccountId: 'gl-2', debitAmount: 0, creditAmount: 1000 },
-          ],
-        },
+        payload: input,
       });
 
       expect(response.statusCode).toBe(201);
@@ -198,17 +186,20 @@ describe('JournalEntry Routes', () => {
         new AccountingError('not balanced', 'UNBALANCED_ENTRY', 400)
       );
 
+      // Note: This test uses raw payload to bypass Zod validation, which itself catches unbalanced entries.
+      // In production, the Zod schema.refine() would reject this before hitting the service.
+      // We're testing the service-level error handling for backward compatibility.
       const response = await app.inject({
         method: 'POST',
         url: '/journal-entries',
         headers: { authorization: 'Bearer test-token' },
         payload: {
-          entityId: 'entity-1',
+          entityId: 'cltest00000000000000entity',
           date: '2026-01-15T00:00:00.000Z',
           memo: 'Bad entry',
           lines: [
-            { glAccountId: 'gl-1', debitAmount: 1000, creditAmount: 0 },
-            { glAccountId: 'gl-2', debitAmount: 0, creditAmount: 500 },
+            { glAccountId: 'cltest00000000000glacc001', debitAmount: 1000, creditAmount: 0 },
+            { glAccountId: 'cltest00000000000glacc002', debitAmount: 0, creditAmount: 500 },
           ],
         },
       });
@@ -222,19 +213,20 @@ describe('JournalEntry Routes', () => {
         new AccountingError('Cross-entity reference', 'CROSS_ENTITY_REFERENCE', 403)
       );
 
+      // Note: Using valid CUIDs representing cross-entity GL accounts
+      const input = mockJournalEntryInput({
+        memo: 'Cross-entity',
+        lines: [
+          { glAccountId: 'cltest00000000otherentity1', debitAmount: 1000, creditAmount: 0 },
+          { glAccountId: 'cltest00000000otherentity2', debitAmount: 0, creditAmount: 1000 },
+        ],
+      });
+
       const response = await app.inject({
         method: 'POST',
         url: '/journal-entries',
         headers: { authorization: 'Bearer test-token' },
-        payload: {
-          entityId: 'entity-1',
-          date: '2026-01-15T00:00:00.000Z',
-          memo: 'Cross-entity',
-          lines: [
-            { glAccountId: 'gl-other-entity', debitAmount: 1000, creditAmount: 0 },
-            { glAccountId: 'gl-2', debitAmount: 0, creditAmount: 1000 },
-          ],
-        },
+        payload: input,
       });
 
       expect(response.statusCode).toBe(403);

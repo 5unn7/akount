@@ -1,0 +1,1029 @@
+{
+  "total": 127,
+  "usingFactories": 55,
+  "needsMigration": 52,
+  "adoptionPercent": 43,
+  "byType": {
+    "other": 41,
+    "service": 53,
+    "route": 33
+  },
+  "files": [
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\schemas\\__tests__\\report.schema.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 15,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\services\\__tests__\\report-export.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 15,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\services\\__tests__\\report.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 24,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\asset.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 16,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\asset.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 9,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\document-posting.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 3,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\fiscal-period.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 19,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\fiscal-period.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 5,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\gl-account.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 13,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\gl-account.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 2,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\journal-entry.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 27,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\journal-entry.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 7,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\posting.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 11,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\report.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 24,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\tax-rate.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 13,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\accounting\\__tests__\\tax-rate.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 4,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\routes\\__tests__\\communication-drafts.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 9,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\routes\\__tests__\\jobs.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 12,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\routes\\__tests__\\natural-bookkeeping.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 9,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\routes\\__tests__\\natural-search.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 11,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\routes\\__tests__\\rule-suggestions.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 16,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\routes\\__tests__\\rules.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 18,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\routes\\__tests__\\tax-suggestions.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 11,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\schemas\\__tests__\\bill-extraction.schema.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 19,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\schemas\\__tests__\\invoice-extraction.schema.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 13,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\analyzers\\__tests__\\cash-flow.analyzer.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 10,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\analyzers\\__tests__\\duplicate.analyzer.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 11,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\analyzers\\__tests__\\overdue.analyzer.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 9,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\analyzers\\__tests__\\reconciliation.analyzer.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\analyzers\\__tests__\\revenue.analyzer.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\analyzers\\__tests__\\spending.analyzer.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 11,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\providers\\__tests__\\mistral.provider.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 9,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\ai-action.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 3,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\ai-decision-log.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 3,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\ai.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 6,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\anomaly-detection.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 4,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\categorization.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 5,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\document-extraction.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 19,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\insight-generator.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 5,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\insight.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\je-suggestion.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 11,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\monthly-close.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 2,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\pattern-detection.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\report-narration.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 4,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\rule-engine.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 23,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\rule.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 14,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\services\\__tests__\\tax-suggestions.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\__tests__\\action-executor.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 5,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\__tests__\\action.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 18,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\__tests__\\auto-bookkeeper-e2e.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 16,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\__tests__\\insight.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 10,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\__tests__\\monthly-close.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 13,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\ai\\__tests__\\routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 27,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\routes\\__tests__\\categories.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 22,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\routes\\__tests__\\connections.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 13,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\routes\\__tests__\\imports.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 21,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\routes\\__tests__\\reconciliation.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 19,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\routes\\__tests__\\transactions.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 23,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\routes\\__tests__\\transfers.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 13,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\account-matcher.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 14,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\account.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\category.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 5,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\duplication.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 23,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\flinks.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 6,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\fx-rate.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\import.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 8,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\parser-shared.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\reconciliation.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\transaction.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 3,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\services\\__tests__\\transfer.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 28,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\banking\\__tests__\\routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 13,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\clients\\routes\\__tests__\\clients.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 27,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\clients\\services\\__tests__\\client.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\routes\\__tests__\\bills.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 33,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\routes\\__tests__\\credit-notes.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 19,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\routes\\__tests__\\invoices.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 33,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\routes\\__tests__\\payments.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 50,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\services\\__tests__\\bill.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 12,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\services\\__tests__\\credit-note.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 4,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\services\\__tests__\\invoice-send.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 3,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\services\\__tests__\\invoice.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 11,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\services\\__tests__\\payment.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 8,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\invoicing\\services\\__tests__\\pdf.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 5,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\overview\\services\\__tests__\\dashboard.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\overview\\services\\__tests__\\performance.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\overview\\__tests__\\routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 6,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\planning\\services\\__tests__\\budget.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\planning\\services\\__tests__\\goal.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\planning\\__tests__\\goals.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 23,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\routes\\__tests__\\ai-data-deletion.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 14,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\routes\\__tests__\\entities.routes.test.ts",
+      "testType": "route",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 32,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\routes\\__tests__\\entity.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 11,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\routes\\__tests__\\onboarding-progress.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 4,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\routes\\__tests__\\onboarding-wizard.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 9,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\services\\__tests__\\ai-consent.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 15,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\services\\__tests__\\ai-data-deletion.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\services\\__tests__\\audit-query.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\services\\__tests__\\data-export.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 2,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\services\\__tests__\\entity.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 12,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\services\\__tests__\\health.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\system\\services\\__tests__\\user.service.test.ts",
+      "testType": "service",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 5,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\domains\\vendors\\routes\\__tests__\\vendors.routes.test.ts",
+      "testType": "route",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 27,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\vendors\\services\\__tests__\\vendor.service.test.ts",
+      "testType": "service",
+      "usesFactories": true,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\__tests__\\flows\\bank-import.flow.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 7,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\__tests__\\flows\\bill-lifecycle.flow.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 4,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\__tests__\\flows\\invoice-lifecycle.flow.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 9,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\domains\\__tests__\\flows\\reporting-accuracy.flow.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 13,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\queue\\__tests__\\queue-manager.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 3,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\validators\\__tests__\\tax-id.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\__tests__\\ai-data-retention.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\__tests__\\audit-retention.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\__tests__\\audit.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 14,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\__tests__\\pii-redaction.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\__tests__\\prompt-defense.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\__tests__\\tenant-scoped-query.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\lib\\__tests__\\upload-quota.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\auth.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\consent-gate.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 10,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\csrf.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 17,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\errorHandler.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 4,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\rate-limit.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 8,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\rbac.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 1,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\sanitize.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 3,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\security-headers.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": true,
+      "objectLiteralCount": 1,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\tenant.test.ts",
+      "testType": "other",
+      "usesFactories": true,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\validation.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 7,
+      "needsMigration": true
+    },
+    {
+      "path": "apps\\api\\src\\middleware\\__tests__\\withPermission.test.ts",
+      "testType": "other",
+      "usesFactories": false,
+      "hasInlineMocks": false,
+      "objectLiteralCount": 0,
+      "needsMigration": false
+    }
+  ]
+}

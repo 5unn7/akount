@@ -33,7 +33,7 @@ export {
   mockTenantUser,
   mockAccount,
   mockTransaction,
-  mockTransfer,
+  // mockTransfer removed - Transfer model doesn't exist in schema
   mockInvoice,
   mockBill,
   mockClient,

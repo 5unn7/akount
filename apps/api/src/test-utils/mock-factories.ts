@@ -1,24 +1,41 @@
 /**
  * Centralized Mock Data Factories
  *
- * Provides consistent mock data for unit tests (Prisma model mocking).
+ * Provides type-safe mock data for unit tests (Prisma model mocking).
  * All monetary values use integer cents. All records include
  * createdAt/updatedAt. Soft-deletable records default to deletedAt: null.
  *
+ * ✅ TYPE-SAFE: All factories use Prisma model types
+ * Schema changes cause TypeScript errors in these factories (not in 140+ test files)
+ *
  * MIGRATION NOTE (2026-02-28):
  * For NEW tests, prefer:
- * - Prisma model mocks: Use define*Factory from __generated__/fabbrica/
- *   (for integration tests with real DB)
+ * - Prisma model mocks: Use these type-safe factories (this file)
  * - API route inputs: Use mock*Input from ./input-factories
  *   (validated against Zod schemas, catches schema drift)
- *
- * These manual factories remain valid for unit tests that mock Prisma
- * responses, since fabbrica's build() returns CreateInput types
- * (not model types). Future work: type these with Prisma model types.
  *
  * Usage:
  *   import { TEST_IDS, mockAccount, mockInvoice } from '../../test-utils';
  */
+
+import type {
+  Entity,
+  TenantUser,
+  Account,
+  Transaction,
+  Invoice,
+  Bill,
+  Client,
+  Vendor,
+  Payment,
+  GLAccount,
+  JournalEntry,
+  JournalLine,
+  Category,
+  TaxRate,
+  Insight,
+  AIAction,
+} from '@akount/db';
 
 // ---------------------------------------------------------------------------
 // Shared Test Constants
@@ -39,21 +56,22 @@ const NOW = new Date('2026-01-15T12:00:00.000Z');
 // Entity / Tenant
 // ---------------------------------------------------------------------------
 
-export function mockEntity(overrides: Record<string, unknown> = {}) {
+export function mockEntity(overrides: Partial<Entity> = {}): Entity {
   return {
     id: TEST_IDS.ENTITY_ID,
     tenantId: TEST_IDS.TENANT_ID,
     name: 'Test Corp',
     type: 'CORPORATION',
+    status: 'ACTIVE',
     functionalCurrency: 'CAD',
     fiscalYearEnd: 12,
     createdAt: NOW,
     updatedAt: NOW,
     ...overrides,
-  };
+  } as Entity;
 }
 
-export function mockTenantUser(overrides: Record<string, unknown> = {}) {
+export function mockTenantUser(overrides: Partial<TenantUser> = {}): TenantUser {
   return {
     id: 'tu-1',
     tenantId: TEST_IDS.TENANT_ID,
@@ -62,14 +80,14 @@ export function mockTenantUser(overrides: Record<string, unknown> = {}) {
     createdAt: NOW,
     updatedAt: NOW,
     ...overrides,
-  };
+  } as TenantUser;
 }
 
 // ---------------------------------------------------------------------------
 // Banking
 // ---------------------------------------------------------------------------
 
-export function mockAccount(overrides: Record<string, unknown> = {}) {
+export function mockAccount(overrides: Partial<Account> = {}): Account {
   return {
     id: 'acc-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -77,17 +95,19 @@ export function mockAccount(overrides: Record<string, unknown> = {}) {
     type: 'BANK',
     currency: 'CAD',
     country: 'CA',
+    institution: null,
     currentBalance: 1000000, // $10,000.00
     isActive: true,
+    glAccountId: null,
     deletedAt: null,
     createdAt: NOW,
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as Account;
 }
 
-export function mockTransaction(overrides: Record<string, unknown> = {}) {
+export function mockTransaction(overrides: Partial<Transaction> = {}): Transaction {
   return {
     id: 'txn-1',
     accountId: 'acc-1',
@@ -101,41 +121,30 @@ export function mockTransaction(overrides: Record<string, unknown> = {}) {
     type: 'EXPENSE',
     categoryId: null,
     isReconciled: false,
+    sourceType: null,
+    sourceId: null,
     deletedAt: null,
     createdAt: NOW,
     updatedAt: NOW,
     account: { entity: { tenantId: TEST_IDS.TENANT_ID } },
     ...overrides,
-  };
+  } as Transaction;
 }
 
-export function mockTransfer(overrides: Record<string, unknown> = {}) {
-  return {
-    id: 'xfr-1',
-    entityId: TEST_IDS.ENTITY_ID,
-    fromAccountId: 'acc-1',
-    toAccountId: 'acc-2',
-    amount: 50000, // $500.00
-    currency: 'CAD',
-    exchangeRate: 1.0,
-    baseCurrencyAmount: 50000,
-    date: NOW,
-    memo: 'Test transfer',
-    sourceTransactionId: 'txn-1',
-    destinationTransactionId: 'txn-2',
-    journalEntryId: 'je-1',
-    deletedAt: null,
-    createdAt: NOW,
-    updatedAt: NOW,
-    ...overrides,
-  };
-}
+/**
+ * ❌ DEPRECATED: Transfer model doesn't exist in Prisma schema
+ * This is exactly the schema drift that type-safe factories catch!
+ * Use mockTransaction for account transfer scenarios instead.
+ */
+// export function mockTransfer(overrides = {}) {
+//   return { ... };
+// }
 
 // ---------------------------------------------------------------------------
 // Business (Invoicing / Bills / Payments)
 // ---------------------------------------------------------------------------
 
-export function mockInvoice(overrides: Record<string, unknown> = {}) {
+export function mockInvoice(overrides: Partial<Invoice> = {}): Invoice {
   return {
     id: 'inv-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -158,10 +167,10 @@ export function mockInvoice(overrides: Record<string, unknown> = {}) {
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as Invoice;
 }
 
-export function mockBill(overrides: Record<string, unknown> = {}) {
+export function mockBill(overrides: Partial<Bill> = {}): Bill {
   return {
     id: 'bill-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -184,10 +193,10 @@ export function mockBill(overrides: Record<string, unknown> = {}) {
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as Bill;
 }
 
-export function mockClient(overrides: Record<string, unknown> = {}) {
+export function mockClient(overrides: Partial<Client> = {}): Client {
   return {
     id: 'client-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -201,10 +210,10 @@ export function mockClient(overrides: Record<string, unknown> = {}) {
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as Client;
 }
 
-export function mockVendor(overrides: Record<string, unknown> = {}) {
+export function mockVendor(overrides: Partial<Vendor> = {}): Vendor {
   return {
     id: 'vendor-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -218,10 +227,10 @@ export function mockVendor(overrides: Record<string, unknown> = {}) {
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as Vendor;
 }
 
-export function mockPayment(overrides: Record<string, unknown> = {}) {
+export function mockPayment(overrides: Partial<Payment> = {}): Payment {
   return {
     id: 'pmt-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -239,14 +248,14 @@ export function mockPayment(overrides: Record<string, unknown> = {}) {
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as Payment;
 }
 
 // ---------------------------------------------------------------------------
 // Accounting
 // ---------------------------------------------------------------------------
 
-export function mockGLAccount(overrides: Record<string, unknown> = {}) {
+export function mockGLAccount(overrides: Partial<GLAccount> = {}): GLAccount {
   return {
     id: 'gl-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -265,10 +274,10 @@ export function mockGLAccount(overrides: Record<string, unknown> = {}) {
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     _count: { childAccounts: 0, journalLines: 0 },
     ...overrides,
-  };
+  } as GLAccount;
 }
 
-export function mockJournalEntry(overrides: Record<string, unknown> = {}) {
+export function mockJournalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
   return {
     id: 'je-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -285,10 +294,10 @@ export function mockJournalEntry(overrides: Record<string, unknown> = {}) {
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     lines: [],
     ...overrides,
-  };
+  } as JournalEntry;
 }
 
-export function mockJournalLine(overrides: Record<string, unknown> = {}) {
+export function mockJournalLine(overrides: Partial<JournalLine> = {}): JournalLine {
   return {
     id: 'jl-1',
     journalEntryId: 'je-1',
@@ -304,10 +313,10 @@ export function mockJournalLine(overrides: Record<string, unknown> = {}) {
     createdAt: NOW,
     updatedAt: NOW,
     ...overrides,
-  };
+  } as JournalLine;
 }
 
-export function mockCategory(overrides: Record<string, unknown> = {}) {
+export function mockCategory(overrides: Partial<Category> = {}): Category {
   return {
     id: 'cat-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -320,16 +329,18 @@ export function mockCategory(overrides: Record<string, unknown> = {}) {
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as Category;
 }
 
-export function mockTaxRate(overrides: Record<string, unknown> = {}) {
+export function mockTaxRate(overrides: Partial<TaxRate> = {}): TaxRate {
   return {
     id: 'tax-1',
     entityId: TEST_IDS.ENTITY_ID,
     code: 'GST',
     name: 'Goods and Services Tax',
-    rate: 5, // 5% stored as integer percentage points
+    rateBasisPoints: 500, // ✅ SCHEMA-SAFE: Compiler enforces this field (was 'rate')
+    jurisdiction: 'Federal (Canada)',
+    isInclusive: false,
     isActive: true,
     effectiveFrom: new Date('2026-01-01'),
     effectiveTo: null,
@@ -337,14 +348,14 @@ export function mockTaxRate(overrides: Record<string, unknown> = {}) {
     updatedAt: NOW,
     entity: { id: TEST_IDS.ENTITY_ID, tenantId: TEST_IDS.TENANT_ID },
     ...overrides,
-  };
+  } as TaxRate;
 }
 
 // ---------------------------------------------------------------------------
 // AI
 // ---------------------------------------------------------------------------
 
-export function mockInsight(overrides: Record<string, unknown> = {}) {
+export function mockInsight(overrides: Partial<Insight> = {}): Insight {
   return {
     id: 'insight-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -360,10 +371,10 @@ export function mockInsight(overrides: Record<string, unknown> = {}) {
     createdAt: NOW,
     updatedAt: NOW,
     ...overrides,
-  };
+  } as Insight;
 }
 
-export function mockAIAction(overrides: Record<string, unknown> = {}) {
+export function mockAIAction(overrides: Partial<AIAction> = {}): AIAction {
   return {
     id: 'action-1',
     entityId: TEST_IDS.ENTITY_ID,
@@ -379,5 +390,5 @@ export function mockAIAction(overrides: Record<string, unknown> = {}) {
     createdAt: NOW,
     updatedAt: NOW,
     ...overrides,
-  };
+  } as AIAction;
 }

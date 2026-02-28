@@ -66,7 +66,7 @@ const MOCK_ACCOUNTS = [
         isActive: true,
         glAccountId: null,
         glAccount: null,
-        entity: { id: 'ent-1', name: 'Acme Corp', type: 'BUSINESS' },
+        entity: { id: 'ent-1', name: 'Acme Corp', type: EntityType.CORPORATION },
     },
     {
         id: 'acc-2',
@@ -79,7 +79,7 @@ const MOCK_ACCOUNTS = [
         isActive: true,
         glAccountId: null,
         glAccount: null,
-        entity: { id: 'ent-1', name: 'Acme Corp', type: 'BUSINESS' },
+        entity: { id: 'ent-1', name: 'Acme Corp', type: EntityType.CORPORATION },
     },
 ]
 
@@ -169,6 +169,7 @@ describe('EntityAccountCards', () => {
     it('renders account cards with names and types', async () => {
         vi.mocked(listAccounts).mockResolvedValue({
             accounts: MOCK_ACCOUNTS,
+            hasMore: false,
         })
 
         const element = await EntityAccountCards({
@@ -186,6 +187,7 @@ describe('EntityAccountCards', () => {
     it('displays formatted balances', async () => {
         vi.mocked(listAccounts).mockResolvedValue({
             accounts: MOCK_ACCOUNTS,
+            hasMore: false,
         })
 
         const element = await EntityAccountCards({
@@ -203,6 +205,7 @@ describe('EntityAccountCards', () => {
     it('applies red color to negative balances', async () => {
         vi.mocked(listAccounts).mockResolvedValue({
             accounts: MOCK_ACCOUNTS,
+            hasMore: false,
         })
 
         const element = await EntityAccountCards({
@@ -219,6 +222,7 @@ describe('EntityAccountCards', () => {
     it('renders account links to detail pages', async () => {
         vi.mocked(listAccounts).mockResolvedValue({
             accounts: MOCK_ACCOUNTS,
+            hasMore: false,
         })
 
         const element = await EntityAccountCards({
@@ -242,6 +246,7 @@ describe('EntityAccountCards', () => {
     it('displays currency code for each account', async () => {
         vi.mocked(listAccounts).mockResolvedValue({
             accounts: MOCK_ACCOUNTS,
+            hasMore: false,
         })
 
         const element = await EntityAccountCards({
@@ -255,7 +260,7 @@ describe('EntityAccountCards', () => {
     })
 
     it('shows empty state when no accounts', async () => {
-        vi.mocked(listAccounts).mockResolvedValue({ accounts: [] })
+        vi.mocked(listAccounts).mockResolvedValue({ accounts: [], hasMore: false })
 
         const element = await EntityAccountCards({
             entityId: 'ent-1',
@@ -286,7 +291,7 @@ describe('EntityAccountCards', () => {
     })
 
     it('passes entityId and isActive filter to API', async () => {
-        vi.mocked(listAccounts).mockResolvedValue({ accounts: [] })
+        vi.mocked(listAccounts).mockResolvedValue({ accounts: [], hasMore: false })
 
         await EntityAccountCards({ entityId: 'ent-1', currency: 'CAD' })
         expect(listAccounts).toHaveBeenCalledWith({

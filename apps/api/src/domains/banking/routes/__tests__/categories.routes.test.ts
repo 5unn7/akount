@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { categoryRoutes } from '../categories';
+import { mockCategory } from '../../../../test-utils';
 
 // Mock auth middleware
 vi.mock('../../../../middleware/auth', () => ({
@@ -52,45 +53,21 @@ vi.mock('../../services/category.service', () => ({
   },
 }));
 
-const MOCK_CATEGORY = {
-  id: 'cat-1',
-  tenantId: 'tenant-abc-123',
-  name: 'Office Supplies',
-  type: 'EXPENSE',
-  parentCategoryId: null,
-  color: null,
-  isActive: true,
-  createdAt: new Date('2024-01-01'),
-  updatedAt: new Date('2024-01-01'),
-  deletedAt: null,
-  childCategories: [],
-  _count: { transactions: 5 },
-};
-
-const MOCK_CATEGORY_2 = {
-  id: 'cat-2',
-  tenantId: 'tenant-abc-123',
-  name: 'Sales Revenue',
-  type: 'INCOME',
-  parentCategoryId: null,
-  color: '#34D399',
-  isActive: true,
-  createdAt: new Date('2024-01-01'),
-  updatedAt: new Date('2024-01-01'),
-  deletedAt: null,
-  childCategories: [],
-  _count: { transactions: 0 },
-};
+// ✅ MIGRATION: Replaced inline mocks with type-safe factory
+// Before: MOCK_CATEGORY & MOCK_CATEGORY_2 object literals (28 lines total, manual field management)
+// After: mockCategory() from test-utils (type-safe, auto-updates with schema)
 
 describe('Category Routes', () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    mockListCategories.mockResolvedValue([MOCK_CATEGORY, MOCK_CATEGORY_2]);
-    mockGetCategory.mockResolvedValue(MOCK_CATEGORY);
-    mockCreateCategory.mockResolvedValue(MOCK_CATEGORY);
-    mockUpdateCategory.mockResolvedValue(MOCK_CATEGORY);
+    const category1 = mockCategory({ name: 'Office Supplies', type: 'EXPENSE', _count: { transactions: 5 } });
+    const category2 = mockCategory({ name: 'Sales Revenue', type: 'INCOME', color: '#34D399', _count: { transactions: 0 } });
+    mockListCategories.mockResolvedValue([category1, category2]);
+    mockGetCategory.mockResolvedValue(category1);
+    mockCreateCategory.mockResolvedValue(category1);
+    mockUpdateCategory.mockResolvedValue(category1);
     mockSoftDeleteCategory.mockResolvedValue({ id: 'cat-1', deletedAt: new Date() });
     mockSeedDefaults.mockResolvedValue({ created: 20, existing: 0 });
 
@@ -263,7 +240,7 @@ describe('Category Routes', () => {
 
   describe('PATCH /categories/:id', () => {
     it('should return 200 with updated category', async () => {
-      const updated = { ...MOCK_CATEGORY, name: 'Updated Name' };
+      const updated = mockCategory({ name: 'Updated Name' });
       mockUpdateCategory.mockResolvedValueOnce(updated);
 
       const response = await app.inject({
@@ -309,7 +286,7 @@ describe('Category Routes', () => {
     });
 
     it('should allow updating color', async () => {
-      const updated = { ...MOCK_CATEGORY, color: '#FF5733' };
+      const updated = mockCategory({ color: '#FF5733' });
       mockUpdateCategory.mockResolvedValueOnce(updated);
 
       const response = await app.inject({
@@ -324,7 +301,7 @@ describe('Category Routes', () => {
     });
 
     it('should allow deactivating a category', async () => {
-      const updated = { ...MOCK_CATEGORY, isActive: false };
+      const updated = mockCategory({ isActive: false });
       mockUpdateCategory.mockResolvedValueOnce(updated);
 
       const response = await app.inject({

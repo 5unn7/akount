@@ -29,6 +29,19 @@ jobs:
       - name: Generate Prisma Client
         run: npm run db:generate
 
+      - name: Check Factory Drift
+        run: |
+          # Verify generated factories are in sync with schema
+          if git diff --exit-code apps/api/src/__generated__/fabbrica/; then
+            echo "✅ Factories in sync with Prisma schema"
+          else
+            echo "::error::❌ Factory drift detected!"
+            echo "::error::Factories are out of sync with schema.prisma"
+            echo "::error::Run 'npm run db:generate' locally and commit the changes"
+            git diff apps/api/src/__generated__/fabbrica/ | head -50
+            exit 1
+          fi
+
       - name: Lint
         run: npm run lint
 

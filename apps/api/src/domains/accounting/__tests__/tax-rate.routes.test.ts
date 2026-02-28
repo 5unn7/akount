@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { taxRateRoutes } from '../routes/tax-rate';
 import { AccountingError } from '../errors';
+import { mockTaxRate, mockTaxRateInput } from '../../../test-utils';
 
 // Mock middleware
 vi.mock('../../../middleware/auth', () => ({
@@ -62,33 +63,24 @@ vi.mock('../services/tax-rate.service', () => ({
   },
 }));
 
-const MOCK_TAX_RATE = {
-  id: 'tax-rate-1',
-  entityId: 'entity-1',
-  code: 'GST-5',
-  name: 'GST 5%',
-  rateBasisPoints: 500, // FIN-32: 5% in basis points
-  jurisdiction: 'Canada - Federal',
-  isInclusive: false,
-  glAccountId: null,
-  isActive: true,
-  effectiveFrom: '2024-01-01T00:00:00.000Z',
-  effectiveTo: null,
-};
+// ✅ MIGRATION: Replaced inline mock with type-safe factory
+// Before: const MOCK_TAX_RATE = { id, code, rate: 5, ... } (15 lines, breaks on schema change)
+// After: mockTaxRate() from test-utils (type-safe, auto-updates with schema)
 
 describe('TaxRate Routes', () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    mockListTaxRates.mockResolvedValue([MOCK_TAX_RATE]);
-    mockGetTaxRate.mockResolvedValue(MOCK_TAX_RATE);
-    mockCreateTaxRate.mockResolvedValue(MOCK_TAX_RATE);
-    mockUpdateTaxRate.mockResolvedValue({ ...MOCK_TAX_RATE, name: 'Updated GST' });
+    const taxRate = mockTaxRate({ code: 'GST-5', name: 'GST 5%' });
+    mockListTaxRates.mockResolvedValue([taxRate]);
+    mockGetTaxRate.mockResolvedValue(taxRate);
+    mockCreateTaxRate.mockResolvedValue(taxRate);
+    mockUpdateTaxRate.mockResolvedValue({ ...taxRate, name: 'Updated GST' });
     mockDeactivateTaxRate.mockResolvedValue({
-      ...MOCK_TAX_RATE,
+      ...taxRate,
       isActive: false,
-      effectiveTo: '2026-02-22T00:00:00.000Z',
+      effectiveTo: new Date('2026-02-22T00:00:00.000Z'),
     });
 
     app = Fastify({ logger: false });
@@ -169,17 +161,14 @@ describe('TaxRate Routes', () => {
 
   describe('POST /tax-rates', () => {
     it('should return 201 on successful creation', async () => {
+      // ✅ Using validated input factory (catches schema drift at test-write time)
+      const input = mockTaxRateInput({ code: 'GST-5', name: 'GST 5%' });
+
       const response = await app.inject({
         method: 'POST',
         url: '/tax-rates',
         headers: { authorization: 'Bearer test-token' },
-        payload: {
-          code: 'GST-5',
-          name: 'GST 5%',
-          rateBasisPoints: 500,
-          jurisdiction: 'Canada - Federal',
-          effectiveFrom: '2024-01-01T00:00:00.000Z',
-        },
+        payload: input,
       });
 
       expect(response.statusCode).toBe(201);
@@ -191,17 +180,13 @@ describe('TaxRate Routes', () => {
         new AccountingError("Tax rate code 'GST-5' already exists", 'DUPLICATE_TAX_CODE', 409)
       );
 
+      const input = mockTaxRateInput({ code: 'GST-5', name: 'GST 5%' });
+
       const response = await app.inject({
         method: 'POST',
         url: '/tax-rates',
         headers: { authorization: 'Bearer test-token' },
-        payload: {
-          code: 'GST-5',
-          name: 'GST 5%',
-          rateBasisPoints: 500,
-          jurisdiction: 'Canada - Federal',
-          effectiveFrom: '2024-01-01T00:00:00.000Z',
-        },
+        payload: input,
       });
 
       expect(response.statusCode).toBe(409);
