@@ -88,6 +88,7 @@ const KEYWORD_MAP = {
 
 /**
  * Load adjacency matrix
+ * Supports both v1 (flat arrays) and v2 (semantic relationships) formats
  */
 function loadAdjacencyMatrix() {
   if (!fs.existsSync(ADJACENCY_FILE)) {
@@ -98,9 +99,25 @@ function loadAdjacencyMatrix() {
   const content = fs.readFileSync(ADJACENCY_FILE, 'utf-8');
   const data = JSON.parse(content);
 
-  // Remove comment keys
+  // V2 format (semantic relationships)
+  if (data.relationships) {
+    const flatMatrix = {};
+    for (const [domain, relationships] of Object.entries(data.relationships)) {
+      // Skip domains with only _note (they have no relationships)
+      if (typeof relationships === 'object' && !relationships._note) {
+        flatMatrix[domain] = Object.keys(relationships).filter(key => !key.startsWith('_'));
+      } else {
+        flatMatrix[domain] = [];
+      }
+    }
+    return flatMatrix;
+  }
+
+  // V1 format (flat arrays) - backward compatibility
   delete data.$comment;
   delete data._rationale;
+  delete data.version;
+  delete data.lastUpdated;
 
   return data;
 }

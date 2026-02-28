@@ -1,20 +1,175 @@
 {
-  "$comment": "Domain adjacency matrix for multi-domain code index loading. When working in one domain, auto-load adjacent domains that commonly interact.",
-  "banking": ["accounting"],
-  "invoicing": ["accounting"],
-  "vendors": ["accounting"],
-  "accounting": [],
-  "planning": ["accounting", "banking"],
-  "ai": ["banking", "accounting"],
-  "web-pages": ["web-components"],
-  "web-components": [],
-  "packages": [],
-  "_rationale": {
-    "banking → accounting": "Transfers create journal entries, account reconciliation",
-    "invoicing → accounting": "Invoice posting to GL (revenue recognition)",
-    "vendors → accounting": "Bill payments create journal entries (AP)",
-    "planning → accounting + banking": "Budget vs actuals (GL), cash flow projections (accounts)",
-    "ai → banking + accounting": "Transaction categorization, auto-posting rules",
-    "web-pages → web-components": "Pages import shared components and utils"
+  "$schema": "Domain Adjacency Matrix v2 - Semantic Relationships",
+  "$comment": "Enhanced adjacency with relationship types, descriptions, touchpoints, and data flow. Use this for multi-domain code index loading with context-aware suggestions.",
+  "version": "2.0",
+  "lastUpdated": "2026-02-27",
+  "relationships": {
+    "banking": {
+      "accounting": {
+        "relationship": "creates",
+        "description": "Bank transfers and account reconciliations create journal entries in accounting",
+        "touchpoints": [
+          "transfer.service.ts → journal-entry.service.ts (createJournalEntry)",
+          "reconciliation.service.ts → journal-entry.service.ts (reconciliation entries)"
+        ],
+        "dataFlow": "banking creates JEs in accounting (debit/credit based on transfer direction)",
+        "commonPatterns": [
+          "Transfer → JE with 2 lines (debit one account, credit another)",
+          "Reconciliation → adjustment JE for discrepancies"
+        ],
+        "strength": "high"
+      }
+    },
+    "invoicing": {
+      "accounting": {
+        "relationship": "posts",
+        "description": "Invoice lifecycle events (draft→sent→paid→voided) post journal entries to GL for revenue recognition and AR",
+        "touchpoints": [
+          "invoice.service.ts → journal-entry.service.ts (postInvoice, voidInvoice)",
+          "credit-note.service.ts → journal-entry.service.ts (revenue reversals)"
+        ],
+        "dataFlow": "invoicing posts AR entries to accounting (debit AR, credit Revenue on invoice; debit Cash, credit AR on payment)",
+        "commonPatterns": [
+          "Invoice posted → JE (DR: Accounts Receivable, CR: Revenue)",
+          "Payment received → JE (DR: Cash, CR: Accounts Receivable)",
+          "Void invoice → reversing JE (swap debits/credits)"
+        ],
+        "strength": "high"
+      },
+      "clients": {
+        "relationship": "references",
+        "description": "Invoices reference client data (name, email, billing address) for document generation and communication",
+        "touchpoints": [
+          "invoice.service.ts → client.service.ts (getClient for invoice creation)",
+          "invoice-pdf.ts → client.service.ts (client details for PDF)"
+        ],
+        "dataFlow": "invoicing reads from clients (no writes, read-only relationship)",
+        "commonPatterns": [
+          "Create invoice → fetch client details",
+          "Generate PDF → fetch client billing address"
+        ],
+        "strength": "medium"
+      }
+    },
+    "vendors": {
+      "accounting": {
+        "relationship": "posts",
+        "description": "Vendor bill lifecycle events (draft→approved→paid→voided) post journal entries to GL for expense recognition and AP",
+        "touchpoints": [
+          "bill.service.ts → journal-entry.service.ts (postBill, voidBill)",
+          "payment.service.ts → journal-entry.service.ts (bill payment JEs)"
+        ],
+        "dataFlow": "vendors posts AP entries to accounting (debit Expense, credit AP on bill; debit AP, credit Cash on payment)",
+        "commonPatterns": [
+          "Bill posted → JE (DR: Expense, CR: Accounts Payable)",
+          "Payment made → JE (DR: Accounts Payable, CR: Cash)",
+          "Void bill → reversing JE"
+        ],
+        "strength": "high"
+      }
+    },
+    "accounting": {
+      "_note": "Accounting is a sink domain — other domains write to it, but accounting rarely writes to other domains"
+    },
+    "planning": {
+      "accounting": {
+        "relationship": "analyzes",
+        "description": "Planning reads GL data for budget vs actual analysis, variance reports, and forecasting",
+        "touchpoints": [
+          "budget.service.ts → journal-entry.service.ts (actual spend from GL)",
+          "forecast.service.ts → report.service.ts (historical P&L trends)"
+        ],
+        "dataFlow": "planning reads from accounting (budget vs actual comparisons, no writes)",
+        "commonPatterns": [
+          "Budget variance → query GL for category spend this period",
+          "Forecast → analyze last 12 months GL trends"
+        ],
+        "strength": "medium"
+      },
+      "banking": {
+        "relationship": "projects",
+        "description": "Planning uses bank account balances and transaction history for cash flow projections and runway calculations",
+        "touchpoints": [
+          "forecast.service.ts → account.service.ts (current balances)",
+          "cash-flow.service.ts → transaction.service.ts (historical cash movements)"
+        ],
+        "dataFlow": "planning reads from banking (cash flow projections based on account balances and transaction trends)",
+        "commonPatterns": [
+          "Cash runway → current balance / avg monthly burn",
+          "Cash flow forecast → project future balances from transaction trends"
+        ],
+        "strength": "medium"
+      }
+    },
+    "ai": {
+      "banking": {
+        "relationship": "categorizes",
+        "description": "AI categorizes bank transactions and suggests GL account mappings based on learned rules",
+        "touchpoints": [
+          "categorization.service.ts → transaction.service.ts (auto-categorize transactions)",
+          "rule.service.ts → transaction.service.ts (apply categorization rules)"
+        ],
+        "dataFlow": "ai reads from banking (transactions) and writes back (category assignments)",
+        "commonPatterns": [
+          "New transaction → AI suggests category + GL account",
+          "Rule created → AI applies to past transactions retroactively"
+        ],
+        "strength": "high"
+      },
+      "accounting": {
+        "relationship": "suggests",
+        "description": "AI suggests GL account mappings, detects anomalies in journal entries, and recommends categorization improvements",
+        "touchpoints": [
+          "categorization.service.ts → category.service.ts (GL account suggestions)",
+          "insight.service.ts → journal-entry.service.ts (anomaly detection)"
+        ],
+        "dataFlow": "ai reads from accounting (journal entries, categories) and suggests improvements (no direct writes)",
+        "commonPatterns": [
+          "Uncategorized transaction → AI suggests GL account based on description",
+          "Unusual journal entry → AI flags for review"
+        ],
+        "strength": "medium"
+      }
+    },
+    "web-pages": {
+      "web-components": {
+        "relationship": "composes",
+        "description": "Pages compose UI from shared components, layouts, and utilities",
+        "touchpoints": [
+          "app/(dashboard)/banking/page.tsx → components/ui/ (buttons, cards, tables)",
+          "app/(dashboard)/*/layout.tsx → components/shared/DomainTabs (navigation)"
+        ],
+        "dataFlow": "web-pages imports from web-components (one-way, read-only)",
+        "commonPatterns": [
+          "Page → import Card, Button, Table from @akount/ui",
+          "Layout → import DomainTabs, Sidebar from shared"
+        ],
+        "strength": "high"
+      }
+    },
+    "web-components": {
+      "_note": "Web components is a leaf domain — imported by web-pages but doesn't import from other domains (except packages)"
+    },
+    "packages": {
+      "_note": "Packages (db, types, design-tokens, ui) are foundation domains — imported by all others but import nothing"
+    }
+  },
+  "strengthLegend": {
+    "high": "Frequent interaction, critical for domain function, changes often cascade",
+    "medium": "Regular interaction, important but not critical, changes occasionally cascade",
+    "low": "Occasional interaction, loosely coupled, changes rarely cascade"
+  },
+  "relationshipTypes": {
+    "creates": "Source domain creates records in target domain (e.g., banking creates JEs in accounting)",
+    "posts": "Source domain posts financial entries to target domain (invoicing posts to GL)",
+    "references": "Source domain reads data from target domain (read-only)",
+    "analyzes": "Source domain analyzes data from target domain for reporting/insights",
+    "projects": "Source domain uses target domain data for forecasting/planning",
+    "categorizes": "Source domain applies categorization/classification to target domain data",
+    "suggests": "Source domain provides AI-powered suggestions to target domain",
+    "composes": "Source domain imports and composes UI from target domain"
+  },
+  "migrationGuide": {
+    "v1ToV2": "For backward compatibility with load-code-index.js, extract flat arrays from relationships[domain].keys(). Example: banking → [accounting] extracted from relationships.banking.accounting."
   }
 }
