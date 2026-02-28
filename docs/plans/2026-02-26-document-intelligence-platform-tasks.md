@@ -14,11 +14,11 @@
 |-------|-------|-------|------|--------|
 | **1** | Foundation (A + B core + E basics) | 22 | 22 | **✅ Complete (100%)** |
 | **1.5** | **Security Hardening (Review Follow-Up)** | **4** | **4** | **✅ Complete (100%)** |
-| **2** | Expand + Smart (B UIs + C1-C4) | 8 | 0 | Not started |
+| **2** | Expand + Smart (B UIs + C1-C4) | 8 | 8 | **✅ Complete (100%)** |
 | **3** | Compliance + Narration (C5-C9 + E6-E9) | 8 | 0 | Not started |
 | **4** | Matching + Learning (D + F) | 9 | 0 | Not started |
 | **5** | Polish + Scale | — | — | Not started |
-| **Total** | | **51** | **26** | **51%** |
+| **Total** | | **51** | **34** | **67%** |
 
 ---
 
@@ -95,21 +95,21 @@
 
 | ID | Track | Task | Effort | Priority | Status | Deps | Source |
 |----|-------|------|--------|----------|--------|------|--------|
-| DEV-242 | B8 | Bank statement parsing — Mistral primary (replace regex) | 6-8h | Critical | Ready | DEV-230, DEV-231, DEV-235 | plan:doc-intel |
-| DEV-243 | B9 | Upload UI — bill scan (drag-drop, SSE progress, review) | 4-6h | High | Ready | DEV-234, DEV-240 | plan:doc-intel |
-| DEV-244 | B10 | Upload UI — invoice scan (line items, payment terms) | 3-4h | High | Ready | DEV-234, DEV-241 | plan:doc-intel |
-| DEV-245 | B11 | Review queue UI (`/business/review` — pending extractions) | 4-6h | High | Ready | DEV-238, DEV-239 | plan:doc-intel |
+| DEV-242 | B8 | Bank statement parsing — Mistral primary (replace regex) | 6-8h | Critical | ✅ Done (9c3a732) | DEV-230, DEV-231, DEV-235 | plan:doc-intel |
+| DEV-243 | B9 | Upload UI — bill scan (drag-drop, SSE progress, review) | 4-6h | High | ✅ Done (d8b3a3b) | DEV-234, DEV-240 | plan:doc-intel |
+| DEV-244 | B10 | Upload UI — invoice scan (line items, payment terms) | 3-4h | High | ✅ Done (33443ba) | DEV-234, DEV-241 | plan:doc-intel |
+| DEV-245 | B11 | Review queue UI (`/business/review` — pending extractions) | 4-6h | High | ✅ Done (earlier) | DEV-238, DEV-239 | plan:doc-intel |
 
 ### Track C: Smart Automation (NL Features)
 
 | ID | Track | Task | Effort | Priority | Status | Deps | Source |
 |----|-------|------|--------|----------|--------|------|--------|
-| DEV-246 | C1 | NL bookkeeping endpoint + service (Mistral function calling) | 4-6h | High | Ready | DEV-230, DEV-232 | plan:doc-intel |
-| DEV-247 | C2 | NL bookkeeping UI (text input bar on dashboard) | 2-3h | High | Ready | DEV-246 | plan:doc-intel |
-| DEV-248 | C3 | Smart NL search endpoint (query → structured filter) | 3-4h | Medium | Ready | DEV-230, DEV-232 | plan:doc-intel |
-| DEV-249 | C4 | NL search UI (search bar with AI mode toggle) | 2-3h | Medium | Ready | DEV-248 | plan:doc-intel |
+| DEV-246 | C1 | NL bookkeeping endpoint + service (Mistral function calling) | 4-6h | High | ✅ Done (708a671) | DEV-230, DEV-232 | plan:doc-intel |
+| DEV-247 | C2 | NL bookkeeping UI (text input bar on dashboard) | 2-3h | High | ✅ Done (2526532) | DEV-246 | plan:doc-intel |
+| DEV-248 | C3 | Smart NL search endpoint (query → structured filter) | 3-4h | Medium | ✅ Done (800da6d) | DEV-230, DEV-232 | plan:doc-intel |
+| DEV-249 | C4 | NL search UI (search bar with AI mode toggle) | 2-3h | Medium | ✅ Done (e30cfca) | DEV-248 | plan:doc-intel |
 
-**Phase 2 total: 8 tasks**
+**Phase 2 total: 8 tasks** — **✅ COMPLETE (100%)**
 
 ---
 
