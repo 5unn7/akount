@@ -121,6 +121,27 @@ fi
 
 ---
 
+### Phase 1.5: Production Signals (10 seconds)
+
+Check for unresolved production issues:
+
+```bash
+# Run production signals reader
+node .claude/scripts/read-production-signals.js
+```
+
+**Output includes:**
+
+- High-severity errors from production
+- Performance regressions (slow endpoints)
+- Security alerts
+- Deprecation warnings
+- Sorted by severity + frequency
+
+**If no signals file:** Display "_No production signals (not yet configured)._"
+
+---
+
 ### Phase 2: Check for Blockers (15 seconds)
 
 Scan for potential blockers:
@@ -319,6 +340,11 @@ Consolidate everything into a concise dashboard:
 - Branch: [branch]
 - Uncommitted files: [count]
 - Recent commits: [last 3]
+
+---
+
+## Production Signals
+[Output from read-production-signals.js script]
 
 ---
 
