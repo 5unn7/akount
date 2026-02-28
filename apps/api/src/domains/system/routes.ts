@@ -13,6 +13,7 @@ import { onboardingProgressRoutes } from './routes/onboarding-progress';
 import { entityRoutes } from './routes/entity';
 import { entityManagementRoutes } from './routes/entities';
 import { consentRoutes } from './routes/consent';
+import { aiDataDeletionRoutes } from './routes/ai-data-deletion.routes';
 
 // Validation schemas
 const auditLogQuerySchema = z.object({
@@ -58,6 +59,7 @@ export async function systemRoutes(fastify: FastifyInstance) {
     await tenantScope.register(entityRoutes, { prefix: '/entity' });
     await tenantScope.register(entityManagementRoutes, { prefix: '/entities' });
     await tenantScope.register(consentRoutes, { prefix: '/consent' });
+    await tenantScope.register(aiDataDeletionRoutes, { prefix: '/ai-data' });
 
     // ============================================================================
     // USERS
