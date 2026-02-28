@@ -11,6 +11,7 @@ import { EntitySelector } from '@akount/ui/business';
 import { formatReportDate, downloadReport, type ProfitLossReport, type ReportLineItem } from '@/lib/api/reports-client';
 import { formatCurrency } from '@/lib/utils/currency';
 import { SimpleBarChart } from '@/components/charts/SimpleBarChart';
+import { ReportNarration } from '@/components/accounting/ReportNarration';
 
 interface PLReportViewProps {
     initialData: ProfitLossReport | null;
@@ -128,6 +129,16 @@ export function PLReportView({ initialData, initialParams, error, entities = [] 
 
             {initialData && (
                 <div className="space-y-6">
+                    {/* AI Narration - DEV-251 */}
+                    {entityId && (
+                        <ReportNarration
+                            reportType="PROFIT_LOSS"
+                            reportData={initialData}
+                            entityId={entityId}
+                            title="AI Summary: Profit & Loss"
+                        />
+                    )}
+
                     {/* Report Header */}
                     <div className="glass rounded-xl p-6">
                         <div className="flex items-center justify-between">
