@@ -40,7 +40,9 @@ const DOMAIN_INDEX_MAP = {
   planning: 'CODEBASE-PLANNING.md',
   ai: 'CODEBASE-AI.md',
   'web-pages': 'CODEBASE-WEB-PAGES.md',
-  'web-components': 'CODEBASE-WEB-COMPONENTS.md',
+  'web-business': 'CODEBASE-WEB-BUSINESS.md',
+  'web-shared': 'CODEBASE-WEB-SHARED.md',
+  'web-forms': 'CODEBASE-WEB-FORMS.md',
   packages: 'CODEBASE-PACKAGES.md',
 };
 
@@ -84,6 +86,17 @@ const KEYWORD_MAP = {
   insight: ['ai'],
   rule: ['ai', 'banking'],
   'auto-categorize': ['ai', 'banking'],
+
+  // Web UI
+  component: ['web-shared', 'web-business'],
+  form: ['web-forms', 'web-shared'],
+  button: ['web-shared'],
+  input: ['web-forms', 'web-shared'],
+  modal: ['web-shared'],
+  'status badge': ['web-business'],
+  'entity card': ['web-business'],
+  layout: ['web-shared'],
+  dashboard: ['web-shared', 'web-pages'],
 };
 
 /**

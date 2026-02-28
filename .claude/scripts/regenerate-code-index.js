@@ -68,13 +68,33 @@ const DOMAINS = {
     ],
     indexFile: 'CODEBASE-WEB-PAGES.md',
   },
-  'web-components': {
-    name: 'WEB-COMPONENTS',
+  'web-business': {
+    name: 'WEB-BUSINESS',
     paths: [
-      'apps/web/src/components/**/*.tsx',
+      'apps/web/src/components/business/**/*.tsx',
+      'apps/web/src/components/invoicing/**/*.tsx',
+      'apps/web/src/components/entities/**/*.tsx',
+    ],
+    indexFile: 'CODEBASE-WEB-BUSINESS.md',
+  },
+  'web-shared': {
+    name: 'WEB-SHARED',
+    paths: [
+      'apps/web/src/components/ui/**/*.tsx',
+      'apps/web/src/components/shared/**/*.tsx',
+      'apps/web/src/components/layout/**/*.tsx',
+      'apps/web/src/components/dashboard/**/*.tsx',
       'apps/web/src/lib/**/*.ts',
     ],
-    indexFile: 'CODEBASE-WEB-COMPONENTS.md',
+    indexFile: 'CODEBASE-WEB-SHARED.md',
+  },
+  'web-forms': {
+    name: 'WEB-FORMS',
+    paths: [
+      'apps/web/src/components/forms/**/*.tsx',
+      'apps/web/src/components/accounts/**/*.tsx',
+    ],
+    indexFile: 'CODEBASE-WEB-FORMS.md',
   },
   packages: {
     name: 'PACKAGES',
