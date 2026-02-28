@@ -6,6 +6,7 @@ import {
 } from '../services/ai-data-deletion.service';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
+import { prisma } from '@akount/db';
 
 /**
  * AI Data Deletion Routes (SEC-35)
@@ -179,6 +180,80 @@ export async function aiDataDeletionRoutes(fastify: FastifyInstance) {
             error instanceof Error
               ? error.message
               : 'Failed to delete AI data',
+        });
+      }
+    }
+  );
+
+  /**
+   * Export user's AI decisions as CSV
+   *
+   * GET /api/system/ai-data/export
+   *
+   * Implements CCPA right to access AI decisions.
+   * Returns all AIDecisionLog entries for the authenticated user's tenant.
+   */
+  fastify.get(
+    '/export',
+    {
+      preHandler: [authMiddleware, tenantMiddleware],
+    },
+    async (request, reply) => {
+      const userId = request.userId!;
+      const tenantId = request.tenantId!;
+
+      try {
+        // Fetch all AI decision logs for this tenant
+        const decisions = await prisma.aIDecisionLog.findMany({
+          where: { tenantId },
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            decisionType: true,
+            modelVersion: true,
+            confidence: true,
+            routingResult: true,
+            aiExplanation: true,
+            consentStatus: true,
+            createdAt: true,
+            documentId: true,
+          },
+        });
+
+        // Convert to CSV
+        const csvHeader = 'Date,Decision Type,Model,Confidence,Result,Explanation,Consent Status,Document ID\n';
+        const csvRows = decisions.map((d) => {
+          const date = d.createdAt.toISOString();
+          const type = d.decisionType;
+          const model = d.modelVersion;
+          const confidence = d.confidence ?? 'N/A';
+          const result = d.routingResult;
+          const explanation = (d.aiExplanation || '').replace(/"/g, '""'); // Escape quotes
+          const consent = d.consentStatus || 'unknown';
+          const docId = d.documentId || '';
+
+          return `"${date}","${type}","${model}","${confidence}","${result}","${explanation}","${consent}","${docId}"`;
+        }).join('\n');
+
+        const csv = csvHeader + csvRows;
+
+        request.log.info(
+          { userId, tenantId, decisionCount: decisions.length },
+          'AI decisions exported as CSV (CCPA right to access)'
+        );
+
+        // Send as downloadable CSV file
+        return reply
+          .header('Content-Type', 'text/csv')
+          .header('Content-Disposition', `attachment; filename="ai-decisions-${new Date().toISOString().split('T')[0]}.csv"`)
+          .status(200)
+          .send(csv);
+      } catch (error: unknown) {
+        request.log.error({ err: error, userId, tenantId }, 'AI decision export failed');
+
+        return reply.status(500).send({
+          error: 'Internal Server Error',
+          message: 'Failed to export AI decisions',
         });
       }
     }

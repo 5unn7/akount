@@ -344,4 +344,124 @@ describe('AI Data Deletion Routes (SEC-35)', () => {
       expect(durationMs).toBeLessThan(100);
     });
   });
+
+  describe('GET /export', () => {
+    it('should export AI decisions as CSV', async () => {
+      const mockDecisions = [
+        {
+          id: 'decision1',
+          decisionType: 'BILL_EXTRACTION',
+          modelVersion: 'pixtral-large-latest',
+          confidence: 92,
+          routingResult: 'AUTO_CREATED',
+          aiExplanation: 'High confidence extraction',
+          consentStatus: 'granted',
+          createdAt: new Date('2026-02-28T10:00:00Z'),
+          documentId: 'doc123',
+        },
+        {
+          id: 'decision2',
+          decisionType: 'CATEGORIZATION',
+          modelVersion: 'mistral-large-latest',
+          confidence: 85,
+          routingResult: 'QUEUED_FOR_REVIEW',
+          aiExplanation: 'Medium confidence categorization',
+          consentStatus: 'granted',
+          createdAt: new Date('2026-02-27T15:30:00Z'),
+          documentId: null,
+        },
+      ];
+
+      mockPrisma.aIDecisionLog.findMany.mockResolvedValueOnce(mockDecisions);
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/export',
+        headers: AUTH_HEADERS,
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['content-type']).toBe('text/csv');
+      expect(response.headers['content-disposition']).toContain('attachment');
+      expect(response.headers['content-disposition']).toContain('ai-decisions');
+
+      // Verify CSV structure
+      const csv = response.body;
+      expect(csv).toContain('Date,Decision Type,Model,Confidence,Result,Explanation,Consent Status,Document ID');
+      expect(csv).toContain('BILL_EXTRACTION');
+      expect(csv).toContain('pixtral-large-latest');
+      expect(csv).toContain('AUTO_CREATED');
+      expect(csv).toContain('High confidence extraction');
+
+      expect(mockPrisma.aIDecisionLog.findMany).toHaveBeenCalledWith({
+        where: { tenantId: TEST_TENANT_ID },
+        orderBy: { createdAt: 'desc' },
+        select: expect.objectContaining({
+          id: true,
+          decisionType: true,
+          modelVersion: true,
+        }),
+      });
+    });
+
+    it('should handle empty decision log gracefully', async () => {
+      mockPrisma.aIDecisionLog.findMany.mockResolvedValueOnce([]);
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/export',
+        headers: AUTH_HEADERS,
+      });
+
+      expect(response.statusCode).toBe(200);
+
+      const csv = response.body;
+      expect(csv).toContain('Date,Decision Type,Model,Confidence');
+      // Should only have header, no data rows
+      expect(csv.split('\n').length).toBe(2); // Header + empty line
+    });
+
+    it('should escape quotes in CSV fields', async () => {
+      mockPrisma.aIDecisionLog.findMany.mockResolvedValueOnce([
+        {
+          id: 'decision_quotes',
+          decisionType: 'CATEGORIZATION',
+          modelVersion: 'mistral-large-latest',
+          confidence: 88,
+          routingResult: 'AUTO_CREATED',
+          aiExplanation: 'Vendor "ABC Corp" categorized as Office Supplies',
+          consentStatus: 'granted',
+          createdAt: new Date('2026-02-28T10:00:00Z'),
+          documentId: null,
+        },
+      ]);
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/export',
+        headers: AUTH_HEADERS,
+      });
+
+      const csv = response.body;
+      // Quotes should be escaped as ""
+      expect(csv).toContain('Vendor ""ABC Corp"" categorized');
+    });
+
+    it('should handle export errors', async () => {
+      mockPrisma.aIDecisionLog.findMany.mockRejectedValueOnce(
+        new Error('Database error')
+      );
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/export',
+        headers: AUTH_HEADERS,
+      });
+
+      expect(response.statusCode).toBe(500);
+
+      const body = JSON.parse(response.body);
+      expect(body.error).toBe('Internal Server Error');
+    });
+  });
 });
