@@ -24,6 +24,52 @@ const PROJECT_ROOT = path.join(__dirname, '../..');
 // Load code index loader
 const { loadIndexes } = require('./load-code-index');
 
+const CACHE_FILE = path.join(PROJECT_ROOT, '.claude/cache/exports.json');
+
+/**
+ * Check export cache (fast path, before loading indexes)
+ */
+function checkExportCache(importName, modulePath) {
+  // Cache file may not exist yet (not built)
+  if (!fs.existsSync(CACHE_FILE)) {
+    return { found: false, method: 'cache-miss', reason: 'Cache not built' };
+  }
+
+  try {
+    const cache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+
+    // Check if export exists
+    if (!cache.exports[importName]) {
+      return { found: false, method: 'cache', reason: 'Export not in cache' };
+    }
+
+    const exportData = cache.exports[importName];
+
+    // Module path verification (if provided)
+    if (modulePath) {
+      const moduleClean = modulePath.replace(/^.*\//, '').replace(/\.\w+$/, '');
+      const pathMatch = exportData.paths.some(p => p.includes(moduleClean)) ||
+                        exportData.files.some(f => f.includes(moduleClean));
+
+      if (!pathMatch) {
+        return { found: false, method: 'cache', reason: 'Export exists but not in specified module' };
+      }
+    }
+
+    // Found in cache
+    return {
+      found: true,
+      method: 'cache',
+      domains: exportData.domains,
+      files: exportData.files,
+      paths: exportData.paths,
+    };
+  } catch (error) {
+    // Cache corrupted or invalid, fall back
+    return { found: false, method: 'cache-error', reason: error.message };
+  }
+}
+
 /**
  * Normalize module path for lookup
  */
@@ -162,25 +208,40 @@ function searchWithGrep(importName, modulePath) {
 function verifyImport(importName, modulePath) {
   console.log(`🔍 Verifying import: ${importName} from ${modulePath}\n`);
 
-  // Try index first (fast)
-  console.log('1️⃣ Checking code index...');
+  // Try cache first (fastest)
+  console.log('1️⃣ Checking export cache...');
+  const cacheResult = checkExportCache(importName, modulePath);
+
+  if (cacheResult.found) {
+    console.log(`✅ Found in cache: ${cacheResult.paths[0]}`);
+    console.log(`   Domains: ${cacheResult.domains.join(', ')}`);
+    return { verified: true, method: 'cache', ...cacheResult };
+  }
+
+  console.log(`❌ Not found in cache (${cacheResult.reason})`);
+
+  // Try index (fast)
+  console.log('\n2️⃣ Checking code index...');
   const indexResult = searchIndexForExport(importName, modulePath);
 
   if (indexResult.found) {
     console.log(`✅ Found in index: ${indexResult.file}`);
     console.log(`   Exports: ${indexResult.exports.join(', ')}`);
+    console.log(`⚠️  Cache may be stale, recommend rebuild: node .claude/scripts/build-export-cache.js`);
     return { verified: true, method: 'index', ...indexResult };
   }
 
   console.log(`❌ Not found in index (${indexResult.reason})`);
 
   // Fallback to Grep
-  console.log('\n2️⃣ Falling back to Grep search...');
+  console.log('\n3️⃣ Falling back to Grep search...');
   const grepResult = searchWithGrep(importName, modulePath);
 
   if (grepResult.found) {
     console.log(`✅ Found via Grep: ${grepResult.file}`);
-    console.log(`⚠️  Index may be stale, recommend rebuild`);
+    console.log(`⚠️  Cache and index may be stale`);
+    console.log(`   Rebuild cache: node .claude/scripts/build-export-cache.js`);
+    console.log(`   Rebuild index: node .claude/scripts/regenerate-code-index.js --force`);
     return { verified: true, method: 'grep', ...grepResult };
   }
 
@@ -193,7 +254,7 @@ function verifyImport(importName, modulePath) {
   console.log('  1. Function name is incorrect');
   console.log('  2. Module path is incorrect');
   console.log('  3. Function exists but is not exported');
-  console.log('  4. Code index is stale (run: node .claude/scripts/regenerate-code-index.js --force)');
+  console.log('  4. Cache/index is stale (rebuild both)');
   console.log();
 
   return { verified: false, importName, modulePath, ...grepResult };
@@ -228,4 +289,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { verifyImport, searchIndexForExport, searchWithGrep };
+module.exports = { verifyImport, checkExportCache, searchIndexForExport, searchWithGrep };

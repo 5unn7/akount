@@ -160,6 +160,11 @@ grep "^##" $PLAN_FILE >> docs/reviews/$FEATURE_NAME/plan-summary.md
 - Auth: files containing `auth`, `clerk`, `middleware`
 - Financial: files containing `invoice`, `bill`, `payment`, `journal`, `accounting`
 - Config: `turbo.json`, `package.json`, `tsconfig.json`
+- **AI: files containing `ai/`, `anthropic`, `openai`, `mistral`, `workers/`**
+- **Jobs: files containing `workers/`, `queue/`, `bullmq`**
+- **Export: files containing `export`, `csv`, `excel`, `pdf`, `stringify`**
+- **Infrastructure: `Dockerfile`, `docker-compose`, `.env.example`, `health`**
+- **Compliance: files containing `consent`, `audit`, `deletion`, `export`, `privacy`, or models: `AuditLog`, `AIConsent`**
 
 **For PLAN mode**, parse plan headings for keywords:
 - Database/schema mentions
@@ -204,6 +209,11 @@ priority: high | medium | low
 | `rbac-validator` | code | permissions, roles | all | medium |
 | `data-migration-expert` | code | migrations, data | backend | medium |
 | `turborepo-monorepo-reviewer` | code | monorepo, config | all | low |
+| `ai-integration-reviewer` | code | ai, llm, security | backend | high |
+| `bullmq-job-reviewer` | code | bullmq, redis, jobs | backend | high |
+| `data-export-reviewer` | code | export, csv, excel, pdf | backend | medium |
+| `infrastructure-deployment-reviewer` | code | infrastructure, docker, s3 | infra | high |
+| `compliance-reviewer` | both | gdpr, pipeda, soc2, audit | all | high |
 
 ### Selection algorithm
 
@@ -259,6 +269,23 @@ def select_agents(mode: ReviewMode, scope_tags: dict) -> list[str]:
 
         if scope_tags.get("permissions"):
             agents.append("rbac-validator")
+
+        # Technology-specific (NEW)
+        if scope_tags.get("ai"):
+            agents.append("ai-integration-reviewer")
+
+        if scope_tags.get("jobs"):
+            agents.append("bullmq-job-reviewer")
+
+        if scope_tags.get("export"):
+            agents.append("data-export-reviewer")
+
+        if scope_tags.get("infrastructure"):
+            agents.append("infrastructure-deployment-reviewer")
+
+        # Regulatory compliance (HIGH PRIORITY)
+        if scope_tags.get("compliance"):
+            agents.append("compliance-reviewer")
 
         # Cross-cutting (always include)
         agents.extend([
@@ -337,6 +364,11 @@ def filter_files_for_agent(agent_name: str, all_files: list[str]) -> list[str]:
         "fastify-api-reviewer": lambda f: "apps/api/" in f,
         "prisma-migration-reviewer": lambda f: "packages/db/" in f or "prisma" in f,
         "design-system-enforcer": lambda f: "apps/web/" in f and (".tsx" in f or "globals.css" in f),
+        "ai-integration-reviewer": lambda f: "ai/" in f or "anthropic" in f or "openai" in f or "mistral" in f,
+        "bullmq-job-reviewer": lambda f: "workers/" in f or "queue/" in f or "bullmq" in f,
+        "data-export-reviewer": lambda f: "export" in f or "csv" in f or "excel" in f or "pdf" in f,
+        "infrastructure-deployment-reviewer": lambda f: f in ["Dockerfile", "docker-compose.yml", ".env.example"] or "health" in f,
+        "compliance-reviewer": lambda f: "consent" in f or "audit" in f or "privacy" in f or "AIConsent" in f or "AuditLog" in f or "retention" in f,
         # ... etc
     }
 

@@ -1,27 +1,27 @@
 {
   "$schema": "./tasks.schema.json",
   "version": "2.0",
-  "generated": "2026-02-27T21:27:46.866Z",
+  "generated": "2026-02-28T01:05:28.530Z",
   "generatedBy": "regenerate-task-index.js",
   "summary": {
-    "total": 126,
-    "active": 126,
+    "total": 151,
+    "active": 151,
     "done": 0,
     "stale": 16,
     "riskDistribution": {
-      "low": 79,
-      "medium": 42,
+      "low": 96,
+      "medium": 50,
       "high": 5
     },
     "byPriority": {
-      "critical": 1,
-      "high": 11,
-      "medium": 88,
-      "low": 26
+      "critical": 5,
+      "high": 23,
+      "medium": 92,
+      "low": 31
     },
     "byStatus": {
-      "ready": 19,
-      "blocked": 6,
+      "ready": 43,
+      "blocked": 7,
       "backlog": 100
     }
   },
@@ -31,6 +31,368 @@
     "high": "Read affected files, re-scope the task, and consider running a fresh review before starting. The codebase may have changed significantly since this task was created."
   },
   "tasks": {
+    "SEC-45": {
+      "id": "SEC-45",
+      "title": "Add consent gate middleware to bill/invoice scan routes",
+      "effort": "15m",
+      "effortMinutes": 15,
+      "effortCategory": "quick",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "security",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 28,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "SEC-46": {
+      "id": "SEC-46",
+      "title": "Fix cross-tenant IDOR in worker vendor/client lookups (use entityId not tenantId)",
+      "effort": "10m",
+      "effortMinutes": 10,
+      "effortCategory": "quick",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "security",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 29,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "PERF-27": {
+      "id": "PERF-27",
+      "title": "Add compound indexes for Client/Vendor name lookups (entityId, name, deletedAt)",
+      "effort": "5m",
+      "effortMinutes": 5,
+      "effortCategory": "quick",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 30,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-14": {
+      "id": "ARCH-14",
+      "title": "Fix worker initialization race condition (await ready events)",
+      "effort": "10m",
+      "effortMinutes": 10,
+      "effortCategory": "quick",
+      "priority": "critical",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 31,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "SEC-47": {
+      "id": "SEC-47",
+      "title": "Add Zod validation for multipart entityId field in scan routes",
+      "effort": "15m",
+      "effortMinutes": 15,
+      "effortCategory": "quick",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "security",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 32,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-15": {
+      "id": "ARCH-15",
+      "title": "Change AIConsent CASCADE delete to Restrict (preserve audit trail)",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 33,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-16": {
+      "id": "ARCH-16",
+      "title": "Extract Redis connection config to shared module (DRY)",
+      "effort": "20m",
+      "effortMinutes": 20,
+      "effortCategory": "quick",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 34,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-17": {
+      "id": "ARCH-17",
+      "title": "Migrate rate limiter to Redis-backed (multi-instance support)",
+      "effort": "2-3h",
+      "effortMinutes": 150,
+      "effortCategory": "unknown",
+      "priority": "high",
+      "status": "blocked",
+      "deps": [
+        "PERF-11"
+      ],
+      "domain": "architecture",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 35,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-22": {
+      "id": "DRY-22",
+      "title": "Create domain error handler for business routes (eliminate duplication)",
+      "effort": "20m",
+      "effortMinutes": 20,
+      "effortCategory": "quick",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 36,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "UX-107": {
+      "id": "UX-107",
+      "title": "Add success logging to scan routes (job enqueued successfully)",
+      "effort": "5m",
+      "effortMinutes": 5,
+      "effortCategory": "quick",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 37,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
     "UX-103": {
       "id": "UX-103",
       "title": "Fix HeroSection SSR wrapper import (bypass dynamic ssr:false)",
@@ -43,7 +405,7 @@
       "domain": "ux",
       "source": "review:revie23feb",
       "created": "2026-02-26",
-      "line": 28,
+      "line": 38,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -54,7 +416,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 14,
         "recommendation": "ok"
       },
@@ -79,7 +441,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-20",
-      "line": 29,
+      "line": 39,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -103,7 +465,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 7,
+        "daysSinceVerified": 8,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -128,7 +490,7 @@
       "domain": "infrastructure",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 30,
+      "line": 40,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -152,7 +514,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 5,
         "recommendation": "verify_before_executing"
       },
@@ -161,6 +523,785 @@
       "riskFactors": [
         "age_stale",
         "large_effort"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-18": {
+      "id": "ARCH-18",
+      "title": "Feedback Loop 1: Request timing middleware — Fastify `onRequest`/`onResponse` hooks to measure latency, log slow requests (>500ms) to `.claude/runtime/request-log.json`. Dev-only, zero prod overhead. Register after auth in `apps/api/src/index.ts`.",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 41,
+      "files": [
+        "apps/api/src/middleware/request-timing.ts",
+        "apps/api/src/index.ts",
+        ".claude/runtime/request-log.json"
+      ],
+      "verification": "Start dev server, hit a slow endpoint (e.g., trial-balance report), verify .claude/runtime/request-log.json contains entry with durationMs > 500",
+      "acceptanceCriteria": [
+        "Fastify onRequest hook stamps request.startTime",
+        "Fastify onResponse hook calculates duration and appends to request-log.json if > 500ms",
+        "Log entries include: timestamp, method, url, statusCode, durationMs, slow boolean",
+        "Only active when NODE_ENV === 'development'",
+        "File rotates at 100 entries (oldest removed)",
+        "Registered in index.ts after auth middleware"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "performance",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "PERF-28": {
+      "id": "PERF-28",
+      "title": "Feedback Loop 1: Prisma query observer — Hook `prisma.$on('query')` to detect slow queries (>100ms) and N+1 patterns (same fingerprint >5x/request). Write to `.claude/runtime/query-log.json`. Opt-in via `PRISMA_QUERY_LOG=true` env var.",
+      "effort": "2-4h",
+      "effortMinutes": 180,
+      "effortCategory": "medium",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 42,
+      "files": [
+        "apps/api/src/lib/prisma-observer.ts",
+        "packages/db/src/index.ts",
+        ".claude/runtime/query-log.json"
+      ],
+      "verification": "Set PRISMA_QUERY_LOG=true, trigger a list endpoint with many relations, verify .claude/runtime/query-log.json has slow query entries",
+      "acceptanceCriteria": [
+        "prisma.$on('query') captures events when PRISMA_QUERY_LOG=true",
+        "Slow queries (>100ms) written to query-log.json",
+        "N+1 detection: same query fingerprint >5x in one request flagged",
+        "Log entries include: timestamp, query (truncated), params (sanitized), duration, model, operation",
+        "File rotates at 50 entries",
+        "Zero overhead when env var not set"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "performance",
+        "prisma",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 1,
+      "riskFactors": [
+        "large_effort"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-21": {
+      "id": "ARCH-21",
+      "title": "Feedback Loop 2: Git diff pattern extractor — Script that analyzes `git diff` from session to auto-detect: new utilities, cross-domain changes, bug fix patterns, schema changes, new test files. Output to `.claude/session-patterns.json`. Consumed by end-session.",
+      "effort": "2-4h",
+      "effortMinutes": 180,
+      "effortCategory": "medium",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 43,
+      "files": [
+        ".claude/scripts/extract-session-patterns.js",
+        ".claude/session-patterns.json"
+      ],
+      "verification": "Make a cross-domain commit (touch banking + accounting files), run script, verify output contains cross-domain pattern detection",
+      "acceptanceCriteria": [
+        "Analyzes git diff (last session commits) for 6 pattern types: new utility, new shared component, bug fix, cross-domain change, schema change, new tests",
+        "Cross-domain detection: commits touching 2+ domain folders flagged with domain names",
+        "New utility detection: new exports in lib/utils/ or domains/*/utils/",
+        "Output: .claude/session-patterns.json with patterns array (type, description, files, confidence)",
+        "Also extracts newExports array and schemaChanges array",
+        "Handles empty diff gracefully (no patterns found)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "learning",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 1,
+      "riskFactors": [
+        "large_effort"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-27": {
+      "id": "ARCH-27",
+      "title": "Index V2: Split WEB-COMPONENTS (180 files, 16.9K tokens) into 3 sub-indexes: WEB-BUSINESS (~60 files, `components/business/`), WEB-SHARED (~70 files, `components/ui/`, `components/shared/`), WEB-FORMS (~50 files). Update DOMAIN_INDEX_MAP, adjacency matrix, KEYWORD_MAP.",
+      "effort": "2h",
+      "effortMinutes": 120,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 44,
+      "files": [
+        ".claude/scripts/regenerate-code-index.js",
+        ".claude/scripts/load-code-index.js",
+        ".claude/domain-adjacency.json",
+        "CODEBASE-WEB-BUSINESS.md",
+        "CODEBASE-WEB-SHARED.md",
+        "CODEBASE-WEB-FORMS.md"
+      ],
+      "verification": "Regenerate indexes, verify: CODEBASE-WEB-COMPONENTS.md no longer generated, 3 new files exist, each <8K tokens. Run load-code-index.js with keyword 'form', verify WEB-FORMS loaded.",
+      "acceptanceCriteria": [
+        "3 new domain definitions in regenerate-code-index.js replacing web-components",
+        "WEB-BUSINESS: components/business/, domain-specific components (~60 files, <7K tokens)",
+        "WEB-SHARED: components/ui/, components/shared/, layout components (~70 files, <7K tokens)",
+        "WEB-FORMS: components/forms/, form-related, validation UI (~50 files, <5K tokens)",
+        "DOMAIN_INDEX_MAP updated: web-components removed, 3 new entries added",
+        "Adjacency matrix updated: web-pages → [web-shared], web-business → [web-shared, web-forms]",
+        "KEYWORD_MAP updated for new sub-domains",
+        "CODEBASE-WEB-COMPONENTS.md deleted or deprecated",
+        "Total file coverage unchanged (180 files across 3 sub-indexes)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "code-index",
+        "architecture"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "PERF-29": {
+      "id": "PERF-29",
+      "title": "Index V2: Add caller graph — Add `callers` field per export in code index. Build reverse import map: export → list of importing files. Eliminates \"trace impact\" Greps (2-3 tool calls per lookup). ~30% token increase per domain.",
+      "effort": "2-4h",
+      "effortMinutes": 180,
+      "effortCategory": "medium",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "performance",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 45,
+      "files": [
+        ".claude/scripts/regenerate-code-index.js"
+      ],
+      "verification": "Regenerate banking index, verify account.service entry has callers field showing which route/service files import AccountService. Cross-check with Grep.",
+      "acceptanceCriteria": [
+        "Two-pass algorithm: (1) collect all exports per file (existing), (2) for each file's imports resolve which exports are used, build reverse map",
+        "New 'c' (callers) field per file entry: { exportName: [importingFile1, importingFile2] }",
+        "Barrel file (index.ts) re-exports resolved to original source file",
+        "Handles relative imports (../../accounting/services/journal-entry.service)",
+        "Handles package imports (@akount/db, @akount/ui)",
+        "Token impact: ~30% increase per domain (~3K extra tokens), still fits 2-domain budget",
+        "Eliminates need for reverse-dependency Grep calls (2-3 tool calls saved per lookup)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "code-index",
+        "performance"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 7,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 1,
+      "riskFactors": [
+        "large_effort"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-19": {
+      "id": "ARCH-19",
+      "title": "Feedback Loop 1: Runtime error collector — Wrap existing `errorHandler.ts` to ALSO append unhandled/500 errors to `.claude/runtime/error-log.json` with stack trace (10 lines), request context, dedup (same message within 5min = increment count). Dev-only, keep last 50 entries.",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 52,
+      "files": [
+        "apps/api/src/middleware/error-collector.ts",
+        "apps/api/src/middleware/errorHandler.ts",
+        ".claude/runtime/error-log.json"
+      ],
+      "verification": "Trigger a 500 error in dev, verify .claude/runtime/error-log.json contains entry with stack trace and request context",
+      "acceptanceCriteria": [
+        "Wraps existing errorHandler (does NOT replace it)",
+        "Appends unhandled/500 errors to error-log.json",
+        "Includes: timestamp, error.message, stack (10 lines max), request.url, request.method, tenantId",
+        "Dedup: same error.message within 5 min increments count instead of duplicating",
+        "File rotates at 50 entries",
+        "Dev-only (NODE_ENV === 'development')"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "error-handling",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-20": {
+      "id": "ARCH-20",
+      "title": "Feedback Loop 1: Runtime summary script — Reads `.claude/runtime/request-log.json`, `query-log.json`, `error-log.json` and produces human-readable summary for `/processes:begin`. Shows slow endpoints, N+1 queries, unhandled errors since last session.",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 53,
+      "files": [
+        ".claude/scripts/runtime-summary.js",
+        ".claude/commands/processes/begin.md"
+      ],
+      "verification": "Run `node .claude/scripts/runtime-summary.js` with sample runtime logs, verify markdown output shows slow requests, slow queries, N+1 patterns, and errors",
+      "acceptanceCriteria": [
+        "Reads .claude/runtime/request-log.json, query-log.json, error-log.json",
+        "Produces markdown summary: slow requests (count + worst offender), slow queries, N+1 patterns, error list",
+        "begin.md updated to run this script and display output in 'Runtime Signals' section",
+        "Gracefully handles missing/empty log files (shows 'No runtime signals')",
+        "Only shows entries since last session (uses last-session-commit.txt timestamp if available)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "workflow",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-22": {
+      "id": "ARCH-22",
+      "title": "Feedback Loop 2: Enhance end-session with auto-capture — Add Step 1c to `end-session.md` that runs `extract-session-patterns.js`, auto-populates \"Patterns Discovered\" and \"Bugs Fixed\" sections. Agent reviews auto-fill (can edit/remove false positives).",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "ARCH-21"
+      ],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 54,
+      "files": [
+        ".claude/commands/processes/end-session.md"
+      ],
+      "verification": "Run /processes:end-session after a session with commits, verify 'Patterns Discovered' section is auto-populated from session-patterns.json",
+      "acceptanceCriteria": [
+        "New Step 1c added after Step 1b in end-session.md",
+        "Step 1c runs: node .claude/scripts/extract-session-patterns.js",
+        "Auto-populates 'Patterns Discovered' section with extracted patterns",
+        "Auto-populates 'Bugs Fixed' section if bug-fix patterns detected",
+        "Agent reviews auto-filled content (not blindly trusted)",
+        "Manual entries still supported alongside auto-captured ones"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "workflow",
+        "learning",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-23": {
+      "id": "ARCH-23",
+      "title": "Feedback Loop 2: Auto-route patterns to MEMORY topic files — Script `route-to-memory.js` that takes session patterns and appends to correct topic file: bugs → `debugging-log.md`, API patterns → `api-patterns.md`, frontend gotchas → `codebase-quirks.md`. Append-only, dedup by fuzzy match.",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "ARCH-21"
+      ],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 55,
+      "files": [
+        ".claude/scripts/route-to-memory.js",
+        "C:\\Users\\Sunny\\.claude\\projects\\w--Marakana-Corp-Companies-akount-Development-Brand-aggoogle-product-plan\\memory\\debugging-log.md",
+        "C:\\Users\\Sunny\\.claude\\projects\\w--Marakana-Corp-Companies-akount-Development-Brand-aggoogle-product-plan\\memory\\api-patterns.md",
+        "C:\\Users\\Sunny\\.claude\\projects\\w--Marakana-Corp-Companies-akount-Development-Brand-aggoogle-product-plan\\memory\\codebase-quirks.md"
+      ],
+      "verification": "Create test session-patterns.json with a bug-fix pattern, run route-to-memory.js, verify entry appended to debugging-log.md",
+      "acceptanceCriteria": [
+        "Reads .claude/session-patterns.json",
+        "Routes by type: bug-fix → debugging-log.md, API pattern → api-patterns.md, frontend gotcha → codebase-quirks.md, cross-domain → api-patterns.md (cross-domain section), performance → debugging-log.md (performance section)",
+        "Append-only (never overwrites existing content)",
+        "Dedup: checks if similar pattern already exists (fuzzy match on description)",
+        "Format: - **[DATE]** description — [files affected]",
+        "Handles missing topic files gracefully (creates section header if needed)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "learning",
+        "memory",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-24": {
+      "id": "ARCH-24",
+      "title": "Feedback Loop 3: Decision journal format & storage — Create `.claude/decisions/` directory with template format (Context, Decision, Alternatives, Consequences, Files Affected, Tags). Auto-generated INDEX.md. Format: `YYYY-MM-DD-short-description.md`.",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 56,
+      "files": [
+        ".claude/decisions/README.md",
+        ".claude/decisions/TEMPLATE.md",
+        ".claude/decisions/INDEX.md"
+      ],
+      "verification": "Verify .claude/decisions/ directory exists with README.md explaining format, TEMPLATE.md with blank decision template, and empty INDEX.md",
+      "acceptanceCriteria": [
+        "Directory .claude/decisions/ created",
+        "README.md explains: when to capture decisions, format, tags, how future agents use them",
+        "TEMPLATE.md has blank decision format: Title, Date, Context, Decision, Alternatives Considered (with rejection reasons), Consequences, Files Affected, Tags",
+        "INDEX.md starts empty (auto-populated by ARCH-26)",
+        "Tags defined: architecture, financial, security, performance, ux, infrastructure",
+        "Example decision file included (e.g., integer-cents-for-money.md)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "documentation",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-25": {
+      "id": "ARCH-25",
+      "title": "Feedback Loop 3: Decision capture integration — Add decision capture prompts to `/processes:plan` (Phase 2: alternatives considered) and `/processes:work` (non-trivial implementation choices). Link decisions to affected files in code index.",
+      "effort": "1-2h",
+      "effortMinutes": 90,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "ARCH-24"
+      ],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 57,
+      "files": [
+        ".claude/commands/processes/plan.md",
+        ".claude/commands/processes/work.md"
+      ],
+      "verification": "Run /processes:plan for a feature with multiple approaches, verify it prompts for decision capture with alternatives considered",
+      "acceptanceCriteria": [
+        "plan.md Phase 2 includes: 'If choosing between approaches, capture decision in .claude/decisions/'",
+        "work.md includes: 'If making non-trivial implementation choice, create decision entry'",
+        "Automatic triggers: 2+ implementation approaches, schema design choices, architecture decisions",
+        "Decision file auto-created with correct format from TEMPLATE.md",
+        "Files Affected section populated from plan tasks or current working files",
+        "Not over-aggressive: simple coding choices don't trigger capture"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "workflow",
+        "documentation",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "ARCH-26": {
+      "id": "ARCH-26",
+      "title": "Feedback Loop 3: Decision index generator — Script `regenerate-decision-index.js` that scans `.claude/decisions/` and generates searchable INDEX.md (Date, Decision, Tags, Files table). Also adds `decisions` field to code index file entries for cross-reference.",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "low",
+      "status": "ready",
+      "deps": [
+        "ARCH-24"
+      ],
+      "domain": "architecture",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 58,
+      "files": [
+        ".claude/scripts/regenerate-decision-index.js",
+        ".claude/decisions/INDEX.md"
+      ],
+      "verification": "Create 2-3 test decision files, run regenerate-decision-index.js, verify INDEX.md has markdown table with Date, Decision, Tags, Files columns",
+      "acceptanceCriteria": [
+        "Scans .claude/decisions/*.md (excluding README, TEMPLATE, INDEX)",
+        "Parses frontmatter/headers: Title, Date, Tags, Files Affected",
+        "Generates INDEX.md with searchable markdown table",
+        "Sorted by date (newest first)",
+        "Also outputs decisions-by-file.json mapping file paths to decision IDs (for code index integration)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "documentation",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "INFRA-68": {
+      "id": "INFRA-68",
+      "title": "Index V2: Add test coverage map — Cross-reference service/route files with test files (`X.test.ts` or `__tests__/X.test.ts`). Add `tests` field to index entries: `{ file, exists, testCount }`. ~10% token increase, signals coverage gaps.",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 59,
+      "files": [
+        ".claude/scripts/regenerate-code-index.js"
+      ],
+      "verification": "Regenerate banking index, verify account.service entry has tests field with { file: 'account.service.test.ts', exists: true, testCount: N }. Check a file WITHOUT tests shows exists: false.",
+      "acceptanceCriteria": [
+        "For each indexed file X.ts, looks for X.test.ts and __tests__/X.test.ts",
+        "If test file found: tests.exists=true, tests.file=filename, tests.testCount=count of it()/test() calls",
+        "If no test file: tests.exists=false (signals coverage gap)",
+        "Token impact: ~10% increase per domain (~1K tokens)",
+        "Test count is approximate (regex-based, not AST)",
+        "Works for both .ts and .tsx test files"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "code-index",
+        "testing"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-23": {
+      "id": "DRY-23",
+      "title": "Update job-progress.tsx callback types to allow async (onComplete/onError)",
+      "effort": "5m",
+      "effortMinutes": 5,
+      "effortCategory": "quick",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 60,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "DRY-24": {
+      "id": "DRY-24",
+      "title": "Add JSDoc to useJobStream progress type check (explain defense)",
+      "effort": "5m",
+      "effortMinutes": 5,
+      "effortCategory": "quick",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "code-quality",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 61,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "UX-108": {
+      "id": "UX-108",
+      "title": "Standardize error format across scan routes (always include message field)",
+      "effort": "10m",
+      "effortMinutes": 10,
+      "effortCategory": "quick",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 62,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
+      ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "UX-109": {
+      "id": "UX-109",
+      "title": "Add Retry-After header to 429 rate limit responses",
+      "effort": "5m",
+      "effortMinutes": 5,
+      "effortCategory": "quick",
+      "priority": "low",
+      "status": "ready",
+      "deps": [],
+      "domain": "ux",
+      "source": "review:doc-intel-phase1",
+      "created": "2026-02-28",
+      "line": 63,
+      "files": [],
+      "verification": null,
+      "acceptanceCriteria": [],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 14,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "medium",
+      "riskScore": 3,
+      "riskFactors": [
+        "no_files",
+        "no_acceptance_criteria"
       ],
       "claimed": false,
       "claimedBy": null
@@ -177,7 +1318,7 @@
       "domain": "ux",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 37,
+      "line": 64,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -200,7 +1341,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -222,7 +1363,7 @@
       "domain": "development",
       "source": "audit:app-ux",
       "created": "2026-02-19",
-      "line": 38,
+      "line": 65,
       "files": [],
       "verification": "Run: cd apps/api && npm test -- [domain]",
       "acceptanceCriteria": [
@@ -241,7 +1382,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 5,
         "recommendation": "verify_before_executing"
       },
@@ -267,7 +1408,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 39,
+      "line": 66,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -290,7 +1431,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -312,7 +1453,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-26",
-      "line": 40,
+      "line": 67,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -335,7 +1476,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -357,7 +1498,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 41,
+      "line": 68,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -380,7 +1521,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -405,7 +1546,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 42,
+      "line": 69,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -428,7 +1569,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -453,7 +1594,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 43,
+      "line": 70,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -476,7 +1617,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 5,
         "recommendation": "verify_before_executing"
       },
@@ -501,7 +1642,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 44,
+      "line": 71,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -521,7 +1662,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -547,7 +1688,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 45,
+      "line": 72,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -570,7 +1711,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -592,7 +1733,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 46,
+      "line": 73,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -612,7 +1753,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -638,7 +1779,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-19",
-      "line": 47,
+      "line": 74,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -658,7 +1799,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -682,7 +1823,7 @@
       "domain": "architecture",
       "source": "audit:2026-02-26",
       "created": "2026-02-26",
-      "line": 48,
+      "line": 75,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -693,7 +1834,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -718,7 +1859,7 @@
       "domain": "financial",
       "source": "audit:2026-02-26",
       "created": "2026-02-26",
-      "line": 49,
+      "line": 76,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -729,7 +1870,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -754,7 +1895,7 @@
       "domain": "performance",
       "source": "roadmap",
       "created": "2026-02-26",
-      "line": 50,
+      "line": 77,
       "files": [
         "apps/web/src/app/(dashboard)/",
         "apps/web/src/components/"
@@ -775,7 +1916,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -784,222 +1925,6 @@
       "riskFactors": [
         "vague_title",
         "source_unspecific"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-10": {
-      "id": "DRY-10",
-      "title": "Create `@/lib/utils/date.ts` with formatDate/formatDateTime/formatDateSplit — consolidate 15+ inline implementations",
-      "effort": "1.5h",
-      "effortMinutes": null,
-      "effortCategory": "long",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "inline-bandaid-audit",
-      "created": "2026-02-26",
-      "line": 51,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 1,
-        "staleAfterDays": 5,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-13": {
-      "id": "DRY-13",
-      "title": "Create `<EntitySelector>` component — wire API integration for 7 report views",
-      "effort": "2h",
-      "effortMinutes": 120,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "inline-bandaid-audit",
-      "created": "2026-02-22",
-      "line": 52,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 5,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-14": {
-      "id": "DRY-14",
-      "title": "Create global error tracking util — integrate Sentry in 3+ error.tsx files",
-      "effort": "1.5h",
-      "effortMinutes": null,
-      "effortCategory": "long",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "inline-bandaid-audit",
-      "created": "2026-02-22",
-      "line": 53,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 5,
-        "staleAfterDays": 5,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "DRY-19": {
-      "id": "DRY-19",
-      "title": "Replace z.record(z.unknown()) in onboarding with typed schema",
-      "effort": "30m",
-      "effortMinutes": 30,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "code-quality",
-      "source": "review:revie23feb",
-      "created": "2026-02-24",
-      "line": 54,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "FIN-29": {
-      "id": "FIN-29",
-      "title": "Re-validate totals against line items in updateInvoice/updateBill PATCH",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "financial",
-      "source": "review:revie23feb",
-      "created": "2026-02-24",
-      "line": 55,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
-      ],
-      "claimed": false,
-      "claimedBy": null
-    },
-    "FIN-30": {
-      "id": "FIN-30",
-      "title": "Add linkedEntryId deduplication filter to GL report queries",
-      "effort": "1h",
-      "effortMinutes": 60,
-      "effortCategory": "short",
-      "priority": "medium",
-      "status": "ready",
-      "deps": [],
-      "domain": "financial",
-      "source": "review:revie23feb",
-      "created": "2026-02-24",
-      "line": 56,
-      "files": [],
-      "verification": null,
-      "acceptanceCriteria": [],
-      "lastVerified": null,
-      "sourceRef": null,
-      "externalId": null,
-      "tags": [],
-      "notes": null,
-      "staleness": {
-        "isStale": false,
-        "daysSinceVerified": 3,
-        "staleAfterDays": 10,
-        "recommendation": "ok"
-      },
-      "hallucinationRisk": "medium",
-      "riskScore": 3,
-      "riskFactors": [
-        "no_files",
-        "no_acceptance_criteria"
       ],
       "claimed": false,
       "claimedBy": null
@@ -1016,7 +1941,7 @@
       "domain": "security",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 57,
+      "line": 78,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -1036,7 +1961,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -1062,7 +1987,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 58,
+      "line": 79,
       "files": [],
       "verification": "Check: Navigate to page in browser, verify UI renders correctly",
       "acceptanceCriteria": [],
@@ -1076,7 +2001,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -1104,7 +2029,7 @@
       "domain": "ux",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 59,
+      "line": 80,
       "files": [
         "apps/web/src/components/help/",
         "apps/web/src/app/(dashboard)/layout.tsx"
@@ -1126,7 +2051,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -1151,7 +2076,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 60,
+      "line": 81,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -1171,7 +2096,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1196,7 +2121,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 61,
+      "line": 82,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -1216,7 +2141,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1240,7 +2165,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 62,
+      "line": 83,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -1260,7 +2185,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1287,7 +2212,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 63,
+      "line": 84,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -1310,7 +2235,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1336,7 +2261,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 64,
+      "line": 85,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -1356,7 +2281,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1381,7 +2306,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 65,
+      "line": 86,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1406,7 +2331,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1430,7 +2355,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 66,
+      "line": 87,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [
@@ -1450,7 +2375,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -1475,7 +2400,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 67,
+      "line": 88,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -1489,7 +2414,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -1516,7 +2441,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 68,
+      "line": 89,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -1530,7 +2455,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -1557,7 +2482,7 @@
       "domain": "testing",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 69,
+      "line": 90,
       "files": [
         "apps/api/src/__tests__/",
         "apps/web/src/__tests__/"
@@ -1577,7 +2502,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -1602,7 +2527,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 70,
+      "line": 91,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -1625,7 +2550,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1647,7 +2572,7 @@
       "domain": "financial",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 71,
+      "line": 92,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -1673,7 +2598,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1695,7 +2620,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 72,
+      "line": 93,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1721,7 +2646,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1743,7 +2668,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 73,
+      "line": 94,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1768,7 +2693,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1790,7 +2715,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 74,
+      "line": 95,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -1813,7 +2738,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1835,7 +2760,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 75,
+      "line": 96,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -1858,7 +2783,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1880,7 +2805,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 76,
+      "line": 97,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -1905,7 +2830,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1927,7 +2852,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 77,
+      "line": 98,
       "files": [
         "apps/api/src/domains/vendors/services/vendor.service.ts",
         "apps/web/src/app/(dashboard)/business/vendors/page.tsx",
@@ -1949,7 +2874,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -1971,7 +2896,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 78,
+      "line": 99,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -1993,7 +2918,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2015,7 +2940,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 79,
+      "line": 100,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2040,7 +2965,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2062,7 +2987,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 80,
+      "line": 101,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2084,7 +3009,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2106,7 +3031,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 81,
+      "line": 102,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2128,7 +3053,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2150,7 +3075,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 82,
+      "line": 103,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -2176,7 +3101,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2198,7 +3123,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 83,
+      "line": 104,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -2222,7 +3147,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2244,7 +3169,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 84,
+      "line": 105,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2266,7 +3191,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2290,7 +3215,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 85,
+      "line": 106,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2314,7 +3239,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2336,7 +3261,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 86,
+      "line": 107,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2358,7 +3283,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2380,7 +3305,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 87,
+      "line": 108,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -2402,7 +3327,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2426,7 +3351,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 88,
+      "line": 109,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2446,7 +3371,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2470,7 +3395,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 89,
+      "line": 110,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2495,7 +3420,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -2520,7 +3445,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 90,
+      "line": 111,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2542,7 +3467,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2564,7 +3489,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 91,
+      "line": 112,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2584,7 +3509,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2608,7 +3533,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 92,
+      "line": 113,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2630,7 +3555,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -2655,7 +3580,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 93,
+      "line": 114,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2681,7 +3606,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2703,7 +3628,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 94,
+      "line": 115,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2726,7 +3651,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2748,7 +3673,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 95,
+      "line": 116,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2770,7 +3695,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2792,7 +3717,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 96,
+      "line": 117,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2816,7 +3741,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2840,7 +3765,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 97,
+      "line": 118,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2863,7 +3788,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -2887,7 +3812,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 98,
+      "line": 119,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2912,7 +3837,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2934,7 +3859,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 99,
+      "line": 120,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -2956,7 +3881,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -2978,7 +3903,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 100,
+      "line": 121,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3001,7 +3926,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3023,7 +3948,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 101,
+      "line": 122,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3048,7 +3973,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3070,7 +3995,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 102,
+      "line": 123,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3093,7 +4018,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3115,7 +4040,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 103,
+      "line": 124,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3138,7 +4063,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3160,7 +4085,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 104,
+      "line": 125,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3185,7 +4110,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3209,7 +4134,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 105,
+      "line": 126,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3232,7 +4157,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 5,
         "recommendation": "verify_before_executing"
       },
@@ -3257,7 +4182,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 106,
+      "line": 127,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3280,7 +4205,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3302,7 +4227,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 107,
+      "line": 128,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3326,7 +4251,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3348,7 +4273,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-19",
-      "line": 108,
+      "line": 129,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -3371,7 +4296,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 8,
+        "daysSinceVerified": 9,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3395,7 +4320,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 109,
+      "line": 130,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3419,7 +4344,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3444,7 +4369,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 110,
+      "line": 131,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3467,7 +4392,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3491,7 +4416,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 111,
+      "line": 132,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -3511,7 +4436,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3537,7 +4462,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 112,
+      "line": 133,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3559,7 +4484,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3583,7 +4508,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 113,
+      "line": 134,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -3605,7 +4530,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3627,7 +4552,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 114,
+      "line": 135,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -3650,7 +4575,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3672,7 +4597,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 115,
+      "line": 136,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -3695,7 +4620,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3717,7 +4642,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 116,
+      "line": 137,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3737,7 +4662,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3761,7 +4686,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 117,
+      "line": 138,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -3784,7 +4709,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -3808,7 +4733,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 118,
+      "line": 139,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -3828,7 +4753,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3852,7 +4777,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 119,
+      "line": 140,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -3871,7 +4796,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3895,7 +4820,7 @@
       "domain": "development",
       "source": "audit:acct-fe-be",
       "created": "2026-02-26",
-      "line": 120,
+      "line": 141,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -3915,7 +4840,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3939,7 +4864,7 @@
       "domain": "code-quality",
       "source": "inline-bandaid-audit",
       "created": "2026-02-26",
-      "line": 121,
+      "line": 142,
       "files": [],
       "verification": null,
       "acceptanceCriteria": [],
@@ -3950,7 +4875,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -3975,7 +4900,7 @@
       "domain": "code-quality",
       "source": "review:typescript",
       "created": "2026-02-26",
-      "line": 122,
+      "line": 143,
       "files": [],
       "verification": "Grep for related code: Grep \"dry\" apps/",
       "acceptanceCriteria": [],
@@ -3989,7 +4914,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4014,7 +4939,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 123,
+      "line": 144,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4036,7 +4961,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4058,7 +4983,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 124,
+      "line": 145,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4080,7 +5005,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -4105,7 +5030,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 125,
+      "line": 146,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/overview/services/dashboard.service.ts",
@@ -4127,7 +5052,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -4151,7 +5076,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 126,
+      "line": 147,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4171,7 +5096,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4196,7 +5121,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 127,
+      "line": 148,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4216,7 +5141,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4240,7 +5165,7 @@
       "domain": "performance",
       "source": "review:performance",
       "created": "2026-02-18",
-      "line": 128,
+      "line": 149,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -4260,7 +5185,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4284,7 +5209,7 @@
       "domain": "performance",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 129,
+      "line": 150,
       "files": [
         "apps/web/src/app/(dashboard)/overview/page.tsx",
         "apps/api/src/domains/accounting/services/report.service.ts",
@@ -4304,7 +5229,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4328,7 +5253,7 @@
       "domain": "financial",
       "source": "review:financial",
       "created": "2026-02-18",
-      "line": 130,
+      "line": 151,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4348,7 +5273,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4372,7 +5297,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 131,
+      "line": 152,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4392,7 +5317,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -4417,7 +5342,7 @@
       "domain": "financial",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 132,
+      "line": 153,
       "files": [
         "apps/api/src/domains/accounting/services/report.service.ts",
         "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
@@ -4437,7 +5362,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -4462,7 +5387,7 @@
       "domain": "security",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 133,
+      "line": 154,
       "files": [
         "apps/api/src/lib/audit.ts",
         "apps/api/src/middleware/tenant.ts",
@@ -4482,7 +5407,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4507,7 +5432,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-26",
-      "line": 134,
+      "line": 155,
       "files": [
         "apps/api/src/domains/banking/routes.ts",
         "apps/api/src/domains/banking/services/account.service.ts",
@@ -4531,7 +5456,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4553,7 +5478,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 135,
+      "line": 156,
       "files": [],
       "verification": "Grep for related code: Grep \"dev\" apps/",
       "acceptanceCriteria": [],
@@ -4567,7 +5492,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4593,7 +5518,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 136,
+      "line": 157,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4616,7 +5541,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -4640,7 +5565,7 @@
       "domain": "ux",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 137,
+      "line": 158,
       "files": [
         "apps/api/src/domains/invoicing/services/invoice.service.ts",
         "apps/api/src/domains/invoicing/routes/invoices.ts",
@@ -4663,7 +5588,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4685,7 +5610,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 138,
+      "line": 159,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4707,7 +5632,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4731,7 +5656,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 139,
+      "line": 160,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4753,7 +5678,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -4780,7 +5705,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 140,
+      "line": 161,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4806,7 +5731,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4830,7 +5755,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 141,
+      "line": 162,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4852,7 +5777,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4876,7 +5801,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 142,
+      "line": 163,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4898,7 +5823,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 5,
         "recommendation": "ok"
       },
@@ -4924,7 +5849,7 @@
       "domain": "development",
       "source": "audit:fe-be-parity",
       "created": "2026-02-26",
-      "line": 143,
+      "line": 164,
       "files": [
         "apps/api/src/domains/planning/routes.ts",
         "apps/web/src/app/(dashboard)/planning/reports/error.tsx",
@@ -4946,7 +5871,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -4970,7 +5895,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 144,
+      "line": 165,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -4994,7 +5919,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 7,
         "recommendation": "ok"
       },
@@ -5020,7 +5945,7 @@
       "domain": "development",
       "source": "audit:ai-advisor",
       "created": "2026-02-26",
-      "line": 145,
+      "line": 166,
       "files": [
         "apps/api/src/domains/ai/services/categorization.service.ts",
         "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
@@ -5044,7 +5969,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 1,
+        "daysSinceVerified": 2,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5066,7 +5991,7 @@
       "domain": "design-system",
       "source": "audit:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 165,
+      "line": 187,
       "files": [
         "packages/ui/package.json",
         "packages/ui/src/ai/AIPanel.tsx",
@@ -5086,7 +6011,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 10,
         "recommendation": "ok"
       },
@@ -5111,7 +6036,7 @@
       "domain": "design-system",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 166,
+      "line": 188,
       "files": [
         "packages/ui/",
         "packages/ui/.storybook/",
@@ -5133,7 +6058,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 21,
         "recommendation": "ok"
       },
@@ -5159,7 +6084,7 @@
       "domain": "marketing",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 174,
+      "line": 196,
       "files": [
         "apps/web/src/app/(marketing)/",
         "apps/web/src/app/page.tsx"
@@ -5180,7 +6105,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -5206,7 +6131,7 @@
       "domain": "marketing",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 175,
+      "line": 197,
       "files": [],
       "verification": "Grep for related code: Grep \"mkt\" apps/",
       "acceptanceCriteria": [
@@ -5223,7 +6148,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -5248,7 +6173,7 @@
       "domain": "content",
       "source": "manual",
       "created": "2026-02-18",
-      "line": 176,
+      "line": 198,
       "files": [
         "brand/competitive-analysis.md"
       ],
@@ -5268,7 +6193,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -5293,7 +6218,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 186,
+      "line": 208,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -5309,7 +6234,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 17,
         "recommendation": "ok"
       },
@@ -5335,7 +6260,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 187,
+      "line": 209,
       "files": [
         "docker-compose.yml",
         "Dockerfile",
@@ -5359,7 +6284,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -5384,7 +6309,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 188,
+      "line": 210,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -5400,7 +6325,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -5425,7 +6350,7 @@
       "domain": "architecture",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 189,
+      "line": 211,
       "files": [],
       "verification": "Grep for related code: Grep \"arch\" apps/",
       "acceptanceCriteria": [],
@@ -5439,7 +6364,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -5468,7 +6393,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 190,
+      "line": 212,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -5488,7 +6413,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 20,
         "recommendation": "ok"
       },
@@ -5514,7 +6439,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 191,
+      "line": 213,
       "files": [
         ".github/workflows/ci.yml"
       ],
@@ -5530,7 +6455,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -5558,7 +6483,7 @@
       "domain": "infrastructure",
       "source": "review:smooth-floating-mountain",
       "created": "2026-02-18",
-      "line": 192,
+      "line": 214,
       "files": [
         "Dockerfile",
         "docker-compose.yml",
@@ -5581,7 +6506,7 @@
       "notes": null,
       "staleness": {
         "isStale": true,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 7,
         "recommendation": "verify_before_executing"
       },
@@ -5592,6 +6517,207 @@
         "vague_title",
         "large_effort"
       ],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "INFRA-64": {
+      "id": "INFRA-64",
+      "title": "Feedback Loop 4: Production signal schema — Define `.claude/production/signals.json` schema for error/performance/security/deprecation signals from Sentry/Vercel/manual sources. Include: id, timestamp, type, severity, source, message, file, line, frequency, resolved flag. Create README.md documenting how to populate.",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 222,
+      "files": [
+        ".claude/production/signals.json",
+        ".claude/production/README.md"
+      ],
+      "verification": "Verify .claude/production/signals.json has valid JSON schema, README.md documents all signal types and how to populate",
+      "acceptanceCriteria": [
+        "Schema supports signal types: error, performance, security, deprecation, usage",
+        "Each signal has: id, timestamp, type, severity (high/medium/low), source (sentry/vercel/manual/monitoring), message, file (optional), line (optional), frequency, firstSeen, lastSeen, resolved boolean",
+        "README documents: schema, how Sentry webhook populates, how Vercel logs populate, manual CLI usage",
+        "Initial signals.json has empty signals array and lastSync timestamp",
+        "Directory .claude/production/ created and gitignored (signals.json template committed, actual signals gitignored)"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "production",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "INFRA-65": {
+      "id": "INFRA-65",
+      "title": "Feedback Loop 4: Production signal reader for `/processes:begin` — Script `read-production-signals.js` that reads `.claude/production/signals.json`, formats unresolved signals with severity/frequency for session start display. Add section to `begin.md` after git status.",
+      "effort": "1h",
+      "effortMinutes": 60,
+      "effortCategory": "short",
+      "priority": "medium",
+      "status": "ready",
+      "deps": [
+        "INFRA-64"
+      ],
+      "domain": "infrastructure",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 223,
+      "files": [
+        ".claude/scripts/read-production-signals.js",
+        ".claude/commands/processes/begin.md"
+      ],
+      "verification": "Add test signal to signals.json, run read-production-signals.js, verify markdown output with severity badge and file link",
+      "acceptanceCriteria": [
+        "Reads .claude/production/signals.json",
+        "Filters: only unresolved signals (resolved: false)",
+        "Sorts: by severity (high first), then by frequency (most common first)",
+        "Output format: markdown with severity badge, message, file:line link, occurrence count, time range",
+        "begin.md updated: new 'Production Signals' section after git status, runs this script",
+        "Graceful: if no signals file or empty, shows 'No production signals'"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "workflow",
+        "production",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "INFRA-66": {
+      "id": "INFRA-66",
+      "title": "Feedback Loop 4: Manual signal ingestion CLI — Script `add-production-signal.js` accepting `--type`, `--severity`, `--message`, `--file`, `--line` flags. Also `--resolve sig-001` to mark resolved. For teams without Sentry integration.",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
+      "priority": "low",
+      "status": "ready",
+      "deps": [
+        "INFRA-64"
+      ],
+      "domain": "infrastructure",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 224,
+      "files": [
+        ".claude/scripts/add-production-signal.js"
+      ],
+      "verification": "Run: node .claude/scripts/add-production-signal.js --type error --severity high --message 'Test error' --file test.ts --line 1. Verify signal added to signals.json. Run --resolve sig-xxx, verify resolved=true.",
+      "acceptanceCriteria": [
+        "CLI flags: --type (required), --severity (required), --message (required), --file (optional), --line (optional), --source (default: manual)",
+        "Auto-generates signal ID: sig-001, sig-002, etc.",
+        "Appends to .claude/production/signals.json signals array",
+        "Sets firstSeen=lastSeen=now, frequency=1, resolved=false",
+        "--resolve <id> flag marks signal as resolved (sets resolved=true)",
+        "--list flag shows all unresolved signals in table format"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "cli",
+        "production",
+        "feedback-loop"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
+      "claimed": false,
+      "claimedBy": null
+    },
+    "INFRA-67": {
+      "id": "INFRA-67",
+      "title": "Index V2: Deduplicate legend — Move decode legend (repeated 8x across CODEBASE-*.md, ~288 lines, ~1,500 tokens wasted per multi-domain load) to single `.claude/code-index-legend.md`. Update `regenerate-code-index.js` to not emit legend per file. Update `load-code-index.js` to load legend once.",
+      "effort": "30m",
+      "effortMinutes": 30,
+      "effortCategory": "short",
+      "priority": "high",
+      "status": "ready",
+      "deps": [],
+      "domain": "infrastructure",
+      "source": "plan:feedback-loops",
+      "created": "2026-02-28",
+      "line": 225,
+      "files": [
+        ".claude/scripts/regenerate-code-index.js",
+        ".claude/scripts/load-code-index.js",
+        ".claude/code-index-legend.md",
+        "CODEBASE-BANKING.md",
+        "CODEBASE-INVOICING.md",
+        "CODEBASE-ACCOUNTING.md",
+        "CODEBASE-PLANNING.md",
+        "CODEBASE-AI.md",
+        "CODEBASE-WEB-PAGES.md",
+        "CODEBASE-WEB-COMPONENTS.md",
+        "CODEBASE-PACKAGES.md"
+      ],
+      "verification": "Regenerate all indexes, verify legend NOT present in any CODEBASE-*.md. Verify .claude/code-index-legend.md exists with full legend. Run load-code-index.js, verify it still works.",
+      "acceptanceCriteria": [
+        ".claude/code-index-legend.md created with full decode legend (fields, patterns, violations, domains)",
+        "regenerate-code-index.js no longer emits legend block in each CODEBASE-*.md",
+        "Each CODEBASE-*.md has comment: <!-- Legend: .claude/code-index-legend.md -->",
+        "load-code-index.js loads legend once on first call (cached for session)",
+        "Token savings: ~1,500 tokens per multi-domain load (288 lines removed)",
+        "All 8 existing indexes regenerated successfully"
+      ],
+      "lastVerified": null,
+      "sourceRef": null,
+      "externalId": null,
+      "tags": [
+        "infrastructure",
+        "code-index",
+        "optimization"
+      ],
+      "notes": null,
+      "staleness": {
+        "isStale": false,
+        "daysSinceVerified": 0,
+        "staleAfterDays": 10,
+        "recommendation": "ok"
+      },
+      "hallucinationRisk": "low",
+      "riskScore": 0,
+      "riskFactors": [],
       "claimed": false,
       "claimedBy": null
     },
@@ -5609,7 +6735,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 200,
+      "line": 226,
       "files": [
         "docs/operations/disaster-recovery.md",
         "packages/db/prisma/"
@@ -5631,7 +6757,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -5658,7 +6784,7 @@
       "domain": "infrastructure",
       "source": "roadmap",
       "created": "2026-02-18",
-      "line": 201,
+      "line": 227,
       "files": [
         "docs/operations/deployment.md",
         "Dockerfile",
@@ -5681,7 +6807,7 @@
       "notes": null,
       "staleness": {
         "isStale": false,
-        "daysSinceVerified": 9,
+        "daysSinceVerified": 10,
         "staleAfterDays": 30,
         "recommendation": "ok"
       },
@@ -5698,8 +6824,58 @@
   "done": {},
   "indexes": {
     "byDomain": {
+      "security": [
+        "SEC-45",
+        "SEC-46",
+        "SEC-47",
+        "SEC-8",
+        "SEC-10",
+        "SEC-16",
+        "SEC-15"
+      ],
+      "performance": [
+        "PERF-27",
+        "PERF-28",
+        "PERF-29",
+        "PERF-7",
+        "PERF-10",
+        "PERF-12",
+        "PERF-4",
+        "PERF-11"
+      ],
+      "architecture": [
+        "ARCH-14",
+        "ARCH-15",
+        "ARCH-16",
+        "ARCH-17",
+        "ARCH-18",
+        "ARCH-21",
+        "ARCH-27",
+        "ARCH-19",
+        "ARCH-20",
+        "ARCH-22",
+        "ARCH-23",
+        "ARCH-24",
+        "ARCH-25",
+        "ARCH-26",
+        "ARCH-10",
+        "ARCH-5",
+        "ARCH-1",
+        "ARCH-4",
+        "ARCH-3"
+      ],
+      "code-quality": [
+        "DRY-22",
+        "DRY-23",
+        "DRY-24",
+        "DRY-15",
+        "DRY-5"
+      ],
       "ux": [
+        "UX-107",
         "UX-103",
+        "UX-108",
+        "UX-109",
         "UX-44",
         "UX-6",
         "UX-7",
@@ -5710,14 +6886,9 @@
         "UX-64",
         "UX-57"
       ],
-      "security": [
-        "SEC-8",
-        "SEC-10",
-        "SEC-16",
-        "SEC-15"
-      ],
       "infrastructure": [
         "INFRA-13",
+        "INFRA-68",
         "INFRA-11",
         "INFRA-12",
         "INFRA-1",
@@ -5726,6 +6897,10 @@
         "INFRA-5",
         "INFRA-7",
         "INFRA-8",
+        "INFRA-64",
+        "INFRA-65",
+        "INFRA-66",
+        "INFRA-67",
         "INFRA-4",
         "INFRA-6"
       ],
@@ -5799,17 +6974,8 @@
         "DEV-119",
         "DEV-120"
       ],
-      "architecture": [
-        "ARCH-10",
-        "ARCH-5",
-        "ARCH-1",
-        "ARCH-4",
-        "ARCH-3"
-      ],
       "financial": [
         "FIN-33",
-        "FIN-29",
-        "FIN-30",
         "FIN-7",
         "FIN-8",
         "FIN-9",
@@ -5818,21 +6984,6 @@
         "FIN-6",
         "FIN-11",
         "FIN-12"
-      ],
-      "performance": [
-        "PERF-7",
-        "PERF-10",
-        "PERF-12",
-        "PERF-4",
-        "PERF-11"
-      ],
-      "code-quality": [
-        "DRY-10",
-        "DRY-13",
-        "DRY-14",
-        "DRY-19",
-        "DRY-15",
-        "DRY-5"
       ],
       "testing": [
         "TEST-4"
@@ -5851,11 +7002,26 @@
     },
     "byPriority": {
       "critical": [
+        "SEC-45",
+        "SEC-46",
+        "PERF-27",
+        "ARCH-14",
         "UX-103"
       ],
       "high": [
+        "SEC-47",
+        "ARCH-15",
+        "ARCH-16",
+        "ARCH-17",
+        "DRY-22",
+        "UX-107",
         "SEC-8",
         "INFRA-13",
+        "ARCH-18",
+        "PERF-28",
+        "ARCH-21",
+        "ARCH-27",
+        "PERF-29",
         "DS-1",
         "MKT-1",
         "INFRA-1",
@@ -5864,9 +7030,18 @@
         "ARCH-3",
         "INFRA-5",
         "INFRA-7",
-        "INFRA-8"
+        "INFRA-8",
+        "INFRA-67"
       ],
       "medium": [
+        "ARCH-19",
+        "ARCH-20",
+        "ARCH-22",
+        "ARCH-23",
+        "ARCH-24",
+        "ARCH-25",
+        "INFRA-68",
+        "UX-108",
         "UX-44",
         "DEV-83",
         "DEV-61",
@@ -5881,12 +7056,6 @@
         "ARCH-10",
         "FIN-33",
         "PERF-7",
-        "DRY-10",
-        "DRY-13",
-        "DRY-14",
-        "DRY-19",
-        "FIN-29",
-        "FIN-30",
         "SEC-10",
         "UX-6",
         "UX-7",
@@ -5953,10 +7122,16 @@
         "DS-2",
         "MKT-2",
         "CNT-1",
+        "INFRA-64",
+        "INFRA-65",
         "INFRA-4",
         "INFRA-6"
       ],
       "low": [
+        "ARCH-26",
+        "DRY-23",
+        "DRY-24",
+        "UX-109",
         "DEV-70",
         "DRY-15",
         "DRY-5",
@@ -5982,20 +7157,40 @@
         "DEV-110",
         "DEV-111",
         "DEV-119",
-        "DEV-120"
+        "DEV-120",
+        "INFRA-66"
       ]
     },
     "byEffort": {
       "quick": [
-        "UX-103"
+        "SEC-45",
+        "SEC-46",
+        "PERF-27",
+        "ARCH-14",
+        "SEC-47",
+        "ARCH-16",
+        "DRY-22",
+        "UX-107",
+        "UX-103",
+        "DRY-23",
+        "DRY-24",
+        "UX-108",
+        "UX-109"
       ],
       "short": [
+        "ARCH-15",
+        "ARCH-18",
+        "ARCH-27",
+        "ARCH-19",
+        "ARCH-20",
+        "ARCH-22",
+        "ARCH-23",
+        "ARCH-24",
+        "ARCH-25",
+        "ARCH-26",
+        "INFRA-68",
         "FIN-33",
         "PERF-7",
-        "DRY-13",
-        "DRY-19",
-        "FIN-29",
-        "FIN-30",
         "UX-6",
         "UX-7",
         "PERF-12",
@@ -6035,11 +7230,18 @@
         "INFRA-2",
         "INFRA-3",
         "INFRA-5",
+        "INFRA-64",
+        "INFRA-65",
+        "INFRA-66",
+        "INFRA-67",
         "INFRA-4",
         "INFRA-6"
       ],
       "medium": [
         "SEC-8",
+        "PERF-28",
+        "ARCH-21",
+        "PERF-29",
         "DEV-63",
         "DEV-64",
         "DEV-66",
@@ -6075,8 +7277,6 @@
         "INFRA-13",
         "DEV-83",
         "DEV-65",
-        "DRY-10",
-        "DRY-14",
         "DEV-89",
         "DEV-41",
         "DEV-42",
@@ -6088,15 +7288,35 @@
     },
     "byStatus": {
       "ready": [
+        "SEC-45",
+        "SEC-46",
+        "PERF-27",
+        "ARCH-14",
+        "SEC-47",
+        "ARCH-15",
+        "ARCH-16",
+        "DRY-22",
+        "UX-107",
         "UX-103",
+        "ARCH-18",
+        "PERF-28",
+        "ARCH-21",
+        "ARCH-27",
+        "PERF-29",
+        "ARCH-19",
+        "ARCH-20",
+        "ARCH-22",
+        "ARCH-23",
+        "ARCH-24",
+        "ARCH-25",
+        "ARCH-26",
+        "INFRA-68",
+        "DRY-23",
+        "DRY-24",
+        "UX-108",
+        "UX-109",
         "FIN-33",
         "PERF-7",
-        "DRY-10",
-        "DRY-13",
-        "DRY-14",
-        "DRY-19",
-        "FIN-29",
-        "FIN-30",
         "DEV-115",
         "DEV-116",
         "DRY-15",
@@ -6106,9 +7326,14 @@
         "INFRA-1",
         "INFRA-2",
         "INFRA-3",
-        "ARCH-3"
+        "ARCH-3",
+        "INFRA-64",
+        "INFRA-65",
+        "INFRA-66",
+        "INFRA-67"
       ],
       "blocked": [
+        "ARCH-17",
         "UX-7",
         "INFRA-5",
         "INFRA-7",
@@ -6220,10 +7445,22 @@
       ]
     },
     "quickWins": [
+      "SEC-45",
+      "SEC-46",
+      "PERF-27",
+      "ARCH-14",
+      "SEC-47",
+      "ARCH-15",
+      "ARCH-16",
+      "DRY-22",
+      "UX-107",
       "UX-103",
+      "ARCH-18",
+      "ARCH-27",
       "DS-1",
       "INFRA-2",
-      "INFRA-3"
+      "INFRA-3",
+      "INFRA-67"
     ],
     "stale": [
       "INFRA-13",
