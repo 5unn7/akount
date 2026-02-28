@@ -1,5 +1,6 @@
 import { FastifyError, FastifyRequest, FastifyReply } from 'fastify'
 import { ZodError } from 'zod'
+import { collectError } from './error-collector'
 
 /**
  * Global error handler for the API
@@ -10,6 +11,9 @@ export function errorHandler(
   request: FastifyRequest,
   reply: FastifyReply
 ) {
+  // Collect error to runtime log (dev-only)
+  collectError(error, request, reply)
+
   // Log the error
   request.log.error({
     error,
