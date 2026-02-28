@@ -7,7 +7,7 @@ import { withPermission, adminOnly } from '../../middleware/withPermission';
 import { auditQueryService } from './services/audit-query.service';
 import { streamDataBackup } from './services/data-export.service';
 import { createAuditLog } from '../../lib/audit';
-import { getRetentionStats, purgeExpiredLogs } from '../../lib/audit-retention';
+import { getRetentionStats, purgeExpiredLogs, purgeAllExpiredAIData, AI_DECISION_LOG_RETENTION_DAYS, UPLOADED_DOCUMENTS_RETENTION_DAYS, LLM_LOGS_RETENTION_DAYS } from '../../lib/audit-retention';
 import { onboardingRoutes } from './routes/onboarding';
 import { onboardingProgressRoutes } from './routes/onboarding-progress';
 import { entityRoutes } from './routes/entity';
@@ -357,6 +357,135 @@ export async function systemRoutes(fastify: FastifyInstance) {
           return reply.status(500).send({
             error: 'Internal Server Error',
             message: 'Failed to purge expired audit logs',
+          });
+        }
+      }
+    );
+
+    // ============================================================================
+    // AI DATA RETENTION — SEC-36
+    // ============================================================================
+
+    /**
+     * GET /api/system/ai-data/retention
+     *
+     * Get AI data retention policy stats for the current tenant.
+     * Shows retention periods and expiry status for different AI data types.
+     */
+    tenantScope.get(
+      '/ai-data/retention',
+      {
+        ...adminOnly,
+      },
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+          const tenant = await prisma.tenant.findUnique({
+            where: { id: request.tenantId },
+            select: { plan: true },
+          });
+
+          const plan = tenant?.plan ?? 'FREE';
+
+          // Get current retention periods for each AI data type
+          const retentionPolicies = {
+            plan,
+            aiDecisionLogs: {
+              retentionDays: AI_DECISION_LOG_RETENTION_DAYS[plan],
+              description: 'AI decision audit trail (same as financial audit logs)',
+            },
+            uploadedDocuments: {
+              retentionDays: UPLOADED_DOCUMENTS_RETENTION_DAYS[plan],
+              description: 'Uploaded bills, invoices, receipts',
+            },
+            llmLogs: {
+              retentionDays: LLM_LOGS_RETENTION_DAYS[plan],
+              description: 'AI model prompt/response logs (debugging only)',
+            },
+            userCorrections: {
+              retentionDays: null,
+              description: 'Never auto-deleted (user request only)',
+            },
+            ragStore: {
+              retentionDays: null,
+              description: 'Document-linked (cascade delete with documents)',
+            },
+          };
+
+          // Get actual data counts (current implementation)
+          const aiDecisionLogCount = await prisma.aIDecisionLog.count({
+            where: { tenantId: request.tenantId },
+          });
+
+          request.log.info(
+            { tenantId: request.tenantId, plan },
+            'Retrieved AI data retention stats'
+          );
+
+          return {
+            ...retentionPolicies,
+            currentData: {
+              aiDecisionLogs: aiDecisionLogCount,
+              uploadedDocuments: 0, // Future
+              llmLogs: 0, // Future
+            },
+          };
+        } catch (error) {
+          request.log.error({ error }, 'Error fetching AI retention stats');
+          return reply.status(500).send({
+            error: 'Internal Server Error',
+            message: 'Failed to fetch AI retention statistics',
+          });
+        }
+      }
+    );
+
+    /**
+     * POST /api/system/ai-data/retention/purge
+     *
+     * Purge expired AI data entries. OWNER/ADMIN only.
+     * Deletes AI decision logs, LLM logs, and uploaded documents older than retention period.
+     * Rate limited to 1 request per 10 minutes to prevent abuse.
+     */
+    tenantScope.post(
+      '/ai-data/retention/purge',
+      {
+        ...adminOnly,
+        config: {
+          rateLimit: {
+            max: 1,
+            timeWindow: '10 minutes',
+          },
+        },
+      },
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+          const result = await purgeAllExpiredAIData(request.tenantId as string);
+
+          await createAuditLog({
+            tenantId: request.tenantId as string,
+            userId: request.userId as string,
+            model: 'AIData',
+            recordId: 'retention-purge',
+            action: 'DELETE',
+            after: {
+              aiDecisionLogs: result.aiDecisionLogs.purgedCount,
+              llmLogs: result.llmLogs.purgedCount,
+              uploadedDocuments: result.uploadedDocuments.purgedCount,
+              totalPurged: result.totalPurged,
+            },
+          });
+
+          request.log.info(
+            { tenantId: request.tenantId, totalPurged: result.totalPurged },
+            'AI data retention purge completed'
+          );
+
+          return result;
+        } catch (error) {
+          request.log.error({ error }, 'Error purging AI data');
+          return reply.status(500).send({
+            error: 'Internal Server Error',
+            message: 'Failed to purge expired AI data',
           });
         }
       }
