@@ -14,6 +14,7 @@ import { UserService, UserNotFoundError } from './domains/system/services/user.s
 import { queueManager } from './lib/queue/queue-manager';
 import { startBillScanWorker } from './domains/ai/workers/bill-scan.worker';
 import { startInvoiceScanWorker } from './domains/ai/workers/invoice-scan.worker';
+import { attachPrismaObserver } from './lib/prisma-observer';
 
 // Domain routes (Phase 4 restructure)
 import { overviewRoutes } from './domains/overview';
@@ -343,6 +344,9 @@ function startInsightTimer(): void {
 
 const start = async () => {
     try {
+        // Attach Prisma query observer (PERF-28) - opt-in via PRISMA_QUERY_LOG=true
+        attachPrismaObserver(prisma);
+
         await server.listen({ port: env.PORT, host: env.HOST });
         server.log.info(`✓ Server listening on ${env.HOST}:${env.PORT}`);
 

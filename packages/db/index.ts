@@ -18,6 +18,10 @@ if (process.env.NODE_ENV !== 'production') {
     globalThis.prisma = prisma;
 }
 
+// Note: Prisma query observer (PERF-28) is attached in apps/api/src/index.ts
+// Opt-in via PRISMA_QUERY_LOG=true env var
+// Observer detects slow queries (>100ms) and N+1 patterns (same query >5x)
+
 // Tenant Isolation Middleware - Critical for multi-tenant security
 // This middleware validates that queries on tenant-scoped models include tenant filtering
 const TENANT_SCOPED_MODELS = [
