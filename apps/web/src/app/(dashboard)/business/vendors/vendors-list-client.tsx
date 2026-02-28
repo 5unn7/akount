@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import type { Vendor } from '@/lib/api/vendors';
 import { VendorsTable } from '@/components/business/VendorsTable';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,11 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, Filter, X, Loader2, Plus, Info } from 'lucide-react';
 import { fetchMoreVendors } from '../actions';
-import { VendorForm } from '@/components/business/VendorForm';
+
+const VendorForm = dynamic(
+    () => import('@/components/business/VendorForm').then(m => m.VendorForm),
+    { ssr: false }
+);
 
 interface VendorsListClientProps {
     initialVendors: Vendor[];

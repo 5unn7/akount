@@ -2,11 +2,22 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Button } from '@/components/ui/button';
-import { InvoiceForm } from './InvoiceForm';
-import { BillForm } from './BillForm';
-import { PaymentForm } from './PaymentForm';
 import { Plus, FileText, Receipt, CreditCard } from 'lucide-react';
+
+const InvoiceForm = dynamic(
+    () => import('./InvoiceForm').then(m => m.InvoiceForm),
+    { ssr: false }
+);
+const BillForm = dynamic(
+    () => import('./BillForm').then(m => m.BillForm),
+    { ssr: false }
+);
+const PaymentForm = dynamic(
+    () => import('./PaymentForm').then(m => m.PaymentForm),
+    { ssr: false }
+);
 
 interface InvoicingActionsProps {
   clients: Array<{ id: string; name: string; paymentTerms?: string | null }>;

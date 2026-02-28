@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Calendar, Download, PieChart as PieChartIcon } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,6 +25,86 @@ interface SpendingReportViewProps {
     initialData: SpendingReport | null;
     initialParams: Record<string, string | undefined>;
     error: string | null;
+}
+
+/** Pure SVG donut chart — no recharts dependency */
+function SpendingDonutChart({ categories, currency }: {
+    categories: Array<{ category: string; amount: number; percentage: number }>;
+    currency: string;
+}) {
+    const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+    const size = 200;
+    const cx = size / 2;
+    const cy = size / 2;
+    const outerRadius = 90;
+    const innerRadius = 60;
+    const gapAngle = 2; // degrees between slices
+
+    const total = categories.reduce((sum, c) => sum + c.amount, 0);
+    if (total === 0) return null;
+
+    // Build arc paths
+    let currentAngle = -90; // start at top
+    const slices = categories.map((cat, i) => {
+        const sliceAngle = (cat.amount / total) * (360 - gapAngle * categories.length);
+        const startAngle = currentAngle;
+        const endAngle = currentAngle + sliceAngle;
+        currentAngle = endAngle + gapAngle;
+
+        const startRad = (startAngle * Math.PI) / 180;
+        const endRad = (endAngle * Math.PI) / 180;
+        const largeArc = sliceAngle > 180 ? 1 : 0;
+
+        const x1o = cx + outerRadius * Math.cos(startRad);
+        const y1o = cy + outerRadius * Math.sin(startRad);
+        const x2o = cx + outerRadius * Math.cos(endRad);
+        const y2o = cy + outerRadius * Math.sin(endRad);
+        const x1i = cx + innerRadius * Math.cos(endRad);
+        const y1i = cy + innerRadius * Math.sin(endRad);
+        const x2i = cx + innerRadius * Math.cos(startRad);
+        const y2i = cy + innerRadius * Math.sin(startRad);
+
+        const d = [
+            `M ${x1o} ${y1o}`,
+            `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${x2o} ${y2o}`,
+            `L ${x1i} ${y1i}`,
+            `A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x2i} ${y2i}`,
+            'Z',
+        ].join(' ');
+
+        return { d, color: CHART_COLORS[i % CHART_COLORS.length], cat };
+    });
+
+    const hovered = hoveredIdx !== null ? categories[hoveredIdx] : null;
+
+    return (
+        <div className="h-64 flex items-center justify-center relative">
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Expense breakdown donut chart">
+                {slices.map((slice, i) => (
+                    <path
+                        key={slice.cat.category}
+                        d={slice.d}
+                        fill={slice.color}
+                        opacity={hoveredIdx === null || hoveredIdx === i ? 1 : 0.4}
+                        className="transition-opacity duration-150 cursor-pointer"
+                        onMouseEnter={() => setHoveredIdx(i)}
+                        onMouseLeave={() => setHoveredIdx(null)}
+                    />
+                ))}
+                {/* Center text on hover */}
+                {hovered && (
+                    <>
+                        <text x={cx} y={cy - 8} textAnchor="middle" className="fill-foreground text-sm font-medium">
+                            {hovered.category}
+                        </text>
+                        <text x={cx} y={cy + 12} textAnchor="middle" className="fill-muted-foreground text-xs font-mono">
+                            {formatCurrency(hovered.amount, currency)}
+                        </text>
+                    </>
+                )}
+            </svg>
+        </div>
+    );
 }
 
 export function SpendingReportView({ initialData, initialParams, error }: SpendingReportViewProps) {
@@ -150,34 +229,10 @@ export function SpendingReportView({ initialData, initialParams, error }: Spendi
                             <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
                                 Expense Breakdown
                             </h4>
-                            <div className="h-64 flex items-center justify-center">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={initialData.categories.slice(0, 8).map(c => ({
-                                                name: c.category,
-                                                value: c.amount / 100,
-                                            }))}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={60}
-                                            outerRadius={90}
-                                            paddingAngle={2}
-                                            dataKey="value"
-                                        >
-                                            {initialData.categories.slice(0, 8).map((cat, catIdx) => (
-                                                <Cell key={cat.category} fill={CHART_COLORS[catIdx % CHART_COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip
-                                            formatter={(value: number) => [`$${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`, 'Amount']}
-                                            contentStyle={{ background: 'var(--color-ak-bg-2, #15151F)', border: '1px solid var(--color-ak-border)', borderRadius: 8 }}
-                                            labelStyle={{ color: 'var(--color-foreground)' }}
-                                            itemStyle={{ color: 'var(--color-foreground)' }}
-                                        />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
+                            <SpendingDonutChart
+                                categories={initialData.categories.slice(0, 8)}
+                                currency={initialData.currency}
+                            />
                             <div className="flex flex-wrap gap-3 justify-center mt-2">
                                 {initialData.categories.slice(0, 8).map((cat, catIdx) => (
                                     <div key={cat.category} className="flex items-center gap-1.5 text-xs text-muted-foreground">

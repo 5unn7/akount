@@ -18,7 +18,11 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Landmark, Upload, PenLine, ArrowLeft, LayoutDashboard } from 'lucide-react';
 import type { Entity } from '@/lib/api/entities';
 import type { BankConnectionResult } from '@/lib/api/accounts';
-import { AccountFormSheet } from './AccountFormSheet';
+
+const AccountFormSheet = dynamic(
+    () => import('./AccountFormSheet').then(m => m.AccountFormSheet),
+    { ssr: false }
+);
 
 // Lazy-load FlinksConnect — heavy iframe, no SSR benefit
 const FlinksConnect = dynamic(

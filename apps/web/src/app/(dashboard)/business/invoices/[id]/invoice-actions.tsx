@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,8 +20,15 @@ import type { Invoice } from '@/lib/api/invoices';
 import { sendInvoiceAction, postInvoiceAction, cancelInvoiceAction, voidInvoiceAction, deleteInvoiceAction } from './actions';
 import { Send, BookOpen, Download, XCircle, Ban, Loader2, ExternalLink, Pencil, DollarSign, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { InvoiceForm } from '@/components/business/InvoiceForm';
-import { PaymentForm } from '@/components/business/PaymentForm';
+
+const InvoiceForm = dynamic(
+    () => import('@/components/business/InvoiceForm').then(m => m.InvoiceForm),
+    { ssr: false }
+);
+const PaymentForm = dynamic(
+    () => import('@/components/business/PaymentForm').then(m => m.PaymentForm),
+    { ssr: false }
+);
 
 interface InvoiceActionsProps {
     invoice: Invoice;

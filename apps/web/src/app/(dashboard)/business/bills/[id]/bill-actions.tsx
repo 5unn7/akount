@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +20,11 @@ import type { Bill } from '@/lib/api/bills';
 import { approveBillAction, postBillAction, cancelBillAction, deleteBillAction } from './actions';
 import { CheckCircle, BookOpen, XCircle, Loader2, ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { BillForm } from '@/components/business/BillForm';
+
+const BillForm = dynamic(
+    () => import('@/components/business/BillForm').then(m => m.BillForm),
+    { ssr: false }
+);
 
 interface BillActionsProps {
     bill: Bill;

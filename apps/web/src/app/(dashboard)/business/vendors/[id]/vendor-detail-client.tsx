@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import {
     Building2,
@@ -34,8 +35,12 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { VendorForm } from '@/components/business/VendorForm';
 import { toast } from 'sonner';
+
+const VendorForm = dynamic(
+    () => import('@/components/business/VendorForm').then(m => m.VendorForm),
+    { ssr: false }
+);
 import { BillStatusBadge, VendorStatusBadge } from '@akount/ui/business';
 import {
     Table,

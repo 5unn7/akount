@@ -1,10 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Plus } from 'lucide-react';
 import type { Entity, EntityStatus } from '@/lib/api/entities';
 import { EntityCard } from './EntityCard';
-import { EntityFormSheet } from '@/components/dashboard/EntityFormSheet';
+
+const EntityFormSheet = dynamic(
+    () => import('@/components/dashboard/EntityFormSheet').then(m => m.EntityFormSheet),
+    { ssr: false }
+);
 
 type FilterStatus = 'ALL' | EntityStatus;
 

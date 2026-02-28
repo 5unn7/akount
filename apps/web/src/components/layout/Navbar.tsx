@@ -1,11 +1,16 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useSyncStatus } from '@/hooks/use-sync-status';
 import { useEntity } from '@/providers/entity-provider';
 import { MobileSidebar } from "./Sidebar";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { EntityFormSheet } from "@/components/dashboard/EntityFormSheet";
+
+const EntityFormSheet = dynamic(
+    () => import("@/components/dashboard/EntityFormSheet").then(m => m.EntityFormSheet),
+    { ssr: false }
+);
 import {
     DropdownMenu,
     DropdownMenuContent,

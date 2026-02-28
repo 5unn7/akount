@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import {
     Building2,
     Mail,
@@ -32,8 +33,12 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { ClientForm } from '@/components/business/ClientForm';
 import { toast } from 'sonner';
+
+const ClientForm = dynamic(
+    () => import('@/components/business/ClientForm').then(m => m.ClientForm),
+    { ssr: false }
+);
 import { InvoiceStatusBadge, ClientStatusBadge } from '@akount/ui/business';
 import { EmptyState } from '@akount/ui';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import type { Client } from '@/lib/api/clients';
 import { ClientsTable } from '@/components/business/ClientsTable';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,11 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, Filter, X, Loader2, Plus, Info } from 'lucide-react';
 import { fetchMoreClients } from '../actions';
-import { ClientForm } from '@/components/business/ClientForm';
+
+const ClientForm = dynamic(
+    () => import('@/components/business/ClientForm').then(m => m.ClientForm),
+    { ssr: false }
+);
 
 interface ClientsListClientProps {
     initialClients: Client[];

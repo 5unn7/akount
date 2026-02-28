@@ -1,8 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { X } from 'lucide-react'
-import { OnboardingWizard } from '@/app/onboarding/components/OnboardingWizard'
+
+const OnboardingWizard = dynamic(
+    () => import('@/app/onboarding/components/OnboardingWizard').then(m => m.OnboardingWizard),
+    { ssr: false }
+)
 
 /**
  * Onboarding Overlay
