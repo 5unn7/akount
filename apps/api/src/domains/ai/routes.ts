@@ -27,6 +27,7 @@ import { rulesRoutes } from './routes/rules';
 import { ruleSuggestionRoutes } from './routes/rule-suggestions';
 import { monthlyCloseRoutes } from './routes/monthly-close';
 import { jobStreamRoutes } from './routes/jobs';
+import { naturalBookkeepingRoutes } from './routes/natural-bookkeeping.routes';
 import {
   ListInsightsSchema,
   DismissInsightSchema,
@@ -671,4 +672,9 @@ export async function aiRoutes(fastify: FastifyInstance) {
   // Job Stream Routes (sub-plugin) — DEV-233
   // -----------------------------------------------------------------------
   fastify.register(jobStreamRoutes, { prefix: '/jobs' });
+
+  // -----------------------------------------------------------------------
+  // Natural Language Bookkeeping Routes (sub-plugin) — DEV-246
+  // -----------------------------------------------------------------------
+  fastify.register(naturalBookkeepingRoutes, { prefix: '/bookkeeping' });
 }
