@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 5
-**Estimated tokens:** ~587
+**Estimated tokens:** ~645
 
 ---
 
@@ -35,6 +35,9 @@
       "l": 362,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "AddAccountModal": {
@@ -57,6 +60,9 @@
       "l": 248,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "TransactionsList": {
@@ -72,6 +78,9 @@
       "l": 48,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "TransactionsTableClient": {
@@ -91,6 +100,9 @@
       "l": 216,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "TransactionsToolbar": {
@@ -104,6 +116,9 @@
       "l": 64,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     }
   },

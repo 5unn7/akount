@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 26
-**Estimated tokens:** ~901
+**Estimated tokens:** ~993
 
 ---
 
@@ -27,6 +27,9 @@
       "l": 47,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "loading": {
@@ -38,6 +41,9 @@
       "l": 46,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "page": {
@@ -57,6 +63,9 @@
       "l": 84,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "layout": {
@@ -66,6 +75,9 @@
       "l": 10,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "client-detail-client": {
@@ -88,6 +100,9 @@
       "l": 353,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "clients-list-client": {
@@ -110,6 +125,9 @@
       "l": 245,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "vendor-detail-client": {
@@ -132,6 +150,9 @@
       "l": 386,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "vendors-list-client": {
@@ -154,6 +175,9 @@
       "l": 245,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     }
   },

@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 73
-**Estimated tokens:** ~7,037
+**Estimated tokens:** ~8,437
 
 ---
 
@@ -26,6 +26,9 @@
       "l": 45,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "index": {
@@ -35,6 +38,9 @@
       "l": 39,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "routes": {
@@ -57,6 +63,11 @@
       "l": 687,
       "pt": "TSLP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/__tests__/routes.test.ts",
+        "testCount": 24
+      },
       "d": "ai"
     },
     "action.routes": {
@@ -75,6 +86,9 @@
       "l": 296,
       "pt": "TLP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "jobs": {
@@ -99,6 +113,9 @@
           "fix": "Use request.log or server.log (pino structured logging)"
         }
       ],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "monthly-close": {
@@ -117,6 +134,9 @@
       "l": 155,
       "pt": "LP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "natural-bookkeeping.routes": {
@@ -137,6 +157,11 @@
       "l": 124,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/routes/__tests__/natural-bookkeeping.routes.test.ts",
+        "testCount": 8
+      },
       "d": "ai"
     },
     "natural-search.routes": {
@@ -157,6 +182,11 @@
       "l": 125,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/routes/__tests__/natural-search.routes.test.ts",
+        "testCount": 7
+      },
       "d": "ai"
     },
     "rule-suggestions": {
@@ -175,6 +205,9 @@
       "l": 231,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "rules": {
@@ -192,6 +225,9 @@
       "l": 240,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "action.schema": {
@@ -214,6 +250,9 @@
       "l": 64,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "bank-statement-extraction.schema": {
@@ -234,6 +273,9 @@
       "l": 157,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "bill-extraction.schema": {
@@ -255,6 +297,11 @@
       "l": 156,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/schemas/__tests__/bill-extraction.schema.test.ts",
+        "testCount": 19
+      },
       "d": "ai"
     },
     "categorization.schema": {
@@ -273,6 +320,9 @@
       "l": 49,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "insight.schema": {
@@ -295,6 +345,9 @@
       "l": 53,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "invoice-extraction.schema": {
@@ -316,6 +369,11 @@
       "l": 170,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/schemas/__tests__/invoice-extraction.schema.test.ts",
+        "testCount": 13
+      },
       "d": "ai"
     },
     "je-suggestion.schema": {
@@ -332,6 +390,9 @@
       "l": 34,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "monthly-close.schema": {
@@ -350,6 +411,9 @@
       "l": 33,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "natural-bookkeeping.schema": {
@@ -367,6 +431,9 @@
       "l": 73,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "natural-search.schema": {
@@ -382,6 +449,9 @@
       "l": 71,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "rule-suggestion.schema": {
@@ -404,6 +474,9 @@
       "l": 49,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "rule.schema": {
@@ -427,6 +500,9 @@
       "l": 140,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "action-executor.service": {
@@ -445,6 +521,9 @@
       "l": 471,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "ai-action.service": {
@@ -467,6 +546,11 @@
       "l": 471,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/ai-action.service.test.ts",
+        "testCount": 22
+      },
       "d": "ai"
     },
     "ai-decision-log.service": {
@@ -484,6 +568,11 @@
       "l": 289,
       "pt": "TP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/ai-decision-log.service.test.ts",
+        "testCount": 10
+      },
       "d": "ai"
     },
     "ai.service": {
@@ -500,6 +589,11 @@
       "l": 53,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/ai.service.test.ts",
+        "testCount": 23
+      },
       "d": "ai"
     },
     "cash-flow.analyzer": {
@@ -514,6 +608,11 @@
       "l": 94,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/analyzers/__tests__/cash-flow.analyzer.test.ts",
+        "testCount": 9
+      },
       "d": "ai"
     },
     "duplicate.analyzer": {
@@ -528,6 +627,11 @@
       "l": 119,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/analyzers/__tests__/duplicate.analyzer.test.ts",
+        "testCount": 11
+      },
       "d": "ai"
     },
     "overdue.analyzer": {
@@ -542,6 +646,11 @@
       "l": 99,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/analyzers/__tests__/overdue.analyzer.test.ts",
+        "testCount": 10
+      },
       "d": "ai"
     },
     "reconciliation.analyzer": {
@@ -556,6 +665,11 @@
       "l": 108,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/analyzers/__tests__/reconciliation.analyzer.test.ts",
+        "testCount": 13
+      },
       "d": "ai"
     },
     "revenue.analyzer": {
@@ -570,6 +684,11 @@
       "l": 110,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/analyzers/__tests__/revenue.analyzer.test.ts",
+        "testCount": 11
+      },
       "d": "ai"
     },
     "spending.analyzer": {
@@ -584,6 +703,11 @@
       "l": 122,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/analyzers/__tests__/spending.analyzer.test.ts",
+        "testCount": 11
+      },
       "d": "ai"
     },
     "categorization.service": {
@@ -607,6 +731,11 @@
       "l": 725,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/categorization.service.test.ts",
+        "testCount": 36
+      },
       "d": "ai"
     },
     "document-extraction.service": {
@@ -629,6 +758,11 @@
       "l": 505,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/document-extraction.service.test.ts",
+        "testCount": 16
+      },
       "d": "ai"
     },
     "insight-generator.service": {
@@ -653,6 +787,11 @@
       "l": 243,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/insight-generator.service.test.ts",
+        "testCount": 14
+      },
       "d": "ai"
     },
     "insight.service": {
@@ -669,6 +808,11 @@
       "l": 348,
       "pt": "TP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/insight.service.test.ts",
+        "testCount": 15
+      },
       "d": "ai"
     },
     "je-suggestion.service": {
@@ -690,6 +834,11 @@
       "l": 418,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/je-suggestion.service.test.ts",
+        "testCount": 28
+      },
       "d": "ai"
     },
     "monthly-close.service": {
@@ -709,6 +858,11 @@
       "l": 387,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/monthly-close.service.test.ts",
+        "testCount": 17
+      },
       "d": "ai"
     },
     "natural-bookkeeping.service": {
@@ -728,6 +882,9 @@
       "l": 444,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "natural-search.service": {
@@ -748,6 +905,9 @@
       "l": 558,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "pattern-detection.service": {
@@ -765,6 +925,11 @@
       "l": 538,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/pattern-detection.service.test.ts",
+        "testCount": 31
+      },
       "d": "ai"
     },
     "claude.provider": {
@@ -780,6 +945,9 @@
       "l": 72,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "mistral.provider": {
@@ -797,6 +965,11 @@
       "l": 427,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/providers/__tests__/mistral.provider.test.ts",
+        "testCount": 25
+      },
       "d": "ai"
     },
     "perplexity.provider": {
@@ -812,6 +985,9 @@
       "l": 56,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "rule-engine.service": {
@@ -828,6 +1004,11 @@
       "l": 361,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/rule-engine.service.test.ts",
+        "testCount": 28
+      },
       "d": "ai"
     },
     "rule-suggestion.service": {
@@ -847,6 +1028,9 @@
       "l": 343,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "rule.service": {
@@ -869,6 +1053,11 @@
       "l": 569,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/ai/services/__tests__/rule.service.test.ts",
+        "testCount": 37
+      },
       "d": "ai"
     },
     "types": {
@@ -878,6 +1067,9 @@
       "l": 12,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "insight.types": {
@@ -898,6 +1090,9 @@
       "l": 174,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "bill-scan.worker": {
@@ -919,6 +1114,9 @@
       "l": 335,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "invoice-scan.worker": {
@@ -940,6 +1138,9 @@
       "l": 338,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "actions-list-client": {
@@ -960,6 +1161,9 @@
       "l": 463,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "error": {
@@ -974,6 +1178,9 @@
       "l": 50,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "loading": {
@@ -986,6 +1193,9 @@
       "l": 64,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "page": {
@@ -1002,6 +1212,9 @@
       "l": 57,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "chat-interface": {
@@ -1020,6 +1233,9 @@
       "l": 243,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "insight-card": {
@@ -1039,6 +1255,9 @@
       "l": 223,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "insights-client": {
@@ -1057,6 +1276,9 @@
       "l": 343,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "monthly-close-client": {
@@ -1076,6 +1298,9 @@
       "l": 387,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "rule-condition-builder": {
@@ -1093,6 +1318,9 @@
       "l": 202,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "rules-client": {
@@ -1115,6 +1343,9 @@
       "l": 612,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     }
   },

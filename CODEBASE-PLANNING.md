@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 40
-**Estimated tokens:** ~3,256
+**Estimated tokens:** ~3,658
 
 ---
 
@@ -31,6 +31,9 @@
       "l": 24,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "budget.routes": {
@@ -49,6 +52,9 @@
       "l": 280,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "forecast.routes": {
@@ -69,6 +75,9 @@
       "l": 257,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goal.routes": {
@@ -87,6 +96,9 @@
       "l": 241,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "budget.schema": {
@@ -109,6 +121,9 @@
       "l": 59,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "forecast.schema": {
@@ -131,6 +146,9 @@
       "l": 64,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goal.schema": {
@@ -153,6 +171,9 @@
       "l": 50,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "ai-forecast.service": {
@@ -169,6 +190,9 @@
       "l": 389,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "budget-suggestions.service": {
@@ -183,6 +207,9 @@
       "l": 174,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "budget-variance.service": {
@@ -199,6 +226,9 @@
       "l": 323,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "budget.service": {
@@ -215,6 +245,11 @@
       "l": 286,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/planning/services/__tests__/budget.service.test.ts",
+        "testCount": 19
+      },
       "d": "pln"
     },
     "cash-runway.service": {
@@ -230,6 +265,9 @@
       "l": 155,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "forecast.service": {
@@ -245,6 +283,9 @@
       "l": 161,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goal-templates": {
@@ -260,6 +301,9 @@
       "l": 362,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goal-tracking.service": {
@@ -275,6 +319,9 @@
       "l": 271,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goal.service": {
@@ -290,6 +337,11 @@
       "l": 209,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/planning/services/__tests__/goal.service.test.ts",
+        "testCount": 17
+      },
       "d": "pln"
     },
     "seasonal-patterns.service": {
@@ -305,6 +357,9 @@
       "l": 139,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "budget-form": {
@@ -324,6 +379,9 @@
       "l": 201,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "budgets-list": {
@@ -346,6 +404,9 @@
       "l": 250,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "error": {
@@ -360,6 +421,9 @@
       "l": 53,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "loading": {
@@ -371,6 +435,9 @@
       "l": 37,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "page": {
@@ -393,6 +460,9 @@
       "l": 192,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "export-planning": {
@@ -408,6 +478,9 @@
       "l": 123,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "forecast-form": {
@@ -426,6 +499,9 @@
       "l": 388,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "forecasts-list": {
@@ -446,6 +522,9 @@
       "l": 400,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "scenario-comparison": {
@@ -463,6 +542,9 @@
       "l": 172,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goal-form": {
@@ -482,6 +564,9 @@
       "l": 237,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goal-trajectory": {
@@ -496,6 +581,9 @@
       "l": 141,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "goals-list": {
@@ -518,6 +606,9 @@
       "l": 235,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     },
     "layout": {
@@ -527,6 +618,9 @@
       "l": 10,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pln"
     }
   },

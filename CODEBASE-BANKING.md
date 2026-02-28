@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 57
-**Estimated tokens:** ~3,733
+**Estimated tokens:** ~4,458
 
 ---
 
@@ -22,6 +22,9 @@
       "l": 10,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "routes": {
@@ -44,6 +47,11 @@
       "l": 407,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/__tests__/routes.test.ts",
+        "testCount": 11
+      },
       "d": "bnk"
     },
     "categories": {
@@ -62,6 +70,9 @@
       "l": 214,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "connections": {
@@ -80,6 +91,9 @@
       "l": 174,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "imports": {
@@ -100,6 +114,9 @@
       "l": 597,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "reconciliation": {
@@ -118,6 +135,9 @@
       "l": 164,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "transactions": {
@@ -140,6 +160,9 @@
       "l": 339,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "transfers": {
@@ -159,6 +182,9 @@
       "l": 115,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "category.schema": {
@@ -179,6 +205,9 @@
       "l": 31,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "reconciliation.schema": {
@@ -201,6 +230,9 @@
       "l": 49,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "transaction.schema": {
@@ -223,6 +255,9 @@
       "l": 126,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "transfer.schema": {
@@ -241,6 +276,9 @@
       "l": 69,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "account-matcher.service": {
@@ -259,6 +297,11 @@
       "l": 159,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/account-matcher.service.test.ts",
+        "testCount": 15
+      },
       "d": "bnk"
     },
     "account.service": {
@@ -275,6 +318,11 @@
       "l": 375,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/account.service.test.ts",
+        "testCount": 39
+      },
       "d": "bnk"
     },
     "category.service": {
@@ -293,6 +341,11 @@
       "l": 456,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/category.service.test.ts",
+        "testCount": 45
+      },
       "d": "bnk"
     },
     "duplication.service": {
@@ -311,6 +364,11 @@
       "l": 323,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/duplication.service.test.ts",
+        "testCount": 34
+      },
       "d": "bnk"
     },
     "flinks.service": {
@@ -332,6 +390,11 @@
       "l": 570,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/flinks.service.test.ts",
+        "testCount": 21
+      },
       "d": "bnk"
     },
     "fx-rate.service": {
@@ -346,6 +409,11 @@
       "l": 176,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/fx-rate.service.test.ts",
+        "testCount": 12
+      },
       "d": "bnk"
     },
     "import.service": {
@@ -373,6 +441,11 @@
       "l": 728,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/import.service.test.ts",
+        "testCount": 19
+      },
       "d": "bnk"
     },
     "parser-csv": {
@@ -389,6 +462,9 @@
       "l": 294,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "parser-pdf-mistral": {
@@ -407,6 +483,9 @@
       "l": 318,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "parser-pdf": {
@@ -421,6 +500,9 @@
       "l": 671,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "parser-shared": {
@@ -441,6 +523,11 @@
       "l": 152,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/parser-shared.test.ts",
+        "testCount": 42
+      },
       "d": "bnk"
     },
     "parser.service": {
@@ -450,6 +537,9 @@
       "l": 12,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "reconciliation.service": {
@@ -470,6 +560,11 @@
       "l": 542,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/reconciliation.service.test.ts",
+        "testCount": 25
+      },
       "d": "bnk"
     },
     "transaction.service": {
@@ -488,6 +583,11 @@
       "l": 662,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/transaction.service.test.ts",
+        "testCount": 35
+      },
       "d": "bnk"
     },
     "transfer.service": {
@@ -504,6 +604,11 @@
       "l": 622,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/banking/services/__tests__/transfer.service.test.ts",
+        "testCount": 20
+      },
       "d": "bnk"
     },
     "error": {
@@ -518,6 +623,9 @@
       "l": 53,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "loading": {
@@ -530,6 +638,9 @@
       "l": 53,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "page": {
@@ -548,6 +659,9 @@
       "l": 46,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "categories-client": {
@@ -570,6 +684,9 @@
       "l": 359,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "layout": {
@@ -579,6 +696,9 @@
       "l": 10,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     },
     "transfers-client": {
@@ -601,6 +721,9 @@
       "l": 191,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "bnk"
     }
   },

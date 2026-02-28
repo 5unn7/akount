@@ -1,8 +1,8 @@
 # INVOICING Code Index
 
 **Auto-generated:** 2026-02-28
-**Files indexed:** 18
-**Estimated tokens:** ~1,917
+**Files indexed:** 19
+**Estimated tokens:** ~2,340
 
 ---
 
@@ -13,7 +13,7 @@
 <!-- CODE-INDEX:START (auto-generated, do not edit manually)
 {
   "_": "2026-02-28",
-  "n": 18,
+  "n": 19,
   "f": {
     "bills": {
       "p": "apps/api/src/domains/invoicing/routes/bills.ts",
@@ -35,6 +35,9 @@
       "l": 320,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "inv"
     },
     "invoices": {
@@ -57,6 +60,9 @@
       "l": 391,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "inv"
     },
     "payments": {
@@ -78,6 +84,9 @@
       "l": 274,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "inv"
     },
     "bill.schema": {
@@ -98,6 +107,9 @@
       "l": 64,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "inv"
     },
     "invoice.schema": {
@@ -118,6 +130,9 @@
       "l": 61,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "inv"
     },
     "payment.schema": {
@@ -140,6 +155,9 @@
       "l": 60,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "inv"
     },
     "bill.service": {
@@ -163,6 +181,11 @@
       "l": 484,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/invoicing/services/__tests__/bill.service.test.ts",
+        "testCount": 46
+      },
       "d": "inv"
     },
     "invoice.service": {
@@ -189,6 +212,11 @@
       "l": 639,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/invoicing/services/__tests__/invoice.service.test.ts",
+        "testCount": 46
+      },
       "d": "inv"
     },
     "payment.service": {
@@ -211,6 +239,11 @@
       "l": 295,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/invoicing/services/__tests__/payment.service.test.ts",
+        "testCount": 22
+      },
       "d": "inv"
     },
     "pdf.service": {
@@ -224,6 +257,11 @@
       "l": 363,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/invoicing/services/__tests__/pdf.service.test.ts",
+        "testCount": 9
+      },
       "d": "inv"
     },
     "error": {
@@ -238,6 +276,9 @@
       "l": 47,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "invoice-actions": {
@@ -259,6 +300,9 @@
       "l": 338,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "loading": {
@@ -270,6 +314,9 @@
       "l": 88,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "page": {
@@ -292,6 +339,32 @@
       "l": 186,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
+      "d": "pg"
+    },
+    "invoice-scan-upload": {
+      "p": "apps/web/src/app/(dashboard)/business/invoices/invoice-scan-upload.tsx",
+      "e": [
+        "InvoiceScanUpload"
+      ],
+      "i": [
+        "react",
+        "react-dropzone",
+        "@/hooks/use-job-stream",
+        "@/lib/api/client-browser",
+        "@/lib/utils/currency",
+        "@akount/ui",
+        "sonner",
+        "lucide-react"
+      ],
+      "l": 489,
+      "pt": "C",
+      "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     },
     "invoices-list-client": {
@@ -313,6 +386,9 @@
       "l": 217,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pg"
     }
   },
@@ -322,8 +398,8 @@
       "l": 2951
     },
     "pg": {
-      "n": 8,
-      "l": 1215
+      "n": 9,
+      "l": 1704
     }
   },
   "p": {
@@ -348,6 +424,7 @@
     "C": [
       "error",
       "invoice-actions",
+      "invoice-scan-upload",
       "invoices-list-client"
     ]
   },
@@ -361,14 +438,14 @@ CODE-INDEX:END -->
 
 **Files by domain:**
 - inv: 10 files, 2,951 LOC
-- pg: 8 files, 1,215 LOC
+- pg: 9 files, 1,704 LOC
 
 **Patterns found:**
 - L: 2 files
 - T: 2 files
 - S: 3 files
 - P: 3 files
-- C: 3 files
+- C: 4 files
 
 **Violations found:**
 - None ✅

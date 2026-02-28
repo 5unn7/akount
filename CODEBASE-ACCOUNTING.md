@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 107
-**Estimated tokens:** ~6,927
+**Estimated tokens:** ~7,717
 
 ---
 
@@ -26,6 +26,9 @@
       "l": 79,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "index": {
@@ -47,6 +50,9 @@
       "l": 30,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "routes": {
@@ -56,6 +62,9 @@
       "l": 3,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "asset": {
@@ -73,6 +82,9 @@
       "l": 214,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "fiscal-period": {
@@ -90,6 +102,9 @@
       "l": 168,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "gl-account": {
@@ -108,6 +123,9 @@
       "l": 198,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "journal-entry": {
@@ -126,6 +144,9 @@
       "l": 305,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "report": {
@@ -148,6 +169,9 @@
       "l": 224,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "tax-rate": {
@@ -165,6 +189,9 @@
       "l": 154,
       "pt": "L",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "asset.schema": {
@@ -187,6 +214,9 @@
       "l": 111,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "fiscal-period.schema": {
@@ -209,6 +239,9 @@
       "l": 51,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "gl-account.schema": {
@@ -232,6 +265,9 @@
       "l": 70,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "journal-entry.schema": {
@@ -255,6 +291,9 @@
       "l": 152,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "report.schema": {
@@ -277,6 +316,11 @@
       "l": 105,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/accounting/schemas/__tests__/report.schema.test.ts",
+        "testCount": 17
+      },
       "d": "acc"
     },
     "tax-rate.schema": {
@@ -299,6 +343,9 @@
       "l": 73,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "asset.service": {
@@ -316,6 +363,9 @@
       "l": 615,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "coa-template": {
@@ -331,6 +381,9 @@
       "l": 161,
       "pt": "TP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "document-posting.service": {
@@ -350,6 +403,9 @@
       "l": 1059,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "fiscal-period.service": {
@@ -366,6 +422,9 @@
       "l": 348,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "gl-account.service": {
@@ -382,6 +441,9 @@
       "l": 453,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "journal-entry.service": {
@@ -400,6 +462,9 @@
       "l": 708,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "posting.service": {
@@ -416,6 +481,9 @@
       "l": 833,
       "pt": "SP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "report-cache": {
@@ -430,6 +498,9 @@
       "l": 157,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "report-export.service": {
@@ -444,6 +515,11 @@
       "l": 265,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/accounting/services/__tests__/report-export.service.test.ts",
+        "testCount": 46
+      },
       "d": "acc"
     },
     "report.service": {
@@ -460,6 +536,11 @@
       "l": 1234,
       "pt": "TSP",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/api/src/domains/accounting/services/__tests__/report.service.test.ts",
+        "testCount": 38
+      },
       "d": "acc"
     },
     "tax-rate.service": {
@@ -476,6 +557,9 @@
       "l": 309,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "shared-styles": {
@@ -495,6 +579,9 @@
       "l": 210,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "entry-number": {
@@ -508,6 +595,9 @@
       "l": 39,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "gl-resolve": {
@@ -523,6 +613,9 @@
       "l": 47,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "validate-ownership": {
@@ -538,6 +631,9 @@
       "l": 47,
       "pt": "TP",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "accounting-empty": {
@@ -553,6 +649,9 @@
       "l": 139,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "asset-sheet": {
@@ -573,6 +672,9 @@
       "l": 295,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "assets-client": {
@@ -595,6 +697,9 @@
       "l": 678,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "assets-empty": {
@@ -612,6 +717,9 @@
       "l": 50,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "error": {
@@ -626,6 +734,9 @@
       "l": 53,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "loading": {
@@ -637,6 +748,9 @@
       "l": 59,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "page": {
@@ -655,6 +769,9 @@
       "l": 47,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "balance-equation": {
@@ -669,6 +786,9 @@
       "l": 90,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "account-row": {
@@ -691,6 +811,9 @@
       "l": 343,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "chart-of-accounts-client": {
@@ -718,6 +841,9 @@
           "fix": "Use unknown + type guard or specific type"
         }
       ],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "gl-account-sheet": {
@@ -734,6 +860,9 @@
       "l": 197,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "coa-snapshot": {
@@ -750,6 +879,9 @@
       "l": 104,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "fiscal-periods-client": {
@@ -769,6 +901,9 @@
       "l": 319,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "fiscal-periods-empty": {
@@ -788,6 +923,9 @@
       "l": 120,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "income-summary": {
@@ -804,6 +942,9 @@
       "l": 110,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "journal-entry-detail-client": {
@@ -825,6 +966,9 @@
       "l": 435,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "journal-entries-client": {
@@ -845,6 +989,9 @@
       "l": 417,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "journal-entry-detail": {
@@ -863,6 +1010,9 @@
       "l": 243,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "journal-entry-form": {
@@ -886,6 +1036,9 @@
       "l": 364,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "layout": {
@@ -895,6 +1048,9 @@
       "l": 10,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "recent-entries": {
@@ -913,6 +1069,9 @@
       "l": 90,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "bs-report-view": {
@@ -935,6 +1094,9 @@
       "l": 310,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "cf-report-view": {
@@ -956,6 +1118,9 @@
       "l": 271,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "gl-report-view": {
@@ -977,6 +1142,9 @@
       "l": 252,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "pl-report-view": {
@@ -999,6 +1167,9 @@
       "l": 267,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "revenue-report-view": {
@@ -1020,6 +1191,9 @@
       "l": 180,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "spending-report-view": {
@@ -1041,6 +1215,9 @@
       "l": 290,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "tb-report-view": {
@@ -1062,6 +1239,9 @@
       "l": 190,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "tax-rate-sheet": {
@@ -1080,6 +1260,9 @@
       "l": 267,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "tax-rates-client": {
@@ -1101,6 +1284,9 @@
       "l": 335,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     },
     "tax-rates-empty": {
@@ -1123,6 +1309,9 @@
       "l": 336,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "acc"
     }
   },

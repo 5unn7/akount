@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 114
-**Estimated tokens:** ~9,791
+**Estimated tokens:** ~11,349
 
 ---
 
@@ -27,6 +27,9 @@
       "l": 142,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "avatar": {
@@ -40,6 +43,9 @@
       "l": 51,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "badge": {
@@ -55,6 +61,9 @@
       "l": 40,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "breadcrumb": {
@@ -74,6 +83,9 @@
       "l": 76,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "button": {
@@ -90,6 +102,9 @@
       "l": 58,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "card": {
@@ -103,6 +118,9 @@
       "l": 93,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "checkbox": {
@@ -117,6 +135,9 @@
       "l": 31,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "circular-progress": {
@@ -130,6 +151,9 @@
       "l": 118,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "collapsible": {
@@ -141,6 +165,9 @@
       "l": 12,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "country-select": {
@@ -158,6 +185,9 @@
       "l": 158,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "dialog": {
@@ -172,6 +202,9 @@
       "l": 123,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "dropdown-menu": {
@@ -186,6 +219,9 @@
       "l": 202,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "glow-card": {
@@ -200,6 +236,9 @@
       "l": 80,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "hover-card": {
@@ -213,6 +252,9 @@
       "l": 30,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "input": {
@@ -225,6 +267,9 @@
       "l": 26,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "label": {
@@ -239,6 +284,9 @@
       "l": 27,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "scroll-area": {
@@ -252,6 +300,9 @@
       "l": 49,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "select": {
@@ -266,6 +317,9 @@
       "l": 160,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "separator": {
@@ -279,6 +333,9 @@
       "l": 32,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "sheet": {
@@ -294,6 +351,9 @@
       "l": 141,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "skeleton": {
@@ -305,6 +365,9 @@
       "l": 16,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "switch": {
@@ -316,6 +379,9 @@
       "l": 44,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "table": {
@@ -328,6 +394,9 @@
       "l": 133,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "textarea": {
@@ -340,6 +409,9 @@
       "l": 25,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "theme-toggle": {
@@ -355,6 +427,9 @@
       "l": 85,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "tooltip": {
@@ -368,6 +443,9 @@
       "l": 31,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "AgingBar": {
@@ -382,6 +460,9 @@
       "l": 119,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "BulkActionToolbar": {
@@ -396,6 +477,9 @@
       "l": 58,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "ContentPanel": {
@@ -409,6 +493,9 @@
       "l": 20,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "DetailPanel": {
@@ -426,6 +513,9 @@
       "l": 172,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "DomainTabs": {
@@ -442,6 +532,9 @@
       "l": 57,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "KeyboardShortcutsModal": {
@@ -456,6 +549,9 @@
       "l": 111,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "PageHeader": {
@@ -467,6 +563,9 @@
       "l": 66,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "SectionHeader": {
@@ -480,6 +579,9 @@
       "l": 35,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "StatPill": {
@@ -494,6 +596,9 @@
       "l": 55,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "StatsGrid": {
@@ -508,6 +613,9 @@
       "l": 96,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "TwoColumnLayout": {
@@ -521,6 +629,9 @@
       "l": 29,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "Navbar": {
@@ -540,6 +651,9 @@
       "l": 223,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "Sidebar": {
@@ -563,6 +677,9 @@
       "l": 358,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "SidebarProgressIndicator": {
@@ -578,6 +695,11 @@
       "l": 50,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/components/layout/__tests__/SidebarProgressIndicator.test.tsx",
+        "testCount": 4
+      },
       "d": "cmp"
     },
     "ActionItems": {
@@ -594,6 +716,9 @@
       "l": 100,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "AIActionWidget": {
@@ -612,6 +737,9 @@
       "l": 231,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "AIBrief": {
@@ -625,6 +753,9 @@
       "l": 43,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "BudgetVsActualWidget": {
@@ -644,6 +775,9 @@
       "l": 79,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "CashFlowChart": {
@@ -659,6 +793,9 @@
       "l": 213,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "CircularProgress": {
@@ -670,6 +807,11 @@
       "l": 55,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/components/dashboard/__tests__/CircularProgress.test.tsx",
+        "testCount": 5
+      },
       "d": "cmp"
     },
     "CircularProgressDynamic": {
@@ -679,6 +821,9 @@
       "l": 8,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "CommandCenterRightPanel": {
@@ -694,6 +839,9 @@
       "l": 22,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "DashboardCharts": {
@@ -711,6 +859,9 @@
       "l": 62,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "DashboardFilters": {
@@ -726,6 +877,9 @@
       "l": 90,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "DashboardLeftRail": {
@@ -740,6 +894,9 @@
       "l": 24,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "DashboardMetrics": {
@@ -757,6 +914,9 @@
       "l": 95,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "DashboardRightRail": {
@@ -774,6 +934,9 @@
       "l": 28,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "EntitiesList": {
@@ -791,6 +954,9 @@
       "l": 126,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "EntitiesSection": {
@@ -811,6 +977,9 @@
       "l": 52,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "EntityAccountCards": {
@@ -827,6 +996,9 @@
       "l": 100,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "EntityFormSheet": {
@@ -847,6 +1019,9 @@
       "l": 338,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "ExpenseChart": {
@@ -862,6 +1037,9 @@
       "l": 183,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "ExpenseForecastWidget": {
@@ -881,6 +1059,9 @@
       "l": 103,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "GoalProgressWidget": {
@@ -900,6 +1081,9 @@
       "l": 100,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "InsightCards": {
@@ -917,6 +1101,9 @@
       "l": 111,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "LiquidityHero": {
@@ -933,6 +1120,9 @@
       "l": 108,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "MiniSparkline": {
@@ -947,6 +1137,9 @@
       "l": 69,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "NetWorthHero": {
@@ -963,6 +1156,9 @@
       "l": 135,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "ProfitLossSummaryWidget": {
@@ -982,6 +1178,9 @@
       "l": 103,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "QuickActionPills": {
@@ -995,6 +1194,9 @@
       "l": 47,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "QuickActions": {
@@ -1009,6 +1211,9 @@
       "l": 38,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "QuickStats": {
@@ -1022,6 +1227,9 @@
       "l": 39,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "RecentTransactions": {
@@ -1039,6 +1247,9 @@
       "l": 115,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "SparkCards": {
@@ -1055,6 +1266,9 @@
       "l": 106,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "StatCard": {
@@ -1072,6 +1286,9 @@
       "l": 100,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "TopRevenueClientsWidget": {
@@ -1091,6 +1308,9 @@
       "l": 88,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "TrialBalanceStatusWidget": {
@@ -1110,6 +1330,9 @@
       "l": 90,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "UpcomingPayments": {
@@ -1128,6 +1351,9 @@
       "l": 114,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "WidgetPrimitives": {
@@ -1146,6 +1372,9 @@
       "l": 236,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "accounting": {
@@ -1168,6 +1397,9 @@
       "l": 646,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "accounts": {
@@ -1190,6 +1422,11 @@
       "l": 275,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/api/__tests__/accounts.test.ts",
+        "testCount": 14
+      },
       "d": "cmp"
     },
     "ai": {
@@ -1212,6 +1449,9 @@
       "l": 774,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "bills": {
@@ -1234,6 +1474,9 @@
       "l": 225,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "categories": {
@@ -1256,6 +1499,9 @@
       "l": 123,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "client-browser": {
@@ -1267,6 +1513,11 @@
       "l": 133,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/api/__tests__/client-browser.test.ts",
+        "testCount": 15
+      },
       "d": "cmp"
     },
     "client": {
@@ -1280,6 +1531,9 @@
       "l": 61,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "clients": {
@@ -1302,6 +1556,9 @@
       "l": 130,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "dashboard-client": {
@@ -1326,6 +1583,9 @@
       "l": 332,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "dashboard": {
@@ -1347,6 +1607,9 @@
       "l": 199,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "entities": {
@@ -1369,6 +1632,9 @@
       "l": 129,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "imports": {
@@ -1388,6 +1654,9 @@
       "l": 109,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "invoices": {
@@ -1410,6 +1679,11 @@
       "l": 237,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/api/__tests__/invoices.test.ts",
+        "testCount": 18
+      },
       "d": "cmp"
     },
     "onboarding": {
@@ -1432,6 +1706,9 @@
       "l": 162,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "payments": {
@@ -1454,6 +1731,9 @@
       "l": 181,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "performance": {
@@ -1471,6 +1751,9 @@
       "l": 55,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "planning": {
@@ -1493,6 +1776,9 @@
       "l": 602,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "reconciliation": {
@@ -1510,6 +1796,9 @@
       "l": 55,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "reconciliation.types": {
@@ -1525,6 +1814,9 @@
       "l": 87,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "reports-client": {
@@ -1536,6 +1828,9 @@
       "l": 60,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "reports-types": {
@@ -1545,6 +1840,9 @@
       "l": 9,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "reports": {
@@ -1564,6 +1862,9 @@
       "l": 125,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "transactions": {
@@ -1585,6 +1886,11 @@
       "l": 170,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/api/__tests__/transactions.test.ts",
+        "testCount": 18
+      },
       "d": "cmp"
     },
     "transactions.types": {
@@ -1604,6 +1910,9 @@
       "l": 135,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "transfers": {
@@ -1623,6 +1932,9 @@
       "l": 94,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "vendors": {
@@ -1645,6 +1957,9 @@
       "l": 131,
       "pt": "S",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "browser": {
@@ -1657,6 +1972,9 @@
       "l": 20,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "dashboard-personalization": {
@@ -1669,6 +1987,11 @@
       "l": 75,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/__tests__/dashboard-personalization.test.ts",
+        "testCount": 9
+      },
       "d": "cmp"
     },
     "constants": {
@@ -1687,6 +2010,9 @@
       "l": 69,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "transformers": {
@@ -1704,6 +2030,9 @@
       "l": 140,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "countries": {
@@ -1719,6 +2048,9 @@
       "l": 245,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "entity-cookies": {
@@ -1734,6 +2066,9 @@
       "l": 42,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "error-tracking": {
@@ -1749,6 +2084,9 @@
       "l": 110,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "logger": {
@@ -1760,6 +2098,9 @@
       "l": 53,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "navigation": {
@@ -1778,6 +2119,9 @@
       "l": 459,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "utils": {
@@ -1792,6 +2136,9 @@
       "l": 7,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "account-helpers": {
@@ -1811,6 +2158,11 @@
       "l": 107,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/utils/__tests__/account-helpers.test.ts",
+        "testCount": 19
+      },
       "d": "cmp"
     },
     "currency": {
@@ -1825,6 +2177,11 @@
       "l": 79,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/utils/__tests__/currency.test.ts",
+        "testCount": 32
+      },
       "d": "cmp"
     },
     "date": {
@@ -1841,6 +2198,11 @@
       "l": 84,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "apps/web/src/lib/utils/__tests__/date.test.ts",
+        "testCount": 17
+      },
       "d": "cmp"
     }
   },

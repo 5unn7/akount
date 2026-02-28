@@ -106,6 +106,37 @@ const DOMAINS = {
 // ─── File Analysis ──────────────────────────────────────────────
 
 /**
+ * Find test file for a given source file (INFRA-68)
+ */
+function findTestFile(sourceFile) {
+  const dir = path.dirname(sourceFile);
+  const baseName = path.basename(sourceFile, path.extname(sourceFile));
+
+  // Check for X.test.ts in same directory
+  const testFile1 = path.join(dir, `${baseName}.test.ts`);
+  const testFile2 = path.join(dir, `${baseName}.test.tsx`);
+
+  // Check for __tests__/X.test.ts
+  const testFile3 = path.join(dir, '__tests__', `${baseName}.test.ts`);
+  const testFile4 = path.join(dir, '__tests__', `${baseName}.test.tsx`);
+
+  for (const testFile of [testFile1, testFile2, testFile3, testFile4]) {
+    if (fs.existsSync(testFile)) {
+      const testContent = fs.readFileSync(testFile, 'utf-8');
+      const testCount = (testContent.match(/\b(it|test)\s*\(/g) || []).length;
+
+      return {
+        exists: true,
+        file: path.relative(PROJECT_ROOT, testFile).replace(/\\/g, '/'),
+        testCount,
+      };
+    }
+  }
+
+  return { exists: false };
+}
+
+/**
  * Analyze a TypeScript file and extract metadata
  */
 function analyzeFile(filePath) {
@@ -190,6 +221,9 @@ function analyzeFile(filePath) {
     // Shortened path (relative from project root)
     const shortPath = path.relative(PROJECT_ROOT, filePath).replace(/\\/g, '/');
 
+    // Test coverage detection (INFRA-68)
+    const tests = findTestFile(filePath);
+
     return {
       p: shortPath,
       e: exports,
@@ -197,6 +231,7 @@ function analyzeFile(filePath) {
       l: lines.length,
       pt: patterns.join(''),
       v: violations,
+      t: tests, // Test coverage info
     };
   } catch (error) {
     console.error(`Error analyzing ${filePath}:`, error.message);

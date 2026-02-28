@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 18
-**Estimated tokens:** ~2,138
+**Estimated tokens:** ~2,345
 
 ---
 
@@ -31,6 +31,9 @@
       "l": 195,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "BillForm": {
@@ -53,6 +56,9 @@
       "l": 274,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "BillsTable": {
@@ -75,6 +81,9 @@
       "l": 201,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "ClientDetailPanel": {
@@ -92,6 +101,9 @@
       "l": 161,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "ClientForm": {
@@ -114,6 +126,9 @@
       "l": 184,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "ClientsTable": {
@@ -132,6 +147,9 @@
       "l": 137,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "InvoiceDetailPanel": {
@@ -150,6 +168,9 @@
       "l": 199,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "InvoiceForm": {
@@ -172,6 +193,9 @@
       "l": 279,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "InvoiceTable": {
@@ -194,6 +218,9 @@
       "l": 274,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "InvoicingActions": {
@@ -211,6 +238,9 @@
       "l": 90,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "PaymentForm": {
@@ -232,6 +262,9 @@
       "l": 449,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "PaymentTable": {
@@ -254,6 +287,9 @@
       "l": 523,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "VendorDetailPanel": {
@@ -271,6 +307,9 @@
       "l": 161,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "VendorForm": {
@@ -293,6 +332,9 @@
       "l": 184,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "VendorsTable": {
@@ -312,6 +354,9 @@
       "l": 142,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "EntityCard": {
@@ -326,6 +371,9 @@
       "l": 104,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "EntityDetailClient": {
@@ -344,6 +392,9 @@
       "l": 422,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     },
     "EntityHubClient": {
@@ -361,6 +412,9 @@
       "l": 97,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "cmp"
     }
   },

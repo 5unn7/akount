@@ -2,7 +2,7 @@
 
 **Auto-generated:** 2026-02-28
 **Files indexed:** 70
-**Estimated tokens:** ~4,526
+**Estimated tokens:** ~5,280
 
 ---
 
@@ -24,6 +24,9 @@
       "l": 16,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "seed": {
@@ -35,6 +38,9 @@
       "l": 468,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "link-dev-user": {
@@ -46,6 +52,9 @@
       "l": 82,
       "pt": "P",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "tailwind-preset": {
@@ -59,6 +68,9 @@
       "l": 121,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "ai": {
@@ -74,6 +86,9 @@
       "l": 36,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "currency": {
@@ -91,6 +106,9 @@
       "l": 106,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "format": {
@@ -110,6 +128,9 @@
       "l": 136,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "money": {
@@ -130,6 +151,9 @@
       "l": 125,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "reports": {
@@ -150,6 +174,9 @@
       "l": 273,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "jurisdiction": {
@@ -163,6 +190,9 @@
       "l": 51,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "permissions": {
@@ -185,6 +215,9 @@
       "l": 415,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "roles": {
@@ -205,6 +238,9 @@
       "l": 117,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "setup": {
@@ -217,6 +253,9 @@
       "l": 8,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "utils": {
@@ -231,6 +270,9 @@
       "l": 15,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "vitest.config": {
@@ -243,6 +285,9 @@
       "l": 13,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "AIBadge": {
@@ -259,6 +304,9 @@
       "l": 91,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "AIPanel": {
@@ -276,6 +324,9 @@
       "l": 197,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "ConfidenceBadge": {
@@ -290,6 +341,9 @@
       "l": 112,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "CriticalAlert": {
@@ -305,6 +359,9 @@
       "l": 120,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "FeedbackComponent": {
@@ -322,6 +379,9 @@
       "l": 217,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "InsightCard": {
@@ -339,6 +399,9 @@
       "l": 239,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "SuggestionChip": {
@@ -356,6 +419,9 @@
       "l": 192,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "ai"
     },
     "AccountStatusBadge": {
@@ -369,6 +435,9 @@
       "l": 21,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "AIActionStatusBadge": {
@@ -382,6 +451,9 @@
       "l": 26,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "BillStatusBadge": {
@@ -396,6 +468,9 @@
       "l": 32,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "ClientStatusBadge": {
@@ -409,6 +484,9 @@
       "l": 21,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "EntitySelector": {
@@ -423,6 +501,9 @@
       "l": 93,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "InvoiceStatusBadge": {
@@ -437,6 +518,9 @@
       "l": 28,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "JournalEntryStatusBadge": {
@@ -450,6 +534,9 @@
       "l": 23,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "VendorStatusBadge": {
@@ -463,6 +550,9 @@
       "l": 21,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "Card": {
@@ -481,6 +571,11 @@
       "l": 174,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "packages/ui/src/data-display/__tests__/Card.test.tsx",
+        "testCount": 23
+      },
       "d": "pkg"
     },
     "DataTable": {
@@ -496,6 +591,9 @@
       "l": 268,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "LoadingState": {
@@ -518,6 +616,9 @@
       "l": 238,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "Alert": {
@@ -534,6 +635,9 @@
       "l": 138,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "ConfirmDialog": {
@@ -550,6 +654,11 @@
       "l": 148,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "packages/ui/src/feedback/__tests__/ConfirmDialog.test.tsx",
+        "testCount": 10
+      },
       "d": "pkg"
     },
     "Modal": {
@@ -564,6 +673,9 @@
       "l": 229,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "Progress": {
@@ -582,6 +694,9 @@
       "l": 242,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "Toast": {
@@ -600,6 +715,9 @@
       "l": 230,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "AccountCard": {
@@ -615,6 +733,9 @@
       "l": 222,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "BudgetCard": {
@@ -629,6 +750,9 @@
       "l": 162,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "EntityBadge": {
@@ -645,6 +769,9 @@
       "l": 107,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "GLAccountSelector": {
@@ -661,6 +788,9 @@
       "l": 484,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "JournalEntryPreview": {
@@ -679,6 +809,9 @@
       "l": 300,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "KPICard": {
@@ -694,6 +827,9 @@
       "l": 184,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "MoneyAmount": {
@@ -709,6 +845,9 @@
       "l": 79,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "MoneyInput": {
@@ -725,6 +864,9 @@
       "l": 151,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "TransactionRow": {
@@ -746,6 +888,9 @@
       "l": 301,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "EmptyState": {
@@ -762,6 +907,11 @@
       "l": 166,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "packages/ui/src/patterns/__tests__/EmptyState.test.tsx",
+        "testCount": 16
+      },
       "d": "pkg"
     },
     "Sidebar": {
@@ -777,6 +927,9 @@
       "l": 294,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "TopCommandBar": {
@@ -793,6 +946,9 @@
       "l": 282,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "Badge": {
@@ -809,6 +965,11 @@
       "l": 97,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "packages/ui/src/primitives/__tests__/Badge.test.tsx",
+        "testCount": 8
+      },
       "d": "pkg"
     },
     "Button": {
@@ -826,6 +987,11 @@
       "l": 149,
       "pt": "",
       "v": [],
+      "t": {
+        "exists": true,
+        "file": "packages/ui/src/primitives/__tests__/Button.test.tsx",
+        "testCount": 22
+      },
       "d": "pkg"
     },
     "Chip": {
@@ -842,6 +1008,9 @@
       "l": 151,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "Input": {
@@ -856,6 +1025,9 @@
       "l": 184,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     },
     "Select": {
@@ -871,6 +1043,9 @@
       "l": 442,
       "pt": "C",
       "v": [],
+      "t": {
+        "exists": false
+      },
       "d": "pkg"
     }
   },
