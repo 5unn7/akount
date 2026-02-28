@@ -4,6 +4,7 @@ import { billRoutes } from '../invoicing/routes/bills';
 import { paymentRoutes } from '../invoicing/routes/payments';
 import { clientRoutes } from '../clients/routes/clients';
 import { vendorRoutes } from '../vendors/routes/vendors';
+import { creditNoteRoutes } from '../invoicing/routes/credit-notes';
 import { billScanRoutes } from './routes/bill-scan';
 import { invoiceScanRoutes } from './routes/invoice-scan';
 
@@ -29,6 +30,7 @@ export async function businessRoutes(fastify: FastifyInstance) {
   await fastify.register(paymentRoutes, { prefix: '/payments' });
   await fastify.register(clientRoutes, { prefix: '/clients' });
   await fastify.register(vendorRoutes, { prefix: '/vendors' });
+  await fastify.register(creditNoteRoutes, { prefix: '/credit-notes' });
 
   // AI document scanning routes (DEV-240, DEV-241)
   await fastify.register(billScanRoutes, { prefix: '/bills' });

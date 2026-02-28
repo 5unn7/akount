@@ -3,8 +3,8 @@
 **Last Updated:** 2026-02-28
 **Current Phase:** Phase 6 — Launch MVP
 
-> **118 active tasks** · 🔴 1 critical · 🟠 11 high · 🟡 81 medium · ⚪ 25 low
-> 📦 99 backlog · 🟢 12 ready · 🔒 6 blocked · 🟡 1 deferred
+> **152 active tasks** · 🔴 11 critical · 🟠 24 high · 🟡 84 medium · ⚪ 33 low
+> 📦 107 backlog · 🟢 38 ready · 🔒 6 blocked · 🟡 1 deferred
 >
 > _Completed tasks (302) archived in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 > _43 Linear PM infrastructure tasks in [LINEAR-TASKS.md](LINEAR-TASKS.md)_
@@ -26,15 +26,37 @@
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
 | UX-103 | Fix HeroSection SSR wrapper import (bypass dynamic ssr:false) | 5m | 🔴 Critical | 🟢 | | review:revie23feb |
+| DEV-268 | AI: Add timeout (30s) to all AI provider calls (Anthropic, Mistral) — stuck requests cost $50-100 | 2h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| DEV-269 | AI: Implement token tracking — log tokensUsed to AIDecisionLog after every AI call | 2h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| DEV-270 | AI: Add per-tenant AI budget caps — check budget before AI calls, 402 when exceeded | 3h | 🔴 Critical | 🟢 | [needs: DEV-269] | review:doc-intel-p2 |
+| SEC-48 | AI: Add service-layer consent re-verification in all AI service methods (GDPR Article 22 defense-in-depth) | 1h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| SEC-49 | AI: Fix PII leak — redact OCR text BEFORE logging/analysis (currently logs raw PII) | 1h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| DEV-271 | Workers: Add idempotency checks — check AIDecisionLog.inputHash before creating entities on retry | 2h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| SEC-50 | Workers: Add entity ownership validation — verify entityId belongs to tenantId before processing | 1h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| ARCH-28 | Workers: Refactor to call business domain services instead of raw Prisma (domain boundary fix) | 4h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| PERF-30 | Schema: Add Vendor.name composite index `[entityId, name, deletedAt]` (166x speedup) | 30m | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
+| PERF-31 | Schema: Add AIDecisionLog composite indexes (3 indexes: entityId+createdAt, feature+createdAt, inputHash) | 30m | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
 | SEC-8 | Complete security audit (OWASP top 10, auth, tenant isolation, input validation) | 4h | 🟠 High | 🟡 deferred | | roadmap |
 | INFRA-13 | Banking: Bank connection integration (Plaid/MX) — live bank feed, auto-import | 8-12h | 🟠 High | 📦 | | audit:fe-be-parity |
+| DEV-272 | AI: Add AIDecisionLog entries in natural-search and auto-bookkeeper services (GDPR Article 30) | 2h | 🟠 High | 🟢 | [needs: DEV-269] | review:doc-intel-p2 |
+| DEV-273 | AI: Reduce Mistral maxTokens from 2048 → 800 for vision/OCR ($120/mo savings) | 30m | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| SEC-51 | AI: Add Mistral AI to third-party processor disclosure in consent UI and service | 30m | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| ARCH-29 | Workers: Add DLQ monitoring — log failed jobs, add `/api/system/jobs/failed` admin endpoint | 2h | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| ARCH-30 | Workers: Add graceful shutdown (SIGTERM/SIGINT) — wait for in-progress jobs before exit | 1h | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| ARCH-31 | Workers: Fix job cleanup config — reduce removeOnComplete count, add TTL | 30m | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| ARCH-32 | Workers: Extract BaseDocumentScanWorker — deduplicate 258 lines (93% identical) | 3h | 🟠 High | 🟢 | [needs: ARCH-28] | review:doc-intel-p2 |
+| ARCH-33 | Architecture: Split DocumentExtractionService (God Service) into focused modules | 1h | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| ARCH-34 | SSE: Fix memory leak — remove orphaned BullMQ event listeners on client disconnect | 1h | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| DEV-274 | Fix console.error in rule-engine.service.ts:75,118 — replace with structured pino logging | 30m | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| DEV-275 | Fix 3 type safety violations — async callback, query params `:any`, Fastify request extension | 1h | 🟠 High | 🟢 | | review:doc-intel-p2 |
+| INFRA-69 | System: Add Redis PING to `/health` endpoint (currently only checks DB) | 1h | 🟠 High | 🟢 | | review:doc-intel-p2 |
 
 
 ### Medium / Low
 
 | ID | Task | Effort | Priority | Status | Deps | Source |
 |----|------|--------|----------|--------|------|--------|
-| UX-44 | Business: Add invoice/client list CSV/PDF export buttons | 2-3h | 🟡 Medium | 📦 | | audit:app-ux |
+| ~~UX-44~~ | Business: Add invoice/client list CSV export buttons | 2-3h | 🟡 Medium | ✅ done | | audit:app-ux |
 | DEV-83 | Business: Build credit notes feature (CreditNote Prisma model exists, zero API endpoints or UI) | 4-6h | 🟡 Medium | 📦 | | audit:app-ux |
 | DEV-61 | Accounting JE: Add multi-currency support to JE form (backend supports, form is single-currency only) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
 | DEV-62 | Accounting JE: Add batch approve (select multiple drafts → approve all) | 2-3h | 🟡 Medium | 📦 | | audit:acct-fe-be |
@@ -135,6 +157,18 @@
 | DEV-111 | Planning: Auto-suggest budgets from existing spending patterns | 2-3h | ⚪ Low | 📦 | [needs: DEV-98] | audit:fe-be-parity |
 | DEV-119 | Insights: Build Policy Alerts page with real data | 3-4h | ⚪ Low | 📦 | | audit:ai-advisor |
 | DEV-120 | Insights: Build History page with AI interaction logging | 2-3h | ⚪ Low | 📦 | [needs: DEV-118] | audit:ai-advisor |
+| DEV-276 | AI: Add AIDecisionLog retention policy — auto-delete logs >90 days (configurable) | 2h | 🟡 Medium | 📦 | | review:doc-intel-p2 |
+| PERF-32 | AI: Add caching for AI extraction results — check inputHash before re-calling AI (30% duplicate rate) | 2h | 🟡 Medium | 📦 | [needs: DEV-271] | review:doc-intel-p2 |
+| PERF-33 | AI: Add cursor pagination to AIDecisionLog list endpoint | 1h | 🟡 Medium | 📦 | | review:doc-intel-p2 |
+| DEV-277 | Schema: Add data cleanup step before unique constraint on Insight (duplicate cleanup) | 1h | 🟡 Medium | 📦 | | review:doc-intel-p2 |
+| SEC-52 | Schema: Add FK ownership validation for Category.defaultGLAccountId (cross-scope reference) | 1h | 🟡 Medium | 📦 | | review:doc-intel-p2 |
+| DEV-278 | Code cleanup: Remove unused DocumentExtractionService.extractStatement() (115 lines, 0 callers) | 15m | ⚪ Low | 🟢 | | review:doc-intel-p2 |
+| DEV-279 | Code cleanup: Remove 3 unused queue definitions from queue-manager.ts | 15m | ⚪ Low | 🟢 | | review:doc-intel-p2 |
+| DEV-280 | Code cleanup: Unify bill-scan and invoice-scan routes via shared factory (95% identical) | 1h | ⚪ Low | 📦 | | review:doc-intel-p2 |
+| DEV-281 | Exports: Add UTF-8 BOM prefix to CSV output for Excel compatibility | 15m | ⚪ Low | 🟢 | | review:doc-intel-p2 |
+| SEC-53 | Exports: Mask tax IDs in export output (PII exposure prevention) | 30m | ⚪ Low | 📦 | | review:doc-intel-p2 |
+| PERF-34 | Exports: Add pagination to PDF line items — prevent OOM on 10K+ line invoices | 30m | ⚪ Low | 📦 | | review:doc-intel-p2 |
+| DEV-282 | Security: Write integration test verifying CSRF on multipart/form-data uploads | 1h | ⚪ Low | 📦 | | review:doc-intel-p2 |
 
 ---
 
@@ -148,6 +182,7 @@
 | [AI Auto-Bookkeeper Phase 3](docs/plans/2026-02-24-ai-auto-bookkeeper-phase3.md) | 14 tasks (4 sprints) | Ready |
 | [Frontend Test Coverage](docs/plans/2026-02-25-frontend-test-coverage.md) | 14 tasks (5 sprints) | Ready |
 | [Feedback Loops & Indexing V2](docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md) | 17 tasks (4 sprints + quick wins) | Ready |
+| [Doc Intelligence Review Remediation](docs/plans/2026-02-28-doc-intelligence-review-remediation.md) | 34 tasks (3 phases: P0/P1/P2) | Ready — P0 blocking production |
 
 ---
 
@@ -179,7 +214,7 @@
 | INFRA-1 | CI/CD pipeline (GitHub Actions) | 3h | 🟠 High | 🟢 | | roadmap |
 | INFRA-2 | Production environment setup | 2h | 🟠 High | 🟢 | | roadmap |
 | INFRA-3 | Database backups (automated daily) | 1h | 🟠 High | 🟢 | | roadmap |
-| ARCH-3 | S3 cloud storage migration for file uploads (replace local filesystem) | 3h | 🟠 High | 🟢 | | review:smooth-floating-mountain |
+| ARCH-3 | S3 cloud storage migration for file uploads + base64 memory bomb fix (P0: 13MB×1000 jobs = 13GB Redis) | 4h | 🔴 Critical | 🟢 | | review:doc-intel-p2 |
 | INFRA-5 | Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts) | 2h | 🟠 High | 🔒 | [needs: INFRA-2] | roadmap |
 | INFRA-7 | OpenTelemetry instrumentation (distributed tracing, metrics, alerting) | 4h | 🟠 High | 🔒 | [needs: INFRA-2] | review:smooth-floating-mountain |
 | INFRA-8 | Docker image building + container deployment pipeline | 3h | 🟠 High | 🔒 | [needs: INFRA-1] | review:smooth-floating-mountain |
@@ -258,10 +293,11 @@ _Last 10 — full history in [TASKS-ARCHIVE.md](TASKS-ARCHIVE.md)_
 
 
 
+
 <!-- TASK-INDEX:START (auto-generated, do not edit manually)
 {
   "version": "1.0",
-  "generated": "2026-02-28T15:57:46.046Z",
+  "generated": "2026-02-28T16:08:01.260Z",
   "summary": {
     "total": 118,
     "ready": 12,

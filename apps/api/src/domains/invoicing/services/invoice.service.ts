@@ -8,6 +8,7 @@ import type {
 import { generateInvoicePdf } from './pdf.service';
 import { sendEmail } from '../../../lib/email';
 import { JournalEntryService } from '../../accounting/services/journal-entry.service';
+import { sanitizeCsvCell, formatCentsForCsv } from '../../../lib/csv';
 
 /**
  * Invoice service — Business logic for invoice CRUD + status transitions.
@@ -635,4 +636,51 @@ export async function reversePaymentFromInvoice(
     data: { paidAmount: newPaidAmount, status: newStatus },
     include: { client: true, entity: true, invoiceLines: { include: { taxRate: true } } },
   });
+}
+
+/**
+ * Export invoices as CSV string. Fetches ALL matching records (no cursor/limit).
+ * Uses OWASP-safe sanitization for all cell values.
+ */
+export async function exportInvoicesCsv(
+  filters: Omit<ListInvoicesInput, 'cursor' | 'limit'>,
+  ctx: TenantContext
+): Promise<string> {
+  const where: Prisma.InvoiceWhereInput = {
+    entity: {
+      tenantId: ctx.tenantId,
+      ...(filters.entityId && { id: filters.entityId }),
+    },
+    deletedAt: null,
+  };
+
+  if (filters.status) where.status = filters.status;
+  if (filters.clientId) where.clientId = filters.clientId;
+  if (filters.dateFrom) where.issueDate = { gte: new Date(filters.dateFrom) };
+  if (filters.dateTo) {
+    const existing = where.issueDate && typeof where.issueDate === 'object' ? where.issueDate as Record<string, unknown> : {};
+    where.issueDate = { ...existing, lte: new Date(filters.dateTo) };
+  }
+
+  const invoices = await prisma.invoice.findMany({
+    where,
+    include: { client: true, entity: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const header = 'Invoice Number,Client,Status,Issue Date,Due Date,Subtotal,Tax,Total,Paid,Currency';
+  const rows = invoices.map((inv) => [
+    sanitizeCsvCell(inv.invoiceNumber),
+    sanitizeCsvCell(inv.client?.name ?? ''),
+    sanitizeCsvCell(inv.status),
+    sanitizeCsvCell(inv.issueDate),
+    sanitizeCsvCell(inv.dueDate),
+    formatCentsForCsv(inv.subtotal),
+    formatCentsForCsv(inv.taxAmount),
+    formatCentsForCsv(inv.total),
+    formatCentsForCsv(inv.paidAmount),
+    sanitizeCsvCell(inv.currency),
+  ].join(','));
+
+  return [header, ...rows].join('\n');
 }

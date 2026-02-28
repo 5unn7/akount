@@ -338,6 +338,7 @@ model Invoice {
   entity             Entity              @relation(fields: [entityId], references: [id])
   invoiceLines       InvoiceLine[]
   paymentAllocations PaymentAllocation[]
+  creditNotes        CreditNote[]
 
   @@unique([entityId, invoiceNumber]) // SECURITY FIX M-4: Prevent duplicate invoice numbers per entity
   @@index([entityId, status])
@@ -413,6 +414,7 @@ model Bill {
   vendor             Vendor              @relation(fields: [vendorId], references: [id])
   billLines          BillLine[]
   paymentAllocations PaymentAllocation[]
+  creditNotes        CreditNote[]
 
   @@unique([entityId, billNumber]) // SECURITY FIX M-4: Prevent duplicate bill numbers per entity
   @@index([entityId, status])
@@ -489,22 +491,29 @@ model PaymentAllocation {
 }
 
 model CreditNote {
-  id               String    @id @default(cuid())
+  id               String           @id @default(cuid())
   entityId         String
   creditNoteNumber String
   date             DateTime
   currency         String
-  amount           Int
+  amount           Int // Integer cents — total credit note value
+  appliedAmount    Int              @default(0) // Integer cents — amount already applied
   reason           String
+  notes            String?
   linkedInvoiceId  String?
   linkedBillId     String?
-  status           String
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  deletedAt        DateTime?
-  entity           Entity    @relation(fields: [entityId], references: [id])
+  status           CreditNoteStatus @default(DRAFT)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  deletedAt        DateTime? // Soft delete - financial data never hard deleted
+  entity           Entity           @relation(fields: [entityId], references: [id])
+  linkedInvoice    Invoice?         @relation(fields: [linkedInvoiceId], references: [id])
+  linkedBill       Bill?            @relation(fields: [linkedBillId], references: [id])
 
-  @@index([entityId, deletedAt])
+  @@unique([entityId, creditNoteNumber])
+  @@index([entityId, status, deletedAt])
+  @@index([linkedInvoiceId])
+  @@index([linkedBillId])
 }
 
 model Account {
@@ -1131,6 +1140,13 @@ enum BillStatus {
   PARTIALLY_PAID
 }
 
+enum CreditNoteStatus {
+  DRAFT
+  APPROVED
+  APPLIED
+  VOIDED
+}
+
 enum BankFeedStatus {
   PENDING
   POSTED
@@ -1341,6 +1357,7 @@ model AIDecisionLog {
   aiExplanation    String? // Human-readable explanation of the decision
   consentStatus    String? // Consent status at time of decision (from AIConsent)
   processingTimeMs Int? // Processing time in milliseconds
+  tokensUsed       Int? // Total tokens consumed (input + output) for cost attribution (P0-2)
   createdAt        DateTime        @default(now())
   tenant           Tenant          @relation(fields: [tenantId], references: [id])
   entity           Entity?         @relation(fields: [entityId], references: [id])

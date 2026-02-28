@@ -4,6 +4,7 @@ import { listInvoices, type ListInvoicesParams, type ListInvoicesResponse } from
 import { listBills, type ListBillsParams, type ListBillsResponse } from '@/lib/api/bills';
 import { listClients, type ListClientsParams, type ListClientsResponse } from '@/lib/api/clients';
 import { listVendors, type ListVendorsParams, type ListVendorsResponse } from '@/lib/api/vendors';
+import { listCreditNotes, type ListCreditNotesParams, type ListCreditNotesResponse } from '@/lib/api/credit-notes';
 
 export async function fetchMoreInvoices(params: ListInvoicesParams): Promise<ListInvoicesResponse> {
     return listInvoices(params);
@@ -19,4 +20,8 @@ export async function fetchMoreClients(params: ListClientsParams): Promise<ListC
 
 export async function fetchMoreVendors(params: ListVendorsParams): Promise<ListVendorsResponse> {
     return listVendors(params);
+}
+
+export async function fetchMoreCreditNotes(params: ListCreditNotesParams): Promise<ListCreditNotesResponse> {
+    return listCreditNotes(params);
 }

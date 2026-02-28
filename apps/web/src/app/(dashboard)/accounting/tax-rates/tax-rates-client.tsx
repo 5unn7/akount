@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { TaxRate, CreateTaxRateInput, UpdateTaxRateInput } from '@/lib/api/accounting';
 import { formatDate } from '@/lib/utils/date';
+import { formatTaxRate, basisPointsToPercent } from '@/lib/utils/tax';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -105,8 +106,9 @@ export function TaxRatesClient({ initialTaxRates, entityId }: TaxRatesClientProp
         }
     }
 
-    // Tax collection summary — total combined rate across active rates
-    const totalCombinedRate = activeRates.reduce((sum, tr) => sum + tr.rate, 0);
+    // Tax collection summary — total combined rate across active rates (in basis points)
+    const totalCombinedRateBP = activeRates.reduce((sum, tr) => sum + tr.rateBasisPoints, 0);
+    const totalCombinedRate = totalCombinedRateBP / 100; // Convert BP to decimal (500 → 5.00)
 
     return (
         <div className="space-y-6">
@@ -262,7 +264,8 @@ interface TaxRateCardProps {
 }
 
 function TaxRateCard({ rate, onEdit, onDeactivate }: TaxRateCardProps) {
-    const ratePercent = (rate.rateBasisPoints / 100).toFixed(rate.rateBasisPoints % 100 === 0 ? 0 : 2); // FIN-32
+    // Use shared utility for consistent tax rate formatting
+    const ratePercent = formatTaxRate(rate.rateBasisPoints, rate.rateBasisPoints % 100 === 0 ? 0 : 2);
 
     return (
         <div className="glass rounded-xl p-4 transition-all hover:border-ak-border-2 hover:-translate-y-px group">
@@ -290,7 +293,7 @@ function TaxRateCard({ rate, onEdit, onDeactivate }: TaxRateCardProps) {
             {/* Rate display */}
             <div className="mt-3">
                 <p className="text-2xl font-mono font-semibold text-ak-green">
-                    {ratePercent}%
+                    {ratePercent}
                 </p>
                 {rate.isInclusive && (
                     <p className="text-xs text-muted-foreground mt-0.5">Tax-inclusive</p>

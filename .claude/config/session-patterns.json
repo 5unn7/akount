@@ -1,0 +1,108 @@
+{
+  "sessionId": "session-1772294892474",
+  "timestamp": "2026-02-28T16:08:12.474Z",
+  "commitCount": 7,
+  "commitRange": "e30cfca..5cfcc74",
+  "patterns": [
+    {
+      "type": "bug-fix",
+      "description": "feat(api): SEC-36 - AI Data Retention Policies",
+      "files": [
+        "apps/api/src/domains/system/routes.ts",
+        "apps/api/src/lib/__tests__/ai-data-retention.test.ts",
+        "apps/api/src/lib/audit-retention.ts"
+      ],
+      "taskIds": "SEC-36",
+      "confidence": 0.85,
+      "commit": "5cfcc74",
+      "message": "feat(api): SEC-36 - AI Data Retention Policies"
+    },
+    {
+      "type": "new-tests",
+      "description": "1 new test file(s) added",
+      "files": [
+        "apps/api/src/lib/__tests__/ai-data-retention.test.ts"
+      ],
+      "confidence": 1,
+      "commit": "5cfcc74",
+      "message": "feat(api): SEC-36 - AI Data Retention Policies"
+    },
+    {
+      "type": "bug-fix",
+      "description": "feat(api): SEC-35 - GDPR Right to Erasure (AI data deletion)",
+      "files": [
+        "apps/api/src/domains/system/routes.ts",
+        "apps/api/src/domains/system/routes/__tests__/ai-data-deletion.routes.test.ts",
+        "apps/api/src/domains/system/routes/ai-data-deletion.routes.ts",
+        "apps/api/src/domains/system/services/__tests__/ai-data-deletion.service.test.ts",
+        "apps/api/src/domains/system/services/ai-data-deletion.service.ts"
+      ],
+      "taskIds": "SEC-35",
+      "confidence": 0.85,
+      "commit": "fc1e1fd",
+      "message": "feat(api): SEC-35 - GDPR Right to Erasure (AI data deletion)"
+    },
+    {
+      "type": "new-tests",
+      "description": "2 new test file(s) added",
+      "files": [
+        "apps/api/src/domains/system/routes/__tests__/ai-data-deletion.routes.test.ts",
+        "apps/api/src/domains/system/services/__tests__/ai-data-deletion.service.test.ts"
+      ],
+      "confidence": 1,
+      "commit": "fc1e1fd",
+      "message": "feat(api): SEC-35 - GDPR Right to Erasure (AI data deletion)"
+    },
+    {
+      "type": "bug-fix",
+      "description": "feat(api): ARCH-17 — Migrate rate limiters to Redis-backed (multi-instance support)",
+      "files": [
+        "apps/api/src/domains/business/routes/bill-scan.ts",
+        "apps/api/src/domains/business/routes/invoice-scan.ts",
+        "apps/api/src/index.ts",
+        "apps/api/src/lib/queue/__tests__/queue-manager.test.ts",
+        "apps/api/src/lib/queue/queue-manager.ts",
+        "apps/api/src/middleware/__tests__/rate-limit.test.ts",
+        "apps/api/src/middleware/rate-limit.ts"
+      ],
+      "taskIds": "ARCH-17",
+      "confidence": 0.85,
+      "commit": "4480332",
+      "message": "feat(api): ARCH-17 — Migrate rate limiters to Redis-backed (multi-instance support)"
+    },
+    {
+      "type": "bug-fix",
+      "description": "feat(web): DEV-249 - NL Search UI integration (Phase 2 complete)",
+      "files": [
+        ".claude/rules/guardrails.md",
+        ".claude/rules/product-thinking.md",
+        "CLAUDE.md",
+        "TASKS.md",
+        "apps/api/.claude/runtime/error-log.json",
+        "apps/api/CLAUDE.md",
+        "apps/web/CLAUDE.md",
+        "apps/web/src/app/(dashboard)/banking/transactions/page.tsx",
+        "apps/web/src/components/shared/NLSearchBar.tsx",
+        "apps/web/src/components/transactions/TransactionsList.tsx",
+        "apps/web/src/components/transactions/TransactionsListClient.tsx",
+        "docs/implementation-notes/2026-02-28-nl-search-integration.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/CONTEXT.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/PRE-FLIGHT.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/ai-integration-reviewer.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/architecture-strategist.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/bullmq-job-reviewer.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/changed-files.txt",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/compliance-reviewer.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/kieran-typescript-reviewer.md",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/recent-commits.txt",
+        "docs/reviews/doc-intelligence-phase2-2026-02-28/security-sentinel.md"
+      ],
+      "taskIds": "DEV-249",
+      "confidence": 0.85,
+      "commit": "e30cfca",
+      "message": "feat(web): DEV-249 - NL Search UI integration (Phase 2 complete)"
+    }
+  ],
+  "newExports": [],
+  "schemaChanges": []
+}

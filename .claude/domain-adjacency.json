@@ -132,76 +132,23 @@
       }
     },
     "web-pages": {
-      "web-shared": {
+      "web-components": {
         "relationship": "composes",
         "description": "Pages compose UI from shared components, layouts, and utilities",
         "touchpoints": [
-          "app/(dashboard)/*/page.tsx → components/ui/ (buttons, cards, tables)",
-          "app/(dashboard)/*/layout.tsx → components/shared/DomainTabs (navigation)",
-          "app/(dashboard)/*/page.tsx → components/layout/ContentPanel"
+          "app/(dashboard)/banking/page.tsx → components/ui/ (buttons, cards, tables)",
+          "app/(dashboard)/*/layout.tsx → components/shared/DomainTabs (navigation)"
         ],
-        "dataFlow": "web-pages imports from web-shared (one-way, read-only)",
+        "dataFlow": "web-pages imports from web-components (one-way, read-only)",
         "commonPatterns": [
           "Page → import Card, Button, Table from @akount/ui",
           "Layout → import DomainTabs, Sidebar from shared"
         ],
         "strength": "high"
-      },
-      "web-business": {
-        "relationship": "uses",
-        "description": "Business domain pages use domain-specific components (status badges, entity cards, invoicing UI)",
-        "touchpoints": [
-          "app/(dashboard)/business/invoices/page.tsx → components/business/InvoiceStatusBadge",
-          "app/(dashboard)/business/clients/page.tsx → components/entities/EntityCard"
-        ],
-        "dataFlow": "web-pages imports from web-business (business logic + UI)",
-        "commonPatterns": [
-          "Invoice page → InvoiceStatusBadge, InvoiceTable",
-          "Client page → EntityCard, ClientForm"
-        ],
-        "strength": "high"
-      },
-      "web-forms": {
-        "relationship": "uses",
-        "description": "Pages use form components for data entry and validation",
-        "touchpoints": [
-          "app/(dashboard)/*/page.tsx → components/forms/AccountForm",
-          "app/(dashboard)/*/page.tsx → components/accounts/AddAccountModal"
-        ],
-        "dataFlow": "web-pages imports from web-forms (form UI + validation)",
-        "commonPatterns": [
-          "Create/edit page → Form component with validation",
-          "Modal trigger → Form in Sheet/Dialog"
-        ],
-        "strength": "medium"
       }
     },
-    "web-business": {
-      "web-shared": {
-        "relationship": "imports",
-        "description": "Business components build on shared UI primitives (Button, Card, Badge, etc.)",
-        "touchpoints": [
-          "components/business/InvoiceStatusBadge.tsx → components/ui/Badge",
-          "components/business/EntityCard.tsx → components/ui/Card"
-        ],
-        "dataFlow": "web-business imports from web-shared (composition)",
-        "strength": "high"
-      },
-      "web-forms": {
-        "relationship": "includes",
-        "description": "Some business components include form elements",
-        "touchpoints": [
-          "components/business/InvoicingActions.tsx → form inputs"
-        ],
-        "dataFlow": "web-business may import from web-forms (occasional)",
-        "strength": "low"
-      }
-    },
-    "web-shared": {
-      "_note": "Web shared is a foundation domain — imported by web-pages and web-business but only imports from packages"
-    },
-    "web-forms": {
-      "_note": "Web forms is a leaf domain — imported by web-pages and occasionally by web-business"
+    "web-components": {
+      "_note": "Web components is a leaf domain — imported by web-pages but doesn't import from other domains (except packages)"
     },
     "packages": {
       "_note": "Packages (db, types, design-tokens, ui) are foundation domains — imported by all others but import nothing"

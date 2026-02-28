@@ -105,6 +105,40 @@ export async function invoiceRoutes(fastify: FastifyInstance) {
     }
   );
 
+  // GET /api/invoices/export - Export invoices as CSV
+  const ExportQuerySchema = z.object({
+    entityId: z.string().cuid().optional(),
+    status: z.string().optional(),
+    clientId: z.string().cuid().optional(),
+    dateFrom: z.string().optional(),
+    dateTo: z.string().optional(),
+  });
+  fastify.get(
+    '/export',
+    {
+      preHandler: withRolePermission(['OWNER', 'ADMIN', 'ACCOUNTANT']),
+      preValidation: [validateQuery(ExportQuerySchema)],
+    },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      if (!request.tenantId || !request.userId) {
+        return reply.status(500).send({ error: 'Context not initialized' });
+      }
+
+      const query = request.query as z.infer<typeof ExportQuerySchema>;
+      const tenant = { tenantId: request.tenantId, userId: request.userId, role: request.tenantRole! };
+
+      const csv = await invoiceService.exportInvoicesCsv(query, tenant);
+      const filename = `invoices-${new Date().toISOString().split('T')[0]}.csv`;
+
+      request.log.info({ tenantId: request.tenantId, filters: query }, 'Exported invoices CSV');
+
+      return reply
+        .header('Content-Type', 'text/csv')
+        .header('Content-Disposition', `attachment; filename="${filename}"`)
+        .send(csv);
+    }
+  );
+
   // GET /api/invoices/:id - Get single invoice
   fastify.get(
     '/:id',

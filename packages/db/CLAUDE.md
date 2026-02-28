@@ -1,9 +1,9 @@
 # Database Context (packages/db)
 
 > **Loaded automatically** when Claude accesses files in `packages/db/`
-> **Last verified:** 2026-02-25
+> **Last verified:** 2026-02-28
 
-## Prisma Models (43 Total)
+## Prisma Models (47 Total)
 
 | Model | Scope | Key Fields | Soft Delete |
 |-------|-------|------------|-------------|
@@ -11,7 +11,8 @@
 | Tenant | Global | id, name, region, plan | No |
 | TenantUser | Global | tenantId, userId, role | No |
 | User | Global | id, email, clerkUserId | No |
-| Entity | Tenant | id, tenantId, type, baseCurrency | No |
+| AIConsent | Tenant | id, tenantId, userId, features (JSON) | No |
+| Entity | Tenant | id, tenantId, type, baseCurrency, status | No |
 | **Accounting** | | | |
 | GLAccount | Entity | id, entityId, code, type, normalBalance | No |
 | JournalEntry | Entity | id, entityId, date, status, sourceType | **Yes** |
@@ -40,10 +41,13 @@
 | Category | Tenant | id, tenantId, name, type, parentCategoryId | **Yes** |
 | Budget | Entity | id, entityId, categoryId, amount, period | No |
 | Goal | Entity | id, entityId, name, type, targetAmount, status | No |
+| Forecast | Entity | id, entityId, type, scenario, startDate, endDate, data | No |
 | **AI & Automation** | | | |
 | Insight | Entity | id, entityId, title, type, priority, status | No |
 | Rule | Entity | id, entityId, name, conditions, action, source | No |
 | RuleSuggestion | Entity | id, entityId, suggestedRule, aiConfidence, status | No |
+| AIAction | Entity | id, entityId, type, priority, status, payload | No |
+| AIDecisionLog | Entity | id, entityId, type, routingResult, input, output | No |
 | **Onboarding** | | | |
 | OnboardingProgress | Tenant | id, tenantId, userId, completedSteps, dismissed | No |
 | OnboardingWizardState | Tenant | id, tenantId, userId, currentStep, formData, completed | No |
@@ -78,7 +82,7 @@
 - Tenant-scoped: `tenantId` field
 - Entity-scoped: `entityId` field (entity must belong to tenant)
 
-## Key Enums (26 Total)
+## Key Enums (40 Total)
 
 | Enum | Values |
 |------|--------|
@@ -99,32 +103,50 @@
 | FiscalPeriodStatus | OPEN, LOCKED, CLOSED |
 | PaymentMethod | CARD, TRANSFER, CASH, CHECK, WIRE, OTHER |
 | EntityType | PERSONAL, CORPORATION, LLC, PARTNERSHIP, SOLE_PROPRIETORSHIP |
+| EntityStatus | ACTIVE, INACTIVE, SUSPENDED |
+| AssetCategory | LAND, BUILDING, MACHINERY, VEHICLE, FURNITURE, COMPUTER, SOFTWARE, OTHER |
+| DepreciationMethod | STRAIGHT_LINE, DECLINING_BALANCE, UNITS_OF_PRODUCTION, SUM_OF_YEARS |
+| AssetStatus | ACTIVE, DISPOSED, FULLY_DEPRECIATED, IMPAIRED |
+| BudgetPeriod | MONTHLY, QUARTERLY, ANNUAL |
+| GoalType | REVENUE, SAVINGS, DEBT_PAYOFF, EXPENSE_REDUCTION, CUSTOM |
+| GoalStatus | ACTIVE, COMPLETED, ABANDONED, PAUSED |
+| ForecastType | REVENUE, EXPENSE, CASH_FLOW, PROFIT |
+| ForecastScenario | OPTIMISTIC, REALISTIC, PESSIMISTIC |
+| AIActionType | CATEGORIZE_TRANSACTION, CREATE_JOURNAL_ENTRY, SEND_INVOICE, ... |
+| AIActionStatus | PENDING, APPROVED, REJECTED, EXECUTED, FAILED |
+| AIActionPriority | LOW, MEDIUM, HIGH, CRITICAL |
+| AIDecisionType | CATEGORIZATION, EXTRACTION, SUGGESTION, ROUTING |
+| AIRoutingResult | ACCEPTED, REJECTED, DEFERRED, ERROR |
 
-(+9 more enums: OnboardingStatus, TenantRegion, TenantStatus, TenantPlan, ImportBatchSourceType, ImportBatchStatus, RuleSource, RuleSuggestionStatus, AuditAction)
+(+10 more enums: OnboardingStatus, TenantRegion, TenantStatus, TenantPlan, ImportBatchSourceType, ImportBatchStatus, RuleSource, RuleSuggestionStatus, AuditAction)
 
 ## Status Lifecycles
 
-**Invoice:** DRAFT → SENT → (PARTIALLY_PAID) → PAID / OVERDUE / CANCELLED
+**Invoice:** DRAFT → SENT → (PARTIALLY_PAID) → PAID / OVERDUE / CANCELLED / VOIDED
 **Bill:** DRAFT → PENDING → (PARTIALLY_PAID) → PAID / OVERDUE / CANCELLED
 **BankFeedTransaction:** PENDING → POSTED / CANCELLED
-**JournalEntry:** DRAFT → POSTED → ARCHIVED
+**JournalEntry:** DRAFT → POSTED → ARCHIVED / VOIDED
 **FiscalPeriod:** OPEN → LOCKED → CLOSED
+**Goal:** ACTIVE → COMPLETED / ABANDONED / PAUSED
+**AIAction:** PENDING → APPROVED → EXECUTED / FAILED / REJECTED
 
 ## Migration Workflow
 
-1. **Edit** `schema.prisma`
-2. **Generate migration:** `npx prisma migrate dev --name <description>`
-3. **Review** migration file in `prisma/migrations/`
-4. **Apply:** `npx prisma migrate deploy` (already happens in step 2 for dev)
-5. **Generate client:** `npx prisma generate` (happens automatically)
+**See `.claude/rules/prisma-workflow.md` for the agent-friendly workflow.**
 
-**Update this CLAUDE.md** in the same commit when schema changes.
+1. **Edit** `schema.prisma` (agent does this)
+2. **Ask user** to run: `cd packages/db && npx prisma migrate dev --name <description>`
+3. **Verify** migration folder exists
+4. **Generate client:** `npx prisma generate` (happens automatically)
+
+**NEVER** use `db push` for permanent changes. **NEVER** manually write migration SQL.
 
 ## Indexing Strategy
 
 **Every tenant-scoped model:** `@@index([tenantId])`
 **Every entity-scoped model:** `@@index([entityId])`, `@@index([entityId, deletedAt])`
 **Every soft-delete model:** `@@index([entityId, deletedAt])` or `@@index([tenantId, deletedAt])`
+**Performance indexes (PERF-18-27):** Composite indexes on high-traffic query paths (Client/Vendor name lookup, Transaction date ranges, etc.)
 
 ## Location
 

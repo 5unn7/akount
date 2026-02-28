@@ -1,0 +1,1613 @@
+{
+  "SEC-9": {
+    "files": [
+      "apps/api/src/middleware/auth.ts",
+      "apps/api/src/index.ts",
+      "apps/api/src/domains/system/routes/"
+    ],
+    "verification": "Check if CSRF tokens are validated on state-changing endpoints (POST/PUT/DELETE). Grep for 'csrf' in apps/api/src/",
+    "acceptanceCriteria": [
+      "All state-changing API endpoints validate CSRF token or use SameSite cookie",
+      "Clerk session tokens configured with SameSite=Strict",
+      "No state-changing GET endpoints exist"
+    ],
+    "tags": [
+      "security",
+      "middleware"
+    ]
+  },
+  "TEST-3": {
+    "files": [
+      "apps/api/src/domains/",
+      "apps/api/src/__tests__/"
+    ],
+    "verification": "Run: npx vitest run --coverage && check coverage report for <80% files",
+    "acceptanceCriteria": [
+      "Overall API test coverage >= 80% (statement coverage)",
+      "All critical paths (auth, tenant, financial) >= 90%",
+      "Coverage report generated and reviewed"
+    ],
+    "tags": [
+      "testing",
+      "quality"
+    ]
+  },
+  "DS-2": {
+    "files": [
+      "packages/ui/",
+      "packages/ui/.storybook/",
+      "package.json"
+    ],
+    "verification": "Check if Storybook is already configured: ls packages/ui/.storybook/ && Grep 'storybook' package.json",
+    "acceptanceCriteria": [
+      "Storybook 8+ configured in packages/ui/",
+      "All glass-ui components have stories (ButtonGlass, InputGlass, GlassCard, etc.)",
+      "Storybook builds without errors: npx storybook build"
+    ],
+    "staleAfterDays": 21,
+    "tags": [
+      "design-system",
+      "documentation"
+    ]
+  },
+  "CNT-1": {
+    "files": [
+      "brand/competitive-analysis.md"
+    ],
+    "verification": "Check last modified date of brand/competitive-analysis.md",
+    "acceptanceCriteria": [
+      "Competitive analysis updated with current competitor features",
+      "Differentiation points documented",
+      "Pricing comparison table current"
+    ],
+    "staleAfterDays": 30,
+    "tags": [
+      "content",
+      "strategy"
+    ]
+  },
+  "INFRA-2": {
+    "files": [
+      "docker-compose.yml",
+      "Dockerfile",
+      ".env.production",
+      "apps/api/src/lib/env.ts"
+    ],
+    "verification": "Check if production Docker/deploy config exists: ls Dockerfile docker-compose.yml .env.production 2>/dev/null",
+    "acceptanceCriteria": [
+      "Production Docker image builds successfully",
+      "Environment variables documented and validated",
+      "Database migration runs on deploy",
+      "Health check endpoint responds"
+    ],
+    "tags": [
+      "infrastructure",
+      "devops"
+    ]
+  },
+  "INFRA-8": {
+    "files": [
+      "Dockerfile",
+      "docker-compose.yml",
+      ".github/workflows/"
+    ],
+    "verification": "Check if CI/CD pipeline exists: ls .github/workflows/ 2>/dev/null",
+    "acceptanceCriteria": [
+      "Multi-stage Dockerfile for API and web",
+      "CI pipeline runs tests on PR",
+      "CD pipeline deploys on merge to main",
+      "Image tagged with git SHA"
+    ],
+    "tags": [
+      "infrastructure",
+      "ci-cd"
+    ]
+  },
+  "INFRA-4": {
+    "files": [
+      "docs/operations/disaster-recovery.md",
+      "packages/db/prisma/"
+    ],
+    "verification": "Check if DR docs exist: ls docs/operations/ 2>/dev/null",
+    "acceptanceCriteria": [
+      "Database backup procedure documented and tested",
+      "Recovery time objective (RTO) defined",
+      "Recovery point objective (RPO) defined",
+      "Runbook for common failure scenarios"
+    ],
+    "staleAfterDays": 30,
+    "tags": [
+      "infrastructure",
+      "operations"
+    ]
+  },
+  "INFRA-6": {
+    "files": [
+      "docs/operations/deployment.md",
+      "Dockerfile",
+      "docker-compose.yml"
+    ],
+    "verification": "Check if deployment docs exist: ls docs/operations/deployment.md 2>/dev/null",
+    "acceptanceCriteria": [
+      "Step-by-step deployment guide",
+      "Environment variable reference",
+      "Rollback procedure documented",
+      "Pre-deployment checklist"
+    ],
+    "staleAfterDays": 30,
+    "tags": [
+      "infrastructure",
+      "documentation"
+    ]
+  },
+  "_clusterMap": {
+    "$comment": "Maps task IDs to mini-plan clusters. Agent reads docs/plans/mini-plans.md § matching cluster.",
+    "cluster-a-testing": [
+      "TEST-1",
+      "TEST-2",
+      "TEST-3",
+      "DEV-2"
+    ],
+    "cluster-b-business": [
+      "UX-17",
+      "UX-29",
+      "UX-31",
+      "UX-32",
+      "UX-33",
+      "UX-34",
+      "UX-36",
+      "UX-44",
+      "UX-52",
+      "UX-55",
+      "DEV-59",
+      "DEV-83",
+      "DEV-85",
+      "DEV-122",
+      "DEV-123"
+    ],
+    "cluster-c-accounting": [
+      "UX-18",
+      "UX-19",
+      "UX-20",
+      "UX-21",
+      "UX-22",
+      "UX-24",
+      "UX-25",
+      "DEV-61",
+      "DEV-62",
+      "DEV-63",
+      "DEV-64",
+      "DEV-65",
+      "DEV-66",
+      "DEV-67",
+      "DEV-68",
+      "DEV-69",
+      "DEV-70"
+    ],
+    "cluster-d-banking": [
+      "DEV-47",
+      "DEV-48",
+      "DEV-49",
+      "DEV-50",
+      "DEV-51",
+      "DEV-52",
+      "DEV-53",
+      "DEV-54",
+      "DEV-55",
+      "DEV-56",
+      "DEV-57",
+      "DEV-58"
+    ],
+    "cluster-e-planning": [
+      "DEV-97",
+      "DEV-98",
+      "DEV-99",
+      "DEV-100",
+      "DEV-101",
+      "DEV-102",
+      "DEV-103",
+      "DEV-104",
+      "DEV-105",
+      "DEV-107",
+      "DEV-108",
+      "DEV-109",
+      "DEV-110",
+      "DEV-111",
+      "UX-58",
+      "UX-59",
+      "UX-60",
+      "UX-61",
+      "UX-62",
+      "UX-63",
+      "UX-64",
+      "UX-65"
+    ],
+    "cluster-f-insights": [
+      "DEV-113",
+      "DEV-115",
+      "DEV-116",
+      "DEV-117",
+      "DEV-118",
+      "DEV-119",
+      "DEV-120"
+    ],
+    "cluster-g-infra": [
+      "SEC-8",
+      "SEC-10",
+      "INFRA-1",
+      "INFRA-2",
+      "INFRA-3",
+      "INFRA-5",
+      "INFRA-7",
+      "INFRA-8",
+      "INFRA-11",
+      "INFRA-13",
+      "ARCH-1",
+      "ARCH-3",
+      "ARCH-5"
+    ],
+    "cluster-h-financial": [
+      "FIN-7",
+      "FIN-8",
+      "FIN-9",
+      "FIN-10",
+      "FIN-11",
+      "FIN-12",
+      "DEV-66",
+      "DEV-67",
+      "DEV-68",
+      "DEV-69",
+      "DEV-70"
+    ]
+  },
+  "SEC-8": {
+    "files": [
+      "apps/api/src/lib/audit.ts",
+      "apps/api/src/middleware/tenant.ts",
+      "apps/api/src/lib/env.ts",
+      "apps/api/src/middleware/rbac.ts",
+      "apps/api/src/middleware/withPermission.ts"
+    ],
+    "verification": "Grep 'auth' apps/api/src/middleware/ && test protected routes",
+    "acceptanceCriteria": [
+      "Complete security audit (OWASP top 10",
+      "tenant isolation",
+      "input validation)"
+    ],
+    "tags": [
+      "security",
+      "sec"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:00.702Z"
+  },
+  "DEV-78": {
+    "files": [],
+    "verification": "Run: cd apps/api && npm test -- [domain]",
+    "acceptanceCriteria": [
+      "Business: Wire \"Post to GL\" button on payment allocation (backend route exists",
+      "no frontend trigger)"
+    ],
+    "tags": [
+      "api",
+      "dev"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:03.604Z"
+  },
+  "DEV-83": {
+    "files": [],
+    "verification": "Run: cd apps/api && npm test -- [domain]",
+    "acceptanceCriteria": [
+      "Business: Build credit notes feature (CreditNote Prisma model exists",
+      "zero API endpoints or UI)",
+      "Page renders without errors",
+      "Loading and error states implemented"
+    ],
+    "tags": [
+      "api",
+      "dev"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:05.636Z"
+  },
+  "DRY-2": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"dry\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "refactoring",
+      "dry"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.131Z"
+  },
+  "DRY-3": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"dry\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "refactoring",
+      "dry"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.131Z"
+  },
+  "DOC-2": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"doc\" apps/",
+    "acceptanceCriteria": [
+      "Consolidate logging rules (full version in api-conventions.md",
+      "update guardrails.md ref)"
+    ],
+    "tags": [
+      "documentation",
+      "doc"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.131Z"
+  },
+  "DOC-3": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"doc\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "documentation",
+      "doc"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.131Z"
+  },
+  "DOC-7": {
+    "files": [],
+    "verification": "Run: npm test",
+    "acceptanceCriteria": [
+      "Update test/page counts in context files (apps/api: 362→1010 tests",
+      "apps/web: 38→54 pages",
+      "root: 38→40 models)",
+      "All test assertions pass",
+      "Coverage maintained or improved"
+    ],
+    "tags": [
+      "documentation",
+      "doc"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.131Z"
+  },
+  "DOC-8": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"doc\" apps/",
+    "acceptanceCriteria": [
+      "Page renders without errors",
+      "Loading and error states implemented"
+    ],
+    "tags": [
+      "documentation",
+      "doc"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.132Z"
+  },
+  "SEC-10": {
+    "files": [
+      "apps/api/src/lib/audit.ts",
+      "apps/api/src/middleware/tenant.ts",
+      "apps/api/src/lib/env.ts",
+      "apps/api/src/middleware/rbac.ts",
+      "apps/api/src/middleware/withPermission.ts"
+    ],
+    "verification": "Review security middleware and run security tests",
+    "acceptanceCriteria": [],
+    "tags": [
+      "security",
+      "sec"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.248Z"
+  },
+  "SEC-12": {
+    "files": [
+      "apps/api/src/lib/audit.ts",
+      "apps/api/src/middleware/tenant.ts",
+      "apps/api/src/lib/env.ts",
+      "apps/api/src/middleware/rbac.ts",
+      "apps/api/src/middleware/withPermission.ts"
+    ],
+    "verification": "Review security middleware and run security tests",
+    "acceptanceCriteria": [],
+    "tags": [
+      "security",
+      "sec"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.359Z"
+  },
+  "SEC-14": {
+    "files": [
+      "apps/api/src/lib/audit.ts",
+      "apps/api/src/middleware/tenant.ts",
+      "apps/api/src/lib/env.ts",
+      "apps/api/src/middleware/rbac.ts",
+      "apps/api/src/middleware/withPermission.ts"
+    ],
+    "verification": "Review security middleware and run security tests",
+    "acceptanceCriteria": [
+      "Audit log retention policies (prevent unbounded growth",
+      "compliance)"
+    ],
+    "tags": [
+      "security",
+      "sec"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:09.462Z"
+  },
+  "ARCH-5": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"arch\" apps/",
+    "acceptanceCriteria": [
+      "Error recovery patterns (idempotency keys",
+      "circuit breakers",
+      "retry with backoff)",
+      "Page renders without errors",
+      "Loading and error states implemented"
+    ],
+    "tags": [
+      "architecture",
+      "arch"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:10.669Z"
+  },
+  "ARCH-1": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"arch\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "architecture",
+      "arch"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:10.669Z"
+  },
+  "ARCH-4": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"arch\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "architecture",
+      "arch"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:10.669Z"
+  },
+  "DEV-93": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"dev\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "api",
+      "dev"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:19.180Z"
+  },
+  "DOC-4": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"doc\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "documentation",
+      "doc"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:22.631Z"
+  },
+  "DRY-5": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"dry\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "refactoring",
+      "dry"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:23.365Z"
+  },
+  "DOC-5": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"doc\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "documentation",
+      "doc"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:23.366Z"
+  },
+  "DOC-6": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"doc\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "documentation",
+      "doc"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:23.366Z"
+  },
+  "SEC-15": {
+    "files": [
+      "apps/api/src/lib/audit.ts",
+      "apps/api/src/middleware/tenant.ts",
+      "apps/api/src/lib/env.ts",
+      "apps/api/src/middleware/rbac.ts",
+      "apps/api/src/middleware/withPermission.ts"
+    ],
+    "verification": "Review security middleware and run security tests",
+    "acceptanceCriteria": [],
+    "tags": [
+      "security",
+      "sec"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:24.012Z"
+  },
+  "SEC-16": {
+    "files": [
+      "apps/api/src/lib/audit.ts",
+      "apps/api/src/middleware/tenant.ts",
+      "apps/api/src/lib/env.ts",
+      "apps/api/src/middleware/rbac.ts",
+      "apps/api/src/middleware/withPermission.ts"
+    ],
+    "verification": "Review security middleware and run security tests",
+    "acceptanceCriteria": [],
+    "tags": [
+      "security",
+      "sec"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:24.152Z"
+  },
+  "INFRA-11": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Run: npm test",
+    "acceptanceCriteria": [
+      "All test assertions pass",
+      "Coverage maintained or improved"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:24.260Z"
+  },
+  "MKT-2": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"mkt\" apps/",
+    "acceptanceCriteria": [
+      "Page renders without errors",
+      "Loading and error states implemented"
+    ],
+    "tags": [
+      "marketing",
+      "mkt"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:25.584Z"
+  },
+  "INFRA-1": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Check: .github/workflows/ exists and runs successfully",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:25.671Z"
+  },
+  "INFRA-3": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:25.769Z"
+  },
+  "ARCH-3": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"arch\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "architecture",
+      "arch"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:25.769Z"
+  },
+  "INFRA-5": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Monitoring (Sentry error tracking",
+      "Vercel Analytics",
+      "uptime alerts)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:25.828Z"
+  },
+  "INFRA-7": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Check: .github/workflows/ exists and runs successfully",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.159Z"
+  },
+  "INFRA-29": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Update workspace setup script for 12 teams (add CS",
+      "Infrastructure",
+      "Business Ops)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.228Z"
+  },
+  "INFRA-30": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Add customer impact labels (affects-100+",
+      "affects-1000+",
+      "production-down"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.294Z"
+  },
+  "INFRA-31": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Add custom fields (Response Time",
+      "Customer Count",
+      "Deployment ID",
+      "Marketing Campaign)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.362Z"
+  },
+  "INFRA-32": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Run full workspace setup (12 teams",
+      "custom fields)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.424Z"
+  },
+  "INFRA-33": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.527Z"
+  },
+  "INFRA-34": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.607Z"
+  },
+  "INFRA-36": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.692Z"
+  },
+  "INFRA-37": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Check: .github/workflows/ exists and runs successfully",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.763Z"
+  },
+  "INFRA-41": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.829Z"
+  },
+  "INFRA-43": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.896Z"
+  },
+  "INFRA-45": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:29.967Z"
+  },
+  "INFRA-46": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.038Z"
+  },
+  "INFRA-47": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.105Z"
+  },
+  "INFRA-48": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.187Z"
+  },
+  "INFRA-53": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: API usage monitoring (daily cron",
+      "alert at 75% threshold)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.253Z"
+  },
+  "OPS-1": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [
+      "Linear: Configure workflow states (Ready",
+      "Deferred) for all 12 teams"
+    ],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.753Z"
+  },
+  "OPS-2": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [
+      "Linear: Set team-specific settings (cycles",
+      "auto-archive) for consistency"
+    ],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.754Z"
+  },
+  "INFRA-35": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.816Z"
+  },
+  "INFRA-38": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.880Z"
+  },
+  "INFRA-39": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:30.943Z"
+  },
+  "INFRA-40": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Duplicate Detection script (hourly cron",
+      "check similar CS issues"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.001Z"
+  },
+  "INFRA-42": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.062Z"
+  },
+  "INFRA-44": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.123Z"
+  },
+  "OPS-8": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [
+      "Linear: Sprint Board view (current cycle",
+      "group by priority)"
+    ],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.123Z"
+  },
+  "OPS-9": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.124Z"
+  },
+  "OPS-10": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [
+      "Linear: Blocked Tasks view (all blocked",
+      "group by team)"
+    ],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.124Z"
+  },
+  "OPS-11": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [
+      "Linear: High Priority Inbox (Critical/High",
+      "oldest first",
+      "triage view)"
+    ],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.124Z"
+  },
+  "OPS-12": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.124Z"
+  },
+  "INFRA-49": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.185Z"
+  },
+  "OPS-13": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.185Z"
+  },
+  "INFRA-50": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Automation runbook (10 automations: triggers",
+      "troubleshooting)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.247Z"
+  },
+  "INFRA-51": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Run: npm test -- --testPathPattern=integration",
+    "acceptanceCriteria": [
+      "All test assertions pass",
+      "Coverage maintained or improved",
+      "Page renders without errors",
+      "Loading and error states implemented"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.310Z"
+  },
+  "INFRA-52": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.524Z"
+  },
+  "INFRA-55": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Tune automation thresholds (adjust based on 1 week usage",
+      "<5% false positives)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.746Z"
+  },
+  "INFRA-56": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Optimize view performance (date filters",
+      "limit results"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.843Z"
+  },
+  "INFRA-57": {
+    "files": [
+      ".github/workflows/ci.yml"
+    ],
+    "verification": "Verify infrastructure configuration",
+    "acceptanceCriteria": [
+      "Linear: Weekly report automation (Friday cron",
+      "exec summary email)"
+    ],
+    "tags": [
+      "infrastructure",
+      "infra"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.966Z"
+  },
+  "OPS-3": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.966Z"
+  },
+  "OPS-15": {
+    "files": [],
+    "verification": "Grep for related code: Grep \"ops\" apps/",
+    "acceptanceCriteria": [
+      "Linear: Update CLAUDE.md context (Linear as PM tool",
+      "workflow references)"
+    ],
+    "tags": [
+      "operations",
+      "ops"
+    ],
+    "autoGenerated": true,
+    "generatedAt": "2026-02-21T19:49:31.966Z"
+  },
+  "ARCH-18": {
+    "files": [
+      "apps/api/src/middleware/request-timing.ts",
+      "apps/api/src/index.ts",
+      ".claude/runtime/request-log.json"
+    ],
+    "verification": "Start dev server, hit a slow endpoint (e.g., trial-balance report), verify .claude/runtime/request-log.json contains entry with durationMs > 500",
+    "acceptanceCriteria": [
+      "Fastify onRequest hook stamps request.startTime",
+      "Fastify onResponse hook calculates duration and appends to request-log.json if > 500ms",
+      "Log entries include: timestamp, method, url, statusCode, durationMs, slow boolean",
+      "Only active when NODE_ENV === 'development'",
+      "File rotates at 100 entries (oldest removed)",
+      "Registered in index.ts after auth middleware"
+    ],
+    "tags": [
+      "infrastructure",
+      "performance",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a11",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "PERF-28": {
+    "files": [
+      "apps/api/src/lib/prisma-observer.ts",
+      "packages/db/src/index.ts",
+      ".claude/runtime/query-log.json"
+    ],
+    "verification": "Set PRISMA_QUERY_LOG=true, trigger a list endpoint with many relations, verify .claude/runtime/query-log.json has slow query entries",
+    "acceptanceCriteria": [
+      "prisma.$on('query') captures events when PRISMA_QUERY_LOG=true",
+      "Slow queries (>100ms) written to query-log.json",
+      "N+1 detection: same query fingerprint >5x in one request flagged",
+      "Log entries include: timestamp, query (truncated), params (sanitized), duration, model, operation",
+      "File rotates at 50 entries",
+      "Zero overhead when env var not set"
+    ],
+    "tags": [
+      "performance",
+      "prisma",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a12",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-19": {
+    "files": [
+      "apps/api/src/middleware/error-collector.ts",
+      "apps/api/src/middleware/errorHandler.ts",
+      ".claude/runtime/error-log.json"
+    ],
+    "verification": "Trigger a 500 error in dev, verify .claude/runtime/error-log.json contains entry with stack trace and request context",
+    "acceptanceCriteria": [
+      "Wraps existing errorHandler (does NOT replace it)",
+      "Appends unhandled/500 errors to error-log.json",
+      "Includes: timestamp, error.message, stack (10 lines max), request.url, request.method, tenantId",
+      "Dedup: same error.message within 5 min increments count instead of duplicating",
+      "File rotates at 50 entries",
+      "Dev-only (NODE_ENV === 'development')"
+    ],
+    "tags": [
+      "infrastructure",
+      "error-handling",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a13",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-20": {
+    "files": [
+      ".claude/scripts/runtime-summary.js",
+      ".claude/commands/processes/begin.md"
+    ],
+    "verification": "Run `node .claude/scripts/runtime-summary.js` with sample runtime logs, verify markdown output shows slow requests, slow queries, N+1 patterns, and errors",
+    "acceptanceCriteria": [
+      "Reads .claude/runtime/request-log.json, query-log.json, error-log.json",
+      "Produces markdown summary: slow requests (count + worst offender), slow queries, N+1 patterns, error list",
+      "begin.md updated to run this script and display output in 'Runtime Signals' section",
+      "Gracefully handles missing/empty log files (shows 'No runtime signals')",
+      "Only shows entries since last session (uses last-session-commit.txt timestamp if available)"
+    ],
+    "tags": [
+      "infrastructure",
+      "workflow",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a14",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-21": {
+    "files": [
+      ".claude/scripts/extract-session-patterns.js",
+      ".claude/session-patterns.json"
+    ],
+    "verification": "Make a cross-domain commit (touch banking + accounting files), run script, verify output contains cross-domain pattern detection",
+    "acceptanceCriteria": [
+      "Analyzes git diff (last session commits) for 6 pattern types: new utility, new shared component, bug fix, cross-domain change, schema change, new tests",
+      "Cross-domain detection: commits touching 2+ domain folders flagged with domain names",
+      "New utility detection: new exports in lib/utils/ or domains/*/utils/",
+      "Output: .claude/session-patterns.json with patterns array (type, description, files, confidence)",
+      "Also extracts newExports array and schemaChanges array",
+      "Handles empty diff gracefully (no patterns found)"
+    ],
+    "tags": [
+      "infrastructure",
+      "learning",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a21",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-22": {
+    "files": [
+      ".claude/commands/processes/end-session.md"
+    ],
+    "verification": "Run /processes:end-session after a session with commits, verify 'Patterns Discovered' section is auto-populated from session-patterns.json",
+    "acceptanceCriteria": [
+      "New Step 1c added after Step 1b in end-session.md",
+      "Step 1c runs: node .claude/scripts/extract-session-patterns.js",
+      "Auto-populates 'Patterns Discovered' section with extracted patterns",
+      "Auto-populates 'Bugs Fixed' section if bug-fix patterns detected",
+      "Agent reviews auto-filled content (not blindly trusted)",
+      "Manual entries still supported alongside auto-captured ones"
+    ],
+    "tags": [
+      "workflow",
+      "learning",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a22",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-23": {
+    "files": [
+      ".claude/scripts/route-to-memory.js",
+      "C:\\Users\\Sunny\\.claude\\projects\\w--Marakana-Corp-Companies-akount-Development-Brand-aggoogle-product-plan\\memory\\debugging-log.md",
+      "C:\\Users\\Sunny\\.claude\\projects\\w--Marakana-Corp-Companies-akount-Development-Brand-aggoogle-product-plan\\memory\\api-patterns.md",
+      "C:\\Users\\Sunny\\.claude\\projects\\w--Marakana-Corp-Companies-akount-Development-Brand-aggoogle-product-plan\\memory\\codebase-quirks.md"
+    ],
+    "verification": "Create test session-patterns.json with a bug-fix pattern, run route-to-memory.js, verify entry appended to debugging-log.md",
+    "acceptanceCriteria": [
+      "Reads .claude/session-patterns.json",
+      "Routes by type: bug-fix → debugging-log.md, API pattern → api-patterns.md, frontend gotcha → codebase-quirks.md, cross-domain → api-patterns.md (cross-domain section), performance → debugging-log.md (performance section)",
+      "Append-only (never overwrites existing content)",
+      "Dedup: checks if similar pattern already exists (fuzzy match on description)",
+      "Format: - **[DATE]** description — [files affected]",
+      "Handles missing topic files gracefully (creates section header if needed)"
+    ],
+    "tags": [
+      "infrastructure",
+      "learning",
+      "memory",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a23",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-24": {
+    "files": [
+      ".claude/decisions/README.md",
+      ".claude/decisions/TEMPLATE.md",
+      ".claude/decisions/INDEX.md"
+    ],
+    "verification": "Verify .claude/decisions/ directory exists with README.md explaining format, TEMPLATE.md with blank decision template, and empty INDEX.md",
+    "acceptanceCriteria": [
+      "Directory .claude/decisions/ created",
+      "README.md explains: when to capture decisions, format, tags, how future agents use them",
+      "TEMPLATE.md has blank decision format: Title, Date, Context, Decision, Alternatives Considered (with rejection reasons), Consequences, Files Affected, Tags",
+      "INDEX.md starts empty (auto-populated by ARCH-26)",
+      "Tags defined: architecture, financial, security, performance, ux, infrastructure",
+      "Example decision file included (e.g., integer-cents-for-money.md)"
+    ],
+    "tags": [
+      "infrastructure",
+      "documentation",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a31",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-25": {
+    "files": [
+      ".claude/commands/processes/plan.md",
+      ".claude/commands/processes/work.md"
+    ],
+    "verification": "Run /processes:plan for a feature with multiple approaches, verify it prompts for decision capture with alternatives considered",
+    "acceptanceCriteria": [
+      "plan.md Phase 2 includes: 'If choosing between approaches, capture decision in .claude/decisions/'",
+      "work.md includes: 'If making non-trivial implementation choice, create decision entry'",
+      "Automatic triggers: 2+ implementation approaches, schema design choices, architecture decisions",
+      "Decision file auto-created with correct format from TEMPLATE.md",
+      "Files Affected section populated from plan tasks or current working files",
+      "Not over-aggressive: simple coding choices don't trigger capture"
+    ],
+    "tags": [
+      "workflow",
+      "documentation",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a32",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-26": {
+    "files": [
+      ".claude/scripts/regenerate-decision-index.js",
+      ".claude/decisions/INDEX.md"
+    ],
+    "verification": "Create 2-3 test decision files, run regenerate-decision-index.js, verify INDEX.md has markdown table with Date, Decision, Tags, Files columns",
+    "acceptanceCriteria": [
+      "Scans .claude/decisions/*.md (excluding README, TEMPLATE, INDEX)",
+      "Parses frontmatter/headers: Title, Date, Tags, Files Affected",
+      "Generates INDEX.md with searchable markdown table",
+      "Sorted by date (newest first)",
+      "Also outputs decisions-by-file.json mapping file paths to decision IDs (for code index integration)"
+    ],
+    "tags": [
+      "infrastructure",
+      "documentation",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a33",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "INFRA-64": {
+    "files": [
+      ".claude/production/signals.json",
+      ".claude/production/README.md"
+    ],
+    "verification": "Verify .claude/production/signals.json has valid JSON schema, README.md documents all signal types and how to populate",
+    "acceptanceCriteria": [
+      "Schema supports signal types: error, performance, security, deprecation, usage",
+      "Each signal has: id, timestamp, type, severity (high/medium/low), source (sentry/vercel/manual/monitoring), message, file (optional), line (optional), frequency, firstSeen, lastSeen, resolved boolean",
+      "README documents: schema, how Sentry webhook populates, how Vercel logs populate, manual CLI usage",
+      "Initial signals.json has empty signals array and lastSync timestamp",
+      "Directory .claude/production/ created and gitignored (signals.json template committed, actual signals gitignored)"
+    ],
+    "tags": [
+      "infrastructure",
+      "production",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a41",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "INFRA-65": {
+    "files": [
+      ".claude/scripts/read-production-signals.js",
+      ".claude/commands/processes/begin.md"
+    ],
+    "verification": "Add test signal to signals.json, run read-production-signals.js, verify markdown output with severity badge and file link",
+    "acceptanceCriteria": [
+      "Reads .claude/production/signals.json",
+      "Filters: only unresolved signals (resolved: false)",
+      "Sorts: by severity (high first), then by frequency (most common first)",
+      "Output format: markdown with severity badge, message, file:line link, occurrence count, time range",
+      "begin.md updated: new 'Production Signals' section after git status, runs this script",
+      "Graceful: if no signals file or empty, shows 'No production signals'"
+    ],
+    "tags": [
+      "infrastructure",
+      "workflow",
+      "production",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a42",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "INFRA-66": {
+    "files": [
+      ".claude/scripts/add-production-signal.js"
+    ],
+    "verification": "Run: node .claude/scripts/add-production-signal.js --type error --severity high --message 'Test error' --file test.ts --line 1. Verify signal added to signals.json. Run --resolve sig-xxx, verify resolved=true.",
+    "acceptanceCriteria": [
+      "CLI flags: --type (required), --severity (required), --message (required), --file (optional), --line (optional), --source (default: manual)",
+      "Auto-generates signal ID: sig-001, sig-002, etc.",
+      "Appends to .claude/production/signals.json signals array",
+      "Sets firstSeen=lastSeen=now, frequency=1, resolved=false",
+      "--resolve <id> flag marks signal as resolved (sets resolved=true)",
+      "--list flag shows all unresolved signals in table format"
+    ],
+    "tags": [
+      "infrastructure",
+      "cli",
+      "production",
+      "feedback-loop"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-a43",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "INFRA-67": {
+    "files": [
+      ".claude/scripts/regenerate-code-index.js",
+      ".claude/scripts/load-code-index.js",
+      ".claude/code-index-legend.md",
+      "CODEBASE-BANKING.md",
+      "CODEBASE-INVOICING.md",
+      "CODEBASE-ACCOUNTING.md",
+      "CODEBASE-PLANNING.md",
+      "CODEBASE-AI.md",
+      "CODEBASE-WEB-PAGES.md",
+      "CODEBASE-WEB-COMPONENTS.md",
+      "CODEBASE-PACKAGES.md"
+    ],
+    "verification": "Regenerate all indexes, verify legend NOT present in any CODEBASE-*.md. Verify .claude/code-index-legend.md exists with full legend. Run load-code-index.js, verify it still works.",
+    "acceptanceCriteria": [
+      ".claude/code-index-legend.md created with full decode legend (fields, patterns, violations, domains)",
+      "regenerate-code-index.js no longer emits legend block in each CODEBASE-*.md",
+      "Each CODEBASE-*.md has comment: <!-- Legend: .claude/code-index-legend.md -->",
+      "load-code-index.js loads legend once on first call (cached for session)",
+      "Token savings: ~1,500 tokens per multi-domain load (288 lines removed)",
+      "All 8 existing indexes regenerated successfully"
+    ],
+    "tags": [
+      "infrastructure",
+      "code-index",
+      "optimization"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-b11",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "ARCH-27": {
+    "files": [
+      ".claude/scripts/regenerate-code-index.js",
+      ".claude/scripts/load-code-index.js",
+      ".claude/domain-adjacency.json",
+      "CODEBASE-WEB-BUSINESS.md",
+      "CODEBASE-WEB-SHARED.md",
+      "CODEBASE-WEB-FORMS.md"
+    ],
+    "verification": "Regenerate indexes, verify: CODEBASE-WEB-COMPONENTS.md no longer generated, 3 new files exist, each <8K tokens. Run load-code-index.js with keyword 'form', verify WEB-FORMS loaded.",
+    "acceptanceCriteria": [
+      "3 new domain definitions in regenerate-code-index.js replacing web-components",
+      "WEB-BUSINESS: components/business/, domain-specific components (~60 files, <7K tokens)",
+      "WEB-SHARED: components/ui/, components/shared/, layout components (~70 files, <7K tokens)",
+      "WEB-FORMS: components/forms/, form-related, validation UI (~50 files, <5K tokens)",
+      "DOMAIN_INDEX_MAP updated: web-components removed, 3 new entries added",
+      "Adjacency matrix updated: web-pages → [web-shared], web-business → [web-shared, web-forms]",
+      "KEYWORD_MAP updated for new sub-domains",
+      "CODEBASE-WEB-COMPONENTS.md deleted or deprecated",
+      "Total file coverage unchanged (180 files across 3 sub-indexes)"
+    ],
+    "tags": [
+      "infrastructure",
+      "code-index",
+      "architecture"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-b21",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "PERF-29": {
+    "files": [
+      ".claude/scripts/regenerate-code-index.js"
+    ],
+    "verification": "Regenerate banking index, verify account.service entry has callers field showing which route/service files import AccountService. Cross-check with Grep.",
+    "acceptanceCriteria": [
+      "Two-pass algorithm: (1) collect all exports per file (existing), (2) for each file's imports resolve which exports are used, build reverse map",
+      "New 'c' (callers) field per file entry: { exportName: [importingFile1, importingFile2] }",
+      "Barrel file (index.ts) re-exports resolved to original source file",
+      "Handles relative imports (../../accounting/services/journal-entry.service)",
+      "Handles package imports (@akount/db, @akount/ui)",
+      "Token impact: ~30% increase per domain (~3K extra tokens), still fits 2-domain budget",
+      "Eliminates need for reverse-dependency Grep calls (2-3 tool calls saved per lookup)"
+    ],
+    "tags": [
+      "infrastructure",
+      "code-index",
+      "performance"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-b31",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  },
+  "INFRA-68": {
+    "files": [
+      ".claude/scripts/regenerate-code-index.js"
+    ],
+    "verification": "Regenerate banking index, verify account.service entry has tests field with { file: 'account.service.test.ts', exists: true, testCount: N }. Check a file WITHOUT tests shows exists: false.",
+    "acceptanceCriteria": [
+      "For each indexed file X.ts, looks for X.test.ts and __tests__/X.test.ts",
+      "If test file found: tests.exists=true, tests.file=filename, tests.testCount=count of it()/test() calls",
+      "If no test file: tests.exists=false (signals coverage gap)",
+      "Token impact: ~10% increase per domain (~1K tokens)",
+      "Test count is approximate (regex-based, not AST)",
+      "Works for both .ts and .tsx test files"
+    ],
+    "tags": [
+      "infrastructure",
+      "code-index",
+      "testing"
+    ],
+    "planRef": "docs/plans/2026-02-27-feedback-loops-and-indexing-v2.md#task-b41",
+    "generatedAt": "2026-02-27T00:00:00.000Z",
+    "autoGenerated": false
+  }
+}

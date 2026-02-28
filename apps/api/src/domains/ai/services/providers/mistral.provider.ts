@@ -154,6 +154,10 @@ export class MistralProvider implements AIProvider {
       });
     }
 
+    // P0-1: Add 30s timeout to prevent stuck requests (cost $50-100 each)
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 30000); // 30 seconds
+
     try {
       const response = await this.client.chat.complete({
         model,
@@ -161,6 +165,8 @@ export class MistralProvider implements AIProvider {
         temperature: options?.temperature ?? 0.2,
         maxTokens: options?.maxTokens ?? 1024,
         ...(options?.responseFormat ? { responseFormat: options.responseFormat } : {}),
+      }, {
+        signal: abortController.signal,
       });
 
       if (!response.choices || response.choices.length === 0) {
@@ -205,6 +211,8 @@ export class MistralProvider implements AIProvider {
         }
       }
 
+      clearTimeout(timeoutId);
+
       // Record success (close circuit if it was open)
       this.circuitBreaker.recordSuccess();
 
@@ -220,8 +228,17 @@ export class MistralProvider implements AIProvider {
           : undefined,
       };
     } catch (error: unknown) {
+      clearTimeout(timeoutId);
+
       // Record failure (may open circuit if threshold reached)
       this.circuitBreaker.recordFailure();
+
+      // Handle timeout errors specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        logger.error('Mistral API call timed out after 30s');
+        throw new Error('Mistral API Error: Request timed out after 30 seconds');
+      }
+
       // Sanitize SDK errors — don't leak API keys or internal details
       if (error instanceof Error) {
         logger.error(
@@ -273,7 +290,7 @@ export class MistralProvider implements AIProvider {
     imageBuffer: Buffer,
     schema: z.ZodType<T>,
     prompt?: string
-  ): Promise<T> {
+  ): Promise<{ data: T; usage?: { promptTokens: number; completionTokens: number; totalTokens: number }; model: string }> {
     // Circuit breaker check (ARCH-13)
     this.circuitBreaker.checkState();
 
@@ -290,6 +307,10 @@ export class MistralProvider implements AIProvider {
     const extractionPrompt =
       prompt ||
       `Extract structured data from this image. Return ONLY valid JSON matching the expected schema. Do not include any explanatory text.`;
+
+    // P0-1: Add 30s timeout to prevent stuck requests
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 30000); // 30 seconds
 
     try {
       const response = await this.client.chat.complete({
@@ -312,6 +333,8 @@ export class MistralProvider implements AIProvider {
         temperature: 0.1, // Lower temperature for structured extraction
         maxTokens: 2048, // Higher token limit for detailed extractions
         responseFormat: { type: 'json_object' },
+      }, {
+        signal: abortController.signal,
       });
 
       if (!response.choices || response.choices.length === 0) {
@@ -330,11 +353,14 @@ export class MistralProvider implements AIProvider {
         const parsed = JSON.parse(content);
         const validated = schema.parse(parsed);
 
+        clearTimeout(timeoutId);
+
         logger.info(
           {
             model,
             confidence: parsed.confidence || 'unknown',
             fields: Object.keys(validated as Record<string, unknown>),
+            tokensUsed: response.usage?.totalTokens || 0,
           },
           'Mistral vision extraction successful'
         );
@@ -342,8 +368,21 @@ export class MistralProvider implements AIProvider {
         // Record success
         this.circuitBreaker.recordSuccess();
 
-        return validated;
+        // P0-2: Return usage information for token tracking
+        return {
+          data: validated,
+          usage: response.usage
+            ? {
+                promptTokens: response.usage.promptTokens || 0,
+                completionTokens: response.usage.completionTokens || 0,
+                totalTokens: response.usage.totalTokens || 0,
+              }
+            : undefined,
+          model: response.model || model,
+        };
       } catch (validationError: unknown) {
+        clearTimeout(timeoutId);
+
         logger.error(
           {
             err: validationError,
@@ -357,8 +396,16 @@ export class MistralProvider implements AIProvider {
         );
       }
     } catch (error: unknown) {
+      clearTimeout(timeoutId);
+
       // Record failure
       this.circuitBreaker.recordFailure();
+
+      // Handle timeout errors specifically
+      if (error instanceof Error && error.name === 'AbortError') {
+        logger.error({ model }, 'Mistral Vision API call timed out after 30s');
+        throw new Error('Mistral Vision API Error: Request timed out after 30 seconds');
+      }
 
       if (error instanceof Error) {
         logger.error(

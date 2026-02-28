@@ -6,4 +6,5 @@ export { ClientStatusBadge } from './ClientStatusBadge';
 export { VendorStatusBadge } from './VendorStatusBadge';
 export { JournalEntryStatusBadge } from './JournalEntryStatusBadge';
 export { AIActionStatusBadge } from './AIActionStatusBadge';
+export { CreditNoteStatusBadge } from './CreditNoteStatusBadge';
 export { EntitySelector } from './EntitySelector';

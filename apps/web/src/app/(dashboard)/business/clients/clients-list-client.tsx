@@ -15,8 +15,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Search, Filter, X, Loader2, Plus, Info } from 'lucide-react';
+import { Search, Filter, X, Loader2, Plus, Info, Download } from 'lucide-react';
 import { fetchMoreClients } from '../actions';
+import { downloadCsvExport } from '@/lib/api/export-client';
+import { toast } from 'sonner';
 
 const ClientForm = dynamic(
     () => import('@/components/business/ClientForm').then(m => m.ClientForm),
@@ -42,6 +44,8 @@ export function ClientsListClient({
     const [formOpen, setFormOpen] = useState(false);
     // UX-104: Prepare for edit mode - prevents stale data when switching records
     const [editingClient, setEditingClient] = useState<Client | null>(null);
+
+    const [isExporting, setIsExporting] = useState(false);
 
     // Filter state
     const [searchQuery, setSearchQuery] = useState('');
@@ -114,6 +118,26 @@ export function ClientsListClient({
         await fetchWithFilters(nextCursor);
     }
 
+    async function handleExportCsv() {
+        setIsExporting(true);
+        try {
+            await downloadCsvExport(
+                'clients/export',
+                {
+                    entityId,
+                    search: searchQuery || undefined,
+                    status: statusFilter !== 'all' ? statusFilter : undefined,
+                },
+                'clients.csv'
+            );
+            toast.success('Clients exported successfully');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Export failed');
+        } finally {
+            setIsExporting(false);
+        }
+    }
+
     return (
         <div className="space-y-4">
             {/* Filter Bar */}
@@ -127,14 +151,30 @@ export function ClientsListClient({
                             </h3>
                         </div>
                         {entityId ? (
-                            <Button
-                                size="sm"
-                                onClick={() => setFormOpen(true)}
-                                className="gap-1.5"
-                            >
-                                <Plus className="h-4 w-4" />
-                                New Client
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleExportCsv}
+                                    disabled={isExporting}
+                                    className="gap-1.5 rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
+                                >
+                                    {isExporting ? (
+                                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                    ) : (
+                                        <Download className="h-3.5 w-3.5" />
+                                    )}
+                                    Export CSV
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    onClick={() => setFormOpen(true)}
+                                    className="gap-1.5"
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    New Client
+                                </Button>
+                            </div>
                         ) : (
                             <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                 <Info className="h-3.5 w-3.5" />

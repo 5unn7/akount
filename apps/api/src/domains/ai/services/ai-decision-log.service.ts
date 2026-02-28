@@ -43,6 +43,8 @@ export interface LogDecisionInput {
   consentStatus?: string;
   /** Processing time in milliseconds */
   processingTimeMs?: number;
+  /** Total tokens consumed (input + output) for cost attribution (P0-2) */
+  tokensUsed?: number;
 }
 
 export interface QueryDecisionsInput {
@@ -92,6 +94,7 @@ export class AIDecisionLogService {
           aiExplanation: input.aiExplanation,
           consentStatus: input.consentStatus,
           processingTimeMs: input.processingTimeMs,
+          tokensUsed: input.tokensUsed, // P0-2: Track token usage for cost attribution
         },
         select: {
           id: true,

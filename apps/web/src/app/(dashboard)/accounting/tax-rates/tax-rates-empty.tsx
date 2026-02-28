@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { createTaxRateAction } from './actions';
 import { TaxRateSheet } from './tax-rate-sheet';
 import type { CreateTaxRateInput } from '@/lib/api/accounting';
+import { formatTaxRate } from '@/lib/utils/tax';
 
 interface TaxRatesEmptyProps {
     entityId?: string;
@@ -77,30 +78,26 @@ const CANADIAN_PRESETS: PresetGroup = {
         {
             code: 'PST-BC',
             name: 'Provincial Sales Tax (BC)',
-            rate: 0.07,
+            rateBasisPoints: 700, // 7%
             jurisdiction: 'British Columbia',
-
         },
         {
             code: 'PST-SK',
             name: 'Provincial Sales Tax (SK)',
-            rate: 0.06,
+            rateBasisPoints: 600, // 6%
             jurisdiction: 'Saskatchewan',
-
         },
         {
             code: 'PST-MB',
             name: 'Retail Sales Tax (MB)',
-            rate: 0.07,
+            rateBasisPoints: 700, // 7%
             jurisdiction: 'Manitoba',
-
         },
         {
             code: 'QST',
             name: 'Quebec Sales Tax',
-            rate: 0.09975,
+            rateBasisPoints: 998, // 9.975% rounded to 9.98%
             jurisdiction: 'Quebec',
-
         },
     ],
 };
@@ -269,9 +266,10 @@ export function TaxRatesEmpty({ entityId }: TaxRatesEmptyProps) {
                                                 variant="outline"
                                                 className="ml-2 shrink-0 font-mono text-xs text-ak-green border-ak-green/20"
                                             >
-                                                {(preset.rateBasisPoints / 100).toFixed(
+                                                {formatTaxRate(
+                                                    preset.rateBasisPoints,
                                                     preset.rateBasisPoints % 100 === 0 ? 0 : 2
-                                                )}%
+                                                )}
                                             </Badge>
                                         </button>
                                     );

@@ -1,0 +1,13 @@
+{
+  "lastBuild": "2026-02-28T15:54:59.835Z",
+  "gitCommit": "4480332aa914cca321a44149e508f3b6f2ee67c8",
+  "gitBranch": "main",
+  "domains": {
+    "banking": {
+      "lastBuild": "2026-02-28T15:54:59.835Z",
+      "fileCount": 57,
+      "indexFile": ".claude/CODEBASE-BANKING.md",
+      "indexSize": 5653
+    }
+  }
+}

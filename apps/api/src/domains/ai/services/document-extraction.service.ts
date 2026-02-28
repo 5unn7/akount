@@ -1,4 +1,5 @@
 import { MistralProvider } from './providers/mistral.provider';
+import { AIDecisionLogService } from './ai-decision-log.service';
 import { redactImage, redactText } from '../../../lib/pii-redaction';
 import {
   analyzePromptInjection,
@@ -11,6 +12,7 @@ import { InvoiceExtractionSchema, validateInvoiceTotals, type InvoiceExtraction 
 import { BankStatementExtractionSchema, validateStatementBalances, type BankStatementExtraction } from '../schemas/bank-statement-extraction.schema';
 import { logger } from '../../../lib/logger';
 import { env } from '../../../lib/env';
+import crypto from 'crypto';
 
 /**
  * Document Extraction Service
@@ -65,6 +67,7 @@ export interface ExtractionResult<T> {
 
 export class DocumentExtractionService {
   private mistralProvider: MistralProvider;
+  private decisionLogService: AIDecisionLogService;
 
   constructor() {
     const apiKey = env.MISTRAL_API_KEY;
@@ -72,6 +75,7 @@ export class DocumentExtractionService {
       throw new Error('MISTRAL_API_KEY not configured');
     }
     this.mistralProvider = new MistralProvider(apiKey);
+    this.decisionLogService = new AIDecisionLogService();
   }
 
   /**
@@ -154,25 +158,61 @@ Optional fields:
 Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
       `.trim());
 
-      const extracted = await this.mistralProvider.extractFromImage(
+      const extractionResult = await this.mistralProvider.extractFromImage(
         piiResult.redactedBuffer,
         BillExtractionSchema,
         extractionPrompt
       );
 
-      // Step 4: Prompt Defense Analysis (SEC-30)
+      const extracted = extractionResult.data;
+
+      // Step 4: Log token usage to AIDecisionLog (P0-2)
+      await this.decisionLogService.logDecision({
+        tenantId: options.tenantId,
+        entityId: options.entityId,
+        decisionType: 'BILL_EXTRACTION',
+        input: piiResult.redactedBuffer,
+        modelVersion: extractionResult.model,
+        confidence: extracted.confidence,
+        extractedData: {
+          vendor: extracted.vendor,
+          totalAmount: extracted.totalAmount,
+          date: extracted.date,
+          lineItemCount: extracted.lineItems?.length || 0,
+        },
+        routingResult: 'AUTO_CREATED',
+        tokensUsed: extractionResult.usage?.totalTokens,
+        processingTimeMs: Date.now() - startTime,
+      });
+
+      // Step 5: Redact PII from OCR text (P0-5)
+      // Even though image was redacted, OCR text might contain PII if redaction missed something
+      const ocrText = extracted.ocrText || '';
+      const ocrRedactionResult = options.skipSecurityChecks
+        ? { redactedBuffer: Buffer.from(ocrText, 'utf-8'), hadPII: false }
+        : redactText(ocrText);
+      const redactedOcrText = ocrRedactionResult.redactedBuffer.toString('utf-8');
+
+      if (ocrRedactionResult.hadPII) {
+        logger.warn(
+          { tenantId: options.tenantId },
+          'PII detected in OCR text and redacted before analysis'
+        );
+      }
+
+      // Step 6: Prompt Defense Analysis (SEC-30) - uses REDACTED OCR text
       const promptDefense = options.skipSecurityChecks
         ? { safe: true, riskLevel: 'safe' as const, threats: [], requiresReview: false }
-        : analyzePromptInjection(extracted.ocrText || '');
+        : analyzePromptInjection(redactedOcrText);
 
       const amountDefense = options.skipSecurityChecks
         ? { safe: true, riskLevel: 'safe' as const, threats: [], requiresReview: false }
-        : validateExtractedAmount(extracted.totalAmount, extracted.ocrText);
+        : validateExtractedAmount(extracted.totalAmount, redactedOcrText);
 
-      // Step 5: Business Rule Validation
+      // Step 7: Business Rule Validation
       validateBillTotals(extracted);
 
-      // Step 6: Security Review Gate
+      // Step 8: Security Review Gate
       const requiresReview =
         !options.skipSecurityChecks && (promptDefense.requiresReview || amountDefense.requiresReview);
 
@@ -299,25 +339,60 @@ Optional fields:
 Return ONLY valid JSON. All amounts MUST be integer cents, never decimals.
       `.trim());
 
-      const extracted = await this.mistralProvider.extractFromImage(
+      const extractionResult = await this.mistralProvider.extractFromImage(
         piiResult.redactedBuffer,
         InvoiceExtractionSchema,
         extractionPrompt
       );
 
-      // Step 3: Prompt Defense Analysis
+      const extracted = extractionResult.data;
+
+      // Step 3: Log token usage to AIDecisionLog (P0-2)
+      await this.decisionLogService.logDecision({
+        tenantId: options.tenantId,
+        entityId: options.entityId,
+        decisionType: 'INVOICE_EXTRACTION',
+        input: piiResult.redactedBuffer,
+        modelVersion: extractionResult.model,
+        confidence: extracted.confidence,
+        extractedData: {
+          clientName: extracted.clientName,
+          totalAmount: extracted.totalAmount,
+          date: extracted.date,
+          lineItemCount: extracted.lineItems?.length || 0,
+        },
+        routingResult: 'AUTO_CREATED',
+        tokensUsed: extractionResult.usage?.totalTokens,
+        processingTimeMs: Date.now() - startTime,
+      });
+
+      // Step 4: Redact PII from OCR text (P0-5)
+      const ocrText = extracted.ocrText || '';
+      const ocrRedactionResult = options.skipSecurityChecks
+        ? { redactedBuffer: Buffer.from(ocrText, 'utf-8'), hadPII: false }
+        : redactText(ocrText);
+      const redactedOcrText = ocrRedactionResult.redactedBuffer.toString('utf-8');
+
+      if (ocrRedactionResult.hadPII) {
+        logger.warn(
+          { tenantId: options.tenantId },
+          'PII detected in OCR text and redacted before analysis'
+        );
+      }
+
+      // Step 5: Prompt Defense Analysis (uses REDACTED OCR text)
       const promptDefense = options.skipSecurityChecks
         ? { safe: true, riskLevel: 'safe' as const, threats: [], requiresReview: false }
-        : analyzePromptInjection(extracted.ocrText || '');
+        : analyzePromptInjection(redactedOcrText);
 
       const amountDefense = options.skipSecurityChecks
         ? { safe: true, riskLevel: 'safe' as const, threats: [], requiresReview: false }
-        : validateExtractedAmount(extracted.totalAmount, extracted.ocrText);
+        : validateExtractedAmount(extracted.totalAmount, redactedOcrText);
 
-      // Step 4: Business Rule Validation
+      // Step 6: Business Rule Validation
       validateInvoiceTotals(extracted);
 
-      // Step 5: Security Review Gate
+      // Step 7: Security Review Gate
       const requiresReview =
         !options.skipSecurityChecks && (promptDefense.requiresReview || amountDefense.requiresReview);
 
@@ -438,16 +513,55 @@ CRITICAL RULES:
 Return JSON matching BankStatementExtractionSchema.
       `.trim());
 
-      const extracted = await this.mistralProvider.extractFromImage(
+      const extractionResult = await this.mistralProvider.extractFromImage(
         piiResult.redactedBuffer,
         BankStatementExtractionSchema,
         extractionPrompt
       );
 
-      // Step 3: Prompt Defense Analysis (SEC-30)
+      const extracted = extractionResult.data;
+
+      // Step 3: Log token usage to AIDecisionLog (P0-2)
+      if (extractionResult.usage) {
+        const inputHash = crypto
+          .createHash('sha256')
+          .update(piiResult.redactedBuffer)
+          .digest('hex');
+
+        await this.decisionLogService.logDecision({
+          tenantId: options.tenantId,
+          userId: options.tenantId,
+          entityId: options.entityId,
+          feature: 'document-extraction-statement',
+          model: extractionResult.model,
+          inputHash,
+          tokensUsed: extractionResult.usage.totalTokens,
+          metadata: {
+            confidence: extracted.confidence,
+            institutionName: extracted.accountInfo.institutionName,
+            transactionCount: extracted.transactions.length,
+          },
+        });
+      }
+
+      // Step 4: Redact PII from OCR text (P0-5)
+      const ocrText = extracted.ocrText || '';
+      const ocrRedactionResult = options.skipSecurityChecks
+        ? { redactedBuffer: Buffer.from(ocrText, 'utf-8'), hadPII: false }
+        : redactText(ocrText);
+      const redactedOcrText = ocrRedactionResult.redactedBuffer.toString('utf-8');
+
+      if (ocrRedactionResult.hadPII) {
+        logger.warn(
+          { tenantId: options.tenantId },
+          'PII detected in OCR text and redacted before analysis'
+        );
+      }
+
+      // Step 5: Prompt Defense Analysis (SEC-30) - uses REDACTED OCR text
       const promptDefense = options.skipSecurityChecks
         ? { safe: true, riskLevel: 'safe' as const, threats: [], requiresReview: false }
-        : analyzePromptInjection(extracted.ocrText || '');
+        : analyzePromptInjection(redactedOcrText);
 
       if (!promptDefense.safe) {
         logger.warn(
@@ -460,7 +574,7 @@ Return JSON matching BankStatementExtractionSchema.
         );
       }
 
-      // Step 4: Business Rule Validation (Balance Reconciliation)
+      // Step 6: Business Rule Validation (Balance Reconciliation)
       validateStatementBalances(extracted);
 
       const processingTimeMs = Date.now() - startTime;

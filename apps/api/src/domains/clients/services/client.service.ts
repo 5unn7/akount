@@ -5,6 +5,7 @@ import type {
   UpdateClientInput,
   ListClientsInput,
 } from '../schemas/client.schema';
+import { sanitizeCsvCell } from '../../../lib/csv';
 
 /**
  * Client service — Business logic for client CRUD operations.
@@ -170,4 +171,48 @@ export async function deleteClient(id: string, ctx: TenantContext) {
     where: { id },
     data: { deletedAt: new Date() },
   });
+}
+
+/**
+ * Export clients as CSV string. Fetches ALL matching records (no cursor/limit).
+ * Uses OWASP-safe sanitization for all cell values.
+ */
+export async function exportClientsCsv(
+  filters: Omit<ListClientsInput, 'cursor' | 'limit'>,
+  ctx: TenantContext
+): Promise<string> {
+  const where: Prisma.ClientWhereInput = {
+    entity: {
+      tenantId: ctx.tenantId,
+      ...(filters.entityId && { id: filters.entityId }),
+    },
+    deletedAt: null,
+  };
+
+  if (filters.status) where.status = filters.status;
+  if (filters.search) {
+    where.OR = [
+      { name: { contains: filters.search, mode: 'insensitive' } },
+      { email: { contains: filters.search, mode: 'insensitive' } },
+    ];
+  }
+
+  const clients = await prisma.client.findMany({
+    where,
+    include: { entity: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const header = 'Name,Email,Phone,Address,Payment Terms,Status,Created';
+  const rows = clients.map((c) => [
+    sanitizeCsvCell(c.name),
+    sanitizeCsvCell(c.email ?? ''),
+    sanitizeCsvCell(c.phone ?? ''),
+    sanitizeCsvCell(c.address ?? ''),
+    sanitizeCsvCell(c.paymentTerms ?? ''),
+    sanitizeCsvCell(c.status),
+    sanitizeCsvCell(c.createdAt),
+  ].join(','));
+
+  return [header, ...rows].join('\n');
 }

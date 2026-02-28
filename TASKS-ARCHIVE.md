@@ -287,6 +287,21 @@
 
 | ID | Task | Completed | Source |
 |----|------|-----------|--------|
+| SEC-45 | Add consent gate middleware to bill/invoice scan routes | 2026-02-28 | review:doc-intel-phase1 |
+| SEC-46 | Fix cross-tenant IDOR in worker vendor/client lookups (use entityId not tenantId) | 2026-02-28 | review:doc-intel-phase1 |
+| PERF-27 | Add compound indexes for Client/Vendor name lookups (entityId, name, deletedAt) | 2026-02-28 | review:doc-intel-phase1 |
+| ARCH-14 | Fix worker initialization race condition (await ready events) | 2026-02-28 | review:doc-intel-phase1 |
+| SEC-47 | Add Zod validation for multipart entityId field in scan routes | 2026-02-28 | review:doc-intel-phase1 |
+| ARCH-15 | Change AIConsent CASCADE delete to Restrict (preserve audit trail) | 2026-02-28 | review:doc-intel-phase1 |
+| ARCH-16 | Extract Redis connection config to shared module (DRY) | 2026-02-28 | review:doc-intel-phase1 |
+| ARCH-17 | Migrate rate limiter to Redis-backed (multi-instance support) | 2026-02-28 | review:doc-intel-phase1 |
+| DRY-22 | Create domain error handler for business routes (eliminate duplication) | 2026-02-28 | review:doc-intel-phase1 |
+| UX-107 | Add success logging to scan routes (job enqueued successfully) | 2026-02-28 | review:doc-intel-phase1 |
+| DRY-23 | Update job-progress.tsx callback types to allow async (onComplete/onError) | 2026-02-28 | review:doc-intel-phase1 |
+| DRY-24 | Add JSDoc to useJobStream progress type check (explain defense) | 2026-02-28 | review:doc-intel-phase1 |
+| UX-108 | Standardize error format across scan routes (always include message field) | 2026-02-28 | review:doc-intel-phase1 |
+| UX-109 | Add Retry-After header to 429 rate limit responses | 2026-02-28 | review:doc-intel-phase1 |
+| PERF-11 | Distributed rate limiting (Redis-backed) for multi-instance | 2026-02-28 | review:smooth-floating-mountain |
 | ARCH-18 | Feedback Loop 1: Request timing middleware — Fastify `onRequest`/`onResponse` hooks to measure latency, log slow requests (>500ms) to `.claude/runtime/request-log.json`. Dev-only, zero prod overhead. Register after auth in `apps/api/src/index.ts`. | 2026-02-28 | plan:feedback-loops |
 | PERF-28 | Feedback Loop 1: Prisma query observer — Hook `prisma.$on('query')` to detect slow queries (>100ms) and N+1 patterns (same fingerprint >5x/request). Write to `.claude/runtime/query-log.json`. Opt-in via `PRISMA_QUERY_LOG=true` env var. | 2026-02-28 | plan:feedback-loops |
 | ARCH-21 | Feedback Loop 2: Git diff pattern extractor — Script that analyzes `git diff` from session to auto-detect: new utilities, cross-domain changes, bug fix patterns, schema changes, new test files. Output to `.claude/session-patterns.json`. Consumed by end-session. | 2026-02-28 | plan:feedback-loops |

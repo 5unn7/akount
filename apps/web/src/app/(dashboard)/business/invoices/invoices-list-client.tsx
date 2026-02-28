@@ -14,8 +14,10 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Filter, X, Loader2 } from 'lucide-react';
+import { Filter, X, Loader2, Download } from 'lucide-react';
 import { fetchMoreInvoices } from '../actions';
+import { downloadCsvExport } from '@/lib/api/export-client';
+import { toast } from 'sonner';
 
 type InvoiceStatus = 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE' | 'CANCELLED' | 'PARTIALLY_PAID' | 'VOIDED';
 
@@ -38,6 +40,8 @@ export function InvoicesListClient({
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+
+    const [isExporting, setIsExporting] = useState(false);
 
     const hasFilters = statusFilter !== 'all' || dateFrom || dateTo;
 
@@ -92,16 +96,53 @@ export function InvoicesListClient({
         await fetchWithFilters(nextCursor);
     }
 
+    async function handleExportCsv() {
+        setIsExporting(true);
+        try {
+            await downloadCsvExport(
+                'invoices/export',
+                {
+                    entityId,
+                    status: statusFilter !== 'all' ? statusFilter : undefined,
+                    dateFrom: dateFrom || undefined,
+                    dateTo: dateTo || undefined,
+                },
+                'invoices.csv'
+            );
+            toast.success('Invoices exported successfully');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Export failed');
+        } finally {
+            setIsExporting(false);
+        }
+    }
+
     return (
         <div className="space-y-4">
             {/* Filter Bar */}
             <Card className="glass rounded-[14px]">
                 <CardContent className="pt-6">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Filter className="h-4 w-4 text-muted-foreground" />
-                        <h3 className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
-                            Filters
-                        </h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                            <h3 className="text-xs uppercase tracking-wider font-medium text-muted-foreground">
+                                Filters
+                            </h3>
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleExportCsv}
+                            disabled={isExporting}
+                            className="gap-1.5 rounded-lg border-ak-border-2 hover:bg-ak-bg-3"
+                        >
+                            {isExporting ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                                <Download className="h-3.5 w-3.5" />
+                            )}
+                            Export CSV
+                        </Button>
                     </div>
 
                     <div className="grid gap-4 md:grid-cols-4">
