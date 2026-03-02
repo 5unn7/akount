@@ -3,7 +3,7 @@ import { Queue } from 'bullmq';
 import { getRedisConnection, type QueueName } from '../../../lib/queue/queue-manager';
 import { authMiddleware } from '../../../middleware/auth';
 import { tenantMiddleware } from '../../../middleware/tenant';
-import { withPermission } from '../../../middleware/withPermission';
+import { requireRole } from '../../../middleware/rbac';
 
 /**
  * Failed Jobs Admin Endpoint (P1-15)
@@ -30,7 +30,7 @@ export async function failedJobsRoutes(fastify: FastifyInstance) {
       preHandler: [
         authMiddleware,
         tenantMiddleware,
-        withPermission('system:admin'), // Admin-only
+        requireRole(['OWNER', 'ADMIN']),
       ],
     },
     async (request, reply) => {
