@@ -15,6 +15,7 @@ import type {
     NormalBalance,
     CreateGLAccountInput,
     UpdateGLAccountInput,
+    ListGLAccountsParams,
 } from '@/lib/api/accounting';
 import type { Entity } from '@/lib/api/entities';
 import { formatCurrency } from '@/lib/utils/currency';
@@ -86,9 +87,9 @@ export function ChartOfAccountsClient({
     // Debounced search - refetch when search or filterType changes
     useEffect(() => {
         const timer = setTimeout(async () => {
-            const params: { entityId: string; search?: string; type?: string } = { entityId };
+            const params: ListGLAccountsParams = { entityId };
             if (search) params.search = search;
-            if (filterType !== 'all') params.type = filterType;
+            if (filterType !== 'all') params.type = filterType as GLAccountType;
 
             try {
                 const newAccounts = await fetchGLAccounts(params);
