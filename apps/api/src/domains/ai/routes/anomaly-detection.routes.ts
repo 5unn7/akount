@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AnomalyDetectionService, type AnomalyType } from '../services/anomaly-detection.service';
 import { queueManager } from '../../../lib/queue/queue-manager';
 import type { AnomalyDetectionJobData } from '../workers/anomaly-detection.worker';
+import { validateBody, validateParams } from '../../../middleware/validation';
 
 /**
  * Anomaly Detection Routes (DEV-252, C7)
@@ -24,6 +25,10 @@ const ScheduleDetectionSchema = z.object({
   entityId: z.string().cuid(),
 });
 
+const JobIdParamsSchema = z.object({
+  jobId: z.string(),
+});
+
 const anomalyDetectionRoutes: FastifyPluginAsync = async (fastify) => {
   /**
    * POST /anomaly-detection/detect
@@ -36,21 +41,7 @@ const anomalyDetectionRoutes: FastifyPluginAsync = async (fastify) => {
   }>(
     '/detect',
     {
-      schema: {
-        body: DetectAnomaliesSchema,
-        response: {
-          200: z.object({
-            generated: z.number(),
-            updated: z.number(),
-            errors: z.array(z.string()),
-            anomalies: z.object({
-              subscriptionCreep: z.number(),
-              cashFlowDanger: z.number(),
-              missingTransactions: z.number(),
-            }),
-          }),
-        },
-      },
+      preValidation: [validateBody(DetectAnomaliesSchema)],
     },
     async (request, reply) => {
       const { entityId, types } = request.body;
@@ -88,16 +79,7 @@ const anomalyDetectionRoutes: FastifyPluginAsync = async (fastify) => {
   }>(
     '/schedule',
     {
-      schema: {
-        body: ScheduleDetectionSchema,
-        response: {
-          202: z.object({
-            jobId: z.string(),
-            status: z.string(),
-            message: z.string(),
-          }),
-        },
-      },
+      preValidation: [validateBody(ScheduleDetectionSchema)],
     },
     async (request, reply) => {
       const { entityId } = request.body;
@@ -153,15 +135,11 @@ const anomalyDetectionRoutes: FastifyPluginAsync = async (fastify) => {
    * Get anomaly detection job status and results.
    */
   fastify.get<{
-    Params: { jobId: string };
+    Params: z.infer<typeof JobIdParamsSchema>;
   }>(
     '/jobs/:jobId',
     {
-      schema: {
-        params: z.object({
-          jobId: z.string(),
-        }),
-      },
+      preValidation: [validateParams(JobIdParamsSchema)],
     },
     async (request, reply) => {
       const { jobId } = request.params;
