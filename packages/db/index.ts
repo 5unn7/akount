@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 export * from '@prisma/client';
 
@@ -70,7 +71,7 @@ function hasTenantFilter(where: any, depth: number = 0): boolean {
 // IMPORTANT: Only register middleware if NOT in Edge Runtime (Next.js middleware doesn't support $use)
 if (typeof prisma.$use === 'function') {
     try {
-        prisma.$use(async (params, next) => {
+        prisma.$use(async (params: Prisma.MiddlewareParams, next: (params: Prisma.MiddlewareParams) => Promise<unknown>) => {
             const model = params.model as string | undefined;
 
             // Check if this is a tenant-scoped model
