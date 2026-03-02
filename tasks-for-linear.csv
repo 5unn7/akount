@@ -1,0 +1,277 @@
+Title,Description,Priority,Estimate,Labels,Team
+"TEST-3: 80%+ API test coverage target","**Status:** 🔒
+**Source:** roadmap
+**Dependencies:** [needs: TEST-1]
+**Effort:** 2h",High,2,,Platform
+"UX-58: Planning: Build goals page — list goals, create form, progress tracking, status updates","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-97]
+**Effort:** 3-4h",High,3,,Platform
+"UX-59: Planning: Build budgets page — list budgets, create form, budget vs actual bars","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-98]
+**Effort:** 3-4h",High,3,,Platform
+"UX-60: Planning: Add planning landing page at `/planning` with summary cards (active goals, budget utilization, forecast status)","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-97, DEV-98]
+**Effort:** 2-3h",High,2,,Platform
+"DEV-113: Insights: Build AI Chat interface on Insights page (wire to existing `POST /api/ai/chat`)","**Status:** 📦
+**Source:** audit:ai-advisor
+**Dependencies:** [needs: UX-66, DEV-112]
+**Effort:** 2-3h",High,2,,Platform
+"UX-7: Help overlay documenting keyboard shortcuts","**Status:** 🔒
+**Source:** roadmap
+**Dependencies:** [needs: UX-6]
+**Effort:** 1h",Normal,1,,Platform
+"FIN-8: Fiscal year close process (closing entries, revenue → retained earnings)","**Status:** 📦
+**Source:** review:smooth-floating-mountain §2.3.2
+**Dependencies:** [needs: FIN-7]
+**Effort:** 4h",Normal,4,,Platform
+"FIN-9: Multi-currency revaluation on period close (FX gains/losses, IFRS/GAAP)","**Status:** 📦
+**Source:** review:smooth-floating-mountain §2.3.1
+**Dependencies:** [needs: FIN-8]
+**Effort:** 4h",Normal,4,,Platform
+"DEV-99: Planning: Add budget variance analysis endpoint — compare budget amount vs actual spend from GL/transactions","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-98]
+**Effort:** 3-4h",Normal,3,,Platform
+"DEV-100: Planning: Add goal auto-tracking + milestone notifications — calculate currentAmount from linked account/category, alert at 25/50/75/100%","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-97]
+**Effort:** 3-4h",Normal,3,,Platform
+"UX-62: Planning: Add budget period selector (monthly/quarterly/yearly) with visual spend-rate indicator","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: UX-59]
+**Effort:** 1-2h",Normal,1,,Platform
+"UX-63: Planning: Add budget vs actual drill-down — click category to see transactions contributing to spend","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-99]
+**Effort:** 2-3h",Normal,2,,Platform
+"DEV-105: Planning: Add budget alerts — threshold warnings at 80%/100% utilization, surfaced to dashboard action items","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-99]
+**Effort:** 2-3h",Normal,2,,Platform
+"UX-64: Planning: Add goal trajectory projection — trend line showing ""on pace"" vs ""behind"" based on progress rate","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-100]
+**Effort:** 2-3h",Normal,2,,Platform
+"DEV-107: Planning: Add AI-powered expense forecast — predict next month spend using 3-month trend + seasonality","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-104]
+**Effort:** 4-6h",Low,4,,Platform
+"DEV-108: Planning: Add goal templates — pre-built goals (emergency fund, revenue target, expense reduction)","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-97]
+**Effort:** 2-3h",Low,2,,Platform
+"DEV-109: Planning: Add budget rollover — option to carry unused budget forward to next period","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-98]
+**Effort:** 1-2h",Low,1,,Platform
+"DEV-110: Planning: Add ""What-if"" scenario comparison — side-by-side view of 2-3 forecast scenarios","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-102]
+**Effort:** 4-6h",Low,4,,Platform
+"DEV-111: Planning: Auto-suggest budgets from existing spending patterns — pre-fill amounts from 3-month category averages","**Status:** 📦
+**Source:** audit:fe-be-parity
+**Dependencies:** [needs: DEV-98]
+**Effort:** 2-3h",Low,2,,Platform
+"DEV-117: Insights: Wire AIBrief on dashboard to show real data (generate basic insight from transaction trends)","**Status:** 📦
+**Source:** audit:ai-advisor
+**Dependencies:** [needs: DEV-112]
+**Effort:** 1h",Normal,1,,Platform
+"DEV-120: Insights: Build History page with AI interaction logging (requires new BE endpoint + model)","**Status:** 📦
+**Source:** audit:ai-advisor
+**Dependencies:** [needs: DEV-118]
+**Effort:** 2-3h",Low,2,,Platform
+"DEV-121: Accounting: Add journal entry detail page `/accounting/journal-entries/[id]` — view entry with debit/credit lines, approve/void actions, source document link (API `GET /:id` exists, no frontend)","**Status:** ✅
+**Source:** sitemap:audit
+**Dependencies:** 8106fcb
+**Effort:** 3-4h",Urgent,3,,Platform
+"UX-79: Business: Add bill detail page at `/business/bills/[id]` — view bill, approve/cancel actions, payment progress bar, mark-overdue button (API `GET /bills/:id` exists). Absorbs UX-56 + UX-40. Depends on UX-77 (route fix)","**Status:** 🟢
+**Source:** sitemap:audit, plan:phase-4-bill-and-get-paid.md
+**Dependencies:** [needs: UX-77]
+**Effort:** 2-3h",Normal,2,,Platform
+"INFRA-5: Monitoring (Sentry error tracking, Vercel Analytics, uptime alerts)","**Status:** 🔒
+**Source:** roadmap
+**Dependencies:** [needs: INFRA-2]
+**Effort:** 2h",High,2,,Platform
+"INFRA-7: OpenTelemetry instrumentation (distributed tracing, metrics, alerting)","**Status:** 🔒
+**Source:** review:smooth-floating-mountain
+**Dependencies:** [needs: INFRA-2]
+**Effort:** 4h",High,4,,Platform
+"INFRA-8: Docker image building + container deployment pipeline","**Status:** 🔒
+**Source:** review:smooth-floating-mountain
+**Dependencies:** [needs: INFRA-1]
+**Effort:** 3h",High,3,,Platform
+"INFRA-32: Linear: Run full workspace setup (12 teams, 34 labels, custom fields)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-29, INFRA-30, INFRA-31]
+**Effort:** 15m",High,15,,Platform
+"INFRA-33: Linear: Auto-Triage Bugs automation (CS + bug + >10 users → High + cycle + notify)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 30m",High,30,,Platform
+"INFRA-34: Linear: Auto-Route Feature Requests (CS + feature-request → parse keywords → assign team)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 1h",High,1,,Platform
+"INFRA-36: Linear: Customer Impact Escalation (affects-1000+ → Critical + cycle + notify exec)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 30m",High,30,,Platform
+"INFRA-37: Linear: Incident Response automation (production-down → P0 + timeline + notify all)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 30m",Urgent,30,,Platform
+"INFRA-41: Linear: GitHub Actions → Linear webhook (deploy → Infrastructure issue + update Product tasks)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 2h",High,2,,Platform
+"INFRA-43: Linear: Support widget → Linear API (in-app feedback → CS issue with user context)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 3h",High,3,,Platform
+"INFRA-45: Linear: Sentry → Linear integration (error >10 occurrences → Infrastructure issue)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 1h",High,1,,Platform
+"INFRA-46: Linear: Fix task import domain mapping (UX tasks → parse description keywords for correct team)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 1h",High,1,,Platform
+"INFRA-47: Linear: Add metadata preservation to import (priority, effort, status, deps, source)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-46]
+**Effort:** 2h",High,2,,Platform
+"INFRA-48: Linear: Run task import (migrate 256 product tasks from TASKS.md to Linear)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-47]
+**Effort:** 30m",Urgent,30,,Platform
+"INFRA-53: Linear: API usage monitoring (daily cron, alert at 75% threshold)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-41]
+**Effort:** 2h",High,2,,Platform
+"OPS-4: Linear: Executive Dashboard view (all teams, health metrics, primary visibility tool)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",Urgent,15,,Business Ops
+"OPS-5: Linear: Customer Health Dashboard (CS team, 7d, response time metrics)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-31]
+**Effort:** 15m",High,15,,Business Ops
+"OPS-6: Linear: Product Velocity Dashboard (product teams, cycle, velocity + burndown)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",High,15,,Business Ops
+"OPS-7: Linear: Incident Response Dashboard (Infrastructure, active incidents, priority sort)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",High,15,,Business Ops
+"INFRA-4: Disaster recovery procedure + documentation","**Status:** 🔒
+**Source:** roadmap
+**Dependencies:** [needs: INFRA-3]
+**Effort:** 2h",Normal,2,,Platform
+"INFRA-6: Deployment documentation","**Status:** 🔒
+**Source:** roadmap
+**Dependencies:** [needs: INFRA-2]
+**Effort:** 1h",Normal,1,,Platform
+"OPS-1: Linear: Configure workflow states (Ready, Blocked, Review, Deferred) for all 12 teams","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 30m",Normal,30,,Business Ops
+"OPS-2: Linear: Set team-specific settings (cycles, estimation, triage, auto-archive) for consistency","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 30m",Normal,30,,Business Ops
+"INFRA-35: Linear: Sprint Auto-Assignment (priority→Critical → add to current cycle)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",Normal,15,,Platform
+"INFRA-38: Linear: Feature Shipped Notification (Done + deployed → CS + Content task)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 45m",Normal,45,,Platform
+"INFRA-39: Linear: Cross-Team Handoff automation (needs-content → create Content issue)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 30m",Normal,30,,Platform
+"INFRA-40: Linear: Duplicate Detection script (hourly cron, check similar CS issues, auto-link)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 2h",Normal,2,,Platform
+"INFRA-42: Linear: GitHub commit auto-linking verification (ensure working)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",Normal,15,,Platform
+"INFRA-44: Linear: Intercom → Linear webhook (conversation tagged → CS issue)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 2h",Normal,2,,Platform
+"OPS-8: Linear: Sprint Board view (current cycle, board, group by priority)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",Normal,15,,Business Ops
+"OPS-9: Linear: Roadmap Timeline view (projects, roadmap, 8 weeks)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",Normal,15,,Business Ops
+"OPS-10: Linear: Blocked Tasks view (all blocked, group by team)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: OPS-1]
+**Effort:** 15m",Normal,15,,Business Ops
+"OPS-11: Linear: High Priority Inbox (Critical/High, oldest first, triage view)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 15m",Normal,15,,Business Ops
+"OPS-12: Linear: Verify import accuracy (spot-check 20 tasks match TASKS.md)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-48]
+**Effort:** 30m",Normal,30,,Business Ops
+"INFRA-49: Linear: Create sync state file (TASKS.md ↔ Linear ID mapping for bidirectional sync)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-48]
+**Effort:** 15m",Normal,15,,Platform
+"OPS-13: Linear: Team workflow docs (12 teams: triage, handoffs, lifecycle)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: all linear sprints 1-5]
+**Effort:** 2h",Normal,2,,Business Ops
+"INFRA-50: Linear: Automation runbook (10 automations: triggers, actions, troubleshooting)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-33 to INFRA-40]
+**Effort:** 2h",Normal,2,,Platform
+"INFRA-51: Linear: Integration guide (5 integrations: setup, webhooks, testing)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-41 to INFRA-45]
+**Effort:** 2h",Normal,2,,Platform
+"OPS-14: Linear: Dashboard usage guide (8 views: purpose, metrics, when to use)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: OPS-4 to OPS-11]
+**Effort:** 1h",Normal,1,,Business Ops
+"INFRA-52: Linear: Best practices (titling, labeling, lifecycle, handoffs)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: all linear sprints]
+**Effort:** 1h",Normal,1,,Platform
+"INFRA-54: Linear: Automation health dashboard (track trigger count, success rate, errors)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-33 to INFRA-40]
+**Effort:** 2h",Normal,2,,Platform
+"INFRA-55: Linear: Tune automation thresholds (adjust based on 1 week usage, <5% false positives)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-33 to INFRA-40, 1 week usage]
+**Effort:** 1h",Normal,1,,Platform
+"INFRA-56: Linear: Optimize view performance (date filters, limit results, <2s load)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: OPS-4 to OPS-11, 1 week usage]
+**Effort:** 1h",Normal,1,,Platform
+"INFRA-57: Linear: Weekly report automation (Friday cron, exec summary email)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: OPS-4]
+**Effort:** 2h",Normal,2,,Platform
+"OPS-3: Linear: Stale Issue Cleanup (>90d + no activity → comment → close if no response)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-32]
+**Effort:** 30m",Low,30,,Business Ops
+"OPS-15: Linear: Update CLAUDE.md context (Linear as PM tool, workflow references)","**Status:** 🟢
+**Source:** plan:linear-scale-architecture
+**Dependencies:** [needs: INFRA-52]
+**Effort:** 30m",Low,30,,Business Ops

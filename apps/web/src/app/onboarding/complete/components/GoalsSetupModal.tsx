@@ -1,0 +1,235 @@
+'use client'
+
+import { useState } from 'react'
+import { X, Target, TrendingUp, TrendingDown } from 'lucide-react'
+import { GlassCard } from 'shadcn-glass-ui'
+import { apiFetch } from '@/lib/api/client-browser'
+
+interface GoalsSetupModalProps {
+  onClose: () => void
+  onComplete: () => void
+}
+
+export function GoalsSetupModal({ onClose, onComplete }: GoalsSetupModalProps) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const [formData, setFormData] = useState({
+    revenueTarget: '',
+    expenseTarget: '',
+    savingsTarget: '',
+    timeframe: 'monthly',
+  })
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setIsLoading(true)
+
+    try {
+      // TODO: Save goals to database
+      await apiFetch('/api/goals/create', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...formData,
+          revenueTarget: parseFloat(formData.revenueTarget) * 100, // Convert to cents
+          expenseTarget: parseFloat(formData.expenseTarget) * 100,
+          savingsTarget: parseFloat(formData.savingsTarget) * 100,
+        }),
+      })
+
+      // Update onboarding progress
+      await apiFetch('/api/system/onboarding/update-progress', {
+        method: 'POST',
+        body: JSON.stringify({
+          step: 'goals_setup',
+          completed: true,
+        }),
+      })
+
+      onComplete()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  function handleSkip() {
+    onClose()
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <GlassCard className="w-full max-w-2xl">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Set Financial Goals</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Define your targets to track progress and get insights
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-ak-bg-3 rounded-lg transition-colors"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="rounded-lg bg-destructive/[0.08] p-4 text-sm text-ak-red border border-destructive/20">
+                <p className="font-medium">Error</p>
+                <p>{error}</p>
+              </div>
+            )}
+
+            {/* Timeframe */}
+            <div>
+              <label htmlFor="timeframe" className="block text-sm font-medium text-foreground mb-2">
+                Timeframe
+              </label>
+              <select
+                id="timeframe"
+                value={formData.timeframe}
+                onChange={(e) => setFormData({ ...formData, timeframe: e.target.value })}
+                disabled={isLoading}
+                className="w-full px-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
+              >
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </div>
+
+            {/* Revenue Target */}
+            <div>
+              <label htmlFor="revenueTarget" className="block text-sm font-medium text-foreground mb-2">
+                <span className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-ak-green" />
+                  Revenue Target
+                </span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  $
+                </span>
+                <input
+                  type="number"
+                  id="revenueTarget"
+                  value={formData.revenueTarget}
+                  onChange={(e) => setFormData({ ...formData, revenueTarget: e.target.value })}
+                  placeholder="10000"
+                  step="0.01"
+                  min="0"
+                  disabled={isLoading}
+                  required
+                  className="w-full pl-8 pr-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                How much revenue do you want to generate?
+              </p>
+            </div>
+
+            {/* Expense Target */}
+            <div>
+              <label htmlFor="expenseTarget" className="block text-sm font-medium text-foreground mb-2">
+                <span className="flex items-center gap-2">
+                  <TrendingDown className="h-4 w-4 text-ak-red" />
+                  Expense Budget
+                </span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  $
+                </span>
+                <input
+                  type="number"
+                  id="expenseTarget"
+                  value={formData.expenseTarget}
+                  onChange={(e) => setFormData({ ...formData, expenseTarget: e.target.value })}
+                  placeholder="5000"
+                  step="0.01"
+                  min="0"
+                  disabled={isLoading}
+                  required
+                  className="w-full pl-8 pr-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Maximum amount you want to spend
+              </p>
+            </div>
+
+            {/* Savings Target */}
+            <div>
+              <label htmlFor="savingsTarget" className="block text-sm font-medium text-foreground mb-2">
+                <span className="flex items-center gap-2">
+                  <Target className="h-4 w-4 text-primary" />
+                  Savings Goal
+                </span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  $
+                </span>
+                <input
+                  type="number"
+                  id="savingsTarget"
+                  value={formData.savingsTarget}
+                  onChange={(e) => setFormData({ ...formData, savingsTarget: e.target.value })}
+                  placeholder="5000"
+                  step="0.01"
+                  min="0"
+                  disabled={isLoading}
+                  required
+                  className="w-full pl-8 pr-4 py-3 glass-2 border border-ak-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 text-foreground transition-all"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                How much do you want to save? (Revenue - Expenses)
+              </p>
+            </div>
+
+            {/* Calculated profit */}
+            {formData.revenueTarget && formData.expenseTarget && (
+              <div className="rounded-lg glass border border-ak-border p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-foreground/80">Projected Profit:</span>
+                  <span className="text-lg font-bold text-ak-green">
+                    ${(parseFloat(formData.revenueTarget) - parseFloat(formData.expenseTarget)).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-4 pt-4">
+              <button
+                type="button"
+                onClick={handleSkip}
+                disabled={isLoading}
+                className="flex-1 px-6 py-3 text-sm font-medium text-foreground glass border border-ak-border rounded-lg hover:bg-ak-bg-3 disabled:opacity-50 transition-all"
+              >
+                Skip for now
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="flex-1 px-6 py-3 text-sm font-medium text-black bg-primary rounded-lg hover:bg-ak-pri-hover disabled:opacity-50 transition-all glow-primary"
+              >
+                {isLoading ? 'Saving...' : 'Save Goals'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </GlassCard>
+    </div>
+  )
+}

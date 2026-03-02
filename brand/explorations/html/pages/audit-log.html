@@ -1,0 +1,68 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Audit Log</div>
+        <div class="page-sub">Security Events &middot; User Activity &middot; System Changes</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Exporting logs...')">Export CSV</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/system'">System</button>
+    <button class="sec-tab" onclick="window.location.hash='#/integrations'">Integrations</button>
+    <button class="sec-tab" onclick="window.location.hash='#/rules'">Rules</button>
+    <button class="sec-tab" onclick="window.location.hash='#/users'">Users</button>
+    <button class="sec-tab on">Audit Log</button>
+    <button class="sec-tab" onclick="window.location.hash='#/security'">Security</button>
+    <button class="sec-tab" onclick="window.location.hash='#/settings'">Settings</button>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Activity Stream</h2>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Event</th>
+                    <th>Details</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row">
+                    <td style="font-family:var(--mono);font-size:11px">Feb 9 18:32:04</td>
+                    <td><span style="font-weight:600">Sunny M.</span></td>
+                    <td>Page View</td>
+                    <td style="color:var(--t3)">Accessed Audit Log</td>
+                    <td style="font-family:var(--mono);font-size:11px">192.168.1.1</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-family:var(--mono);font-size:11px">Feb 9 18:30:00</td>
+                    <td><span style="font-weight:600;color:var(--pri)">System</span></td>
+                    <td>Sync</td>
+                    <td style="color:var(--t3)">Auto-sync RBC, Wise</td>
+                    <td style="font-family:var(--mono);font-size:11px">-</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-family:var(--mono);font-size:11px">Feb 9 14:00:12</td>
+                    <td><span style="font-weight:600;color:var(--green)">AI Advisor</span></td>
+                    <td>Categorization</td>
+                    <td style="color:var(--t3)">Applied Rule #42 to 12 txns</td>
+                    <td style="font-family:var(--mono);font-size:11px">-</td>
+                </tr>
+                <tr class="txn-row">
+                    <td style="font-family:var(--mono);font-size:11px">Feb 8 09:15:22</td>
+                    <td><span style="font-weight:600">Sunny M.</span></td>
+                    <td>Create Invoice</td>
+                    <td style="color:var(--t3)">Created Invoice #1047</td>
+                    <td style="font-family:var(--mono);font-size:11px">192.168.1.1</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

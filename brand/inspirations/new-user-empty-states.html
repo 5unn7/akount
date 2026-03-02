@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Akount — New User Empty State Standardization</title>
+<style>
+  /* ═══════════════════════════════════════
+     DESIGN TOKENS (from globals.css)
+     ═══════════════════════════════════════ */
+  :root {
+    --bg-0: #09090F;
+    --bg-1: #0F0F17;
+    --bg-2: #15151F;
+    --bg-3: #1A1A26;
+    --bg-4: #22222E;
+    --fg: #F0F0F5;
+    --muted: #71717A;
+    --muted-light: rgba(113, 113, 122, 0.5);
+    --primary: #F59E0B;
+    --primary-hover: #FBBF24;
+    --primary-dim: rgba(245, 158, 11, 0.18);
+    --primary-glow: rgba(245, 158, 11, 0.12);
+    --green: #34D399;
+    --green-dim: rgba(52, 211, 153, 0.18);
+    --red: #F87171;
+    --red-dim: rgba(248, 113, 113, 0.18);
+    --blue: #60A5FA;
+    --blue-dim: rgba(96, 165, 250, 0.18);
+    --purple: #A78BFA;
+    --purple-dim: rgba(167, 139, 250, 0.18);
+    --teal: #2DD4BF;
+    --teal-dim: rgba(45, 212, 191, 0.18);
+    --glass: rgba(255, 255, 255, 0.06);
+    --glass-2: rgba(255, 255, 255, 0.09);
+    --glass-3: rgba(255, 255, 255, 0.12);
+    --border: rgba(255, 255, 255, 0.12);
+    --border-2: rgba(255, 255, 255, 0.18);
+    --border-3: rgba(255, 255, 255, 0.25);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --font-heading: 'Newsreader', serif;
+    --font-sans: 'Manrope', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  /* ═══════════════════════════════════════
+     RESET & BASE
+     ═══════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-0);
+    color: var(--fg);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  /* ═══════════════════════════════════════
+     UTILITY CLASSES
+     ═══════════════════════════════════════ */
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .glass-2 {
+    background: var(--glass-2);
+    border: 1px solid var(--border-2);
+    border-radius: var(--radius);
+  }
+  .glass-3 {
+    background: var(--glass-3);
+    border: 1px solid var(--border-3);
+    border-radius: var(--radius);
+  }
+  .font-heading { font-family: var(--font-heading); }
+  .font-mono { font-family: var(--font-mono); }
+  .text-muted { color: var(--muted); }
+  .text-muted-light { color: var(--muted-light); }
+  .text-primary { color: var(--primary); }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-blue { color: var(--blue); }
+  .text-purple { color: var(--purple); }
+  .text-teal { color: var(--teal); }
+
+  /* ═══════════════════════════════════════
+     DOCUMENT LAYOUT
+     ═══════════════════════════════════════ */
+  .doc-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+
+  .doc-header {
+    text-align: center;
+    margin-bottom: 64px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .doc-header h1 {
+    font-family: var(--font-heading);
+    font-size: 36px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .doc-header p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .section {
+    margin-bottom: 64px;
+  }
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .section-subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  .subsection {
+    margin-bottom: 40px;
+  }
+  .subsection-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted-light);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  /* ═══════════════════════════════════════
+     PLAN TABLE
+     ═══════════════════════════════════════ */
+  .plan-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .plan-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border-2);
+    font-weight: 600;
+  }
+  .plan-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .plan-table .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-green { background: var(--green-dim); color: var(--green); }
+  .badge-blue { background: var(--blue-dim); color: var(--blue); }
+  .badge-purple { background: var(--purple-dim); color: var(--purple); }
+  .badge-red { background: var(--red-dim); color: var(--red); }
+  .badge-primary { background: var(--primary-dim); color: var(--primary); }
+
+  /* ═══════════════════════════════════════
+     EMPTY STATE COMPONENT DEMOS
+     ═══════════════════════════════════════ */
+  .demo-frame {
+    border: 1px dashed var(--border-2);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .demo-frame::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -9px;
+    left: 16px;
+    background: var(--bg-0);
+    padding: 0 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* ── Tier 1: Inline (sm) ── */
+  .empty-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 16px;
+  }
+  .empty-inline .icon {
+    width: 32px;
+    height: 32px;
+    color: rgba(113, 113, 122, 0.2);
+    margin-bottom: 8px;
+  }
+  .empty-inline .title {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── Tier 2: Card (md) ── */
+  .empty-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 16px;
+  }
+  .empty-card .icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .empty-card .icon-wrap svg {
+    width: 24px;
+    height: 24px;
+    color: var(--muted);
+  }
+  .empty-card .title {
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .empty-card .description {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 320px;
+    margin-bottom: 16px;
+  }
+
+  /* ── Tier 3: Hero (lg) ── */
+  .empty-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 64px 16px;
+  }
+  .empty-hero .icon-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .empty-hero .icon-wrap::after {
+    content: '';
+    position: absolute;
+    inset: -16px;
+    border-radius: 50%;
+    background: var(--primary-glow);
+    filter: blur(24px);
+    animation: breathe 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .empty-hero .icon-wrap svg {
+    width: 24px;
+    height: 24px;
+    color: var(--primary);
+  }
+  .empty-hero .title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .empty-hero .description {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 400px;
+    margin-bottom: 24px;
+  }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.06; }
+    50% { opacity: 0.12; }
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s var(--ease);
+    border: none;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #000;
+  }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-outline {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--border-2);
+  }
+  .btn-outline:hover { border-color: var(--border-3); background: var(--glass); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+  }
+  .btn-ghost:hover { color: var(--fg); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  /* ── Setup Cards (4-grid) ── */
+  .setup-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 900px) {
+    .setup-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .setup-card {
+    padding: 20px;
+    transition: all 0.3s var(--ease);
+    cursor: default;
+  }
+  .setup-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--border-2);
+  }
+  .setup-card .icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .setup-card .icon-box svg { width: 20px; height: 20px; }
+  .setup-card h3 {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 2px;
+  }
+  .setup-card p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .setup-card .btn { width: 100%; justify-content: center; }
+
+  /* ── Domain page layout ── */
+  .page-layout {
+    padding: 24px;
+    background: var(--bg-0);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .page-layout > * + * { margin-top: 24px; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .stat-card {
+    padding: 24px;
+  }
+  .stat-card .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .stat-card .value {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* ── Spec Notes ── */
+  .spec-note {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    font-size: 13px;
+    margin-top: 16px;
+    line-height: 1.8;
+  }
+  .spec-note strong { color: var(--primary); font-weight: 600; }
+  .spec-note code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 2px 6px;
+    background: var(--glass-2);
+    border-radius: 4px;
+    color: var(--purple);
+  }
+
+  /* ── Comparison ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .compare-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--red);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .compare-label.good { color: var(--green); }
+
+  /* ── Skeleton ── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--glass-2) 25%, var(--glass-3) 50%, var(--glass-2) 75%);
+    background-size: 200% 100%;
+    border-radius: 6px;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted-light);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* SVG icons inline */
+  .icon-svg { display: inline-block; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="doc-container">
+
+  <!-- ═══════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════ -->
+  <div class="doc-header">
+    <h1>New User Empty State Standardization</h1>
+    <p>Akount Design System &mdash; Component specification &amp; implementation plan</p>
+    <p style="color: var(--muted-light); font-size: 12px; margin-top: 4px;">February 2026</p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 1: THE PRINCIPLE
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">1. The Principle</h2>
+    <p class="section-subtitle">One pattern, three tiers, every domain.</p>
+
+    <div class="spec-note">
+      <strong>Rule:</strong> A new user and an existing user see the <em>same page layout</em>. The only difference is:<br>
+      &bull; New users get <strong>setup action cards</strong> at the top (when setup is incomplete)<br>
+      &bull; All components render their <strong>natural empty states</strong> below (no skeletons, no fake previews)<br>
+      &bull; One shared <code>EmptyState</code> component handles all empty rendering (from <code>@akount/ui</code>)<br><br>
+      <strong>No separate "empty page" components.</strong> No duplicated markup. The real components handle their own empty data.
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 2: THE THREE TIERS
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">2. EmptyState Component &mdash; Three Tiers</h2>
+    <p class="section-subtitle">One component, three sizes. Used by every table, widget, and page across all domains.</p>
+
+    <!-- Tier 1: Inline (sm) -->
+    <div class="subsection">
+      <div class="subsection-label">Tier 1 &mdash; Inline (size="sm")</div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">
+        For widgets, sidebar items, and compact containers. Minimal &mdash; just an icon and one line of text.
+      </p>
+      <div class="demo-frame" data-label="EmptyState size=sm variant=inline">
+        <div class="glass" style="max-width: 400px; margin: 0 auto;">
+          <div class="empty-inline">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <div class="title">No transactions yet</div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-note">
+        <strong>Use for:</strong> Dashboard widgets, sidebar summaries, card footers<br>
+        <strong>Props:</strong> <code>size="sm"</code> <code>variant="inline"</code> <code>icon={Receipt}</code> <code>title="No X yet"</code>
+      </div>
+    </div>
+
+    <!-- Tier 2: Card (md) -->
+    <div class="subsection">
+      <div class="subsection-label">Tier 2 &mdash; Card (size="md") &mdash; DEFAULT</div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">
+        For tables, lists, and content areas. Icon in a circle + title + description + optional action.
+      </p>
+      <div class="demo-frame" data-label="EmptyState size=md (default)">
+        <div class="glass" style="max-width: 600px; margin: 0 auto;">
+          <div class="empty-card">
+            <div class="icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="title">No invoices yet</div>
+            <div class="description">Create your first invoice to start tracking revenue.</div>
+            <a class="btn btn-primary btn-sm" href="#">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Invoice
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="spec-note">
+        <strong>Use for:</strong> Table empty states, list pages, detail not found<br>
+        <strong>Props:</strong> <code>icon={FileText}</code> <code>title="No X yet"</code> <code>description="..."</code><br>
+        <strong>Children:</strong> Optional action button(s) passed as children
+      </div>
+    </div>
+
+    <!-- Tier 3: Hero (lg) -->
+    <div class="subsection">
+      <div class="subsection-label">Tier 3 &mdash; Hero (size="lg")</div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 16px;">
+        For domain landing pages and first-run experiences. Large icon with glow + prominent CTA.
+      </p>
+      <div class="demo-frame" data-label="EmptyState size=lg">
+        <div class="glass" style="max-width: 600px; margin: 0 auto;">
+          <div class="empty-hero">
+            <div class="icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div class="title">No journal entries yet</div>
+            <div class="description">Record your first transaction to start building your general ledger.</div>
+            <div style="display: flex; gap: 8px;">
+              <a class="btn btn-primary" href="#">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New Journal Entry
+              </a>
+              <a class="btn btn-outline" href="#">Learn More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-note">
+        <strong>Use for:</strong> First-run domain pages, primary entity pages<br>
+        <strong>Props:</strong> <code>size="lg"</code> <code>icon={BookOpen}</code> <code>title="..."</code> <code>description="..."</code><br>
+        <strong>Icon wrap:</strong> <code>bg-primary/10</code> circle with breathing glow animation
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 3: SETUP ACTION CARDS
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">3. Setup Action Cards Pattern</h2>
+    <p class="section-subtitle">Shown above real dashboard components when setup is incomplete. Dismisses naturally as user completes steps.</p>
+
+    <div class="subsection">
+      <div class="subsection-label">Pattern &mdash; 4-Card Grid with GlowCards</div>
+      <div class="demo-frame" data-label="AccountingSetupCards example">
+        <!-- Header -->
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <div style="position: relative;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-dim); display: flex; align-items: center; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.3 3.9 4.1.1-3.2 2.5 1.1 4-3.3-2.3-3.3 2.3 1.1-4-3.2-2.5 4.1-.1z"/></svg>
+            </div>
+            <div style="position: absolute; inset: -8px; border-radius: 50%; background: var(--primary-glow); filter: blur(16px); animation: breathe 4s ease-in-out infinite; pointer-events: none;"></div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-heading); font-size: 18px;">Set Up Your Books</div>
+            <div style="font-size: 12px; color: var(--muted);">Complete these steps to unlock your accounting dashboard</div>
+          </div>
+        </div>
+
+        <!-- 4-Card Grid -->
+        <div class="setup-grid">
+          <div class="setup-card glass">
+            <div class="icon-box" style="background: var(--green-dim);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg>
+            </div>
+            <h3>Chart of Accounts</h3>
+            <p>Seed your financial foundation</p>
+            <a class="btn btn-primary btn-sm" href="#">Set Up &rarr;</a>
+          </div>
+
+          <div class="setup-card glass">
+            <div class="icon-box" style="background: var(--blue-dim);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <h3>Fiscal Year</h3>
+            <p>12 monthly reporting periods</p>
+            <a class="btn btn-outline btn-sm" href="#">Create &rarr;</a>
+          </div>
+
+          <div class="setup-card glass">
+            <div class="icon-box" style="background: var(--purple-dim);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+            <h3>Tax Rates</h3>
+            <p>GST, HST, PST presets</p>
+            <a class="btn btn-outline btn-sm" href="#">Configure &rarr;</a>
+          </div>
+
+          <div class="setup-card glass">
+            <div class="icon-box" style="background: var(--teal-dim);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <h3>Fixed Assets</h3>
+            <p>Equipment &amp; depreciation</p>
+            <a class="btn btn-outline btn-sm" href="#">Add &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spec-note">
+      <strong>Key behavior:</strong><br>
+      &bull; Shown conditionally: <code>{`{isNewUser && <SetupCards />}`}</code><br>
+      &bull; Below it, the <em>real dashboard components</em> render with empty data (showing their natural empty states)<br>
+      &bull; Each card uses <code>GlowCard</code> with a color-matched <code>glowColor</code><br>
+      &bull; First card gets <code>btn-primary</code>, rest get <code>btn-outline</code><br>
+      &bull; Cards disappear automatically once setup conditions are met (no manual dismiss)<br>
+      &bull; Same pattern works for any domain: Banking, Invoicing, Planning, etc.<br><br>
+      <strong>Don't:</strong> Create fake skeleton previews. Don't build separate empty page components. Let real components handle their own empty data.
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 4: FULL PAGE EXAMPLE
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">4. Full Page Example &mdash; Accounting Overview</h2>
+    <p class="section-subtitle">New user sees setup cards + real components with empty data. Same layout, no separate page.</p>
+
+    <div class="demo-frame" data-label="New user &mdash; /accounting">
+      <div class="page-layout">
+        <!-- Setup cards -->
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-dim); display: flex; align-items: center; justify-content: center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 3l1.3 3.9 4.1.1-3.2 2.5 1.1 4-3.3-2.3-3.3 2.3 1.1-4-3.2-2.5 4.1-.1z"/></svg>
+          </div>
+          <div>
+            <div style="font-family: var(--font-heading); font-size: 16px;">Set Up Your Books</div>
+            <div style="font-size: 11px; color: var(--muted);">Complete these steps to unlock your accounting dashboard</div>
+          </div>
+        </div>
+        <div class="setup-grid" style="margin-bottom: 0;">
+          <div class="setup-card glass" style="padding: 16px;">
+            <div class="icon-box" style="background: var(--green-dim); width: 32px; height: 32px; margin-bottom: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-8"/></svg></div>
+            <h3 style="font-size: 13px;">Chart of Accounts</h3>
+            <p style="font-size: 10px;">Seed your foundation</p>
+            <a class="btn btn-primary btn-sm" style="font-size: 11px; padding: 4px 10px;" href="#">Set Up &rarr;</a>
+          </div>
+          <div class="setup-card glass" style="padding: 16px;">
+            <div class="icon-box" style="background: var(--blue-dim); width: 32px; height: 32px; margin-bottom: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <h3 style="font-size: 13px;">Fiscal Year</h3>
+            <p style="font-size: 10px;">12 monthly periods</p>
+            <a class="btn btn-outline btn-sm" style="font-size: 11px; padding: 4px 10px;" href="#">Create &rarr;</a>
+          </div>
+          <div class="setup-card glass" style="padding: 16px;">
+            <div class="icon-box" style="background: var(--purple-dim); width: 32px; height: 32px; margin-bottom: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+            <h3 style="font-size: 13px;">Tax Rates</h3>
+            <p style="font-size: 10px;">GST, HST, PST</p>
+            <a class="btn btn-outline btn-sm" style="font-size: 11px; padding: 4px 10px;" href="#">Configure &rarr;</a>
+          </div>
+          <div class="setup-card glass" style="padding: 16px;">
+            <div class="icon-box" style="background: var(--teal-dim); width: 32px; height: 32px; margin-bottom: 8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+            <h3 style="font-size: 13px;">Fixed Assets</h3>
+            <p style="font-size: 10px;">Depreciation</p>
+            <a class="btn btn-outline btn-sm" style="font-size: 11px; padding: 4px 10px;" href="#">Add &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Real Quick Stats (empty) -->
+        <div class="stats-grid">
+          <div class="stat-card glass">
+            <div class="label">Total Assets</div>
+            <div class="value">$0.00</div>
+          </div>
+          <div class="stat-card glass">
+            <div class="label">Total Liabilities</div>
+            <div class="value">$0.00</div>
+          </div>
+          <div class="stat-card glass">
+            <div class="label">Total Equity</div>
+            <div class="value">$0.00</div>
+          </div>
+        </div>
+
+        <!-- Real Balance Equation (empty) -->
+        <div class="glass" style="padding: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-family: var(--font-heading); font-size: 18px;">Balance Equation</span>
+            <span style="font-family: var(--font-mono); font-size: 12px; color: var(--muted);">A = L + E</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+            <div class="glass-2" style="padding: 16px; border-radius: 10px;">
+              <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 500;">Assets</div>
+              <div style="font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--green); margin-top: 4px;">$0.00</div>
+              <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">0 accounts</div>
+            </div>
+            <div class="glass-2" style="padding: 16px; border-radius: 10px;">
+              <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 500;">Liabilities</div>
+              <div style="font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--red); margin-top: 4px;">$0.00</div>
+              <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">0 accounts</div>
+            </div>
+            <div class="glass-2" style="padding: 16px; border-radius: 10px;">
+              <div style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 500;">Equity</div>
+              <div style="font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--blue); margin-top: 4px;">$0.00</div>
+              <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">0 accounts</div>
+            </div>
+          </div>
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; color: var(--muted);">Balance check:</span>
+            <span style="font-size: 12px; font-family: var(--font-mono); color: var(--green);">&check; Balanced</span>
+          </div>
+        </div>
+
+        <!-- Real Income Summary (empty) + COA Snapshot (empty) -->
+        <div class="two-col">
+          <div class="glass" style="padding: 24px;">
+            <span style="font-family: var(--font-heading); font-size: 18px;">Income Summary</span>
+            <p style="font-size: 14px; color: var(--muted); margin-top: 12px;">No income data for this month yet</p>
+          </div>
+          <div class="glass" style="padding: 24px;">
+            <span style="font-family: var(--font-heading); font-size: 18px;">Chart of Accounts</span>
+            <div style="margin-top: 12px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 8px;">
+                <span style="color: var(--green);">Assets</span>
+                <span style="font-family: var(--font-mono); color: var(--green);">$0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 8px;">
+                <span style="color: var(--red);">Liabilities</span>
+                <span style="font-family: var(--font-mono); color: var(--red);">$0.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 8px;">
+                <span style="color: var(--blue);">Equity</span>
+                <span style="font-family: var(--font-mono); color: var(--blue);">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real Recent Entries (empty) -->
+        <div class="glass" style="padding: 24px;">
+          <span style="font-family: var(--font-heading); font-size: 18px;">Recent Journal Entries</span>
+          <div class="empty-inline" style="padding-top: 24px;">
+            <svg style="width: 32px; height: 32px; color: rgba(113,113,122,0.2); margin-bottom: 8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <div style="font-size: 12px; color: var(--muted);">No journal entries yet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 5: DOMAIN AUDIT
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">5. Domain Audit &mdash; Current vs Target State</h2>
+    <p class="section-subtitle">Every domain page that needs an empty state, what exists today, and what needs to change.</p>
+
+    <table class="plan-table">
+      <thead>
+        <tr>
+          <th>Domain / Page</th>
+          <th>Current Pattern</th>
+          <th>Issues</th>
+          <th>Target</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Accounting</strong> &mdash; Overview</td>
+          <td>Setup cards + real components</td>
+          <td style="color: var(--green);">Done (just built)</td>
+          <td>Keep as-is</td>
+          <td><span class="badge badge-green">Done</span></td>
+        </tr>
+        <tr>
+          <td><strong>Accounting</strong> &mdash; Tax Rates</td>
+          <td>Custom TaxRatesEmpty (preset picker)</td>
+          <td>Rich but custom &mdash; could wrap in EmptyState shell</td>
+          <td>Keep rich preset UX; wrap header in EmptyState lg</td>
+          <td><span class="badge badge-blue">Low</span></td>
+        </tr>
+        <tr>
+          <td><strong>Accounting</strong> &mdash; Fiscal Periods</td>
+          <td>Custom FiscalPeriodsEmpty (month picker)</td>
+          <td>Rich but custom</td>
+          <td>Same as tax rates &mdash; keep, optionally wrap</td>
+          <td><span class="badge badge-blue">Low</span></td>
+        </tr>
+        <tr>
+          <td><strong>Accounting</strong> &mdash; Assets</td>
+          <td>Custom AssetsEmpty (simple button)</td>
+          <td>Could use shared EmptyState lg</td>
+          <td>Replace with EmptyState size="lg" + action button</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Accounting</strong> &mdash; Chart of Accounts</td>
+          <td>EmptyState from @akount/ui</td>
+          <td style="color: var(--green);">Already standardized</td>
+          <td>Keep</td>
+          <td><span class="badge badge-green">Done</span></td>
+        </tr>
+        <tr>
+          <td><strong>Accounting</strong> &mdash; Journal Entries</td>
+          <td>EmptyState from @akount/ui</td>
+          <td style="color: var(--green);">Already standardized</td>
+          <td>Keep</td>
+          <td><span class="badge badge-green">Done</span></td>
+        </tr>
+        <tr style="background: var(--glass);">
+          <td><strong>Banking</strong> &mdash; Accounts</td>
+          <td>Generic / missing</td>
+          <td style="color: var(--red);">No setup guidance</td>
+          <td>Setup cards (Connect Bank, Add Manual Account) + EmptyState</td>
+          <td><span class="badge badge-red">High</span></td>
+        </tr>
+        <tr style="background: var(--glass);">
+          <td><strong>Banking</strong> &mdash; Transactions</td>
+          <td>EmptyState from @akount/ui</td>
+          <td>No onboarding context</td>
+          <td>Keep EmptyState; add hint about importing/connecting</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+        </tr>
+        <tr style="background: var(--glass);">
+          <td><strong>Business</strong> &mdash; Invoices</td>
+          <td>EmptyState from @akount/ui (in table)</td>
+          <td>No guidance to add clients first</td>
+          <td>EmptyState lg with "New Invoice" CTA + "Add clients first" hint</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Business</strong> &mdash; Bills</td>
+          <td>EmptyState from @akount/ui (in table)</td>
+          <td>Same pattern</td>
+          <td>EmptyState lg with "New Bill" CTA</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Business</strong> &mdash; Clients</td>
+          <td>EmptyState from @akount/ui (in table)</td>
+          <td>Good but minimal</td>
+          <td>EmptyState lg with "Add Client" CTA</td>
+          <td><span class="badge badge-blue">Low</span></td>
+        </tr>
+        <tr>
+          <td><strong>Business</strong> &mdash; Vendors</td>
+          <td>EmptyState from @akount/ui (in table)</td>
+          <td>Good but minimal</td>
+          <td>EmptyState lg with "Add Vendor" CTA</td>
+          <td><span class="badge badge-blue">Low</span></td>
+        </tr>
+        <tr style="background: var(--glass);">
+          <td><strong>Overview</strong> &mdash; Dashboard</td>
+          <td>Custom EmptyState (app-specific duplicate!)</td>
+          <td style="color: var(--red);">Uses duplicate component from components/shared/</td>
+          <td>Migrate to @akount/ui EmptyState; use setup cards pattern</td>
+          <td><span class="badge badge-red">High</span></td>
+        </tr>
+        <tr>
+          <td><strong>Planning</strong> &mdash; all pages</td>
+          <td>Unknown / likely missing</td>
+          <td style="color: var(--red);">Needs audit</td>
+          <td>EmptyState lg per sub-page</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Insights</strong> &mdash; all pages</td>
+          <td>Unknown / likely missing</td>
+          <td>Needs audit</td>
+          <td>EmptyState lg</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>Services</strong> &mdash; all pages</td>
+          <td>Unknown / likely missing</td>
+          <td>Needs audit</td>
+          <td>EmptyState lg</td>
+          <td><span class="badge badge-blue">Low</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 6: CONSOLIDATION PLAN
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">6. Consolidation Plan</h2>
+    <p class="section-subtitle">Steps to standardize all empty states across the app.</p>
+
+    <div class="spec-note" style="margin-bottom: 24px;">
+      <strong>Step 1: Resolve the duplicate EmptyState</strong><br>
+      &bull; <code>packages/ui/src/patterns/EmptyState.tsx</code> is the canonical source<br>
+      &bull; <code>apps/web/src/components/shared/EmptyState.tsx</code> has extra props: <code>action</code>, <code>secondaryAction</code>, <code>progress</code><br>
+      &bull; <strong>Action:</strong> Merge the useful props (action, progress) into the canonical component, then delete the duplicate<br><br>
+
+      <strong>Step 2: Standardize messaging</strong><br>
+      &bull; Title pattern: <code>"No [resources] yet"</code> (friendly, not "found")<br>
+      &bull; Description pattern: <code>"[Action verb] your first [resource] to [benefit]."</code><br>
+      &bull; Examples:<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;"No invoices yet" / "Create your first invoice to start tracking revenue."<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;"No transactions yet" / "Connect a bank account or import transactions to get started."<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;"No journal entries yet" / "Record your first transaction to build your general ledger."<br><br>
+
+      <strong>Step 3: Apply setup cards pattern to domains that need onboarding</strong><br>
+      &bull; <strong>Banking:</strong> Setup cards for "Connect Bank" + "Add Manual Account"<br>
+      &bull; <strong>Overview:</strong> Migrate from custom EmptyState to @akount/ui + setup cards pattern<br>
+      &bull; <strong>Business:</strong> No setup cards needed (just better EmptyState CTAs)<br><br>
+
+      <strong>Step 4: Audit remaining domains</strong><br>
+      &bull; Check Planning, Insights, Services for empty state coverage<br>
+      &bull; Add EmptyState lg where missing<br>
+      &bull; Every list/table page should use EmptyState md from @akount/ui
+    </div>
+
+    <div class="subsection-label">Proposed canonical EmptyState props (merged)</div>
+    <div class="glass" style="padding: 20px; font-family: var(--font-mono); font-size: 12px; line-height: 2;">
+      <span style="color: var(--purple);">interface</span> <span style="color: var(--fg);">EmptyStateProps</span> {<br>
+      &nbsp;&nbsp;<span style="color: var(--muted);">// Existing (keep)</span><br>
+      &nbsp;&nbsp;title: <span style="color: var(--green);">string</span>;<br>
+      &nbsp;&nbsp;description?: <span style="color: var(--green);">string</span>;<br>
+      &nbsp;&nbsp;icon?: <span style="color: var(--blue);">LucideIcon</span>;<br>
+      &nbsp;&nbsp;variant?: <span style="color: var(--green);">'card' | 'inline'</span>;<br>
+      &nbsp;&nbsp;size?: <span style="color: var(--green);">'sm' | 'md' | 'lg'</span>;<br>
+      &nbsp;&nbsp;children?: <span style="color: var(--blue);">ReactNode</span>;<br>
+      &nbsp;&nbsp;className?: <span style="color: var(--green);">string</span>;<br>
+      <br>
+      &nbsp;&nbsp;<span style="color: var(--muted);">// New (from app-specific version)</span><br>
+      &nbsp;&nbsp;action?: { label: <span style="color: var(--green);">string</span>; href: <span style="color: var(--green);">string</span>; };<br>
+      &nbsp;&nbsp;secondaryAction?: { label: <span style="color: var(--green);">string</span>; href: <span style="color: var(--green);">string</span>; };<br>
+      }
+    </div>
+
+    <div class="spec-note" style="margin-top: 16px;">
+      <strong>Note:</strong> The <code>progress</code> prop from the app-specific version is only used in the overview page for onboarding progress.
+      This is better handled by a separate <code>OnboardingProgress</code> component rather than bloating EmptyState.
+      The <code>action</code> and <code>secondaryAction</code> props are convenience shortcuts &mdash; equivalent to passing
+      <code>&lt;Button asChild&gt;&lt;Link&gt;...&lt;/Link&gt;&lt;/Button&gt;</code> as children, but cleaner for the common case.
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 7: IMPLEMENTATION PRIORITY
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">7. Implementation Priority</h2>
+    <p class="section-subtitle">Ordered by impact and dependencies.</p>
+
+    <table class="plan-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Task</th>
+          <th>Effort</th>
+          <th>Impact</th>
+          <th>Dependencies</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><strong>Merge EmptyState props</strong> &mdash; Add action/secondaryAction to @akount/ui version</td>
+          <td>30 min</td>
+          <td><span class="badge badge-red">High</span></td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><strong>Delete duplicate</strong> &mdash; Remove apps/web/src/components/shared/EmptyState.tsx, update overview imports</td>
+          <td>20 min</td>
+          <td><span class="badge badge-red">High</span></td>
+          <td>Task 1</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><strong>Standardize messaging</strong> &mdash; Update all EmptyState titles/descriptions to use "No X yet" pattern</td>
+          <td>30 min</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><strong>Banking setup cards</strong> &mdash; Add setup cards pattern to banking overview for new users</td>
+          <td>1 hr</td>
+          <td><span class="badge badge-red">High</span></td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><strong>Overview migration</strong> &mdash; Replace custom EmptyState with @akount/ui version</td>
+          <td>45 min</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+          <td>Task 1-2</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td><strong>Business CTAs</strong> &mdash; Upgrade invoice/bill/client/vendor empty states with action props</td>
+          <td>30 min</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+          <td>Task 1</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td><strong>Assets standardize</strong> &mdash; Replace custom AssetsEmpty with EmptyState lg</td>
+          <td>15 min</td>
+          <td><span class="badge badge-blue">Low</span></td>
+          <td>Task 1</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td><strong>Remaining domains audit</strong> &mdash; Check Planning, Insights, Services for gaps</td>
+          <td>1 hr</td>
+          <td><span class="badge badge-primary">Medium</span></td>
+          <td>None</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="spec-note">
+      <strong>Total estimated effort:</strong> ~5 hours<br>
+      <strong>Quick wins (Tasks 1-3):</strong> ~1.5 hours for the core standardization<br>
+      <strong>Key metric:</strong> Go from 2 EmptyState components to 1, from 4+ messaging patterns to 1
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       SECTION 8: MESSAGE REFERENCE
+       ═══════════════════════════════════════ -->
+  <div class="section">
+    <h2 class="section-title">8. Standardized Message Reference</h2>
+    <p class="section-subtitle">Copy-paste reference for every empty state across the app.</p>
+
+    <table class="plan-table">
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>CTA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Invoices</td>
+          <td>No invoices yet</td>
+          <td>Create your first invoice to start tracking revenue.</td>
+          <td>New Invoice</td>
+        </tr>
+        <tr>
+          <td>Bills</td>
+          <td>No bills yet</td>
+          <td>Add your first bill to track what you owe.</td>
+          <td>New Bill</td>
+        </tr>
+        <tr>
+          <td>Clients</td>
+          <td>No clients yet</td>
+          <td>Add your first client to start sending invoices.</td>
+          <td>Add Client</td>
+        </tr>
+        <tr>
+          <td>Vendors</td>
+          <td>No vendors yet</td>
+          <td>Add your first vendor to track expenses and bills.</td>
+          <td>Add Vendor</td>
+        </tr>
+        <tr>
+          <td>Payments</td>
+          <td>No payments yet</td>
+          <td>Payments will appear here as invoices and bills are settled.</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td>Bank Accounts</td>
+          <td>No accounts yet</td>
+          <td>Connect a bank or add an account to start tracking balances.</td>
+          <td>Add Account</td>
+        </tr>
+        <tr>
+          <td>Transactions</td>
+          <td>No transactions yet</td>
+          <td>Import transactions or connect a bank account to get started.</td>
+          <td>Import</td>
+        </tr>
+        <tr>
+          <td>Journal Entries</td>
+          <td>No journal entries yet</td>
+          <td>Record your first transaction to build your general ledger.</td>
+          <td>New Entry</td>
+        </tr>
+        <tr>
+          <td>Chart of Accounts</td>
+          <td>No accounts yet</td>
+          <td>Seed a standard chart of accounts to get started.</td>
+          <td>Seed Default COA</td>
+        </tr>
+        <tr>
+          <td>Tax Rates</td>
+          <td>No tax rates configured</td>
+          <td>Set up tax rates for your jurisdiction. Presets available.</td>
+          <td>Configure</td>
+        </tr>
+        <tr>
+          <td>Fiscal Periods</td>
+          <td>No fiscal year set</td>
+          <td>Define your fiscal year to enable period-based reporting.</td>
+          <td>Create Fiscal Year</td>
+        </tr>
+        <tr>
+          <td>Fixed Assets</td>
+          <td>No assets tracked</td>
+          <td>Add equipment, vehicles, or buildings to track depreciation.</td>
+          <td>Add Asset</td>
+        </tr>
+        <tr>
+          <td>Budgets</td>
+          <td>No budgets yet</td>
+          <td>Create a budget to compare planned vs actual spending.</td>
+          <td>New Budget</td>
+        </tr>
+        <tr>
+          <td>Insights / Rules</td>
+          <td>No insights yet</td>
+          <td>Insights will appear as your financial data grows.</td>
+          <td>&mdash;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════ -->
+  <div style="text-align: center; padding-top: 48px; border-top: 1px solid var(--border); color: var(--muted-light); font-size: 12px;">
+    <p>Akount Design System &mdash; Empty State Standardization Plan</p>
+    <p style="margin-top: 4px;">February 2026 &mdash; Reference: <code style="font-family: var(--font-mono); font-size: 11px; color: var(--purple);">brand/inspirations/new-user-empty-states.html</code></p>
+  </div>
+
+</div>
+</body>
+</html>

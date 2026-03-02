@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Code Review Summary Schema",
+  "description": "Machine-readable frontmatter for review SUMMARY.md files",
+  "type": "object",
+  "required": ["review_id", "date", "verdict", "agents"],
+  "properties": {
+    "review_id": {
+      "type": "string",
+      "description": "Unique review identifier (e.g., phase5-reports)",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Review date (YYYY-MM-DD)"
+    },
+    "branch": {
+      "type": "string",
+      "description": "Git branch reviewed"
+    },
+    "verdict": {
+      "enum": ["approved", "changes_required", "blocked"],
+      "description": "Review verdict"
+    },
+    "agents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "financial",
+          "architecture",
+          "security",
+          "performance",
+          "fastify",
+          "nextjs",
+          "prisma",
+          "typescript",
+          "clerk-auth",
+          "design-system",
+          "rbac",
+          "simplicity",
+          "turborepo"
+        ]
+      },
+      "description": "Review agents that ran"
+    },
+    "p0_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of P0 (critical) findings"
+    },
+    "p1_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of P1 (important) findings"
+    },
+    "p2_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of P2 (nice-to-have) findings"
+    },
+    "fix_effort_hours": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Estimated fix effort in hours (P0 + P1)"
+    },
+    "anti_patterns": {
+      "type": "array",
+      "description": "Anti-patterns discovered that should be added to guardrails",
+      "items": {
+        "type": "object",
+        "required": ["id", "pattern", "files", "fix"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Short identifier (kebab-case)",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Description of the anti-pattern"
+          },
+          "files": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Files where pattern was found"
+          },
+          "fix": {
+            "type": "string",
+            "description": "How to fix the anti-pattern"
+          },
+          "severity": {
+            "enum": ["P0", "P1", "P2"],
+            "description": "Severity level"
+          },
+          "line": {
+            "type": "string",
+            "description": "Line numbers or range (e.g., '26-39', '13,52')"
+          }
+        }
+      }
+    },
+    "recurring_issues": {
+      "type": "array",
+      "description": "Issues that appeared multiple times in this review",
+      "items": {
+        "type": "object",
+        "required": ["issue", "occurrences"],
+        "properties": {
+          "issue": {
+            "type": "string",
+            "description": "Description of the recurring issue"
+          },
+          "occurrences": {
+            "type": "integer",
+            "minimum": 2,
+            "description": "Number of times it occurred"
+          },
+          "domains": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Affected domains"
+          },
+          "files": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Affected files"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Common pattern across occurrences"
+          }
+        }
+      }
+    },
+    "architecture_strengths": {
+      "type": "array",
+      "description": "Patterns that worked well and should be reused",
+      "items": {
+        "type": "object",
+        "required": ["pattern", "effectiveness", "reuse"],
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Description of the pattern"
+          },
+          "effectiveness": {
+            "enum": ["high", "medium", "low"],
+            "description": "How effective the pattern was"
+          },
+          "reuse": {
+            "type": "boolean",
+            "description": "Should this pattern be reused elsewhere?"
+          },
+          "location": {
+            "type": "string",
+            "description": "Where the pattern is implemented"
+          }
+        }
+      }
+    },
+    "cross_domain_impacts": {
+      "type": "array",
+      "description": "Changes in one domain that affected others",
+      "items": {
+        "type": "object",
+        "required": ["change", "affected", "lesson"],
+        "properties": {
+          "change": {
+            "type": "string",
+            "description": "The change that was made"
+          },
+          "affected": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Files or domains that were affected"
+          },
+          "lesson": {
+            "type": "string",
+            "description": "What to remember for next time"
+          }
+        }
+      }
+    },
+    "high_confidence": {
+      "type": "array",
+      "description": "Issues flagged by 3+ agents (highest confidence)",
+      "items": {
+        "type": "object",
+        "required": ["issue", "agents", "priority"],
+        "properties": {
+          "issue": {
+            "type": "string",
+            "description": "Issue description"
+          },
+          "agents": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 3,
+            "description": "Agents that flagged this"
+          },
+          "priority": {
+            "enum": ["P0", "P1", "P2"]
+          }
+        }
+      }
+    }
+  }
+}

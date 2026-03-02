@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/* Dark mode via class strategy */
+@variant dark (&:where(.dark, .dark *));
+
+/* ═══════════════════════════════════════════════════════
+   1. THEME TOKENS — Tailwind v4 utilities
+   ═══════════════════════════════════════════════════════ */
+@theme inline {
+  /* Fonts */
+  --font-heading: "Newsreader", serif;
+  --font-sans: "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* shadcn/ui semantic colors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Akount colors */
+  --color-ak-green: var(--ak-green);
+  --color-ak-green-dim: var(--ak-green-dim);
+  --color-ak-red: var(--ak-red);
+  --color-ak-red-dim: var(--ak-red-dim);
+  --color-ak-blue: var(--ak-blue);
+  --color-ak-blue-dim: var(--ak-blue-dim);
+  --color-ak-purple: var(--ak-purple);
+  --color-ak-purple-dim: var(--ak-purple-dim);
+  --color-ak-teal: var(--ak-teal);
+  --color-ak-bg-3: var(--ak-bg-3);
+  --color-ak-bg-4: var(--ak-bg-4);
+  --color-ak-border: var(--ak-border);
+  --color-ak-border-2: var(--ak-border-2);
+  --color-ak-border-3: var(--ak-border-3);
+}
+
+/* ═══════════════════════════════════════════════════════
+   2. CSS VARIABLES — Dark Theme
+   ═══════════════════════════════════════════════════════ */
+@layer base {
+  :root {
+    /* Dark mode (landing is dark-first) */
+    --background: 240 24% 4%;
+    --foreground: 240 10% 95%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 240 14% 10%;
+    --muted-foreground: 240 8% 55%;
+    --destructive: 0 91% 71%;
+    --border: 240 14% 10%;
+    --input: 240 14% 12%;
+    --ring: 38 92% 50%;
+    --radius: 0.1875rem;
+
+    /* Akount colors (dark mode) */
+    --ak-green: #34D399;
+    --ak-green-dim: rgba(52, 211, 153, 0.18);
+    --ak-red: #F87171;
+    --ak-red-dim: rgba(248, 113, 113, 0.18);
+    --ak-blue: #60A5FA;
+    --ak-blue-dim: rgba(96, 165, 250, 0.18);
+    --ak-purple: #A78BFA;
+    --ak-purple-dim: rgba(167, 139, 250, 0.18);
+    --ak-teal: #2DD4BF;
+    --ak-bg-3: #1A1A26;
+    --ak-bg-4: #22222E;
+    --ak-border: rgba(255, 255, 255, 0.12);
+    --ak-border-2: rgba(255, 255, 255, 0.18);
+    --ak-border-3: rgba(255, 255, 255, 0.25);
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   3. UTILITIES — Glass
+   ═══════════════════════════════════════════════════════ */
+@utility glass {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--ak-border);
+  transform: translateZ(0);
+}
+
+@utility glass-2 {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--ak-border-2);
+  transform: translateZ(0);
+  backdrop-filter: blur(16px);
+}

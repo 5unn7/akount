@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akount — Component Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200;0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Manrope:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pri:#F59E0B;--pri-hover:#FBBF24;--pri-dim:rgba(245,158,11,.14);--pri-glow:rgba(245,158,11,.08);
+  --green:#34D399;--green-dim:rgba(52,211,153,.12);
+  --red:#F87171;--red-dim:rgba(248,113,113,.12);
+  --blue:#60A5FA;--blue-dim:rgba(96,165,250,.12);
+  --purple:#A78BFA;--purple-dim:rgba(167,139,250,.12);
+  --teal:#2DD4BF;--teal-dim:rgba(45,212,191,.12);
+  --bg-0:#09090F;--bg-1:#0F0F17;--bg-2:#15151F;--bg-3:#1A1A26;--bg-4:#22222E;
+  --glass:rgba(255,255,255,.025);--glass-2:rgba(255,255,255,.04);--glass-3:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.06);--border-2:rgba(255,255,255,.09);--border-3:rgba(255,255,255,.13);
+  --t1:#F0F0F5;--t2:#9494A8;--t3:#5C5C72;--t4:#3A3A4E;
+  --r:14px;--r-sm:8px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --font-h:'Newsreader',Georgia,serif;
+  --font-b:'Manrope',system-ui,sans-serif;
+  --font-m:'JetBrains Mono',monospace;
+}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{background:var(--bg-0);color:var(--t1);font-family:var(--font-b);line-height:1.6;padding:48px 0}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.3}
+::selection{background:rgba(245,158,11,.25);color:#fff}
+.page{max-width:1100px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+
+/* ── Section ── */
+.section{margin-bottom:80px}
+.section-tag{font-size:10px;color:var(--pri);text-transform:uppercase;letter-spacing:.15em;font-weight:600;margin-bottom:6px}
+.section-title{font-family:var(--font-h);font-size:28px;font-weight:300;letter-spacing:-.02em;margin-bottom:6px}
+.section-desc{font-size:13px;color:var(--t3);margin-bottom:28px}
+.divider{height:1px;background:var(--border);margin:80px 0}
+
+/* ── Page Header ── */
+.page-header{text-align:center;margin-bottom:64px;padding-bottom:48px;border-bottom:1px solid var(--border)}
+.page-header h1{font-family:var(--font-h);font-size:40px;font-weight:200;letter-spacing:-.03em;margin-bottom:8px}
+.page-header h1 span{color:var(--pri)}
+.page-header p{font-size:15px;color:var(--t3);max-width:500px;margin:0 auto}
+
+/* ── Grids ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.flex-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.flex-col{display:flex;flex-direction:column;gap:10px}
+
+/* ═══════════════════════════════════════
+   SURFACES
+   ═══════════════════════════════════════ */
+.swatch{border-radius:var(--r);padding:24px;min-height:80px;display:flex;flex-direction:column;justify-content:flex-end}
+.swatch-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);font-weight:500}
+.swatch-hex{font-family:var(--font-m);font-size:12px;color:var(--t2);margin-top:2px}
+
+/* ═══════════════════════════════════════
+   GLASS TIERS
+   ═══════════════════════════════════════ */
+.glass-demo{border-radius:var(--r);padding:20px;backdrop-filter:blur(16px);transition:all .3s var(--ease)}
+.glass-1{background:var(--glass);border:1px solid var(--border)}
+.glass-1:hover{border-color:var(--border-2);background:var(--glass-2)}
+.glass-2{background:var(--glass-2);border:1px solid var(--border-2)}
+.glass-2:hover{border-color:var(--border-3)}
+.glass-3{background:var(--glass-3);border:1px solid var(--border-3)}
+.glass-label{font-size:11px;font-weight:600;margin-bottom:4px}
+.glass-meta{font-size:10px;color:var(--t3);font-family:var(--font-m)}
+
+/* ═══════════════════════════════════════
+   GLOW CARDS (Mouse-tracking)
+   ═══════════════════════════════════════ */
+.glow-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:28px 22px;position:relative;overflow:hidden;cursor:default;transition:all .4s var(--ease)}
+.glow-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border-3),transparent);opacity:0;transition:opacity .4s}
+.glow-card::after{content:'';position:absolute;inset:-50%;width:200%;height:200%;background:radial-gradient(circle at var(--mx,50%) var(--my,0%),var(--glow-c,rgba(245,158,11,.04)),transparent 50%);opacity:0;transition:opacity .4s;pointer-events:none;z-index:0}
+.glow-card:hover{border-color:var(--border-2);background:var(--glass-2);transform:translateY(-3px)}
+.glow-card:hover::before{opacity:1}
+.glow-card:hover::after{opacity:1}
+.glow-card > *{position:relative;z-index:1}
+.glow-ico{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:18px}
+.glow-card h4{font-family:var(--font-h);font-size:17px;font-weight:400;margin-bottom:6px}
+.glow-card p{font-size:12.5px;color:var(--t2);line-height:1.6}
+
+/* ═══════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r-sm);font-size:13px;font-family:var(--font-b);font-weight:500;cursor:pointer;transition:all .2s var(--ease);border:1px solid transparent;white-space:nowrap}
+.btn-ghost{background:transparent;border-color:var(--border-2);color:var(--t2)}
+.btn-ghost:hover{background:var(--glass-2);color:var(--t1);border-color:var(--border-3)}
+.btn-dim{background:var(--pri-dim);border-color:rgba(245,158,11,.22);color:var(--pri)}
+.btn-dim:hover{background:rgba(245,158,11,.22)}
+.btn-solid{background:var(--pri);border-color:var(--pri);color:var(--bg-0);font-weight:600}
+.btn-solid:hover{background:var(--pri-hover);box-shadow:0 0 24px var(--pri-glow)}
+.btn-danger{background:var(--red-dim);border-color:rgba(248,113,113,.22);color:var(--red)}
+.btn-danger:hover{background:rgba(248,113,113,.22)}
+.btn-sm{padding:5px 12px;font-size:11px;border-radius:6px}
+.btn-lg{padding:12px 28px;font-size:15px}
+
+/* Fill-on-hover variant */
+.btn-fill{position:relative;overflow:hidden;background:transparent;border-color:var(--border-2);color:var(--t1)}
+.btn-fill::before{content:'';position:absolute;inset:0;background:var(--pri);transform:translateY(100%);transition:transform .35s var(--ease);z-index:0}
+.btn-fill span{position:relative;z-index:1}
+.btn-fill:hover{border-color:var(--pri);color:var(--bg-0);box-shadow:0 0 20px var(--pri-glow)}
+.btn-fill:hover::before{transform:translateY(0)}
+
+/* ═══════════════════════════════════════
+   BADGES
+   ═══════════════════════════════════════ */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:600;letter-spacing:.02em}
+.badge-default{background:var(--glass-2);border:1px solid var(--border);color:var(--t2)}
+.badge-primary{background:var(--pri-dim);color:var(--pri)}
+.badge-success{background:var(--green-dim);color:var(--green)}
+.badge-danger{background:var(--red-dim);color:var(--red)}
+.badge-info{background:var(--blue-dim);color:var(--blue)}
+.badge-ai{background:var(--purple-dim);color:var(--purple)}
+.badge-teal{background:var(--teal-dim);color:var(--teal)}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.badge-pulse{animation:bp 2s ease-in-out infinite}
+@keyframes bp{0%,100%{opacity:.5}50%{opacity:1}}
+
+/* ═══════════════════════════════════════
+   INPUTS
+   ═══════════════════════════════════════ */
+.input{width:100%;height:40px;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--border-2);background:var(--bg-2);color:var(--t1);font-size:13px;font-family:var(--font-b);outline:none;transition:all .3s}
+.input::placeholder{color:var(--t4)}
+.input:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(245,158,11,.1)}
+.input-label{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:6px;display:block}
+
+/* ═══════════════════════════════════════
+   STAT CARDS
+   ═══════════════════════════════════════ */
+.stat{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;transition:all .3s var(--ease)}
+.stat:hover{border-color:var(--border-2);background:var(--glass-2)}
+.stat-label{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;font-weight:500;margin-bottom:5px}
+.stat-val{font-family:var(--font-m);font-size:22px;color:var(--t1);letter-spacing:-.02em}
+.stat-trend{font-size:10px;font-family:var(--font-m);margin-top:4px}
+.stat-trend.up{color:var(--green)}.stat-trend.dn{color:var(--red)}.stat-trend.flat{color:var(--t3)}
+
+/* ═══════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════ */
+.type-sample{margin-bottom:16px}
+.type-label{font-size:9px;color:var(--t4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;font-family:var(--font-m)}
+
+/* ═══════════════════════════════════════
+   COLOR SWATCHES
+   ═══════════════════════════════════════ */
+.color-row{display:flex;gap:8px;margin-bottom:8px}
+.color-chip{width:48px;height:48px;border-radius:10px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:8px;font-family:var(--font-m);color:rgba(255,255,255,.6);border:1px solid var(--border)}
+
+/* ═══════════════════════════════════════
+   PULSE ORB
+   ═══════════════════════════════════════ */
+.orb-demo{display:flex;align-items:center;gap:24px}
+.orb{border-radius:50%;display:flex;align-items:center;justify-content:center}
+.orb-sm{width:36px;height:36px}
+.orb-md{width:56px;height:56px}
+.orb-lg{width:80px;height:80px}
+.orb-primary{background:radial-gradient(circle at 35% 35%,#FCD34D,#F59E0B,#D97706);box-shadow:0 0 30px rgba(245,158,11,.2);animation:orb-breathe 4s ease-in-out infinite}
+.orb-ai{background:radial-gradient(circle at 35% 35%,#C4B5FD,#8B5CF6,#6D28D9);box-shadow:0 0 20px rgba(139,92,246,.3);animation:orb-breathe 5s ease-in-out infinite .5s}
+.orb-success{background:radial-gradient(circle at 35% 35%,#6EE7B7,#34D399,#059669);box-shadow:0 0 20px rgba(52,211,153,.2);animation:orb-breathe 4.5s ease-in-out infinite 1s}
+@keyframes orb-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.orb-ring{position:relative}.orb-ring::before,.orb-ring::after{content:'';position:absolute;border-radius:50%;border:1px solid;animation:ring-p 4s ease-in-out infinite}
+.orb-ring::before{inset:-10px;border-color:rgba(245,158,11,.08);animation-delay:0s}
+.orb-ring::after{inset:-22px;border-color:rgba(245,158,11,.04);animation-delay:.5s}
+@keyframes ring-p{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.7;transform:scale(1.05)}}
+
+/* ═══════════════════════════════════════
+   AI INSIGHT CARD
+   ═══════════════════════════════════════ */
+.ai-card{padding:16px;background:var(--glass);border:1px solid rgba(167,139,250,.12);border-radius:var(--r);transition:all .3s}
+.ai-card:hover{border-color:rgba(167,139,250,.2);background:var(--glass-2)}
+.ai-card-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ai-card-text{font-family:var(--font-h);font-style:italic;font-size:13px;color:var(--t2);line-height:1.7}
+.ai-card-text .hl{color:var(--t1);font-weight:400}.ai-card-text .pos{color:var(--green)}.ai-card-text .warn{color:var(--pri)}
+.ai-card-meta{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:9px;color:var(--t4)}
+.ai-conf{display:flex;gap:2px}
+.ai-conf i{width:14px;height:3px;border-radius:1px;background:var(--border-2);font-style:normal}
+.ai-conf i.on{background:var(--purple)}
+
+/* ═══════════════════════════════════════
+   TRANSACTION ROW
+   ═══════════════════════════════════════ */
+.txn-list{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.txn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .2s}
+.txn:last-child{border:none}
+.txn:hover{background:var(--glass-2)}
+.txn-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.txn-info{flex:1;min-width:0}
+.txn-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.txn-cat{font-size:10px;color:var(--t3);margin-top:1px}
+.txn-amt{font-family:var(--font-m);font-size:13px;font-weight:500;text-align:right;flex-shrink:0}
+.txn-amt.neg{color:var(--red)}.txn-amt.pos{color:var(--green)}
+.txn-date{font-size:10px;color:var(--t4);font-family:var(--font-m);flex-shrink:0;margin-left:8px}
+
+/* ═══════════════════════════════════════
+   FX CARD
+   ═══════════════════════════════════════ */
+.fx-card{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--glass);border:1px solid var(--border);border-radius:12px;transition:all .3s}
+.fx-card:hover{border-color:var(--border-2);background:var(--glass-2)}
+.fx-flag{width:36px;height:36px;border-radius:9px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:20px}
+.fx-info{flex:1}.fx-pair{font-size:13px;font-weight:600}.fx-full{font-size:10px;color:var(--t3);margin-top:1px}
+.fx-rate{text-align:right}.fx-val{font-family:var(--font-m);font-size:15px}.fx-change{font-size:10px;font-family:var(--font-m);margin-top:1px}
+.fx-change.up{color:var(--green)}.fx-change.dn{color:var(--red)}
+
+/* ═══════════════════════════════════════
+   TOOLTIP
+   ═══════════════════════════════════════ */
+.tooltip-demo{position:relative;display:inline-block}
+.tooltip-demo .tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg-3);border:1px solid var(--border-2);padding:6px 12px;border-radius:6px;font-size:11px;color:var(--t1);white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.5);opacity:0;transition:opacity .2s;pointer-events:none}
+.tooltip-demo:hover .tip{opacity:1}
+
+/* ═══════════════════════════════════════
+   SIDEBAR ICONS
+   ═══════════════════════════════════════ */
+.sidebar-demo{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(9,9,15,.9);border:1px solid var(--border);border-radius:var(--r);padding:14px;width:56px}
+.sb-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--t4);cursor:pointer;transition:all .2s;font-size:15px}
+.sb-ico:hover{background:var(--glass-2);color:var(--t2)}
+.sb-ico.on{background:rgba(245,158,11,.18);color:var(--pri)}
+.sb-div{width:20px;height:1px;background:var(--border);margin:4px 0}
+
+/* ═══════════════════════════════════════
+   INVOICE PREVIEW
+   ═══════════════════════════════════════ */
+.inv-preview{background:var(--bg-1);border:1px solid var(--border-2);border-radius:var(--r);padding:24px;max-width:400px}
+.inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+.inv-title{font-family:var(--font-h);font-size:16px;font-weight:400}
+.inv-num{font-size:10px;color:var(--t3);margin-top:2px}
+.inv-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.inv-row:last-child{border:none}
+.inv-row .lab{color:var(--t3)}
+.inv-row .val{font-family:var(--font-m);font-weight:500}
+.inv-total{display:flex;justify-content:space-between;padding:12px 0 0;font-size:15px;font-weight:600;border-top:1px solid var(--border-2);margin-top:6px}
+.inv-total .val{font-family:var(--font-m);color:var(--pri)}
+
+@media(max-width:768px){
+  .grid-2,.grid-3,.grid-4,.grid-5{grid-template-columns:1fr}
+  .page{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<!-- ═══ HEADER ═══ -->
+<div class="page-header">
+  <h1>Akount <span>Design System</span></h1>
+  <p>Component showcase &mdash; Financial Clarity aesthetic. Dark-first, zen, glass, glowy, minimal.</p>
+</div>
+
+<!-- ═══════════════════════════════════════
+     1. SURFACES
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Foundations</div>
+  <div class="section-title">Surface Hierarchy</div>
+  <div class="section-desc">Five depth levels &mdash; near-black with purple undertones. Not slate.</div>
+  <div class="grid-5">
+    <div class="swatch" style="background:var(--bg-0);border:1px solid var(--border)"><div class="swatch-label">bg-0</div><div class="swatch-hex">#09090F</div></div>
+    <div class="swatch" style="background:var(--bg-1);border:1px solid var(--border)"><div class="swatch-label">bg-1</div><div class="swatch-hex">#0F0F17</div></div>
+    <div class="swatch" style="background:var(--bg-2);border:1px solid var(--border)"><div class="swatch-label">bg-2</div><div class="swatch-hex">#15151F</div></div>
+    <div class="swatch" style="background:var(--bg-3);border:1px solid var(--border)"><div class="swatch-label">bg-3</div><div class="swatch-hex">#1A1A26</div></div>
+    <div class="swatch" style="background:var(--bg-4);border:1px solid var(--border)"><div class="swatch-label">bg-4</div><div class="swatch-hex">#22222E</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     2. COLORS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Foundations</div>
+  <div class="section-title">Colors</div>
+  <div class="section-desc">Primary amber + semantic 400-level palette for dark backgrounds.</div>
+  <div style="margin-bottom:20px">
+    <div class="type-label">Primary</div>
+    <div class="color-row">
+      <div class="color-chip" style="background:#F59E0B">#F59E0B</div>
+      <div class="color-chip" style="background:#FBBF24">#FBBF24</div>
+      <div class="color-chip" style="background:rgba(245,158,11,.14)">dim</div>
+      <div class="color-chip" style="background:rgba(245,158,11,.08)">glow</div>
+    </div>
+  </div>
+  <div>
+    <div class="type-label">Semantic</div>
+    <div class="color-row">
+      <div class="color-chip" style="background:#34D399">Green</div>
+      <div class="color-chip" style="background:#F87171">Red</div>
+      <div class="color-chip" style="background:#60A5FA">Blue</div>
+      <div class="color-chip" style="background:#A78BFA">Purple</div>
+      <div class="color-chip" style="background:#2DD4BF">Teal</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     3. TYPOGRAPHY
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Foundations</div>
+  <div class="section-title">Typography</div>
+  <div class="section-desc">Three typefaces, each with a distinct purpose.</div>
+
+  <div class="grid-2">
+    <div>
+      <div class="type-sample">
+        <div class="type-label">font-heading &mdash; Newsreader</div>
+        <div style="font-family:var(--font-h);font-size:28px;font-weight:200;letter-spacing:-.02em">Financial Clarity</div>
+      </div>
+      <div class="type-sample">
+        <div class="type-label">font-heading italic &mdash; AI voice</div>
+        <div style="font-family:var(--font-h);font-style:italic;font-size:15px;color:var(--t2);font-weight:300">Your cash position is <span style="color:var(--green)">strong</span>. Revenue up <span style="color:var(--t1)">+12%</span> vs last month.</div>
+      </div>
+      <div class="type-sample">
+        <div class="type-label">font-sans &mdash; Manrope (body)</div>
+        <div style="font-size:14px;color:var(--t2)">Clean, readable body text for interfaces and descriptions. Weights 300&ndash;700.</div>
+      </div>
+    </div>
+    <div>
+      <div class="type-sample">
+        <div class="type-label">font-mono &mdash; JetBrains Mono (numbers)</div>
+        <div style="font-family:var(--font-m);font-size:28px;letter-spacing:-.02em">$42,180.00</div>
+      </div>
+      <div class="type-sample">
+        <div class="type-label">Labels &mdash; uppercase, tracked</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);font-weight:600">Revenue &middot; Expenses &middot; Net Cash</div>
+      </div>
+      <div class="type-sample">
+        <div class="type-label">Text hierarchy</div>
+        <div style="color:var(--t1);font-size:13px;margin-bottom:2px">t1 &mdash; Primary text #F0F0F5</div>
+        <div style="color:var(--t2);font-size:13px;margin-bottom:2px">t2 &mdash; Secondary text #9494A8</div>
+        <div style="color:var(--t3);font-size:13px;margin-bottom:2px">t3 &mdash; Muted text #5C5C72</div>
+        <div style="color:var(--t4);font-size:13px">t4 &mdash; Disabled text #3A3A4E</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     4. GLASS MORPHISM
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Glass Morphism Tiers</div>
+  <div class="section-desc">Three levels of glass opacity. Hover to see interaction states.</div>
+  <div class="grid-3">
+    <div class="glass-demo glass-1">
+      <div class="glass-label">Glass 1 (Default)</div>
+      <div class="glass-meta">rgba(255,255,255, 0.025)</div>
+      <div class="glass-meta">border: 0.06 &middot; blur: 16px</div>
+    </div>
+    <div class="glass-demo glass-2">
+      <div class="glass-label">Glass 2 (Elevated)</div>
+      <div class="glass-meta">rgba(255,255,255, 0.04)</div>
+      <div class="glass-meta">border: 0.09 &middot; blur: 16px</div>
+    </div>
+    <div class="glass-demo glass-3">
+      <div class="glass-label">Glass 3 (Active)</div>
+      <div class="glass-meta">rgba(255,255,255, 0.06)</div>
+      <div class="glass-meta">border: 0.13 &middot; blur: 16px</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     5. GLOW CARDS (Mouse-tracking)
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Glow Cards</div>
+  <div class="section-desc">Mouse-tracking radial glow. Move cursor over cards to see the effect. Customizable glow color.</div>
+  <div class="grid-3">
+    <div class="glow-card" onmousemove="glowTrack(event,this)">
+      <div class="glow-ico" style="background:var(--pri-dim);color:var(--pri)">&#9733;</div>
+      <h4>Default Glow</h4>
+      <p>Amber radial glow follows cursor. For feature cards, settings panels, dashboards.</p>
+    </div>
+    <div class="glow-card" onmousemove="glowTrack(event,this)" style="--glow-c:rgba(139,92,246,.04)">
+      <div class="glow-ico" style="background:var(--purple-dim);color:var(--purple)">&#10024;</div>
+      <h4>AI / Purple Glow</h4>
+      <p>Purple variant for AI-related cards. Pass custom <code style="font-family:var(--font-m);font-size:11px;color:var(--purple)">glowColor</code> prop.</p>
+    </div>
+    <div class="glow-card" onmousemove="glowTrack(event,this)" style="--glow-c:rgba(52,211,153,.04)">
+      <div class="glow-ico" style="background:var(--green-dim);color:var(--green)">&#10003;</div>
+      <h4>Success / Green Glow</h4>
+      <p>Green variant for income, success states, and positive metrics.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     6. BUTTONS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Buttons</div>
+  <div class="section-desc">Three tiers + fill-on-hover + sizes. Radius: 8px always.</div>
+
+  <div style="margin-bottom:20px">
+    <div class="type-label" style="margin-bottom:10px">Variants</div>
+    <div class="flex-row">
+      <button class="btn btn-ghost">Ghost</button>
+      <button class="btn btn-dim">Dim</button>
+      <button class="btn btn-solid">Solid</button>
+      <button class="btn btn-danger">Danger</button>
+      <button class="btn btn-fill"><span>Fill on Hover</span></button>
+    </div>
+  </div>
+  <div>
+    <div class="type-label" style="margin-bottom:10px">Sizes</div>
+    <div class="flex-row" style="align-items:center">
+      <button class="btn btn-solid btn-sm">Small</button>
+      <button class="btn btn-solid">Default</button>
+      <button class="btn btn-solid btn-lg">Large</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     7. BADGES
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Badges & Pills</div>
+  <div class="section-desc">12px border-radius, 9-10px font, colored dim backgrounds.</div>
+  <div class="flex-row">
+    <span class="badge badge-default">Default</span>
+    <span class="badge badge-primary"><span class="badge-dot"></span>Primary</span>
+    <span class="badge badge-success">Paid</span>
+    <span class="badge badge-danger">Overdue</span>
+    <span class="badge badge-info">Transfer</span>
+    <span class="badge badge-ai">AI Insight</span>
+    <span class="badge badge-teal">Equity</span>
+    <span class="badge badge-success"><span class="badge-dot badge-pulse"></span>Live</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     8. INPUTS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Inputs</div>
+  <div class="section-desc">Glass-backed inputs with amber focus ring.</div>
+  <div class="grid-2">
+    <div>
+      <label class="input-label">Email Address</label>
+      <input class="input" type="email" placeholder="you@company.com">
+    </div>
+    <div>
+      <label class="input-label">Amount (CAD)</label>
+      <input class="input" type="text" placeholder="$0.00" style="font-family:var(--font-m)">
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     9. STAT CARDS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Stat Cards</div>
+  <div class="section-desc">Label (muted, uppercase) &rarr; Value (mono, large) &rarr; Trend (colored, small).</div>
+  <div class="grid-4">
+    <div class="stat"><div class="stat-label">Revenue</div><div class="stat-val">$18,420</div><div class="stat-trend up">&#9650; 12.3%</div></div>
+    <div class="stat"><div class="stat-label">Expenses</div><div class="stat-val">$6,180</div><div class="stat-trend dn">&#9650; 4.1%</div></div>
+    <div class="stat"><div class="stat-label">Outstanding</div><div class="stat-val">$3,250</div><div class="stat-trend flat">2 invoices</div></div>
+    <div class="stat"><div class="stat-label">Net Cash</div><div class="stat-val">$42,180</div><div class="stat-trend up">&#9650; 8.7%</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     10. PULSE ORBS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Pulse Orbs</div>
+  <div class="section-desc">Breathing radial-gradient orbs. Three variants + ring animation.</div>
+  <div class="orb-demo">
+    <div class="orb orb-sm orb-primary"></div>
+    <div class="orb orb-md orb-primary orb-ring"></div>
+    <div class="orb orb-lg orb-primary"></div>
+    <div style="width:24px"></div>
+    <div class="orb orb-md orb-ai"></div>
+    <div class="orb orb-md orb-success"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     11. AI INSIGHT CARDS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">AI Insight Cards</div>
+  <div class="section-desc">Newsreader italic signals "interpreted, not raw data". Purple-tinted borders.</div>
+  <div class="grid-2">
+    <div class="ai-card">
+      <div class="ai-card-header">
+        <div class="orb orb-sm orb-ai" style="width:22px;height:22px"></div>
+        <span style="font-size:12px;font-weight:600">AI Pulse</span>
+        <span class="badge badge-ai" style="margin-left:auto">Intelligent</span>
+      </div>
+      <div class="ai-card-text">Your <span class="hl">net cash position</span> is strong at <span class="pos">CAD $42,180</span>. Revenue grew <span class="pos">+12%</span> this month, driven by a <span class="hl">new US client</span>.</div>
+      <div class="ai-card-meta"><span>Confidence</span><div class="ai-conf"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
+    </div>
+    <div class="ai-card">
+      <div class="ai-card-header">
+        <div class="orb orb-sm orb-ai" style="width:22px;height:22px"></div>
+        <span style="font-size:12px;font-weight:600">Anomaly</span>
+        <span class="badge badge-primary" style="margin-left:auto">Alert</span>
+      </div>
+      <div class="ai-card-text"><span class="warn">Heads up:</span> <span class="hl">Adobe subscription</span> renewed at <span class="warn">$79.99/mo</span> &mdash; <span class="warn">15% higher</span> than last year. Worth reviewing?</div>
+      <div class="ai-card-meta"><span>Confidence</span><div class="ai-conf"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     12. TRANSACTIONS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Patterns</div>
+  <div class="section-title">Transaction List</div>
+  <div class="section-desc">Glass container, icon + info + amount layout. Hover highlight.</div>
+  <div style="max-width:540px">
+    <div class="txn-list">
+      <div class="txn">
+        <div class="txn-ico" style="background:var(--green-dim);color:var(--green)">&#8599;</div>
+        <div class="txn-info"><div class="txn-name">Stripe Payout</div><div class="txn-cat">Revenue &middot; USD</div></div>
+        <div class="txn-amt pos">+$4,200.00</div>
+        <div class="txn-date">Feb 8</div>
+      </div>
+      <div class="txn">
+        <div class="txn-ico" style="background:var(--red-dim);color:var(--red)">&#8601;</div>
+        <div class="txn-info"><div class="txn-name">Adobe Creative Cloud</div><div class="txn-cat">Software &middot; CAD</div></div>
+        <div class="txn-amt neg">-$79.99</div>
+        <div class="txn-date">Feb 7</div>
+      </div>
+      <div class="txn">
+        <div class="txn-ico" style="background:var(--blue-dim);color:var(--blue)">&#8644;</div>
+        <div class="txn-info"><div class="txn-name">Wise Transfer</div><div class="txn-cat">Transfer &middot; EUR &rarr; CAD</div></div>
+        <div class="txn-amt" style="color:var(--blue)">&euro;1,800.00</div>
+        <div class="txn-date">Feb 6</div>
+      </div>
+      <div class="txn">
+        <div class="txn-ico" style="background:var(--purple-dim);color:var(--purple)">&#10024;</div>
+        <div class="txn-info"><div class="txn-name">Client Payment &mdash; Vercel Inc.</div><div class="txn-cat">Invoice #087 &middot; USD</div></div>
+        <div class="txn-amt pos">+$11,300.00</div>
+        <div class="txn-date">Feb 5</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     13. FX CARDS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Patterns</div>
+  <div class="section-title">Currency / FX Cards</div>
+  <div class="section-desc">Flag + pair + rate. Hover elevates.</div>
+  <div class="grid-2">
+    <div class="fx-card"><div class="fx-flag">&#127482;&#127480;</div><div class="fx-info"><div class="fx-pair">USD / CAD</div><div class="fx-full">US Dollar &rarr; Canadian Dollar</div></div><div class="fx-rate"><div class="fx-val">1.3542</div><div class="fx-change up">&#9650; 0.12%</div></div></div>
+    <div class="fx-card"><div class="fx-flag">&#127466;&#127482;</div><div class="fx-info"><div class="fx-pair">EUR / CAD</div><div class="fx-full">Euro &rarr; Canadian Dollar</div></div><div class="fx-rate"><div class="fx-val">1.4891</div><div class="fx-change dn">&#9660; 0.08%</div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     14. INVOICE PREVIEW
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Patterns</div>
+  <div class="section-title">Invoice Preview</div>
+  <div class="section-desc">Line items + total with FX conversion.</div>
+  <div class="inv-preview">
+    <div class="inv-header">
+      <div><div class="inv-title">Invoice #INV-2024-087</div><div class="inv-num">Feb 1, 2026 &middot; Due: Mar 1</div></div>
+      <span class="badge badge-success">Paid</span>
+    </div>
+    <div class="inv-row"><span class="lab">Brand Strategy</span><span class="val">$3,500.00</span></div>
+    <div class="inv-row"><span class="lab">UI/UX Sprint (5 days)</span><span class="val">$4,500.00</span></div>
+    <div class="inv-row"><span class="lab">Documentation</span><span class="val">$2,000.00</span></div>
+    <div class="inv-row"><span class="lab">HST 13%</span><span class="val">$1,300.00</span></div>
+    <div class="inv-total"><span>Total (USD)</span><span class="val">$11,300.00</span></div>
+    <div style="font-size:10px;color:var(--t3);margin-top:10px;padding-top:8px;border-top:1px solid var(--border)">Converted: CAD $15,306.00 @ 1.3545</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     15. SIDEBAR ICONS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Patterns</div>
+  <div class="section-title">Sidebar Navigation</div>
+  <div class="section-desc">Compact icon nav. Active state: amber dim bg.</div>
+  <div class="flex-row" style="align-items:flex-start;gap:24px">
+    <div class="sidebar-demo">
+      <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--pri),#D97706);display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:14px;color:var(--bg-0);font-weight:500;margin-bottom:10px">A</div>
+      <div class="sb-ico on">&#9632;</div>
+      <div class="sb-ico">&#9776;</div>
+      <div class="sb-ico">&#9638;</div>
+      <div class="sb-div"></div>
+      <div class="sb-ico">&#9783;</div>
+      <div class="sb-ico">&#9881;</div>
+    </div>
+    <div style="flex:1;max-width:400px">
+      <div class="type-label" style="margin-bottom:8px">States</div>
+      <div class="flex-row" style="gap:16px">
+        <div style="text-align:center"><div class="sb-ico" style="margin:0 auto">&#9632;</div><div style="font-size:9px;color:var(--t4);margin-top:4px">Default</div></div>
+        <div style="text-align:center"><div class="sb-ico" style="margin:0 auto;background:var(--glass-2);color:var(--t2)">&#9632;</div><div style="font-size:9px;color:var(--t4);margin-top:4px">Hover</div></div>
+        <div style="text-align:center"><div class="sb-ico on" style="margin:0 auto">&#9632;</div><div style="font-size:9px;color:var(--t4);margin-top:4px">Active</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     16. TOOLTIPS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Components</div>
+  <div class="section-title">Tooltips</div>
+  <div class="section-desc">bg-3 surface, border-2, shadow. Hover to reveal.</div>
+  <div class="flex-row">
+    <div class="tooltip-demo"><button class="btn btn-ghost">Hover me</button><div class="tip">Export as CSV</div></div>
+    <div class="tooltip-demo"><button class="btn btn-dim">Or me</button><div class="tip">3 invoices overdue</div></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════
+     ANTI-PATTERNS
+     ═══════════════════════════════════════ -->
+<div class="section">
+  <div class="section-tag">Guidelines</div>
+  <div class="section-title">Anti-Patterns</div>
+  <div class="section-desc">What NOT to do in the Financial Clarity aesthetic.</div>
+  <div class="grid-2">
+    <div style="padding:16px;border:1px dashed rgba(248,113,113,.3);border-radius:var(--r)">
+      <div style="font-size:11px;color:var(--red);font-weight:600;margin-bottom:8px">&#10007; DON'T</div>
+      <ul style="font-size:12px;color:var(--t3);list-style:none;display:flex;flex-direction:column;gap:6px">
+        <li>&bull; Heavy drop shadows</li>
+        <li>&bull; Solid white backgrounds in dark mode</li>
+        <li>&bull; Flat gray borders (use rgba white)</li>
+        <li>&bull; 500-level semantic colors on dark</li>
+        <li>&bull; Dense text walls without disclosure</li>
+        <li>&bull; Competing accent colors (orange is primary)</li>
+      </ul>
+    </div>
+    <div style="padding:16px;border:1px dashed rgba(52,211,153,.3);border-radius:var(--r)">
+      <div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:8px">&#10003; DO</div>
+      <ul style="font-size:12px;color:var(--t3);list-style:none;display:flex;flex-direction:column;gap:6px">
+        <li>&bull; Subtle border + glow for elevation</li>
+        <li>&bull; Glass tiers for all containers</li>
+        <li>&bull; rgba(255,255,255) borders with low alpha</li>
+        <li>&bull; 400-level colors for dark readability</li>
+        <li>&bull; Progressive disclosure, expand on click</li>
+        <li>&bull; Orange primary, everything else supports</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:48px 0;font-size:11px;color:var(--t4);border-top:1px solid var(--border)">
+  Akount Design System &middot; Financial Clarity &middot; v1.0
+</div>
+
+</div>
+
+<script>
+function glowTrack(e, el) {
+  const r = el.getBoundingClientRect();
+  el.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+  el.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+}
+</script>
+</body>
+</html>

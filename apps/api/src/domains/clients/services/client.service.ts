@@ -1,0 +1,218 @@
+import { prisma, Prisma } from '@akount/db';
+import type { TenantContext } from '../../../middleware/tenant.js';
+import type {
+  CreateClientInput,
+  UpdateClientInput,
+  ListClientsInput,
+} from '../schemas/client.schema';
+import { sanitizeCsvCell } from '../../../lib/csv';
+
+/**
+ * Client service — Business logic for client CRUD operations.
+ *
+ * CRITICAL RULES:
+ * - Tenant isolation: All queries MUST filter by tenantId via entity relation
+ * - Soft delete: Use deletedAt field, filter deletedAt: null
+ * - Get single includes aggregated stats (openInvoices count, balanceDue)
+ */
+
+export async function createClient(
+  data: CreateClientInput,
+  ctx: TenantContext
+) {
+  // Verify entity belongs to tenant
+  const entity = await prisma.entity.findFirst({
+    where: {
+      id: data.entityId,
+      tenantId: ctx.tenantId,
+    },
+  });
+
+  if (!entity) {
+    throw new Error('Entity not found');
+  }
+
+  return prisma.client.create({
+    data: {
+      entityId: data.entityId,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      address: data.address,
+      paymentTerms: data.paymentTerms,
+      status: data.status,
+    },
+    include: { entity: true },
+  });
+}
+
+export async function listClients(
+  filters: ListClientsInput,
+  ctx: TenantContext
+) {
+  const where: Prisma.ClientWhereInput = {
+    entity: {
+      tenantId: ctx.tenantId,
+      ...(filters.entityId && { id: filters.entityId }),
+    },
+    deletedAt: null,
+  };
+
+  if (filters.status) where.status = filters.status;
+  if (filters.search) {
+    where.OR = [
+      { name: { contains: filters.search, mode: 'insensitive' } },
+      { email: { contains: filters.search, mode: 'insensitive' } },
+    ];
+  }
+  if (filters.cursor) where.id = { gt: filters.cursor };
+
+  const clients = await prisma.client.findMany({
+    where,
+    include: { entity: true },
+    orderBy: { createdAt: 'desc' },
+    take: filters.limit,
+  });
+
+  const nextCursor =
+    clients.length === filters.limit
+      ? clients[clients.length - 1].id
+      : null;
+
+  return { clients, nextCursor };
+}
+
+export async function getClient(id: string, ctx: TenantContext) {
+  const client = await prisma.client.findFirst({
+    where: {
+      id,
+      entity: { tenantId: ctx.tenantId },
+      deletedAt: null,
+    },
+    include: { entity: true },
+  });
+
+  if (!client) throw new Error('Client not found');
+
+  // Aggregate open invoices and balance due
+  // SECURITY FIX H-1: Add tenant isolation to prevent cross-tenant data leakage
+  const [openInvoices, balance] = await Promise.all([
+    prisma.invoice.count({
+      where: {
+        clientId: id,
+        entity: { tenantId: ctx.tenantId },
+        status: { in: ['SENT', 'OVERDUE'] },
+        deletedAt: null,
+      },
+    }),
+    prisma.invoice.aggregate({
+      where: {
+        clientId: id,
+        entity: { tenantId: ctx.tenantId },
+        status: { in: ['SENT', 'OVERDUE'] },
+        deletedAt: null,
+      },
+      _sum: { total: true, paidAmount: true },
+    }),
+  ]);
+
+  const balanceDue = (balance._sum.total || 0) - (balance._sum.paidAmount || 0);
+
+  return {
+    ...client,
+    openInvoices,
+    balanceDue, // Integer cents
+  };
+}
+
+export async function updateClient(
+  id: string,
+  data: UpdateClientInput,
+  ctx: TenantContext
+) {
+  // Verify exists and tenant owns (without stats)
+  const client = await prisma.client.findFirst({
+    where: {
+      id,
+      entity: { tenantId: ctx.tenantId },
+      deletedAt: null,
+    },
+  });
+
+  if (!client) throw new Error('Client not found');
+
+  return prisma.client.update({
+    where: { id },
+    data: {
+      ...(data.name && { name: data.name }),
+      ...(data.email !== undefined && { email: data.email }),
+      ...(data.phone !== undefined && { phone: data.phone }),
+      ...(data.address !== undefined && { address: data.address }),
+      ...(data.paymentTerms !== undefined && { paymentTerms: data.paymentTerms }),
+      ...(data.status && { status: data.status }),
+    },
+    include: { entity: true },
+  });
+}
+
+export async function deleteClient(id: string, ctx: TenantContext) {
+  // Verify exists and tenant owns
+  const client = await prisma.client.findFirst({
+    where: {
+      id,
+      entity: { tenantId: ctx.tenantId },
+      deletedAt: null,
+    },
+  });
+
+  if (!client) throw new Error('Client not found');
+
+  return prisma.client.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
+}
+
+/**
+ * Export clients as CSV string. Fetches ALL matching records (no cursor/limit).
+ * Uses OWASP-safe sanitization for all cell values.
+ */
+export async function exportClientsCsv(
+  filters: Omit<ListClientsInput, 'cursor' | 'limit'>,
+  ctx: TenantContext
+): Promise<string> {
+  const where: Prisma.ClientWhereInput = {
+    entity: {
+      tenantId: ctx.tenantId,
+      ...(filters.entityId && { id: filters.entityId }),
+    },
+    deletedAt: null,
+  };
+
+  if (filters.status) where.status = filters.status;
+  if (filters.search) {
+    where.OR = [
+      { name: { contains: filters.search, mode: 'insensitive' } },
+      { email: { contains: filters.search, mode: 'insensitive' } },
+    ];
+  }
+
+  const clients = await prisma.client.findMany({
+    where,
+    include: { entity: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const header = 'Name,Email,Phone,Address,Payment Terms,Status,Created';
+  const rows = clients.map((c) => [
+    sanitizeCsvCell(c.name),
+    sanitizeCsvCell(c.email ?? ''),
+    sanitizeCsvCell(c.phone ?? ''),
+    sanitizeCsvCell(c.address ?? ''),
+    sanitizeCsvCell(c.paymentTerms ?? ''),
+    sanitizeCsvCell(c.status),
+    sanitizeCsvCell(c.createdAt),
+  ].join(','));
+
+  return [header, ...rows].join('\n');
+}

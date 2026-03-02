@@ -1,0 +1,209 @@
+{
+  "_": "2026-02-27",
+  "n": 8,
+  "f": {
+    "account.service": {
+      "p": "domains/banking/services/account.service.ts",
+      "d": "bnk",
+      "e": [
+        "getDefaultGLAccountForType",
+        "ListAccountsParams",
+        "PaginatedAccounts",
+        "AccountService"
+      ],
+      "i": [
+        "@akount/db"
+      ],
+      "l": 375,
+      "pt": "TSP",
+      "v": []
+    },
+    "invoice.service": {
+      "p": "domains/invoicing/services/invoice.service.ts",
+      "d": "inv",
+      "e": [
+        "createInvoice",
+        "listInvoices",
+        "getInvoice",
+        "updateInvoice",
+        "deleteInvoice",
+        "getInvoiceStats",
+        "sendInvoice",
+        "getInvoicePdf",
+        "cancelInvoice",
+        "voidInvoice"
+      ],
+      "i": [
+        "@akount/db",
+        "../../../middleware/tenant.js",
+        "./pdf.service",
+        "../../../lib/email",
+        "../../accounting/services/journal-entry.service"
+      ],
+      "l": 639,
+      "pt": "TSP",
+      "v": []
+    },
+    "journal-entry.service": {
+      "p": "domains/accounting/services/journal-entry.service.ts",
+      "d": "acc",
+      "e": [
+        "JournalEntryService"
+      ],
+      "i": [
+        "@akount/db",
+        "../errors",
+        "../../../lib/audit",
+        "./report-cache",
+        "../utils/entry-number",
+        "../schemas/journal-entry.schema"
+      ],
+      "l": 708,
+      "pt": "TSP",
+      "v": []
+    },
+    "currency": {
+      "p": "lib/utils/currency.ts",
+      "d": "unk",
+      "e": [
+        "formatCurrency",
+        "formatCompactNumber",
+        "formatCents",
+        "parseCentsInput"
+      ],
+      "i": [],
+      "l": 79,
+      "pt": "",
+      "v": [
+        {
+          "code": "F",
+          "msg": "Inline formatCurrency",
+          "fix": "Import from @/lib/utils/currency"
+        }
+      ]
+    },
+    "date": {
+      "p": "lib/utils/date.ts",
+      "d": "unk",
+      "e": [
+        "formatDate",
+        "formatDateTime",
+        "formatDateSplit",
+        "formatMonthYear"
+      ],
+      "i": [
+        "@/lib/utils/date"
+      ],
+      "l": 84,
+      "pt": "",
+      "v": []
+    },
+    "page": {
+      "p": "app/(dashboard)/banking/accounts/page.tsx",
+      "d": "bnk",
+      "e": [
+        "metadata"
+      ],
+      "i": [
+        "next",
+        "next/link",
+        "lucide-react",
+        "@/components/banking/BankingBalanceHero",
+        "@/components/banking/BankingInsightPanel",
+        "@/components/banking/AccountCardGrid",
+        "@/components/banking/BankingStatsRow",
+        "@/components/ui/glow-card",
+        "@/components/ui/card",
+        "@/lib/api/entities"
+      ],
+      "l": 142,
+      "pt": "",
+      "v": []
+    },
+    "DomainTabs": {
+      "p": "components/shared/DomainTabs.tsx",
+      "d": "cmp",
+      "e": [
+        "DomainTabs"
+      ],
+      "i": [
+        "next/link",
+        "next/navigation",
+        "@/lib/utils",
+        "@/lib/navigation"
+      ],
+      "l": 57,
+      "pt": "C",
+      "v": []
+    },
+    "seed": {
+      "p": "db/prisma/seed.ts",
+      "d": "pkg",
+      "e": [],
+      "i": [
+        "@prisma/client"
+      ],
+      "l": 468,
+      "pt": "TP",
+      "v": []
+    }
+  },
+  "d": {
+    "bnk": {
+      "n": 2,
+      "l": 517
+    },
+    "inv": {
+      "n": 1,
+      "l": 639
+    },
+    "acc": {
+      "n": 1,
+      "l": 708
+    },
+    "unk": {
+      "n": 2,
+      "l": 163
+    },
+    "cmp": {
+      "n": 1,
+      "l": 57
+    },
+    "pkg": {
+      "n": 1,
+      "l": 468
+    }
+  },
+  "p": {
+    "T": [
+      "account.service",
+      "invoice.service",
+      "journal-entry.service",
+      "seed"
+    ],
+    "S": [
+      "account.service",
+      "invoice.service",
+      "journal-entry.service"
+    ],
+    "P": [
+      "account.service",
+      "invoice.service",
+      "journal-entry.service",
+      "seed"
+    ],
+    "C": [
+      "DomainTabs"
+    ]
+  },
+  "v": {
+    "F": [
+      {
+        "file": "currency",
+        "path": "lib/utils/currency.ts",
+        "msg": "Inline formatCurrency",
+        "fix": "Import from @/lib/utils/currency"
+      }
+    ]
+  }
+}

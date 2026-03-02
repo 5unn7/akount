@@ -1,0 +1,99 @@
+'use client';
+
+import { useCallback, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { MiniSparkline } from './MiniSparkline';
+import {
+    colorMap,
+    trendColorMap,
+    glowColorMap,
+    type StatCardData,
+} from '@/lib/dashboard/constants';
+
+const TrendIcon = { up: ArrowUp, down: ArrowDown, flat: Minus } as const;
+
+export function StatCard({ stat, index, highlighted }: { stat: StatCardData; index: number; highlighted?: boolean }) {
+    const router = useRouter();
+    const frameRef = useRef<number>(0);
+    const Icon = stat.trend ? TrendIcon[stat.trend.direction] : null;
+    const trendColor = stat.trend ? trendColorMap[stat.trend.direction] : '';
+    const glowColor = glowColorMap[stat.color ?? 'primary'];
+
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        const target = e.currentTarget;
+        const clientX = e.clientX;
+        const clientY = e.clientY;
+
+        cancelAnimationFrame(frameRef.current);
+        frameRef.current = requestAnimationFrame(() => {
+            const rect = target.getBoundingClientRect();
+            const x = ((clientX - rect.left) / rect.width) * 100;
+            const y = ((clientY - rect.top) / rect.height) * 100;
+            target.style.setProperty('--glow-x', `${x}%`);
+            target.style.setProperty('--glow-y', `${y}%`);
+        });
+    }, []);
+
+    const handleClick = useCallback(() => {
+        if (stat.href) {
+            router.push(stat.href);
+        }
+    }, [stat.href, router]);
+
+    useEffect(() => {
+        return () => {
+            cancelAnimationFrame(frameRef.current);
+        };
+    }, []);
+
+    return (
+        <div
+            role={stat.href ? 'link' : undefined}
+            className={cn(
+                'glass rounded-lg px-4 py-3.5 transition-all hover:border-ak-border-2 hover:-translate-y-px glow-track fi',
+                stat.href ? 'cursor-pointer active:scale-[0.98]' : '',
+                highlighted && 'border-ak-border-3',
+                `fi${Math.min(index + 1, 6)}`
+            )}
+            style={{ '--glow-color': glowColor } as React.CSSProperties}
+            onMouseMove={handleMouseMove}
+            onClick={handleClick}
+        >
+            <div className="flex items-start justify-between mb-2 h-5">
+                <p className="text-micro uppercase tracking-[0.05em] text-muted-foreground font-medium">
+                    {stat.label}
+                </p>
+                <div className="opacity-70 w-14 h-5">
+                    {stat.sparkline && stat.sparkline.length > 1 && (
+                        <MiniSparkline
+                            data={stat.sparkline}
+                            color={stat.color}
+                            width={56}
+                            height={20}
+                        />
+                    )}
+                </div>
+            </div>
+            <p className={cn(
+                'text-xl sm:text-3xl font-mono font-semibold leading-none mb-2',
+                stat.color ? colorMap[stat.color] : 'text-foreground'
+            )}>
+                {stat.value}
+            </p>
+            <div className={cn('flex items-center gap-1 h-4', stat.trend && Icon ? trendColor : 'text-transparent')}>
+                {stat.trend && Icon ? (
+                    <>
+                        <Icon className="h-3 w-3" />
+                        <span className="text-micro font-medium">
+                            {stat.trend.text}
+                        </span>
+                    </>
+                ) : (
+                    <span className="text-micro">&nbsp;</span>
+                )}
+            </div>
+        </div>
+    );
+}

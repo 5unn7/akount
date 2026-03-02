@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Akount Screen Builder v2.0</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0F0F17;
+      color: #FFFFFF;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════════ */
+
+    .header {
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #F59E0B;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #71717A;
+      margin-bottom: 16px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TABS
+       ═══════════════════════════════════════════════════════ */
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 8px;
+    }
+
+    .tab {
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      color: #A1A1AA;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #FFFFFF;
+    }
+
+    .tab.active {
+      background: rgba(245, 158, 11, 0.14);
+      color: #F59E0B;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTIONS
+       ═══════════════════════════════════════════════════════ */
+
+    .section {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section p {
+      font-size: 12px;
+      color: #A1A1AA;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       COMPONENT GRID
+       ═══════════════════════════════════════════════════════ */
+
+    .component-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .component-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .component-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(245, 158, 11, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .component-item .icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .component-item .name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #FFFFFF;
+    }
+
+    .component-item .desc {
+      font-size: 10px;
+      color: #71717A;
+      margin-top: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       VARIANT SELECTOR
+       ═══════════════════════════════════════════════════════ */
+
+    .variant-selector {
+      margin-top: 12px;
+      display: none;
+    }
+
+    .variant-selector.active {
+      display: block;
+    }
+
+    .variant-options {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .variant-chip {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 6px;
+      color: #A1A1AA;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .variant-chip:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.13);
+      color: #FFFFFF;
+    }
+
+    .variant-chip.selected {
+      background: rgba(245, 158, 11, 0.14);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #F59E0B;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       INPUTS
+       ═══════════════════════════════════════════════════════ */
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: #A1A1AA;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 6px;
+      color: #FFFFFF;
+      font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #F59E0B;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       BUTTONS
+       ═══════════════════════════════════════════════════════ */
+
+    .btn {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      margin-bottom: 8px;
+    }
+
+    .btn:last-child {
+      margin-bottom: 0;
+    }
+
+    .btn-primary {
+      background: #F59E0B;
+      color: #000000;
+    }
+
+    .btn-primary:hover {
+      background: #FBBF24;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(245, 158, 11, 0.14);
+      color: #FFB02E;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.13);
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       QUICK SCREENS
+       ═══════════════════════════════════════════════════════ */
+
+    .screen-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .screen-item {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.06), rgba(96, 165, 250, 0.06));
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .screen-item:hover {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(96, 165, 250, 0.1));
+      border-color: rgba(245, 158, 11, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .screen-item .screen-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .screen-item .screen-info {
+      flex: 1;
+    }
+
+    .screen-item .screen-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #FFFFFF;
+      margin-bottom: 2px;
+    }
+
+    .screen-item .screen-desc {
+      font-size: 11px;
+      color: #A1A1AA;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       UTILITIES
+       ═══════════════════════════════════════════════════════ */
+
+    .hidden {
+      display: none !important;
+    }
+
+    .mt-12 {
+      margin-top: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(52, 211, 153, 0.18);
+      color: #34D399;
+      border-radius: 6px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════════ -->
+  <div class="header">
+    <h1>🎨 Akount Screen Builder</h1>
+    <p class="subtitle">Build screens with your design system — 24+ components, 3 quick screens</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TABS
+       ═══════════════════════════════════════════════════════ -->
+  <div class="tabs">
+    <button class="tab active" data-tab="components">Components</button>
+    <button class="tab" data-tab="screens">Quick Screens</button>
+    <button class="tab" data-tab="custom">Custom</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB: COMPONENTS
+       ═══════════════════════════════════════════════════════ -->
+  <div id="tab-components" class="tab-content">
+    <!-- BUTTONS -->
+    <div class="section">
+      <h2>🔘 Buttons <span class="badge">6 variants</span></h2>
+      <div class="component-grid">
+        <div class="component-item" onclick="selectComponent('button', 'default')">
+          <div class="name">Primary</div>
+          <div class="desc">Default CTA</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('button', 'destructive')">
+          <div class="name">Destructive</div>
+          <div class="desc">Delete actions</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('button', 'outline')">
+          <div class="name">Outline</div>
+          <div class="desc">Secondary action</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('button', 'secondary')">
+          <div class="name">Secondary</div>
+          <div class="desc">Subtle button</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('button', 'ghost')">
+          <div class="name">Ghost</div>
+          <div class="desc">Minimal style</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('button', 'link')">
+          <div class="name">Link</div>
+          <div class="desc">Text link</div>
+        </div>
+      </div>
+
+      <div id="button-config" class="variant-selector mt-12">
+        <div class="input-group">
+          <label>Button Label</label>
+          <input type="text" id="button-label" value="Click me" placeholder="Enter text...">
+        </div>
+        <div class="input-group">
+          <label>Size</label>
+          <div class="variant-options">
+            <div class="variant-chip selected" data-size="default">Default</div>
+            <div class="variant-chip" data-size="sm">Small</div>
+            <div class="variant-chip" data-size="lg">Large</div>
+            <div class="variant-chip" data-size="icon">Icon</div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="createButton()">Create Button</button>
+      </div>
+    </div>
+
+    <!-- BADGES -->
+    <div class="section">
+      <h2>🏷️ Badges <span class="badge">6 variants</span></h2>
+      <div class="component-grid">
+        <div class="component-item" onclick="selectComponent('badge', 'default')">
+          <div class="name">Default</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('badge', 'secondary')">
+          <div class="name">Secondary</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('badge', 'destructive')">
+          <div class="name">Destructive</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('badge', 'success')">
+          <div class="name">Success</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('badge', 'warning')">
+          <div class="name">Warning</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('badge', 'outline')">
+          <div class="name">Outline</div>
+        </div>
+      </div>
+
+      <div id="badge-config" class="variant-selector mt-12">
+        <div class="input-group">
+          <label>Badge Label</label>
+          <input type="text" id="badge-label" value="NEW" placeholder="Badge text...">
+        </div>
+        <button class="btn btn-primary" onclick="createBadge()">Create Badge</button>
+      </div>
+    </div>
+
+    <!-- CARDS -->
+    <div class="section">
+      <h2>🃏 Cards <span class="badge">2 variants</span></h2>
+      <div class="component-grid">
+        <div class="component-item" onclick="selectComponent('card', 'default')">
+          <div class="name">Default Card</div>
+          <div class="desc">Solid background</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('card', 'glass')">
+          <div class="name">Glass Card</div>
+          <div class="desc">Glassmorphism</div>
+        </div>
+      </div>
+
+      <div id="card-config" class="variant-selector mt-12">
+        <div class="input-group">
+          <label>Width (px)</label>
+          <input type="number" id="card-width" value="400">
+        </div>
+        <div class="input-group">
+          <label>Height (px)</label>
+          <input type="number" id="card-height" value="300">
+        </div>
+        <button class="btn btn-primary" onclick="createCard()">Create Card</button>
+      </div>
+    </div>
+
+    <!-- FORM INPUTS -->
+    <div class="section">
+      <h2>📝 Form Inputs</h2>
+      <div class="component-grid">
+        <div class="component-item" onclick="selectComponent('input', 'text')">
+          <div class="name">Text Input</div>
+          <div class="desc">Standard input</div>
+        </div>
+        <div class="component-item" onclick="selectComponent('table', 'default')">
+          <div class="name">Table</div>
+          <div class="desc">Data table</div>
+        </div>
+      </div>
+
+      <div id="input-config" class="variant-selector mt-12">
+        <div class="input-group">
+          <label>Placeholder</label>
+          <input type="text" id="input-placeholder" value="Enter text..." placeholder="Placeholder text">
+        </div>
+        <button class="btn btn-primary" onclick="createInput()">Create Input</button>
+      </div>
+
+      <div id="table-config" class="variant-selector mt-12">
+        <div class="input-group">
+          <label>Rows</label>
+          <input type="number" id="table-rows" value="3" min="1" max="10">
+        </div>
+        <div class="input-group">
+          <label>Columns</label>
+          <input type="number" id="table-cols" value="3" min="1" max="6">
+        </div>
+        <button class="btn btn-primary" onclick="createTable()">Create Table</button>
+      </div>
+    </div>
+
+    <!-- STAT CARD (Custom) -->
+    <div class="section">
+      <h2>📊 Stat Card <span class="badge">Custom</span></h2>
+      <div class="input-group">
+        <label>Label</label>
+        <input type="text" id="stat-label" value="Total Revenue">
+      </div>
+      <div class="input-group">
+        <label>Value</label>
+        <input type="text" id="stat-value" value="$48,392">
+      </div>
+      <div class="input-group">
+        <label>Trend</label>
+        <input type="text" id="stat-trend" value="+12.3%">
+      </div>
+      <div class="input-group">
+        <label>Trend Type</label>
+        <div class="variant-options">
+          <div class="variant-chip selected" data-positive="true">Positive ↑</div>
+          <div class="variant-chip" data-positive="false">Negative ↓</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="createStatCard()">Create Stat Card</button>
+    </div>
+
+    <!-- SKELETON -->
+    <div class="section">
+      <h2>⏳ Skeleton</h2>
+      <div class="input-group">
+        <label>Width (px)</label>
+        <input type="number" id="skeleton-width" value="200">
+      </div>
+      <div class="input-group">
+        <label>Height (px)</label>
+        <input type="number" id="skeleton-height" value="20">
+      </div>
+      <button class="btn btn-primary" onclick="createSkeleton()">Create Skeleton</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB: QUICK SCREENS
+       ═══════════════════════════════════════════════════════ -->
+  <div id="tab-screens" class="tab-content hidden">
+    <div class="section">
+      <h2>🚀 Pre-built Screens</h2>
+      <p>Full-featured screens with Akount branding</p>
+
+      <div class="screen-grid">
+        <div class="screen-item" onclick="buildScreen('dashboard')">
+          <div class="screen-icon">📊</div>
+          <div class="screen-info">
+            <div class="screen-name">Dashboard</div>
+            <div class="screen-desc">Overview with stat cards + CTAs</div>
+          </div>
+        </div>
+
+        <div class="screen-item" onclick="buildScreen('invoice-detail')">
+          <div class="screen-icon">📄</div>
+          <div class="screen-info">
+            <div class="screen-name">Invoice Detail</div>
+            <div class="screen-desc">Invoice header + status badge</div>
+          </div>
+        </div>
+
+        <div class="screen-item" onclick="buildScreen('banking')">
+          <div class="screen-icon">🏦</div>
+          <div class="screen-info">
+            <div class="screen-name">Banking Overview</div>
+            <div class="screen-desc">Account cards + transactions table</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       TAB: CUSTOM (Future)
+       ═══════════════════════════════════════════════════════ -->
+  <div id="tab-custom" class="tab-content hidden">
+    <div class="section">
+      <h2>🛠️ Custom Builder</h2>
+      <p style="text-align: center; color: #71717A; padding: 40px 0;">
+        Coming soon: Advanced component customization
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════ -->
+  <button class="btn btn-ghost" onclick="closePlugin()">Close Plugin</button>
+
+  <!-- ═══════════════════════════════════════════════════════
+       JAVASCRIPT
+       ═══════════════════════════════════════════════════════ -->
+  <script>
+    // ───────────────────────────────────────────────────────
+    // State Management
+    // ───────────────────────────────────────────────────────
+
+    let currentComponent = null;
+    let currentVariant = 'default';
+    let currentSize = 'default';
+    let currentPositive = true;
+
+    // ───────────────────────────────────────────────────────
+    // Tab Switching
+    // ───────────────────────────────────────────────────────
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Deactivate all tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+
+        // Activate clicked tab
+        tab.classList.add('active');
+        const tabName = tab.dataset.tab;
+        document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+      });
+    });
+
+    // ───────────────────────────────────────────────────────
+    // Component Selection
+    // ───────────────────────────────────────────────────────
+
+    function selectComponent(type, variant) {
+      // Hide all configs
+      document.querySelectorAll('.variant-selector').forEach(s => s.classList.remove('active'));
+
+      // Show selected config
+      const configId = `${type}-config`;
+      const config = document.getElementById(configId);
+      if (config) {
+        config.classList.add('active');
+        currentComponent = type;
+        currentVariant = variant;
+      }
+    }
+
+    // ───────────────────────────────────────────────────────
+    // Variant Chip Selection
+    // ───────────────────────────────────────────────────────
+
+    document.querySelectorAll('.variant-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        const parent = e.target.closest('.variant-options');
+        parent.querySelectorAll('.variant-chip').forEach(c => c.classList.remove('selected'));
+        e.target.classList.add('selected');
+
+        // Update state
+        if (e.target.dataset.size) {
+          currentSize = e.target.dataset.size;
+        }
+        if (e.target.dataset.positive !== undefined) {
+          currentPositive = e.target.dataset.positive === 'true';
+        }
+      });
+    });
+
+    // ───────────────────────────────────────────────────────
+    // Component Creators
+    // ───────────────────────────────────────────────────────
+
+    function createButton() {
+      const label = document.getElementById('button-label').value;
+      parent.postMessage({
+        pluginMessage: {
+          type: 'create-button',
+          label,
+          variant: currentVariant,
+          size: currentSize,
+        }
+      }, '*');
+    }
+
+    function createBadge() {
+      const label = document.getElementById('badge-label').value;
+      parent.postMessage({
+        pluginMessage: {
+          type: 'create-badge',
+          label,
+          variant: currentVariant,
+        }
+      }, '*');
+    }
+
+    function createCard() {
+      const width = parseInt(document.getElementById('card-width').value);
+      const height = parseInt(document.getElementById('card-height').value);
+      parent.postMessage({
+        pluginMessage: {
+          type: 'create-card',
+          width,
+          height,
+          variant: currentVariant,
+        }
+      }, '*');
+    }
+
+    function createInput() {
+      const placeholder = document.getElementById('input-placeholder').value;
+      parent.postMessage({
+        pluginMessage: {
+          type: 'create-input',
+          placeholder,
+        }
+      }, '*');
+    }
+
+    function createTable() {
+      const rows = parseInt(document.getElementById('table-rows').value);
+      const cols = parseInt(document.getElementById('table-cols').value);
+      parent.postMessage({
+        pluginMessage: {
+          type: 'create-table',
+          rows,
+          cols,
+        }
+      }, '*');
+    }
+
+    function createStatCard() {
+      const label = document.getElementById('stat-label').value;
+      const value = document.getElementById('stat-value').value;
+      const trend = document.getElementById('stat-trend').value;
+      parent.postMessage({
+        pluginMessage: {
+          type: 'create-stat-card',
+          label,
+          value,
+          trend,
+          positive: currentPositive,
+        }
+      }, '*');
+    }
+
+    function createSkeleton() {
+      const width = parseInt(document.getElementById('skeleton-width').value);
+      const height = parseInt(document.getElementById('skeleton-height').value);
+      parent.postMessage({
+        pluginMessage: {
+          type: 'create-skeleton',
+          width,
+          height,
+        }
+      }, '*');
+    }
+
+    // ───────────────────────────────────────────────────────
+    // Screen Builders
+    // ───────────────────────────────────────────────────────
+
+    function buildScreen(screenType) {
+      const typeMap = {
+        'dashboard': 'build-dashboard',
+        'invoice-detail': 'build-invoice-detail',
+        'banking': 'build-banking',
+      };
+
+      parent.postMessage({
+        pluginMessage: {
+          type: typeMap[screenType],
+        }
+      }, '*');
+    }
+
+    // ───────────────────────────────────────────────────────
+    // Plugin Control
+    // ───────────────────────────────────────────────────────
+
+    function closePlugin() {
+      parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*');
+    }
+  </script>
+</body>
+</html>

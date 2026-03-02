@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akount Banking — Command Center Style</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg-0: #09090F;
+    --bg-1: #0F0F17;
+    --bg-2: #15151F;
+    --bg-3: #1A1A26;
+    --bg-4: #22222E;
+    --glass: rgba(255,255,255,0.035);
+    --glass-2: rgba(255,255,255,0.06);
+    --glass-3: rgba(255,255,255,0.09);
+    --border: rgba(255,255,255,0.09);
+    --border-2: rgba(255,255,255,0.14);
+    --border-3: rgba(255,255,255,0.20);
+    --text: #F0F0F5;
+    --text-muted: #71717A;
+    --text-dim: #52525B;
+    --primary: #F59E0B;
+    --primary-dim: rgba(245,158,11,0.18);
+    --green: #34D399;
+    --green-dim: rgba(52,211,153,0.18);
+    --red: #F87171;
+    --red-dim: rgba(248,113,113,0.18);
+    --blue: #60A5FA;
+    --blue-dim: rgba(96,165,250,0.18);
+    --purple: #A78BFA;
+    --purple-dim: rgba(167,139,250,0.18);
+    --teal: #2DD4BF;
+    --teal-dim: rgba(45,212,191,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #050508; color: var(--text); font-family: 'Manrope', sans-serif; }
+  .font-heading { font-family: 'Newsreader', serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Title bar */
+  .title-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg-0);
+    border-bottom: 1px solid var(--border-2);
+    padding: 16px 24px;
+    display: flex; align-items: center; gap: 12px;
+    backdrop-filter: blur(16px);
+  }
+  .title-bar h1 { font-family: 'Newsreader', serif; font-size: 18px; font-weight: 400; margin-right: auto; }
+  .title-bar .badge { font-size: 10px; background: var(--blue-dim); color: var(--blue); padding: 2px 8px; border-radius: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* Shared frame */
+  .frame { margin: 24px; border-radius: 16px; border: 1px solid var(--border-2); overflow: hidden; background: var(--bg-0); }
+  .frame-topbar { display: flex; align-items: center; padding: 12px 20px; background: var(--bg-1); border-bottom: 1px solid var(--border-2); gap: 12px; }
+  .frame-topbar .logo { width: 24px; height: 24px; border-radius: 6px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #000; }
+  .frame-topbar .entity { font-size: 13px; font-weight: 600; }
+  .frame-topbar .currency { font-size: 11px; color: var(--text-muted); background: var(--glass-2); padding: 2px 8px; border-radius: 6px; }
+  .frame-topbar .search { flex: 1; margin: 0 16px; padding: 6px 12px; border-radius: 8px; background: var(--glass); border: 1px solid var(--border); color: var(--text-dim); font-size: 12px; font-family: 'Manrope', sans-serif; }
+  .frame-topbar .avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--blue)); }
+  .frame-tabs { display: flex; gap: 0; padding: 0 20px; border-bottom: 1px solid var(--border); background: var(--bg-1); }
+  .frame-tabs span { padding: 10px 16px; font-size: 12px; color: var(--text-muted); border-bottom: 2px solid transparent; font-weight: 500; cursor: pointer; }
+  .frame-tabs span.active { color: var(--text); border-bottom-color: var(--primary); }
+  .frame-body { padding: 20px; min-height: 600px; }
+
+  /* Annotation */
+  .annotation { background: var(--primary-dim); border: 1px solid rgba(245,158,11,0.25); border-radius: 8px; padding: 10px 14px; margin: 16px 24px; font-size: 12px; color: var(--primary); line-height: 1.5; }
+  .annotation strong { color: var(--text); }
+
+  /* Card base */
+  .card { background: var(--glass); border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: all 0.2s; }
+  .card:hover { border-color: var(--border-2); transform: translateY(-1px); }
+  .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; }
+  .card-value { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; }
+  .card-value.sm { font-size: 18px; }
+  .card-trend { font-size: 10px; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+
+  /* ===== BANKING GRID ===== */
+  .bk-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 768px) {
+    .bk-grid { grid-template-columns: repeat(2, 1fr); }
+    .bk-full { grid-column: 1 / -1; }
+  }
+  @media (min-width: 1200px) {
+    .bk-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* Balance Hero */
+  .bk-hero {
+    background: linear-gradient(135deg, rgba(96,165,250,0.08) 0%, rgba(45,212,191,0.05) 100%);
+    border: 1px solid rgba(96,165,250,0.15); border-radius: 16px; padding: 28px;
+  }
+  .bk-hero .page-title { font-family: 'Newsreader', serif; font-size: 22px; font-weight: 400; margin-bottom: 4px; }
+  .bk-hero .page-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .bk-hero .bal-row { display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .bk-hero .bal-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 500; }
+  .bk-hero .bal-value { font-family: 'JetBrains Mono', monospace; font-size: 40px; font-weight: 600; line-height: 1; }
+  .bk-hero .bal-sub { display: flex; gap: 24px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .bk-hero .bal-sub-item .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 500; }
+  .bk-hero .bal-sub-item .val { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 600; margin-top: 2px; }
+
+  /* Action pills */
+  .bk-actions-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bk-action-pill {
+    display: flex; align-items: center; gap: 7px; padding: 7px 14px;
+    background: var(--glass-2); border: 1px solid var(--border);
+    border-radius: 8px; font-size: 11px; font-weight: 500; color: var(--text-muted);
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .bk-action-pill:hover { border-color: var(--border-2); color: var(--text); transform: translateY(-1px); background: var(--glass-3); }
+  .bk-action-pill svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* Account cards */
+  .acct-card {
+    background: var(--glass); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden;
+  }
+  .acct-card:hover { border-color: var(--border-2); transform: translateY(-1px); }
+  .acct-card .acct-type { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+  .acct-card .acct-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .acct-card .acct-institution { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+  .acct-card .acct-balance-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 500; }
+  .acct-card .acct-balance { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 600; }
+  .acct-card .acct-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .acct-card .acct-footer span { font-size: 10px; color: var(--text-dim); }
+  .acct-card .acct-sparkline { height: 24px; width: 80px; position: relative; overflow: hidden; }
+  .acct-card .acct-sparkline::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, currentColor 15%, currentColor 30%, transparent 40%, transparent 50%, currentColor 65%, currentColor 80%, transparent 90%);
+    opacity: 0.25; mask: linear-gradient(to top, transparent 0%, black 100%);
+  }
+
+  /* Transaction row */
+  .tx-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .tx-row:last-child { border-bottom: none; }
+  .tx-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .tx-info { flex: 1; min-width: 0; }
+  .tx-info .name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-info .meta { font-size: 11px; color: var(--text-muted); }
+  .tx-cat { font-size: 10px; color: var(--text-muted); background: var(--glass-2); padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+  .tx-amount { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; text-align: right; white-space: nowrap; }
+  .tx-status { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Insight mini */
+  .insight-mini {
+    background: var(--glass); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px; position: relative; overflow: hidden; transition: all 0.2s;
+  }
+  .insight-mini:hover { border-color: var(--border-2); }
+  .insight-mini .accent-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .insight-mini .type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .insight-mini .body { font-family: 'Newsreader', serif; font-style: italic; font-size: 13px; color: rgba(240,240,245,0.85); line-height: 1.5; }
+
+  /* Mobile */
+  .mobile-row { display: flex; gap: 24px; padding: 24px; justify-content: center; flex-wrap: wrap; }
+  .mobile-frame { width: 375px; border-radius: 24px; border: 2px solid var(--border-2); overflow: hidden; background: var(--bg-0); flex-shrink: 0; }
+  .mobile-frame .frame-topbar { padding: 10px 16px; }
+  .mobile-frame .frame-body { padding: 16px; min-height: 500px; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+</style>
+</head>
+<body>
+
+<!-- Title -->
+<nav class="title-bar">
+  <h1 class="font-heading">Akount Banking &mdash; Command Center Style</h1>
+  <span class="badge">Concept</span>
+</nav>
+
+<div class="annotation">
+  <strong>Banking Screen Redesign:</strong> Applies Command Center grid to Banking &gt; Accounts tab. Hero with total balance + breakdown by type. Account cards in responsive grid. Quick action pills for banking-specific actions. AI insight about banking health. Consistent with dashboard mockup language.
+</div>
+
+<!-- ==================== DESKTOP: ACCOUNTS TAB ==================== -->
+<div style="padding: 0 24px">
+  <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 8px; padding-left: 4px;">Desktop (1440px) &mdash; Banking &gt; Accounts</p>
+</div>
+<div class="frame">
+  <div class="frame-topbar">
+    <div class="logo">A</div>
+    <span class="entity">Sunny Marakana</span>
+    <span class="currency">CAD</span>
+    <input class="search" placeholder="Search transactions, accounts, invoices..." readonly>
+    <div class="avatar"></div>
+  </div>
+  <div class="frame-tabs">
+    <span class="active">Accounts</span>
+    <span>Transactions</span>
+    <span>Reconciliation</span>
+    <span>Imports</span>
+    <span>Transfers</span>
+  </div>
+  <div class="frame-body">
+    <div class="bk-grid">
+
+      <!-- ===== ROW 1: Balance Hero (3 cols) + Right Panel (1 col) ===== -->
+      <div style="grid-column: 1 / 4;">
+        <div class="bk-hero">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+            <div>
+              <div class="page-title font-heading">Banking</div>
+              <div class="page-sub">5 accounts across 2 currencies</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <div class="bk-action-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import Statement
+              </div>
+              <div class="bk-action-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Reconcile
+              </div>
+              <div class="bk-action-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>
+                Transfer
+              </div>
+              <div class="bk-action-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                Add Account
+              </div>
+            </div>
+          </div>
+          <div class="bal-row">
+            <div>
+              <div class="bal-label">Total Balance</div>
+              <div class="bal-value font-mono" style="color:var(--green)">$89,200</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--green);font-size:12px;">&#9650;</span>
+              <span class="font-mono" style="color:var(--green);font-size:14px;font-weight:600;">+$4,200</span>
+              <span class="font-mono" style="color:var(--text-muted);font-size:12px;">this month</span>
+            </div>
+          </div>
+          <div class="bal-sub">
+            <div class="bal-sub-item"><div class="label">Checking</div><div class="val font-mono" style="color:var(--green)">$52,400</div></div>
+            <div class="bal-sub-item"><div class="label">Savings</div><div class="val font-mono" style="color:var(--teal)">$35,000</div></div>
+            <div class="bal-sub-item"><div class="label">Credit Cards</div><div class="val font-mono" style="color:var(--red)">-$2,340</div></div>
+            <div class="bal-sub-item"><div class="label">Investments</div><div class="val font-mono" style="color:var(--purple)">$4,140</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Banking Insight -->
+      <div style="grid-column: 4 / 5;">
+        <div class="card" style="height:100%;display:flex;flex-direction:column;gap:12px;">
+          <!-- Banking Insight -->
+          <div class="insight-mini">
+            <div class="accent-line" style="background:linear-gradient(90deg, var(--blue), transparent);"></div>
+            <div class="type" style="color:var(--blue);">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;animation:pulse 2s infinite;"></span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Account Health
+            </div>
+            <div class="body">Your checking account has grown 8% this month. Credit card balance is low at 2.6% utilization &mdash; excellent for credit score.</div>
+          </div>
+
+          <!-- Unreconciled -->
+          <div style="margin-top:auto;">
+            <div class="card-label">Needs Attention</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
+                <div><span style="font-size:12px;font-weight:500;">Unreconciled</span></div>
+                <span class="font-mono" style="font-size:12px;color:var(--primary);font-weight:600;">14 txns</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
+                <div><span style="font-size:12px;font-weight:500;">Uncategorized</span></div>
+                <span class="font-mono" style="font-size:12px;color:var(--primary);font-weight:600;">7 txns</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;">
+                <div><span style="font-size:12px;font-weight:500;">Last import</span></div>
+                <span style="font-size:11px;color:var(--text-muted);">2 days ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 2: Quick Stats (4 cards) ===== -->
+      <div class="bk-full">
+        <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:12px;">
+          <div class="card" style="padding:20px;">
+            <div class="card-label">Income MTD</div>
+            <div class="card-value sm font-mono" style="color:var(--green)">$12,800</div>
+            <div class="card-trend" style="color:var(--green)">&#9650; +18.2% vs last mo</div>
+          </div>
+          <div class="card" style="padding:20px;">
+            <div class="card-label">Expenses MTD</div>
+            <div class="card-value sm font-mono" style="color:var(--red)">$8,600</div>
+            <div class="card-trend" style="color:var(--green)">&#9660; -3.4% vs last mo</div>
+          </div>
+          <div class="card" style="padding:20px;">
+            <div class="card-label">Net Cash Flow</div>
+            <div class="card-value sm font-mono" style="color:var(--teal)">+$4,200</div>
+            <div class="card-trend" style="color:var(--green)">&#9650; Positive</div>
+          </div>
+          <div class="card" style="padding:20px;">
+            <div class="card-label">Accounts</div>
+            <div class="card-value sm font-mono">5</div>
+            <div class="card-trend" style="color:var(--text-muted)">2 currencies (CAD, USD)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 3: Account Cards (4 cols) ===== -->
+      <div class="bk-full">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div class="card-label" style="margin-bottom:0;">Your Accounts</div>
+          <div style="display:flex;gap:6px;">
+            <span style="font-size:10px;padding:3px 8px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border-2);color:var(--text);cursor:pointer;">All</span>
+            <span style="font-size:10px;padding:3px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Checking</span>
+            <span style="font-size:10px;padding:3px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Savings</span>
+            <span style="font-size:10px;padding:3px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Credit</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:12px;">
+          <!-- Checking 1 -->
+          <div class="acct-card">
+            <span class="acct-type" style="background:var(--green-dim);color:var(--green);">Checking</span>
+            <div class="acct-name">Business Chequing</div>
+            <div class="acct-institution">CIBC &bull; ****4521</div>
+            <div class="acct-balance-label">Balance</div>
+            <div class="acct-balance font-mono" style="color:var(--green)">$42,400</div>
+            <div class="acct-footer">
+              <span>23 txns this month</span>
+              <div class="acct-sparkline" style="color:var(--green);"></div>
+            </div>
+          </div>
+          <!-- Checking 2 -->
+          <div class="acct-card">
+            <span class="acct-type" style="background:var(--green-dim);color:var(--green);">Checking</span>
+            <div class="acct-name">USD Operations</div>
+            <div class="acct-institution">TD &bull; ****8832</div>
+            <div class="acct-balance-label">Balance</div>
+            <div class="acct-balance font-mono" style="color:var(--green)">$10,000</div>
+            <div class="acct-footer">
+              <span>8 txns this month</span>
+              <div class="acct-sparkline" style="color:var(--green);"></div>
+            </div>
+          </div>
+          <!-- Savings -->
+          <div class="acct-card">
+            <span class="acct-type" style="background:var(--teal-dim);color:var(--teal);">Savings</span>
+            <div class="acct-name">Tax Reserve</div>
+            <div class="acct-institution">EQ Bank &bull; ****1190</div>
+            <div class="acct-balance-label">Balance</div>
+            <div class="acct-balance font-mono" style="color:var(--teal)">$35,000</div>
+            <div class="acct-footer">
+              <span>2 txns this month</span>
+              <div class="acct-sparkline" style="color:var(--teal);"></div>
+            </div>
+          </div>
+          <!-- Credit Card -->
+          <div class="acct-card">
+            <span class="acct-type" style="background:var(--red-dim);color:var(--red);">Credit Card</span>
+            <div class="acct-name">Business Visa</div>
+            <div class="acct-institution">CIBC &bull; ****7743</div>
+            <div class="acct-balance-label">Owing</div>
+            <div class="acct-balance font-mono" style="color:var(--red)">-$2,340</div>
+            <div class="acct-footer">
+              <span>$90k limit &bull; 2.6% used</span>
+              <div class="acct-sparkline" style="color:var(--red);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 4: Recent Transactions (3 cols) + Cash Flow Mini (1 col) ===== -->
+      <div style="grid-column: 1 / 4;">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div class="card-label" style="margin-bottom:0;">Recent Transactions</div>
+            <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:500;">View all &rarr;</span>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon" style="background:var(--green-dim);color:var(--green);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+            </div>
+            <div class="tx-info"><div class="name">Acme Corp &mdash; Invoice #1042</div><div class="meta">Today, 2:30 PM &bull; Business Chequing</div></div>
+            <div class="tx-cat">Consulting Revenue</div>
+            <div class="tx-amount" style="color:var(--green)">+$3,500.00</div>
+            <div class="tx-status" style="background:var(--green);" title="Reconciled"></div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon" style="background:var(--red-dim);color:var(--red);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+            </div>
+            <div class="tx-info"><div class="name">AWS &mdash; Monthly hosting</div><div class="meta">Today, 9:15 AM &bull; Business Visa</div></div>
+            <div class="tx-cat">Cloud Infrastructure</div>
+            <div class="tx-amount" style="color:var(--red)">-$420.00</div>
+            <div class="tx-status" style="background:var(--green);" title="Reconciled"></div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon" style="background:var(--green-dim);color:var(--green);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+            </div>
+            <div class="tx-info"><div class="name">Widget Labs &mdash; Consulting</div><div class="meta">Yesterday &bull; Business Chequing</div></div>
+            <div class="tx-cat">Consulting Revenue</div>
+            <div class="tx-amount" style="color:var(--green)">+$2,800.00</div>
+            <div class="tx-status" style="background:var(--primary);" title="Unreconciled"></div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon" style="background:var(--red-dim);color:var(--red);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+            </div>
+            <div class="tx-info"><div class="name">Figma &mdash; Annual license</div><div class="meta">Feb 18 &bull; Business Visa</div></div>
+            <div class="tx-cat">Software &amp; Tools</div>
+            <div class="tx-amount" style="color:var(--red)">-$144.00</div>
+            <div class="tx-status" style="background:var(--green);" title="Reconciled"></div>
+          </div>
+          <div class="tx-row">
+            <div class="tx-icon" style="background:var(--blue-dim);color:var(--blue);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="m15 9 6-6"/><path d="m9 15-6 6"/></svg>
+            </div>
+            <div class="tx-info"><div class="name">Transfer to Tax Reserve</div><div class="meta">Feb 17 &bull; Chequing &rarr; Savings</div></div>
+            <div class="tx-cat">Internal Transfer</div>
+            <div class="tx-amount" style="color:var(--blue)">$5,000.00</div>
+            <div class="tx-status" style="background:var(--green);" title="Reconciled"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cash Flow Mini Chart -->
+      <div style="grid-column: 4 / 5;">
+        <div class="card" style="height:100%;display:flex;flex-direction:column;">
+          <div class="card-label">Monthly Cash Flow</div>
+          <!-- Mini bar chart -->
+          <div style="flex:1;display:flex;align-items:flex-end;gap:6px;padding-top:12px;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-dim);border-radius:4px;height:60px;position:relative;">
+                <div style="position:absolute;bottom:0;width:100%;background:var(--green);border-radius:4px;height:45px;opacity:0.6;"></div>
+              </div>
+              <span style="font-size:9px;color:var(--text-dim);">Oct</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-dim);border-radius:4px;height:80px;position:relative;">
+                <div style="position:absolute;bottom:0;width:100%;background:var(--green);border-radius:4px;height:55px;opacity:0.6;"></div>
+              </div>
+              <span style="font-size:9px;color:var(--text-dim);">Nov</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--red-dim);border-radius:4px;height:70px;position:relative;">
+                <div style="position:absolute;bottom:0;width:100%;background:var(--red);border-radius:4px;height:75px;opacity:0.6;"></div>
+              </div>
+              <span style="font-size:9px;color:var(--text-dim);">Dec</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-dim);border-radius:4px;height:90px;position:relative;">
+                <div style="position:absolute;bottom:0;width:100%;background:var(--green);border-radius:4px;height:60px;opacity:0.6;"></div>
+              </div>
+              <span style="font-size:9px;color:var(--text-dim);">Jan</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div style="width:100%;background:var(--green-dim);border-radius:4px;height:100px;position:relative;">
+                <div style="position:absolute;bottom:0;width:100%;background:var(--green);border-radius:4px;height:58px;opacity:0.6;"></div>
+              </div>
+              <span style="font-size:9px;color:var(--text-dim);">Feb</span>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-muted);">
+              <span style="width:8px;height:8px;border-radius:2px;background:var(--green);opacity:0.6;"></span> Income
+            </span>
+            <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-muted);">
+              <span style="width:8px;height:8px;border-radius:2px;background:var(--green-dim);"></span> Expenses
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DESKTOP: TRANSACTIONS COMMAND CENTER ==================== -->
+<div style="padding: 24px 24px 0">
+  <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 8px; padding-left: 4px;">Desktop (1440px) &mdash; Banking &gt; Transactions (Command Center)</p>
+</div>
+<div class="annotation">
+  <strong>Transactions Command Center:</strong> Transforms flat transaction list into an intelligence-driven view. Features: 6-stat row with sparklines, spending breakdown by category (horizontal bars), AI categorization queue with 1-click suggestions, top merchants, daily spending timeline, recurring transaction detection, and an enhanced table with inline bulk actions. All powered by existing backend: AI categorization service (138 patterns), performance metrics with sparklines, bulk categorize/delete APIs.
+</div>
+<div class="frame">
+  <div class="frame-topbar">
+    <div class="logo">A</div>
+    <span class="entity">Sunny Marakana</span>
+    <span class="currency">CAD</span>
+    <input class="search" placeholder="Search transactions, accounts, invoices..." readonly>
+    <div class="avatar"></div>
+  </div>
+  <div class="frame-tabs">
+    <span>Accounts</span>
+    <span class="active">Transactions</span>
+    <span>Reconciliation</span>
+    <span>Imports</span>
+    <span>Transfers</span>
+  </div>
+  <div class="frame-body">
+    <div class="bk-grid">
+
+      <!-- ===== ROW 1: Header with Actions + AI CTA ===== -->
+      <div class="bk-full">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="font-heading" style="font-size:22px;font-weight:400;">Transaction Intelligence</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">156 transactions this month &bull; 7 need attention</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <!-- AI Auto-categorize CTA -->
+            <div class="bk-action-pill" style="background:var(--purple-dim);border-color:rgba(167,139,250,0.25);color:var(--purple);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              Auto-Categorize 7
+            </div>
+            <div class="bk-action-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+              New Transaction
+            </div>
+            <div class="bk-action-pill" style="background:var(--primary-dim);border-color:rgba(245,158,11,0.25);color:var(--primary);">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Import
+            </div>
+            <div class="bk-action-pill">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              Deduplicate
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 2: 6-Stat Cards with Sparklines ===== -->
+      <div class="bk-full">
+        <div style="display:grid;grid-template-columns:repeat(6, 1fr);gap:10px;">
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Revenue</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--green);">$18,400</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--green);margin-top:0;">&#9650; +12.3%</div>
+              <!-- Mini sparkline -->
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,12 6,10 12,8 18,11 24,7 30,5 36,6 42,3 48,4" stroke="var(--green)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Expenses</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--red);">$10,850</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--green);margin-top:0;">&#9660; -5.1%</div>
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,4 6,6 12,5 18,8 24,7 30,9 36,10 42,8 48,11" stroke="var(--red)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Net Flow</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--teal);">+$7,550</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--green);margin-top:0;">&#9650; Positive</div>
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,10 6,9 12,7 18,9 24,6 30,4 36,5 42,3 48,2" stroke="var(--teal)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Transactions</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;">156</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--text-muted);margin-top:0;">42 in, 114 out</div>
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,8 6,6 12,9 18,5 24,7 30,4 36,8 42,6 48,5" stroke="var(--blue)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Categorized</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--green);">95.5%</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--primary);margin-top:0;">7 remaining</div>
+              <!-- Progress bar instead of sparkline -->
+              <div style="width:48px;height:4px;background:var(--glass-3);border-radius:2px;overflow:hidden;">
+                <div style="width:95.5%;height:100%;background:var(--green);border-radius:2px;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">GL Posted</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--blue);">82%</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--text-muted);margin-top:0;">28 unposted</div>
+              <div style="width:48px;height:4px;background:var(--glass-3);border-radius:2px;overflow:hidden;">
+                <div style="width:82%;height:100%;background:var(--blue);border-radius:2px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 3: Spending Breakdown (2 cols) + Intelligence Panel (2 cols) ===== -->
+      <!-- Left: Spending by Category -->
+      <div style="grid-column: 1 / 3;">
+        <div class="card" style="height:100%;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="card-label" style="margin-bottom:0;">Spending by Category</div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border-2);color:var(--text);cursor:pointer;">This Month</span>
+              <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Last 90d</span>
+            </div>
+          </div>
+          <!-- Horizontal bar chart -->
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:11px;width:110px;color:var(--text-muted);text-align:right;">Cloud & Hosting</span>
+              <div style="flex:1;height:20px;background:var(--glass);border-radius:4px;overflow:hidden;position:relative;">
+                <div style="width:72%;height:100%;background:linear-gradient(90deg, var(--red), rgba(248,113,113,0.4));border-radius:4px;"></div>
+              </div>
+              <span class="font-mono" style="font-size:11px;width:70px;text-align:right;color:var(--red);">$3,840</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:11px;width:110px;color:var(--text-muted);text-align:right;">Software & Tools</span>
+              <div style="flex:1;height:20px;background:var(--glass);border-radius:4px;overflow:hidden;">
+                <div style="width:48%;height:100%;background:linear-gradient(90deg, var(--purple), rgba(167,139,250,0.4));border-radius:4px;"></div>
+              </div>
+              <span class="font-mono" style="font-size:11px;width:70px;text-align:right;color:var(--purple);">$2,560</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:11px;width:110px;color:var(--text-muted);text-align:right;">Office & Supplies</span>
+              <div style="flex:1;height:20px;background:var(--glass);border-radius:4px;overflow:hidden;">
+                <div style="width:34%;height:100%;background:linear-gradient(90deg, var(--blue), rgba(96,165,250,0.4));border-radius:4px;"></div>
+              </div>
+              <span class="font-mono" style="font-size:11px;width:70px;text-align:right;color:var(--blue);">$1,810</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:11px;width:110px;color:var(--text-muted);text-align:right;">Meals & Entertain</span>
+              <div style="flex:1;height:20px;background:var(--glass);border-radius:4px;overflow:hidden;">
+                <div style="width:22%;height:100%;background:linear-gradient(90deg, var(--teal), rgba(45,212,191,0.4));border-radius:4px;"></div>
+              </div>
+              <span class="font-mono" style="font-size:11px;width:70px;text-align:right;color:var(--teal);">$1,180</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:11px;width:110px;color:var(--text-muted);text-align:right;">Professional Svc</span>
+              <div style="flex:1;height:20px;background:var(--glass);border-radius:4px;overflow:hidden;">
+                <div style="width:16%;height:100%;background:linear-gradient(90deg, var(--primary), rgba(245,158,11,0.4));border-radius:4px;"></div>
+              </div>
+              <span class="font-mono" style="font-size:11px;width:70px;text-align:right;color:var(--primary);">$860</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:11px;width:110px;color:var(--text-muted);text-align:right;">Other (3)</span>
+              <div style="flex:1;height:20px;background:var(--glass);border-radius:4px;overflow:hidden;">
+                <div style="width:11%;height:100%;background:linear-gradient(90deg, var(--text-dim), rgba(82,82,91,0.4));border-radius:4px;"></div>
+              </div>
+              <span class="font-mono" style="font-size:11px;width:70px;text-align:right;color:var(--text-muted);">$600</span>
+            </div>
+          </div>
+          <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:10px;color:var(--text-dim);">Total expenses: <span class="font-mono" style="color:var(--red);">$10,850</span></span>
+            <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:500;">View all categories &rarr;</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Intelligence Panel -->
+      <div style="grid-column: 3 / 5;">
+        <div style="display:flex;flex-direction:column;gap:12px;height:100%;">
+
+          <!-- AI Categorization Queue -->
+          <div class="card" style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div class="card-label" style="margin-bottom:0;display:flex;align-items:center;gap:6px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--purple);display:inline-block;animation:pulse 2s infinite;"></span>
+                AI Categorization Queue
+              </div>
+              <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--purple-dim);color:var(--purple);font-weight:600;">7 PENDING</span>
+            </div>
+            <!-- Queue items with AI suggestions -->
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--glass);border-radius:8px;border:1px solid var(--border);">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Starbucks &mdash; Client meeting</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Feb 16 &bull; -$12.40</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--teal-dim);color:var(--teal);border:1px solid rgba(45,212,191,0.2);cursor:pointer;font-weight:500;" title="AI suggests: Meals & Entertainment (85% confidence)">Meals &check;</span>
+                  <span style="font-size:9px;padding:3px 6px;border-radius:6px;background:var(--glass-2);color:var(--text-dim);cursor:pointer;" title="Reject suggestion">&times;</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--glass);border-radius:8px;border:1px solid var(--border);">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">COSTCO WHOLESALE #204</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Feb 15 &bull; -$89.32</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,165,250,0.2);cursor:pointer;font-weight:500;" title="AI suggests: Office Supplies (75% confidence)">Supplies &check;</span>
+                  <span style="font-size:9px;padding:3px 6px;border-radius:6px;background:var(--glass-2);color:var(--text-dim);cursor:pointer;">&times;</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--glass);border-radius:8px;border:1px solid var(--border);">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">UBER* TRIP-29381</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Feb 14 &bull; -$24.50</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                  <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.2);cursor:pointer;font-weight:500;" title="AI suggests: Transportation (85% confidence)">Transport &check;</span>
+                  <span style="font-size:9px;padding:3px 6px;border-radius:6px;background:var(--glass-2);color:var(--text-dim);cursor:pointer;">&times;</span>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:8px;text-align:center;">
+              <span style="font-size:10px;color:var(--purple);cursor:pointer;font-weight:500;">+ 4 more uncategorized &rarr;</span>
+            </div>
+          </div>
+
+          <!-- Top Merchants + Recurring -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <!-- Top Merchants -->
+            <div class="card" style="padding:14px;">
+              <div class="card-label">Top Merchants</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:11px;font-weight:500;">AWS</span>
+                  <span class="font-mono" style="font-size:11px;color:var(--red);">$2,100</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:11px;font-weight:500;">Stripe Fees</span>
+                  <span class="font-mono" style="font-size:11px;color:var(--red);">$1,240</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:11px;font-weight:500;">WeWork</span>
+                  <span class="font-mono" style="font-size:11px;color:var(--red);">$800</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:11px;font-weight:500;">GitHub</span>
+                  <span class="font-mono" style="font-size:11px;color:var(--red);">$420</span>
+                </div>
+              </div>
+            </div>
+            <!-- Recurring Detected -->
+            <div class="card" style="padding:14px;">
+              <div class="card-label" style="display:flex;align-items:center;gap:6px;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><polyline points="21 3 21 9 15 9"/></svg>
+                Recurring Detected
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><span style="font-size:11px;font-weight:500;">AWS</span><span style="font-size:9px;color:var(--text-dim);margin-left:4px;">monthly</span></div>
+                  <span class="font-mono" style="font-size:11px;color:var(--text-muted);">~$420</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><span style="font-size:11px;font-weight:500;">GitHub</span><span style="font-size:9px;color:var(--text-dim);margin-left:4px;">monthly</span></div>
+                  <span class="font-mono" style="font-size:11px;color:var(--text-muted);">~$44</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><span style="font-size:11px;font-weight:500;">WeWork</span><span style="font-size:9px;color:var(--text-dim);margin-left:4px;">monthly</span></div>
+                  <span class="font-mono" style="font-size:11px;color:var(--text-muted);">~$800</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div><span style="font-size:11px;font-weight:500;">Figma</span><span style="font-size:9px;color:var(--text-dim);margin-left:4px;">annual</span></div>
+                  <span class="font-mono" style="font-size:11px;color:var(--text-muted);">$144/yr</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 4: Daily Spending Timeline (full width) ===== -->
+      <div class="bk-full">
+        <div class="card" style="padding:16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div class="card-label" style="margin-bottom:0;">Daily Cash Flow &mdash; February 2026</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-muted);">
+                <span style="width:8px;height:3px;border-radius:1px;background:var(--green);"></span> Income
+              </span>
+              <span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--text-muted);">
+                <span style="width:8px;height:3px;border-radius:1px;background:var(--red);"></span> Expenses
+              </span>
+            </div>
+          </div>
+          <!-- Area chart representation -->
+          <div style="height:80px;display:flex;align-items:flex-end;gap:3px;padding-top:4px;">
+            <!-- 20 days of data, bars alternate income (above) and expense (below baseline) -->
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:35px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:12px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:8px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:22px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:0px;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:18px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:45px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:8px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:5px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:30px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:0px;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:6px;background:var(--red);opacity:0.15;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:0px;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:4px;background:var(--red);opacity:0.15;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:28px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:15px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:12px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:25px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:60px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:5px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:0px;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:42px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:20px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:10px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:0px;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:3px;background:var(--red);opacity:0.15;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:0px;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:3px;background:var(--red);opacity:0.15;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:15px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:20px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:5px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:15px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:50px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:20px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:28px;background:var(--green);opacity:0.4;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:8px;background:var(--red);opacity:0.3;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:35px;background:var(--green);opacity:0.5;border-radius:2px 2px 0 0;"></div>
+              <div style="width:100%;height:16px;background:var(--red);opacity:0.4;border-radius:0 0 2px 2px;"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;">
+              <div style="width:100%;height:55px;background:var(--green);opacity:0.6;border-radius:2px 2px 0 0;border:1px solid rgba(52,211,153,0.3);"></div>
+              <div style="width:100%;height:10px;background:var(--red);opacity:0.5;border-radius:0 0 2px 2px;border:1px solid rgba(248,113,113,0.3);"></div>
+            </div>
+          </div>
+          <!-- Day labels -->
+          <div style="display:flex;gap:3px;margin-top:4px;">
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">1</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">2</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">3</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">4</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">5</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">6</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">7</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">8</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">9</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">10</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">11</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">12</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">13</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">14</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">15</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">16</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">17</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">18</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);">19</span>
+            <span style="flex:1;text-align:center;font-size:8px;color:var(--text-dim);font-weight:600;color:var(--text-muted);">20</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 5: Filters + Smart Search Bar ===== -->
+      <div class="bk-full">
+        <div class="card" style="padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input style="flex:1;min-width:200px;padding:6px 10px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border);color:var(--text);font-size:12px;font-family:'Manrope',sans-serif;" placeholder="Search by description, merchant, amount..." readonly>
+          <div style="height:20px;width:1px;background:var(--border);"></div>
+          <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border-2);color:var(--text);cursor:pointer;">All Accounts &#9662;</span>
+          <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Feb 1 &mdash; Feb 20 &#9662;</span>
+          <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">All Categories &#9662;</span>
+          <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">All Sources &#9662;</span>
+          <div style="flex:1;min-width:0;"></div>
+          <span style="font-size:10px;color:var(--text-dim);">156 results</span>
+          <!-- Bulk action (appears when rows selected) -->
+          <div style="display:flex;gap:4px;padding-left:8px;border-left:1px solid var(--border);">
+            <span style="font-size:9px;padding:4px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Post to GL</span>
+            <span style="font-size:9px;padding:4px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Bulk Categorize</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 6: Enhanced Transaction Table ===== -->
+      <div class="bk-full">
+        <div class="card" style="padding:0;overflow:hidden;">
+          <!-- Table header -->
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--glass);border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:500;">
+            <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+            <span style="width:70px;">Date</span>
+            <span style="flex:1;">Description</span>
+            <span style="width:110px;">Category</span>
+            <span style="width:80px;">Account</span>
+            <span style="width:70px;">Source</span>
+            <span style="width:60px;">GL</span>
+            <span style="width:100px;text-align:right;">Amount</span>
+          </div>
+          <!-- Transaction rows with enriched data -->
+          <div style="padding:0 16px;">
+            <!-- Row 1: Income, reconciled, posted -->
+            <div class="tx-row" style="gap:12px;">
+              <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 20</span>
+              <div class="tx-info">
+                <div class="name">Acme Corp &mdash; Invoice #1042</div>
+                <div class="meta">Business Chequing &bull; e-Transfer</div>
+              </div>
+              <div class="tx-cat" style="width:110px;background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.15);">Consulting</div>
+              <span style="font-size:10px;color:var(--text-muted);width:80px;">Chequing</span>
+              <span style="font-size:9px;width:70px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--blue-dim);color:var(--blue);text-align:center;">Posted</span>
+              <div class="tx-amount" style="color:var(--green);width:100px;">+$3,500.00</div>
+            </div>
+            <!-- Row 2: Expense, reconciled, posted -->
+            <div class="tx-row" style="gap:12px;">
+              <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 20</span>
+              <div class="tx-info">
+                <div class="name">AWS &mdash; Monthly hosting</div>
+                <div class="meta">Business Visa &bull; Recurring
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" style="vertical-align:-1px;margin-left:3px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                </div>
+              </div>
+              <div class="tx-cat" style="width:110px;">Cloud Infra</div>
+              <span style="font-size:10px;color:var(--text-muted);width:80px;">Visa</span>
+              <span style="font-size:9px;width:70px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--blue-dim);color:var(--blue);text-align:center;">Posted</span>
+              <div class="tx-amount" style="color:var(--red);width:100px;">-$420.00</div>
+            </div>
+            <!-- Row 3: Income, unreconciled -->
+            <div class="tx-row" style="gap:12px;">
+              <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 19</span>
+              <div class="tx-info">
+                <div class="name">Widget Labs &mdash; Consulting</div>
+                <div class="meta">Business Chequing</div>
+              </div>
+              <div class="tx-cat" style="width:110px;background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.15);">Revenue</div>
+              <span style="font-size:10px;color:var(--text-muted);width:80px;">Chequing</span>
+              <span style="font-size:9px;width:70px;padding:2px 6px;border-radius:4px;background:var(--blue-dim);color:var(--blue);text-align:center;">CSV</span>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--glass-2);color:var(--text-dim);text-align:center;">Unposted</span>
+              <div class="tx-amount" style="color:var(--green);width:100px;">+$2,800.00</div>
+            </div>
+            <!-- Row 4: Expense, posted, recurring -->
+            <div class="tx-row" style="gap:12px;">
+              <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 18</span>
+              <div class="tx-info">
+                <div class="name">Figma &mdash; Annual license</div>
+                <div class="meta">Business Visa &bull; Recurring
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" style="vertical-align:-1px;margin-left:3px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                </div>
+              </div>
+              <div class="tx-cat" style="width:110px;">Software</div>
+              <span style="font-size:10px;color:var(--text-muted);width:80px;">Visa</span>
+              <span style="font-size:9px;width:70px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--blue-dim);color:var(--blue);text-align:center;">Posted</span>
+              <div class="tx-amount" style="color:var(--red);width:100px;">-$144.00</div>
+            </div>
+            <!-- Row 5: Transfer -->
+            <div class="tx-row" style="gap:12px;">
+              <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 17</span>
+              <div class="tx-info">
+                <div class="name">Transfer to Tax Reserve</div>
+                <div class="meta">Chequing &rarr; Savings</div>
+              </div>
+              <div class="tx-cat" style="width:110px;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,165,250,0.15);">Transfer</div>
+              <span style="font-size:10px;color:var(--text-muted);width:80px;">Internal</span>
+              <span style="font-size:9px;width:70px;padding:2px 6px;border-radius:4px;background:var(--glass-2);color:var(--text-dim);text-align:center;">MANUAL</span>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--blue-dim);color:var(--blue);text-align:center;">Posted</span>
+              <div class="tx-amount" style="color:var(--blue);width:100px;">$5,000.00</div>
+            </div>
+            <!-- Row 6: UNCATEGORIZED with AI suggestion inline -->
+            <div class="tx-row" style="gap:12px;background:rgba(245,158,11,0.03);margin:0 -16px;padding:10px 16px;border-left:2px solid var(--primary);">
+              <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 16</span>
+              <div class="tx-info">
+                <div class="name">Starbucks &mdash; Client meeting</div>
+                <div class="meta" style="color:var(--primary);">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2.5" style="vertical-align:-1px;margin-right:3px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                  AI suggests: Meals &amp; Entertainment (85%)
+                </div>
+              </div>
+              <div style="width:110px;display:flex;gap:3px;">
+                <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--teal-dim);color:var(--teal);border:1px solid rgba(45,212,191,0.2);cursor:pointer;font-weight:500;">Accept</span>
+                <span style="font-size:9px;padding:3px 6px;border-radius:6px;background:var(--glass-2);color:var(--text-dim);cursor:pointer;">Edit</span>
+              </div>
+              <span style="font-size:10px;color:var(--text-muted);width:80px;">Visa</span>
+              <span style="font-size:9px;width:70px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--glass-2);color:var(--text-dim);text-align:center;">Unposted</span>
+              <div class="tx-amount" style="color:var(--red);width:100px;">-$12.40</div>
+            </div>
+            <!-- Row 7: Anomaly detection highlight -->
+            <div class="tx-row" style="gap:12px;background:rgba(248,113,113,0.03);margin:0 -16px;padding:10px 16px;border-left:2px solid var(--red);">
+              <span style="width:16px;"><input type="checkbox" style="accent-color:var(--primary);width:12px;height:12px;cursor:pointer;"></span>
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 15</span>
+              <div class="tx-info">
+                <div class="name">AMZN MKTP &mdash; Bulk order</div>
+                <div class="meta" style="color:var(--red);">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" style="vertical-align:-1px;margin-right:3px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                  Unusual &mdash; 4.2x your avg Amazon spend
+                </div>
+              </div>
+              <div class="tx-cat" style="width:110px;">Office Supplies</div>
+              <span style="font-size:10px;color:var(--text-muted);width:80px;">Visa</span>
+              <span style="font-size:9px;width:70px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--glass-2);color:var(--text-dim);text-align:center;">Unposted</span>
+              <div class="tx-amount" style="color:var(--red);width:100px;">-$847.20</div>
+            </div>
+          </div>
+          <!-- Pagination -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);">
+            <span>Showing 1-25 of 156</span>
+            <div style="display:flex;gap:4px;">
+              <span style="padding:4px 10px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border-2);color:var(--text);cursor:pointer;">1</span>
+              <span style="padding:4px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);cursor:pointer;">2</span>
+              <span style="padding:4px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);cursor:pointer;">3</span>
+              <span style="padding:4px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);cursor:pointer;">...</span>
+              <span style="padding:4px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);cursor:pointer;">7</span>
+              <span style="padding:4px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);cursor:pointer;">&rarr;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DESKTOP: ACCOUNT DETAIL ==================== -->
+<div style="padding: 24px 24px 0">
+  <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 8px; padding-left: 4px;">Desktop (1440px) &mdash; Banking &gt; Accounts &gt; Business Chequing (Detail)</p>
+</div>
+<div class="annotation">
+  <strong>Account Detail Command Center:</strong> Replaces the flat header + stat pills + transaction list with a rich account profile. Features: type-colored gradient hero with balance + running balance sparkline, 5-stat row (Income MTD, Expenses MTD, Unreconciled, Avg Daily, Running Balance trend), account insight card, spending breakdown for this account, balance trend chart, and the enhanced transaction table scoped to this account. Breadcrumb navigation back to Accounts list.
+</div>
+<div class="frame">
+  <div class="frame-topbar">
+    <div class="logo">A</div>
+    <span class="entity">Sunny Marakana</span>
+    <span class="currency">CAD</span>
+    <input class="search" placeholder="Search transactions, accounts, invoices..." readonly>
+    <div class="avatar"></div>
+  </div>
+  <div class="frame-tabs">
+    <span>Accounts</span>
+    <span>Transactions</span>
+    <span>Reconciliation</span>
+    <span>Imports</span>
+    <span>Transfers</span>
+  </div>
+  <div class="frame-body">
+
+    <!-- Breadcrumbs -->
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;font-size:12px;">
+      <span style="color:var(--text-muted);cursor:pointer;">Banking</span>
+      <span style="color:var(--text-dim);">/</span>
+      <span style="color:var(--text-muted);cursor:pointer;">Accounts</span>
+      <span style="color:var(--text-dim);">/</span>
+      <span style="color:var(--text);">Business Chequing</span>
+    </div>
+
+    <div class="bk-grid">
+
+      <!-- ===== ROW 1: Account Hero (3 cols) + Account Insight (1 col) ===== -->
+      <div style="grid-column: 1 / 4;">
+        <div style="background:linear-gradient(135deg, rgba(52,211,153,0.08) 0%, rgba(96,165,250,0.05) 100%);border:1px solid rgba(52,211,153,0.15);border-radius:16px;padding:24px;">
+          <!-- Header row: icon + name + actions -->
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <!-- Account type icon -->
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--green-dim);display:flex;align-items:center;justify-content:center;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;">Business Chequing</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
+                  <span style="font-size:12px;color:var(--text-muted);">CIBC &bull; ****4521</span>
+                  <span style="width:6px;height:6px;border-radius:50%;background:var(--green);"></span>
+                  <span style="font-size:10px;color:var(--text-muted);">Active</span>
+                  <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Checking</span>
+                  <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:var(--glass-2);color:var(--text-muted);font-family:'JetBrains Mono',monospace;">CAD</span>
+                  <span style="font-size:10px;color:var(--text-dim);">Sunny Marakana Corp</span>
+                </div>
+              </div>
+            </div>
+            <!-- Actions -->
+            <div style="display:flex;gap:8px;">
+              <div class="bk-action-pill" style="background:var(--primary-dim);border-color:rgba(245,158,11,0.25);color:var(--primary);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import
+              </div>
+              <div class="bk-action-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                Reconcile
+              </div>
+              <div class="bk-action-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Manage
+              </div>
+            </div>
+          </div>
+
+          <!-- Balance + Running balance sparkline -->
+          <div style="display:flex;align-items:flex-end;gap:32px;">
+            <div>
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:500;">Current Balance</div>
+              <div class="font-mono" style="font-size:40px;font-weight:600;color:var(--green);line-height:1;">$42,400</div>
+            </div>
+            <!-- Running balance sparkline (30 days) -->
+            <div style="flex:1;max-width:300px;">
+              <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);margin-bottom:4px;">30-Day Balance Trend</div>
+              <svg width="100%" height="48" viewBox="0 0 300 48" preserveAspectRatio="none" fill="none">
+                <defs>
+                  <linearGradient id="balGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--green)" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="var(--green)" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,38 L15,35 L30,32 L45,36 L60,30 L75,28 L90,33 L105,25 L120,22 L135,26 L150,20 L165,18 L180,22 L195,15 L210,12 L225,16 L240,10 L255,8 L270,12 L285,6 L300,4 L300,48 L0,48Z" fill="url(#balGrad)"/>
+                <polyline points="0,38 15,35 30,32 45,36 60,30 75,28 90,33 105,25 120,22 135,26 150,20 165,18 180,22 195,15 210,12 225,16 240,10 255,8 270,12 285,6 300,4" stroke="var(--green)" stroke-width="2" fill="none"/>
+              </svg>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="color:var(--green);font-size:12px;">&#9650;</span>
+                <span class="font-mono" style="color:var(--green);font-size:14px;font-weight:600;">+$6,800</span>
+                <span style="color:var(--text-muted);font-size:12px;">this month</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Account Insight -->
+      <div style="grid-column: 4 / 5;">
+        <div class="card" style="height:100%;display:flex;flex-direction:column;gap:12px;">
+          <!-- Account Insight -->
+          <div class="insight-mini">
+            <div class="accent-line" style="background:linear-gradient(90deg, var(--green), transparent);"></div>
+            <div class="type" style="color:var(--green);">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;"></span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Account Insight
+            </div>
+            <div class="body">Strong growth trend &mdash; balance increased 19% over the last 30 days. Average daily inflow of $2,140 exceeds outflow by 63%. No unusual patterns detected.</div>
+          </div>
+
+          <!-- Account Details -->
+          <div style="margin-top:auto;">
+            <div class="card-label">Account Details</div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+                <span style="font-size:11px;color:var(--text-muted);">Institution</span>
+                <span style="font-size:11px;font-weight:500;">CIBC</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+                <span style="font-size:11px;color:var(--text-muted);">Account #</span>
+                <span class="font-mono" style="font-size:11px;">****4521</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+                <span style="font-size:11px;color:var(--text-muted);">Entity</span>
+                <span style="font-size:11px;font-weight:500;">Sunny Marakana Corp</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+                <span style="font-size:11px;color:var(--text-muted);">Last Import</span>
+                <span style="font-size:11px;color:var(--text-muted);">Feb 18, 2026</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;">
+                <span style="font-size:11px;color:var(--text-muted);">Total Transactions</span>
+                <span class="font-mono" style="font-size:11px;font-weight:500;">247</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 2: 5-Stat Row ===== -->
+      <div class="bk-full">
+        <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:10px;">
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Income MTD</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--green);">$9,800</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--green);margin-top:0;">&#9650; +22.4%</div>
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,12 8,10 16,7 24,9 32,5 40,3 48,4" stroke="var(--green)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Expenses MTD</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--red);">$3,000</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--green);margin-top:0;">&#9660; -8.2%</div>
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,6 8,8 16,5 24,9 32,7 40,10 48,9" stroke="var(--red)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Unreconciled</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--primary);">5</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--primary);margin-top:0;">Needs review</div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Avg Daily Flow</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;color:var(--teal);">+$340</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--teal);margin-top:0;">Net inflow</div>
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,10 8,8 16,11 24,6 32,7 40,4 48,5" stroke="var(--teal)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div class="card" style="padding:14px 16px;">
+            <div class="card-label">Transactions</div>
+            <div class="font-mono" style="font-size:16px;font-weight:600;">23</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+              <div class="card-trend" style="color:var(--text-muted);margin-top:0;">This month</div>
+              <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+                <polyline points="0,8 8,6 16,9 24,5 32,7 40,4 48,6" stroke="var(--blue)" stroke-width="1.5" fill="none" opacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 3: Balance Trend Chart (3 cols) + Spending Breakdown (1 col) ===== -->
+      <div style="grid-column: 1 / 4;">
+        <div class="card" style="padding:16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div class="card-label" style="margin-bottom:0;">Balance History &mdash; Last 6 Months</div>
+            <div style="display:flex;gap:6px;">
+              <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">1M</span>
+              <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">3M</span>
+              <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border-2);color:var(--text);cursor:pointer;">6M</span>
+              <span style="font-size:9px;padding:3px 8px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">1Y</span>
+            </div>
+          </div>
+          <!-- Area chart -->
+          <svg width="100%" height="140" viewBox="0 0 600 140" preserveAspectRatio="none" fill="none">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--green)" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="var(--green)" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid lines -->
+            <line x1="0" y1="35" x2="600" y2="35" stroke="var(--border)" stroke-dasharray="4 4"/>
+            <line x1="0" y1="70" x2="600" y2="70" stroke="var(--border)" stroke-dasharray="4 4"/>
+            <line x1="0" y1="105" x2="600" y2="105" stroke="var(--border)" stroke-dasharray="4 4"/>
+            <!-- Area -->
+            <path d="M0,105 L50,100 L100,110 L150,95 L200,85 L250,90 L300,75 L350,60 L400,55 L450,50 L500,35 L550,30 L600,20 L600,140 L0,140Z" fill="url(#areaGrad)"/>
+            <!-- Line -->
+            <polyline points="0,105 50,100 100,110 150,95 200,85 250,90 300,75 350,60 400,55 450,50 500,35 550,30 600,20" stroke="var(--green)" stroke-width="2" fill="none"/>
+            <!-- Current point -->
+            <circle cx="600" cy="20" r="4" fill="var(--green)" stroke="var(--bg-0)" stroke-width="2"/>
+          </svg>
+          <!-- X-axis labels -->
+          <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <span style="font-size:9px;color:var(--text-dim);">Sep</span>
+            <span style="font-size:9px;color:var(--text-dim);">Oct</span>
+            <span style="font-size:9px;color:var(--text-dim);">Nov</span>
+            <span style="font-size:9px;color:var(--text-dim);">Dec</span>
+            <span style="font-size:9px;color:var(--text-dim);">Jan</span>
+            <span style="font-size:9px;color:var(--text-muted);font-weight:600;">Feb</span>
+          </div>
+          <!-- Y-axis annotation -->
+          <div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+            <span style="font-size:10px;color:var(--text-dim);">Low: <span class="font-mono" style="color:var(--text-muted);">$28,100</span> (Sep 15)</span>
+            <span style="font-size:10px;color:var(--text-dim);">High: <span class="font-mono" style="color:var(--green);">$42,400</span> (Today)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Spending for this account -->
+      <div style="grid-column: 4 / 5;">
+        <div class="card" style="height:100%;display:flex;flex-direction:column;">
+          <div class="card-label">Spending This Month</div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex:1;">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:11px;color:var(--text-muted);">Cloud Hosting</span>
+                <span class="font-mono" style="font-size:11px;color:var(--red);">$1,200</span>
+              </div>
+              <div style="height:4px;background:var(--glass);border-radius:2px;overflow:hidden;">
+                <div style="width:80%;height:100%;background:var(--red);border-radius:2px;opacity:0.6;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:11px;color:var(--text-muted);">Software</span>
+                <span class="font-mono" style="font-size:11px;color:var(--purple);">$680</span>
+              </div>
+              <div style="height:4px;background:var(--glass);border-radius:2px;overflow:hidden;">
+                <div style="width:45%;height:100%;background:var(--purple);border-radius:2px;opacity:0.6;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:11px;color:var(--text-muted);">Office</span>
+                <span class="font-mono" style="font-size:11px;color:var(--blue);">$520</span>
+              </div>
+              <div style="height:4px;background:var(--glass);border-radius:2px;overflow:hidden;">
+                <div style="width:35%;height:100%;background:var(--blue);border-radius:2px;opacity:0.6;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:11px;color:var(--text-muted);">Meals</span>
+                <span class="font-mono" style="font-size:11px;color:var(--teal);">$340</span>
+              </div>
+              <div style="height:4px;background:var(--glass);border-radius:2px;overflow:hidden;">
+                <div style="width:23%;height:100%;background:var(--teal);border-radius:2px;opacity:0.6;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                <span style="font-size:11px;color:var(--text-muted);">Other</span>
+                <span class="font-mono" style="font-size:11px;color:var(--text-dim);">$260</span>
+              </div>
+              <div style="height:4px;background:var(--glass);border-radius:2px;overflow:hidden;">
+                <div style="width:17%;height:100%;background:var(--text-dim);border-radius:2px;opacity:0.4;"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;">
+            <span style="font-size:10px;color:var(--text-dim);">Total out: <span class="font-mono" style="color:var(--red);">$3,000</span></span>
+            <span style="font-size:10px;color:var(--text-dim);">In: <span class="font-mono" style="color:var(--green);">$9,800</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ROW 4: Transaction Table (scoped to this account) ===== -->
+      <div class="bk-full">
+        <div class="card" style="padding:0;overflow:hidden;">
+          <!-- Toolbar -->
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input style="flex:1;padding:6px 10px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border);color:var(--text);font-size:12px;font-family:'Manrope',sans-serif;" placeholder="Search transactions..." readonly>
+            <div style="display:flex;gap:2px;">
+              <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass-2);border:1px solid var(--border-2);color:var(--text);cursor:pointer;">All</span>
+              <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Unreconciled</span>
+              <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Income</span>
+              <span style="font-size:10px;padding:5px 10px;border-radius:6px;background:var(--glass);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;">Expense</span>
+            </div>
+            <div style="height:20px;width:1px;background:var(--border);"></div>
+            <span style="font-size:10px;color:var(--text-dim);">23 transactions</span>
+          </div>
+          <!-- Table header -->
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 16px;background:var(--glass);border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:500;">
+            <span style="width:70px;">Date</span>
+            <span style="flex:1;">Description</span>
+            <span style="width:110px;">Category</span>
+            <span style="width:60px;">Source</span>
+            <span style="width:60px;">Status</span>
+            <span style="width:100px;text-align:right;">Amount</span>
+            <span style="width:100px;text-align:right;">Balance</span>
+          </div>
+          <!-- Transaction rows with running balance -->
+          <div style="padding:0 16px;">
+            <div class="tx-row" style="gap:12px;">
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 20</span>
+              <div class="tx-info"><div class="name">Acme Corp &mdash; Invoice #1042</div><div class="meta">e-Transfer deposit</div></div>
+              <div class="tx-cat" style="width:110px;background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.15);">Consulting</div>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="width:60px;display:flex;align-items:center;gap:3px;font-size:9px;color:var(--green);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
+                Recon
+              </span>
+              <div class="tx-amount" style="color:var(--green);width:100px;">+$3,500.00</div>
+              <div class="font-mono" style="font-size:12px;font-weight:500;width:100px;text-align:right;">$42,400</div>
+            </div>
+            <div class="tx-row" style="gap:12px;">
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 19</span>
+              <div class="tx-info"><div class="name">Widget Labs &mdash; Consulting</div><div class="meta">Wire transfer</div></div>
+              <div class="tx-cat" style="width:110px;background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.15);">Revenue</div>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--blue-dim);color:var(--blue);text-align:center;">CSV</span>
+              <span style="width:60px;display:flex;align-items:center;gap:3px;font-size:9px;color:var(--primary);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="3"><circle cx="12" cy="12" r="10"/></svg>
+                Pending
+              </span>
+              <div class="tx-amount" style="color:var(--green);width:100px;">+$2,800.00</div>
+              <div class="font-mono" style="font-size:12px;font-weight:500;width:100px;text-align:right;">$38,900</div>
+            </div>
+            <div class="tx-row" style="gap:12px;">
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 17</span>
+              <div class="tx-info"><div class="name">Transfer to Tax Reserve</div><div class="meta">Internal transfer</div></div>
+              <div class="tx-cat" style="width:110px;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,165,250,0.15);">Transfer</div>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--glass-2);color:var(--text-dim);text-align:center;">MANUAL</span>
+              <span style="width:60px;display:flex;align-items:center;gap:3px;font-size:9px;color:var(--green);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
+                Recon
+              </span>
+              <div class="tx-amount" style="color:var(--blue);width:100px;">-$5,000.00</div>
+              <div class="font-mono" style="font-size:12px;font-weight:500;width:100px;text-align:right;">$36,100</div>
+            </div>
+            <div class="tx-row" style="gap:12px;">
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 15</span>
+              <div class="tx-info"><div class="name">WeWork &mdash; Office space</div><div class="meta">Recurring
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" style="vertical-align:-1px;margin-left:3px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              </div></div>
+              <div class="tx-cat" style="width:110px;">Office Space</div>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="width:60px;display:flex;align-items:center;gap:3px;font-size:9px;color:var(--green);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
+                Recon
+              </span>
+              <div class="tx-amount" style="color:var(--red);width:100px;">-$800.00</div>
+              <div class="font-mono" style="font-size:12px;font-weight:500;width:100px;text-align:right;">$41,100</div>
+            </div>
+            <div class="tx-row" style="gap:12px;">
+              <span class="font-mono" style="width:70px;font-size:11px;color:var(--text-muted);">Feb 12</span>
+              <div class="tx-info"><div class="name">Client Payment &mdash; Retainer</div><div class="meta">Direct deposit</div></div>
+              <div class="tx-cat" style="width:110px;background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.15);">Revenue</div>
+              <span style="font-size:9px;width:60px;padding:2px 6px;border-radius:4px;background:var(--green-dim);color:var(--green);text-align:center;">BANK</span>
+              <span style="width:60px;display:flex;align-items:center;gap:3px;font-size:9px;color:var(--green);">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
+                Recon
+              </span>
+              <div class="tx-amount" style="color:var(--green);width:100px;">+$3,500.00</div>
+              <div class="font-mono" style="font-size:12px;font-weight:500;width:100px;text-align:right;">$41,900</div>
+            </div>
+          </div>
+          <!-- Pagination -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);">
+            <span>Showing 1-25 of 23</span>
+            <span style="font-size:10px;color:var(--primary);cursor:pointer;font-weight:500;">View all transactions &rarr;</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MOBILE: ACCOUNTS ==================== -->
+<div style="padding: 24px 24px 0">
+  <p style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 8px;">Mobile (375px) &mdash; Banking &gt; Accounts</p>
+</div>
+<div class="mobile-row">
+  <div class="mobile-frame">
+    <div class="frame-topbar">
+      <div class="logo">A</div>
+      <span class="entity" style="font-size:12px;">Sunny Marakana</span>
+      <span class="currency">CAD</span>
+      <div style="flex:1"></div>
+      <div class="avatar" style="width:24px;height:24px;"></div>
+    </div>
+    <div class="frame-body" style="padding:14px;">
+      <!-- Hero compact -->
+      <div class="bk-hero" style="padding:18px;margin-bottom:12px;">
+        <div class="page-title font-heading" style="font-size:18px;">Banking</div>
+        <div class="page-sub" style="font-size:11px;margin-bottom:14px;">5 accounts</div>
+        <div><div class="bal-label">Total Balance</div><div class="bal-value font-mono" style="font-size:32px;color:var(--green);">$89,200</div></div>
+        <div class="bal-sub" style="gap:12px;margin-top:12px;padding-top:12px;">
+          <div class="bal-sub-item"><div class="label" style="font-size:9px;">Checking</div><div class="val font-mono" style="font-size:16px;color:var(--green);">$52.4k</div></div>
+          <div class="bal-sub-item"><div class="label" style="font-size:9px;">Savings</div><div class="val font-mono" style="font-size:16px;color:var(--teal);">$35k</div></div>
+          <div class="bal-sub-item"><div class="label" style="font-size:9px;">Credit</div><div class="val font-mono" style="font-size:16px;color:var(--red);">-$2.3k</div></div>
+        </div>
+      </div>
+
+      <!-- Quick Actions mobile scroll -->
+      <div style="margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;">
+        <div style="display:flex;gap:6px;padding:2px 0;">
+          <div class="bk-action-pill" style="padding:6px 10px;font-size:10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Import</div>
+          <div class="bk-action-pill" style="padding:6px 10px;font-size:10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Reconcile</div>
+          <div class="bk-action-pill" style="padding:6px 10px;font-size:10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="m15 9 6-6"/></svg>
+            Transfer</div>
+          <div class="bk-action-pill" style="padding:6px 10px;font-size:10px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            Add</div>
+        </div>
+      </div>
+
+      <!-- Stats 2-col -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+        <div class="card" style="padding:12px;"><div class="card-label">Income MTD</div><div class="font-mono" style="font-size:16px;font-weight:600;color:var(--green);">$12,800</div></div>
+        <div class="card" style="padding:12px;"><div class="card-label">Expenses MTD</div><div class="font-mono" style="font-size:16px;font-weight:600;color:var(--red);">$8,600</div></div>
+      </div>
+
+      <!-- Account cards stacked -->
+      <div class="card-label" style="margin-bottom:6px;">Accounts</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="acct-card" style="padding:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div><div class="acct-name" style="font-size:13px;">Business Chequing</div><div class="acct-institution" style="font-size:10px;margin-bottom:4px;">CIBC &bull; ****4521</div></div>
+            <div class="acct-balance font-mono" style="font-size:16px;color:var(--green);">$42,400</div>
+          </div>
+        </div>
+        <div class="acct-card" style="padding:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div><div class="acct-name" style="font-size:13px;">Tax Reserve</div><div class="acct-institution" style="font-size:10px;margin-bottom:4px;">EQ Bank &bull; ****1190</div></div>
+            <div class="acct-balance font-mono" style="font-size:16px;color:var(--teal);">$35,000</div>
+          </div>
+        </div>
+        <div class="acct-card" style="padding:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:start;">
+            <div><div class="acct-name" style="font-size:13px;">Business Visa</div><div class="acct-institution" style="font-size:10px;margin-bottom:4px;">CIBC &bull; ****7743</div></div>
+            <div class="acct-balance font-mono" style="font-size:16px;color:var(--red);">-$2,340</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height: 48px;"></div>
+
+</body>
+</html>

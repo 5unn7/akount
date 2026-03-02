@@ -1,0 +1,27 @@
+
+> web@0.1.0 build
+> next build
+
+▲ Next.js 16.1.5 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./node_modules/@clerk/nextjs/dist/esm/app-router/server
+Invalid import
+'server-only' cannot be imported from a Client Component module. It should only be used from a Server Component.
+The error was caused by importing 'node_modules/@clerk/nextjs/dist/esm/app-router/server'
+
+
+
+    at ignore-listed frames
+npm error Lifecycle script `build` failed with error:
+npm error code 1
+npm error path W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web
+npm error workspace web@0.1.0
+npm error location W:\Marakana Corp\Companies\akount\Development\Brand\aggoogle\product-plan\apps\web
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.exe /d /s /c next build

@@ -1,0 +1,200 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">System</div>
+        <div class="page-sub">Configure your workspace, integrations, and security</div>
+    </div>
+</div>
+
+<div class="two-col">
+    <div>
+        <!-- Entity Setup -->
+        <section class="sec fi fi2">
+            <div class="sec-h">
+                <h2 class="sec-t">Business Entity</h2><span class="sec-m">Required</span>
+            </div>
+
+            <div
+                style="text-align:center;padding:32px 0;border:1px dashed var(--border);border-radius:var(--r-sm);margin-bottom:16px">
+                <div style="font-size:36px;opacity:.2;margin-bottom:10px">&#128188;</div>
+                <div style="font-size:13px;color:var(--t3);margin-bottom:12px">Set up your business information</div>
+                <button class="btn pri" onclick="showToast('Entity setup wizard...')">&#128188; Configure
+                    Entity</button>
+            </div>
+
+            <div class="ac" style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#127970;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Business name & type</div>
+                    <div class="ac-m"><span>Corporation, sole proprietorship, etc.</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Business info...')">Set</button>
+            </div>
+            <div class="ac" style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128205;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Business address</div>
+                    <div class="ac-m"><span>Shows on invoices and reports</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Address setup...')">Set</button>
+            </div>
+            <div class="ac" style="padding:12px 0">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128196;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Tax registration numbers</div>
+                    <div class="ac-m"><span>HST/GST, BN, provincial IDs</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Tax IDs...')">Set</button>
+            </div>
+        </section>
+
+        <!-- Preferences -->
+        <section class="sec fi fi3">
+            <div class="sec-h">
+                <h2 class="sec-t">Preferences</h2><span class="sec-m">Optional</span>
+            </div>
+
+            <div class="d-row">
+                <span class="d-row-l">Default Currency</span>
+                <span class="d-row-v">
+                    <select
+                        style="background:var(--glass);border:1px solid var(--border);border-radius:4px;color:var(--t1);font-size:11px;padding:2px 6px;font-family:inherit"
+                        onchange="showToast('Currency updated')">
+                        <option>CAD</option>
+                        <option>USD</option>
+                        <option>EUR</option>
+                        <option>GBP</option>
+                    </select>
+                </span>
+            </div>
+            <div class="d-row">
+                <span class="d-row-l">Date Format</span>
+                <span class="d-row-v">
+                    <select
+                        style="background:var(--glass);border:1px solid var(--border);border-radius:4px;color:var(--t1);font-size:11px;padding:2px 6px;font-family:inherit"
+                        onchange="showToast('Date format updated')">
+                        <option>YYYY-MM-DD</option>
+                        <option>MM/DD/YYYY</option>
+                        <option>DD/MM/YYYY</option>
+                    </select>
+                </span>
+            </div>
+            <div class="d-row">
+                <span class="d-row-l">Number Format</span>
+                <span class="d-row-v">
+                    <select
+                        style="background:var(--glass);border:1px solid var(--border);border-radius:4px;color:var(--t1);font-size:11px;padding:2px 6px;font-family:inherit"
+                        onchange="showToast('Number format updated')">
+                        <option>1,234.56</option>
+                        <option>1.234,56</option>
+                        <option>1 234.56</option>
+                    </select>
+                </span>
+            </div>
+            <div class="d-row" style="border:none">
+                <span class="d-row-l">Fiscal Year Start</span>
+                <span class="d-row-v">
+                    <select
+                        style="background:var(--glass);border:1px solid var(--border);border-radius:4px;color:var(--t1);font-size:11px;padding:2px 6px;font-family:inherit"
+                        onchange="showToast('Fiscal year updated')">
+                        <option>January</option>
+                        <option>February</option>
+                        <option>March</option>
+                        <option>April</option>
+                        <option>May</option>
+                        <option>June</option>
+                        <option>July</option>
+                        <option>August</option>
+                        <option>September</option>
+                        <option>October</option>
+                        <option>November</option>
+                        <option>December</option>
+                    </select>
+                </span>
+            </div>
+        </section>
+
+        <!-- Integrations (empty) -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Integrations</h2><span class="sec-m">0 connected</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+                <div style="padding:14px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting Stripe...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:16px;margin-bottom:4px">&#128179;</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--t1)">Stripe</div>
+                    <div style="font-size:10px;color:var(--t4)">Payments</div>
+                </div>
+                <div style="padding:14px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting Shopify...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:16px;margin-bottom:4px">&#128722;</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--t1)">Shopify</div>
+                    <div style="font-size:10px;color:var(--t4)">E-commerce</div>
+                </div>
+                <div style="padding:14px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting Gusto...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:16px;margin-bottom:4px">&#128101;</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--t1)">Gusto</div>
+                    <div style="font-size:10px;color:var(--t4)">Payroll</div>
+                </div>
+                <div style="padding:14px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Connecting HubSpot...')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:16px;margin-bottom:4px">&#128200;</div>
+                    <div style="font-size:12px;font-weight:600;color:var(--t1)">HubSpot</div>
+                    <div style="font-size:10px;color:var(--t4)">CRM</div>
+                </div>
+            </div>
+            <div style="text-align:center;padding-top:12px;font-size:11px;color:var(--t4)">+ 20 more integrations
+                available</div>
+        </section>
+    </div>
+
+    <div class="right-col fi fi5">
+        <!-- Security -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Security</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Two-Factor Auth</span><span class="d-row-v"><button class="btn"
+                        onclick="showToast('2FA setup...')"
+                        style="font-size:10px;padding:2px 8px">Enable</button></span></div>
+            <div class="d-row"><span class="d-row-l">Password</span><span class="d-row-v"><button class="btn"
+                        onclick="showToast('Password change...')"
+                        style="font-size:10px;padding:2px 8px">Change</button></span></div>
+            <div class="d-row"><span class="d-row-l">Login Sessions</span><span class="d-row-v"
+                    style="color:var(--t3)">1 active</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">API Keys</span><span class="d-row-v"
+                    style="color:var(--t3)">None</span></div>
+        </div>
+
+        <!-- Account -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Your Account</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">Plan</span><span class="d-row-v" style="color:var(--pri)">Trial —
+                    14 days left</span></div>
+            <div class="d-row"><span class="d-row-l">Email</span><span class="d-row-v">sunny@marakana.com</span></div>
+            <div class="d-row"><span class="d-row-l">Member Since</span><span class="d-row-v">Feb 2026</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Entities</span><span class="d-row-v">0 of
+                    3</span></div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Quick Links</h2>
+            </div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening docs...')">&#128214; Documentation</div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening support...')">&#128172; Contact Support</div>
+            <div style="padding:8px 0;font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening changelog...')">&#128203; What's New</div>
+        </div>
+    </div>
+</div>

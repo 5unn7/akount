@@ -1,0 +1,50 @@
+# Dashboard Overview — Reviewed Files
+# 34 files total (10 pages, 24 components, 8 backend)
+
+# Frontend Pages (10)
+apps/web/src/app/(dashboard)/overview/page.tsx
+apps/web/src/app/(dashboard)/overview/layout.tsx
+apps/web/src/app/(dashboard)/overview/loading.tsx
+apps/web/src/app/(dashboard)/overview/error.tsx
+apps/web/src/app/(dashboard)/overview/cash-flow/page.tsx
+apps/web/src/app/(dashboard)/overview/cash-flow/loading.tsx
+apps/web/src/app/(dashboard)/overview/cash-flow/error.tsx
+apps/web/src/app/(dashboard)/overview/net-worth/page.tsx
+apps/web/src/app/(dashboard)/overview/net-worth/loading.tsx
+apps/web/src/app/(dashboard)/overview/net-worth/error.tsx
+
+# Frontend Components (24)
+apps/web/src/components/dashboard/AIBrief.tsx
+apps/web/src/components/dashboard/ActionItems.tsx
+apps/web/src/components/dashboard/DashboardCharts.tsx
+apps/web/src/components/dashboard/DashboardLeftRail.tsx
+apps/web/src/components/dashboard/DashboardMetrics.tsx
+apps/web/src/components/dashboard/DashboardRightRail.tsx
+apps/web/src/components/dashboard/EntitiesList.tsx
+apps/web/src/components/dashboard/EntitiesSection.tsx
+apps/web/src/components/dashboard/ExpenseChart.tsx
+apps/web/src/components/dashboard/CashFlowChart.tsx
+apps/web/src/components/dashboard/NetWorthHero.tsx
+apps/web/src/components/dashboard/QuickActions.tsx
+apps/web/src/components/dashboard/RecentTransactions.tsx
+apps/web/src/components/dashboard/SparkCards.tsx
+apps/web/src/components/dashboard/UpcomingPayments.tsx
+apps/web/src/components/onboarding/OnboardingHeroCard.tsx
+apps/web/src/components/shared/SectionHeader.tsx
+apps/web/src/components/shared/EmptyState.tsx
+apps/web/src/components/shared/DomainTabs.tsx
+apps/web/src/lib/api/dashboard.ts
+apps/web/src/lib/api/performance.ts
+apps/web/src/lib/api/entities.ts
+apps/web/src/lib/api/transactions.ts
+apps/web/src/app/globals.css
+
+# Backend (8)
+apps/api/src/domains/overview/routes.ts
+apps/api/src/domains/overview/services/dashboard.service.ts
+apps/api/src/domains/overview/services/performance.service.ts
+apps/api/src/domains/overview/services/net-worth.service.ts
+apps/api/src/domains/overview/services/cash-flow.service.ts
+apps/api/src/domains/overview/schemas/dashboard.schema.ts
+apps/api/src/domains/overview/schemas/performance.schema.ts
+apps/api/src/domains/overview/index.ts

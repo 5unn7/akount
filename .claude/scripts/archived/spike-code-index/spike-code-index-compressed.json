@@ -1,0 +1,134 @@
+{
+  "_": "2026-02-27",
+  "n": 8,
+  "f": {
+    "account.service": {
+      "p": "domains/banking/services/account.service.ts",
+      "d": "bnk",
+      "e": 4,
+      "i": 1,
+      "l": 375,
+      "pt": "TSP",
+      "v": ""
+    },
+    "invoice.service": {
+      "p": "domains/invoicing/services/invoice.service.ts",
+      "d": "inv",
+      "e": 13,
+      "i": 5,
+      "l": 639,
+      "pt": "TSP",
+      "v": ""
+    },
+    "journal-entry.service": {
+      "p": "domains/accounting/services/journal-entry.service.ts",
+      "d": "acc",
+      "e": 1,
+      "i": 6,
+      "l": 708,
+      "pt": "TSP",
+      "v": ""
+    },
+    "currency": {
+      "p": "lib/utils/currency.ts",
+      "d": "util",
+      "e": 4,
+      "i": 0,
+      "l": 79,
+      "pt": "",
+      "v": "F"
+    },
+    "date": {
+      "p": "lib/utils/date.ts",
+      "d": "util",
+      "e": 4,
+      "i": 1,
+      "l": 84,
+      "pt": "",
+      "v": ""
+    },
+    "page": {
+      "p": "app/(dashboard)/banking/accounts/page.tsx",
+      "d": "bnk",
+      "e": 1,
+      "i": 14,
+      "l": 142,
+      "pt": "",
+      "v": ""
+    },
+    "DomainTabs": {
+      "p": "components/shared/DomainTabs.tsx",
+      "d": "cmp",
+      "e": 1,
+      "i": 4,
+      "l": 57,
+      "pt": "C",
+      "v": ""
+    },
+    "seed": {
+      "p": "db/prisma/seed.ts",
+      "d": "db",
+      "e": 0,
+      "i": 1,
+      "l": 468,
+      "pt": "TP",
+      "v": "L"
+    }
+  },
+  "d": {
+    "bnk": {
+      "n": 2,
+      "l": 517
+    },
+    "inv": {
+      "n": 1,
+      "l": 639
+    },
+    "acc": {
+      "n": 1,
+      "l": 708
+    },
+    "util": {
+      "n": 2,
+      "l": 163
+    },
+    "cmp": {
+      "n": 1,
+      "l": 57
+    },
+    "db": {
+      "n": 1,
+      "l": 468
+    }
+  },
+  "p": {
+    "T": [
+      "account.service",
+      "invoice.service",
+      "journal-entry.service",
+      "seed"
+    ],
+    "S": [
+      "account.service",
+      "invoice.service",
+      "journal-entry.service"
+    ],
+    "P": [
+      "account.service",
+      "invoice.service",
+      "journal-entry.service",
+      "seed"
+    ],
+    "C": [
+      "DomainTabs"
+    ]
+  },
+  "v": {
+    "F": [
+      "currency"
+    ],
+    "L": [
+      "seed"
+    ]
+  }
+}

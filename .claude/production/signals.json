@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "lastSync": null,
+  "signals": [
+    {
+      "id": "sig-001",
+      "timestamp": "2026-02-28T04:30:09.927Z",
+      "type": "error",
+      "severity": "high",
+      "source": "manual",
+      "message": "Test signal for verification",
+      "file": "test.ts",
+      "line": 1,
+      "frequency": 1,
+      "firstSeen": "2026-02-28T04:30:09.928Z",
+      "lastSeen": "2026-02-28T04:30:09.928Z",
+      "resolved": true,
+      "resolvedAt": "2026-02-28T04:30:20.051Z"
+    }
+  ]
+}

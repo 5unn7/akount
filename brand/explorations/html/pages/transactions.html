@@ -1,0 +1,269 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Transactions</div>
+        <div class="page-sub">2,450 transactions &middot; Feb 2026 &middot; All entities</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Exporting CSV...')">&#128229; Export</button>
+        <button class="btn pri" onclick="showToast('New transaction added')">+ Add Transaction</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/banking'">Banking</button>
+    <button class="sec-tab on">Transactions</button>
+    <button class="sec-tab" onclick="window.location.hash='#/reconciliation'">Reconciliation</button>
+    <button class="sec-tab" onclick="window.location.hash='#/imports'">Imports</button>
+    <button class="sec-tab" onclick="window.location.hash='#/transfers'">Transfers</button>
+</div>
+
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Total (Feb)</div>
+        <div class="st-val">54</div>
+        <div class="st-trend flat">transactions</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Categorized</div>
+        <div class="st-val" style="color:var(--green)">42</div>
+        <div class="st-trend up">78%</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Uncategorized</div>
+        <div class="st-val" style="color:var(--pri)">12</div>
+        <div class="st-trend dn">needs review</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Reconciled</div>
+        <div class="st-val">42</div>
+        <div class="st-trend up">78%</div>
+    </div>
+</div>
+
+<section class="txn-section fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">All Transactions</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">All</button>
+            <button class="sec-tab">Uncategorized</button>
+            <button class="sec-tab">Categorized</button>
+            <button class="sec-tab">Reconciled</button>
+            <button class="sec-tab">Exceptions</button>
+            <button class="sec-tab">AI Suggestions</button>
+        </div>
+    </div>
+    <div class="txn-filters">
+        <button class="txn-filter on">All Accounts</button>
+        <button class="txn-filter">RBC</button>
+        <button class="txn-filter">Wise</button>
+        <button class="txn-filter">Amex</button>
+        <span class="txn-count">54 transactions</span>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="txn-table">
+            <thead>
+                <tr>
+                    <th style="width:30px"><input type="checkbox" style="accent-color:var(--pri)"></th>
+                    <th>Date <span class="sort">&#9660;</span></th>
+                    <th>Description</th>
+                    <th>Entity</th>
+                    <th>Category</th>
+                    <th>Account</th>
+                    <th>Reconciled</th>
+                    <th class="right">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="txn-row uncat" onclick="openDetail('txn-cat')">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 9</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:var(--pri-dim)">&#128230;</div>
+                            <div>
+                                <div class="txn-desc">AMZN MKTP CA*2R4K1</div>
+                                <div style="font-size:9px;color:var(--t4)">Amazon &middot; Marketplace</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag uncat">Uncategorized</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot pend"></span>Pending</div>
+                    </td>
+                    <td class="txn-amt out">-$84.99</td>
+                </tr>
+                <tr class="txn-row uncat">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 9</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:var(--pri-dim)">&#127963;</div>
+                            <div>
+                                <div class="txn-desc">UBER TRIP 4X92HJ</div>
+                                <div style="font-size:9px;color:var(--t4)">Uber &middot; Transportation</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag uncat">Uncategorized</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot pend"></span>Pending</div>
+                    </td>
+                    <td class="txn-amt out">-$23.40</td>
+                </tr>
+                <tr class="txn-row">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 8</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico" style="background:rgba(167,139,250,.1)">&#10022;</div>
+                            <div>
+                                <div class="txn-desc">STARBUCKS #12445</div>
+                                <div style="font-size:9px;color:var(--purple)">AI: Meals &amp; Entertainment (91%)</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag" style="background:rgba(167,139,250,.1);color:var(--purple)">AI:
+                            Meals</span></td>
+                    <td class="txn-acct-cell">Amex ****1008</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot pend"></span>Pending</div>
+                    </td>
+                    <td class="txn-amt out">-$6.80</td>
+                </tr>
+                <tr class="txn-row">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 7</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128179;</div>
+                            <div>
+                                <div class="txn-desc">Wise Transfer &mdash; EUR to CAD</div>
+                                <div style="font-size:9px;color:var(--t4)">FX Rate: 1 EUR = 1.47 CAD</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag">Transfer</span></td>
+                    <td class="txn-acct-cell">Wise</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt in">+$4,700.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 6</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128176;</div>
+                            <div>
+                                <div class="txn-desc">XYZ Ltd &mdash; Invoice #1046 Payment</div>
+                                <div style="font-size:9px;color:var(--t4)">Linked to INV-1046</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag matched">Client Payment</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt in">+$8,200.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 5</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#127968;</div>
+                            <div>
+                                <div class="txn-desc">WeWork &mdash; Monthly Office Space</div>
+                                <div style="font-size:9px;color:var(--t4)">Recurring &middot; Monthly</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag">Rent</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt out">-$1,800.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 4</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128187;</div>
+                            <div>
+                                <div class="txn-desc">Vercel Pro &mdash; Hosting</div>
+                                <div style="font-size:9px;color:var(--t4)">SaaS &middot; Subscription</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127482;&#127480; LLC</td>
+                    <td><span class="txn-cat-tag">SaaS</span></td>
+                    <td class="txn-acct-cell">Amex ****1008</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt out">-$20.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 4</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128187;</div>
+                            <div>
+                                <div class="txn-desc">Linear &mdash; Team Plan</div>
+                                <div style="font-size:9px;color:var(--t4)">SaaS &middot; Subscription</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag">SaaS</span></td>
+                    <td class="txn-acct-cell">Amex ****1008</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt out">-$48.00</td>
+                </tr>
+                <tr class="txn-row">
+                    <td><input type="checkbox" style="accent-color:var(--pri)"></td>
+                    <td class="txn-date-cell">Feb 3</td>
+                    <td>
+                        <div class="txn-desc-cell">
+                            <div class="txn-ico">&#128176;</div>
+                            <div>
+                                <div class="txn-desc">DEF Consulting &mdash; Retainer Feb</div>
+                                <div style="font-size:9px;color:var(--t4)">Linked to INV-1043</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td><span class="txn-cat-tag matched">Client Payment</span></td>
+                    <td class="txn-acct-cell">RBC ****4521</td>
+                    <td>
+                        <div class="txn-recon"><span class="r-dot ok"></span>Matched</div>
+                    </td>
+                    <td class="txn-amt in">+$3,500.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div
+        style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--border);margin-top:8px">
+        <span style="font-size:11px;color:var(--t3)">Showing 1–9 of 54</span>
+        <div style="display:flex;gap:4px">
+            <button class="btn" style="padding:4px 10px;font-size:11px" disabled>&laquo; Prev</button>
+            <button class="btn" style="padding:4px 10px;font-size:11px">Next &raquo;</button>
+        </div>
+    </div>
+</section>

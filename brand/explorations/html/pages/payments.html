@@ -1,0 +1,97 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Payments</div>
+        <div class="page-sub">Received & Sent &middot; Last 30 Days</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Exporting...')">Export CSV</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/invoicing'">Invoices</button>
+    <button class="sec-tab" onclick="window.location.hash='#/bills'">Bills</button>
+    <button class="sec-tab" onclick="window.location.hash='#/clients'">Clients</button>
+    <button class="sec-tab" onclick="window.location.hash='#/vendors'">Vendors</button>
+    <button class="sec-tab on">Payments</button>
+</div>
+
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Received</div>
+        <div class="st-val">$18,600</div>
+        <div class="st-trend up">+24%</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Total Paid</div>
+        <div class="st-val">$12,400</div>
+        <div class="st-trend flat">Normal</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Processing</div>
+        <div class="st-val">$1,200</div>
+        <div class="st-trend flat">Stripe</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Failed</div>
+        <div class="st-val" style="color:var(--t4)">$0</div>
+        <div class="st-trend flat">All good</div>
+    </div>
+</div>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Payment History</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">All</button>
+            <button class="sec-tab">Received</button>
+            <button class="sec-tab">Sent</button>
+        </div>
+    </div>
+    <div style="overflow-x:auto">
+        <table class="inv-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Entity</th>
+                    <th>Method</th>
+                    <th class="right">Amount</th>
+                    <th>Reference</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="inv-row">
+                    <td class="inv-due">today</td>
+                    <td><span class="inv-client">XYZ Ltd</span><br><span class="inv-client-sub">Invoice #1046</span>
+                    </td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td>Wire</td>
+                    <td class="inv-amt" style="color:var(--green)">+$8,200 <span class="cur">CAD</span></td>
+                    <td>REF-9928</td>
+                    <td><span class="inv-badge paid">Cleared</span></td>
+                </tr>
+                <tr class="inv-row">
+                    <td class="inv-due">Feb 8</td>
+                    <td><span class="inv-client">WeWork</span><br><span class="inv-client-sub">Bill #BIL-038</span></td>
+                    <td style="font-size:11px;color:var(--t3)">&#127464;&#127462; Corp</td>
+                    <td>ACH</td>
+                    <td class="inv-amt">-$4,500 <span class="cur">CAD</span></td>
+                    <td>ACH-112</td>
+                    <td><span class="inv-badge paid">Sent</span></td>
+                </tr>
+                <tr class="inv-row">
+                    <td class="inv-due">Feb 5</td>
+                    <td><span class="inv-client">Stripe Payout</span><br><span class="inv-client-sub">Daily
+                            Settlement</span></td>
+                    <td style="font-size:11px;color:var(--t3)">Global</td>
+                    <td>Bank Transfer</td>
+                    <td class="inv-amt" style="color:var(--green)">+$10,400 <span class="cur">USD</span></td>
+                    <td>STR-221</td>
+                    <td><span class="inv-badge paid">Cleared</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,13 @@
+{
+  "name": "akount-screen-builder",
+  "version": "1.0.0",
+  "description": "Figma plugin to build Akount screens programmatically using design tokens",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.98.0",
+    "typescript": "^5.3.3"
+  }
+}

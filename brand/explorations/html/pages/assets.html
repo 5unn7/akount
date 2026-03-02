@@ -1,0 +1,462 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Assets & Depreciation</div>
+        <div class="page-sub">14 assets &middot; $186,400 total cost &middot; $124,200 net book value</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Running depreciation schedule...')">&#9881; Run Schedule</button>
+        <button class="btn pri" onclick="showToast('Capitalizing new asset...')">+ Capitalize Asset</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/accounting'">Accounting</button>
+    <button class="sec-tab on">Assets</button>
+    <button class="sec-tab" onclick="window.location.hash='#/journal-entries'">Journal Entries</button>
+    <button class="sec-tab" onclick="window.location.hash='#/tax-rates'">Tax Rates</button>
+    <button class="sec-tab" onclick="window.location.hash='#/fiscal-periods'">Fiscal Periods</button>
+</div>
+
+<!-- ═══ ASSET VALUE DECAY — The Zen Visualization ═══ -->
+<section class="sec fi fi2">
+    <div class="sec-h">
+        <h2 class="sec-t">Value Decay</h2>
+        <span class="sec-m">Depreciation over useful life</span>
+    </div>
+    <div class="asset-decay-w">
+        <!-- SVG Decay Visualization: Stacked area showing cost vs NBV over time -->
+        <svg viewBox="0 0 700 200" class="asset-decay-svg">
+            <defs>
+                <linearGradient id="costGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--pri)" stop-opacity=".25"/>
+                    <stop offset="100%" stop-color="var(--pri)" stop-opacity=".02"/>
+                </linearGradient>
+                <linearGradient id="nbvGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--green)" stop-opacity=".35"/>
+                    <stop offset="100%" stop-color="var(--green)" stop-opacity=".04"/>
+                </linearGradient>
+                <linearGradient id="deprGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--red)" stop-opacity=".18"/>
+                    <stop offset="100%" stop-color="var(--red)" stop-opacity=".02"/>
+                </linearGradient>
+            </defs>
+            <!-- Grid lines -->
+            <line x1="50" y1="25" x2="680" y2="25" stroke="var(--border)" stroke-opacity=".3" stroke-dasharray="3"/>
+            <line x1="50" y1="65" x2="680" y2="65" stroke="var(--border)" stroke-opacity=".2" stroke-dasharray="3"/>
+            <line x1="50" y1="105" x2="680" y2="105" stroke="var(--border)" stroke-opacity=".2" stroke-dasharray="3"/>
+            <line x1="50" y1="145" x2="680" y2="145" stroke="var(--border)" stroke-opacity=".2" stroke-dasharray="3"/>
+            <line x1="50" y1="180" x2="680" y2="180" stroke="var(--border)" stroke-opacity=".3"/>
+            <!-- Y axis labels -->
+            <text x="44" y="29" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">$200k</text>
+            <text x="44" y="69" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">$150k</text>
+            <text x="44" y="109" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">$100k</text>
+            <text x="44" y="149" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">$50k</text>
+            <text x="44" y="184" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">$0</text>
+            <!-- Total Cost area (flat top — total cost doesn't change) -->
+            <path d="M50,35 L175,35 L300,32 L425,30 L550,30 L680,30 L680,180 L50,180 Z" fill="url(#costGrad)" stroke="var(--pri)" stroke-width=".5" stroke-opacity=".4"/>
+            <!-- Accumulated Depreciation area (growing from bottom) -->
+            <path d="M50,175 L175,160 L300,140 L425,120 L550,105 L680,95 L680,180 L50,180 Z" fill="url(#deprGrad)" stroke="var(--red)" stroke-width="1" stroke-opacity=".5" stroke-dasharray="4"/>
+            <!-- Net Book Value line (declining) -->
+            <path d="M50,38 L175,55 L300,72 L425,90 L550,105 L680,120" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round"/>
+            <!-- Today marker -->
+            <line x1="330" y1="20" x2="330" y2="180" stroke="var(--pri)" stroke-width="1" stroke-opacity=".3" stroke-dasharray="3"/>
+            <text x="330" y="15" text-anchor="middle" fill="var(--pri)" font-size="7" font-family="JetBrains Mono" opacity=".6">TODAY</text>
+            <!-- Data points with glow -->
+            <circle cx="50" cy="38" r="3" fill="var(--green)" opacity=".8"/>
+            <circle cx="175" cy="55" r="3" fill="var(--green)" opacity=".8"/>
+            <circle cx="300" cy="72" r="3" fill="var(--green)" opacity=".8"/>
+            <circle cx="425" cy="90" r="3" fill="var(--green)" opacity=".8"/>
+            <circle cx="550" cy="105" r="3" fill="var(--green)" opacity=".8"/>
+            <circle cx="680" cy="120" r="3" fill="var(--green)" opacity=".8"/>
+            <!-- X axis labels -->
+            <text x="50" y="195" text-anchor="start" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">2021</text>
+            <text x="175" y="195" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">2022</text>
+            <text x="300" y="195" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">2023</text>
+            <text x="425" y="195" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">2024</text>
+            <text x="550" y="195" text-anchor="middle" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">2025</text>
+            <text x="680" y="195" text-anchor="end" fill="var(--t4)" font-size="8" font-family="JetBrains Mono">2026</text>
+        </svg>
+        <div class="asset-decay-legend">
+            <div class="aging-item"><div class="aging-dot" style="background:var(--pri)"></div>Total Cost</div>
+            <div class="aging-item"><div class="aging-dot" style="background:var(--green)"></div>Net Book Value</div>
+            <div class="aging-item"><div class="aging-dot" style="background:var(--red)"></div>Accumulated Depreciation</div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ TWO-COLUMN: Stats + Methods ═══ -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px" class="fi fi3">
+    <!-- Asset Health Cards -->
+    <section class="sec" style="margin:0">
+        <div class="sec-h"><h2 class="sec-t">Portfolio Health</h2></div>
+        <div class="stats stats-2" style="margin:12px 0">
+            <div class="st">
+                <div class="st-label">Total Cost</div>
+                <div class="st-val">$186,400</div>
+                <div class="st-trend flat">14 capitalized assets</div>
+            </div>
+            <div class="st">
+                <div class="st-label">Net Book Value</div>
+                <div class="st-val" style="color:var(--green)">$124,200</div>
+                <div class="st-trend up">67% remaining</div>
+            </div>
+        </div>
+        <div class="stats stats-2" style="margin:0">
+            <div class="st">
+                <div class="st-label">Monthly Charge</div>
+                <div class="st-val" style="color:var(--pri)">$2,180</div>
+                <div class="st-trend flat">Feb 2026</div>
+            </div>
+            <div class="st">
+                <div class="st-label">Fully Depreciated</div>
+                <div class="st-val" style="color:var(--t3)">2</div>
+                <div class="st-trend flat">ready for disposal</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Depreciation by Method — Donut -->
+    <section class="sec" style="margin:0">
+        <div class="sec-h"><h2 class="sec-t">Methods</h2></div>
+        <div style="display:flex;align-items:center;gap:24px;padding:16px 0">
+            <svg viewBox="0 0 120 120" style="width:110px;height:110px;flex-shrink:0">
+                <!-- Donut background -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="var(--glass-2)" stroke-width="12"/>
+                <!-- Straight-line (78%) -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="var(--pri)" stroke-width="12"
+                    stroke-dasharray="235 66" stroke-dashoffset="75" stroke-linecap="round" opacity=".9">
+                    <animate attributeName="stroke-dasharray" from="0 301" to="235 66" dur="1s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/>
+                </circle>
+                <!-- Declining balance (15%) -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="var(--blue)" stroke-width="12"
+                    stroke-dasharray="45 256" stroke-dashoffset="-160" stroke-linecap="round" opacity=".9">
+                    <animate attributeName="stroke-dasharray" from="0 301" to="45 256" dur="1s" begin=".3s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/>
+                </circle>
+                <!-- Units of production (7%) -->
+                <circle cx="60" cy="60" r="48" fill="none" stroke="var(--purple)" stroke-width="12"
+                    stroke-dasharray="21 280" stroke-dashoffset="-205" stroke-linecap="round" opacity=".9">
+                    <animate attributeName="stroke-dasharray" from="0 301" to="21 280" dur="1s" begin=".5s" fill="freeze" calcMode="spline" keySplines="0.16 1 0.3 1"/>
+                </circle>
+                <!-- Center text -->
+                <text x="60" y="56" text-anchor="middle" fill="var(--t1)" font-family="JetBrains Mono" font-size="14" font-weight="500">14</text>
+                <text x="60" y="70" text-anchor="middle" fill="var(--t3)" font-size="7" font-family="Manrope">assets</text>
+            </svg>
+            <div style="flex:1">
+                <div class="asset-method-row">
+                    <div class="aging-dot" style="background:var(--pri)"></div>
+                    <span class="asset-method-name">Straight-line</span>
+                    <span class="asset-method-count">11</span>
+                    <span class="asset-method-pct">78%</span>
+                </div>
+                <div class="asset-method-row">
+                    <div class="aging-dot" style="background:var(--blue)"></div>
+                    <span class="asset-method-name">Declining balance</span>
+                    <span class="asset-method-count">2</span>
+                    <span class="asset-method-pct">15%</span>
+                </div>
+                <div class="asset-method-row">
+                    <div class="aging-dot" style="background:var(--purple)"></div>
+                    <span class="asset-method-name">Units of production</span>
+                    <span class="asset-method-count">1</span>
+                    <span class="asset-method-pct">7%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ═══ ASSET REGISTER — Reimagined as cards with life bars ═══ -->
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">Asset Register</h2>
+        <div class="sec-tabs">
+            <button class="sec-tab on">All</button>
+            <button class="sec-tab">Active</button>
+            <button class="sec-tab">Fully Depr.</button>
+            <button class="sec-tab">Disposed</button>
+        </div>
+    </div>
+    <div class="asset-cards">
+        <!-- Asset Card 1: Tesla -->
+        <div class="asset-card" onclick="showToast('Opening Tesla Model 3 detail...')">
+            <div class="asset-card-top">
+                <div class="asset-card-icon">&#128663;</div>
+                <div class="asset-card-info">
+                    <div class="asset-card-name">Tesla Model 3 (Business)</div>
+                    <div class="asset-card-meta">Vehicle &middot; 5yr Declining balance &middot; <span style="color:var(--t3)">&#127464;&#127462; Corp</span></div>
+                </div>
+                <div class="asset-card-nbv">
+                    <div class="asset-card-nbv-label">NBV</div>
+                    <div class="asset-card-nbv-val" style="color:var(--green)">$41,600</div>
+                </div>
+            </div>
+            <div class="asset-life-bar-w">
+                <div class="asset-life-bar">
+                    <div class="asset-life-fill" style="width:80%;background:linear-gradient(90deg,var(--green),var(--teal))"></div>
+                </div>
+                <div class="asset-life-labels">
+                    <span>Cost $52,000</span>
+                    <span>80% remaining</span>
+                    <span>Depr. $10,400</span>
+                </div>
+            </div>
+            <div class="asset-card-foot">
+                <span>Acquired Jan 2025</span>
+                <span class="asset-card-badge active">Active</span>
+                <span style="font-family:var(--mono);color:var(--t3)">$1,733/mo</span>
+            </div>
+        </div>
+
+        <!-- Asset Card 2: Server Rack -->
+        <div class="asset-card" onclick="showToast('Opening Server Rack detail...')">
+            <div class="asset-card-top">
+                <div class="asset-card-icon">&#127981;</div>
+                <div class="asset-card-info">
+                    <div class="asset-card-name">Server Rack (US DC)</div>
+                    <div class="asset-card-meta">IT Equipment &middot; 5yr Straight-line &middot; <span style="color:var(--t3)">&#127482;&#127480; LLC</span></div>
+                </div>
+                <div class="asset-card-nbv">
+                    <div class="asset-card-nbv-label">NBV</div>
+                    <div class="asset-card-nbv-val" style="color:var(--green)">$7,200</div>
+                </div>
+            </div>
+            <div class="asset-life-bar-w">
+                <div class="asset-life-bar">
+                    <div class="asset-life-fill" style="width:40%;background:linear-gradient(90deg,var(--pri),var(--pri-hover))"></div>
+                </div>
+                <div class="asset-life-labels">
+                    <span>Cost $18,000</span>
+                    <span>40% remaining</span>
+                    <span>Depr. $10,800</span>
+                </div>
+            </div>
+            <div class="asset-card-foot">
+                <span>Acquired Mar 2023</span>
+                <span class="asset-card-badge active">Active</span>
+                <span style="font-family:var(--mono);color:var(--t3)">$300/mo</span>
+            </div>
+        </div>
+
+        <!-- Asset Card 3: MacBook Pro -->
+        <div class="asset-card" onclick="showToast('Opening MacBook Pro detail...')">
+            <div class="asset-card-top">
+                <div class="asset-card-icon">&#128187;</div>
+                <div class="asset-card-info">
+                    <div class="asset-card-name">MacBook Pro 16"</div>
+                    <div class="asset-card-meta">Computer Equipment &middot; 3yr Straight-line &middot; <span style="color:var(--t3)">&#127464;&#127462; Corp</span></div>
+                </div>
+                <div class="asset-card-nbv">
+                    <div class="asset-card-nbv-label">NBV</div>
+                    <div class="asset-card-nbv-val" style="color:var(--green)">$2,800</div>
+                </div>
+            </div>
+            <div class="asset-life-bar-w">
+                <div class="asset-life-bar">
+                    <div class="asset-life-fill" style="width:67%;background:linear-gradient(90deg,var(--green),var(--teal))"></div>
+                </div>
+                <div class="asset-life-labels">
+                    <span>Cost $4,200</span>
+                    <span>67% remaining</span>
+                    <span>Depr. $1,400</span>
+                </div>
+            </div>
+            <div class="asset-card-foot">
+                <span>Acquired Jun 2024</span>
+                <span class="asset-card-badge active">Active</span>
+                <span style="font-family:var(--mono);color:var(--t3)">$117/mo</span>
+            </div>
+        </div>
+
+        <!-- Asset Card 4: Standing Desk -->
+        <div class="asset-card" onclick="showToast('Opening Standing Desk detail...')">
+            <div class="asset-card-top">
+                <div class="asset-card-icon">&#128421;</div>
+                <div class="asset-card-info">
+                    <div class="asset-card-name">Standing Desk Setup</div>
+                    <div class="asset-card-meta">Office Furniture &middot; 7yr Straight-line &middot; <span style="color:var(--t3)">&#127464;&#127462; Corp</span></div>
+                </div>
+                <div class="asset-card-nbv">
+                    <div class="asset-card-nbv-label">NBV</div>
+                    <div class="asset-card-nbv-val" style="color:var(--green)">$2,114</div>
+                </div>
+            </div>
+            <div class="asset-life-bar-w">
+                <div class="asset-life-bar">
+                    <div class="asset-life-fill" style="width:88%;background:linear-gradient(90deg,var(--green),var(--teal))"></div>
+                </div>
+                <div class="asset-life-labels">
+                    <span>Cost $2,400</span>
+                    <span>88% remaining</span>
+                    <span>Depr. $286</span>
+                </div>
+            </div>
+            <div class="asset-card-foot">
+                <span>Acquired Jun 2024</span>
+                <span class="asset-card-badge active">Active</span>
+                <span style="font-family:var(--mono);color:var(--t3)">$29/mo</span>
+            </div>
+        </div>
+
+        <!-- Asset Card 5: Camera Rig -->
+        <div class="asset-card" onclick="showToast('Opening Camera Rig detail...')">
+            <div class="asset-card-top">
+                <div class="asset-card-icon">&#127909;</div>
+                <div class="asset-card-info">
+                    <div class="asset-card-name">Camera Rig (Production)</div>
+                    <div class="asset-card-meta">Equipment &middot; Units of production &middot; <span style="color:var(--t3)">&#127464;&#127462; Corp</span></div>
+                </div>
+                <div class="asset-card-nbv">
+                    <div class="asset-card-nbv-label">NBV</div>
+                    <div class="asset-card-nbv-val" style="color:var(--green)">$6,200</div>
+                </div>
+            </div>
+            <div class="asset-life-bar-w">
+                <div class="asset-life-bar">
+                    <div class="asset-life-fill" style="width:62%;background:linear-gradient(90deg,var(--purple),var(--blue))"></div>
+                </div>
+                <div class="asset-life-labels">
+                    <span>Cost $10,000</span>
+                    <span>62% remaining</span>
+                    <span>Depr. $3,800</span>
+                </div>
+            </div>
+            <div class="asset-card-foot">
+                <span>Acquired Sep 2023</span>
+                <span class="asset-card-badge active">Active</span>
+                <span style="font-family:var(--mono);color:var(--t3)">usage-based</span>
+            </div>
+        </div>
+
+        <!-- Asset Card 6: Disposed -->
+        <div class="asset-card disposed" onclick="showToast('Opening Canon Printer detail...')">
+            <div class="asset-card-top">
+                <div class="asset-card-icon" style="opacity:.4">&#128424;</div>
+                <div class="asset-card-info">
+                    <div class="asset-card-name" style="color:var(--t3)">Canon Printer (Old)</div>
+                    <div class="asset-card-meta">Office Equipment &middot; Disposed Dec 2024</div>
+                </div>
+                <div class="asset-card-nbv">
+                    <div class="asset-card-nbv-label">NBV</div>
+                    <div class="asset-card-nbv-val" style="color:var(--t4)">$0</div>
+                </div>
+            </div>
+            <div class="asset-life-bar-w">
+                <div class="asset-life-bar">
+                    <div class="asset-life-fill" style="width:100%;background:var(--t4);opacity:.3"></div>
+                </div>
+                <div class="asset-life-labels">
+                    <span style="color:var(--t4)">Cost $800</span>
+                    <span style="color:var(--t4)">Fully depreciated</span>
+                    <span style="color:var(--t4)">Depr. $800</span>
+                </div>
+            </div>
+            <div class="asset-card-foot">
+                <span>Acquired Jan 2021</span>
+                <span class="asset-card-badge disposed">Disposed</span>
+                <span style="color:var(--t4)">$0 salvage</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ UPCOMING DEPRECIATION SCHEDULE ═══ -->
+<section class="sec fi fi5">
+    <div class="sec-h">
+        <h2 class="sec-t">Upcoming Schedule</h2>
+        <span class="sec-m">Next 3 months</span>
+    </div>
+    <div class="asset-schedule">
+        <div class="asset-sched-month">
+            <div class="asset-sched-header">
+                <span class="asset-sched-label">February 2026</span>
+                <span class="asset-sched-total">$2,180</span>
+            </div>
+            <div class="asset-sched-bar">
+                <div class="asset-sched-seg" style="width:79%;background:var(--pri)" title="Straight-line: $1,733"></div>
+                <div class="asset-sched-seg" style="width:14%;background:var(--blue)" title="Declining: $300"></div>
+                <div class="asset-sched-seg" style="width:7%;background:var(--purple)" title="Units: $147"></div>
+            </div>
+        </div>
+        <div class="asset-sched-month">
+            <div class="asset-sched-header">
+                <span class="asset-sched-label">March 2026</span>
+                <span class="asset-sched-total">$2,180</span>
+            </div>
+            <div class="asset-sched-bar">
+                <div class="asset-sched-seg" style="width:79%;background:var(--pri)"></div>
+                <div class="asset-sched-seg" style="width:14%;background:var(--blue)"></div>
+                <div class="asset-sched-seg" style="width:7%;background:var(--purple)"></div>
+            </div>
+        </div>
+        <div class="asset-sched-month">
+            <div class="asset-sched-header">
+                <span class="asset-sched-label">April 2026</span>
+                <span class="asset-sched-total">$2,180</span>
+            </div>
+            <div class="asset-sched-bar">
+                <div class="asset-sched-seg" style="width:79%;background:var(--pri)"></div>
+                <div class="asset-sched-seg" style="width:14%;background:var(--blue)"></div>
+                <div class="asset-sched-seg" style="width:7%;background:var(--purple)"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ═══ ASSET VALUE DECAY CHART ═══ */
+.asset-decay-w{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;transition:border-color .2s}
+.asset-decay-w:hover{border-color:var(--border-2)}
+.asset-decay-svg{width:100%;height:auto;display:block}
+.asset-decay-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+
+/* ═══ METHOD BREAKDOWN ═══ */
+.asset-method-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.asset-method-row:last-child{border:none}
+.asset-method-name{flex:1;font-size:12px;color:var(--t2)}
+.asset-method-count{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--t1);min-width:24px;text-align:right}
+.asset-method-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);min-width:32px;text-align:right}
+
+/* ═══ ASSET CARDS ═══ */
+.asset-cards{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.asset-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;cursor:pointer;transition:all .2s var(--ease2)}
+.asset-card:hover{border-color:var(--border-2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.asset-card.disposed{opacity:.5}
+.asset-card.disposed:hover{opacity:.7}
+.asset-card-top{display:flex;align-items:center;gap:14px}
+.asset-card-icon{font-size:24px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--glass-2);border-radius:var(--r-sm);flex-shrink:0}
+.asset-card-info{flex:1;min-width:0}
+.asset-card-name{font-size:13px;font-weight:600;color:var(--t1)}
+.asset-card-meta{font-size:10px;color:var(--t3);margin-top:2px}
+.asset-card-nbv{text-align:right;flex-shrink:0}
+.asset-card-nbv-label{font-size:9px;color:var(--t4);text-transform:uppercase;letter-spacing:.04em}
+.asset-card-nbv-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500}
+
+/* Life Bar */
+.asset-life-bar-w{margin:12px 0 8px}
+.asset-life-bar{height:6px;border-radius:3px;background:var(--glass-2);overflow:hidden}
+.asset-life-fill{height:100%;border-radius:3px;transition:width 1.2s var(--ease)}
+.asset-life-labels{display:flex;justify-content:space-between;margin-top:4px}
+.asset-life-labels span{font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace}
+
+/* Card Footer */
+.asset-card-foot{display:flex;align-items:center;justify-content:space-between;padding-top:8px;border-top:1px solid var(--border);font-size:10px;color:var(--t3)}
+.asset-card-badge{padding:2px 8px;border-radius:10px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.asset-card-badge.active{background:var(--green-dim);color:var(--green)}
+.asset-card-badge.disposed{background:var(--glass-2);color:var(--t4)}
+
+/* ═══ SCHEDULE ═══ */
+.asset-schedule{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.asset-sched-month{background:var(--glass);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;transition:border-color .2s}
+.asset-sched-month:hover{border-color:var(--border-2)}
+.asset-sched-header{display:flex;justify-content:space-between;margin-bottom:8px}
+.asset-sched-label{font-size:12px;color:var(--t2);font-weight:500}
+.asset-sched-total{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--pri)}
+.asset-sched-bar{display:flex;height:6px;border-radius:3px;overflow:hidden;gap:2px}
+.asset-sched-seg{border-radius:2px;transition:width 1s var(--ease)}
+
+/* Responsive */
+@media(max-width:768px){
+    .asset-cards{gap:10px}
+    div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important}
+}
+</style>

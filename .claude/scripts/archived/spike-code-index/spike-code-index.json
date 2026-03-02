@@ -1,0 +1,219 @@
+{
+  "generated": "2026-02-27T21:28:33.075Z",
+  "fileCount": 8,
+  "services": {
+    "account.service.ts": {
+      "path": "apps/api/src/domains/banking/services/account.service.ts",
+      "domain": "banking",
+      "exports": [
+        "getDefaultGLAccountForType",
+        "ListAccountsParams",
+        "PaginatedAccounts",
+        "AccountService"
+      ],
+      "imports": [
+        "@akount/db"
+      ],
+      "patterns": [
+        "tenant-isolation",
+        "prisma",
+        "server-component"
+      ],
+      "violations": [],
+      "loc": 375
+    },
+    "invoice.service.ts": {
+      "path": "apps/api/src/domains/invoicing/services/invoice.service.ts",
+      "domain": "invoicing",
+      "exports": [
+        "createInvoice",
+        "listInvoices",
+        "getInvoice",
+        "updateInvoice",
+        "deleteInvoice"
+      ],
+      "imports": [
+        "@akount/db",
+        "../../../middleware/tenant.js",
+        "./pdf.service",
+        "../../../lib/email",
+        "../../accounting/services/journal-entry.service"
+      ],
+      "patterns": [
+        "tenant-isolation",
+        "prisma",
+        "server-component"
+      ],
+      "violations": [],
+      "loc": 639
+    },
+    "journal-entry.service.ts": {
+      "path": "apps/api/src/domains/accounting/services/journal-entry.service.ts",
+      "domain": "accounting",
+      "exports": [
+        "JournalEntryService"
+      ],
+      "imports": [
+        "@akount/db",
+        "../errors",
+        "../../../lib/audit",
+        "./report-cache",
+        "../utils/entry-number"
+      ],
+      "patterns": [
+        "tenant-isolation",
+        "prisma"
+      ],
+      "violations": [],
+      "loc": 708
+    }
+  },
+  "routes": {},
+  "pages": {
+    "page.tsx": {
+      "path": "apps/web/src/app/(dashboard)/banking/accounts/page.tsx",
+      "domain": "banking",
+      "exports": [
+        "metadata"
+      ],
+      "imports": [
+        "next",
+        "next/link",
+        "lucide-react",
+        "@/components/banking/BankingBalanceHero",
+        "@/components/banking/BankingInsightPanel"
+      ],
+      "patterns": [
+        "server-component"
+      ],
+      "violations": [],
+      "loc": 142
+    }
+  },
+  "components": {
+    "DomainTabs.tsx": {
+      "path": "apps/web/src/components/shared/DomainTabs.tsx",
+      "domain": "web-components",
+      "exports": [
+        "DomainTabs"
+      ],
+      "imports": [
+        "next/link",
+        "next/navigation",
+        "@/lib/utils",
+        "@/lib/navigation"
+      ],
+      "patterns": [
+        "client-component"
+      ],
+      "violations": [],
+      "loc": 57
+    }
+  },
+  "utils": {
+    "currency.ts": {
+      "path": "apps/web/src/lib/utils/currency.ts",
+      "domain": "web-utils",
+      "exports": [
+        "formatCurrency",
+        "formatCompactNumber",
+        "formatCents",
+        "parseCentsInput"
+      ],
+      "imports": [],
+      "patterns": [],
+      "violations": [
+        "inline-formatCurrency"
+      ],
+      "loc": 79
+    },
+    "date.ts": {
+      "path": "apps/web/src/lib/utils/date.ts",
+      "domain": "web-utils",
+      "exports": [
+        "formatDate",
+        "formatDateTime",
+        "formatDateSplit",
+        "formatMonthYear"
+      ],
+      "imports": [
+        "@/lib/utils/date"
+      ],
+      "patterns": [],
+      "violations": [],
+      "loc": 84
+    }
+  },
+  "other": {
+    "seed.ts": {
+      "path": "packages/db/prisma/seed.ts",
+      "domain": "db",
+      "exports": [],
+      "imports": [
+        "@prisma/client"
+      ],
+      "patterns": [
+        "prisma",
+        "server-component"
+      ],
+      "violations": [],
+      "loc": 468
+    }
+  },
+  "domains": {
+    "banking": {
+      "files": 2,
+      "loc": 517
+    },
+    "invoicing": {
+      "files": 1,
+      "loc": 639
+    },
+    "accounting": {
+      "files": 1,
+      "loc": 708
+    },
+    "web-utils": {
+      "files": 2,
+      "loc": 163
+    },
+    "web-components": {
+      "files": 1,
+      "loc": 57
+    },
+    "db": {
+      "files": 1,
+      "loc": 468
+    }
+  },
+  "patterns": {
+    "tenant-isolation": [
+      "account.service.ts",
+      "invoice.service.ts",
+      "journal-entry.service.ts"
+    ],
+    "prisma": [
+      "account.service.ts",
+      "invoice.service.ts",
+      "journal-entry.service.ts",
+      "seed.ts"
+    ],
+    "server-component": [
+      "account.service.ts",
+      "invoice.service.ts",
+      "page.tsx",
+      "seed.ts"
+    ],
+    "client-component": [
+      "DomainTabs.tsx"
+    ]
+  },
+  "violations": {
+    "inline-formatCurrency": [
+      {
+        "file": "currency.ts",
+        "path": "apps/web/src/lib/utils/currency.ts"
+      }
+    ]
+  }
+}

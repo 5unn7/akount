@@ -1,0 +1,514 @@
+@import "tailwindcss";
+
+/* Scan packages/ui for utility classes */
+@source "../../../../packages/ui/src";
+
+/* Dark mode via class strategy */
+@variant dark (&:where(.dark, .dark *));
+
+/* ═══════════════════════════════════════════════════════
+   1. THEME TOKENS — Tailwind v4 utilities
+   Creates: text-<name>, bg-<name>, border-<name>
+   ═══════════════════════════════════════════════════════ */
+@theme inline {
+  /* Fonts */
+  --font-heading: "Newsreader", serif;
+  --font-sans: "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Border radius — 3px / 2px / 1px (never 0) */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 1px);
+  --radius-sm: calc(var(--radius) - 2px);
+
+  /* shadcn/ui semantic colors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Financial semantic — mode-aware via --ak-* vars
+     Usage: text-finance-income, bg-finance-expense, etc. */
+  --color-finance-income: var(--ak-green);
+  --color-finance-expense: var(--ak-red);
+  --color-finance-transfer: var(--ak-blue);
+  --color-finance-liability: hsl(var(--primary));
+  --color-finance-equity: var(--ak-teal);
+
+  /* AI accent — mode-aware via --ak-* vars
+     Usage: text-ai, bg-ai-accent, border-ai-border */
+  --color-ai: var(--ak-ai);
+  --color-ai-accent: var(--ak-ai-accent);
+  --color-ai-border: var(--ak-ai-border);
+
+  /* Akount — primary alpha variants
+     Usage: bg-ak-pri-dim, text-ak-pri-text, hover:bg-ak-pri-hover */
+  --color-ak-pri-hover: var(--ak-pri-hover);
+  --color-ak-pri-dim: var(--ak-pri-dim);
+  --color-ak-pri-glow: var(--ak-pri-glow);
+  --color-ak-pri-text: var(--ak-pri-text);
+  --color-ak-pri-active: var(--ak-pri-active);
+
+  /* Akount — semantic palette
+     Usage: text-ak-green, bg-ak-red-dim, border-ak-blue, etc. */
+  --color-ak-green: var(--ak-green);
+  --color-ak-green-dim: var(--ak-green-dim);
+  --color-ak-red: var(--ak-red);
+  --color-ak-red-dim: var(--ak-red-dim);
+  --color-ak-blue: var(--ak-blue);
+  --color-ak-blue-dim: var(--ak-blue-dim);
+  --color-ak-purple: var(--ak-purple);
+  --color-ak-purple-dim: var(--ak-purple-dim);
+  --color-ak-teal: var(--ak-teal);
+  --color-ak-teal-dim: var(--ak-teal-dim);
+
+  /* Akount — surfaces & text levels
+     Usage: bg-ak-bg-3, text-ak-t3 */
+  --color-ak-bg-3: var(--ak-bg-3);
+  --color-ak-bg-4: var(--ak-bg-4);
+  --color-ak-t3: var(--ak-t3);
+  --color-ak-t4: var(--ak-t4);
+
+  /* Akount — border tiers
+     Usage: border-ak-border, border-ak-border-2 */
+  --color-ak-border: var(--ak-border);
+  --color-ak-border-2: var(--ak-border-2);
+  --color-ak-border-3: var(--ak-border-3);
+}
+
+/* ═══════════════════════════════════════════════════════
+   2. CSS VARIABLES — Light/Dark Theming
+   ═══════════════════════════════════════════════════════ */
+@layer base {
+  :root {
+    /* ── shadcn Light Mode ── */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 258 90% 66%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 262 83% 58%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 25 95% 53%;
+    --radius: 0.1875rem;
+
+    /* ── Akount Light Mode ── */
+
+    /* Primary alpha variants (darker orange for light bg) */
+    --ak-pri-hover: #B45309;
+    --ak-pri-dim: rgba(217, 119, 6, 0.12);
+    --ak-pri-glow: rgba(217, 119, 6, 0.08);
+    --ak-pri-text: #D97706;
+    --ak-pri-active: rgba(217, 119, 6, 0.16);
+
+    /* Semantic colors (600-level for better contrast on light backgrounds) */
+    --ak-green: #059669;
+    --ak-green-dim: rgba(5, 150, 105, 0.12);
+    --ak-red: #DC2626;
+    --ak-red-dim: rgba(220, 38, 38, 0.10);
+    --ak-blue: #2563EB;
+    --ak-blue-dim: rgba(37, 99, 235, 0.10);
+    --ak-purple: #7C3AED;
+    --ak-purple-dim: rgba(124, 58, 237, 0.10);
+    --ak-teal: #0D9488;
+    --ak-teal-dim: rgba(13, 148, 136, 0.10);
+
+    /* Chart/SVG fill variants (for light backgrounds) */
+    --ak-green-fill: rgba(5, 150, 105, 0.18);
+    --ak-red-fill: rgba(220, 38, 38, 0.18);
+    --ak-blue-fill: rgba(37, 99, 235, 0.18);
+    --ak-purple-fill: rgba(124, 58, 237, 0.18);
+    --ak-pri-fill: rgba(217, 119, 6, 0.18);
+    --ak-teal-fill: rgba(13, 148, 136, 0.18);
+
+    /* AI */
+    --ak-ai: #7C3AED;
+    --ak-ai-accent: rgba(124, 58, 237, 0.08);
+    --ak-ai-border: rgba(124, 58, 237, 0.30);
+
+    /* Surfaces (warm gray with subtle purple undertone to match dark mode) */
+    --ak-bg-3: #E8E8EE;
+    --ak-bg-4: #DDDDE5;
+
+    /* Glass & borders (stronger for visible card definition) */
+    --ak-glass: rgba(0, 0, 0, 0.06);
+    --ak-glass-2: rgba(0, 0, 0, 0.09);
+    --ak-glass-3: rgba(0, 0, 0, 0.12);
+    --ak-border: rgba(0, 0, 0, 0.12);
+    --ak-border-2: rgba(0, 0, 0, 0.18);
+    --ak-border-3: rgba(0, 0, 0, 0.25);
+
+    /* Text levels */
+    --ak-t3: #7A7A8E;
+    --ak-t4: #A0A0AE;
+
+    /* Layout & easing (shared across modes) */
+    --ak-sidebar: 240px;
+    --ak-topbar: 56px;
+    --ak-r: 16px;
+    --ak-r-sm: 10px;
+    --ak-r-xs: 6px;
+    --ak-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --ak-ease2: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    /* ── shadcn Dark Mode — Financial Clarity ──
+       Near-black surfaces with purple undertones.
+       Ref: brand/inspirations/financial-clarity-final.html */
+    --background: 240 24% 4%;          /* #09090F */
+    --foreground: 240 10% 95%;         /* #F0F0F5 */
+    --card: 240 18% 5%;               /* #0F0F17 */
+    --card-foreground: 240 10% 95%;
+    --popover: 240 16% 7%;            /* #15151F */
+    --popover-foreground: 240 10% 95%;
+    --primary: 38 92% 50%;            /* #F59E0B */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 263 70% 71%;         /* #A78BFA purple-400 */
+    --secondary-foreground: 240 10% 95%;
+    --muted: 240 14% 10%;
+    --muted-foreground: 240 8% 55%;   /* #5C5C72 */
+    --accent: 240 14% 10%;
+    --accent-foreground: 240 10% 95%;
+    --destructive: 0 91% 71%;         /* #F87171 red-400 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 14% 10%;
+    --input: 240 14% 12%;
+    --ring: 38 92% 50%;
+
+    /* ── Akount Dark Mode ── */
+
+    /* Primary alpha variants (brighter for dark bg) */
+    --ak-pri-hover: #FBBF24;
+    --ak-pri-dim: rgba(245, 158, 11, 0.18);
+    --ak-pri-glow: rgba(245, 158, 11, 0.12);
+    --ak-pri-text: #FFB02E;
+    --ak-pri-active: rgba(245, 158, 11, 0.25);
+
+    /* Semantic colors (400-level for dark backgrounds) */
+    --ak-green: #34D399;
+    --ak-green-dim: rgba(52, 211, 153, 0.18);
+    --ak-red: #F87171;
+    --ak-red-dim: rgba(248, 113, 113, 0.18);
+    --ak-blue: #60A5FA;
+    --ak-blue-dim: rgba(96, 165, 250, 0.18);
+    --ak-purple: #A78BFA;
+    --ak-purple-dim: rgba(167, 139, 250, 0.18);
+    --ak-teal: #2DD4BF;
+    --ak-teal-dim: rgba(45, 212, 191, 0.18);
+
+    /* Chart/SVG fill variants (lower opacity for area fills) */
+    --ak-green-fill: rgba(52, 211, 153, 0.12);
+    --ak-red-fill: rgba(248, 113, 113, 0.12);
+    --ak-blue-fill: rgba(96, 165, 250, 0.12);
+    --ak-purple-fill: rgba(167, 139, 250, 0.12);
+    --ak-pri-fill: rgba(245, 158, 11, 0.12);
+    --ak-teal-fill: rgba(45, 212, 191, 0.12);
+
+    /* AI */
+    --ak-ai: #A78BFA;
+    --ak-ai-accent: rgba(139, 92, 246, 0.10);
+    --ak-ai-border: rgba(139, 92, 246, 0.35);
+
+    /* Surfaces */
+    --ak-bg-3: #1A1A26;
+    --ak-bg-4: #22222E;
+
+    /* Glass & borders (light-on-dark) — increased opacity for better readability */
+    --ak-glass: rgba(255, 255, 255, 0.06);
+    --ak-glass-2: rgba(255, 255, 255, 0.09);
+    --ak-glass-3: rgba(255, 255, 255, 0.12);
+    --ak-border: rgba(255, 255, 255, 0.12);
+    --ak-border-2: rgba(255, 255, 255, 0.18);
+    --ak-border-3: rgba(255, 255, 255, 0.25);
+
+    /* Text levels */
+    --ak-t3: #71717A;
+    --ak-t4: #52525B;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   3. UTILITIES — Glass, Glow, Tracking
+   ═══════════════════════════════════════════════════════ */
+
+/* Glass tiers — auto-adapt to light/dark via --ak-* vars */
+@utility glass {
+  background: var(--ak-glass);
+  border: 1px solid var(--ak-border);
+  transform: translateZ(0);
+}
+
+@utility glass-2 {
+  background: var(--ak-glass-2);
+  border: 1px solid var(--ak-border-2);
+  transform: translateZ(0);
+}
+
+@utility glass-3 {
+  background: var(--ak-glass-3);
+  border: 1px solid var(--ak-border-3);
+  transform: translateZ(0);
+}
+
+/* Glass modal — highest opacity for modal dialogs and overlays */
+@utility glass-modal {
+  background: hsl(var(--popover));
+  border: 1px solid var(--ak-border-3);
+  transform: translateZ(0);
+}
+
+/* Blur reserved for shell elements only (sidebar, topbar, overlays).
+   Cards do NOT need blur on #09090F background — perf win. */
+@utility glass-blur {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* Mouse-tracking radial glow for cards.
+   Set --glow-x / --glow-y via JS and --glow-color (default: primary amber).
+   Usage: <GlowCard> component or glow-track utility + onMouseMove handler. */
+@utility glow-track {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-track::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at var(--glow-x, 50%) var(--glow-y, 0%),
+    var(--glow-color, rgba(245, 158, 11, 0.04)),
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--ak-ease);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-track:hover::after {
+  opacity: 1;
+}
+
+.glow-track > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Static glow box-shadows */
+@utility glow-primary {
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.08);
+}
+
+@utility glow-primary-strong {
+  box-shadow: 0 0 36px rgba(245, 158, 11, 0.22);
+}
+
+@utility glow-success {
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.06);
+}
+
+@utility glow-danger {
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.06);
+}
+
+@utility glow-blue {
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.06);
+}
+
+@utility glow-purple {
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════
+   4. ANIMATIONS
+   ═══════════════════════════════════════════════════════ */
+
+/* Fade-in with upward slide + scale — used for staggered page entry */
+@keyframes fi {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fi {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fi 0.45s var(--ak-ease) forwards;
+}
+.fi1 { animation-delay: 0.06s; }
+.fi2 { animation-delay: 0.12s; }
+.fi3 { animation-delay: 0.20s; }
+.fi4 { animation-delay: 0.28s; }
+.fi5 { animation-delay: 0.36s; }
+.fi6 { animation-delay: 0.44s; }
+
+/* Number transition animation */
+@keyframes number-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.number-transition {
+  animation: number-in 0.3s ease-out;
+}
+
+/* Sparkline draw animation */
+@keyframes sparkline-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.sparkline-path {
+  stroke-dasharray: 100;
+  animation: sparkline-draw 1.2s ease-out forwards;
+}
+
+/* Glow pulse animation (subtle) */
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.06;
+  }
+  50% {
+    opacity: 0.10;
+  }
+}
+
+@utility glow-animate {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+/* Thin glass scrollbar — subtle pill that blends with dark glass surfaces */
+@utility scrollbar-thin-glass {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Text utilities */
+@utility text-micro {
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════
+   5. NATIVE FORM ELEMENT FIXES
+   ═══════════════════════════════════════════════════════ */
+
+/* Select dropdown options — ensure proper background in both light/dark modes */
+select option {
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+}
+
+/* Dropdown appear */
+@keyframes dd-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Pulse breathing (orb / hero elements) */
+@keyframes pb {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 36px rgba(245, 158, 11, 0.22), 0 0 72px rgba(245, 158, 11, 0.08);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 52px rgba(245, 158, 11, 0.3), 0 0 100px rgba(245, 158, 11, 0.12);
+  }
+}
+
+/* Pulse ring (notification indicators) */
+@keyframes pr {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.07);
+    opacity: 0.9;
+  }
+}
+
+/* Checkmark draw (onboarding completion) */
+@keyframes check-draw {
+  from { stroke-dashoffset: 24; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Scale-in with fade (onboarding success orb) */
+@keyframes scale-in {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

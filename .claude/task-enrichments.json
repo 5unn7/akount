@@ -1,0 +1,663 @@
+{
+  "_meta": {
+    "description": "Task enrichment sidecar — files, verification, acceptance criteria per task",
+    "lastUpdated": "2026-02-28",
+    "source": "review:doc-intelligence-phase2-2026-02-28"
+  },
+
+  "DEV-268": {
+    "title": "AI: Add timeout (30s) to all AI provider calls",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/services/providers/claude.provider.ts",
+      "apps/api/src/domains/ai/services/providers/mistral.provider.ts",
+      "apps/api/src/domains/ai/services/document-extraction.service.ts",
+      "apps/api/src/domains/ai/services/natural-search.service.ts",
+      "apps/api/src/domains/ai/services/auto-bookkeeper.service.ts"
+    ],
+    "verification": "Grep 'timeout|AbortController|signal' apps/api/src/domains/ai/services/",
+    "acceptanceCriteria": [
+      "Every AI API call (Anthropic, Mistral) has a 30s timeout configured",
+      "Uses AbortController + setTimeout pattern for non-native timeout support",
+      "Timeout errors are caught and logged with structured logging",
+      "AIDecisionLog records timeout failures for cost attribution"
+    ],
+    "tags": ["ai", "cost-control", "reliability"],
+    "reviewAgent": "ai-integration-reviewer"
+  },
+
+  "DEV-269": {
+    "title": "AI: Implement token tracking",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/services/providers/claude.provider.ts",
+      "apps/api/src/domains/ai/services/providers/mistral.provider.ts",
+      "apps/api/src/domains/ai/services/document-extraction.service.ts",
+      "apps/api/src/domains/ai/services/natural-search.service.ts",
+      "apps/api/src/domains/ai/services/auto-bookkeeper.service.ts"
+    ],
+    "verification": "Grep 'tokensUsed|usage.input_tokens|usage.output_tokens' apps/api/src/domains/ai/",
+    "acceptanceCriteria": [
+      "Every AI call response parses usage.input_tokens + usage.output_tokens",
+      "Token counts logged to AIDecisionLog.metadata JSON field",
+      "Token usage visible in structured logs per-request"
+    ],
+    "tags": ["ai", "cost-control", "observability"],
+    "reviewAgent": "ai-integration-reviewer"
+  },
+
+  "DEV-270": {
+    "title": "AI: Add per-tenant AI budget caps",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/services/ai-budget.service.ts",
+      "apps/api/src/domains/ai/routes/",
+      "packages/db/prisma/schema.prisma"
+    ],
+    "verification": "Grep '402|Payment Required|budget|AIBudget' apps/api/src/domains/ai/",
+    "acceptanceCriteria": [
+      "Budget config stored per-tenant (monthly limit in tokens or dollars)",
+      "Budget checked before every AI call",
+      "Returns 402 Payment Required when budget exceeded",
+      "Admin endpoint to view/set tenant budgets",
+      "Budget usage resets monthly"
+    ],
+    "tags": ["ai", "cost-control", "multi-tenant"],
+    "reviewAgent": "ai-integration-reviewer"
+  },
+
+  "SEC-48": {
+    "title": "AI: Service-layer consent re-verification",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/services/natural-search.service.ts",
+      "apps/api/src/domains/ai/services/auto-bookkeeper.service.ts",
+      "apps/api/src/domains/ai/services/document-extraction.service.ts",
+      "apps/api/src/domains/system/services/ai-consent.service.ts"
+    ],
+    "verification": "Grep 'verifyConsent|checkConsent|getConsent' apps/api/src/domains/ai/services/",
+    "acceptanceCriteria": [
+      "Every AI service method calls verifyConsent(tenantId, userId, feature) before processing",
+      "Throws 403 if consent not granted (defense-in-depth beyond middleware)",
+      "Consent check is a reusable utility imported from ai-consent.service.ts",
+      "Unit tests verify consent rejection path"
+    ],
+    "tags": ["security", "gdpr", "consent", "compliance"],
+    "reviewAgent": "ai-integration-reviewer"
+  },
+
+  "SEC-49": {
+    "title": "AI: Fix PII leak in OCR logs",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/services/document-extraction.service.ts",
+      "apps/api/src/lib/pii-redaction.ts",
+      "apps/api/src/lib/prompt-defense.ts"
+    ],
+    "verification": "Grep -n 'log.*ocr|log.*text|log.*raw' apps/api/src/domains/ai/services/document-extraction.service.ts",
+    "acceptanceCriteria": [
+      "OCR text is PII-redacted BEFORE any logging occurs",
+      "Pipeline order: OCR → PII redaction → log → analyze",
+      "No raw OCR text appears in any log output",
+      "Test verifies PII (email, phone, SSN) stripped from logged text"
+    ],
+    "tags": ["security", "gdpr", "pii", "logging"],
+    "reviewAgent": "ai-integration-reviewer"
+  },
+
+  "DEV-271": {
+    "title": "Workers: Add idempotency checks via inputHash",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/invoice-scan.worker.ts"
+    ],
+    "verification": "Grep 'inputHash|findFirst.*inputHash|idempoten' apps/api/src/domains/ai/workers/",
+    "acceptanceCriteria": [
+      "Before creating bill/invoice, check AIDecisionLog for existing record with same inputHash",
+      "If match found, skip entity creation and return existing result",
+      "inputHash computed from file content SHA-256 (already exists in field)",
+      "Job retries do NOT create duplicate financial records",
+      "Test: submit same file twice → only 1 bill/invoice created"
+    ],
+    "tags": ["workers", "idempotency", "data-integrity"],
+    "reviewAgent": "bullmq-job-reviewer"
+  },
+
+  "SEC-50": {
+    "title": "Workers: Entity ownership validation",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/invoice-scan.worker.ts"
+    ],
+    "verification": "Grep 'entity.*findFirst.*tenantId|ownership|access denied' apps/api/src/domains/ai/workers/",
+    "acceptanceCriteria": [
+      "Workers validate entityId belongs to tenantId before processing",
+      "5-line check: prisma.entity.findFirst({ where: { id: entityId, tenantId } })",
+      "Throws descriptive error if validation fails",
+      "Logged at error level with jobId, tenantId, entityId",
+      "Prevents cross-tenant data pollution if Redis compromised"
+    ],
+    "tags": ["security", "tenant-isolation", "workers"],
+    "reviewAgent": "security-sentinel"
+  },
+
+  "ARCH-28": {
+    "title": "Workers: Domain boundary fix — use business services",
+    "priority": "P0",
+    "files": [
+      "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
+      "apps/api/src/domains/business/services/bill.service.ts",
+      "apps/api/src/domains/invoicing/services/invoice.service.ts",
+      "apps/api/src/domains/vendors/services/vendor.service.ts",
+      "apps/api/src/domains/clients/services/client.service.ts"
+    ],
+    "verification": "Grep -n 'prisma\\.(bill|invoice|vendor|client)\\.(create|upsert)' apps/api/src/domains/ai/workers/",
+    "acceptanceCriteria": [
+      "Workers call billService.create() / invoiceService.create() instead of prisma.bill.create()",
+      "Workers call vendorService.findOrCreate() instead of prisma.vendor.upsert()",
+      "All business validation logic delegated to domain services",
+      "Zero direct Prisma calls for entity creation in worker files",
+      "Existing tests still pass"
+    ],
+    "tags": ["architecture", "domain-boundaries", "workers"],
+    "reviewAgent": "architecture-strategist"
+  },
+
+  "PERF-30": {
+    "title": "Schema: Add Vendor.name composite index",
+    "priority": "P0",
+    "files": [
+      "packages/db/prisma/schema.prisma"
+    ],
+    "verification": "Grep 'Vendor_entityId_name' packages/db/prisma/schema.prisma",
+    "acceptanceCriteria": [
+      "Composite index @@index([entityId, name, deletedAt]) on Vendor model",
+      "Matches existing Client model index pattern",
+      "Migration applied successfully",
+      "Vendor name lookups drop from 500ms to ~3ms at 10K vendors"
+    ],
+    "migrationName": "add_vendor_name_and_ai_decision_log_indexes",
+    "tags": ["performance", "schema", "indexes"],
+    "reviewAgent": "performance-oracle"
+  },
+
+  "PERF-31": {
+    "title": "Schema: Add AIDecisionLog composite indexes",
+    "priority": "P0",
+    "files": [
+      "packages/db/prisma/schema.prisma"
+    ],
+    "verification": "Grep 'AIDecisionLog.*@@index' packages/db/prisma/schema.prisma",
+    "acceptanceCriteria": [
+      "Index 1: @@index([entityId, createdAt]) — for time-range queries",
+      "Index 2: @@index([entityId, feature, createdAt]) — for feature-filtered queries",
+      "Index 3: @@index([entityId, inputHash]) — for idempotency lookups",
+      "Migration applied successfully",
+      "Query time at 100K+ records drops from 2s to <50ms"
+    ],
+    "migrationName": "add_vendor_name_and_ai_decision_log_indexes",
+    "tags": ["performance", "schema", "indexes"],
+    "reviewAgent": "performance-oracle"
+  },
+
+  "DEV-272": {
+    "title": "AI: AIDecisionLog coverage in all AI services",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/services/natural-search.service.ts",
+      "apps/api/src/domains/ai/services/auto-bookkeeper.service.ts"
+    ],
+    "verification": "Grep 'AIDecisionLog|aIDecisionLog\\.create' apps/api/src/domains/ai/services/",
+    "acceptanceCriteria": [
+      "natural-search.service.ts creates AIDecisionLog after every AI call",
+      "auto-bookkeeper.service.ts creates AIDecisionLog after every AI call",
+      "Logged fields: feature, model, tokensUsed, inputHash, tenantId, entityId, result summary",
+      "GDPR Article 30 (record of processing) satisfied"
+    ],
+    "tags": ["ai", "compliance", "gdpr"],
+    "reviewAgent": "ai-integration-reviewer"
+  },
+
+  "DEV-273": {
+    "title": "AI: Reduce Mistral maxTokens 2048→800",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/services/providers/mistral.provider.ts",
+      "apps/api/src/domains/ai/services/document-extraction.service.ts"
+    ],
+    "verification": "Grep 'maxTokens|max_tokens' apps/api/src/domains/ai/services/providers/mistral.provider.ts",
+    "acceptanceCriteria": [
+      "Vision/OCR calls use maxTokens: 800 (was 2048)",
+      "Categorization calls use maxTokens: 512",
+      "No degradation in extraction quality",
+      "Estimated savings: $120/mo"
+    ],
+    "tags": ["ai", "cost-optimization"],
+    "reviewAgent": "ai-integration-reviewer"
+  },
+
+  "SEC-51": {
+    "title": "AI: Add Mistral disclosure to consent UI",
+    "priority": "P1",
+    "files": [
+      "apps/web/src/app/(dashboard)/system/settings/ai-consent-form.tsx",
+      "apps/api/src/domains/system/services/ai-consent.service.ts"
+    ],
+    "verification": "Grep -i 'mistral' apps/web/src/app/(dashboard)/system/",
+    "acceptanceCriteria": [
+      "Consent UI lists 'Mistral AI' alongside 'Anthropic' as third-party processor",
+      "Consent service stores Mistral acknowledgment",
+      "GDPR Article 13 (third-party processor disclosure) satisfied"
+    ],
+    "tags": ["compliance", "gdpr", "ui"],
+    "reviewAgent": "compliance-reviewer"
+  },
+
+  "ARCH-29": {
+    "title": "Workers: DLQ monitoring and admin endpoint",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
+      "apps/api/src/domains/ai/services/queue-manager.ts",
+      "apps/api/src/domains/system/routes.ts"
+    ],
+    "verification": "Grep 'failed|deadLetter|DLQ' apps/api/src/domains/ai/",
+    "acceptanceCriteria": [
+      "Failed jobs logged to structured logging after max retries",
+      "Admin endpoint GET /api/system/jobs/failed returns failed job list",
+      "Failed jobs preserved (not auto-removed) for investigation",
+      "Optional: notification on repeated failures"
+    ],
+    "tags": ["workers", "observability", "reliability"],
+    "reviewAgent": "bullmq-job-reviewer"
+  },
+
+  "ARCH-30": {
+    "title": "Workers: Graceful shutdown handlers",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/invoice-scan.worker.ts"
+    ],
+    "verification": "Grep 'SIGTERM|SIGINT|worker.close|graceful' apps/api/src/domains/ai/workers/",
+    "acceptanceCriteria": [
+      "Workers handle SIGTERM and SIGINT signals",
+      "In-progress jobs complete before worker exits",
+      "No partial DB state on deployment",
+      "Worker logs shutdown sequence"
+    ],
+    "tags": ["workers", "reliability", "deployment"],
+    "reviewAgent": "bullmq-job-reviewer"
+  },
+
+  "ARCH-31": {
+    "title": "Workers: Fix job cleanup config",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/services/queue-manager.ts"
+    ],
+    "verification": "Grep 'removeOnComplete|removeOnFail' apps/api/src/domains/ai/services/queue-manager.ts",
+    "acceptanceCriteria": [
+      "removeOnComplete: { count: 100, age: 86400 } (keep 100 or 24h, whichever less)",
+      "removeOnFail: { count: 500, age: 604800 } (keep 500 or 7d for investigation)",
+      "After S3 migration (ARCH-3), job payloads are ~1KB so this is safe"
+    ],
+    "tags": ["workers", "redis", "memory"],
+    "reviewAgent": "bullmq-job-reviewer"
+  },
+
+  "ARCH-32": {
+    "title": "Workers: Extract BaseDocumentScanWorker",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/base-document-scan.worker.ts"
+    ],
+    "verification": "Grep 'BaseDocumentScanWorker|extends.*Worker' apps/api/src/domains/ai/workers/",
+    "acceptanceCriteria": [
+      "New BaseDocumentScanWorker contains shared logic (~258 lines → ~200 lines)",
+      "bill-scan.worker.ts extends base with bill-specific entity creation (~30 lines)",
+      "invoice-scan.worker.ts extends base with invoice-specific entity creation (~30 lines)",
+      "Existing tests pass without modification",
+      "No behavioral changes"
+    ],
+    "tags": ["architecture", "dry", "workers"],
+    "reviewAgent": "architecture-strategist"
+  },
+
+  "ARCH-33": {
+    "title": "Split DocumentExtractionService (God Service)",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/services/document-extraction.service.ts"
+    ],
+    "verification": "Grep 'class.*Service' apps/api/src/domains/ai/services/document-extraction*",
+    "acceptanceCriteria": [
+      "Split into focused modules: OcrService, ExtractionValidationService, PromptBuilder",
+      "DocumentExtractionService remains as orchestrator (thin coordinator)",
+      "Each new service has single responsibility",
+      "No behavioral changes, all existing tests pass"
+    ],
+    "tags": ["architecture", "srp"],
+    "reviewAgent": "architecture-strategist"
+  },
+
+  "ARCH-34": {
+    "title": "SSE: Fix memory leak from orphaned listeners",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/routes/jobs.ts"
+    ],
+    "verification": "Grep 'removeListener|removeAllListeners|close.*listener|connection.*registry' apps/api/src/domains/ai/routes/jobs.ts",
+    "acceptanceCriteria": [
+      "SSE close event removes all BullMQ listeners for that connection",
+      "Connection registry tracks active SSE connections per tenant",
+      "Stale connections cleaned up periodically (setInterval or on new connection)",
+      "No memory growth under sustained SSE connections"
+    ],
+    "tags": ["performance", "memory", "sse"],
+    "reviewAgent": "architecture-strategist"
+  },
+
+  "DEV-274": {
+    "title": "Fix console.error in rule-engine.service.ts",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/ai/services/rule-engine.service.ts"
+    ],
+    "verification": "Grep 'console\\.' apps/api/src/domains/ai/services/rule-engine.service.ts",
+    "acceptanceCriteria": [
+      "Line 75: console.error → logger.error({ err, executionCount }, 'Failed to increment execution count')",
+      "Line 118: console.error → logger.error({ err, executionCounts }, 'Failed to batch increment execution counts')",
+      "Zero console.* calls remaining in file",
+      "Uses pino logger (server.log or injected logger)"
+    ],
+    "tags": ["logging", "code-quality"],
+    "reviewAgent": "fastify-api-reviewer"
+  },
+
+  "DEV-275": {
+    "title": "Fix 3 type safety violations",
+    "priority": "P1",
+    "files": [
+      "apps/web/src/app/(dashboard)/accounting/chart-of-accounts/gl-account-sheet.tsx",
+      "apps/web/src/app/(dashboard)/accounting/chart-of-accounts/chart-of-accounts-client.tsx",
+      "apps/api/src/middleware/csrf.ts"
+    ],
+    "verification": "Grep ': any' apps/web/src/app/(dashboard)/accounting/chart-of-accounts/ apps/api/src/middleware/csrf.ts",
+    "acceptanceCriteria": [
+      "gl-account-sheet.tsx:45 — onSubmit typed as () => void | Promise<void> (not () => void)",
+      "chart-of-accounts-client.tsx:89 — query params properly typed (not :any)",
+      "csrf.ts:104 — Fastify request extension properly typed",
+      "Zero :any types in modified files"
+    ],
+    "tags": ["typescript", "type-safety"],
+    "reviewAgent": "kieran-typescript-reviewer"
+  },
+
+  "INFRA-69": {
+    "title": "System: Add Redis to /health endpoint",
+    "priority": "P1",
+    "files": [
+      "apps/api/src/domains/system/routes.ts"
+    ],
+    "verification": "Grep 'redis|PING|health' apps/api/src/domains/system/routes.ts",
+    "acceptanceCriteria": [
+      "Health endpoint checks Redis via PING command",
+      "Returns { db: 'ok', redis: 'ok' } when both healthy",
+      "Degrades gracefully if Redis down (still returns DB status)",
+      "Response includes latency for each service"
+    ],
+    "tags": ["infrastructure", "health-check", "observability"],
+    "reviewAgent": "infrastructure-deployment-reviewer"
+  },
+
+  "DEV-276": {
+    "title": "AI: AIDecisionLog retention policy",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/ai/services/ai-retention.service.ts",
+      "apps/api/src/domains/ai/services/queue-manager.ts"
+    ],
+    "verification": "Grep 'retention|deleteMany.*createdAt' apps/api/src/domains/ai/",
+    "acceptanceCriteria": [
+      "BullMQ repeatable job runs daily to clean old AIDecisionLog records",
+      "Default retention: 90 days (configurable per tenant)",
+      "Soft-deleted records cleaned first, then aged records",
+      "Cleanup logged with record count"
+    ],
+    "tags": ["compliance", "data-retention"],
+    "reviewAgent": "compliance-reviewer"
+  },
+
+  "PERF-32": {
+    "title": "AI: Cache extraction results by inputHash",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/ai/services/document-extraction.service.ts"
+    ],
+    "verification": "Grep 'inputHash.*cache|findFirst.*inputHash' apps/api/src/domains/ai/services/document-extraction.service.ts",
+    "acceptanceCriteria": [
+      "Before calling AI, check AIDecisionLog for existing result with same inputHash",
+      "If cache hit, return cached extraction result (skip AI call)",
+      "30% duplicate rate → 30% cost savings (~$600/mo → $420/mo)",
+      "Cache bypassed when user explicitly requests re-scan"
+    ],
+    "tags": ["performance", "cost-optimization", "caching"],
+    "reviewAgent": "performance-oracle"
+  },
+
+  "PERF-33": {
+    "title": "AI: Cursor pagination on AIDecisionLog list",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/ai/routes/",
+      "apps/api/src/domains/ai/services/"
+    ],
+    "verification": "Grep 'cursor|take.*skip|pagination' apps/api/src/domains/ai/",
+    "acceptanceCriteria": [
+      "List endpoint uses cursor-based pagination (not offset)",
+      "Default page size: 50, max: 100",
+      "Cursor based on createdAt + id (guaranteed unique ordering)"
+    ],
+    "tags": ["performance", "api-design"],
+    "reviewAgent": "performance-oracle"
+  },
+
+  "DEV-277": {
+    "title": "Schema: Insight duplicate cleanup before unique constraint",
+    "priority": "P2",
+    "files": [
+      "packages/db/prisma/schema.prisma",
+      "packages/db/prisma/migrations/"
+    ],
+    "verification": "Grep 'Insight.*@@unique|cleanup.*duplicate' packages/db/",
+    "acceptanceCriteria": [
+      "Data cleanup script removes existing duplicate Insights before migration",
+      "Unique constraint applied after cleanup (safe migration)",
+      "No data loss — duplicates merged, not deleted"
+    ],
+    "tags": ["schema", "data-integrity"],
+    "reviewAgent": "prisma-migration-reviewer"
+  },
+
+  "SEC-52": {
+    "title": "Schema: FK ownership validation for Category.defaultGLAccountId",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/business/services/category.service.ts"
+    ],
+    "verification": "Grep 'defaultGLAccountId.*entity|gLAccount.*findFirst' apps/api/src/domains/business/services/category.service.ts",
+    "acceptanceCriteria": [
+      "When setting defaultGLAccountId, validate GLAccount belongs to same entity",
+      "Prevents cross-entity FK references",
+      "Returns descriptive error if GLAccount not found or different entity"
+    ],
+    "tags": ["security", "data-integrity", "fk-validation"],
+    "reviewAgent": "security-sentinel"
+  },
+
+  "DEV-278": {
+    "title": "Code cleanup: Remove unused extractStatement method",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/ai/services/document-extraction.service.ts"
+    ],
+    "verification": "Grep 'extractStatement' apps/api/src/domains/ai/",
+    "acceptanceCriteria": [
+      "extractStatement() method removed (115 lines, 0 callers)",
+      "No compile errors after removal",
+      "No imports reference the removed method"
+    ],
+    "tags": ["code-cleanup", "dead-code"],
+    "reviewAgent": "code-simplicity-reviewer"
+  },
+
+  "DEV-279": {
+    "title": "Code cleanup: Remove unused queue definitions",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/ai/services/queue-manager.ts"
+    ],
+    "verification": "Grep 'createQueue|addQueue' apps/api/src/domains/ai/services/queue-manager.ts",
+    "acceptanceCriteria": [
+      "3 unused queue definitions removed",
+      "Only actively used queues remain",
+      "No compile errors, no broken imports"
+    ],
+    "tags": ["code-cleanup", "dead-code"],
+    "reviewAgent": "code-simplicity-reviewer"
+  },
+
+  "DEV-280": {
+    "title": "Code cleanup: Unify scan routes via shared factory",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/business/routes/bill-scan.ts",
+      "apps/api/src/domains/business/routes/invoice-scan.ts"
+    ],
+    "verification": "Grep 'createScanRoute|scanRouteFactory' apps/api/src/domains/business/routes/",
+    "acceptanceCriteria": [
+      "Shared route factory: createScanRoute(config) handles 95% identical logic",
+      "bill-scan.ts and invoice-scan.ts each ~5-10 lines of config",
+      "No behavioral changes"
+    ],
+    "tags": ["code-cleanup", "dry"],
+    "reviewAgent": "code-simplicity-reviewer"
+  },
+
+  "DEV-281": {
+    "title": "Exports: Add UTF-8 BOM for Excel CSV compatibility",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/business/services/export.service.ts",
+      "apps/api/src/domains/accounting/services/report.service.ts"
+    ],
+    "verification": "Grep 'BOM|\\\\uFEFF|utf-8.*bom' apps/api/src/",
+    "acceptanceCriteria": [
+      "CSV output prefixed with UTF-8 BOM (\\uFEFF)",
+      "Non-ASCII characters (accented names, currency symbols) display correctly in Excel",
+      "No impact on non-Excel CSV consumers"
+    ],
+    "tags": ["exports", "compatibility"],
+    "reviewAgent": "data-export-reviewer"
+  },
+
+  "SEC-53": {
+    "title": "Exports: Mask tax IDs in export output",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/business/services/export.service.ts"
+    ],
+    "verification": "Grep 'mask.*tax|taxId.*mask|\\*\\*\\*' apps/api/src/domains/business/services/",
+    "acceptanceCriteria": [
+      "Tax IDs masked in all export formats: ***-**-1234 pattern",
+      "Full tax IDs only visible in secure admin views",
+      "PII exposure in downloaded files eliminated"
+    ],
+    "tags": ["security", "pii", "exports"],
+    "reviewAgent": "data-export-reviewer"
+  },
+
+  "PERF-34": {
+    "title": "Exports: Paginate PDF line items to prevent OOM",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/invoicing/services/pdf.service.ts"
+    ],
+    "verification": "Grep 'maxLines|paginate|chunk.*line' apps/api/src/domains/invoicing/services/pdf.service.ts",
+    "acceptanceCriteria": [
+      "PDF line items paginated at 500 per page",
+      "Large invoices (10K+ lines) don't OOM",
+      "Page breaks include 'continued' indicator"
+    ],
+    "tags": ["performance", "exports", "pdf"],
+    "reviewAgent": "data-export-reviewer"
+  },
+
+  "DEV-282": {
+    "title": "Security: CSRF multipart integration test",
+    "priority": "P2",
+    "files": [
+      "apps/api/src/domains/business/routes/__tests__/bill-scan.test.ts"
+    ],
+    "verification": "Grep 'csrf.*multipart|multipart.*csrf' apps/api/src/domains/business/routes/__tests__/",
+    "acceptanceCriteria": [
+      "Integration test: POST /api/business/bills/scan without CSRF token → 403",
+      "Integration test: POST with valid CSRF token → 200/202",
+      "If SameSite=Strict cookies prevent cross-site forms, document and close",
+      "If vulnerable, add form field CSRF support to csrf.ts getToken()"
+    ],
+    "tags": ["security", "csrf", "testing"],
+    "reviewAgent": "security-sentinel"
+  },
+
+  "ARCH-3": {
+    "_note": "ENRICHMENT UPDATE — existing task, adding P0-7 context from doc-intel review",
+    "title": "S3 cloud storage migration for file uploads (+ base64 memory bomb fix)",
+    "priority": "P0 (upgraded from High)",
+    "files": [
+      "apps/api/src/domains/ai/workers/bill-scan.worker.ts",
+      "apps/api/src/domains/ai/workers/invoice-scan.worker.ts",
+      "apps/api/src/domains/ai/services/queue-manager.ts",
+      "apps/api/src/domains/business/routes/bill-scan.ts",
+      "apps/api/src/domains/business/routes/invoice-scan.ts"
+    ],
+    "verification": "Grep 'S3|Spaces|objectKey|putObject' apps/api/src/domains/ai/",
+    "acceptanceCriteria": [
+      "Uploaded files stored in S3/DigitalOcean Spaces (not local filesystem)",
+      "Job payloads contain S3 object key instead of base64 (99.998% size reduction)",
+      "Workers fetch file from S3 when processing",
+      "13MB base64 × 1000 jobs = 13GB Redis → ~1KB × 1000 = 1MB Redis",
+      "S3 credentials via environment variables",
+      "Presigned URLs for secure file access"
+    ],
+    "tags": ["infrastructure", "performance", "workers", "redis"],
+    "reviewAgent": "bullmq-job-reviewer, performance-oracle, architecture-strategist"
+  },
+
+  "INFRA-8": {
+    "_note": "ENRICHMENT UPDATE — existing task, adding P1-25 context from doc-intel review",
+    "title": "Docker image building + container deployment pipeline (includes Dockerfile)",
+    "files": [
+      "Dockerfile",
+      "apps/api/Dockerfile",
+      ".dockerignore"
+    ],
+    "verification": "ls Dockerfile apps/api/Dockerfile 2>/dev/null",
+    "acceptanceCriteria": [
+      "Multi-stage Dockerfile: build stage + production stage",
+      "Prisma generate step included in build",
+      "Non-root user in production stage",
+      "Health check configured",
+      ".dockerignore excludes node_modules, .git, test files"
+    ],
+    "tags": ["infrastructure", "deployment", "docker"],
+    "reviewAgent": "infrastructure-deployment-reviewer"
+  }
+}

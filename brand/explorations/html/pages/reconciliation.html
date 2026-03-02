@@ -1,0 +1,233 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Reconciliation</div>
+        <div class="page-sub">RBC Business Chequing &middot; February 2026</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Auto-matching...')">&#10022; Auto-Match</button>
+        <button class="btn pri" onclick="showToast('Period marked complete')">&#10003; Complete Period</button>
+    </div>
+</div>
+
+<!-- Summary Bar -->
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/banking'">Banking</button>
+    <button class="sec-tab" onclick="window.location.hash='#/transactions'">Transactions</button>
+    <button class="sec-tab on">Reconciliation</button>
+    <button class="sec-tab" onclick="window.location.hash='#/imports'">Imports</button>
+    <button class="sec-tab" onclick="window.location.hash='#/transfers'">Transfers</button>
+</div>
+
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Bank Balance</div>
+        <div class="st-val">$29,340</div>
+        <div class="st-trend flat">RBC CAD</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Book Balance</div>
+        <div class="st-val">$29,340</div>
+        <div class="st-trend up" style="color:var(--green)">&#10003; Balanced</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Matched</div>
+        <div class="st-val" style="color:var(--green)">42</div>
+        <div class="st-trend up">78%</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Unmatched</div>
+        <div class="st-val" style="color:var(--pri)">12</div>
+        <div class="st-trend dn">needs review</div>
+    </div>
+</div>
+
+<!-- Reconciliation Progress -->
+<div class="recon-sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Reconciliation Progress</h2><span class="sec-m">42 of 54 matched</span>
+    </div>
+    <div class="recon-bar-w">
+        <div class="recon-bar">
+            <div class="recon-fill" style="width:78%"></div>
+        </div>
+        <div class="recon-pct">78%</div>
+    </div>
+</div>
+
+<!-- Split Pane: Bank vs Books -->
+<div class="two-col fi fi4" style="gap:12px">
+    <!-- LEFT: Bank Feed -->
+    <div>
+        <section class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">&#127974; Bank Feed</h2><span class="sec-m">Source of truth</span>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th class="right">Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="txn-row uncat" style="cursor:pointer"
+                            onclick="showToast('Select book transaction to match')">
+                            <td class="txn-date-cell">Feb 9</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:var(--pri-dim)">&#128230;</div>
+                                    <div class="txn-desc">AMZN MKTP CA*2R4K1</div>
+                                </div>
+                            </td>
+                            <td class="txn-amt out">-$84.99</td>
+                            <td><span class="txn-cat-tag uncat">Unmatched</span></td>
+                        </tr>
+                        <tr class="txn-row uncat" style="cursor:pointer">
+                            <td class="txn-date-cell">Feb 9</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:var(--pri-dim)">&#127963;</div>
+                                    <div class="txn-desc">UBER TRIP 4X92HJ</div>
+                                </div>
+                            </td>
+                            <td class="txn-amt out">-$23.40</td>
+                            <td><span class="txn-cat-tag uncat">Unmatched</span></td>
+                        </tr>
+                        <tr class="txn-row" style="opacity:.6">
+                            <td class="txn-date-cell">Feb 7</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico">&#128179;</div>
+                                    <div class="txn-desc">WISE *EUR TO CAD</div>
+                                </div>
+                            </td>
+                            <td class="txn-amt in">+$4,700.00</td>
+                            <td><span class="txn-cat-tag matched"
+                                    style="background:rgba(52,211,153,.1);color:var(--green)">Matched</span></td>
+                        </tr>
+                        <tr class="txn-row" style="opacity:.6">
+                            <td class="txn-date-cell">Feb 6</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico">&#128176;</div>
+                                    <div class="txn-desc">XYZ LTD PAYMENT</div>
+                                </div>
+                            </td>
+                            <td class="txn-amt in">+$8,200.00</td>
+                            <td><span class="txn-cat-tag matched"
+                                    style="background:rgba(52,211,153,.1);color:var(--green)">Matched</span></td>
+                        </tr>
+                        <tr class="txn-row" style="opacity:.6">
+                            <td class="txn-date-cell">Feb 5</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico">&#127968;</div>
+                                    <div class="txn-desc">WEWORK OFFICE PAD</div>
+                                </div>
+                            </td>
+                            <td class="txn-amt out">-$1,800.00</td>
+                            <td><span class="txn-cat-tag matched"
+                                    style="background:rgba(52,211,153,.1);color:var(--green)">Matched</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- RIGHT: Book Transactions -->
+    <div>
+        <section class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">&#128214; Book Transactions</h2><span class="sec-m">Your records</span>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th class="right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="txn-row" style="opacity:.6">
+                            <td class="txn-date-cell">Feb 7</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico">&#128179;</div>
+                                    <div class="txn-desc">Wise Transfer &mdash; EUR to CAD</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag">Transfer</span></td>
+                            <td class="txn-amt in">+$4,700.00</td>
+                        </tr>
+                        <tr class="txn-row" style="opacity:.6">
+                            <td class="txn-date-cell">Feb 6</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico">&#128176;</div>
+                                    <div class="txn-desc">XYZ Ltd &mdash; Invoice #1046</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag matched">Client Payment</span></td>
+                            <td class="txn-amt in">+$8,200.00</td>
+                        </tr>
+                        <tr class="txn-row" style="opacity:.6">
+                            <td class="txn-date-cell">Feb 5</td>
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico">&#127968;</div>
+                                    <div class="txn-desc">WeWork &mdash; Monthly Rent</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag">Rent</span></td>
+                            <td class="txn-amt out">-$1,800.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Match Confidence -->
+        <div class="sec" style="margin-top:12px">
+            <div class="sec-h">
+                <h2 class="sec-t">AI Match Suggestions</h2>
+            </div>
+            <div class="ai-card" onclick="this.classList.toggle('expanded')" style="margin-bottom:8px">
+                <div style="display:flex;align-items:center">
+                    <div style="flex:1">
+                        <div class="ai-type saving">&#10003; Suggested Match</div>
+                        <div class="ai-card-title">AMZN MKTP CA*2R4K1 → Amazon Purchase</div>
+                    </div>
+                    <div class="ai-conf">
+                        <div class="ai-conf-bar" style="width:40px">
+                            <div class="ai-conf-fill" style="width:92%"></div>
+                        </div>
+                        <span>92%</span>
+                    </div>
+                </div>
+                <div class="ai-peek">Amount match &middot; Date proximity &middot; Description similarity</div>
+            </div>
+            <div class="ai-card" onclick="this.classList.toggle('expanded')">
+                <div style="display:flex;align-items:center">
+                    <div style="flex:1">
+                        <div class="ai-type warning">&#9888; Low Confidence</div>
+                        <div class="ai-card-title">UBER TRIP 4X92HJ — No book match found</div>
+                    </div>
+                    <div class="ai-conf">
+                        <div class="ai-conf-bar" style="width:40px">
+                            <div class="ai-conf-fill" style="width:34%"></div>
+                        </div>
+                        <span>34%</span>
+                    </div>
+                </div>
+                <div class="ai-peek">Create new book entry or match manually</div>
+            </div>
+        </div>
+    </div>
+</div>

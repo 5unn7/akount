@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "description": "Single source of truth for Akount project facts. Auto-updated by /processes:eod. Validated by context-freshness hook.",
+  "last_updated": "2026-02-17",
+  "updated_by": "context-optimization-implementation",
+  "project": {
+    "name": "Akount",
+    "description": "AI-powered financial command center for globally-operating solopreneurs",
+    "philosophy": "Architecture for scale, implement for lean"
+  },
+  "tech_stack": {
+    "frontend": {
+      "framework": "Next.js 16",
+      "router": "App Router",
+      "ui_base": "shadcn/ui",
+      "ui_glass": "shadcn-glass-ui@2.11.2",
+      "styling": "Tailwind v4.1.18",
+      "css_config": "CSS-based (NOT tailwind.config.ts)"
+    },
+    "backend": {
+      "framework": "Fastify",
+      "runtime": "Node.js"
+    },
+    "database": {
+      "engine": "PostgreSQL",
+      "orm": "Prisma"
+    },
+    "auth": {
+      "provider": "Clerk"
+    },
+    "monorepo": {
+      "tool": "Turborepo"
+    }
+  },
+  "architecture": {
+    "domains": [
+      "Overview",
+      "Banking",
+      "Invoicing",
+      "Clients",
+      "Vendors",
+      "Accounting",
+      "Planning",
+      "Insights",
+      "Services"
+    ],
+    "domain_count": 9,
+    "api_pattern": "Route → Schema (Zod) → Service → Prisma",
+    "frontend_pattern": "Server Component (data fetch) → Client Component (interactivity)"
+  },
+  "database": {
+    "models_count": 40,
+    "models_count_as_of": "2026-02-17",
+    "key_models": [
+      "Tenant",
+      "Entity",
+      "GLAccount",
+      "JournalEntry",
+      "JournalLine",
+      "Invoice",
+      "Bill",
+      "Payment",
+      "PaymentAllocation",
+      "Account",
+      "Transaction",
+      "Client",
+      "Vendor",
+      "Category"
+    ]
+  },
+  "invariants": {
+    "count": 5,
+    "list": [
+      "Tenant isolation (every query filters by tenantId)",
+      "Integer cents for money (never floats)",
+      "Double-entry bookkeeping (SUM(debits) === SUM(credits))",
+      "Soft delete (deletedAt field, never hard delete)",
+      "Source preservation (sourceDocument JSON snapshots)"
+    ]
+  },
+  "phases": {
+    "total": 6,
+    "completed": 5,
+    "current": 6,
+    "completed_list": [
+      "Phase 1: See Your Money",
+      "Phase 2: Move Your Money",
+      "Phase 3: Structure Your Finances",
+      "Phase 4: Get Paid & Pay Bills",
+      "Phase 5: Understand Your Money"
+    ],
+    "current_phase": {
+      "number": 6,
+      "name": "Launch MVP",
+      "status": "NOT STARTED",
+      "scope": "Security audit, performance optimization, CI/CD, monitoring"
+    }
+  },
+  "test_coverage": {
+    "backend_tests_count": 46,
+    "backend_tests_as_of": "2026-02-17",
+    "service_coverage": "27/27 services (100%)",
+    "test_file_count": 46
+  },
+  "api": {
+    "endpoints_count": 126,
+    "endpoints_as_of": "2026-02-17",
+    "report_endpoints": 7,
+    "report_endpoints_list": [
+      "P&L",
+      "Balance Sheet",
+      "Cash Flow",
+      "Trial Balance",
+      "GL Ledger",
+      "Spending by Category",
+      "Revenue by Client"
+    ]
+  },
+  "frontend": {
+    "pages_count": 54,
+    "pages_as_of": "2026-02-17",
+    "fonts": {
+      "headings": "Newsreader",
+      "body": "Manrope",
+      "code": "JetBrains Mono"
+    },
+    "design_aesthetic": "Financial Clarity (dark-first, glass, glowy, minimalist)"
+  },
+  "known_issues": [
+    {
+      "issue": "Schema roles (4) vs design (6) mismatch",
+      "status": "Pending migration",
+      "phase": "Phase 6"
+    },
+    {
+      "issue": "Dashboard redesign uncommitted",
+      "status": "Needs review + commit",
+      "phase": "UX"
+    },
+    {
+      "issue": "Onboarding redesign uncommitted",
+      "status": "Needs review + commit",
+      "phase": "UX"
+    }
+  ],
+  "recent_milestones": [
+    {
+      "date": "2026-02-16",
+      "milestone": "Phase 5 COMPLETE",
+      "details": "All 7 report endpoints, 7 frontend pages, export, charts, data backup"
+    },
+    {
+      "date": "2026-02-16",
+      "milestone": "Test Coverage Milestone",
+      "details": "1009 backend tests, 100% service coverage (27/27)"
+    },
+    {
+      "date": "2026-02-16",
+      "milestone": "Code Audit",
+      "details": "Deleted 4.3K lines dead code, split 4 oversized modules, archived 21 plans"
+    }
+  ]
+}

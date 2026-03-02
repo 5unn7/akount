@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "counters": {
+    "UX": 103,
+    "DEV": 282,
+    "SEC": 53,
+    "ARCH": 34,
+    "PERF": 34,
+    "INFRA": 69,
+    "FIN": 33,
+    "TEST": 5,
+    "DRY": 15,
+    "DS": 2,
+    "MKT": 2,
+    "CNT": 1
+  },
+  "lastUpdated": "2026-02-28T17:16:46.499Z",
+  "metadata": {
+    "initializedFrom": "TASKS.md",
+    "totalTasksParsed": 162
+  }
+}

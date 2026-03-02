@@ -1,0 +1,227 @@
+---
+name: processes:end-session
+description: Lightweight per-instance session capture before closing
+argument-hint: "[optional: brief description of what was worked on]"
+aliases:
+  - end-session
+  - wrap
+  - done
+keywords:
+  - end
+  - session
+  - wrap
+  - done
+  - close
+---
+
+# Workflow: End Session
+
+Lightweight capture of what happened in this Claude instance. Does NOT update artifacts — that's `/processes:eod`'s job.
+
+**Time:** ~2 minutes
+**When to use:** Before closing any Claude Code instance for the day. Run this in EVERY instance, then run `/processes:eod` once at end of day.
+**Output:** `docs/archive/sessions/YYYY-MM-DD-HHMM-session.md`
+
+---
+
+## Process
+
+### Step 1: Update TASKS.md "Active Now" Table (30 seconds)
+
+**If task was claimed via /processes:claim or /processes:begin:**
+
+1. Read TASKS.md "Active Now" table at the top
+2. Remove this agent's row from the "Active Now" table
+3. Update the task's Status column:
+   - If work completed: move task row to "Done (Recent)" section with date + commit hash
+   - If work in progress: set Status back to `ready` for another agent to pick up
+4. Update "Last Updated" timestamp at top of TASKS.md
+
+**Example:**
+
+Before (Active Now):
+```markdown
+| agent-ab5c | Dev | SEC-8: Security audit | 2026-02-17 14:30 |
+```
+
+After: Row removed from Active Now. Task moved to Done (Recent):
+```markdown
+| SEC-8 | Complete security audit | 2026-02-17 | abc1234 |
+```
+
+**If ad-hoc work (no task claimed):**
+- Skip TASKS.md Active Now updates
+- Just create session file below
+
+### Step 1b: Auto-Archive & Refresh Index (15 seconds)
+
+After updating task statuses, run these two scripts to keep the task file clean:
+
+```bash
+# Archive completed tasks (moves done → TASKS-ARCHIVE.md, keeps last 10 in Recent)
+node .claude/scripts/archive-done-tasks.js
+
+# Refresh the embedded TASK-INDEX for fast agent lookups
+node .claude/scripts/regenerate-task-index.js
+```
+
+This ensures:
+- Completed tasks don't accumulate in TASKS.md (auto-moved to archive)
+- "Recently Completed" stays at a rolling window of 10
+- Header counts stay accurate
+- TASK-INDEX stays fresh for next session's fast task lookups
+
+---
+
+### Step 1c: Auto-Extract Learning Patterns (20 seconds)
+
+**NEW:** Extract learning patterns from session commits automatically:
+
+```bash
+# Extract patterns from git commits (auto-populates session summary)
+node .claude/scripts/extract-session-patterns.js
+```
+
+This analyzes recent commits and generates `.claude/session-patterns.json` with:
+- **Cross-domain changes** — when one commit touches 2+ domains
+- **New utilities** — detects `lib/utils/` or `domains/*/utils/` additions
+- **New shared components** — detects `packages/ui/` or `apps/web/src/components/shared/` additions
+- **Bug fixes** — commits with "fix", "bug", "crash", etc. keywords
+- **Schema changes** — Prisma schema or migration file changes
+- **New test files** — test files added (not modified)
+
+**Output will be used in Step 3 to auto-populate "Patterns Discovered" and "Bugs Fixed" sections.**
+
+---
+
+### Step 2: Auto-Gather from Git (30 seconds)
+```bash
+# Recent commits (last 2 hours or since session started)
+git log --oneline --since="2 hours ago"
+
+# Files changed
+git diff --name-only HEAD~5
+
+# Current status
+git status --short
+```
+
+### Step 3: Build Session Summary (1 minute)
+
+Save to `docs/archive/sessions/YYYY-MM-DD-HHMM-session.md`:
+
+**Auto-populate from `.claude/session-patterns.json`:**
+
+1. Read `.claude/session-patterns.json` (generated in Step 1c)
+2. Auto-populate "Bugs Fixed" from patterns with `type: "bug-fix"`
+3. Auto-populate "Patterns Discovered" from patterns with types: `new-utility`, `new-component`, `cross-domain`, `schema-change`
+4. **Review auto-filled content** — remove false positives, add manual entries
+
+```markdown
+# Session Summary — YYYY-MM-DD HH:MM
+
+## What Was Done
+- [Bullet list of work completed — from commits + user context]
+
+## Files Changed
+- [From git diff --name-only]
+
+## Commits Made
+- [From git log --oneline]
+
+## Bugs Fixed / Issues Hit
+<!-- AUTO-POPULATED from session-patterns.json (type: bug-fix) -->
+<!-- Review and remove false positives below -->
+- [Task ID if present] [Description from commit message] (commit: [hash])
+- [Add manual entries here if not detected]
+- [Skip this section entirely if no bugs]
+
+## Patterns Discovered
+<!-- AUTO-POPULATED from session-patterns.json (types: new-utility, new-component, cross-domain, schema-change) -->
+<!-- Review and remove false positives below -->
+- **[Pattern type]:** [Description] (commit: [hash])
+  - Files: [affected files]
+  - Exports: [new functions/components] (if applicable)
+- [Add manual entries here if patterns not detected]
+- [Skip this section entirely if nothing new]
+
+## New Systems / Features Built
+- [Anything not in the original plan — new endpoints, pages, utilities]
+- [Skip if all work was planned]
+
+## Unfinished Work
+- [What was started but not completed, with context for next instance]
+- [Include: file paths, what's left to do, any blockers]
+
+## Self-Reflection (AI Agent Quality Check)
+
+### Did I Follow the Pre-Flight Checklist?
+- [ ] Checked task availability (Step 0) before implementation
+- [ ] Read existing files before editing (never edited blindly)
+- [ ] Searched for patterns via Grep before creating new code
+- [ ] Used offset/limit for large files (>300 lines)
+- [ ] Verified patterns with Grep (didn't claim patterns without proof)
+- [ ] Searched MEMORY topic files before implementing
+
+### Did I Violate Any Invariants?
+- [ ] All queries included tenantId filter ✅
+- [ ] All money fields used integer cents (no floats) ✅
+- [ ] All financial records soft-deleted (no hard deletes) ✅
+- [ ] All page.tsx files have loading.tsx + error.tsx ✅
+- [ ] No mixing server imports with 'use client' ✅
+- [ ] Used design tokens (no hardcoded colors) ✅
+- [ ] Used request.log/server.log (no console.log in production) ✅
+- [ ] No `: any` types (used specific types or unknown) ✅
+
+### Loops or Repeated Mistakes Detected?
+- [Did I retry the same failing approach multiple times?]
+- [Did I make the same type of error repeatedly?]
+- [Did I ignore earlier feedback or context?]
+- [Examples: "Tried reading file 3 times without using offset/limit", "Forgot tenantId filter twice"]
+- [Skip if no loops detected]
+
+### What Would I Do Differently Next Time?
+- [Specific improvements based on this session's mistakes]
+- [Examples: "Use Grep BEFORE claiming pattern exists", "Read files with offset/limit first"]
+- [Skip if session went smoothly]
+
+### Context Efficiency Score (Self-Grade)
+- **File reads:** Efficient (used offset/limit) / Mixed / Wasteful (read entire files)
+- **Pattern verification:** Always verified / Mostly verified / Often assumed
+- **Memory usage:** Checked topic files first / Sometimes checked / Never checked
+- **Overall grade:** A (efficient) / B (good) / C (needs improvement) / D (wasteful)
+
+## Artifact Update Hints
+- [Suggest which files might need updating based on what was done]
+- [Examples: "New /api/vendors/bills endpoint → apps/api/CLAUDE.md needs update"]
+- [Examples: "Completed BE-3.1 task → TASKS.md needs checkoff"]
+- [Examples: "Discovered Fastify quirk → MEMORY debugging-log.md"]
+```
+
+### Step 4: Commit the Session File (30 seconds)
+
+```bash
+git add docs/archive/sessions/YYYY-MM-DD-HHMM-session.md
+git add TASKS.md  # If Active Now table updated
+git commit -m "docs: End session capture YYYY-MM-DD HH:MM"
+```
+
+---
+
+## Design Principles
+
+- **Fast** — mostly auto-populated from git, user fills in non-obvious items
+- **Raw** — capture facts, don't analyze or update other files
+- **Self-aware** — AI reflects on its own behavior to catch patterns and loops
+- **Stackable** — multiple sessions per day create separate timestamped files
+- **Bridge to EOD** — "Artifact Update Hints" and self-reflection data feed into EOD analysis
+
+---
+
+## Skip Sections
+
+If a section doesn't apply (no bugs fixed, nothing new learned), either skip it entirely or write "None". Don't pad with filler content.
+
+---
+
+_~140 lines. Fast capture. Self-aware. Git-powered. Feeds into /processes:eod._

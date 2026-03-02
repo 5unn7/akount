@@ -1,0 +1,140 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">AI Advisor</div>
+        <div class="page-sub">4 new insights &middot; Last analysis: 2 hours ago</div>
+    </div>
+    <div class="page-actions"><button class="btn pri" onclick="showToast('Running full analysis...')">&#10022; Run
+            Analysis</button></div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab on">AI Advisor</button>
+    <button class="sec-tab" onclick="window.location.hash='#/policy-alerts'">Policy Alerts</button>
+    <button class="sec-tab" onclick="window.location.hash='#/ai-history'">AI History</button>
+</div>
+
+<section class="ai-brief fi fi2" style="margin-bottom:24px">
+    <div class="ai-hdr">
+        <div class="ai-dot-sm"></div><span class="ai-label">Weekly Intelligence Brief</span><span class="ai-time">Feb 9,
+            2026</span>
+    </div>
+    <p class="ai-body">Your business is in <strong>strong health</strong>. Revenue grew 23% YoY in Q1 with consulting as
+        the primary driver. Cash runway at 5.6 months is above your 4-month target. The EUR strengthening trend (+2.1%
+        this week) adds <strong>$340 CAD</strong> to receivables. One risk factor: ABC Corp's invoice is now 3 days
+        overdue. Based on their history, a single reminder resolves within 48 hours.</p>
+</section>
+
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">Insights</h2><span class="sec-m">4 active</span>
+    </div>
+    <div class="ai-card" onclick="this.classList.toggle('expanded')">
+        <div style="display:flex;align-items:center">
+            <div style="flex:1">
+                <div class="ai-type saving">&#10003; Cost Saving</div>
+                <div class="ai-card-title">Consolidate SaaS subscriptions — save $340/mo</div>
+            </div>
+            <div class="ai-conf">
+                <div class="ai-conf-bar" style="width:40px">
+                    <div class="ai-conf-fill" style="width:88%"></div>
+                </div><span>88%</span>
+            </div><span class="ai-chevron">&#9662;</span>
+        </div>
+        <div class="ai-peek">3 overlapping tools detected. Consolidate to save $4,080/year.</div>
+        <div class="ai-expand">
+            <div class="ai-card-body">You're paying for 3 project management tools: <strong>Notion ($18/mo)</strong>,
+                <strong>Linear ($48/mo)</strong>, and <strong>Asana ($40/mo)</strong>. Team engagement is 94% on Linear,
+                12% Notion, 3% Asana. Consolidating to Linear alone saves <strong>$4,080/year</strong>.
+            </div>
+            <div class="ai-card-foot">
+                <div class="ai-conf"><span>Confidence</span>
+                    <div class="ai-conf-bar">
+                        <div class="ai-conf-fill" style="width:88%"></div>
+                    </div><span>88%</span>
+                </div><button class="btn pri"
+                    onclick="event.stopPropagation();showToast('Added to action items')">Act</button>
+            </div>
+        </div>
+    </div>
+    <div class="ai-card" onclick="this.classList.toggle('expanded')">
+        <div style="display:flex;align-items:center">
+            <div style="flex:1">
+                <div class="ai-type growth">&#8599; Growth</div>
+                <div class="ai-card-title">EUR clients pay 6 days faster than average</div>
+            </div>
+            <div class="ai-conf">
+                <div class="ai-conf-bar" style="width:40px">
+                    <div class="ai-conf-fill" style="width:94%"></div>
+                </div><span>94%</span>
+            </div><span class="ai-chevron">&#9662;</span>
+        </div>
+        <div class="ai-peek">Expand EUR engagements to improve cash flow velocity.</div>
+        <div class="ai-expand">
+            <div class="ai-card-body">European clients average <strong>8.3 days</strong> to pay vs your portfolio
+                average of <strong>14.2 days</strong>. TechStart GmbH has paid within 5 days on all 3 invoices.
+                Prioritizing EUR-based contracts could reduce your overall DSO by 20%.</div>
+            <div class="ai-card-foot">
+                <div class="ai-conf"><span>Confidence</span>
+                    <div class="ai-conf-bar">
+                        <div class="ai-conf-fill" style="width:94%"></div>
+                    </div><span>94%</span>
+                </div><button class="btn" onclick="event.stopPropagation()">Details</button>
+            </div>
+        </div>
+    </div>
+    <div class="ai-card" onclick="this.classList.toggle('expanded')">
+        <div style="display:flex;align-items:center">
+            <div style="flex:1">
+                <div class="ai-type warning">&#9888; Attention</div>
+                <div class="ai-card-title">ABC Corp payment 3 days late — unusual</div>
+            </div>
+            <div class="ai-conf">
+                <div class="ai-conf-bar" style="width:40px">
+                    <div class="ai-conf-fill" style="width:76%"></div>
+                </div><span>76%</span>
+            </div><span class="ai-chevron">&#9662;</span>
+        </div>
+        <div class="ai-peek">First late payment in 18 months. Reminder recommended.</div>
+        <div class="ai-expand">
+            <div class="ai-card-body">ABC Corp typically pays within <strong>2 days</strong> of due date. Invoice #1047
+                ($4,200 USD) is now 3 days overdue — their first late payment in 18 months. Historical pattern: a single
+                courtesy reminder resolves within <strong>48 hours</strong>. No credit risk indicators detected.</div>
+            <div class="ai-card-foot">
+                <div class="ai-conf"><span>Confidence</span>
+                    <div class="ai-conf-bar">
+                        <div class="ai-conf-fill" style="width:76%"></div>
+                    </div><span>76%</span>
+                </div><button class="btn pri"
+                    onclick="event.stopPropagation();showToast('Reminder sent')">Remind</button>
+            </div>
+        </div>
+    </div>
+    <div class="ai-card" onclick="this.classList.toggle('expanded')">
+        <div style="display:flex;align-items:center">
+            <div style="flex:1">
+                <div class="ai-type risk">&#9888; Risk</div>
+                <div class="ai-card-title">Cash dip mid-March if Q2 contracts delayed</div>
+            </div>
+            <div class="ai-conf">
+                <div class="ai-conf-bar" style="width:40px">
+                    <div class="ai-conf-fill" style="width:62%"></div>
+                </div><span>62%</span>
+            </div><span class="ai-chevron">&#9662;</span>
+        </div>
+        <div class="ai-peek">Runway could drop below 4-month target by March 20.</div>
+        <div class="ai-expand">
+            <div class="ai-card-body">Two pending proposals — <strong>NovaSync ($12,000 USD)</strong> and
+                <strong>Meridian ($8,500 CAD)</strong> — need signatures by March 8. Without them, cash runway drops
+                from 5.6 months to <strong>3.7 months</strong> by March 20, below your 4-month safety target. Consider
+                accelerating proposal follow-ups.
+            </div>
+            <div class="ai-card-foot">
+                <div class="ai-conf"><span>Confidence</span>
+                    <div class="ai-conf-bar">
+                        <div class="ai-conf-fill" style="width:62%"></div>
+                    </div><span>62%</span>
+                </div><button class="btn" onclick="event.stopPropagation()">Forecast</button>
+            </div>
+        </div>
+    </div>
+</section>

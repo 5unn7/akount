@@ -1,0 +1,58 @@
+{
+    "name": "akount-monorepo",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "lint:md": "markdownlint-cli2 \"**/*.md\"",
+        "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
+        "typecheck": "turbo typecheck",
+        "clean": "turbo clean",
+        "test": "turbo test",
+        "test:coverage": "turbo test:coverage",
+        "start": "npm run start --workspace=web",
+        "check:env": "node scripts/check-env.mjs",
+        "db:push": "turbo db:push",
+        "db:studio": "turbo db:studio",
+        "db:setup": "npm run db:generate && npm run db:migrate && npm run db:seed",
+        "db:generate": "cd packages/db && npm run generate",
+        "db:migrate": "cd packages/db && npm run migrate",
+        "db:seed": "cd packages/db && npm run seed",
+        "db:reset": "cd packages/db && npm run db:reset",
+        "linear:setup": "dotenv -e .env -- tsx .claude/scripts/linear-setup-workspace.ts",
+        "linear:custom-fields": "dotenv -e .env -- tsx .claude/scripts/linear-custom-fields.ts",
+        "linear:advanced": "dotenv -e .env -- tsx .claude/scripts/linear-advanced-setup.ts",
+        "linear:import": "dotenv -e .env -- tsx .claude/scripts/linear-import-quick.ts",
+        "linear:import-all": "dotenv -e .env -- tsx .claude/scripts/linear-import-all-tasks.ts",
+        "linear:import-robust": "dotenv -e .env -- tsx .claude/scripts/linear-import-robust.ts",
+        "linear:import-full": "dotenv -e .env -- tsx .claude/scripts/linear-import-comprehensive.ts",
+        "linear:sync": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts sync",
+        "linear:pull": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts pull",
+        "linear:push": "dotenv -e .env -- tsx .claude/scripts/linear-sync.ts push",
+        "linear:duplicate-check": "dotenv -e .env -- tsx .claude/scripts/linear-duplicate-check.ts",
+        "linear:api-monitor": "dotenv -e .env -- tsx .claude/scripts/linear-api-monitor.ts",
+        "linear:weekly-report": "dotenv -e .env -- tsx .claude/scripts/linear-weekly-report.ts",
+        "linear:automation-configs": "dotenv -e .env -- tsx .claude/scripts/linear-generate-automation-configs.ts"
+    },
+    "devDependencies": {
+        "@linear/import": "^3.0.10",
+        "@linear/sdk": "^33.0.0",
+        "dotenv": "^17.3.1",
+        "dotenv-cli": "^11.0.0",
+        "markdownlint-cli2": "^0.21.0",
+        "prettier": "^3.1.0",
+        "tsx": "^4.7.0",
+        "turbo": "^2.3.3",
+        "typescript": "^5.3.3"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "packageManager": "npm@10.2.4",
+    "dependencies": {
+        "file-type": "^19.0.0"
+    }
+}

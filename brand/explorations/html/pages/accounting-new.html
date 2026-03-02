@@ -1,0 +1,159 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Accounting</div>
+        <div class="page-sub">Chart of accounts, journal entries, and reports will appear once you set up your books
+        </div>
+    </div>
+</div>
+
+<!-- Empty Stats -->
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Total Assets</div>
+        <div class="st-val" style="opacity:.3">$0</div>
+        <div class="st-trend flat">Not set up</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Total Liabilities</div>
+        <div class="st-val" style="opacity:.3">$0</div>
+        <div class="st-trend flat">—</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Equity</div>
+        <div class="st-val" style="opacity:.3">$0</div>
+        <div class="st-trend flat">—</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Journal Entries</div>
+        <div class="st-val" style="opacity:.3">0</div>
+        <div class="st-trend flat">—</div>
+    </div>
+</div>
+
+<div class="two-col">
+    <div>
+        <!-- Chart of Accounts Setup -->
+        <section class="sec fi fi3" style="text-align:center;padding:48px 20px">
+            <div style="font-size:52px;margin-bottom:16px;opacity:.2">&#128218;</div>
+            <div style="font-size:17px;font-weight:600;color:var(--t1);margin-bottom:8px">Set up your chart of accounts
+            </div>
+            <div style="font-size:13px;color:var(--t3);max-width:440px;margin:0 auto 24px;line-height:1.6">
+                Start with a pre-built template for your industry or build a custom chart of accounts. Akount will
+                automatically map transactions to the right GL codes.
+            </div>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+                <button class="btn pri" onclick="showToast('Template wizard opening...')">&#128218; Use a
+                    Template</button>
+                <button class="btn" onclick="showToast('Custom setup...')">&#128295; Build Custom</button>
+            </div>
+        </section>
+
+        <!-- Template Picker -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Industry Templates</h2><span class="sec-m">Pre-configured</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
+                <div style="padding:16px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Consulting template selected')"
+                    onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:20px;margin-bottom:6px">&#128188;</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">Consulting / Agency</div>
+                    <div style="font-size:10px;color:var(--t4);margin-top:2px">Revenue, COGS, SaaS expenses, contractors
+                    </div>
+                </div>
+                <div style="padding:16px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('Freelancer template selected')"
+                    onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:20px;margin-bottom:6px">&#128187;</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">Freelancer</div>
+                    <div style="font-size:10px;color:var(--t4);margin-top:2px">Simplified accounts for solo
+                        professionals</div>
+                </div>
+                <div style="padding:16px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('SaaS template selected')" onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:20px;margin-bottom:6px">&#9729;&#65039;</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">SaaS / Tech</div>
+                    <div style="font-size:10px;color:var(--t4);margin-top:2px">MRR, deferred revenue, hosting costs
+                    </div>
+                </div>
+                <div style="padding:16px;border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;transition:border-color .15s"
+                    onclick="showToast('E-commerce template selected')"
+                    onmouseover="this.style.borderColor='var(--pri)'"
+                    onmouseout="this.style.borderColor='var(--border)'">
+                    <div style="font-size:20px;margin-bottom:6px">&#128722;</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--t1)">E-Commerce</div>
+                    <div style="font-size:10px;color:var(--t4);margin-top:2px">Inventory, COGS, shipping, returns</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accounting Setup Steps -->
+        <section class="sec fi fi5">
+            <div class="sec-h">
+                <h2 class="sec-t">Getting Started</h2>
+            </div>
+
+            <div class="ac" style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128197;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Set your fiscal year</div>
+                    <div class="ac-m"><span>When does your business year start?</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Fiscal year setup...')">Configure</button>
+            </div>
+            <div class="ac" style="padding:12px 0;border-bottom:1px solid var(--border)">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128176;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Enter opening balances</div>
+                    <div class="ac-m"><span>Import balances from your previous system</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Opening balances...')">Enter</button>
+            </div>
+            <div class="ac" style="padding:12px 0">
+                <div class="ac-i" style="font-size:14px;opacity:.4">&#128202;</div>
+                <div class="ac-b">
+                    <div class="ac-t" style="color:var(--t2)">Set tax rates</div>
+                    <div class="ac-m"><span>HST/GST/PST or other applicable taxes</span></div>
+                </div>
+                <button class="btn" onclick="showToast('Tax rate setup...')">Set Up</button>
+            </div>
+        </section>
+    </div>
+
+    <div class="right-col fi fi6">
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">What Gets Set Up</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">&#128218; Chart of accounts</span><span class="d-row-v"
+                    style="color:var(--t3)">Auto</span></div>
+            <div class="d-row"><span class="d-row-l">&#128196; Journal entries</span><span class="d-row-v"
+                    style="color:var(--t3)">Auto</span></div>
+            <div class="d-row"><span class="d-row-l">&#128200; Trial balance</span><span class="d-row-v"
+                    style="color:var(--t3)">Real-time</span></div>
+            <div class="d-row"><span class="d-row-l">&#128202; P&amp;L report</span><span class="d-row-v"
+                    style="color:var(--t3)">Auto</span></div>
+            <div class="d-row"><span class="d-row-l">&#128176; Balance sheet</span><span class="d-row-v"
+                    style="color:var(--t3)">Auto</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">&#128197; Period close</span><span
+                    class="d-row-v" style="color:var(--t3)">Guided</span></div>
+        </div>
+
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Resources</h2>
+            </div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening guide...')">&#128214; Accounting basics guide</div>
+            <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening video...')">&#127909; Setting up your books</div>
+            <div style="padding:8px 0;font-size:12px;color:var(--blue);cursor:pointer"
+                onclick="showToast('Opening docs...')">&#128218; Import from QuickBooks / Xero</div>
+        </div>
+    </div>
+</div>

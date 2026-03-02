@@ -1,0 +1,190 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Budgets & Goals</div>
+        <div class="page-sub">February 2026 &middot; $2,250 of $3,400 budget spent &middot; 2 active goals</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Opening goal wizard...')">&#127919; New Goal</button>
+        <button class="btn pri" onclick="showToast('Adjusting budgets...')">&#9998; Edit Budgets</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/planning'">Planning</button>
+    <button class="sec-tab" onclick="window.location.hash='#/reports'">Reports</button>
+    <button class="sec-tab on">Budgets</button>
+    <button class="sec-tab" onclick="window.location.hash='#/goals'">Goals</button>
+    <button class="sec-tab" onclick="window.location.hash='#/forecasts'">Forecasts</button>
+</div>
+
+<!-- Monthly Summary -->
+<div class="stats stats-4 fi fi2">
+    <div class="st">
+        <div class="st-label">Monthly Budget</div>
+        <div class="st-val">$3,400</div>
+        <div class="st-trend flat">Feb 2026</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Spent</div>
+        <div class="st-val" style="color:var(--pri)">$2,250</div>
+        <div class="st-trend flat">66% used</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Remaining</div>
+        <div class="st-val" style="color:var(--green)">$1,150</div>
+        <div class="st-trend up">on track</div>
+    </div>
+    <div class="st">
+        <div class="st-label">Savings Rate</div>
+        <div class="st-val">18%</div>
+        <div class="st-trend up">+2% vs Jan</div>
+    </div>
+</div>
+
+<!-- Budget Bars -->
+<section class="sec fi fi3">
+    <div class="sec-h">
+        <h2 class="sec-t">February Budget</h2><span class="sec-m">$1,150 remaining &middot; 19 days left</span>
+    </div>
+
+    <!-- Category progress bars -->
+    <div style="display:flex;flex-direction:column;gap:14px;padding:8px 0">
+        <!-- Food & Dining -->
+        <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span style="font-size:12px;font-weight:500;color:var(--t1)">&#127869; Food & Dining</span>
+                <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2)">$480 / $600</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden">
+                <div
+                    style="width:80%;height:100%;background:var(--pri);border-radius:4px;transition:width 1s var(--ease)">
+                </div>
+            </div>
+            <div style="font-size:9px;color:var(--t3);margin-top:2px">$120 remaining &middot; 80% used</div>
+        </div>
+
+        <!-- Rent -->
+        <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span style="font-size:12px;font-weight:500;color:var(--t1)">&#127968; Rent</span>
+                <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2)">$1,200 /
+                    $1,200</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden">
+                <div style="width:100%;height:100%;background:var(--green);border-radius:4px"></div>
+            </div>
+            <div style="font-size:9px;color:var(--green);margin-top:2px">&#10003; Paid in full</div>
+        </div>
+
+        <!-- Transport -->
+        <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span style="font-size:12px;font-weight:500;color:var(--t1)">&#128652; Transport</span>
+                <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2)">$210 / $300</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden">
+                <div
+                    style="width:70%;height:100%;background:var(--pri);border-radius:4px;transition:width 1s var(--ease)">
+                </div>
+            </div>
+            <div style="font-size:9px;color:var(--t3);margin-top:2px">$90 remaining &middot; 70% used</div>
+        </div>
+
+        <!-- Entertainment -->
+        <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span style="font-size:12px;font-weight:500;color:var(--t1)">&#127916; Entertainment</span>
+                <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2)">$240 / $200</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden">
+                <div style="width:100%;height:100%;background:var(--red);border-radius:4px"></div>
+            </div>
+            <div style="font-size:9px;color:var(--red);margin-top:2px">$40 over budget &mdash; that's okay, it happens!
+            </div>
+        </div>
+
+        <!-- Utilities -->
+        <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span style="font-size:12px;font-weight:500;color:var(--t1)">&#128161; Utilities</span>
+                <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2)">$120 / $200</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden">
+                <div
+                    style="width:60%;height:100%;background:var(--green);border-radius:4px;transition:width 1s var(--ease)">
+                </div>
+            </div>
+            <div style="font-size:9px;color:var(--t3);margin-top:2px">$80 remaining &middot; Looking good!</div>
+        </div>
+
+        <!-- Subscriptions -->
+        <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span style="font-size:12px;font-weight:500;color:var(--t1)">&#128241; Subscriptions</span>
+                <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2)">$68 / $100</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden">
+                <div
+                    style="width:68%;height:100%;background:var(--blue);border-radius:4px;transition:width 1s var(--ease)">
+                </div>
+            </div>
+            <div style="font-size:9px;color:var(--t3);margin-top:2px">Netflix, Spotify, iCloud</div>
+        </div>
+    </div>
+</section>
+
+<!-- Goals -->
+<section class="sec fi fi4">
+    <div class="sec-h">
+        <h2 class="sec-t">Financial Goals</h2><span class="sec-m">2 active goals</span>
+    </div>
+    <div class="acct-grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+        <div class="acct">
+            <div class="acct-bank" style="color:var(--green)">&#127919; On Track</div>
+            <div class="acct-name">Emergency Fund</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span class="acct-bal">$8,400</span>
+                <span style="font-size:11px;color:var(--t3)">of $10,000</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden;margin-bottom:6px">
+                <div
+                    style="width:84%;height:100%;background:linear-gradient(90deg,var(--pri),var(--green));border-radius:4px">
+                </div>
+            </div>
+            <div class="acct-foot">
+                <span>84% complete</span>
+                <span style="color:var(--green)">~2 months left</span>
+            </div>
+        </div>
+        <div class="acct">
+            <div class="acct-bank" style="color:var(--blue)">&#9992;&#65039; Saving</div>
+            <div class="acct-name">Japan Trip</div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                <span class="acct-bal">$1,200</span>
+                <span style="font-size:11px;color:var(--t3)">of $5,000</span>
+            </div>
+            <div style="height:8px;background:var(--glass-2);border-radius:4px;overflow:hidden;margin-bottom:6px">
+                <div style="width:24%;height:100%;background:var(--blue);border-radius:4px"></div>
+            </div>
+            <div class="acct-foot">
+                <span>24% complete</span>
+                <span style="color:var(--t3)">Target: Dec 2026</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AI Tip -->
+<div class="sec fi" style="animation-delay:.36s;border-left:3px solid var(--pri);padding-left:16px">
+    <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="font-size:16px">&#10022;</span>
+        <div>
+            <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:4px">AI Suggestion</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.5">You've spent less on transport this month
+                compared to January. If you move $30 from Transport to Entertainment, your budget would stay balanced.
+                <button class="btn" style="font-size:10px;padding:2px 8px;margin-left:4px"
+                    onclick="showToast('Budget adjusted!')">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>

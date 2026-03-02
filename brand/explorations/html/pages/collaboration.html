@@ -1,0 +1,220 @@
+<div class="page-hdr fi fi1">
+    <div>
+        <div class="page-title">Collaboration</div>
+        <div class="page-sub">Your accountant &middot; Shared workspace &middot; Review requests</div>
+    </div>
+    <div class="page-actions">
+        <button class="btn" onclick="showToast('Opening message composer...')">&#9993; Message</button>
+        <button class="btn pri" onclick="showToast('New review request...')">&#128203; Request Review</button>
+    </div>
+</div>
+
+<div class="sec-tabs fi fi2" style="margin-bottom:16px">
+    <button class="sec-tab" onclick="window.location.hash='#/services'">Services</button>
+    <button class="sec-tab on">Bookkeeping</button>
+    <button class="sec-tab" onclick="window.location.hash='#/documents'">Documents</button>
+</div>
+
+<div class="two-col">
+    <div>
+        <!-- Accountant Card -->
+        <section class="sec fi fi2">
+            <div class="sec-h">
+                <h2 class="sec-t">My Accountant</h2><span class="sec-m">Connected</span>
+            </div>
+            <div style="display:flex;gap:16px;align-items:center;padding:16px 0;border-bottom:1px solid var(--border)">
+                <div
+                    style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--pri),var(--pri-hover));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;flex-shrink:0">
+                    RP</div>
+                <div style="flex:1">
+                    <div style="font-size:15px;font-weight:600;color:var(--t1)">Rachel Park, CPA</div>
+                    <div style="font-size:12px;color:var(--t3);margin-top:2px">Park &amp; Associates &middot; Toronto,
+                        ON</div>
+                    <div style="font-size:11px;color:var(--t3);margin-top:4px">rachel@parkassociates.ca &middot; (416)
+                        555-0189</div>
+                </div>
+                <div style="text-align:right">
+                    <span class="inv-badge paid" style="font-size:10px">Active</span>
+                    <div style="font-size:10px;color:var(--t4);margin-top:4px">Since Jan 2024</div>
+                </div>
+            </div>
+            <div class="d-row"><span class="d-row-l">Plan</span><span class="d-row-v">Monthly Bookkeeping + Tax
+                    Filing</span></div>
+            <div class="d-row"><span class="d-row-l">Monthly Fee</span><span class="d-row-v">$450/mo CAD</span></div>
+            <div class="d-row"><span class="d-row-l">Next Review</span><span class="d-row-v"
+                    style="color:var(--pri)">Feb 28, 2026</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Access Level</span><span
+                    class="d-row-v">Read-only + Reports</span></div>
+        </section>
+
+        <!-- Review Requests -->
+        <section class="sec fi fi3">
+            <div class="sec-h">
+                <h2 class="sec-t">Review Requests</h2><span class="sec-m">1 open</span>
+            </div>
+            <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span style="font-size:12px;font-weight:500;color:var(--t1)">Q4 Year-End Adjustments</span>
+                    <span class="inv-badge sent" style="font-size:10px">Under Review</span>
+                </div>
+                <div style="font-size:10px;color:var(--t3)">Sent to Rachel Park &middot; Feb 8, 2026 &middot; 3
+                    adjusting entries</div>
+            </div>
+            <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span style="font-size:12px;font-weight:500;color:var(--t1)">January 2026 Close</span>
+                    <span class="inv-badge paid" style="font-size:10px">Approved</span>
+                </div>
+                <div style="font-size:10px;color:var(--t3)">Rachel Park &middot; Jan 18, 2026 &middot; &ldquo;All clean,
+                    no issues.&rdquo;</div>
+            </div>
+            <div style="padding:10px 0">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span style="font-size:12px;font-weight:500;color:var(--t1)">Q3 HST Filing</span>
+                    <span class="inv-badge paid" style="font-size:10px">Approved</span>
+                </div>
+                <div style="font-size:10px;color:var(--t3)">Rachel Park &middot; Dec 10, 2025 &middot; Filed with CRA
+                </div>
+            </div>
+        </section>
+
+        <!-- Activity -->
+        <section class="sec fi fi4">
+            <div class="sec-h">
+                <h2 class="sec-t">Activity Feed</h2><span class="sec-m">Recent</span>
+            </div>
+            <div
+                style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start">
+                <div
+                    style="width:28px;height:28px;border-radius:50%;background:var(--pri-dim);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--pri);flex-shrink:0">
+                    RP</div>
+                <div>
+                    <div style="font-size:12px;color:var(--t1)"><strong>Rachel Park</strong> reviewed Q4 financials
+                    </div>
+                    <div style="font-size:10px;color:var(--t4);margin-top:2px">Jan 12, 2026 &middot; &ldquo;Minor note
+                        on deferred revenue classification.&rdquo;</div>
+                </div>
+            </div>
+            <div
+                style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start">
+                <div
+                    style="width:28px;height:28px;border-radius:50%;background:rgba(96,165,250,.12);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--blue);flex-shrink:0">
+                    SM</div>
+                <div>
+                    <div style="font-size:12px;color:var(--t1)"><strong>Sunny M.</strong> uploaded T2 return draft</div>
+                    <div style="font-size:10px;color:var(--t4);margin-top:2px">Jan 15, 2026 &middot; Shared with Rachel
+                        Park</div>
+                </div>
+            </div>
+            <div style="padding:10px 0;display:flex;gap:10px;align-items:flex-start">
+                <div
+                    style="width:28px;height:28px;border-radius:50%;background:var(--pri-dim);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--pri);flex-shrink:0">
+                    RP</div>
+                <div>
+                    <div style="font-size:12px;color:var(--t1)"><strong>Rachel Park</strong> filed Q4 HST return</div>
+                    <div style="font-size:10px;color:var(--t4);margin-top:2px">Dec 15, 2025 &middot; CRA submission
+                        confirmed</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-col fi fi5">
+        <!-- Shared Documents -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Shared Documents</h2>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="txn-table">
+                    <thead>
+                        <tr>
+                            <th>Document</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="txn-row">
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(248,113,113,.1)">&#128196;</div>
+                                    <div class="txn-desc">T2 Corporate Tax Return — 2025</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(248,113,113,.1);color:var(--red)">Tax</span></td>
+                            <td class="txn-date-cell">Jan 15</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(96,165,250,.12)">&#128200;</div>
+                                    <div class="txn-desc">Q4 2025 Financial Statements</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(96,165,250,.12);color:var(--blue)">Report</span></td>
+                            <td class="txn-date-cell">Jan 10</td>
+                        </tr>
+                        <tr class="txn-row">
+                            <td>
+                                <div class="txn-desc-cell">
+                                    <div class="txn-ico" style="background:rgba(52,211,153,.12)">&#128206;</div>
+                                    <div class="txn-desc">HST Return — Q4 2025</div>
+                                </div>
+                            </td>
+                            <td><span class="txn-cat-tag"
+                                    style="background:rgba(248,113,113,.1);color:var(--red)">Tax</span></td>
+                            <td class="txn-date-cell">Dec 15</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Upcoming Deadlines -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Upcoming Deadlines</h2>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day">28</span><span class="u-mon">Feb</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">Monthly review call</div>
+                    <div class="upcoming-meta">With Rachel Park &middot; 30 min</div>
+                </div>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day">31</span><span class="u-mon">Mar</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">Q1 HST filing</div>
+                    <div class="upcoming-meta">CRA deadline</div>
+                </div>
+            </div>
+            <div class="upcoming-item">
+                <div class="upcoming-date"><span class="u-day">30</span><span class="u-mon">Jun</span></div>
+                <div class="upcoming-info">
+                    <div class="upcoming-name">T2 Corporate Tax Return</div>
+                    <div class="upcoming-meta">CRA deadline &middot; FY2025</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookkeeping Status -->
+        <div class="sec">
+            <div class="sec-h">
+                <h2 class="sec-t">Bookkeeping Status</h2>
+            </div>
+            <div class="d-row"><span class="d-row-l">January 2026</span><span class="d-row-v"><span
+                        class="inv-badge paid" style="font-size:10px">Complete</span></span></div>
+            <div class="d-row"><span class="d-row-l">February 2026</span><span class="d-row-v"><span
+                        class="inv-badge sent" style="font-size:10px">In Progress</span></span></div>
+            <div class="d-row"><span class="d-row-l">Categorized</span><span class="d-row-v"
+                    style="color:var(--green)">92%</span></div>
+            <div class="d-row" style="border:none"><span class="d-row-l">Reconciled</span><span class="d-row-v"
+                    style="color:var(--pri)">78%</span></div>
+        </div>
+    </div>
+</div>

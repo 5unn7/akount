@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akount — Financial Clarity for the Global Solopreneur</title>
+<meta name="description" content="AI-powered financial command center. Multi-currency, double-entry bookkeeping, and intelligent insights — all in one zen dashboard.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --pri:#F59E0B;--pri-hover:#FBBF24;--pri-dim:rgba(245,158,11,.14);--pri-glow:rgba(245,158,11,.08);
+  --green:#34D399;--green-dim:rgba(52,211,153,.12);
+  --red:#F87171;--red-dim:rgba(248,113,113,.12);
+  --blue:#60A5FA;--blue-dim:rgba(96,165,250,.12);
+  --purple:#A78BFA;--purple-dim:rgba(167,139,250,.12);
+  --teal:#2DD4BF;
+  --bg-0:#09090F;--bg-1:#0F0F17;--bg-2:#15151F;--bg-3:#1A1A26;--bg-4:#22222E;
+  --glass:rgba(255,255,255,.025);--glass-2:rgba(255,255,255,.04);--glass-3:rgba(255,255,255,.06);
+  --border:rgba(255,255,255,.06);--border-2:rgba(255,255,255,.09);--border-3:rgba(255,255,255,.13);
+  --t1:#F0F0F5;--t2:#9494A8;--t3:#5C5C72;--t4:#3A3A4E;
+  --r:14px;--r-sm:8px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
+body{background:var(--bg-0);color:var(--t1);font-family:'Manrope',system-ui,sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+/* ═══ GLOBAL ═══ */
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+section{padding:100px 0}
+a{color:inherit;text-decoration:none}
+
+/* ═══ NAV ═══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 0;transition:all .3s}
+nav.scrolled{background:rgba(9,9,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Newsreader',serif;font-size:1.25rem;font-weight:500}
+.nav-logo-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pri),#D97706);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;color:var(--bg-0)}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:13px;color:var(--t2);transition:color .2s;font-weight:500}
+.nav-links a:hover{color:var(--t1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 22px;border-radius:var(--r-sm);border:none;font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s var(--ease);white-space:nowrap}
+.btn-pri{background:var(--pri);color:var(--bg-0);box-shadow:0 0 20px var(--pri-glow),0 2px 8px rgba(0,0,0,.3)}
+.btn-pri:hover{background:var(--pri-hover);transform:translateY(-1px);box-shadow:0 0 30px rgba(245,158,11,.15),0 4px 16px rgba(0,0,0,.4)}
+.btn-ghost{background:transparent;color:var(--t2);border:1px solid var(--border-2)}
+.btn-ghost:hover{color:var(--t1);border-color:var(--border-3);background:var(--glass)}
+.btn-lg{padding:14px 32px;font-size:15px;border-radius:10px}
+
+/* ═══ HERO ═══ */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.04) 0%,transparent 70%);pointer-events:none}
+.hero-content{max-width:680px;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px 5px 6px;border-radius:20px;background:var(--glass-2);border:1px solid var(--border);font-size:11px;color:var(--t2);margin-bottom:28px}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+h1{font-family:'Newsreader',serif;font-size:3.6rem;font-weight:400;line-height:1.15;letter-spacing:-.02em;margin-bottom:20px}
+h1 .hl{color:var(--pri);position:relative}
+h1 .hl::after{content:'';position:absolute;bottom:2px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--pri),transparent);border-radius:1px}
+.hero-sub{font-size:1.15rem;color:var(--t2);line-height:1.7;max-width:520px;margin:0 auto 36px;font-weight:400}
+.hero-cta{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-note{font-size:11px;color:var(--t3);margin-top:16px}
+
+/* Pulse Orb */
+.hero-orb-w{position:relative;width:72px;height:72px;margin:0 auto 32px}
+.hero-orb{width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FCD34D,#F59E0B,#D97706);box-shadow:0 0 40px rgba(245,158,11,.2),0 0 80px rgba(245,158,11,.06);animation:pb 4s ease-in-out infinite}
+.hero-r1{position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(245,158,11,.08);animation:pr 4s ease-in-out infinite}
+.hero-r2{position:absolute;inset:-24px;border-radius:50%;border:1px solid rgba(245,158,11,.04);animation:pr 4s ease-in-out infinite .5s}
+@keyframes pb{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes pr{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.08);opacity:.8}}
+
+/* Waitlist form */
+.waitlist{display:flex;gap:8px;justify-content:center;max-width:420px;margin:0 auto}
+.waitlist input{flex:1;padding:12px 16px;border-radius:var(--r-sm);border:1px solid var(--border-2);background:var(--glass-2);color:var(--t1);font-family:'Manrope',sans-serif;font-size:14px;outline:none;transition:all .2s}
+.waitlist input::placeholder{color:var(--t4)}
+.waitlist input:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-glow)}
+
+/* ═══ LOGOS BAR ═══ */
+.logos{padding:48px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.logos-label{text-align:center;font-size:11px;color:var(--t4);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:24px}
+.logos-row{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;opacity:.3}
+.logos-row span{font-family:'Newsreader',serif;font-size:1.1rem;font-weight:400;color:var(--t2);font-style:italic}
+
+/* ═══ PROBLEM ═══ */
+.problem{text-align:center}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.problem-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;text-align:left;transition:all .25s var(--ease)}
+.problem-card:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.problem-ico{font-size:24px;margin-bottom:14px}
+.problem-card h3{font-size:14px;font-weight:600;margin-bottom:6px}
+.problem-card p{font-size:12px;color:var(--t2);line-height:1.65}
+@media(max-width:768px){.problem-grid{grid-template-columns:1fr}}
+
+/* ═══ SECTION HEADERS ═══ */
+.sh{text-align:center;margin-bottom:52px}
+.sh-label{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--pri);margin-bottom:14px}
+.sh-label .dot{width:5px;height:5px;border-radius:50%;background:var(--pri);box-shadow:0 0 6px var(--pri)}
+.sh h2{font-family:'Newsreader',serif;font-size:2.4rem;font-weight:400;line-height:1.25;margin-bottom:14px}
+.sh p{font-size:1rem;color:var(--t2);max-width:540px;margin:0 auto;line-height:1.7}
+
+/* ═══ APP PREVIEW ═══ */
+.preview{padding:80px 0 100px}
+.preview-window{background:var(--bg-1);border:1px solid var(--border-2);border-radius:16px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 60px rgba(245,158,11,.03);position:relative}
+.preview-window::before{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(180deg,rgba(245,158,11,.02) 0%,transparent 30%);pointer-events:none}
+.pw-bar{display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid var(--border)}
+.pw-dot{width:8px;height:8px;border-radius:50%;background:var(--t4)}
+.pw-dot:nth-child(1){background:#FF5F57}.pw-dot:nth-child(2){background:#FFBD2E}.pw-dot:nth-child(3){background:#27C93F}
+.pw-url{flex:1;text-align:center;font-size:10px;color:var(--t4);font-family:'JetBrains Mono',monospace}
+
+/* Dashboard mockup */
+.mock{display:grid;grid-template-columns:56px 1fr;grid-template-rows:42px 1fr;height:520px;overflow:hidden}
+.mock-side{grid-row:1/-1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;border-right:1px solid var(--border);background:rgba(9,9,15,.5)}
+.mock-side-logo{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--pri),#D97706);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--bg-0);margin-bottom:10px}
+.mock-side-btn{width:32px;height:32px;border-radius:7px;background:transparent;display:flex;align-items:center;justify-content:center}
+.mock-side-btn.on{background:var(--pri-dim)}
+.mock-side-dot{width:14px;height:14px;border-radius:4px;background:var(--t4);opacity:.25}
+.mock-side-btn.on .mock-side-dot{background:var(--pri);opacity:1}
+.mock-top{display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid var(--border);background:rgba(9,9,15,.4)}
+.mock-entity{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--t1)}
+.mock-entity-dot{width:5px;height:5px;border-radius:50%;background:var(--pri)}
+.mock-search{flex:1;max-width:240px;height:26px;margin:0 auto;border-radius:5px;border:1px solid var(--border);background:var(--glass);display:flex;align-items:center;padding:0 8px;font-size:9px;color:var(--t4)}
+.mock-main{overflow:hidden;padding:20px;background:var(--bg-0)}
+
+/* Pulse in mockup */
+.mock-pulse{text-align:center;margin-bottom:16px}
+.mock-orb{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FCD34D,#F59E0B,#D97706);margin:0 auto 10px;box-shadow:0 0 20px rgba(245,158,11,.15);animation:pb 4s ease-in-out infinite}
+.mock-pulse-text{font-family:'Newsreader',serif;font-style:italic;font-size:11px;color:var(--t2);max-width:320px;margin:0 auto}
+.mock-pulse-text .hl{color:var(--t1);font-weight:400}
+
+/* Stats row */
+.mock-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:16px}
+.mock-stat{background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:8px 10px}
+.mock-stat-label{font-size:7px;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.mock-stat-val{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t1)}
+.mock-stat-trend{font-size:7px;font-family:'JetBrains Mono',monospace;margin-top:1px}
+.mock-stat-trend.up{color:var(--green)}.mock-stat-trend.dn{color:var(--red)}
+
+/* Two col */
+.mock-2col{display:grid;grid-template-columns:1fr 200px;gap:12px}
+/* River */
+.mock-river{background:var(--glass);border:1px solid var(--border);border-radius:8px;height:100px;position:relative;overflow:hidden}
+.mock-river canvas{width:100%;height:100%}
+.mock-river-today{position:absolute;top:0;bottom:0;left:42%;width:1px;background:linear-gradient(180deg,transparent,var(--pri),transparent);opacity:.25}
+/* Actions */
+.mock-actions{display:flex;flex-direction:column;gap:4px}
+.mock-ac{background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:7px}
+.mock-ac-ico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.mock-ac-ico.urg{background:var(--red-dim)}.mock-ac-ico.att{background:var(--pri-dim)}.mock-ac-ico.ai{background:var(--purple-dim)}
+.mock-ac-text{font-size:9px;font-weight:500;color:var(--t1)}
+.mock-ac-meta{font-size:7px;color:var(--t3);margin-top:1px}
+
+/* AI Brief */
+.mock-ai{background:linear-gradient(135deg,rgba(245,158,11,.03),rgba(167,139,250,.03));border:1px solid rgba(245,158,11,.08);border-radius:8px;padding:10px 12px}
+.mock-ai-hdr{display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.mock-ai-dot{width:4px;height:4px;border-radius:50%;background:var(--pri);box-shadow:0 0 4px var(--pri)}
+.mock-ai-label{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pri)}
+.mock-ai-text{font-family:'Newsreader',serif;font-style:italic;font-size:9px;color:var(--t2);line-height:1.6}
+
+/* ═══ FEATURES ═══ */
+.features{padding:100px 0}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.feat{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:32px;transition:all .25s var(--ease);position:relative;overflow:hidden}
+.feat:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.feat-ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px}
+.feat h3{font-family:'Newsreader',serif;font-size:1.2rem;font-weight:400;margin-bottom:8px}
+.feat p{font-size:13px;color:var(--t2);line-height:1.65}
+.feat-visual{margin-top:20px;background:var(--bg-1);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+@media(max-width:768px){.feat-grid{grid-template-columns:1fr}}
+
+/* Feature mini visuals */
+.fv-txn{padding:10px 12px}
+.fv-txn-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)}
+.fv-txn-row:last-child{border:none}
+.fv-txn-ico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;background:var(--glass-2);flex-shrink:0}
+.fv-txn-info{flex:1}
+.fv-txn-name{font-size:10px;font-weight:500;color:var(--t1)}
+.fv-txn-cat{font-size:8px;color:var(--t3)}
+.fv-txn-amt{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500}
+.fv-txn-amt.in{color:var(--green)}.fv-txn-amt.out{color:var(--t1)}
+.fv-txn-tag{display:inline-block;padding:1px 5px;border-radius:3px;font-size:7px;font-weight:600}
+.fv-txn-tag.ai{background:var(--pri-dim);color:var(--pri)}
+.fv-txn-tag.matched{background:var(--green-dim);color:var(--green)}
+
+/* Currency visual */
+.fv-curr{padding:14px;display:flex;gap:8px}
+.fv-curr-card{flex:1;background:var(--glass);border:1px solid var(--border);border-radius:6px;padding:8px 10px;text-align:center}
+.fv-curr-code{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.fv-curr-amt{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t2)}
+.fv-curr-rate{font-size:7px;font-family:'JetBrains Mono',monospace;margin-top:2px}
+.fv-curr-rate.up{color:var(--green)}.fv-curr-rate.dn{color:var(--red)}
+
+/* AI insight visual */
+.fv-ai{padding:12px}
+.fv-ai-card{background:var(--glass);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:6px}
+.fv-ai-type{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.fv-ai-type.saving{color:var(--green)}.fv-ai-type.risk{color:var(--red)}.fv-ai-type.growth{color:var(--blue)}
+.fv-ai-title{font-size:10px;font-weight:500;color:var(--t1)}
+.fv-ai-conf{display:flex;align-items:center;gap:4px;margin-top:4px;font-size:7px;color:var(--t3)}
+.fv-ai-bar{width:32px;height:2px;border-radius:1px;background:var(--glass-2);overflow:hidden}
+.fv-ai-fill{height:100%;border-radius:1px;background:var(--pri)}
+
+/* Recon visual */
+.fv-recon{padding:14px}
+.fv-recon-bar{height:4px;border-radius:2px;background:var(--glass-2);overflow:hidden;margin-bottom:8px}
+.fv-recon-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--pri),var(--green));width:78%}
+.fv-recon-label{display:flex;justify-content:space-between;font-size:8px;color:var(--t3)}
+.fv-recon-label span:last-child{color:var(--pri);font-weight:600;font-family:'JetBrains Mono',monospace}
+.fv-recon-items{margin-top:10px;display:flex;flex-direction:column;gap:4px}
+.fv-recon-item{display:flex;align-items:center;gap:6px;font-size:9px}
+.fv-recon-dot{width:5px;height:5px;border-radius:50%}
+.fv-recon-dot.ok{background:var(--green)}.fv-recon-dot.pend{background:var(--pri)}.fv-recon-dot.no{background:var(--t4)}
+
+/* ═══ HOW IT WORKS ═══ */
+.steps{padding:100px 0}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;counter-reset:step}
+.step{position:relative;padding:32px 28px;background:var(--glass);border:1px solid var(--border);border-radius:var(--r);transition:all .25s var(--ease);counter-increment:step}
+.step:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.step::before{content:counter(step);position:absolute;top:16px;right:18px;font-family:'JetBrains Mono',monospace;font-size:3rem;font-weight:300;color:var(--t4);opacity:.15;line-height:1}
+.step-ico{font-size:28px;margin-bottom:16px}
+.step h3{font-family:'Newsreader',serif;font-size:1.1rem;font-weight:400;margin-bottom:8px}
+.step p{font-size:12px;color:var(--t2);line-height:1.65}
+@media(max-width:768px){.steps-grid{grid-template-columns:1fr}}
+
+/* ═══ TESTIMONIALS ═══ */
+.social{padding:100px 0}
+.social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.testi{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:all .25s var(--ease)}
+.testi:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.testi-quote{font-family:'Newsreader',serif;font-style:italic;font-size:.95rem;color:var(--t2);line-height:1.7;margin-bottom:16px}
+.testi-quote strong{color:var(--t1);font-weight:400}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff}
+.testi-name{font-size:12px;font-weight:500;color:var(--t1)}
+.testi-role{font-size:10px;color:var(--t3)}
+@media(max-width:768px){.social-grid{grid-template-columns:1fr}}
+
+/* ═══ PRICING ═══ */
+.pricing{padding:100px 0}
+.price-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto}
+.price-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);padding:32px 28px;transition:all .25s var(--ease)}
+.price-card:hover{border-color:var(--border-2);transform:translateY(-2px)}
+.price-card.featured{border-color:rgba(245,158,11,.2);background:linear-gradient(135deg,rgba(245,158,11,.03),rgba(245,158,11,.01));position:relative}
+.price-card.featured::before{content:'Early Access';position:absolute;top:-10px;left:50%;transform:translateX(-50%);padding:3px 12px;border-radius:10px;background:var(--pri);color:var(--bg-0);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.price-label{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:4px}
+.price-val{font-family:'JetBrains Mono',monospace;font-size:2rem;color:var(--t1);margin-bottom:4px}
+.price-val .per{font-size:.8rem;color:var(--t3);font-weight:400}
+.price-note{font-size:11px;color:var(--t3);margin-bottom:20px}
+.price-features{list-style:none;margin-bottom:24px}
+.price-features li{padding:6px 0;font-size:12px;color:var(--t2);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.price-features li:last-child{border:none}
+.price-features .check{color:var(--green);font-size:12px}
+@media(max-width:768px){.price-cards{grid-template-columns:1fr}}
+
+/* ═══ FINAL CTA ═══ */
+.final-cta{padding:120px 0;text-align:center;position:relative}
+.final-cta::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:600px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(245,158,11,.04) 0%,transparent 70%);pointer-events:none}
+.final-cta h2{font-family:'Newsreader',serif;font-size:2.8rem;font-weight:400;line-height:1.2;margin-bottom:16px}
+.final-cta p{font-size:1rem;color:var(--t2);max-width:480px;margin:0 auto 32px;line-height:1.7}
+
+/* ═══ FOOTER ═══ */
+footer{padding:48px 0;border-top:1px solid var(--border)}
+.footer-inner{display:flex;justify-content:space-between;align-items:center}
+.footer-left{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t3)}
+.footer-logo{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--pri),#D97706);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--bg-0)}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:11px;color:var(--t3);transition:color .2s}
+.footer-links a:hover{color:var(--t2)}
+
+/* ═══ SCROLL ANIMATIONS ═══ */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.vis{opacity:1;transform:none}
+.reveal-d1{transition-delay:.1s}.reveal-d2{transition-delay:.2s}.reveal-d3{transition-delay:.3s}.reveal-d4{transition-delay:.4s}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  h1{font-size:2.4rem}
+  .sh h2{font-size:1.8rem}
+  .mock{height:380px}
+  .mock-2col{grid-template-columns:1fr}
+  .mock-stats{grid-template-columns:repeat(3,1fr)}
+  .waitlist{flex-direction:column}
+  .nav-links a:not(:last-child){display:none}
+  section{padding:64px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-logo"><span class="nav-logo-mark">A</span> Akount</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it Works</a>
+      <a href="#pricing">Pricing</a>
+      <button class="btn btn-pri" onclick="document.getElementById('hero-email').focus()">Join Waitlist</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><span class="hero-badge-dot"></span> Now accepting early access signups</div>
+    <div class="hero-orb-w"><div class="hero-r2"></div><div class="hero-r1"></div><div class="hero-orb"></div></div>
+    <h1>Financial <span class="hl">clarity</span> for the global solopreneur</h1>
+    <p class="hero-sub">One zen dashboard. Multi-currency. AI-powered insights. Double-entry bookkeeping that actually makes sense.</p>
+    <div class="waitlist">
+      <input type="email" id="hero-email" placeholder="you@company.com" aria-label="Email address">
+      <button class="btn btn-pri btn-lg" onclick="joinWaitlist()">Join the Waitlist</button>
+    </div>
+    <p class="hero-note">Free during beta. No credit card required.</p>
+  </div>
+</section>
+
+<!-- ═══ LOGOS ═══ -->
+<div class="logos">
+  <div class="wrap">
+    <div class="logos-label">Built for solopreneurs who operate globally</div>
+    <div class="logos-row">
+      <span>Consultants</span>
+      <span>Freelancers</span>
+      <span>Agency Owners</span>
+      <span>SaaS Founders</span>
+      <span>Contractors</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PROBLEM ═══ -->
+<section class="problem">
+  <div class="wrap">
+    <div class="sh reveal">
+      <div class="sh-label"><span class="dot"></span> The Problem</div>
+      <h2>Your finances are scattered<br>across 5 tabs and 3 currencies</h2>
+      <p>Spreadsheets. Bank logins. Currency converters. Invoice generators. You're a solopreneur, not an accounting department.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal reveal-d1">
+        <div class="problem-ico">&#127760;</div>
+        <h3>Multi-currency chaos</h3>
+        <p>USD from American clients, EUR from European ones, CAD in your bank. Exchange rates change daily. Your spreadsheet can't keep up.</p>
+      </div>
+      <div class="problem-card reveal reveal-d2">
+        <div class="problem-ico">&#128200;</div>
+        <h3>No real-time picture</h3>
+        <p>You check three bank apps, a spreadsheet, and an invoice tool just to answer: "How much money do I actually have?"</p>
+      </div>
+      <div class="problem-card reveal reveal-d3">
+        <div class="problem-ico">&#129504;</div>
+        <h3>Tax time anxiety</h3>
+        <p>Scrambling to categorize 11 months of transactions the night before your accountant's deadline. Every. Single. Year.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ APP PREVIEW ═══ -->
+<section class="preview">
+  <div class="wrap">
+    <div class="sh reveal">
+      <div class="sh-label"><span class="dot"></span> The Solution</div>
+      <h2>One glance. Zero anxiety.</h2>
+      <p>Akount gives you a living, breathing view of your entire financial world. Always current. Always clear.</p>
+    </div>
+    <div class="preview-window reveal">
+      <div class="pw-bar">
+        <span class="pw-dot"></span><span class="pw-dot"></span><span class="pw-dot"></span>
+        <span class="pw-url">app.akount.com/dashboard</span>
+      </div>
+      <div class="mock">
+        <!-- Sidebar -->
+        <div class="mock-side">
+          <div class="mock-side-logo">A</div>
+          <div class="mock-side-btn on"><div class="mock-side-dot"></div></div>
+          <div class="mock-side-btn"><div class="mock-side-dot"></div></div>
+          <div class="mock-side-btn"><div class="mock-side-dot"></div></div>
+          <div class="mock-side-btn"><div class="mock-side-dot"></div></div>
+          <div style="width:20px;height:1px;background:var(--border);margin:4px 0"></div>
+          <div class="mock-side-btn"><div class="mock-side-dot"></div></div>
+          <div class="mock-side-btn"><div class="mock-side-dot"></div></div>
+        </div>
+        <!-- Topbar -->
+        <div class="mock-top">
+          <div class="mock-entity"><span class="mock-entity-dot"></span> Marakana Corp</div>
+          <div class="mock-search">&#128269; Search invoices, clients...</div>
+        </div>
+        <!-- Main -->
+        <div class="mock-main">
+          <!-- Pulse -->
+          <div class="mock-pulse">
+            <div class="mock-orb"></div>
+            <p class="mock-pulse-text">You have <span class="hl">$47,200</span> across 3 accounts. <span style="color:var(--green)">$12,400</span> arriving this week.</p>
+          </div>
+          <!-- Stats -->
+          <div class="mock-stats">
+            <div class="mock-stat"><div class="mock-stat-label">Revenue</div><div class="mock-stat-val">$24,800</div><div class="mock-stat-trend up">+12%</div></div>
+            <div class="mock-stat"><div class="mock-stat-label">Expenses</div><div class="mock-stat-val">$8,420</div><div class="mock-stat-trend dn">+3%</div></div>
+            <div class="mock-stat"><div class="mock-stat-label">Profit</div><div class="mock-stat-val">$16,380</div><div class="mock-stat-trend up">+18%</div></div>
+            <div class="mock-stat"><div class="mock-stat-label">Receivables</div><div class="mock-stat-val">$42,800</div><div class="mock-stat-trend" style="color:var(--t3)">8 inv</div></div>
+            <div class="mock-stat"><div class="mock-stat-label">Runway</div><div class="mock-stat-val">5.6 mo</div><div class="mock-stat-trend" style="color:var(--t3)">Stable</div></div>
+          </div>
+          <!-- Two col -->
+          <div class="mock-2col">
+            <div>
+              <!-- River -->
+              <div class="mock-river"><canvas id="mRiver"></canvas><div class="mock-river-today"></div></div>
+            </div>
+            <div class="mock-actions">
+              <div class="mock-ai">
+                <div class="mock-ai-hdr"><div class="mock-ai-dot"></div><span class="mock-ai-label">AI Brief</span></div>
+                <p class="mock-ai-text">Q1 revenue is <strong>23% above last year</strong>. Cash runway at 5.6 months. ABC Corp's payment is 3 days late.</p>
+              </div>
+              <div class="mock-ac"><div class="mock-ac-ico urg">&#9889;</div><div><div class="mock-ac-text">Send overdue reminder</div><div class="mock-ac-meta">ABC Corp &middot; $4,200 USD</div></div></div>
+              <div class="mock-ac"><div class="mock-ac-ico att">&#128229;</div><div><div class="mock-ac-text">Categorize 3 transactions</div><div class="mock-ac-meta">RBC &middot; Imported today</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="sh reveal">
+      <div class="sh-label"><span class="dot"></span> Features</div>
+      <h2>Everything you need,<br>nothing you don't</h2>
+    </div>
+    <div class="feat-grid">
+      <!-- Feature 1: AI Categorization -->
+      <div class="feat reveal reveal-d1">
+        <div class="feat-ico" style="background:var(--pri-dim)">&#129302;</div>
+        <h3>AI-Powered Categorization</h3>
+        <p>Transactions auto-categorize with 87%+ accuracy. One click to confirm. Your books stay clean without the busywork.</p>
+        <div class="feat-visual">
+          <div class="fv-txn">
+            <div class="fv-txn-row"><div class="fv-txn-ico">&#128230;</div><div class="fv-txn-info"><div class="fv-txn-name">AMZN MKTP CA*2R4K1</div><div class="fv-txn-cat"><span class="fv-txn-tag ai">AI: Office Supplies 87%</span></div></div><div class="fv-txn-amt out">-$84.99</div></div>
+            <div class="fv-txn-row"><div class="fv-txn-ico">&#127963;</div><div class="fv-txn-info"><div class="fv-txn-name">UBER TRIP 4X92HJ</div><div class="fv-txn-cat"><span class="fv-txn-tag ai">AI: Travel 92%</span></div></div><div class="fv-txn-amt out">-$23.40</div></div>
+            <div class="fv-txn-row"><div class="fv-txn-ico">&#128176;</div><div class="fv-txn-info"><div class="fv-txn-name">XYZ Ltd &mdash; Invoice #1046</div><div class="fv-txn-cat"><span class="fv-txn-tag matched">Matched</span></div></div><div class="fv-txn-amt in">+$8,200</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Feature 2: Multi-Currency -->
+      <div class="feat reveal reveal-d2">
+        <div class="feat-ico" style="background:var(--blue-dim)">&#127760;</div>
+        <h3>Multi-Currency Native</h3>
+        <p>CAD, USD, EUR, GBP — track every currency natively. Exchange rates captured at transaction time. Consolidate in your base currency.</p>
+        <div class="feat-visual">
+          <div class="fv-curr">
+            <div class="fv-curr-card"><div class="fv-curr-code">CAD</div><div class="fv-curr-amt">$29,300</div><div class="fv-curr-rate up">+0.3%</div></div>
+            <div class="fv-curr-card"><div class="fv-curr-code">USD</div><div class="fv-curr-amt">$13,200</div><div class="fv-curr-rate dn">-0.1%</div></div>
+            <div class="fv-curr-card"><div class="fv-curr-code">EUR</div><div class="fv-curr-amt">$4,700</div><div class="fv-curr-rate up">+2.1%</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Feature 3: AI Advisor -->
+      <div class="feat reveal reveal-d3">
+        <div class="feat-ico" style="background:var(--purple-dim)">&#10022;</div>
+        <h3>AI Financial Advisor</h3>
+        <p>Actionable insights, not dashboards of charts. "Your EUR clients pay 6 days faster" — intelligence you can act on.</p>
+        <div class="feat-visual">
+          <div class="fv-ai">
+            <div class="fv-ai-card"><div class="fv-ai-type saving">&#10003; Cost Saving</div><div class="fv-ai-title">Consolidate SaaS — save $340/mo</div><div class="fv-ai-conf"><div class="fv-ai-bar"><div class="fv-ai-fill" style="width:88%"></div></div> 88%</div></div>
+            <div class="fv-ai-card"><div class="fv-ai-type growth">&#8599; Growth</div><div class="fv-ai-title">EUR clients pay 6 days faster</div><div class="fv-ai-conf"><div class="fv-ai-bar"><div class="fv-ai-fill" style="width:94%"></div></div> 94%</div></div>
+            <div class="fv-ai-card"><div class="fv-ai-type risk">&#9888; Risk</div><div class="fv-ai-title">Cash dip mid-March if delayed</div><div class="fv-ai-conf"><div class="fv-ai-bar"><div class="fv-ai-fill" style="width:62%"></div></div> 62%</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Feature 4: Reconciliation -->
+      <div class="feat reveal reveal-d4">
+        <div class="feat-ico" style="background:var(--green-dim)">&#128260;</div>
+        <h3>Smart Reconciliation</h3>
+        <p>Bank transactions auto-match to invoices and bills. See your reconciliation health at a glance. Catch discrepancies before your accountant does.</p>
+        <div class="feat-visual">
+          <div class="fv-recon">
+            <div class="fv-recon-bar"><div class="fv-recon-fill"></div></div>
+            <div class="fv-recon-label"><span>February Reconciliation</span><span>78%</span></div>
+            <div class="fv-recon-items">
+              <div class="fv-recon-item"><span class="fv-recon-dot ok"></span><span style="color:var(--t2)">XYZ Ltd payment matched to Invoice #1046</span></div>
+              <div class="fv-recon-item"><span class="fv-recon-dot ok"></span><span style="color:var(--t2)">WeWork rent matched to recurring bill</span></div>
+              <div class="fv-recon-item"><span class="fv-recon-dot pend"></span><span style="color:var(--pri)">3 transactions pending categorization</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="steps" id="how">
+  <div class="wrap">
+    <div class="sh reveal">
+      <div class="sh-label"><span class="dot"></span> How It Works</div>
+      <h2>Three minutes to clarity</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step reveal reveal-d1">
+        <div class="step-ico">&#128279;</div>
+        <h3>Connect your banks</h3>
+        <p>Link your accounts in seconds. RBC, TD, Wise, PayPal, Stripe — we support 10,000+ institutions across 30+ countries.</p>
+      </div>
+      <div class="step reveal reveal-d2">
+        <div class="step-ico">&#129302;</div>
+        <h3>AI learns your business</h3>
+        <p>Our AI categorizes transactions, matches invoices, and learns your patterns. After a week, it handles 90% of bookkeeping automatically.</p>
+      </div>
+      <div class="step reveal reveal-d3">
+        <div class="step-ico">&#128161;</div>
+        <h3>Breathe</h3>
+        <p>Open your dashboard. See the Pulse. Know exactly where you stand — cash, receivables, runway — in one calm glance. Zen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SOCIAL PROOF ═══ -->
+<section class="social">
+  <div class="wrap">
+    <div class="sh reveal">
+      <div class="sh-label"><span class="dot"></span> Early Feedback</div>
+      <h2>What solopreneurs are saying</h2>
+    </div>
+    <div class="social-grid">
+      <div class="testi reveal reveal-d1">
+        <p class="testi-quote">"I was managing 3 currencies across 4 bank accounts in a Google Sheet. Akount replaced all of that with <strong>one screen I actually want to look at</strong>."</p>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#667eea,#764ba2)">M</div><div><div class="testi-name">Marcus T.</div><div class="testi-role">Freelance Developer &middot; Berlin</div></div></div>
+      </div>
+      <div class="testi reveal reveal-d2">
+        <p class="testi-quote">"The AI categorization is scary good. I spent 2 hours a month on bookkeeping. Now it's <strong>10 minutes</strong>. And the Pulse — I check it every morning like weather."</p>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#f093fb,#f5576c)">S</div><div><div class="testi-name">Sofia R.</div><div class="testi-role">Marketing Consultant &middot; Toronto</div></div></div>
+      </div>
+      <div class="testi reveal reveal-d3">
+        <p class="testi-quote">"Finally, accounting software that doesn't look like it was designed in 2004. The dark mode + glass UI is <strong>genuinely beautiful</strong>. My accountant is jealous."</p>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">J</div><div><div class="testi-name">James K.</div><div class="testi-role">Agency Owner &middot; London</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="sh reveal">
+      <div class="sh-label"><span class="dot"></span> Pricing</div>
+      <h2>Simple, honest pricing</h2>
+      <p>No per-transaction fees. No hidden charges. One plan, everything included.</p>
+    </div>
+    <div class="price-cards">
+      <div class="price-card reveal reveal-d1">
+        <div class="price-label">Starter</div>
+        <div class="price-val">Free</div>
+        <div class="price-note">1 entity, 1 currency</div>
+        <ul class="price-features">
+          <li><span class="check">&#10003;</span> Bank connection (1 account)</li>
+          <li><span class="check">&#10003;</span> AI categorization</li>
+          <li><span class="check">&#10003;</span> Dashboard + Pulse</li>
+          <li><span class="check">&#10003;</span> Basic invoicing</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%" onclick="joinWaitlist()">Join Waitlist</button>
+      </div>
+      <div class="price-card featured reveal reveal-d2">
+        <div class="price-label">Pro</div>
+        <div class="price-val">$29<span class="per">/mo</span></div>
+        <div class="price-note">Unlimited entities & currencies</div>
+        <ul class="price-features">
+          <li><span class="check">&#10003;</span> Unlimited bank accounts</li>
+          <li><span class="check">&#10003;</span> Multi-currency + FX tracking</li>
+          <li><span class="check">&#10003;</span> AI Advisor + insights</li>
+          <li><span class="check">&#10003;</span> Smart reconciliation</li>
+          <li><span class="check">&#10003;</span> Double-entry bookkeeping</li>
+          <li><span class="check">&#10003;</span> CSV/PDF import</li>
+        </ul>
+        <button class="btn btn-pri" style="width:100%" onclick="joinWaitlist()">Join Waitlist &mdash; Free in Beta</button>
+      </div>
+      <div class="price-card reveal reveal-d3">
+        <div class="price-label">Team</div>
+        <div class="price-val">$79<span class="per">/mo</span></div>
+        <div class="price-note">Up to 5 users + accountant access</div>
+        <ul class="price-features">
+          <li><span class="check">&#10003;</span> Everything in Pro</li>
+          <li><span class="check">&#10003;</span> Team roles (RBAC)</li>
+          <li><span class="check">&#10003;</span> Accountant portal</li>
+          <li><span class="check">&#10003;</span> Audit trail + compliance</li>
+          <li><span class="check">&#10003;</span> Priority support</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%" onclick="joinWaitlist()">Join Waitlist</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final-cta">
+  <div class="wrap">
+    <div class="hero-orb-w" style="margin-bottom:24px"><div class="hero-r2"></div><div class="hero-r1"></div><div class="hero-orb"></div></div>
+    <h2 class="reveal">Stop managing finances.<br>Start <em style="font-family:'Newsreader',serif;font-style:italic;color:var(--pri)">seeing</em> them.</h2>
+    <p class="reveal reveal-d1">Join 400+ solopreneurs already on the waitlist. Be first to experience financial clarity.</p>
+    <div class="waitlist reveal reveal-d2">
+      <input type="email" id="footer-email" placeholder="you@company.com" aria-label="Email address">
+      <button class="btn btn-pri btn-lg" onclick="joinWaitlist()">Join the Waitlist</button>
+    </div>
+    <p class="hero-note reveal reveal-d3">Free during beta &middot; No credit card &middot; Cancel anytime</p>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-left"><span class="footer-logo">A</span> &copy; 2026 Akount. All rights reserved.</div>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Twitter</a>
+      <a href="#">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast" style="position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg-3);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:12px 20px;font-size:13px;color:var(--t1);box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transition:all .3s var(--ease);z-index:200;display:flex;align-items:center;gap:8px;pointer-events:none">
+  <span style="color:var(--green)">&#10003;</span><span id="tMsg"></span>
+</div>
+
+<script>
+// ═══ NAV SCROLL ═══
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>40);});
+
+// ═══ SCROLL REVEAL ═══
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');observer.unobserve(e.target);}});
+},{threshold:0.15,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// ═══ WAITLIST ═══
+function joinWaitlist(){
+  const email=document.getElementById('hero-email').value||document.getElementById('footer-email').value;
+  if(email&&email.includes('@')){
+    showToast("You're on the list! We'll be in touch soon.");
+  }else{
+    showToast("Welcome to the waitlist!");
+  }
+}
+
+// ═══ TOAST ═══
+let tT;
+function showToast(m){
+  clearTimeout(tT);
+  document.getElementById('tMsg').textContent=m;
+  const t=document.getElementById('toast');
+  t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  tT=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(16px)';},3000);
+}
+
+// ═══ MINI RIVER ═══
+function drawMiniRiver(){
+  const c=document.getElementById('mRiver');if(!c||!c.offsetWidth)return;
+  const ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1;
+  c.width=c.offsetWidth*dpr;c.height=c.offsetHeight*dpr;ctx.scale(dpr,dpr);
+  const w=c.offsetWidth,h=c.offsetHeight,mid=h*.5;
+  const pts=[{x:0,t:-18,b:18},{x:.1,t:-16,b:16},{x:.2,t:-22,b:22},{x:.3,t:-15,b:15},{x:.42,t:-20,b:20},{x:.55,t:-14,b:14},{x:.65,t:-24,b:24},{x:.8,t:-20,b:20},{x:1,t:-26,b:26}];
+  function gY(n,s){for(let i=0;i<pts.length-1;i++)if(n>=pts[i].x&&n<=pts[i+1].x){const t2=(n-pts[i].x)/(pts[i+1].x-pts[i].x),sm=t2*t2*(3-2*t2);return mid+(s==='t'?pts[i].t+(pts[i+1].t-pts[i].t)*sm:pts[i].b+(pts[i+1].b-pts[i].b)*sm);}return mid;}
+  ctx.beginPath();for(let x=0;x<=w;x+=2)ctx.lineTo(x,gY(x/w,'t'));for(let x=w;x>=0;x-=2)ctx.lineTo(x,gY(x/w,'b'));ctx.closePath();
+  const g=ctx.createLinearGradient(0,mid-30,0,mid+30);g.addColorStop(0,'rgba(245,158,11,.06)');g.addColorStop(.5,'rgba(245,158,11,.02)');g.addColorStop(1,'rgba(245,158,11,.06)');ctx.fillStyle=g;ctx.fill();
+  [['t','rgba(245,158,11,.18)',1],['b','rgba(245,158,11,.08)',.8]].forEach(([s,col,lw])=>{ctx.beginPath();for(let x=0;x<=w;x+=2)ctx.lineTo(x,gY(x/w,s));ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.stroke();});
+  // Income drops
+  [{x:.2},{x:.55},{x:.8}].forEach(s=>{const px=s.x*w,ry=gY(s.x,'t');ctx.beginPath();ctx.arc(px,ry,3,0,Math.PI*2);ctx.fillStyle='rgba(52,211,153,.2)';ctx.fill();});
+  // Expense drops
+  [{x:.3},{x:.48},{x:.7}].forEach(s=>{const px=s.x*w,ry=gY(s.x,'b');ctx.beginPath();ctx.arc(px,ry,3,0,Math.PI*2);ctx.fillStyle='rgba(248,113,113,.15)';ctx.fill();});
+}
+
+window.addEventListener('load',()=>{drawMiniRiver();window.addEventListener('resize',drawMiniRiver);});
+
+// ═══ SMOOTH SCROLL ═══
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
