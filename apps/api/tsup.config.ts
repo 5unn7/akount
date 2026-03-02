@@ -9,9 +9,16 @@ export default defineConfig({
     noExternal: ['@akount/db', '@akount/types'],
     // Disable splitting so banner applies to entire output
     splitting: false,
-    // Provide real require() for CJS packages bundled into ESM (pino, etc.)
+    // Provide CJS compatibility shims for packages bundled into ESM (pino, prisma, etc.)
     banner: {
-        js: `import { createRequire } from 'module'; const require = createRequire(import.meta.url);`,
+        js: [
+            `import { createRequire } from 'module';`,
+            `import { fileURLToPath } from 'url';`,
+            `import { dirname } from 'path';`,
+            `const require = createRequire(import.meta.url);`,
+            `const __filename = fileURLToPath(import.meta.url);`,
+            `const __dirname = dirname(__filename);`,
+        ].join(' '),
     },
     // Skip type checking (handled by tsc separately)
     dts: false,
