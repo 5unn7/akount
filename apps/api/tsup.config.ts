@@ -7,6 +7,8 @@ export default defineConfig({
     // Bundle monorepo packages that ship raw TypeScript
     // (their package.json "main" points to .ts files)
     noExternal: ['@akount/db', '@akount/types'],
+    // Prisma uses native binary engine — must resolve from node_modules at runtime
+    external: ['@prisma/client', '.prisma/client'],
     // Disable splitting so banner applies to entire output
     splitting: false,
     // Provide CJS compatibility shims for packages bundled into ESM (pino, prisma, etc.)
